@@ -30,3 +30,11 @@ pi3d specification (pi3d-spec.txt)
 
 This file outlines the heirarchy of classes and defs of pi3d to be completed.  Please note that this is in infancy and may grow to include a more collaborated effort if pi3d takes off!
 
+
+Acknowledgements
+----------------
+
+Python code is based on Peter de Rivaz 'pyopengles' at https://github.com/peterderivaz/pyopengles and,
+Jon Macey's code from jonmacey.blogspot.co.uk/2012/06/
+
+Many Thanks! 
