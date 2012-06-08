@@ -1,0 +1,32 @@
+pi3D ReadMe
+===========
+
+There's plenty of 3D code flying around at the moment for the Raspberry Pi, but all of it is rather complicated to understand and most of it can sit under the bonnet!
+
+pi3d is first of all written in Python and is designed to simplify the programming of 3D by wrapping various C/C++ functions and other Python complexities.  It should allow the prospective young programmer to start off with something as simple as:
+
+
+  import pi3d
+
+  pi3d.init
+
+  mywindow = pi3d.create_window(0,0,pi3d.screenWidth, pi3d.screenHeight)
+
+  mymodel = pi3d.load("spaceship.p3d")
+
+  while pi3d.mouse.leftButton == False:
+
+      mymodel.rotate(0,1,0,0.01)
+      mymodel.draw
+      pi3d.swap_buffers
+
+  mywindow.exit
+
+... should produce a fully textured spaceship model loaded into a full screen, slowly rotating until the left mouse button is clicked!
+
+
+pi3d specification (pi3d-spec.txt)
+----------------------------------
+
+This file outlines the heirarchy of classes and defs of pi3d to be completed.  Please note that this is in infancy and may grow to include a more collaborated effort if pi3d takes off!
+
