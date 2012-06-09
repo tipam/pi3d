@@ -1,11 +1,12 @@
 # Setup EGL display
 # Based on code by Peter de Rivaz and others
 
-import ctypes
+import ctypes, math
 # Pick up our constants extracted from the header files with prepare_constants.py
 from egl import *
 from gl2 import *
 from gl2ext import *
+from gl import *
 
 # Define verbose=True to get debug messages
 verbose = True
@@ -25,9 +26,12 @@ openegl = ctypes.CDLL('libEGL.so')
 eglint = ctypes.c_int
 eglshort = ctypes.c_short
 eglfloat = ctypes.c_float
+eglbyte = ctypes.c_byte
+
+def eglbytes(L):
+    return (eglbyte*len(L))(*L)
 
 def eglints(L):
-    """Converts a tuple to an array of eglints (would a pointer return be better?)"""
     return (eglint*len(L))(*L)
 
 def eglfloats(L):
@@ -40,7 +44,8 @@ def check(e):
         print 'Error code',hex(e&0xffffffff)
     raise ValueError
 
-class init_display(object):
+
+class init(object):
 
     def __init__(self):
         """Opens up the OpenGL library and prepares a window for display"""
@@ -57,7 +62,7 @@ class init_display(object):
         self.max_height = height
 	
 	
-    def make_display(self,x,y,w,h):
+    def create(self,x,y,w,h):
 	
         self.display = openegl.eglGetDisplay(EGL_DEFAULT_DISPLAY)
 	assert self.display != EGL_NO_DISPLAY
@@ -73,24 +78,12 @@ class init_display(object):
                                       EGL_NONE) )
         numconfig = eglint()
         config = ctypes.c_void_p()
-        r = openegl.eglChooseConfig(self.display,
-                                     ctypes.byref(attribute_list),
-                                     ctypes.byref(config), 1,
-                                     ctypes.byref(numconfig));
-                                     
-        r = openegl.eglBindAPI(EGL_OPENGL_ES_API)
+	r = openegl.eglChooseConfig(self.display, ctypes.byref(attribute_list), ctypes.byref(config), 1, ctypes.byref(numconfig));
+   
+	if verbose: print 'numconfig=',numconfig
 
-        if verbose:
-            print 'numconfig=',numconfig
-
-        context_attribs = eglints( (EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE) )
-        self.context = openegl.eglCreateContext(self.display, config,
-                                        EGL_NO_CONTEXT,
-                                        ctypes.byref(context_attribs))
-                                        
-        assert self.context != EGL_NO_CONTEXT
-        
-        
+        self.context = openegl.eglCreateContext(self.display, config, EGL_NO_CONTEXT, 0 ) 
+	assert self.context != EGL_NO_CONTEXT
         
         #Set the viewport position and size
 
@@ -117,10 +110,27 @@ class init_display(object):
         r = openegl.eglMakeCurrent(self.display, self.surface, self.surface, self.context)
         assert r
 	
+	#Create viewport
+        opengles.glViewport (0, 0, w, h)
+        #
+	opengles.glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST )
+	opengles.glEnable(GL_CULL_FACE)	
+        opengles.glShadeModel(GL_FLAT);
+	
+	#Setup perspective view
+	opengles.glMatrixMode(GL_PROJECTION)
+        opengles.glLoadIdentity()
+        nearp=1.0
+        farp=500.0
+        hht = nearp * math.tan(45.0 / 2.0 / 180.0 * 3.1415926)
+        hwd = hht * w / h
+        opengles.glFrustumf(eglfloat(-hwd), eglfloat(hwd), eglfloat(-hht), eglfloat(hht), eglfloat(nearp), eglfloat(farp))
+	opengles.glMatrixMode(GL_MODELVIEW)
+	
 	self.active = True
 	
 	
-    def destroy_display(self):
+    def destroy(self):
 	if self.active:
 	    openegl.eglSwapBuffers(self.display, self.surface);
 	    openegl.eglMakeCurrent(self.display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT)
@@ -134,6 +144,9 @@ class init_display(object):
         
     def swap_buffers(self):
 	openegl.eglSwapBuffers(self.display, self.surface);
+    
+    def clear(self):
+	opengles.glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	
     def setBackColour(self,r,g,b,a):
 	self.backColour=(r,g,b,a)
@@ -149,6 +162,17 @@ class create_cuboid(object):
 		self.x=0
 		self.y=0
 		self.z=0
+		self.rotx=0
+		self.roty=0
+		self.rotz=0
+		
+		
+		self.cube_vertices = eglbytes(( -1,1,1, 1,1,1, 1,-1,1, -1,-1,1, -1,1,-1, 1,1,-1, 1,-1,-1, -1,-1,-1));
+		#self.cube_triangles = eglbytes(( 1,0,3, 1,3,2, 2,6,5, 2,5,1, 7,4,5, 7,5,6, 0,4,7, 0,7,3, 5,4,0, 5,0,1, 3,7,6, 3,6,2));
+		self.cube_colours = eglbytes(( 0,0,255,255, 0,0,0,255, 0,255,0,255, 0,255,0,255, 0,0,255,255, 255,0,0,255, 255,0,0,255, 0,0,0,255 ));
+		self.cube_fan1 = eglbytes(( 1,0,3, 1,3,2, 1,2,6, 1,6,5, 1,5,4, 1,4,0 ));
+		self.cube_fan2 = eglbytes(( 7,4,5, 7,5,6, 7,6,2, 7,2,3, 7,3,0, 7,0,4 ));
+
 		
 	#this should all be done with matrices!! ... just for testing ...
 	
@@ -166,4 +190,33 @@ class create_cuboid(object):
 		self.x=self.x+tx
 		self.y=self.y+ty
 		self.z=self.z+tz
+		
+	def rotatex(self,v):
+		self.rotx = v
+		
+	def rotatey(self,v):
+		self.roty = v
+		
+	def rotatez(self,v):
+		self.rotz = v
+		
+	def draw(self):
+		opengles.glEnableClientState(GL_VERTEX_ARRAY)
+		opengles.glVertexPointer( 3, GL_BYTE, 0, self.cube_vertices);
+
+		opengles.glEnableClientState(GL_COLOR_ARRAY)
+		opengles.glColorPointer( 4, GL_UNSIGNED_BYTE, 0, self.cube_colours);
+
+		opengles.glLoadIdentity()
+		opengles.glTranslatef(eglfloat(self.x), eglfloat(self.y), eglfloat(self.z))
+		
+		if self.rotx <> 0:  opengles.glRotatef(eglfloat(self.roty),eglfloat(1), eglfloat(0), eglfloat(0))
+		if self.roty <> 0:  opengles.glRotatef(eglfloat(self.roty),eglfloat(0), eglfloat(1), eglfloat(0))
+		if self.rotz <> 0:  opengles.glRotatef(eglfloat(self.rotz),eglfloat(0), eglfloat(0), eglfloat(1))
+		
+		opengles.glScalef(eglfloat(self.width),eglfloat(self.height),eglfloat(self.depth))
+		#opengles.glDrawElements( GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, self.triangles)
+	
+		opengles.glDrawElements( GL_TRIANGLE_FAN, 18, GL_UNSIGNED_BYTE, self.cube_fan1)
+		opengles.glDrawElements( GL_TRIANGLE_FAN, 18, GL_UNSIGNED_BYTE, self.cube_fan2)
 		
