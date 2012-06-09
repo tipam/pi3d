@@ -191,14 +191,23 @@ class create_cuboid(object):
 		self.y=self.y+ty
 		self.z=self.z+tz
 		
-	def rotatex(self,v):
+	def rotateToX(self,v):
 		self.rotx = v
 		
-	def rotatey(self,v):
+	def rotateToY(self,v):
 		self.roty = v
 		
-	def rotatez(self,v):
+	def rotateToZ(self,v):
 		self.rotz = v
+		
+	def rotateIncX(self,v):
+		self.rotx += v
+		
+	def rotateIncY(self,v):
+		self.roty += v
+		
+	def rotateIncZ(self,v):
+		self.rotz += v
 		
 	def draw(self):
 		opengles.glEnableClientState(GL_VERTEX_ARRAY)
