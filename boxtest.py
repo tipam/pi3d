@@ -12,14 +12,21 @@ import pi3d
 
 if __name__ == "__main__":
     
+    img = pi3d.load_texture("COFFEE.PNG")
+    print "texID:",img.texID
+    
     # Setup display and initialise pi3d
-    display = pi3d.init()
+    display = pi3d.glDisplay()
     display.create(100,100,600,400)
     display.setBackColour(0,0.7,1,1)    
 
     # Create my cuboid
     mycuboid = pi3d.create_cuboid(1,1.5,1)
     mycuboid.translate(0,0,-5)
+    
+    # Create plane for texturing
+    myplane = pi3d.create_plane(2,2)
+    myplane.translate(0,0,-7)
     
     # Display scene and rotate cuboid
     while 1:
@@ -28,6 +35,8 @@ if __name__ == "__main__":
         mycuboid.draw()
 	mycuboid.rotateIncY( 3 )
 	mycuboid.rotateIncX( 1 )
+	
+	myplane.draw(img.texID)
 	
 	display.swap_buffers()
         time.sleep(0.01)

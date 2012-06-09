@@ -1,7 +1,7 @@
 # Setup EGL display
 # Based on code by Peter de Rivaz and others
 
-import ctypes, math
+import ctypes, math, Image
 # Pick up our constants extracted from the header files with prepare_constants.py
 from egl import *
 from gl2 import *
@@ -28,6 +28,8 @@ eglshort = ctypes.c_short
 eglfloat = ctypes.c_float
 eglbyte = ctypes.c_byte
 
+
+		
 def eglbytes(L):
     return (eglbyte*len(L))(*L)
 
@@ -45,7 +47,7 @@ def check(e):
     raise ValueError
 
 
-class init(object):
+class glDisplay(object):
 
     def __init__(self):
         """Opens up the OpenGL library and prepares a window for display"""
@@ -60,7 +62,6 @@ class init(object):
 
         self.max_width = width
         self.max_height = height
-	
 	
     def create(self,x,y,w,h):
 	
@@ -166,14 +167,14 @@ class create_cuboid(object):
 		self.roty=0
 		self.rotz=0
 		
-		
+		#cuboid data
+
 		self.cube_vertices = eglbytes(( -1,1,1, 1,1,1, 1,-1,1, -1,-1,1, -1,1,-1, 1,1,-1, 1,-1,-1, -1,-1,-1));
 		#self.cube_triangles = eglbytes(( 1,0,3, 1,3,2, 2,6,5, 2,5,1, 7,4,5, 7,5,6, 0,4,7, 0,7,3, 5,4,0, 5,0,1, 3,7,6, 3,6,2));
 		self.cube_colours = eglbytes(( 0,0,255,255, 0,0,0,255, 0,255,0,255, 0,255,0,255, 0,0,255,255, 255,0,0,255, 255,0,0,255, 0,0,0,255 ));
 		self.cube_fan1 = eglbytes(( 1,0,3, 1,3,2, 1,2,6, 1,6,5, 1,5,4, 1,4,0 ));
 		self.cube_fan2 = eglbytes(( 7,4,5, 7,5,6, 7,6,2, 7,2,3, 7,3,0, 7,0,4 ));
 
-		
 	#this should all be done with matrices!! ... just for testing ...
 	
 	def scale(self,sw,sd,sh):
@@ -213,8 +214,8 @@ class create_cuboid(object):
 		opengles.glEnableClientState(GL_VERTEX_ARRAY)
 		opengles.glVertexPointer( 3, GL_BYTE, 0, self.cube_vertices);
 
-		opengles.glEnableClientState(GL_COLOR_ARRAY)
-		opengles.glColorPointer( 4, GL_UNSIGNED_BYTE, 0, self.cube_colours);
+		#opengles.glEnableClientState(GL_COLOR_ARRAY)
+		#opengles.glColorPointer( 4, GL_UNSIGNED_BYTE, 0, self.cube_colours);
 
 		opengles.glLoadIdentity()
 		opengles.glTranslatef(eglfloat(self.x), eglfloat(self.y), eglfloat(self.z))
@@ -228,4 +229,140 @@ class create_cuboid(object):
 	
 		opengles.glDrawElements( GL_TRIANGLE_FAN, 18, GL_UNSIGNED_BYTE, self.cube_fan1)
 		opengles.glDrawElements( GL_TRIANGLE_FAN, 18, GL_UNSIGNED_BYTE, self.cube_fan2)
+
+class create_plane(object):
+	
+	def __init__(self,w,h):
+		self.width = w
+		self.height = h
+		self.x=0
+		self.y=0
+		self.z=0
+		self.rotx=0
+		self.roty=0
+		self.rotz=0
 		
+		#plane data
+
+		self.plane_vertices = eglbytes(( -1,1,1, 1,1,1, 1,-1,1, -1,-1,1 ));
+		self.plane_fan = eglbytes(( 1,0,3, 1,3,2 ));
+		self.tex_coords = eglbytes((0,0, 255,0, 255,255, 0,255));
+
+	#this should all be done with matrices!! ... just for testing ...
+	
+	def scale(self,sw,sh):
+		self.width = self.width * sw
+		self.height = self.height * sh
+
+	def position(self,xp,yp,zp):
+		self.x=xp
+		self.y=yp
+		self.z=zp
+	
+	def translate(self,tx,ty,tz):
+		self.x=self.x+tx
+		self.y=self.y+ty
+		self.z=self.z+tz
+		
+	def rotateToX(self,v):
+		self.rotx = v
+		
+	def rotateToY(self,v):
+		self.roty = v
+		
+	def rotateToZ(self,v):
+		self.rotz = v
+		
+	def rotateIncX(self,v):
+		self.rotx += v
+		
+	def rotateIncY(self,v):
+		self.roty += v
+		
+	def rotateIncZ(self,v):
+		self.rotz += v
+		
+	def draw(self,texID):
+		opengles.glEnableClientState(GL_VERTEX_ARRAY)
+		opengles.glVertexPointer( 3, GL_BYTE, 0, self.plane_vertices);
+
+		if texID > 0:
+		    opengles.glEnableClientState(GL_TEXTURE_COORD_ARRAY)
+		    opengles.glTexCoordPointer(2,GL_BYTE,0,self.tex_coords)
+		    opengles.glBindTexture(GL_TEXTURE_2D,texID)
+		    opengles.glEnable(GL_TEXTURE_2D)
+		    
+		opengles.glLoadIdentity()
+		opengles.glTranslatef(eglfloat(self.x), eglfloat(self.y), eglfloat(self.z))
+		
+		if self.rotx <> 0:  opengles.glRotatef(eglfloat(self.roty),eglfloat(1), eglfloat(0), eglfloat(0))
+		if self.roty <> 0:  opengles.glRotatef(eglfloat(self.roty),eglfloat(0), eglfloat(1), eglfloat(0))
+		if self.rotz <> 0:  opengles.glRotatef(eglfloat(self.rotz),eglfloat(0), eglfloat(0), eglfloat(1))
+		
+		opengles.glScalef(eglfloat(self.width),eglfloat(self.height),1)
+	
+		opengles.glDrawElements( GL_TRIANGLE_FAN, 6, GL_UNSIGNED_BYTE, self.plane_fan)
+		
+		if texID > 0:
+		    opengles.glBindTexture(GL_TEXTURE_2D,0)
+				
+class camera(object):
+    
+    def __init__(self,x,y,z,rx,ry,rz):
+	self.x=x
+	self.y=y
+	self.z=z
+	self.rotx=rx
+	self.roty=ry
+	self.rotz=rz
+	
+    def orthographic(self,w,h,zoom,near,far):
+	opengles.glMatrixMode(GL_PROJECTION)
+	opengles.glLoadIdentity()
+	opengles.glOrtho(-w/zoom, w/zoom, -h/zoom, h/zoom, near, far)
+
+    def perspective(self,w,h,zoom,nearp,farp):
+	opengles.glMatrixMode(GL_PROJECTION)
+        opengles.glLoadIdentity()
+        hht = nearp * math.tan(45.0 / 2.0 / 180.0 * 3.1415926)
+        hwd = hht * w / h
+        opengles.glFrustumf(eglfloat(-hwd), eglfloat(hwd), eglfloat(-hht), eglfloat(hht), eglfloat(nearp), eglfloat(farp))
+	
+    def position(self,x,y,z,rx,ry,rz):
+	self.x=x
+	self.y=y
+	self.z=z
+	self.rotx=rx
+	self.roty=ry
+	self.rotz=rz
+	
+	opengles.glMatrixMode(GL_MODELVIEW)
+	opengles.glLoadIdentity()
+	opengles.glTranslatef(eglfloat(x), eglfloat(y), eglfloat(z))
+	
+	if rx <> 0:  opengles.glRotatef(eglfloat(ry),eglfloat(1), eglfloat(0), eglfloat(0))
+	if ry <> 0:  opengles.glRotatef(eglfloat(ry),eglfloat(0), eglfloat(1), eglfloat(0))
+	if rz <> 0:  opengles.glRotatef(eglfloat(rz),eglfloat(0), eglfloat(0), eglfloat(1))
+	
+    def pos(self,x,y,z,rx,ry,rz):
+	position(x,y,z,self.rotx,self.roty,self.rotz)
+	
+class load_texture(object):
+    
+    def __init__(self,fileString):
+	
+	im= Image.open(fileString)
+	self.iy = im.size[0]
+	self.ix = im.size[1]
+	image = im.convert("RGB").tostring("raw","RGB")
+	self.texID = eglint()
+	opengles.glGenTextures(1,ctypes.byref(self.texID))
+	opengles.glBindTexture(GL_TEXTURE_2D,self.texID)
+	opengles.glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,self.ix,self.iy,0,GL_RGB,GL_UNSIGNED_BYTE, image)
+	
+    def check(self):
+	e=opengles.glGetError()
+	if e:
+	    print hex(e)
+	    raise ValueError
+	    
