@@ -1,5 +1,5 @@
-# Setup EGL display
-# Based on code by Peter de Rivaz and others
+# pi3D module
+# By Tim Skillman. Based on code by Peter de Rivaz and Jon Macey.
 
 import ctypes, math, Image
 # Pick up our constants extracted from the header files with prepare_constants.py
@@ -28,8 +28,6 @@ eglshort = ctypes.c_short
 eglfloat = ctypes.c_float
 eglbyte = ctypes.c_byte
 
-
-		
 def eglbytes(L):
     return (eglbyte*len(L))(*L)
 
@@ -46,6 +44,7 @@ def check(e):
         print 'Error code',hex(e&0xffffffff)
     raise ValueError
 
+# Setup EGL display
 
 class glDisplay(object):
 
@@ -116,7 +115,11 @@ class glDisplay(object):
         #
 	opengles.glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST )
 	opengles.glEnable(GL_CULL_FACE)	
-        opengles.glShadeModel(GL_FLAT);
+        opengles.glShadeModel(GL_FLAT)
+	opengles.glEnable(GL_NORMALIZE)
+	opengles.glEnable(GL_DEPTH_TEST)
+	opengles.glDepthFunc(GL_LEQUAL)
+	opengles.glClear(GL_DEPTH_BUFFER_BIT)
 	
 	#Setup perspective view
 	opengles.glMatrixMode(GL_PROJECTION)
@@ -167,13 +170,30 @@ class create_cuboid(object):
 		self.roty=0
 		self.rotz=0
 		
-		#cuboid data
+		#cuboid data - faces are separated out for texturing..
 
-		self.cube_vertices = eglbytes(( -1,1,1, 1,1,1, 1,-1,1, -1,-1,1, -1,1,-1, 1,1,-1, 1,-1,-1, -1,-1,-1));
-		#self.cube_triangles = eglbytes(( 1,0,3, 1,3,2, 2,6,5, 2,5,1, 7,4,5, 7,5,6, 0,4,7, 0,7,3, 5,4,0, 5,0,1, 3,7,6, 3,6,2));
-		self.cube_colours = eglbytes(( 0,0,255,255, 0,0,0,255, 0,255,0,255, 0,255,0,255, 0,0,255,255, 255,0,0,255, 255,0,0,255, 0,0,0,255 ));
-		self.cube_fan1 = eglbytes(( 1,0,3, 1,3,2, 1,2,6, 1,6,5, 1,5,4, 1,4,0 ));
-		self.cube_fan2 = eglbytes(( 7,4,5, 7,5,6, 7,6,2, 7,2,3, 7,3,0, 7,0,4 ));
+		self.vertices = eglbytes(( -1,1,1, 1,1,1, 1,-1,1, -1,-1,1,
+					  1,1,1, 1,1,-1, 1,-1,-1, 1,-1,1,
+					  -1,1,1, -1,1,-1, 1,1,-1, 1,1,1,
+					  1,-1,1, 1,-1,-1, -1,-1,-1, -1,-1,1,
+					  -1,-1,1, -1,-1,-1, -1,1,-1, -1,1,1,
+					  -1,1,-1, 1,1,-1, 1,-1,-1, -1,-1,-1));
+		self.normals = eglbytes(( 0,0,1, 0,0,1, 0,0,1, 0,0,1,
+					  1,0,0, 1,0,0, 1,0,0, 1,0,0, 
+					  0,1,0, 0,1,0, 0,1,0, 0,1,0,
+					  0,-1,0, 0,-1,0, 0,-1,0, 0,-1,0, 
+					  -1,0,0, -1,0,0, -1,0,0, -1,0,0, 
+					  0,0,-1, 0,0,-1, 0,0,-1, 0,0,-1))
+		self.triangles = eglbytes(( 1,0,3, 1,3,2, 5,4,7, 5,7,6, 9,8,11, 9,11,10, 13,12,15, 13,15,14, 17,16,19, 17,19,18, 21,22,23, 21,23,20));
+		self.tex_coords = eglbytes(( 0,0, 255,0, 255,255, 0,255,
+					  0,0, 255,0, 255,255, 0,255,
+					  0,0, 255,0, 255,255, 0,255,
+					  0,0, 255,0, 255,255, 0,255,
+					  0,0, 255,0, 255,255, 0,255,
+					  0,0, 255,0, 255,255, 0,255))					  
+		#self.cube_colours = eglbytes(( 0,0,255,255, 0,0,0,255, 0,255,0,255, 0,255,0,255, 0,0,255,255, 255,0,0,255, 255,0,0,255, 0,0,0,255 ));
+		#self.cube_fan1 = eglbytes(( 1,0,3, 1,3,2, 1,2,6, 1,6,5, 1,5,4, 1,4,0 ));
+		#self.cube_fan2 = eglbytes(( 7,4,5, 7,5,6, 7,6,2, 7,2,3, 7,3,0, 7,0,4 ));
 
 	#this should all be done with matrices!! ... just for testing ...
 	
@@ -212,8 +232,15 @@ class create_cuboid(object):
 		
 	def draw(self):
 		opengles.glEnableClientState(GL_VERTEX_ARRAY)
-		opengles.glVertexPointer( 3, GL_BYTE, 0, self.cube_vertices);
+		opengles.glVertexPointer( 3, GL_BYTE, 0, self.vertices);
 
+		opengles.glEnableClientState(GL_NORMAL_ARRAY)
+		opengles.glNormalPointer( GL_BYTE, 0, self.normals);
+		
+		opengles.glEnableClientState(GL_TEXTURE_COORD_ARRAY)
+		opengles.glTexCoordPointer(2,GL_BYTE,0,self.tex_coords)
+		    #opengles.glBindTexture(GL_TEXTURE_2D,texID)
+		    #opengles.glEnable(GL_TEXTURE_2D)
 		#opengles.glEnableClientState(GL_COLOR_ARRAY)
 		#opengles.glColorPointer( 4, GL_UNSIGNED_BYTE, 0, self.cube_colours);
 
@@ -225,10 +252,11 @@ class create_cuboid(object):
 		if self.rotz <> 0:  opengles.glRotatef(eglfloat(self.rotz),eglfloat(0), eglfloat(0), eglfloat(1))
 		
 		opengles.glScalef(eglfloat(self.width),eglfloat(self.height),eglfloat(self.depth))
-		#opengles.glDrawElements( GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, self.triangles)
+		
+		opengles.glDrawElements( GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, self.triangles)
 	
-		opengles.glDrawElements( GL_TRIANGLE_FAN, 18, GL_UNSIGNED_BYTE, self.cube_fan1)
-		opengles.glDrawElements( GL_TRIANGLE_FAN, 18, GL_UNSIGNED_BYTE, self.cube_fan2)
+		#opengles.glDrawElements( GL_TRIANGLE_FAN, 18, GL_UNSIGNED_BYTE, self.cube_fan1)
+		#opengles.glDrawElements( GL_TRIANGLE_FAN, 18, GL_UNSIGNED_BYTE, self.cube_fan2)
 
 class create_plane(object):
 	
@@ -244,8 +272,9 @@ class create_plane(object):
 		
 		#plane data
 
-		self.plane_vertices = eglbytes(( -1,1,1, 1,1,1, 1,-1,1, -1,-1,1 ));
-		self.plane_fan = eglbytes(( 1,0,3, 1,3,2 ));
+		self.vertices = eglbytes(( -1,1,1, 1,1,1, 1,-1,1, -1,-1,1 ));
+		self.fan = eglbytes(( 1,0,3, 1,3,2 ));
+		self.normals = eglbytes(( 0,0,-1, 0,0,-1, 0,0,-1, 0,0,-1 ));
 		self.tex_coords = eglbytes((0,0, 255,0, 255,255, 0,255));
 
 	#this should all be done with matrices!! ... just for testing ...
@@ -284,7 +313,10 @@ class create_plane(object):
 		
 	def draw(self,texID):
 		opengles.glEnableClientState(GL_VERTEX_ARRAY)
-		opengles.glVertexPointer( 3, GL_BYTE, 0, self.plane_vertices);
+		opengles.glVertexPointer( 3, GL_BYTE, 0, self.vertices);
+
+		opengles.glEnableClientState(GL_NORMAL_ARRAY)
+		opengles.glNormalPointer( GL_BYTE, 0, self.normals);
 
 		if texID > 0:
 		    opengles.glEnableClientState(GL_TEXTURE_COORD_ARRAY)
@@ -301,7 +333,7 @@ class create_plane(object):
 		
 		opengles.glScalef(eglfloat(self.width),eglfloat(self.height),1)
 	
-		opengles.glDrawElements( GL_TRIANGLE_FAN, 6, GL_UNSIGNED_BYTE, self.plane_fan)
+		opengles.glDrawElements( GL_TRIANGLE_FAN, 6, GL_UNSIGNED_BYTE, self.fan)
 		
 		if texID > 0:
 		    opengles.glBindTexture(GL_TEXTURE_2D,0)
@@ -366,3 +398,33 @@ class load_texture(object):
 	    print hex(e)
 	    raise ValueError
 	    
+class light(object):
+    
+    def __init__(self,no,red,grn,blu,x,y,z):
+	self.ambient = eglfloats((0.2,0.2,0.2,1))
+	self.diffuse = eglfloats((red,grn,blu,1))
+	self.specular = eglfloats((red,grn,blu,1))
+	self.xyz = eglfloats((x,y,z,1))
+	self.no = eglint(no)
+	self.lighton = True
+	
+	#opengles.glLightModelf(GL_LIGHT_MODEL_COLOUR_CONTROL, GL_SEPERATE_SPECULAR_COLOR)   #Turns on specular highlights for textures
+	opengles.glLightModelf(GL_LIGHT_MODEL_AMBIENT, self.ambient)
+	opengles.glLightf(self.no,GL_DIFFUSE,self.diffuse)
+	opengles.glLightf(self.no,GL_SPECULAR,self.specular)
+	opengles.glLightf(self.no,GL_POSITION,self.xyz)
+
+    def position(self,x,y,z):
+	self.xyz = eglfloats((x,y,z,1))
+	opengles.glLoadIdentity()
+	opengles.glLightf(self.no,GL_POSITION,self.xyz)
+    
+    def on(self):
+	opengles.glEnable(GL_LIGHTING)
+	opengles.glEnable(GL_LIGHT0)
+	opengles.glDisable(GL_COLOR_MATERIAL)
+
+    def off(self):
+	opengles.glDisable(GL_LIGHTING)
+	opengles.glDisable(GL_LIGHT0)
+	opengles.glEnable(GL_COLOR_MATERIAL)
