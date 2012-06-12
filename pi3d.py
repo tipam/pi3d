@@ -27,15 +27,12 @@ eglint = ctypes.c_int
 eglshort = ctypes.c_short
 eglfloat = ctypes.c_float
 eglbyte = ctypes.c_byte
+eglchar = ctypes.c_char
 
-def eglbytes(L):
-    return (eglbyte*len(L))(*L)
-
-def eglints(L):
-    return (eglint*len(L))(*L)
-
-def eglfloats(L):
-    return (eglfloat*len(L))(*L)
+def eglbytes(L): return (eglbyte*len(L))(*L)
+def eglchars(L): return (eglchar*len(L))(*L)
+def eglints(L): return (eglint*len(L))(*L)
+def eglfloats(L): return (eglfloat*len(L))(*L)
                 
 def check(e):
     """Checks that error is zero"""
@@ -43,6 +40,51 @@ def check(e):
     if verbose:
         print 'Error code',hex(e&0xffffffff)
     raise ValueError
+
+#load a texture specifying RGB or RGBA
+def load_tex(fileString,RGBv,RGBs):
+	print "Loading ...",fileString
+	im= Image.open(fileString)
+	iy = im.size[0]
+	ix = im.size[1]
+	if ix<>iy:   #needs to do a proper ^2 check
+	    im.thumbnail((256,256),Image.ANTIALIAS)
+	    ix=256
+	    iy=256
+	image = eglchars(im.convert(RGBs).tostring("raw",RGBs))
+	tex=eglint()
+        opengles.glGenTextures(1,ctypes.byref(tex))
+	opengles.glBindTexture(GL_TEXTURE_2D,tex)
+	opengles.glTexImage2D(GL_TEXTURE_2D,0,RGBv,ix,iy,0,RGBv,GL_UNSIGNED_BYTE, ctypes.byref(image))
+	return (ix,iy,tex)
+
+#turn texture on before drawing arrays
+def texture_on(tex, tex_coords):
+	opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, eglfloat(GL_LINEAR));
+	opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, eglfloat(GL_LINEAR));
+	opengles.glEnableClientState(GL_TEXTURE_COORD_ARRAY)
+	opengles.glTexCoordPointer(2,GL_BYTE,0,ctypes.byref(tex_coords))
+	opengles.glBindTexture(GL_TEXTURE_2D,tex.tex)
+	opengles.glEnable(GL_TEXTURE_2D)
+	if tex.alpha:
+	    opengles.glDisable(GL_DEPTH_TEST)
+	    opengles.glEnable(GL_BLEND)
+	    opengles.glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA)
+
+#turn texture off after drawing arrays
+def texture_off():
+	opengles.glDisable(GL_TEXTURE_2D)
+	opengles.glDisable(GL_BLEND)
+	opengles.glEnable(GL_DEPTH_TEST)
+		    
+#position, rotate and scale an object
+def transform(x,y,z,rotx,roty,rotz,sx,sy,sz):
+	opengles.glLoadIdentity()
+	opengles.glTranslatef(eglfloat(x), eglfloat(y), eglfloat(z))		
+	if rotx <> 0: opengles.glRotatef(eglfloat(roty),eglfloat(1), eglfloat(0), eglfloat(0))
+	if roty <> 0: opengles.glRotatef(eglfloat(roty),eglfloat(0), eglfloat(1), eglfloat(0))
+	if rotz <> 0: opengles.glRotatef(eglfloat(rotz),eglfloat(0), eglfloat(0), eglfloat(1))
+	opengles.glScalef(eglfloat(sx),eglfloat(sy),eglfloat(sz))
 
 # Setup EGL display
 
@@ -74,6 +116,7 @@ class glDisplay(object):
                                       EGL_GREEN_SIZE, 8,
                                       EGL_BLUE_SIZE, 8,
                                       EGL_ALPHA_SIZE, 8,
+				      EGL_DEPTH_SIZE, 24,
                                       EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
                                       EGL_NONE) )
         numconfig = eglint()
@@ -112,15 +155,6 @@ class glDisplay(object):
 	
 	#Create viewport
         opengles.glViewport (0, 0, w, h)
-        #
-	opengles.glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST )
-	opengles.glEnable(GL_CULL_FACE)	
-        opengles.glShadeModel(GL_FLAT)
-	opengles.glEnable(GL_NORMALIZE)
-	opengles.glEnable(GL_DEPTH_TEST)
-	opengles.glDepthFunc(GL_LEQUAL)
-	opengles.glClear(GL_DEPTH_BUFFER_BIT)
-	
 	#Setup perspective view
 	opengles.glMatrixMode(GL_PROJECTION)
         opengles.glLoadIdentity()
@@ -130,6 +164,18 @@ class glDisplay(object):
         hwd = hht * w / h
         opengles.glFrustumf(eglfloat(-hwd), eglfloat(hwd), eglfloat(-hht), eglfloat(hht), eglfloat(nearp), eglfloat(farp))
 	opengles.glMatrixMode(GL_MODELVIEW)
+
+        #
+	opengles.glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST )
+	#opengles.glEnable(GL_CULL_FACE)	
+        opengles.glShadeModel(GL_FLAT)
+	opengles.glEnable(GL_NORMALIZE)
+	opengles.glEnable(GL_DEPTH_TEST)
+	#opengles.glDepthFunc(GL_LEQUAL)
+	#opengles.glClear(GL_DEPTH_BUFFER_BIT)
+	
+	opengles.glEnableClientState(GL_VERTEX_ARRAY)
+	opengles.glEnableClientState(GL_NORMAL_ARRAY)
 	
 	self.active = True
 	
@@ -230,33 +276,20 @@ class create_cuboid(object):
 	def rotateIncZ(self,v):
 		self.rotz += v
 		
-	def draw(self):
-		opengles.glEnableClientState(GL_VERTEX_ARRAY)
+	def draw(self,texID):
 		opengles.glVertexPointer( 3, GL_BYTE, 0, self.vertices);
-
-		opengles.glEnableClientState(GL_NORMAL_ARRAY)
 		opengles.glNormalPointer( GL_BYTE, 0, self.normals);
 		
-		opengles.glEnableClientState(GL_TEXTURE_COORD_ARRAY)
-		opengles.glTexCoordPointer(2,GL_BYTE,0,self.tex_coords)
-		    #opengles.glBindTexture(GL_TEXTURE_2D,texID)
-		    #opengles.glEnable(GL_TEXTURE_2D)
+		if texID > 0: texture_on(texID,self.tex_coords)
+
 		#opengles.glEnableClientState(GL_COLOR_ARRAY)
 		#opengles.glColorPointer( 4, GL_UNSIGNED_BYTE, 0, self.cube_colours);
-
-		opengles.glLoadIdentity()
-		opengles.glTranslatef(eglfloat(self.x), eglfloat(self.y), eglfloat(self.z))
-		
-		if self.rotx <> 0:  opengles.glRotatef(eglfloat(self.roty),eglfloat(1), eglfloat(0), eglfloat(0))
-		if self.roty <> 0:  opengles.glRotatef(eglfloat(self.roty),eglfloat(0), eglfloat(1), eglfloat(0))
-		if self.rotz <> 0:  opengles.glRotatef(eglfloat(self.rotz),eglfloat(0), eglfloat(0), eglfloat(1))
-		
-		opengles.glScalef(eglfloat(self.width),eglfloat(self.height),eglfloat(self.depth))
+		transform(self.x,self.y,self.z,self.rotx,self.roty,self.rotz,self.width,self.height,self.depth)
 		
 		opengles.glDrawElements( GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, self.triangles)
-	
-		#opengles.glDrawElements( GL_TRIANGLE_FAN, 18, GL_UNSIGNED_BYTE, self.cube_fan1)
-		#opengles.glDrawElements( GL_TRIANGLE_FAN, 18, GL_UNSIGNED_BYTE, self.cube_fan2)
+		
+		if texID > 0: texture_off()
+
 
 class create_plane(object):
 	
@@ -272,9 +305,9 @@ class create_plane(object):
 		
 		#plane data
 
-		self.vertices = eglbytes(( -1,1,1, 1,1,1, 1,-1,1, -1,-1,1 ));
-		self.fan = eglbytes(( 1,0,3, 1,3,2 ));
-		self.normals = eglbytes(( 0,0,-1, 0,0,-1, 0,0,-1, 0,0,-1 ));
+		self.vertices = eglbytes(( -1,1,0, 1,1,0, 1,-1,0, -1,-1,0 ));
+		self.triangles = eglbytes(( 1,0,3, 1,3,2 ));
+		self.normals = eglbytes(( 0,0,1, 0,0,1, 0,0,1, 0,0,1 ));
 		self.tex_coords = eglbytes((0,0, 255,0, 255,255, 0,255));
 
 	#this should all be done with matrices!! ... just for testing ...
@@ -312,31 +345,13 @@ class create_plane(object):
 		self.rotz += v
 		
 	def draw(self,texID):
-		opengles.glEnableClientState(GL_VERTEX_ARRAY)
 		opengles.glVertexPointer( 3, GL_BYTE, 0, self.vertices);
-
-		opengles.glEnableClientState(GL_NORMAL_ARRAY)
 		opengles.glNormalPointer( GL_BYTE, 0, self.normals);
 
-		if texID > 0:
-		    opengles.glEnableClientState(GL_TEXTURE_COORD_ARRAY)
-		    opengles.glTexCoordPointer(2,GL_BYTE,0,self.tex_coords)
-		    opengles.glBindTexture(GL_TEXTURE_2D,texID)
-		    opengles.glEnable(GL_TEXTURE_2D)
-		    
-		opengles.glLoadIdentity()
-		opengles.glTranslatef(eglfloat(self.x), eglfloat(self.y), eglfloat(self.z))
-		
-		if self.rotx <> 0:  opengles.glRotatef(eglfloat(self.roty),eglfloat(1), eglfloat(0), eglfloat(0))
-		if self.roty <> 0:  opengles.glRotatef(eglfloat(self.roty),eglfloat(0), eglfloat(1), eglfloat(0))
-		if self.rotz <> 0:  opengles.glRotatef(eglfloat(self.rotz),eglfloat(0), eglfloat(0), eglfloat(1))
-		
-		opengles.glScalef(eglfloat(self.width),eglfloat(self.height),1)
-	
-		opengles.glDrawElements( GL_TRIANGLE_FAN, 6, GL_UNSIGNED_BYTE, self.fan)
-		
-		if texID > 0:
-		    opengles.glBindTexture(GL_TEXTURE_2D,0)
+		if texID > 0: texture_on(texID,self.tex_coords)
+		transform(self.x,self.y,self.z,self.rotx,self.roty,self.rotz,self.width,self.height,1)    
+		opengles.glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, self.triangles)
+		if texID > 0: texture_off()
 				
 class camera(object):
     
@@ -377,27 +392,26 @@ class camera(object):
 	if rz <> 0:  opengles.glRotatef(eglfloat(rz),eglfloat(0), eglfloat(0), eglfloat(1))
 	
     def pos(self,x,y,z,rx,ry,rz):
-	position(x,y,z,self.rotx,self.roty,self.rotz)
+	position(x,y,z,self.rotx,self.roty,self.rotz) #THIS AINT GOING TO WORK!
 	
 class load_texture(object):
     
     def __init__(self,fileString):
-	
-	im= Image.open(fileString)
-	self.iy = im.size[0]
-	self.ix = im.size[1]
-	image = im.convert("RGB").tostring("raw","RGB")
-	self.texID = eglint()
-	opengles.glGenTextures(1,ctypes.byref(self.texID))
-	opengles.glBindTexture(GL_TEXTURE_2D,self.texID)
-	opengles.glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,self.ix,self.iy,0,GL_RGB,GL_UNSIGNED_BYTE, image)
-	
-    def check(self):
-	e=opengles.glGetError()
-	if e:
-	    print hex(e)
-	    raise ValueError
-	    
+	xyt=load_tex(fileString,GL_RGB,"RGB")
+	self.ix=xyt[0]
+	self.iy=xyt[1]
+	self.tex=xyt[2]
+	self.alpha=False	
+
+class load_textureAlpha(object):
+    
+    def __init__(self,fileString):	
+	xyt=load_tex(fileString,GL_RGBA,"RGBA")
+	self.ix=xyt[0]
+	self.iy=xyt[1]
+	self.tex=xyt[2]
+	self.alpha=True
+		    
 class light(object):
     
     def __init__(self,no,red,grn,blu,x,y,z):
@@ -428,3 +442,15 @@ class light(object):
 	opengles.glDisable(GL_LIGHTING)
 	opengles.glDisable(GL_LIGHT0)
 	opengles.glEnable(GL_COLOR_MATERIAL)
+
+class piText3D(object):
+    
+    def __init__(self,font,scx,scy,colour):
+	self.font=font
+	xyt = load_tex(font+".png",GL_RGBA,"RGBA")
+	
+	
+def showerror():
+    e=opengles.glGetError()
+    print hex(e)
+    
