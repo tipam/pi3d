@@ -1,7 +1,7 @@
 # pi3D module
 # By Tim Skillman. Based on code by Peter de Rivaz and Jon Macey.
 
-import ctypes, math, Image
+import ctypes, math, Image, curses
 # Pick up our constants extracted from the header files with prepare_constants.py
 from egl import *
 from gl2 import *
@@ -44,13 +44,14 @@ def check(e):
 #load a texture specifying RGB or RGBA
 def load_tex(fileString,RGBv,RGBs):
 	print "Loading ...",fileString
-	im= Image.open(fileString)
+	imo= Image.open(fileString)
+	#if ix<>iy:   #needs to do a proper ^2 check
+	im = imo.resize((256,256),Image.ANTIALIAS)
 	iy = im.size[0]
 	ix = im.size[1]
-	if ix<>iy:   #needs to do a proper ^2 check
-	    im.thumbnail((256,256),Image.ANTIALIAS)
-	    ix=256
-	    iy=256
+	print ix,iy
+	ix=256
+	iy=256
 	image = eglchars(im.convert(RGBs).tostring("raw",RGBs))
 	tex=eglint()
         opengles.glGenTextures(1,ctypes.byref(tex))
@@ -86,6 +87,44 @@ def transform(x,y,z,rotx,roty,rotz,sx,sy,sz):
 	if rotz <> 0: opengles.glRotatef(eglfloat(rotz),eglfloat(0), eglfloat(0), eglfloat(1))
 	opengles.glScalef(eglfloat(sx),eglfloat(sy),eglfloat(sz))
 
+rect_normals = eglbytes(( 0,0,1, 0,0,1, 0,0,1, 0,0,1 ))
+rect_tex_coords = eglbytes((0,0, 255,0, 255,255, 0,255))
+rect_vertsTL = eglbytes(( 0,0,0, 2,0,0, 2,-2,0, 0,-2,0 ))
+rect_vertsCT = eglbytes(( -1,-1,0, 1,-1,0, 1,1,0, -1,1,0 ))
+rect_triangles = eglbytes(( 1,0,3, 1,3,2 ))
+
+def rectangleTL(tex,x,y,z=0,r=0,w=1,h=1):
+	opengles.glNormalPointer( GL_BYTE, 0, rect_normals);
+	opengles.glVertexPointer( 3, GL_BYTE, 0, rect_vertsTL);
+	opengles.glLoadIdentity()
+	opengles.glTranslatef(eglfloat(x), eglfloat(y), eglfloat(z))
+	opengles.glRotatef(eglfloat(r),eglfloat(0), eglfloat(0), eglfloat(1))
+	opengles.glScalef(eglfloat(w), eglfloat(h), eglfloat(1))
+	if tex > 0: texture_on(tex,rect_tex_coords)
+	opengles.glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, rect_triangles)
+	if tex > 0: texture_off()
+
+def rectangle(tex,x,y,z=0,r=0,w=1,h=1):
+	opengles.glNormalPointer( GL_BYTE, 0, rect_normals);
+	opengles.glVertexPointer( 3, GL_BYTE, 0, rect_vertsCT);
+	opengles.glLoadIdentity()
+	opengles.glTranslatef(eglfloat(x), eglfloat(y), eglfloat(z))
+	opengles.glRotatef(eglfloat(r),eglfloat(0), eglfloat(0), eglfloat(1))
+	opengles.glScalef(eglfloat(w), eglfloat(h), eglfloat(1))
+	if tex > 0: texture_on(tex,rect_tex_coords)
+	opengles.glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, rect_triangles)
+	if tex > 0: texture_off()
+
+class key():
+    
+    def __init__(self):
+	self.key = curses.initscr()
+	self.key.nodelay(1)
+
+    def read(self):
+	return (self.key.getch())
+
+#=====================================================================================================================================================================================	
 # Setup EGL display
 
 class glDisplay(object):
@@ -104,7 +143,8 @@ class glDisplay(object):
         self.max_width = width
         self.max_height = height
 	
-    def create(self,x,y,w,h):
+	
+    def create(self,x,y,w,h,depth=24):
 	
         self.display = openegl.eglGetDisplay(EGL_DEFAULT_DISPLAY)
 	assert self.display != EGL_NO_DISPLAY
@@ -116,7 +156,8 @@ class glDisplay(object):
                                       EGL_GREEN_SIZE, 8,
                                       EGL_BLUE_SIZE, 8,
                                       EGL_ALPHA_SIZE, 8,
-				      EGL_DEPTH_SIZE, 24,
+				      EGL_DEPTH_SIZE, 16,
+				      EGL_BUFFER_SIZE, 32,
                                       EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
                                       EGL_NONE) )
         numconfig = eglint()
@@ -193,7 +234,9 @@ class glDisplay(object):
 	
         
     def swap_buffers(self):
-	openegl.eglSwapBuffers(self.display, self.surface);
+        opengles.glFlush()
+        opengles.glFinish()
+	openegl.eglSwapBuffers(self.display, self.surface)
     
     def clear(self):
 	opengles.glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
@@ -205,16 +248,16 @@ class glDisplay(object):
 
 class create_cuboid(object):
 	
-	def __init__(self,w,d,h):
+	def __init__(self,w,d,h,x=0,y=0,z=0,rx=0,ry=0,rz=0):
 		self.width = w
 		self.depth = d
 		self.height = h
-		self.x=0
-		self.y=0
-		self.z=0
-		self.rotx=0
-		self.roty=0
-		self.rotz=0
+		self.x=x
+		self.y=y
+		self.z=z
+		self.rotx=rx
+		self.roty=ry
+		self.rotz=rz
 		
 		#cuboid data - faces are separated out for texturing..
 
@@ -293,22 +336,22 @@ class create_cuboid(object):
 
 class create_plane(object):
 	
-	def __init__(self,w,h):
+	def __init__(self,w,h,x=0,y=0,z=0,rx=0,ry=0,rz=0):
 		self.width = w
 		self.height = h
-		self.x=0
-		self.y=0
-		self.z=0
-		self.rotx=0
-		self.roty=0
-		self.rotz=0
+		self.x=x
+		self.y=y
+		self.z=z
+		self.rotx=rx
+		self.roty=ry
+		self.rotz=rz
 		
-		#plane data
+		#plane data - this could be stored locally so that vertices / tex coords an be altered in real-time
 
-		self.vertices = eglbytes(( -1,1,0, 1,1,0, 1,-1,0, -1,-1,0 ));
-		self.triangles = eglbytes(( 1,0,3, 1,3,2 ));
-		self.normals = eglbytes(( 0,0,1, 0,0,1, 0,0,1, 0,0,1 ));
-		self.tex_coords = eglbytes((0,0, 255,0, 255,255, 0,255));
+		#self.vertices = eglbytes(( -1,1,0, 1,1,0, 1,-1,0, -1,-1,0 ));
+		#self.triangles = eglbytes(( 1,0,3, 1,3,2 ));
+		#self.normals = eglbytes(( 0,0,1, 0,0,1, 0,0,1, 0,0,1 ));
+		#self.tex_coords = eglbytes((0,255, 255,255, 255,0, 0,0));
 
 	#this should all be done with matrices!! ... just for testing ...
 	
@@ -345,12 +388,12 @@ class create_plane(object):
 		self.rotz += v
 		
 	def draw(self,texID):
-		opengles.glVertexPointer( 3, GL_BYTE, 0, self.vertices);
-		opengles.glNormalPointer( GL_BYTE, 0, self.normals);
+		opengles.glVertexPointer( 3, GL_BYTE, 0, rect_vertsCT);
+		opengles.glNormalPointer( GL_BYTE, 0, rect_normals);
 
-		if texID > 0: texture_on(texID,self.tex_coords)
+		if texID > 0: texture_on(texID,rect_tex_coords)
 		transform(self.x,self.y,self.z,self.rotx,self.roty,self.rotz,self.width,self.height,1)    
-		opengles.glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, self.triangles)
+		opengles.glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, rect_triangles)
 		if texID > 0: texture_off()
 				
 class camera(object):
@@ -414,7 +457,7 @@ class load_textureAlpha(object):
 		    
 class light(object):
     
-    def __init__(self,no,red,grn,blu,x,y,z):
+    def __init__(self,no,x,y,z,red=1,grn=1,blu=1):
 	self.ambient = eglfloats((0.2,0.2,0.2,1))
 	self.diffuse = eglfloats((red,grn,blu,1))
 	self.specular = eglfloats((red,grn,blu,1))
@@ -448,6 +491,9 @@ class piText3D(object):
     def __init__(self,font,scx,scy,colour):
 	self.font=font
 	xyt = load_tex(font+".png",GL_RGBA,"RGBA")
+	
+    def draw(self,tstring):
+	s = tstring.split()
 	
 	
 def showerror():
