@@ -44,14 +44,16 @@ def check(e):
 #load a texture specifying RGB or RGBA
 def load_tex(fileString,RGBv,RGBs):
 	print "Loading ...",fileString
-	imo= Image.open(fileString)
-	#if ix<>iy:   #needs to do a proper ^2 check
-	im = imo.resize((256,256),Image.ANTIALIAS)
+	im = Image.open(fileString)
 	iy = im.size[0]
 	ix = im.size[1]
-	print ix,iy
-	ix=256
-	iy=256
+
+	if (ix<>8 and ix<>16 and ix<>32 and ix<>64 and ix<>128 and ix<>256 and ix<>512 and ix<>1024) or ix<>iy:
+	    im = im.resize((256,256),Image.ANTIALIAS)
+	    iy = im.size[0]
+	    ix = im.size[1]
+	    print ix,iy
+	    
 	image = eglchars(im.convert(RGBs).tostring("raw",RGBs))
 	tex=eglint()
         opengles.glGenTextures(1,ctypes.byref(tex))
@@ -138,16 +140,20 @@ class glDisplay(object):
         height = eglint() 
         s = bcm.graphics_get_display_size(0,ctypes.byref(width),ctypes.byref(height))
         assert s>=0
-        print width, height
 
-        self.max_width = width
-        self.max_height = height
+        self.max_width = width.value
+        self.max_height = height.value
+        print self.max_width, self.max_height
 	
 	
-    def create(self,x,y,w,h,depth=24):
+    def create(self,x=0,y=0,w=0,h=0,depth=24):
 	
         self.display = openegl.eglGetDisplay(EGL_DEFAULT_DISPLAY)
 	assert self.display != EGL_NO_DISPLAY
+	
+	if w <= 0 or h <= 0:
+	    w = self.max_width
+	    h = self.max_height
 	
         r = openegl.eglInitialize(self.display,0,0)
 	#assert r == EGL_FALSE

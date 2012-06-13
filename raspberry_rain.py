@@ -23,7 +23,7 @@ display.create(0,0,1900,1200)
 display.setBackColour(0,0.7,1,0)    
 
 # Load textures
-raspimg = pi3d.load_textureAlpha("Raspi256x256.png")
+raspimg = pi3d.load_textureAlpha("Textures/Raspi256x256.png")
 	
 pino=20
 
