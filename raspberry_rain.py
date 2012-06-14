@@ -11,6 +11,8 @@
 #
 # before running this example
 #
+# Rasperry rain demonstrates pi3d sprites over the desktop.
+# The sprites make use of the z value in a perspective view
 
 import time, random
 import pi3d
@@ -37,7 +39,7 @@ while 1:
     display.clear()
 
     for b in range (0, pino):
-	pi3d.rectangle(raspimg,xyz[b][0],5-xyz[b][1],-xyz[b][2],xyz[b][3])	#draw a rectangle(x,y,z,rotation,scaleX,scaleY)
+	pi3d.sprite(raspimg,xyz[b][0],5-xyz[b][1],-xyz[b][2],1,1,xyz[b][3])	#draw a rectangle(x,y,z,scaleX,scaleY,rotation)
 	r = xyz[b][3]+1
 	y = (xyz[b][1]+0.1) % 10
 	if y<0.06:
@@ -46,4 +48,4 @@ while 1:
 	    xyz[b] = ((xyz[b][0], y, xyz[b][2], r))
     
     display.swap_buffers()
-    time.sleep(0.01)
+    #time.sleep(0.01)

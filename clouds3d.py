@@ -1,5 +1,18 @@
-# 3D clouds
-# Copyright (c) Tim Skillman 2012
+# Clouds 3D example using pi3d module
+# ===================================
+# Copyright (c) 2012 - Tim Skillman
+# 
+# This example does not reflect the finished pi3d module in any way whatsoever!
+# It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
+#
+# PLEASE INSTALL PIL imaging with:
+#
+#      $ sudo apt-get install python-imaging
+#
+# before running this example
+#
+# This demo needs some sorting out - the alpha's are blending with desktop
+# Solutions welcome!
 
 import pi3d, random, time
 
@@ -15,13 +28,13 @@ zd = cloud_depth / cloudno
 def drawCloud(c, xx,zz):
     zzz=(zz+c[2]) % cloud_depth
     xxx=(xx+c[0])
-    pi3d.rectangle(clouds[c[3]], xxx,c[1],-zzz,0, 8,5)
+    pi3d.sprite(clouds[c[3]], xxx,c[1],-zzz,8,5)
     
 # Setup display and initialise pi3d
-scnx = 1920
-scny = 1100
+scnx = 800
+scny = 600
 display = pi3d.glDisplay()
-display.create(0,0,scnx,scny)
+display.create(100,100,scnx,scny)
 display.setBackColour(0,0.7,1,1)
 
 clouds = []
@@ -50,6 +63,7 @@ while True:
 	z = (z+(cloud_depth-speed)) % cloud_depth	#zc = int((z/1000) * cloudno)
 	zc = (zc + (cloudno-1)) % cloudno
 
+	#attempts to resolve z-sorting of clouds
 	for d in range (zc, cloudno):
 		drawCloud(cxyz[d],x,z)
 			

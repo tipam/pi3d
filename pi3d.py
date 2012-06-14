@@ -52,7 +52,7 @@ def load_tex(fileString,RGBv,RGBs):
 	    im = im.resize((256,256),Image.ANTIALIAS)
 	    iy = im.size[0]
 	    ix = im.size[1]
-	    print ix,iy
+	    print "Resizing to :",ix,iy
 	    
 	image = eglchars(im.convert(RGBs).tostring("raw",RGBs))
 	tex=eglint()
@@ -91,28 +91,28 @@ def transform(x,y,z,rotx,roty,rotz,sx,sy,sz):
 
 rect_normals = eglbytes(( 0,0,1, 0,0,1, 0,0,1, 0,0,1 ))
 rect_tex_coords = eglbytes((0,0, 255,0, 255,255, 0,255))
-rect_vertsTL = eglbytes(( 0,0,0, 2,0,0, 2,-2,0, 0,-2,0 ))
+rect_vertsTL = eglbytes(( 1,0,0, 0,0,0, 0,1,0, 1,1,0 ))
 rect_vertsCT = eglbytes(( -1,-1,0, 1,-1,0, 1,1,0, -1,1,0 ))
 rect_triangles = eglbytes(( 1,0,3, 1,3,2 ))
 
-def rectangleTL(tex,x,y,z=0,r=0,w=1,h=1):
+def rectangle(tex,x,y,w,h,r=0.0,z=-1.0):
 	opengles.glNormalPointer( GL_BYTE, 0, rect_normals);
 	opengles.glVertexPointer( 3, GL_BYTE, 0, rect_vertsTL);
 	opengles.glLoadIdentity()
 	opengles.glTranslatef(eglfloat(x), eglfloat(y), eglfloat(z))
-	opengles.glRotatef(eglfloat(r),eglfloat(0), eglfloat(0), eglfloat(1))
 	opengles.glScalef(eglfloat(w), eglfloat(h), eglfloat(1))
+	if r <> 0.0: opengles.glRotatef(eglfloat(r),eglfloat(0), eglfloat(0), eglfloat(1))
 	if tex > 0: texture_on(tex,rect_tex_coords)
 	opengles.glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, rect_triangles)
 	if tex > 0: texture_off()
 
-def rectangle(tex,x,y,z=0,r=0,w=1,h=1):
+def sprite(tex,x,y,z=-10.0,w=1.0,h=1.0,r=0.0):
 	opengles.glNormalPointer( GL_BYTE, 0, rect_normals);
 	opengles.glVertexPointer( 3, GL_BYTE, 0, rect_vertsCT);
 	opengles.glLoadIdentity()
 	opengles.glTranslatef(eglfloat(x), eglfloat(y), eglfloat(z))
-	opengles.glRotatef(eglfloat(r),eglfloat(0), eglfloat(0), eglfloat(1))
 	opengles.glScalef(eglfloat(w), eglfloat(h), eglfloat(1))
+	if r <> 0.0: opengles.glRotatef(eglfloat(r),eglfloat(0), eglfloat(0), eglfloat(1))
 	if tex > 0: texture_on(tex,rect_tex_coords)
 	opengles.glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, rect_triangles)
 	if tex > 0: texture_off()
@@ -128,7 +128,7 @@ class key():
 
 #=====================================================================================================================================================================================	
 # Setup EGL display
-
+    
 class glDisplay(object):
 
     def __init__(self):
@@ -144,8 +144,7 @@ class glDisplay(object):
         self.max_width = width.value
         self.max_height = height.value
         print self.max_width, self.max_height
-	
-	
+		
     def create(self,x=0,y=0,w=0,h=0,depth=24):
 	
         self.display = openegl.eglGetDisplay(EGL_DEFAULT_DISPLAY)
@@ -188,7 +187,7 @@ class glDisplay(object):
                                   DISPMANX_PROTECTION_NONE,
                                   0 , 0, 0)
 
-        nativewindow = eglints((self.dispman_element,w,h));
+        nativewindow = eglints((self.dispman_element,w,h+1));
         bcm.vc_dispmanx_update_submit_sync( self.dispman_update )
     
         nw_p = ctypes.pointer(nativewindow)
@@ -404,7 +403,7 @@ class create_plane(object):
 				
 class camera(object):
     
-    def __init__(self,x,y,z,rx,ry,rz):
+    def __init__(self,x=0.0,y=0.0,z=0.0,rx=0.0,ry=0.0,rz=0.0):
 	self.x=x
 	self.y=y
 	self.z=z
@@ -412,17 +411,21 @@ class camera(object):
 	self.roty=ry
 	self.rotz=rz
 	
-    def orthographic(self,w,h,zoom,near,far):
+    def orthographic(self,left,right,bottom,top,zoom=1,near=-1,far=10):
 	opengles.glMatrixMode(GL_PROJECTION)
 	opengles.glLoadIdentity()
-	opengles.glOrtho(-w/zoom, w/zoom, -h/zoom, h/zoom, near, far)
+	#opengles.glOrthof(eglfloat(-10), eglfloat(10), eglfloat(10), eglfloat(-10.0), eglfloat(near), eglfloat(far))
+	opengles.glOrthof(eglfloat(left/zoom), eglfloat(right/zoom), eglfloat(bottom/zoom), eglfloat(top/zoom), eglfloat(near), eglfloat(far))
+	opengles.glMatrixMode(GL_MODELVIEW)
+	opengles.glLoadIdentity()
 
-    def perspective(self,w,h,zoom,nearp,farp):
+    def perspective(self,w,h,zoom,near=1,far=500):
 	opengles.glMatrixMode(GL_PROJECTION)
         opengles.glLoadIdentity()
-        hht = nearp * math.tan(45.0 / 2.0 / 180.0 * 3.1415926)
+        hht = near * math.tan(45.0 / 2.0 / 180.0 * 3.1415926)
         hwd = hht * w / h
-        opengles.glFrustumf(eglfloat(-hwd), eglfloat(hwd), eglfloat(-hht), eglfloat(hht), eglfloat(nearp), eglfloat(farp))
+        opengles.glFrustumf(eglfloat(-hwd), eglfloat(hwd), eglfloat(-hht), eglfloat(hht), eglfloat(near), eglfloat(far))
+	opengles.glMatrixMode(GL_MODELVIEW)
 	
     def position(self,x,y,z,rx,ry,rz):
 	self.x=x
