@@ -1,5 +1,24 @@
 # pi3D module
-# By Tim Skillman. Based on code by Peter de Rivaz and Jon Macey.
+# ===========
+# By Tim Skillman & Peter de Rivaz, Copyright (c) 2012
+# www.github.com/tipam/pi3d
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy of
+# this software and associated documentation files (the "Software"), to deal in the
+# Software without restriction, including without limitation the rights to use, copy,
+# modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+# and to permit persons to whom the Software is furnished to do so, subject to the
+# following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all copies
+# or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+# INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+# PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+# FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+# OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+# DEALINGS IN THE SOFTWARE.
 
 import ctypes, math, Image, curses
 # Pick up our constants extracted from the header files with prepare_constants.py
@@ -161,7 +180,7 @@ class glDisplay(object):
                                       EGL_GREEN_SIZE, 8,
                                       EGL_BLUE_SIZE, 8,
                                       EGL_ALPHA_SIZE, 8,
-				      EGL_DEPTH_SIZE, 16,
+				      EGL_DEPTH_SIZE, 24,
 				      EGL_BUFFER_SIZE, 32,
                                       EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
                                       EGL_NONE) )
@@ -217,8 +236,10 @@ class glDisplay(object):
         opengles.glShadeModel(GL_FLAT)
 	opengles.glEnable(GL_NORMALIZE)
 	opengles.glEnable(GL_DEPTH_TEST)
-	#opengles.glDepthFunc(GL_LEQUAL)
-	#opengles.glClear(GL_DEPTH_BUFFER_BIT)
+	
+	#switches off alpha blending problem with desktop (is there a bug in the driver?)
+	#Thanks to Roland Humphries who sorted this one!!
+	opengles.glColorMask(1,1,1,0)  
 	
 	opengles.glEnableClientState(GL_VERTEX_ARRAY)
 	opengles.glEnableClientState(GL_NORMAL_ARRAY)
@@ -240,6 +261,7 @@ class glDisplay(object):
         
     def swap_buffers(self):
         opengles.glFlush()
+	#opengles.glClear()
         opengles.glFinish()
 	openegl.eglSwapBuffers(self.display, self.surface)
     
@@ -248,7 +270,13 @@ class glDisplay(object):
 	
     def setBackColour(self,r,g,b,a):
 	self.backColour=(r,g,b,a)
-	opengles.glClearColor ( eglfloat(r), eglfloat(g), eglfloat(b), eglfloat(a) );
+	opengles.glClearColor ( eglfloat(r), eglfloat(g), eglfloat(b), eglfloat(a) )
+	if a<1.0:
+	    opengles.glColorMask(1,1,1,1)  #switches off alpha blending with desktop (is there a bug in the driver?)
+	else:
+	    opengles.glColorMask(1,1,1,0)
+
+
 
 
 class create_cuboid(object):
