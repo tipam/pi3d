@@ -1,40 +1,30 @@
 pi3D ReadMe
 ===========
 
-There's plenty of 3D code flying around at the moment for the Raspberry Pi, but all of it is rather complicated to understand and most of it can sit under the bonnet!
+There's plenty of 3D code flying around at the moment for the Raspberry Pi, but much of it is rather complicated to understand and most of it can sit under the bonnet!
 
-pi3d is first of all written in Python and is designed to simplify the programming of 3D by wrapping various C/C++ functions and other Python complexities.  It should allow the prospective young programmer to start off with something as simple as:
+pi3d is a Python module that aims to greatly simplify writing 3D in Python whilst giving access to the power of the Raspberry Pi GPU.  It enables both 3D and 2D rendering and it hopes to provide a host of exciting commands to load in textured/animated models, create fractal landscapes, shaders and much more.
 
+However, the current state of pi3d will enable some basic 2D & 3D rendering within a window.  The examples included with the code can be tinkered with to see how they work;
 
-  import pi3d
+  boxtest.py        Displays an animated textured box with the Raspberry Pi logo
+  bouncingballs.py  Yes, bouncing balls which demonstrates sprite rendering in a 2D pixel-scaled window
+  raspberry_rain.py Tumbling raspberry's over the desktop
+  clouds3d.py       A demo in development that needs some tidying up (perhaps a challenge for you!)
 
-  pi3d.init
+Other files:
 
-  mywindow = pi3d.create_window(0,0,pi3d.screenWidth, pi3d.screenHeight)
+  pi3d.py           The main pi3d module
+  gl.py, glext.py, egl.py, gl2.py, gl2ext.py are support files for pi3d.py
 
-  mymodel = pi3d.load("spaceship.p3d")
+IMPORTANT: Please install the Python Imaging Library as this is used to load textures.
+           To install on the terminal, type:  sudo apt-get install python-imaging
 
-  while pi3d.mouse.leftButton == False:
-
-      mymodel.rotate(0,1,0,0.01)
-      mymodel.draw
-      pi3d.swap_buffers
-
-  mywindow.exit
-
-... should produce a fully textured spaceship model loaded into a full screen, slowly rotating until the left mouse button is clicked!
-
-
-pi3d specification (pi3d-spec.txt)
-----------------------------------
-
-This file outlines the heirarchy of classes and defs of pi3d to be completed.  Please note that this is in infancy and may grow to include a more collaborated effort if pi3d takes off!
-
+A short 'manual' on using pi3d will eventually be found on the github.  Please note that pi3d functions may change significantly during it's development.
 
 Acknowledgements
 ----------------
 
-Python code is based on Peter de Rivaz 'pyopengles' at https://github.com/peterderivaz/pyopengles and,
-Jon Macey's code from jonmacey.blogspot.co.uk/2012/06/
+pi3d started with code based on Peter de Rivaz 'pyopengles' (https://github.com/peterderivaz/pyopengles) and some tweaking from Jon Macey's code (jonmacey.blogspot.co.uk/2012/06/).  Many Thanks! 
 
-Many Thanks! 
+Tim Skillman, 14/06/2012
