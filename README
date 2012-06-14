@@ -8,9 +8,9 @@ pi3d is a Python module that aims to greatly simplify writing 3D in Python whils
 However, the current state of pi3d will enable some basic 2D & 3D rendering within a window.  The examples included with the code can be tinkered with to see how they work;
 
   boxtest.py        Displays an animated textured box with the Raspberry Pi logo
-  bouncingballs.py  Yes, bouncing balls which demonstrates sprite rendering in a 2D pixel-scaled window
+  bouncingballs.py  Demonstrates sprite rendering in a 2D pixel-scaled window
   raspberry_rain.py Tumbling raspberry's over the desktop
-  clouds3d.py       A demo in development that needs some tidying up (perhaps a challenge for you!)
+  clouds3d.py       A demo in development that needs some tidying up!!
 
 Other files:
 
