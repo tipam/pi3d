@@ -65,6 +65,9 @@ def eglints(L): return (eglint*len(L))(*L)
 def eglfloats(L): return (eglfloat*len(L))(*L)
 def eglshorts(L): return (eglshort*len(L))(*L)
 
+egf0 = eglfloat(0)
+egf1 = eglfloat(1)
+
 pipi = 3.14159268
 pi2 = pipi * 2
 rads = 0.017453292512  # degrees to radians
@@ -92,15 +95,24 @@ def load_tex(fileString,RGBv,RGBs,flip,size):
 	print "Loading ...",fileString
 	im = Image.open(fileString)
 	ix,iy = im.size
-	if size>0:
-	    ix,iy = (size,size)
-	    im = im.resize((size,size),Image.ANTIALIAS)
-	    print "Resizing to :",ix,iy
-	elif (ix<>8 and ix<>16 and ix<>32 and ix<>64 and ix<>128 and ix<>256 and ix<>512 and ix<>1024) or ix<>iy:
-	    im = im.resize((256,256),Image.ANTIALIAS)
-	    ix,iy = im.size
-	    print "Resizing to :",ix,iy
 	
+	#work out if sizes are not to the power of 2 or >512
+	xx=0
+	yy=0
+	nx,ny=ix,iy
+	while (2**xx)<nx: xx+=1
+	while (2**yy)<ny: yy+=1
+	if (2**xx)>nx: nx=2**xx
+	if (2**yy)>ny: ny=2**yy
+	if nx>512: nx=512
+	if ny>512: ny=512
+	
+	if nx<>ix or ny<>iy:
+	    ix,iy = nx,ny
+	    im = im.resize((ix,iy),Image.ANTIALIAS)
+	    print "Resizing to:",ix,iy
+	else: print "Bitmap size:",ix,iy
+	        
 	if flip: im = im.transpose(Image.FLIP_TOP_BOTTOM)
 	    
 	image = im.convert(RGBs).tostring("raw",RGBs)
@@ -157,16 +169,16 @@ class loadTextureAlpha(object):
 #position, rotate and scale an object
 def transform(x,y,z,rotx,roty,rotz,sx,sy,sz,cx,cy,cz):
 	opengles.glTranslatef(eglfloat(x-cx), eglfloat(y-cy), eglfloat(z-cz))		
-	if rotz <> 0: opengles.glRotatef(eglfloat(rotz),eglfloat(0), eglfloat(0), eglfloat(1))
-	if roty <> 0: opengles.glRotatef(eglfloat(roty),eglfloat(0), eglfloat(1), eglfloat(0))
-	if rotx <> 0: opengles.glRotatef(eglfloat(rotx),eglfloat(1), eglfloat(0), eglfloat(0))
+	if rotz <> 0: opengles.glRotatef(eglfloat(rotz),egf0, egf0, egf1)
+	if roty <> 0: opengles.glRotatef(eglfloat(roty),egf0, egf1, egf0)
+	if rotx <> 0: opengles.glRotatef(eglfloat(rotx),egf1, egf0, egf0)
 	opengles.glScalef(eglfloat(sx),eglfloat(sy),eglfloat(sz))
 	opengles.glTranslatef(eglfloat(cx), eglfloat(cy), eglfloat(cz))
 
 def rotate(rotx,roty,rotz):
-	if rotz <> 0: opengles.glRotatef(eglfloat(rotz),eglfloat(0), eglfloat(0), eglfloat(1))
-	if roty <> 0: opengles.glRotatef(eglfloat(roty),eglfloat(0), eglfloat(1), eglfloat(0))
-	if rotx <> 0: opengles.glRotatef(eglfloat(rotx),eglfloat(1), eglfloat(0), eglfloat(0))
+	if rotz <> 0: opengles.glRotatef(eglfloat(rotz),egf0, egf0, egf1)
+	if roty <> 0: opengles.glRotatef(eglfloat(roty),egf0, egf1, egf0)
+	if rotx <> 0: opengles.glRotatef(eglfloat(rotx),egf1, egf0, egf0)
 
 def identity():
 	opengles.glLoadIdentity()
@@ -301,8 +313,8 @@ def drawString(font,string,x,y,z,rot,sclx,scly):
 	mtrx =(ctypes.c_float*16)()
 	opengles.glGetFloatv(GL_MODELVIEW_MATRIX,ctypes.byref(mtrx))
 	opengles.glTranslatef(eglfloat(x), eglfloat(y), eglfloat(z))
-	opengles.glRotatef(eglfloat(rot), eglfloat(0), eglfloat(0), eglfloat(1.0))
-	opengles.glScalef(eglfloat(sclx), eglfloat(scly), eglfloat(1.0))
+	opengles.glRotatef(eglfloat(rot), egf0, egf0, egf1)
+	opengles.glScalef(eglfloat(sclx), eglfloat(scly), egf1)
 
 	for c in range(0,len(string)):
 		v=ord(string[c])-32
@@ -311,7 +323,7 @@ def drawString(font,string,x,y,z,rot,sclx,scly):
 		    opengles.glVertexPointer(3, GL_FLOAT, 0,verts)
 		    opengles.glTexCoordPointer(2, GL_FLOAT,0,texc)
 		    opengles.glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, rect_triangles)
-		opengles.glTranslatef(eglfloat(w), eglfloat(0), eglfloat(0))
+		opengles.glTranslatef(eglfloat(w), egf0, egf0)
 
 	opengles.glLoadMatrixf(mtrx)
 	opengles.glDisable(GL_TEXTURE_2D)
@@ -324,8 +336,8 @@ def rectangle(tex,x,y,w,h,r=0.0,z=-1.0):
 	opengles.glVertexPointer( 3, GL_BYTE, 0, rect_vertsTL);
 	opengles.glLoadIdentity()
 	opengles.glTranslatef(eglfloat(x), eglfloat(y), eglfloat(z))
-	opengles.glScalef(eglfloat(w), eglfloat(h), eglfloat(1))
-	if r <> 0.0: opengles.glRotatef(eglfloat(r),eglfloat(0), eglfloat(0), eglfloat(1))
+	opengles.glScalef(eglfloat(w), eglfloat(h), egf1)
+	if r <> 0.0: opengles.glRotatef(eglfloat(r),egf0, egf0, egf1)
 	if tex > 0: texture_on(tex,rect_tex_coords,GL_BYTE)
 	opengles.glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, rect_triangles)
 	if tex > 0: texture_off()
@@ -335,8 +347,8 @@ def sprite(tex,x,y,z=-10.0,w=1.0,h=1.0,r=0.0):
 	opengles.glVertexPointer( 3, GL_BYTE, 0, rect_vertsCT);
 	opengles.glLoadIdentity()
 	opengles.glTranslatef(eglfloat(x), eglfloat(y), eglfloat(z))
-	opengles.glScalef(eglfloat(w), eglfloat(h), eglfloat(1))
-	if r <> 0.0: opengles.glRotatef(eglfloat(r),eglfloat(0), eglfloat(0), eglfloat(1))
+	opengles.glScalef(eglfloat(w), eglfloat(h), egf1)
+	if r <> 0.0: opengles.glRotatef(eglfloat(r),egf0, egf0, egf1)
 	if tex > 0: texture_on(tex,rect_tex_coords,GL_BYTE)
 	opengles.glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, rect_triangles)
 	if tex > 0: texture_off()
@@ -579,9 +591,9 @@ class mouse(threading.Thread):
         self.finished=False
         self.button=False
         
-    def run ( self ):
-        while 1:
-            while 1:
+    def run(self):
+        while True:
+            while True:
                 buttons,dx,dy=map(ord,self.fd.read(3))
                 if buttons&8:
                     break # This bit should always be set
