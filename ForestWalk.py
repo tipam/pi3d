@@ -19,7 +19,7 @@ rads = 0.017453292512  # degrees to radians
 
 # Setup display and initialise pi3d
 display = pi3d.display()
-display.create3D(100,100,1200,800, 0.5, 800.0, 60.0)   	# x,y,width,height,near,far,aspect
+display.create3D(100,100,1600,800, 0.5, 800.0, 60.0)   	# x,y,width,height,near,far,aspect
 display.setBackColour(0.4,0.8,0.8,1)    	# r,g,b,alpha
 
 # Load textures
@@ -37,8 +37,6 @@ mapheight=60.0
 mountimg1 = pi3d.loadTexture("textures/mountains3_512.jpg")
 mymap = pi3d.createElevationMapFromTexture("textures/mountainsHgt.jpg",mapwidth,mapdepth,mapheight,64,64) #testislands.jpg
  
-mymatrix = pi3d.matrix()	
-
 #Create tree models	
 treeplane = pi3d.createPlane(4.0,5.0)
 
@@ -78,13 +76,17 @@ ym= -(mymap.calcHeight(xm,zm)+avhgt)
 
 # Fetch key presses
 mykeys = pi3d.key()
+mymouse = pi3d.mouse()
+mymouse.start()
 
+omx=mymouse.x
+omy=mymouse.y
 
 # Display scene and rotate cuboid
 while 1:
     display.clear()
     
-    mymatrix.identity()
+    pi3d.identity()
     pi3d.rotate(tilt,0,0)
     pi3d.rotate(0,rot,0)
     pi3d.position(xm,ym,zm)
@@ -94,7 +96,16 @@ while 1:
     mytrees1.drawAll(tree2img)
     mytrees2.drawAll(tree1img)
     mytrees3.drawAll(hb2img)
-	
+
+    mx=mymouse.x
+    my=mymouse.y
+    
+    #if mx>display.left and mx<display.right and my>display.top and my<display.bottom:
+    rot += (mx-omx)*0.2
+    tilt -= (my-omy)*0.2
+    omx=mx
+    omy=my
+		
     #Press ESCAPE to terminate
     k = mykeys.read()
     if k >-1:
