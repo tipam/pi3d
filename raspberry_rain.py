@@ -1,6 +1,7 @@
 # Raspberry Rain example using pi3d module
 # ========================================
 # Copyright (c) 2012 - Tim Skillman
+# Version 0.02 - 03Jul12
 # 
 # This example does not reflect the finished pi3d module in any way whatsoever!
 # It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
@@ -18,21 +19,25 @@ import time, random
 import pi3d
 
 # Setup display and initialise pi3d
-display = pi3d.glDisplay()
-display.create(0,0,1900,1200)
+display = pi3d.display()
+display.create3D(0,0,1900,1200)
 
 # Set last value (alpha) to zero for a transparent background!
 display.setBackColour(0,0.7,1,0)    
 
 # Load textures
-raspimg = pi3d.load_textureAlpha("Textures/Raspi256x256.png")
+raspimg = pi3d.loadTextureAlpha("Textures/Raspi256x256.png")
 	
 pino=20
 
 # Setup array of random x,y,z coords and initial rotation
 xyz=[]
 for b in range (0, pino):
-    xyz.append((random.random()*8-4,random.random() * 8,random.random() * 6 + 5, random.random() * 360))
+    xyz.append((random.random()*8-4,random.random() * 8,random.random() * 4 + 3, random.random() * 360))
+
+# Fetch key presses
+mykeys = pi3d.key()
+scshots = 1
 
 # Display scene and rotate cuboid
 while 1:
@@ -46,6 +51,11 @@ while 1:
 	    xyz[b] = ((random.random()*8-4, y, xyz[b][2], r))
 	else:
 	    xyz[b] = ((xyz[b][0], y, xyz[b][2], r))
-    
-    display.swap_buffers()
-    #time.sleep(0.01)
+
+    k = mykeys.read()
+    if k >-1:
+	if k==112:
+	    display.screenshot("raspberryRain"+str(scshots)+".jpg")
+	    scshots += 1    
+
+    display.swapBuffers()

@@ -1,6 +1,7 @@
 # Clouds 3D example using pi3d module
 # ===================================
 # Copyright (c) 2012 - Tim Skillman
+# Version 0.02 03Jul12
 # 
 # This example does not reflect the finished pi3d module in any way whatsoever!
 # It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
@@ -11,8 +12,6 @@
 #
 # before running this example
 #
-# This demo needs some sorting out - the alpha's are blending with desktop
-# Solutions welcome!
 
 import pi3d, random, time
 
@@ -24,32 +23,27 @@ widey = 8
 cloudno = 50
 cloud_depth = 60.0
 zd = cloud_depth / cloudno
-
-def drawCloud(c, xx,zz):
-    zzz=(zz+c[2]) % cloud_depth
-    xxx=(xx+c[0])
-    pi3d.sprite(clouds[c[3]], xxx,c[1],-zzz,8,5)
     
 # Setup display and initialise pi3d
 scnx = 800
 scny = 600
-display = pi3d.glDisplay()
-display.create(100,100,scnx,scny)
+display = pi3d.display()
+display.create3D()
 display.setBackColour(0,0.7,1,1)
 
 clouds = []
-clouds.append(pi3d.load_textureAlpha("Textures/cloud2.png"))
-clouds.append(pi3d.load_textureAlpha("Textures/cloud3.png"))
-clouds.append(pi3d.load_textureAlpha("Textures/cloud4.png"))
-clouds.append(pi3d.load_textureAlpha("Textures/cloud5.png"))
-clouds.append(pi3d.load_textureAlpha("Textures/cloud6.png"))
+clouds.append(pi3d.loadTextureAlpha("Textures/cloud2.png",True))
+clouds.append(pi3d.loadTextureAlpha("Textures/cloud3.png",True))
+clouds.append(pi3d.loadTextureAlpha("Textures/cloud4.png",True))
+clouds.append(pi3d.loadTextureAlpha("Textures/cloud5.png",True))
+clouds.append(pi3d.loadTextureAlpha("Textures/cloud6.png",True))
 
 # Setup cloud positions and cloud image refs
 z = 0.0
 cxyz = []
 for b in range (0, cloudno):
 	cxyz.append((random.random() * widex - widex*.5, -random.random() * widey, cloud_depth-z, int(random.random() * 4) + 1))
-	z = z + zd  #(z+random.random() * 100) % 1000
+	z = z + zd
 	
 zc = 0
 
@@ -60,20 +54,20 @@ while True:
 	
 	display.clear()
 	
-	z = (z+(cloud_depth-speed)) % cloud_depth	#zc = int((z/1000) * cloudno)
+	z = (z+(cloud_depth-speed)) % cloud_depth	
 	zc = (zc + (cloudno-1)) % cloudno
 
 	#attempts to resolve z-sorting of clouds
 	for d in range (zc, cloudno):
-		drawCloud(cxyz[d],x,z)
+		pi3d.sprite(clouds[cxyz[d][3]], x+cxyz[d][0],cxyz[d][1],-((z+cxyz[d][2]) % cloud_depth),8,5)
 			
 	for d in range (0, zc):
-		drawCloud(cxyz[d],x,z)
+		pi3d.sprite(clouds[cxyz[d][3]], x+cxyz[d][0],cxyz[d][1],-((z+cxyz[d][2]) % cloud_depth),8,5)
 
-	#Press ENTER to terminate
-	if mykeys.read() == 10:       
+	#Press ESCAPE to terminate
+	if mykeys.read() == 27:       
 	    display.destroy()
 	    break
 		
-	display.swap_buffers()
+	display.swapBuffers()
 	time.sleep(0.01)

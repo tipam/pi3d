@@ -1,0 +1,554 @@
+
+import ctypes, math, Image, curses
+
+# Pick up our constants extracted from the header files with prepare_constants.py
+from egl import *
+from gl2 import *
+from gl2ext import *
+from gl import *
+from array import *
+from ctypes import *
+# loaderEgg import *
+import PIL.ImageOps
+
+
+# Define verbose=True to get debug messages
+verbose = True
+
+# Define some extra constants that the automatic extraction misses
+EGL_DEFAULT_DISPLAY = 0
+EGL_NO_CONTEXT = 0
+EGL_NO_DISPLAY = 0
+EGL_NO_SURFACE = 0
+DISPMANX_PROTECTION_NONE = 0
+
+# Open the libraries
+bcm = ctypes.CDLL('libbcm_host.so')
+opengles = ctypes.CDLL('libGLESv2.so')
+openegl = ctypes.CDLL('libEGL.so')
+
+eglint = ctypes.c_int
+eglshort = ctypes.c_short
+eglfloat = ctypes.c_float
+eglbyte = ctypes.c_byte
+eglchar = ctypes.c_char
+eglshort = ctypes.c_short
+c_char_p = ctypes.c_char_p
+
+def eglbytes(L): return (eglbyte*len(L))(*L)
+def eglchars(L): return (eglchar*len(L))(*L)
+def eglints(L): return (eglint*len(L))(*L)
+def eglfloats(L): return (eglfloat*len(L))(*L)
+def eglshorts(L): return (eglshort*len(L))(*L)
+
+pipi = 3.1415926
+pi2 = pipi * 2
+rads = 0.017453292512  # degrees to radians
+
+mtrx_stack = 0
+
+def check(e):
+    """Checks that error is zero"""
+    if e==0: return
+    if verbose:
+        print 'Error code',hex(e&0xffffffff)
+    raise ValueError
+
+#load a texture specifying RGB or RGBA
+def load_tex(fileString,RGBv,RGBs,flip,size):
+	print "Loading ...",fileString
+	im = Image.open(fileString)
+	ix,iy = im.size
+	if size>0:
+	    ix,iy = (size,size)
+	    im = im.resize((size,size),Image.ANTIALIAS)
+	    print "Resizing to :",ix,iy
+	elif (ix<>8 and ix<>16 and ix<>32 and ix<>64 and ix<>128 and ix<>256 and ix<>512 and ix<>1024) or ix<>iy:
+	    im = im.resize((256,256),Image.ANTIALIAS)
+	    ix,iy = im.size
+	    print "Resizing to :",ix,iy
+	
+	if flip: im = im.transpose(Image.FLIP_TOP_BOTTOM)
+	    
+	image = im.convert(RGBs).tostring("raw",RGBs)
+	tex=eglint()
+        opengles.glGenTextures(1,ctypes.byref(tex))
+	opengles.glBindTexture(GL_TEXTURE_2D,tex)
+	opengles.glTexImage2D(GL_TEXTURE_2D,0,RGBv,ix,iy,0,RGBv,GL_UNSIGNED_BYTE, ctypes.string_at(image,len(image)))
+	return (ix,iy,tex)
+
+#turn texture on before drawing arrays
+def texture_on(tex, tex_coords, vtype):
+	opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, eglfloat(GL_LINEAR));
+	opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, eglfloat(GL_LINEAR));
+	opengles.glEnableClientState(GL_TEXTURE_COORD_ARRAY)
+	opengles.glTexCoordPointer(2,vtype,0,tex_coords)
+	opengles.glBindTexture(GL_TEXTURE_2D,tex.tex)
+	opengles.glEnable(GL_TEXTURE_2D)
+	if tex.alpha:
+	    if tex.blend:
+		opengles.glDisable(GL_DEPTH_TEST)
+		opengles.glEnable(GL_BLEND)
+		opengles.glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA)
+	    else:
+		opengles.glAlphaFunc(GL_GREATER,eglfloat(0.6))
+		opengles.glEnable(GL_ALPHA_TEST)
+
+#turn texture off after drawing arrays
+def texture_off():
+	opengles.glDisable(GL_TEXTURE_2D)
+	opengles.glDisable(GL_ALPHA_TEST)
+	opengles.glDisable(GL_BLEND)
+	opengles.glEnable(GL_DEPTH_TEST)
+
+class loadTexture(object):
+    
+    def __init__(self,fileString,flip=False,size=0):
+	xyt=load_tex(fileString,GL_RGB,"RGB",flip,size)
+	self.ix=xyt[0]
+	self.iy=xyt[1]
+	self.tex=xyt[2]
+	self.alpha=False
+	self.blend=False	
+
+class loadTextureAlpha(object):
+    
+    def __init__(self,fileString,blend=False,flip=False,size=0):	
+	xyt=load_tex(fileString,GL_RGBA,"RGBA",flip,size)
+	self.ix=xyt[0]
+	self.iy=xyt[1]
+	self.tex=xyt[2]
+	self.alpha=True
+	self.blend=blend
+			    
+#position, rotate and scale an object
+def transform(x,y,z,rotx,roty,rotz,sx,sy,sz,cx,cy,cz):
+	opengles.glTranslatef(eglfloat(x-cx), eglfloat(y-cy), eglfloat(z-cz))		
+	if rotz <> 0: opengles.glRotatef(eglfloat(rotz),eglfloat(0), eglfloat(0), eglfloat(1))
+	if roty <> 0: opengles.glRotatef(eglfloat(roty),eglfloat(0), eglfloat(1), eglfloat(0))
+	if rotx <> 0: opengles.glRotatef(eglfloat(rotx),eglfloat(1), eglfloat(0), eglfloat(0))
+	opengles.glScalef(eglfloat(sx),eglfloat(sy),eglfloat(sz))
+	opengles.glTranslatef(eglfloat(cx), eglfloat(cy), eglfloat(cz))
+
+def rotate(rotx,roty,rotz):
+	if rotz <> 0: opengles.glRotatef(eglfloat(rotz),eglfloat(0), eglfloat(0), eglfloat(1))
+	if roty <> 0: opengles.glRotatef(eglfloat(roty),eglfloat(0), eglfloat(1), eglfloat(0))
+	if rotx <> 0: opengles.glRotatef(eglfloat(rotx),eglfloat(1), eglfloat(0), eglfloat(0))
+
+def position(x,y,z):
+	opengles.glTranslatef(eglfloat(x), eglfloat(y), eglfloat(z))		
+
+def scale(sx,sy,sz):
+	opengles.glScalef(eglfloat(sx),eglfloat(sy),eglfloat(sz))
+	
+def intersectTriangle(v1,v2,v3,pos):
+	#Function calculates the y intersection of a point on a triangle
+	
+	#Z order triangle
+	if v1[2]>v2[2]:
+	    v=v1
+	    v1=v2
+	    v2=v
+	if v1[2]>v3[2]:
+	    v=v1
+	    v1=v3
+	    v3=v
+	if v2[2]>v3[2]:
+	    v=v2
+	    v2=v3
+	    v3=v
+
+	#print "pos:",pos[0],pos[2]
+	#print "v1:",v1[0],v1[1],v1[2]
+	#print "v2:",v2[0],v2[1],v2[2]
+	#print "v3:",v3[0],v3[1],v3[2]
+	
+	if pos[2]>v2[2]:
+	    #test bottom half of triangle
+	    if pos[2]>v3[2]:
+		#print "z below triangle"
+		return -100000  # point completely out
+	    za = (pos[2]-v1[2])/(v3[2]-v1[2])
+	    dxa = v1[0]+(v3[0]-v1[0])*za
+	    dya = v1[1]+(v3[1]-v1[1])*za
+	    
+	    zb = (v3[2]-pos[2])/(v3[2]-v2[2])
+	    dxb = v3[0]-(v3[0]-v2[0])*zb
+	    dyb = v3[1]-(v3[1]-v2[1])*zb
+	    if (pos[0]<dxa and pos[0]<dxb) or (pos[0]>dxa and pos[0]>dxb):
+		#print "outside of bottom triangle range"
+		return -100000
+	else:
+	    #test top half of triangle
+	    if pos[2]<v1[2]:
+		#print "z above triangle",pos[2],v1[2]
+		return -100000  # point completely out
+	    za = (pos[2]-v1[2])/(v3[2]-v1[2])
+	    dxa = v1[0]+(v3[0]-v1[0])*za
+	    dya = v1[1]+(v3[1]-v1[1])*za
+	    
+	    zb = (v2[2]-pos[2])/((v2[2]+0.00001)-v1[2])  #get rid of FP error!
+	    dxb = v2[0]-(v2[0]-v1[0])*zb
+	    dyb = v2[1]-(v2[1]-v1[1])*zb
+	    if (pos[0]<dxa and pos[0]<dxb) or (pos[0]>dxa and pos[0]>dxb):
+		#print "outside of top triangle range"
+		return -100000
+	
+	#return resultant intersecting height
+	return dya+(dyb-dya)*((pos[0]-dxa)/(dxb-dxa))
+	    
+def addVertex(v,x,y,z,n,nx,ny,nz,t,tx,ty):
+# add vertex,normal and tex_coords ...
+    	v.append(x)
+	v.append(y)
+	v.append(z)
+    	n.append(nx)
+	n.append(ny)
+	n.append(nz)
+    	t.append(tx)
+	t.append(ty)
+
+def addTri(v,x,y,z):
+# add triangle refs.
+    	v.append(x)
+	v.append(y)
+	v.append(z)
+		
+
+rect_normals = eglbytes(( 0,0,-1, 0,0,-1, 0,0,-1, 0,0,-1 ))
+rect_tex_coords = eglbytes(( 0,255, 255,255, 255,0, 0,0))
+rect_tex_coords2 = eglfloats(( 0,1, 1,1, 1,0, 0,0))
+rect_vertsTL = eglbytes(( 1,0,0, 0,0,0, 0,-1,0, 1,-1,0 ))
+rect_vertsCT = eglbytes(( 1,1,0, -1,1,0, -1,-1,0, 1,-1,0 ))
+rect_triangles = eglbytes(( 3,0,1, 3,1,2 ))
+
+def drawString(font,string,x,y,z,rot,sclx,scly):
+
+	opengles.glNormalPointer( GL_BYTE, 0, rect_normals)	
+	opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, eglfloat(GL_LINEAR));
+	opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, eglfloat(GL_LINEAR));
+	opengles.glEnableClientState(GL_TEXTURE_COORD_ARRAY)
+	opengles.glBindTexture(GL_TEXTURE_2D,font.tex)
+	opengles.glEnable(GL_TEXTURE_2D)
+	
+	opengles.glDisable(GL_DEPTH_TEST)
+	opengles.glDisable(GL_CULL_FACE)
+	opengles.glEnable(GL_BLEND)
+	opengles.glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA)
+
+	mtrx =(ctypes.c_float*16)()
+	opengles.glGetFloatv(GL_MODELVIEW_MATRIX,ctypes.byref(mtrx))
+	opengles.glTranslatef(eglfloat(x), eglfloat(y), eglfloat(z))
+	opengles.glRotatef(eglfloat(rot), eglfloat(0), eglfloat(0), eglfloat(1.0))
+	opengles.glScalef(eglfloat(sclx), eglfloat(scly), eglfloat(1.0))
+
+	for c in range(0,len(string)):
+		v=ord(string[c])-32
+		w,h,texc,verts = font.chr[v]
+		if v>0:
+		    opengles.glVertexPointer(3, GL_FLOAT, 0,verts)
+		    opengles.glTexCoordPointer(2, GL_FLOAT,0,texc)
+		    opengles.glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, rect_triangles)
+		opengles.glTranslatef(eglfloat(w), eglfloat(0), eglfloat(0))
+
+	opengles.glLoadMatrixf(mtrx)
+	opengles.glDisable(GL_TEXTURE_2D)
+	opengles.glDisable(GL_BLEND)
+	opengles.glEnable(GL_DEPTH_TEST)
+	opengles.glEnable(GL_CULL_FACE)
+	
+def rectangle(tex,x,y,w,h,r=0.0,z=-1.0):
+	opengles.glNormalPointer( GL_BYTE, 0, rect_normals);
+	opengles.glVertexPointer( 3, GL_BYTE, 0, rect_vertsTL);
+	opengles.glLoadIdentity()
+	opengles.glTranslatef(eglfloat(x), eglfloat(y), eglfloat(z))
+	opengles.glScalef(eglfloat(w), eglfloat(h), eglfloat(1))
+	if r <> 0.0: opengles.glRotatef(eglfloat(r),eglfloat(0), eglfloat(0), eglfloat(1))
+	if tex > 0: texture_on(tex,rect_tex_coords,GL_BYTE)
+	opengles.glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, rect_triangles)
+	if tex > 0: texture_off()
+
+def sprite(tex,x,y,z=-10.0,w=1.0,h=1.0,r=0.0):
+	opengles.glNormalPointer( GL_BYTE, 0, rect_normals);
+	opengles.glVertexPointer( 3, GL_BYTE, 0, rect_vertsCT);
+	opengles.glLoadIdentity()
+	opengles.glTranslatef(eglfloat(x), eglfloat(y), eglfloat(z))
+	opengles.glScalef(eglfloat(w), eglfloat(h), eglfloat(1))
+	if r <> 0.0: opengles.glRotatef(eglfloat(r),eglfloat(0), eglfloat(0), eglfloat(1))
+	if tex > 0: texture_on(tex,rect_tex_coords,GL_BYTE)
+	opengles.glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, rect_triangles)
+	if tex > 0: texture_off()
+
+def rotateVec(rx,ry,rz,xyz):
+    x,y,z = xyz[0],xyz[1],xyz[2]
+    if rx<>0.0:
+	sa = math.sin(rx * rads)
+	ca = math.cos(rx * rads)
+	yy = y*ca-z*sa
+	z = y*sa+z*ca
+	y = yy
+    if ry<>0.0:
+	sa = math.sin(ry * rads)
+	ca = math.cos(ry * rads)
+	zz = z*ca-x*sa
+	x = z*sa+x*ca
+	z = zz
+    if rz<>0.0:
+	sa = math.sin(rz * rads)
+	ca = math.cos(rz * rads)
+	xx = x*ca-y*sa
+	y = x*sa+y*ca
+	x = xx
+    return (x,y,z)
+
+
+def rotateVecX(r,x,y,z):
+	sa = math.sin(r * rads)
+	ca = math.cos(r * rads)
+	yy = y*ca-z*sa
+	zz = y*sa+z*ca
+	return x,yy,zz
+
+def rotateVecY(r,x,y,z):
+	sa = math.sin(r * rads)
+	ca = math.cos(r * rads)
+	zz = z*ca-x*sa
+	xx = z*sa+x*ca
+	return xx,y,zz
+
+def rotateVecZ(r,x,y,z):
+	sa = math.sin(r * rads)
+	ca = math.cos(r * rads)
+	xx = x*ca-y*sa
+	yy = x*sa+y*ca
+	return xx,yy,z
+		
+def calcNormal(x1,y1,z1,x2,y2,z2):
+	xd = x2-x1
+	yd = y2-y1
+	zd = z2-z1
+	sqt = 1 / math.sqrt(xd^2+yd^2+zd^2)
+	return (xd*sqt,yd*sqt,zd*sqt)
+
+def lathe(path, sides = 12, tris=False, rise = 0.0, coils = 1.0):	    
+	s = len(path)
+	rl = int(sides * coils)
+	if tris:
+	    ssize = rl * 6 * (s-1)
+	else:
+	    ssize = rl * 2 * (s-1)+(s * 2)-2
+	    
+	pn = 0
+	pp = 0
+	tcx = 1.0 / sides
+	pr = (pipi / sides) * 2
+	rdiv = rise / rl
+	ss=0
+	
+	#find largest and smallest y of the path used for stretching the texture over
+	miny = path[0][1]
+	maxy = path[s-1][1]
+	for p in range (0, s):
+	    if path[p][1] < miny: miny = path[p][1]
+	    if path[p][1] > maxy: maxy = path[p][1]
+	
+	verts=[]
+	norms=[]
+	idx=[]
+	tex_coords=[]
+	
+	for p in range (0, s):
+	    px = path[p][0]
+	    py = path[p][1]
+	    tcy = 1.0 - ((py - miny)/(maxy - miny))
+	    
+	    for r in range (0, rl):
+		sinr = math.sin(pr * r)
+		cosr = math.cos(pr * r)
+		verts.append(px * sinr)
+		verts.append(py)
+		verts.append(px * cosr)
+		norms.append(sinr)
+		norms.append(0)
+		norms.append(cosr)
+		tex_coords.append(tcx * r)
+		tex_coords.append(tcy)
+		py = py + rdiv
+	    #last path profile (tidies texture coords)
+	    verts.append(0)
+	    verts.append(py)
+	    verts.append(px)
+	    norms.append(0.0)
+	    norms.append(1.0)
+	    norms.append(0.0)
+	    tex_coords.append(1.0)
+	    tex_coords.append(tcy)
+	    
+	    if p < s-1:
+		if tris:
+		    # Create indices for GL_TRIANGLES
+		    pn += (rl+1)
+		    for r in range (0, rl):
+			idx.append(pp+r)
+			idx.append(pn+r)
+			idx.append(pp+r+1)
+			idx.append(pp+r+1)
+			idx.append(pn+r)
+			idx.append(pn+r+1)
+			ss+=6
+		    pp += (rl+1)
+		else:
+		    #Create indices for GL_TRIANGLE_STRIP
+		    pn += (rl+1)
+		    for r in range (0, rl):
+			idx.append(pp+r)
+			idx.append(pn+r)
+			ss+=2
+		    idx.append(pp+sides)
+		    idx.append(pn+sides)
+		    ss+=2
+		    pp += (rl+1)
+
+	print ssize, ss
+	return (verts, norms, idx, tex_coords, ssize)
+
+def shape_draw(self,tex,shl=GL_UNSIGNED_SHORT):
+	    opengles.glVertexPointer( 3, GL_FLOAT, 0, self.vertices)
+	    opengles.glNormalPointer( GL_FLOAT, 0, self.normals)
+	    if tex > 0: texture_on(tex,self.tex_coords,GL_FLOAT)
+	    transform(self.x,self.y,self.z,self.rotx,self.roty,self.rotz,self.sx,self.sy,self.sz,self.cx,self.cy,self.cz)
+	    opengles.glDrawElements( self.ttype, self.ssize, shl , self.indices)
+	    if tex > 0: texture_off()
+
+def create_display(self,x=0,y=0,w=0,h=0,depth=24):
+    
+        self.display = openegl.eglGetDisplay(EGL_DEFAULT_DISPLAY)
+	assert self.display != EGL_NO_DISPLAY
+	
+        r = openegl.eglInitialize(self.display,0,0)
+	#assert r == EGL_FALSE
+	
+        attribute_list = eglints(     (EGL_RED_SIZE, 8,
+                                      EGL_GREEN_SIZE, 8,
+                                      EGL_BLUE_SIZE, 8,
+                                      EGL_ALPHA_SIZE, 8,
+				      EGL_DEPTH_SIZE, 24,
+				      EGL_BUFFER_SIZE, 32,
+                                      EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
+                                      EGL_NONE) )
+        numconfig = eglint()
+        config = ctypes.c_void_p()
+	r = openegl.eglChooseConfig(self.display, ctypes.byref(attribute_list), ctypes.byref(config), 1, ctypes.byref(numconfig));
+   
+	if verbose: print 'numconfig=',numconfig
+
+        self.context = openegl.eglCreateContext(self.display, config, EGL_NO_CONTEXT, 0 ) 
+	assert self.context != EGL_NO_CONTEXT
+        
+        #Set the viewport position and size
+
+        dst_rect = eglints( (x,y,w,h) ) #width.value,height.value) )
+        src_rect = eglints( (x,y,w<<16, h<<16) ) #width.value<<16, height.value<<16) )
+
+        self.dispman_display = bcm.vc_dispmanx_display_open( 0 ) #LCD setting
+        self.dispman_update = bcm.vc_dispmanx_update_start( 0 )
+        self.dispman_element = bcm.vc_dispmanx_element_add ( self.dispman_update, self.dispman_display,
+                                  0, ctypes.byref(dst_rect), 0,
+                                  ctypes.byref(src_rect),
+                                  DISPMANX_PROTECTION_NONE,
+                                  0 , 0, 0)
+
+        nativewindow = eglints((self.dispman_element,w,h+1));
+        bcm.vc_dispmanx_update_submit_sync( self.dispman_update )
+    
+        nw_p = ctypes.pointer(nativewindow)
+        self.nw_p = nw_p
+        
+        self.surface = openegl.eglCreateWindowSurface( self.display, config, nw_p, 0)
+        assert self.surface != EGL_NO_SURFACE
+        
+        r = openegl.eglMakeCurrent(self.display, self.surface, self.surface, self.context)
+        assert r
+	
+	#Create viewport
+        opengles.glViewport (0, 0, w, h)
+	
+	#Setup default hints
+	opengles.glEnable(GL_CULL_FACE)	
+        opengles.glShadeModel(GL_FLAT)
+	opengles.glEnable(GL_NORMALIZE)
+	opengles.glEnable(GL_DEPTH_TEST)
+	
+	#switches off alpha blending problem with desktop (is there a bug in the driver?)
+	#Thanks to Roland Humphries who sorted this one!!
+	opengles.glColorMask(1,1,1,0)  
+	
+	opengles.glEnableClientState(GL_VERTEX_ARRAY)
+	opengles.glEnableClientState(GL_NORMAL_ARRAY)
+	
+	self.active = True
+
+		    
+class key():
+    
+    def __init__(self):
+	self.key = curses.initscr()
+	self.key.nodelay(1)
+
+    def read(self):
+	return (self.key.getch())
+	
+
+class create_shape(object):
+
+	def __init__(self,name, x,y,z, rx,ry,rz, sx,sy,sz, cx,cy,cz):
+		self.name = name
+		self.x=x		#position
+		self.y=y
+		self.z=z
+		self.rotx=rx		#rotation
+		self.roty=ry
+		self.rotz=rz
+		self.sx=sx		#scale
+		self.sy=sy
+		self.sz=sz
+		self.cx=cx		#center
+		self.cy=cy
+		self.cz=cz
+		
+
+	#this should all be done with matrices!! ... just for testing ...
+
+	def scale(self,sx,sy,sz):
+		self.sx = sx
+		self.sy = sy
+		self.sz = sz
+
+	def position(self,xp,yp,zp):
+		self.x=xp
+		self.y=yp
+		self.z=zp
+	
+	def translate(self,tx,ty,tz):
+		self.x=self.x+tx
+		self.y=self.y+ty
+		self.z=self.z+tz
+		
+	def rotateToX(self,v):
+		self.rotx = v
+		
+	def rotateToY(self,v):
+		self.roty = v
+		
+	def rotateToZ(self,v):
+		self.rotz = v
+		
+	def rotateIncX(self,v):
+		self.rotx += v
+		
+	def rotateIncY(self,v):
+		self.roty += v
+		
+	def rotateIncZ(self,v):
+		self.rotz += v
+
