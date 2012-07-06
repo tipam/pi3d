@@ -23,19 +23,19 @@ display.create3D(100,100,1200,800, 0.5, 800.0, 60.0)   	# x,y,width,height,near,
 display.setBackColour(0.4,0.8,0.8,1)    	# r,g,b,alpha
 
 # Load textures
-tree2img = pi3d.loadTextureAlpha("Textures/tree2.png")
-tree1img = pi3d.loadTextureAlpha("Textures/tree1.png")
-hb2img = pi3d.loadTextureAlpha("Textures/hornbeam2.png")
+tree2img = pi3d.loadTextureAlpha("textures/tree2.png")
+tree1img = pi3d.loadTextureAlpha("textures/tree1.png")
+hb2img = pi3d.loadTextureAlpha("textures/hornbeam2.png")
 
-ectex = pi3d.loadTexture("Textures/SkyBox.png")
+ectex = pi3d.loadTexture("textures/SkyBox.png")
 myecube = pi3d.createEnvironmentCube(900.0,"CROSS")
 
 # Create elevation map
 mapwidth=1000.0
 mapdepth=1000.0
 mapheight=60.0
-mountimg1 = pi3d.loadTexture("Textures/mountains3_512.jpg")
-mymap = pi3d.createElevationMapFromTexture("Textures/mountainsHgt.jpg",mapwidth,mapdepth,mapheight,64,64) #testislands.jpg
+mountimg1 = pi3d.loadTexture("textures/mountains3_512.jpg")
+mymap = pi3d.createElevationMapFromTexture("textures/mountainsHgt.jpg",mapwidth,mapdepth,mapheight,64,64) #testislands.jpg
  
 mymatrix = pi3d.matrix()	
 

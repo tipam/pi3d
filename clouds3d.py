@@ -32,11 +32,11 @@ display.create3D()
 display.setBackColour(0,0.7,1,1)
 
 clouds = []
-clouds.append(pi3d.loadTextureAlpha("Textures/cloud2.png",True))
-clouds.append(pi3d.loadTextureAlpha("Textures/cloud3.png",True))
-clouds.append(pi3d.loadTextureAlpha("Textures/cloud4.png",True))
-clouds.append(pi3d.loadTextureAlpha("Textures/cloud5.png",True))
-clouds.append(pi3d.loadTextureAlpha("Textures/cloud6.png",True))
+clouds.append(pi3d.loadTextureAlpha("textures/cloud2.png",True))
+clouds.append(pi3d.loadTextureAlpha("textures/cloud3.png",True))
+clouds.append(pi3d.loadTextureAlpha("textures/cloud4.png",True))
+clouds.append(pi3d.loadTextureAlpha("textures/cloud5.png",True))
+clouds.append(pi3d.loadTextureAlpha("textures/cloud6.png",True))
 
 # Setup cloud positions and cloud image refs
 z = 0.0

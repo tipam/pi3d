@@ -22,14 +22,13 @@ display.create3D(100,100,1200,900)   	# x,y,width,height
 display.setBackColour(0.2,0.4,0.6,1)    	# r,g,b,alpha
 
 # load model_loadmodel
-mymodel = pi3d.loadModel("models/Triceratops/Triceratops.egg","Cow")
+mymodel = pi3d.loadModel("models/Triceratops/Triceratops.egg","Triceratops", 0,-1,0, -90,0,0, .005,.005,.005)
 	
 # Fetch key presses
 mykeys = pi3d.key()
 
 # mastrix and rotate variables
 rot=0
-mtrx = pi3d.matrix()
 
 #create a light
 mylight = pi3d.createLight(0,1,1,1,"",10,10,0)
@@ -38,14 +37,10 @@ mylight.on()
 while 1:
     display.clear()
 
-    mtrx.identity()
+    pi3d.identity()
     pi3d.position(0,0,-40)
     pi3d.rotate(0,rot,0)
-    pi3d.position(0,-1,0)
-    pi3d.scale(0.005,0.005,0.005)
-    pi3d.rotate(-90.0,0,0)
     rot += 3
-    mtrx.push()
 
     mymodel.draw()
     

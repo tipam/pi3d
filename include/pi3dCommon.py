@@ -1,5 +1,30 @@
+# pi3D common module
+# ==================
+# Version 0.02
+#
+# Copyright (c) 2012, Tim Skillman.
+# (Some code initially based on Peter de Rivaz pyopengles example.)
+#
+#    www.github.com/tipam/pi3d
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy of
+# this software and associated documentation files (the "Software"), to deal in the
+# Software without restriction, including without limitation the rights to use, copy,
+# modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+# and to permit persons to whom the Software is furnished to do so, subject to the
+# following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all copies
+# or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+# INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+# PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+# FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+# OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+# DEALINGS IN THE SOFTWARE.
 
-import ctypes, math, Image, curses
+import ctypes, math, Image, curses, threading
 
 # Pick up our constants extracted from the header files with prepare_constants.py
 from egl import *
@@ -8,7 +33,6 @@ from gl2ext import *
 from gl import *
 from array import *
 from ctypes import *
-# loaderEgg import *
 import PIL.ImageOps
 
 
@@ -41,10 +65,15 @@ def eglints(L): return (eglint*len(L))(*L)
 def eglfloats(L): return (eglfloat*len(L))(*L)
 def eglshorts(L): return (eglshort*len(L))(*L)
 
-pipi = 3.1415926
+pipi = 3.14159268
 pi2 = pipi * 2
 rads = 0.017453292512  # degrees to radians
 
+#for mouse class
+XSIGN = 1<<4
+YSIGN = 1<<5
+
+# matrix stack count 
 mtrx_stack = 0
 
 def check(e):
@@ -54,6 +83,10 @@ def check(e):
         print 'Error code',hex(e&0xffffffff)
     raise ValueError
 
+def showerror():
+    e=opengles.glGetError()
+    print hex(e)
+    
 #load a texture specifying RGB or RGBA
 def load_tex(fileString,RGBv,RGBs,flip,size):
 	print "Loading ...",fileString
@@ -135,11 +168,40 @@ def rotate(rotx,roty,rotz):
 	if roty <> 0: opengles.glRotatef(eglfloat(roty),eglfloat(0), eglfloat(1), eglfloat(0))
 	if rotx <> 0: opengles.glRotatef(eglfloat(rotx),eglfloat(1), eglfloat(0), eglfloat(0))
 
+def identity():
+	opengles.glLoadIdentity()
+	
 def position(x,y,z):
 	opengles.glTranslatef(eglfloat(x), eglfloat(y), eglfloat(z))		
 
 def scale(sx,sy,sz):
 	opengles.glScalef(eglfloat(sx),eglfloat(sy),eglfloat(sz))
+
+def angleVecs(x1,y1,x2,y2,x3,y3):
+	a=x2-x1
+	b=y2-y1
+	c=x2-x3
+	d=y2-y3
+	
+	sqab=math.sqrt(a*a+b*b)
+	sqcd=math.sqrt(c*c+d*d)
+	l = sqab*sqcd
+	if l==0.0: l=0.0001
+	aa=((a*c)+(b*d)) / l
+	if aa==-1.0: return pipi
+	if aa==0.0: return 0.0
+	dist = (a*y3 - b*x3 + x1*b - y1*a) / sqab
+	angle = math.acos(aa)
+	
+	if dist>0.0: return pi2-angle
+	else: return angle
+
+def dot(x1,y1,x2,y2):
+	a=x2-x1
+	b=y2-y1
+	s = math.sqrt(a*a+b*b)
+	if s>0.0: return a/s, b/s
+	else: return 0.0,0.0
 	
 def intersectTriangle(v1,v2,v3,pos):
 	#Function calculates the y intersection of a point on a triangle
@@ -316,6 +378,7 @@ def rotateVecY(r,x,y,z):
 	xx = z*sa+x*ca
 	return xx,y,zz
 
+
 def rotateVecZ(r,x,y,z):
 	sa = math.sin(r * rads)
 	ca = math.cos(r * rads)
@@ -357,30 +420,39 @@ def lathe(path, sides = 12, tris=False, rise = 0.0, coils = 1.0):
 	idx=[]
 	tex_coords=[]
 	
+	opx=path[0][0]
+	opy=path[0][1]
+	
 	for p in range (0, s):
+	    
 	    px = path[p][0]
 	    py = path[p][1]
+		
 	    tcy = 1.0 - ((py - miny)/(maxy - miny))
+
+	    #normal between path points
+	    dx, dy = dot(opx,opy,px,py)
+
 	    
 	    for r in range (0, rl):
 		sinr = math.sin(pr * r)
 		cosr = math.cos(pr * r)
 		verts.append(px * sinr)
 		verts.append(py)
-		verts.append(px * cosr)
-		norms.append(sinr)
-		norms.append(0)
-		norms.append(cosr)
+		verts.append(px * cosr)		
+		norms.append(-sinr*dy)
+		norms.append(dx)
+		norms.append(-cosr*dy)
 		tex_coords.append(tcx * r)
 		tex_coords.append(tcy)
-		py = py + rdiv
+		py += rdiv
 	    #last path profile (tidies texture coords)
 	    verts.append(0)
 	    verts.append(py)
 	    verts.append(px)
-	    norms.append(0.0)
-	    norms.append(1.0)
-	    norms.append(0.0)
+	    norms.append(0)
+	    norms.append(dx)
+	    norms.append(-dy)
 	    tex_coords.append(1.0)
 	    tex_coords.append(tcy)
 	    
@@ -389,12 +461,12 @@ def lathe(path, sides = 12, tris=False, rise = 0.0, coils = 1.0):
 		    # Create indices for GL_TRIANGLES
 		    pn += (rl+1)
 		    for r in range (0, rl):
+			idx.append(pp+r+1)
 			idx.append(pp+r)
 			idx.append(pn+r)
-			idx.append(pp+r+1)
-			idx.append(pp+r+1)
 			idx.append(pn+r)
 			idx.append(pn+r+1)
+			idx.append(pp+r+1)
 			ss+=6
 		    pp += (rl+1)
 		else:
@@ -408,16 +480,23 @@ def lathe(path, sides = 12, tris=False, rise = 0.0, coils = 1.0):
 		    idx.append(pn+sides)
 		    ss+=2
 		    pp += (rl+1)
+		    
+	    opx=px
+	    opy=py
 
 	print ssize, ss
 	return (verts, norms, idx, tex_coords, ssize)
 
 def shape_draw(self,tex,shl=GL_UNSIGNED_SHORT):
+	    opengles.glShadeModel(GL_SMOOTH)
 	    opengles.glVertexPointer( 3, GL_FLOAT, 0, self.vertices)
 	    opengles.glNormalPointer( GL_FLOAT, 0, self.normals)
 	    if tex > 0: texture_on(tex,self.tex_coords,GL_FLOAT)
+	    mtrx =(ctypes.c_float*16)()
+	    opengles.glGetFloatv(GL_MODELVIEW_MATRIX,ctypes.byref(mtrx))
 	    transform(self.x,self.y,self.z,self.rotx,self.roty,self.rotz,self.sx,self.sy,self.sz,self.cx,self.cy,self.cz)
 	    opengles.glDrawElements( self.ttype, self.ssize, shl , self.indices)
+	    opengles.glLoadMatrixf(mtrx)
 	    if tex > 0: texture_off()
 
 def create_display(self,x=0,y=0,w=0,h=0,depth=24):
@@ -440,7 +519,7 @@ def create_display(self,x=0,y=0,w=0,h=0,depth=24):
         config = ctypes.c_void_p()
 	r = openegl.eglChooseConfig(self.display, ctypes.byref(attribute_list), ctypes.byref(config), 1, ctypes.byref(numconfig));
    
-	if verbose: print 'numconfig=',numconfig
+	#if verbose: print 'numconfig=',numconfig
 
         self.context = openegl.eglCreateContext(self.display, config, EGL_NO_CONTEXT, 0 ) 
 	assert self.context != EGL_NO_CONTEXT
@@ -488,7 +567,40 @@ def create_display(self,x=0,y=0,w=0,h=0,depth=24):
 	
 	self.active = True
 
-		    
+class mouse(threading.Thread):
+
+    def __init__(self):
+        threading.Thread.__init__(self)
+        self.fd = open('/dev/input/mouse0','r')
+        self.x = 800
+        self.y = 400
+        self.width=1920
+        self.height=1080
+        self.finished=False
+        self.button=False
+        
+    def run ( self ):
+        while 1:
+            while 1:
+                buttons,dx,dy=map(ord,self.fd.read(3))
+                if buttons&8:
+                    break # This bit should always be set
+                self.fd.read(1) # Try to sync up again
+            if buttons&3:
+                self.button=True
+                #break  # Stop if mouse button pressed!
+            if buttons&XSIGN:
+                dx-=256
+            if buttons&YSIGN:
+                dy-=256
+                
+            self.x+=dx
+            self.y+=dy
+            if self.x<0: self.x=0
+            if self.y<0: self.y=0
+            self.x=min(self.x,self.width)
+            self.y=min(self.y,self.height)
+    
 class key():
     
     def __init__(self):
@@ -552,3 +664,23 @@ class create_shape(object):
 	def rotateIncZ(self,v):
 		self.rotz += v
 
+class matrix(object):
+    
+    def __init__(self):
+        self.mat = []
+        self.mc = 0
+        
+    def identity(self):
+        opengles.glLoadIdentity()
+        self.mc = 0
+
+    def push(self):
+        self.mat.append((ctypes.c_float*16)())
+        opengles.glGetFloatv(GL_MODELVIEW_MATRIX,ctypes.byref(self.mat[self.mc]))
+        self.mc += 1
+        
+    def pop(self):
+        opengles.glMatrixMode(GL_MODELVIEW)
+        if self.mc>0:
+            self.mc -= 1
+            opengles.glLoadMatrixf(self.mat[self.mc])

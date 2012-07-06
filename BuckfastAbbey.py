@@ -23,11 +23,11 @@ display = pi3d.display()
 display.create3D(100,100,1200,900)   	# x,y,width,height
 display.setBackColour(0.2,0.4,0.6,1)    	# r,g,b,alpha
 
-ectex = pi3d.loadTexture("Textures/SkyBox.png")
+ectex = pi3d.loadTexture("textures/SkyBox.png")
 myecube = pi3d.createEnvironmentCube(900.0,"CROSS")
 
 # load model_loadmodel
-mymodel = pi3d.loadModel("models/Buckfast Abbey/BuckfastAbbey.egg","Abbey")
+mymodel = pi3d.loadModel("models/Buckfast Abbey/BuckfastAbbey.egg","Abbey",0,0,0, -90,160,0, 0.03,0.03,0.03)
 	
 # Fetch key presses
 mykeys = pi3d.key()
@@ -42,28 +42,22 @@ avhgt = 2.0
 xm=0.0
 zm=0.0
 ym= -avhgt
-mtrx = pi3d.matrix()
 
 #create a light
-mylight = pi3d.createLight(0,1,1,1,"",100,100,0,.8,.8,.8)
+mylight = pi3d.createLight(0,1,1,1,"",0,200,200,0.4,0.4,0.4)
     
 while 1:
     display.clear()
 
-    mtrx.identity()
+    pi3d.identity()
     pi3d.rotate(tilt,0,0)
     pi3d.rotate(0,rot,0)
     pi3d.position(xm,ym,zm)
     myecube.draw(ectex,xm,ym,zm)
-    mylight.position(0,500,500)
     
-    mtrx.push()
-    pi3d.scale(0.03,0.03,0.03)
-    pi3d.rotate(-90.0,160,0)
     mylight.on()
     mymodel.draw()
     mylight.off()
-    mtrx.pop()
     
     #Press ESCAPE to terminate
     k = mykeys.read()

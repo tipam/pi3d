@@ -237,6 +237,9 @@ def loadFileEGG(self,fileName):
 #        groupDrill(l, "") # recursively break down groups - TODO this doesn't actually work properly because of split() on <Group>
     
 def draw(self):
+    mtrx = matrix()
+    mtrx.push()
+    transform(self.x,self.y,self.z, self.rotx,self.roty,self.rotz, self.sx,self.sy,self.sz, self.cx,self.cy,self.cz)
     for g in self.vGroup:
         opengles.glShadeModel(GL_SMOOTH)
         opengles.glVertexPointer( 3, GL_FLOAT, 0, self.vGroup[g]["vertices"]);
@@ -250,8 +253,6 @@ def draw(self):
             opengles.glEnableClientState(GL_COLOR_ARRAY)
             opengles.glColorPointer( 4, GL_UNSIGNED_BYTE, 0, self.vGroup[g]["material"]);
         
-        transform(self.x,self.y,self.z, self.rotx,self.roty,self.rotz, self.sx,self.sy,self.sz, self.cx,self.cy,self.cz)
-
         opengles.glDrawElements( GL_TRIANGLES, self.vGroup[g]["trianglesLen"], GL_UNSIGNED_SHORT, self.vGroup[g]["triangles"])
         
         if self.vGroup[g]["texID"] > 0: texture_off()
@@ -266,7 +267,11 @@ def draw(self):
         c.draw()
         c.x, c.y, c.z = relx, rely, relz
         c.rotx, c.roty, c.rotz = relrotx, relroty, relrotz
-    
+	
+    mtrx.pop()
+	
+
+
 
 # this just holds position and orientation data, the vertices, normals, triangle, matertials are in a pointer to
 # the originals in self.vGroup        

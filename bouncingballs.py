@@ -56,11 +56,11 @@ for b in range (0, maxballs):
     bi.append(int(random.random() * 3))
 
 ball = []
-ball.append(pi3d.loadTextureAlpha("Textures/red_ball.png"))
-ball.append(pi3d.loadTextureAlpha("Textures/grn_ball.png"))
-ball.append(pi3d.loadTextureAlpha("Textures/blu_ball.png"))
-bar = pi3d.loadTexture("Textures/bar.png")
-bbtitle = pi3d.loadTextureAlpha("Textures/pi3dbbd.png",True)
+ball.append(pi3d.loadTextureAlpha("textures/red_ball.png"))
+ball.append(pi3d.loadTextureAlpha("textures/grn_ball.png"))
+ball.append(pi3d.loadTextureAlpha("textures/blu_ball.png"))
+bar = pi3d.loadTexture("textures/bar.png")
+bbtitle = pi3d.loadTextureAlpha("textures/pi3dbbd.png",True)
 
 # Fetch key presses
 mykeys = pi3d.key()

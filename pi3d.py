@@ -24,6 +24,8 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 # DEALINGS IN THE SOFTWARE.
 
+pi3d_version = 0.02
+
 import sys, random
 sys.path.append("include")
 from pi3dCommon import *
@@ -117,7 +119,12 @@ class display(object):
 
         self.max_width = width.value
         self.max_height = height.value
-        print self.max_width, self.max_height
+        
+        #print startup notices
+        print "Pi3D module - version",pi3d_version
+        print "Copyright (c) Tim Skillman, 2012"
+        print "Updates available from www.github.com/tipam/pi3d"
+        print "Screen size",self.max_width, self.max_height
                 
     def create3D(self,x=0,y=0,w=0,h=0, near=1.0, far=800.0, aspect=60.0, depth=24):
         
@@ -253,7 +260,7 @@ class createCuboid(create_shape):
                 #self.cube_fan1 = eglbytes(( 1,0,3, 1,3,2, 1,2,6, 1,6,5, 1,5,4, 1,4,0 ));
                 #self.cube_fan2 = eglbytes(( 7,4,5, 7,5,6, 7,6,2, 7,2,3, 7,3,0, 7,0,4 ));
                 
-        def draw(self,tex):
+        def draw(self,tex=None):
                 shape_draw(self,tex)
 
 class createEnvironmentCube(object):
@@ -348,7 +355,7 @@ class createMergeShape(create_shape):
                     sta += st
                     rd += rst
                     
-        def draw(self,shapeNo,tex):
+        def draw(self,shapeNo,tex=None):
                 opengles.glVertexPointer( 3, GL_FLOAT, 0, self.verts);
                 opengles.glNormalPointer( GL_FLOAT, 0, self.norms);             
                 if tex > 0: texture_on(tex,self.texcoords,GL_FLOAT)
@@ -356,7 +363,7 @@ class createMergeShape(create_shape):
                 opengles.glDrawElements( self.shape[shapeNo][2], self.shape[shapeNo][1], GL_UNSIGNED_SHORT, self.shape[shapeNo][0])
                 if tex > 0: texture_off()
 
-        def drawAll(self,tex):
+        def drawAll(self,tex=None):
                 opengles.glVertexPointer( 3, GL_FLOAT, 0, self.verts);
                 opengles.glNormalPointer( GL_FLOAT, 0, self.norms);             
                 if tex > 0: texture_on(tex,self.texcoords,GL_FLOAT)
@@ -398,7 +405,7 @@ class createPlane(create_shape):
                 self.texcoords = eglfloats(self.tex_coords);
                 
         
-        def draw(self,tex):
+        def draw(self,tex=None):
                 opengles.glVertexPointer( 3, GL_FLOAT, 0, self.verts);
                 opengles.glNormalPointer( GL_FLOAT, 0, self.norms);
                 if tex > 0: texture_on(tex,self.texcoords,GL_FLOAT)
@@ -410,15 +417,15 @@ class createPlane(create_shape):
 class createLathe(create_shape):
 
         def __init__(self,path, sides=12, name="", x=0.0,y=0.0,z=0.0, rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0):
-                super(create_lathe,self).__init__(name, x,y,z, rx,ry,rz, sx,sy,sz, cx,cy,cz)
+                super(createLathe,self).__init__(name, x,y,z, rx,ry,rz, sx,sy,sz, cx,cy,cz)
 
                 print "Creating lathe ..."
 
                 self.path = path
                 self.sides = sides
-                self.ttype = GL_TRIANGLE_STRIP
+                self.ttype = GL_TRIANGLES
                 
-                results = lathe(path, sides)
+                results = lathe(path, sides, True)
                 
                 self.vertices = eglfloats(results[0])
                 self.normals = eglfloats(results[1])
@@ -426,16 +433,10 @@ class createLathe(create_shape):
                 self.tex_coords = eglfloats(results[3])
                 self.ssize = results[4]
             
-        def draw(self,texID):
-                opengles.glVertexPointer( 3, GL_FLOAT, 0, self.vertices);
-                opengles.glNormalPointer( GL_FLOAT, 0, self.normals);
-
-                if texID > 0: texture_on(texID,self.tex_coords,GL_FLOAT)
-                transform(self.x,self.y,self.z,self.rotx,self.roty,self.rotz,self.sx,self.sy,self.sz,self.cx,self.cy,self.cz)
-                opengles.glDisable(GL_CULL_FACE)
-                opengles.glDrawElements( GL_TRIANGLE_STRIP, self.ssize, GL_UNSIGNED_SHORT, self.indices)
+        def draw(self,tex=None):
+		opengles.glDisable(GL_CULL_FACE)
+                shape_draw(self,tex)
                 opengles.glEnable(GL_CULL_FACE)
-                if texID > 0: texture_off()
 
 class createDisk(create_shape):
     
@@ -468,7 +469,7 @@ class createDisk(create_shape):
                 self.tex_coords = eglfloats(self.texcoords);
                 self.ssize = sides*3            
         
-        def draw(self,tex):
+        def draw(self,tex=None):
                 shape_draw(self,tex)        
 
 
@@ -488,35 +489,6 @@ class createSphere(create_shape):
                 self.slices = slices
                 self.sides = sides
                 self.hemi = hemi
-                self.ttype = GL_TRIANGLE_STRIP
-                
-                results = lathe(path, sides)
-                
-                self.vertices = eglfloats(results[0])
-                self.normals = eglfloats(results[1])
-                self.indices = eglshorts(results[2])
-                self.tex_coords = eglfloats(results[3])
-                self.ssize = results[4]
-
-        def draw(self,tex):
-                shape_draw(self,tex)
-
-class createSphereTris(create_shape):
-
-        def __init__(self,radius=1.0,slices=12,sides=12,hemi=0.0,name="", x=0.0,y=0.0,z=0.0, rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0):
-                super(createSphereTris,self).__init__(name, x,y,z, rx,ry,rz, sx,sy,sz, cx,cy,cz)
-                
-                print "Creating sphere (tris)..."
-
-                path = []
-                st = (pipi*(1.0-hemi))/slices
-                for r in range(0,slices+1):
-                    path.append((radius * math.sin(r*st),radius * math.cos(r*st)))
-                        
-                self.radius = radius
-                self.slices = slices
-                self.sides = sides
-                self.hemi = hemi
                 self.ttype = GL_TRIANGLES
                 
                 results = lathe(path, sides, True)
@@ -526,15 +498,11 @@ class createSphereTris(create_shape):
                 self.indices = eglshorts(results[2])
                 self.tex_coords = eglfloats(results[3])
                 self.ssize = results[4]
-                #self.vertices = results[0]
-                #self.normals = results[1]
-                #self.indices = results[2]
-                #self.tex_coords = results[3]
-                #self.ssize = results[4]
 
-        def draw(self,tex):
+        def draw(self,tex=None):
                 shape_draw(self,tex)
-                
+
+
 class createTorus(create_shape):
 
         def __init__(self,radius=2.0,thickness=0.5, ringrots=6, sides=12,name="", x=0.0,y=0.0,z=0.0, rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0):
@@ -551,9 +519,9 @@ class createTorus(create_shape):
                 self.thickness = thickness
                 self.ringrots = ringrots
                 self.sides = sides
-                self.ttype = GL_TRIANGLE_STRIP
+                self.ttype = GL_TRIANGLES
                 
-                results = lathe(path, sides)
+                results = lathe(path, sides, True)
                 
                 self.vertices = eglfloats(results[0])
                 self.normals = eglfloats(results[1])
@@ -561,7 +529,7 @@ class createTorus(create_shape):
                 self.tex_coords = eglfloats(results[3])
                 self.ssize = results[4]
 
-        def draw(self,tex):
+        def draw(self,tex=None):
                 shape_draw(self,tex)
 
 class createTube(create_shape):
@@ -583,9 +551,9 @@ class createTube(create_shape):
                 self.thickness = thickness
                 self.height = height
                 self.sides = sides
-                self.ttype = GL_TRIANGLE_STRIP
+                self.ttype = GL_TRIANGLES
                 
-                results = lathe(path, sides)
+                results = lathe(path, sides, True)
                 
                 self.vertices = eglfloats(results[0])
                 self.normals = eglfloats(results[1])
@@ -593,7 +561,7 @@ class createTube(create_shape):
                 self.tex_coords = eglfloats(results[3])
                 self.ssize = results[4]
 
-        def draw(self,tex):
+        def draw(self,tex=None):
                 shape_draw(self,tex)
                 
 class createSpiral(create_shape):
@@ -624,8 +592,8 @@ class createSpiral(create_shape):
                 self.tex_coords = eglfloats(results[3])
                 self.ssize = results[4]
 
-        def draw(self,texID):
-                shape_draw(self, texID)
+        def draw(self,tex=None):
+                shape_draw(self, tex)
                                 
 class createCylinder(create_shape):
 
@@ -643,9 +611,9 @@ class createCylinder(create_shape):
                 self.radius = radius
                 self.height = height
                 self.sides = sides
-                self.ttype = GL_TRIANGLE_STRIP
+                self.ttype = GL_TRIANGLES
                 
-                results = lathe(path, sides)
+                results = lathe(path, sides, True)
                 
                 self.vertices = eglfloats(results[0])
                 self.normals = eglfloats(results[1])
@@ -653,7 +621,7 @@ class createCylinder(create_shape):
                 self.tex_coords = eglfloats(results[3])
                 self.ssize = results[4]
 
-        def draw(self,tex):
+        def draw(self,tex=None):
                 shape_draw(self,tex)
                 
 class createCone(create_shape):
@@ -671,9 +639,9 @@ class createCone(create_shape):
                 self.radius = radius
                 self.height = height
                 self.sides = sides
-                self.ttype = GL_TRIANGLE_STRIP
+                self.ttype = GL_TRIANGLES
                 
-                results = lathe(path, sides)
+                results = lathe(path, sides, True)
                 
                 self.vertices = eglfloats(results[0])
                 self.normals = eglfloats(results[1])
@@ -681,7 +649,7 @@ class createCone(create_shape):
                 self.tex_coords = eglfloats(results[3])
                 self.ssize = results[4]
 
-        def draw(self,tex):
+        def draw(self,tex=None):
                 shape_draw(self,tex)            
         
 class createTCone(create_shape):
@@ -701,9 +669,9 @@ class createTCone(create_shape):
                 self.radiusTop = radiusTop
                 self.height = height
                 self.sides = sides
-                self.ttype = GL_TRIANGLE_STRIP
+                self.ttype = GL_TRIANGLES
                 
-                results = lathe(path, sides)
+                results = lathe(path, sides, True)
                 
                 self.vertices = eglfloats(results[0])
                 self.normals = eglfloats(results[1])
@@ -712,7 +680,7 @@ class createTCone(create_shape):
                 self.ssize = results[4]
 
 
-        def draw(self,tex):
+        def draw(self,tex=None):
                 shape_draw(self,tex)
 
 class createExtrude(create_shape):
@@ -796,9 +764,11 @@ class createExtrude(create_shape):
                 self.botface = eglshorts(self.botface)
                 self.sidefaces = eglshorts(self.sidefaces)
 
-        def draw(self,tex1,tex2,tex3):
+        def draw(self,tex1=None,tex2=None,tex3=None):
                 opengles.glVertexPointer( 3, GL_FLOAT, 0, self.verts)
                 opengles.glNormalPointer( GL_FLOAT, 0, self.norms)
+		mtrx =(ctypes.c_float*16)()
+		opengles.glGetFloatv(GL_MODELVIEW_MATRIX,ctypes.byref(mtrx))
                 transform(self.x,self.y,self.z,self.rotx,self.roty,self.rotz,self.sx,self.sy,self.sz,self.cx,self.cy,self.cz)
                 if tex1 > 0: texture_on(tex1,self.tex_coords,GL_FLOAT)
                 opengles.glDrawElements( GL_TRIANGLE_STRIP, self.edges * 2+2, GL_UNSIGNED_SHORT, self.sidefaces)
@@ -807,6 +777,7 @@ class createExtrude(create_shape):
                 if tex3 > 0: texture_on(tex3,self.tex_coords,GL_FLOAT)
                 opengles.glDrawElements( GL_TRIANGLE_FAN, self.edges, GL_UNSIGNED_SHORT, self.botface)
                 if tex1 > 0: texture_off()
+		opengles.glLoadMatrixf(mtrx)
 
 class createElevationMapFromTexture(create_shape):
 
@@ -925,7 +896,7 @@ class createElevationMapFromTexture(create_shape):
                 
                 return ih
                 
-        def draw(self,tex):
+        def draw(self,tex=None):
                 shape_draw(self,tex)
 
 
@@ -976,7 +947,7 @@ class loadModel(create_shape):
         if self.exf == 'egg': loaderEgg.draw(self)
         
     def clone(self): 
-        newLM = loadModel("")
+        newLM = loadModel("__clone__."+self.exf)
         newLM.vGroup = self.vGroup
         return newLM
         
@@ -989,7 +960,7 @@ class loadModel(create_shape):
 
 class createLight(object):
     
-    def __init__(self,no=0,red=1.0,grn=1.0,blu=1.0,name="",x=0,y=0,z=0, ambR = 0.5, ambG = 0.5, ambB = 0.5):
+    def __init__(self,no=0,red=1.0,grn=1.0,blu=1.0, name="",x=0,y=0,z=0, ambR=0.5,ambG=0.5,ambB=0.5):
 
         print "Creating light ..."
 
@@ -997,13 +968,15 @@ class createLight(object):
         self.diffuse = eglfloats((red,grn,blu,1.0))
         self.specular = eglfloats((red,grn,blu,1.0))
         self.xyz = eglfloats((x,y,z,1))
-        self.no = eglint(GL_LIGHT0 + no) 
+        self.no = eglint(GL_LIGHT0 + no)
+	self.name = name
         #self.mShininess = eglfloat(120.0)
         self.lighton = False
         
         #opengles.glLightModelfv(GL_LIGHT_MODEL_COLOUR_CONTROL, GL_SEPERATE_SPECULAR_COLOR)   #Turns on specular highlights for textures
         #opengles.glMaterialfv(GL_FRONT, GL_SHININESS, self.mShininess)#TIM: don't think this works but would like it to
-        opengles.glLightModelfv(GL_LIGHT_MODEL_AMBIENT, self.ambient) 
+        opengles.glLightModelfv(GL_LIGHT_MODEL_AMBIENT, self.ambient)
+	opengles.glLightfv(self.no,GL_AMBIENT, self.ambient) 
         opengles.glLightfv(self.no,GL_DIFFUSE,self.diffuse) 
         opengles.glLightfv(self.no,GL_SPECULAR,self.specular) 
         opengles.glLightfv(self.no,GL_POSITION,self.xyz) 
@@ -1013,8 +986,13 @@ class createLight(object):
 
 
     def position(self,x,y,z):
+
+        mtrx =(ctypes.c_float*16)()
+        opengles.glGetFloatv(GL_MODELVIEW_MATRIX,ctypes.byref(mtrx))
+        opengles.glLoadIdentity()
         self.xyz = eglfloats((x,y,z,1))
-        opengles.glLightfv(self.no, GL_POSITION,self.xyz) #TIM: fv
+        opengles.glLightfv(self.no, GL_POSITION,self.xyz)
+        opengles.glLoadMatrixf(mtrx)
     
     def on(self):
         #load view matrix
@@ -1028,26 +1006,6 @@ class createLight(object):
         opengles.glDisable(GL_LIGHTING)
         self.lighton = False
 
-class matrix(object):
-    
-    def __init__(self):
-        self.mat = []
-        self.mc = 0
-        
-    def identity(self):
-        opengles.glLoadIdentity()
-        self.mc = 0
-
-    def push(self):
-        self.mat.append((ctypes.c_float*16)())
-        opengles.glGetFloatv(GL_MODELVIEW_MATRIX,ctypes.byref(self.mat[self.mc]))
-        self.mc += 1
-        
-    def pop(self):
-        opengles.glMatrixMode(GL_MODELVIEW)
-        if self.mc>0:
-            self.mc -= 1
-            opengles.glLoadMatrixf(self.mat[self.mc])
 
 #=====================================================================================================================================================================================  
 # Text and fonts
@@ -1056,7 +1014,7 @@ class font(object):
     
     def __init__(self,font,col="#ffffff"):
         self.font=font
-        im = Image.open("Fonts/"+font+".png")
+        im = Image.open("fonts/"+font+".png")
         ix,iy = im.size
         pixels = im.load()
                 
@@ -1085,11 +1043,6 @@ class font(object):
         opengles.glBindTexture(GL_TEXTURE_2D,self.tex)
         opengles.glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,ix,iy,0,GL_RGBA,GL_UNSIGNED_BYTE, ctypes.string_at(image,len(image)))
         
-        
-        
-def showerror():
-    e=opengles.glGetError()
-    print hex(e)
 
 #=====================================================================================================================================================================================  
 # Odd classes
