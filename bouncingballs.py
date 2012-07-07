@@ -96,5 +96,9 @@ while True:
 	if k==112:
 	    display.screenshot("screen3D"+str(scshots)+".jpg")
 	    scshots += 1
+	elif k==27:
+	    display.destroy()
+	    mykeys.close()
+	    break
 	        
     display.swapBuffers()

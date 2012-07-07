@@ -102,6 +102,7 @@ while 1:
 	if k==112: display.screenshot("shapesPic.jpg")
 	elif k==27:
 	    display.destroy()
+	    mykeys.close()
 	    break
 	else:
 	    print k

@@ -67,6 +67,7 @@ while True:
 	#Press ESCAPE to terminate
 	if mykeys.read() == 27:       
 	    display.destroy()
+	    mykeys.close()
 	    break
 		
 	display.swapBuffers()
