@@ -109,6 +109,7 @@ while 1:
 	elif k==27:    #Escape key
 		#pi3d.quit()
 		display.destroy()
+		mykeys.close()
 		break
 	else:
 	    print k

@@ -61,6 +61,7 @@ while 1:
 	if k==112: display.screenshot("earthPic.jpg")
 	elif k==27:
 	    display.destroy()
+	    mykeys.close()
 	    break
 	else:
 	    print k
