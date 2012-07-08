@@ -621,9 +621,7 @@ class key():
 
     def read(self):
 	return (self.key.getch())
-
-    def close(self):
-	curses.endwin()
+	
 
 class create_shape(object):
 
@@ -641,7 +639,10 @@ class create_shape(object):
 		self.cx=cx		#center
 		self.cy=cy
 		self.cz=cz
-		
+		self.ao=0		#Needed for rotateAroundPoint/Object
+		self.ax=None
+		self.ay=None
+		self.az=None
 
 	#this should all be done with matrices!! ... just for testing ...
 
@@ -677,6 +678,40 @@ class create_shape(object):
 		
 	def rotateIncZ(self,v):
 		self.rotz += v
+
+	def rotateAroundPoint(self,px,py,pz,axel,angle):
+		#px, py, pz: The cordinates on around which the object moves
+		#axel: x/y/z, choose the axel to rotate around
+		#angle: hos many degrees to rotate
+		#keepFace: Rotate the object itself so that same face point towards the point. (TODO)
+		if self.ax == px and self.ay == py and self.az == pz:
+			angle = angle + self.ao
+			#We don't want the angle to get too big to fit in the memory
+			if angle >= 360:
+				angle -= 360
+			self.ao = angle
+
+		self.ax = px
+		self.ay = py
+		self.az = pz
+		
+		cx = px - self.x
+		cy = py - self.y
+		cz = pz - self.z
+
+		if axel == "x":
+			distance = math.sqrt(cz**2 + cy**2)
+			self.z = pz + distance * math.cos(math.radians(angle))
+			self.y = py + distance * math.sin(math.radians(angle))
+		if axel == "y":
+			distance = math.sqrt(cx**2 + cz**2)
+			self.x = px + distance * math.cos(math.radians(angle))
+			self.z = pz + distance * math.sin(math.radians(angle))
+		if axel == "z":
+			distance = math.sqrt(cx**2 + cy**2)
+			self.x = px + distance * math.cos(math.radians(angle))
+			self.y = py + distance * math.sin(math.radians(angle))
+
 
 class matrix(object):
     
