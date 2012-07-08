@@ -621,7 +621,9 @@ class key():
 
     def read(self):
 	return (self.key.getch())
-	
+
+    def close(self):
+	curses.endwin()
 
 class create_shape(object):
 
