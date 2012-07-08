@@ -712,6 +712,11 @@ class create_shape(object):
 			self.x = px + distance * math.cos(math.radians(angle))
 			self.y = py + distance * math.sin(math.radians(angle))
 
+	def rotateAroundObject(self,_object,axel,angle):
+		px = _object.x
+		py = _object.y
+		pz = _object.z
+		self.rotateAroundPoint(px,py,pz,axel,angle)
 
 class matrix(object):
     
