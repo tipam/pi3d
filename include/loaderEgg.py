@@ -1,4 +1,4 @@
-
+from pi3d import rotateVec
 import re, os
 from pi3dCommon import *
 
@@ -55,7 +55,7 @@ def loadFileEGG(self,fileName):
     self.vNormal = False
     self.vGroup = {} # holds the information for each vertex group         
     
-    if (fileName == ""): return #used for cloning this loadModel, i.e. don't need to parse egg file
+    if ("__clone__" in fileName): return #used for cloning this loadModel, i.e. don't need to parse egg file
     # read in the file and parse into some arrays
     
     filePath = os.path.split(os.path.abspath(fileName))[0]
@@ -257,44 +257,18 @@ def draw(self):
         
         if self.vGroup[g]["texID"] > 0: texture_off()
         opengles.glShadeModel(GL_FLAT)
-
+    mtrx.pop()
+    
     for c in self.childModel:
         relx, rely, relz = c.x, c.y, c.z
         relrotx, relroty, relrotz = c.rotx, c.roty, c.rotz 
-        rval = rotVector(self.rotx, self.roty, self.rotz, c.x, c.y, c.z)
+        rval = rotateVec(self.rotx, self.roty, self.rotz, (c.x, c.y, c.z))
         c.x, c.y, c.z = self.x + rval[0], self.y + rval[1], self.z + rval[2]
         c.rotx, c.roty, c.rotz = self.rotx + c.rotx, self.roty + c.roty, self.rotz + c.rotz
         c.draw()
         c.x, c.y, c.z = relx, rely, relz
         c.rotx, c.roty, c.rotz = relrotx, relroty, relrotz
 	
-    mtrx.pop()
-	
-
-
-
-# this just holds position and orientation data, the vertices, normals, triangle, matertials are in a pointer to
-# the originals in self.vGroup        
-def clone(self): #need to decide what to inherit, this will do for now!
-    newLM = pi3d.loadModel("", "")
-    newLM.vGroup = self.vGroup
-    return newLM
-    
-def reparentTo(self, parent):
-    if not(self in parent.childModel):  parent.childModel.append(self)
-    
-    
-#########################################################################################
-#
-def rotVector(rx, ry, rz, x, y, z):
-    rval = eglfloats([0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0])
-    opengles.glLoadIdentity()
-    opengles.glRotatef(eglfloat(rx),eglfloat(1), eglfloat(0), eglfloat(0))
-    opengles.glRotatef(eglfloat(ry),eglfloat(0), eglfloat(1), eglfloat(0))
-    opengles.glRotatef(eglfloat(rz),eglfloat(0), eglfloat(0), eglfloat(1))
-    opengles.glMultMatrixf(eglfloats([x,y,z,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]))
-    opengles.glGetFloatv(GL_MODELVIEW_MATRIX, rval)
-    return [rval[0], rval[1], rval[2]]
 #########################################################################################
 #
 #########################################################################################
