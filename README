@@ -23,6 +23,7 @@ This is the second release of the pi3d module which has various demo's of built-
   BouncingBalls.py	2D rendering with a title bar
   Raspberry_Rain	Rendering onto the desktop
   Clouds3D.py		Blended sprites in perspective view
+  orbiter.py	Moon orbiting earth
 
 Other files and folders:
 
