@@ -28,19 +28,22 @@ moonimg = pi3d.loadTexture("textures/moon.jpg")
 
 # Init models
 Earth = pi3d.createSphere(10,24,24,0.0,"Earth",0,0,0,0,0,23.5)
+Hemisphere = pi3d.createSphere(10.5,24,24,0.0,"Hemisphere",0,0,0,0,0,23.5)
 Moon = pi3d.createSphere(1,24,24,0.0,"Moon",13.8,0,0)
 	
 #create a light
 mylight = pi3d.createLight(0,1,1,1,"Sun",0,0,100)
 mylight.on()
-    
+
 while 1:
     display.clear()
 
     pi3d.identity()
-    pi3d.position(0,0,-20)
+    pi3d.position(0,0,-25)
     Earth.rotateIncY(2)
     Earth.draw(earthimg)
-    Moon.rotateAroundObject(Earth,"y",0.07)
+    Hemisphere.draw(cloudimg)
+    Hemisphere.rotateIncY(1.8)
+    Moon.rotateAroundObject(Earth,"y",0.07,True)
     Moon.draw(moonimg)
     display.swapBuffers()
