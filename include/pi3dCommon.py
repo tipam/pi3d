@@ -681,17 +681,24 @@ class create_shape(object):
 	def rotateIncZ(self,v):
 		self.rotz += v
 
-	def rotateAroundPoint(self,px,py,pz,axel,angle):
+	def rotateAroundPoint(self,px,py,pz,axel,angle,keepFace):
 		#px, py, pz: The cordinates on around which the object moves
 		#axel: x/y/z, choose the axel to rotate around
 		#angle: hos many degrees to rotate
-		#keepFace: Rotate the object itself so that same face point towards the point. (TODO)
+        #keepFace: Rotate the object itself so that same face point towards the point.
 		if self.ax == px and self.ay == py and self.az == pz:
 			angle = angle + self.ao
 			#We don't want the angle to get too big to fit in the memory
 			if angle >= 360:
 				angle -= 360
 			self.ao = angle
+
+		if keepFace == True and  axel == "x":
+			self.rotateToX(angle)
+		if keepFace == True and  axel == "y":
+			self.rotateToY(angle)
+		if keepFace == True and  axel == "z":
+			self.rotateToZ(angle)
 
 		self.ax = px
 		self.ay = py
@@ -714,11 +721,11 @@ class create_shape(object):
 			self.x = px + distance * math.cos(math.radians(angle))
 			self.y = py + distance * math.sin(math.radians(angle))
 
-	def rotateAroundObject(self,_object,axel,angle):
+	def rotateAroundObject(self,_object,axel,angle,keepFace):
 		px = _object.x
 		py = _object.y
 		pz = _object.z
-		self.rotateAroundPoint(px,py,pz,axel,angle)
+		self.rotateAroundPoint(px,py,pz,axel,angle,keepFace)
 
 class matrix(object):
     
