@@ -24,7 +24,7 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 # DEALINGS IN THE SOFTWARE.
 
-import ctypes, math, Image, curses, threading
+import ctypes, math, Image, curses, threading, pickle
 
 # Pick up our constants extracted from the header files with prepare_constants.py
 from egl import *
@@ -104,10 +104,11 @@ def load_tex(fileString,RGBv,RGBs,flip,size):
 	while (2**yy)<ny: yy+=1
 	if (2**xx)>nx: nx=2**xx
 	if (2**yy)>ny: ny=2**yy
-	if nx>512: nx=512
-	if ny>512: ny=512
+	if nx>1024: nx=1024
+	if ny>1024: ny=1024
 	
 	if nx<>ix or ny<>iy:
+	    print ix,iy
 	    ix,iy = nx,ny
 	    im = im.resize((ix,iy),Image.ANTIALIAS)
 	    print "Resizing to:",ix,iy
@@ -165,7 +166,19 @@ class loadTextureAlpha(object):
 	self.tex=xyt[2]
 	self.alpha=True
 	self.blend=blend
-			    
+
+
+def load3Dfile(fstring):
+    f = open(fstring, 'r')
+    model=pickle.load(f)
+    f.close()
+    return model
+
+def save3Dfile(fstring,model):
+    f = open(fstring, 'w')
+    pickle.dump(model,f)
+    f.close()
+		    
 #position, rotate and scale an object
 def transform(x,y,z,rotx,roty,rotz,sx,sy,sz,cx,cy,cz):
 	opengles.glTranslatef(eglfloat(x-cx), eglfloat(y-cy), eglfloat(z-cz))		
@@ -621,9 +634,10 @@ class key():
 
     def read(self):
 	return (self.key.getch())
-
+	
     def close(self):
 	curses.endwin()
+	
 
 class create_shape(object):
 
@@ -698,3 +712,15 @@ class matrix(object):
         if self.mc>0:
             self.mc -= 1
             opengles.glLoadMatrixf(self.mat[self.mc])
+
+    def translate(self,x,y,z):
+	opengles.glTranslatef(eglfloat(x),eglfloat(y),eglfloat(z))
+	
+    def rotate(self,rx,ry,rz):
+	if rz <> 0: opengles.glRotatef(eglfloat(rz),egf0, egf0, egf1)
+	if rx <> 0: opengles.glRotatef(eglfloat(rx),egf1, egf0, egf0)
+	if ry <> 0: opengles.glRotatef(eglfloat(ry),egf0, egf1, egf0)
+
+    def scale(self,sx,sy,sz):
+	opengles.glScalef(eglfloat(sx),eglfloat(sy),eglfloat(sz))
+	

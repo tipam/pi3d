@@ -53,7 +53,7 @@ def loadFileEGG(self,fileName):
     self.parentModel = None
     self.childModel = [] # don't really need parent and child pointers but will speed up traversing tree
     self.vNormal = False
-    self.vGroup = {} # holds the information for each vertex group         
+    self.vGroup = {} # holds the information for each vertex group
     
     if ("__clone__" in fileName): return #used for cloning this loadModel, i.e. don't need to parse egg file
     # read in the file and parse into some arrays
@@ -64,7 +64,7 @@ def loadFileEGG(self,fileName):
     l = f.read() # whole thing as a string in memory this will only work for reasonably small files!!!
     
     ############### function to parse file as one off process to avoid re-traversing string #########
-    # convertes the '<a> b { c <d> e {f} <g> h {i} }' structure 
+    # convertes the '<a> b { c <d> e {f} <g> h {i} }' structure
     # into nested arrays ['a', 'b', 'c',[['d','e','',['','','f',[]]],['g','h','',['','','i',[]]]]]
     def pRec(x, bReg, l, i):
         while 1:
@@ -103,7 +103,7 @@ def loadFileEGG(self,fileName):
                     structVList[vp] = []
                     offsetVList[vp] = offset
                     for v in x[3]:
-                        #if "<Vertex>" in v[0]: #try with this test first!                            
+                        #if "<Vertex>" in v[0]: #try with this test first!
                         coords = [float(n) for n in v[2].strip().split()] # before first < error if no coords!
                         # texture mapping
                         UVcoords = []
@@ -121,7 +121,7 @@ def loadFileEGG(self,fileName):
                         while (len(structVList[vp]) < (vInt+1)): structVList[vp].append("")
                         structVList[vp][vInt] = (vertex(coords, UVcoords, normal))
                         offset += 1
-        #        
+        #
             # now go through splitting out the Polygons from this Group same level as vertexGroup
             if "<Polygon>" in x[0]:
                 normal = []
@@ -141,7 +141,7 @@ def loadFileEGG(self,fileName):
                 #
                 structPList.append(polygon(normal, rgba, MRef, TRef, vref, vpKey))
 
-        # now go through the polygons in order of vertexPool+id, trying to ensure that the polygon arrays in each group are built in the order of vertexPool names 
+        # now go through the polygons in order of vertexPool+id, trying to ensure that the polygon arrays in each group are built in the order of vertexPool names
         # only cope with one material and one texture per group
         nP = len(structPList)
         verticesArray = []
@@ -199,7 +199,7 @@ def loadFileEGG(self,fileName):
             self.vGroup[np]["texFile"] = None
         
         # load materials TODO something more sophisticated
-        if (gMRef in self.materialList): 
+        if (gMRef in self.materialList):
             materialArray = []
             redVal = int(float(self.materialList[gMRef]["diffr"]) * 255.0)
             grnVal = int(float(self.materialList[gMRef]["diffg"]) * 255.0)
@@ -224,7 +224,7 @@ def loadFileEGG(self,fileName):
             for i in xrange(len(x[3])): self.textureList[x[1]][x[3][i][1]] = x[3][i][2]
             self.textureList[x[1]]["filename"] = x[2].strip("\"")
             print filePath, self.textureList[x[1]]["filename"]
-            self.textureList[x[1]]["texID"] = loadTexture(os.path.join(filePath, self.textureList[x[1]]["filename"]),True) # load from file 
+            self.textureList[x[1]]["texID"] = loadTexture(os.path.join(filePath, self.textureList[x[1]]["filename"]),True) # load from file
         if "<CoordinateSystem>" in x[0]:
             self.coordinateSystem = x[2]
         if "<Material>" in x[0]:
@@ -234,7 +234,7 @@ def loadFileEGG(self,fileName):
             groupDrill(x[3], x[1])
 
     
-#        groupDrill(l, "") # recursively break down groups - TODO this doesn't actually work properly because of split() on <Group>
+# groupDrill(l, "") # recursively break down groups - TODO this doesn't actually work properly because of split() on <Group>
     
 def draw(self, texID=None, n=None):
     texToUse = None
@@ -274,7 +274,11 @@ def draw(self, texID=None, n=None):
     
     for c in self.childModel:
         relx, rely, relz = c.x, c.y, c.z
+<<<<<<< HEAD
         relrotx, relroty, relrotz = c.rotx, c.roty, c.rotz 
+=======
+        relrotx, relroty, relrotz = c.rotx, c.roty, c.rotz
+>>>>>>> upstream/master
         rval = rotateVec(self.rotx, self.roty, self.rotz, (c.x, c.y, c.z))
         c.x, c.y, c.z = self.x + rval[0], self.y + rval[1], self.z + rval[2]
         c.rotx, c.roty, c.rotz = self.rotx + c.rotx, self.roty + c.roty, self.rotz + c.rotz
@@ -287,13 +291,22 @@ def texSwap(self, texID, fileName):
     texToSwap = None
     for t in self.textureList:
         if fileName in self.textureList[t]["filename"]: # NB this is a bit slacker than using == but easier to use
+<<<<<<< HEAD
             texToSwap = self.textureList[t]["texID"] 
+=======
+            texToSwap = self.textureList[t]["texID"]
+>>>>>>> upstream/master
             break
     for g in self.vGroup:
          if self.vGroup[g]["texID"] == texToSwap: self.vGroup[g]["texID"] = texID
     return texToSwap # this texture is returned so it can be used or held by the calling code and reinserted if need be
+<<<<<<< HEAD
 
 	
+=======
+
+
+>>>>>>> upstream/master
 #########################################################################################
 #
 #########################################################################################
