@@ -34,10 +34,10 @@ myecube = pi3d.createEnvironmentCube(900.0,"CROSS")
 mapwidth=1000.0
 mapdepth=1000.0
 mapheight=60.0
-mountimg1 = pi3d.loadTexture("textures/mountains3_512.jpg")
-surface1 = pi3d.loadTextureAlpha("textures/gravel3.png")
-mymap = pi3d.createElevationMapFromTexture("textures/mountainsHgt.jpg",mapwidth,mapdepth,mapheight,64,64) #testislands.jpg
-mymap2 = pi3d.createElevationMapFromTexture("textures/mountainsHgt.jpg",mapwidth,mapdepth,mapheight,64,64, "surface", 0.0,0.01,0.0, 0.0,0.0,0.0, 1.0,1.0,1.0, 0.0,0.0,0.0, 128) 
+mountimg1 = pi3d.loadTexture("textures/tattybuilding.jpg")
+surface1 = pi3d.loadTextureAlpha("textures/tattybuilding.jpg")
+mymap = pi3d.createElevationMapFromTexture("textures/tattybuilding.jpg",mapwidth,mapdepth,mapheight,64,64) #testislands.jpg
+mymap2 = pi3d.createElevationMapFromTexture("textures/tattybuilding.jpg",mapwidth,mapdepth,mapheight,64,64, "surface", 0.0,0.01,0.0, 0.0,0.0,0.0, 1.0,1.0,1.0, 0.0,0.0,0.0, 128) 
 
 myclip = pi3d.clipPlane()
 
