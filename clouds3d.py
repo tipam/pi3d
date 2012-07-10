@@ -42,11 +42,9 @@ clouds.append(pi3d.loadTextureAlpha("textures/cloud6.png",True))
 z = 0.0
 cxyz = []
 for b in range (0, cloudno):
-	cxyz.append((random.random() * widex - widex*.5, -random.random() * widey, cloud_depth-z, int(random.random() * 4) + 1))
+	cxyz.append([random.random() * widex - widex*.5, -random.random() * widey, cloud_depth-z, int(random.random() * 4) + 1])
 	z = z + zd
 	
-zc = 0
-
 # Fetch key presses
 mykeys = pi3d.key()
 
@@ -54,15 +52,21 @@ while True:
 	
 	display.clear()
 	
-	z = (z+(cloud_depth-speed)) % cloud_depth	
-	zc = (zc + (cloudno-1)) % cloudno
-
-	#attempts to resolve z-sorting of clouds
-	for d in range (zc, cloudno):
-		pi3d.sprite(clouds[cxyz[d][3]], x+cxyz[d][0],cxyz[d][1],-((z+cxyz[d][2]) % cloud_depth),8,5)
-			
-	for d in range (0, zc):
-		pi3d.sprite(clouds[cxyz[d][3]], x+cxyz[d][0],cxyz[d][1],-((z+cxyz[d][2]) % cloud_depth),8,5)
+	maxDepth = 0
+	axDepthIndex = 0
+	# this is easier to understand, the z position of each cloud is (only) held in cxyz[][2]
+	# it stops the clouds appearing in front of nearer clouds!
+	# first go through the clouds to find index of furthest away
+	for i in range(len(cxyz)):
+	    cxyz[i][2] = (cxyz[i][2] - speed) % cloud_depth
+	    if (cxyz[i][2] > maxDepth):
+		maxDepth = cxyz[i][2]
+		maxDepthIndex = i
+		
+	# paint the clouds from background to foreground
+	for i in range(maxDepthIndex, maxDepthIndex + cloudno):
+		c = cxyz[i%cloudno]
+		pi3d.sprite(clouds[c[3]], c[0], c[1], -c[2], 8, 5)
 
 	#Press ESCAPE to terminate
 	if mykeys.read() == 27:       
