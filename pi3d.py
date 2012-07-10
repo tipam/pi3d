@@ -24,13 +24,14 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 # DEALINGS IN THE SOFTWARE.
 
-pi3d_version = 0.02
+pi3d_version = 0.03
 
 import sys, random
 sys.path.append("include")
 from pi3dCommon import *
 import loaderEgg
 import PIL.ImageOps, ImageDraw
+
 
 def merge(self,shape, x,y,z, rx=0.0,ry=0.0,rz=0.0, sx=1.0,sy=1.0,sz=1.0, cx=0.0,cy=0.0,cz=0.0):
 
@@ -786,7 +787,7 @@ class createExtrude(create_shape):
 
 class createElevationMapFromTexture(create_shape):
 
-        def __init__(self, mapfile, width=100.0, depth=100.0, height=10.0, divx=0, divy=0, name="",x=0.0,y=0.0,z=0.0, rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0):
+        def __init__(self, mapfile, width=100.0, depth=100.0, height=10.0, divx=0, divy=0, ntiles=1.0, name="",x=0.0,y=0.0,z=0.0, rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0):
                 super(createElevationMapFromTexture,self).__init__(name, x,y,z, rx,ry,rz, sx,sy,sz, cx,cy,cz)
                 
                 print "Loading height map ...",mapfile
@@ -824,8 +825,8 @@ class createElevationMapFromTexture(create_shape):
                 ws = width / ix
                 hs = depth / iy
                 ht = height / 255.0
-                tx = 1.0/ix
-                ty = 1.0/iy
+                tx = ntiles/ix
+                ty = ntiles/iy
                 
                 verts=[]
                 norms=[]
@@ -905,7 +906,20 @@ class createElevationMapFromTexture(create_shape):
                 shape_draw(self,tex)
 
 
-                
+class clipPlane():
+# Added by Patrick Gaunt, 10-07-2012
+    
+    def __init__(self, no=0, x=0, y=0, z=1, w=60):
+	self.no = eglint(GL_CLIP_PLANE0 + no)
+	self.equation = eglfloats((x,y,z,w))
+	opengles.glClipPlanef(self.no, self.equation)
+	
+    def enable(self):
+	opengles.glEnable(self.no)
+	
+    def disable(self):
+	opengles.glDisable(self.no)
+	
 #=====================================================================================================================================================================================  
 # Cameras
                                 
@@ -948,8 +962,8 @@ class loadModel(create_shape):
             print self.exf, " file not supported"
             return None
             
-    def draw(self):
-        if self.exf == 'egg': loaderEgg.draw(self)
+    def draw(self,tex=None,n=None):
+        if self.exf == 'egg': loaderEgg.draw(self,tex,n)
         
     def clone(self): 
         newLM = loadModel("__clone__."+self.exf)
@@ -958,6 +972,9 @@ class loadModel(create_shape):
         
     def reparentTo(self, parent):
         if not(self in parent.childModel):  parent.childModel.append(self)
+	
+    def texSwap(self, texID, filename):
+	return loaderEgg.texSwap(self, texID, filename)
             
                                         
 #=====================================================================================================================================================================================  
@@ -1098,4 +1115,91 @@ class missile(object):
         missile.roty = self.ry
         missile.rotz = self.rz
         missile.draw(tex)
-        
+
+class ball(object):
+    
+    def __init__(self,radius,x,y,vx=0.0,vy=0.0,decay=0.001):
+	self.radius=radius
+	self.x=x
+	self.y=y
+	self.x=x
+	self.vx = vx
+	self.vy = vy
+	self.mass =radius*2
+	self.decay = decay
+	
+    def hit(self,otherball):
+	#used for pre-checking ball positions
+	dx = (self.x+self.vx)-(otherball.x+otherball.vx)
+	dy = (self.y+self.vy)-(otherball.y+otherball.vy)
+	rd = self.radius+otherball.radius
+	if (dx**2+dy**2) <= (rd**2): return True
+	else: return False
+	
+    def collisionBounce(self,otherball):
+	dx = (self.x+self.vx)-(otherball.x+otherball.vx)
+	dy = (self.y+self.vy)-(otherball.y+otherball.vy)
+	rd = self.radius+otherball.radius
+	#print dx,dy #,self.x,otherball.x
+	if (dx**2+dy**2) <= (rd**2):
+	    #sq = 1.0 / math.sqrt(dx**2+dy**2)
+	    #print "dxdy", dx**2+dy**2
+	    #otherball.vx = math.copysign((dx*sq),self.vx)*5.0
+	    #otherball.vy = math.copysign((dy*sq),self.vy)*5.0
+	    #self.vx = 0.0 #math.copysign(abs(dy*sq),self.vx)
+	    #self.vy = 0.0 #-math.copysign(abs(dx*sq),self.vy)
+	    
+	    cangle = math.atan2(dy,dx)
+	    mag1 = math.sqrt(self.vx**2+self.vy**2)
+	    mag2 = math.sqrt(otherball.vx**2+otherball.vy**2)
+	    dir1 = math.atan2(self.vy,self.vx)
+	    dir2 = math.atan2(otherball.vy,otherball.vx)
+	    nspx1 = mag1 * math.cos(dir1-cangle)
+	    nspy1 = mag1 * math.sin(dir1-cangle)
+	    nspx2 = mag2 * math.cos(dir2-cangle)
+	    nspy2 = mag2 * math.sin(dir2-cangle)
+	    fspx1 = ((self.mass-otherball.mass)*nspx1+(otherball.mass*2)*nspx2)/(self.mass+otherball.mass)
+	    fspx2 = ((self.mass*2)*nspx1+(otherball.mass-self.mass)*nspx2)/(self.mass+otherball.mass)
+	    fspy1 = nspy1
+	    fspy2 = nspy2
+	    self.vx = math.cos(cangle)*fspx1+math.cos(cangle+pipi*.5)*fspy1
+	    self.vy = math.sin(cangle)*fspx1+math.sin(cangle+pipi*.5)*fspy1
+	    otherball.vx = math.cos(cangle)*fspx2+math.cos(cangle+pipi*.5)*fspy2
+	    otherball.vy = math.sin(cangle)*fspx2+math.sin(cangle+pipi*.5)*fspy2
+	    
+	    
+	    
+
+	    
+	
+class shader(object):
+
+# This class based on Peter de Rivaz's mandlebrot example
+
+	def __init__(self, vshader_source, fshader_source, textures=None, param1=None, param2=None, param3=None):
+		
+	    #Pi3D can only accept shaders with limited parameters as specific parameters
+	    #would require a lot more coding unless there's a way of passing these back.
+	    #Shaders should have there parameters defined in the shader source.
+	    #The only parameters Pi3D can pass is textures.
+	    
+	    vshader = opengles.glCreateShader(GL_VERTEX_SHADER);
+	    opengles.glShaderSource(vshader, 1, ctypes.byref(vshader_source), 0)
+	    opengles.glCompileShader(vshader);
+
+	    fshader = opengles.glCreateShader(GL_FRAGMENT_SHADER);
+	    opengles.glShaderSource(fshader, 1, ctypes.byref(fshader_source), 0);
+	    opengles.glCompileShader(fshader);
+
+	    program = opengles.glCreateProgram();
+	    opengles.glAttachShader(program, vshader);
+	    opengles.glAttachShader(program, fshader);
+	    opengles.glLinkProgram(program);
+
+        #self.program = program
+        #self.unif_color = opengles.glGetUniformLocation(program, "color");
+        #self.attr_vertex = opengles.glGetAttribLocation(program, "vertex");
+        #self.unif_scale = opengles.glGetUniformLocation(program, "scale");
+        #self.unif_offset = opengles.glGetUniformLocation(program, "offset");
+        #self.unif_tex = opengles.glGetUniformLocation(program, "tex");
+

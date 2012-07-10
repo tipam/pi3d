@@ -25,11 +25,17 @@ display.setBackColour(0,0,0,1)    	# r,g,b,alpha
 # Setting 2nd param to True renders 'True' Blending
 # (this can be changed later to 'False' with 'cloudimg.blend = False')
 cloudimg = pi3d.loadTextureAlpha("textures/earth_clouds.png",True)   
-earthimg = pi3d.loadTexture("textures/world_map256x256.jpg")
-starsimg = pi3d.loadTexture("textures/stars.jpg")
+earthimg = pi3d.loadTexture("textures/world_map.jpg")
+moonimg = pi3d.loadTexture("textures/moon.jpg")
+starsimg = pi3d.loadTexture("textures/stars2.jpg")
+watimg = pi3d.loadTexture("textures/water.jpg")
 	
-mysphere = pi3d.createSphere(2,24,24,0.0,"earth",0,0,-7)
-mysphere2 = pi3d.createSphere(2.05,24,24,0.0,"clouds",0,0,-7)
+mysphere = pi3d.createSphere(2,24,24,0.0,"earth",0,0,0)
+mysphere2 = pi3d.createSphere(2.05,24,24,0.0,"clouds",0,0,0)
+mymoon = pi3d.createSphere(0.4,16,16,0.0,"moon",0,0,0)
+mymoon2 = pi3d.createSphere(0.1,16,16,0.0,"moon2",0,0,0)
+
+pi3d.save3Dfile("sphere.p3d",mysphere)
 
 arialFont = pi3d.font("AR_CENA","#dd00aa")   #load AR_CENA font and set the font colour to 'raspberry'
 destineFont = pi3d.font("AR_DELANEY", "#0055ff")
@@ -37,7 +43,11 @@ destineFont = pi3d.font("AR_DELANEY", "#0055ff")
 # Fetch key presses
 mykeys = pi3d.key()
 
+mtrx = pi3d.matrix()
+
 rot=0.0
+rot1=0.0
+rot2=0.0
 
 # Display scene
 while 1:
@@ -46,21 +56,37 @@ while 1:
     pi3d.sprite(starsimg, 0,0,-20, 20,20,rot)
     rot=rot+0.02
     
-    pi3d.identity()
+    mtrx.identity()
+    mtrx.translate(0,0,-7)
     mysphere.draw(earthimg)
     mysphere.rotateIncY( 0.1 )
-
     mysphere2.draw(cloudimg)
     mysphere2.rotateIncY( .2 )
-        
-    pi3d.drawString(arialFont,"The Raspberry Pi ROCKS!",-1.0,0.0,-2.2, 10.0, 0.003,0.003)
-    pi3d.drawString(destineFont,"Some nice OpenGL bitmap fonts to play with!",-1.3,-0.3,-2.2, 10.0, 0.002,0.002)
+    mtrx.rotate(0,0,10)
+    mtrx.rotate(0,rot1,0)
+    mtrx.translate(4,0,0)
+    mymoon.draw(moonimg)
+    mymoon.rotateIncY( 0.2 )
+    mtrx.rotate(30,0,0)
+    mtrx.rotate(0,rot2,0)
+    mtrx.translate(0.7,0,0)
+    mymoon2.draw(watimg)
+    #pi3d.pop()
     
+    rot1 += 1.0
+    rot2 += 5.0
+    
+    #pi3d.identity()
+    #pi3d.drawString(arialFont,"The Raspberry Pi ROCKS!",-1.0,0.0,-2.2, 10.0, 0.003,0.003)
+    #pi3d.drawString(destineFont,"Some nice OpenGL bitmap fonts to play with!",-1.3,-0.3,-2.2, 10.0, 0.002,0.002)
+    
+
     k = mykeys.read()
     if k >-1:
 	if k==112: display.screenshot("earthPic.jpg")
 	elif k==27:
 	    display.destroy()
+	    mykeys.close()
 	    break
 	else:
 	    print k
