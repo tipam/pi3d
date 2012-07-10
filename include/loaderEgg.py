@@ -236,7 +236,19 @@ def loadFileEGG(self,fileName):
     
 #        groupDrill(l, "") # recursively break down groups - TODO this doesn't actually work properly because of split() on <Group>
     
-def draw(self):
+def draw(self, texID=None, n=None):
+    texToUse = None
+    if texID != None:
+         texToUse = texID
+    elif n != None:
+        n = n % (len(self.textureList))
+        i = 0
+        for t in self.textureList:
+            if i == n:
+                texToUse = self.textureList[t]["texID"]
+                break
+            i += 1
+
     mtrx = matrix()
     mtrx.push()
     transform(self.x,self.y,self.z, self.rotx,self.roty,self.rotz, self.sx,self.sy,self.sz, self.cx,self.cy,self.cz)
@@ -245,7 +257,8 @@ def draw(self):
         opengles.glVertexPointer( 3, GL_FLOAT, 0, self.vGroup[g]["vertices"]);
         opengles.glNormalPointer( GL_FLOAT, 0, self.vGroup[g]["normals"]);
         
-        if self.vGroup[g]["texID"] > 0: texture_on(self.vGroup[g]["texID"],self.vGroup[g]["tex_coords"],GL_FLOAT)
+        if texToUse > 0: texture_on(texToUse, self.vGroup[g]["tex_coords"], GL_FLOAT)
+        elif self.vGroup[g]["texID"] > 0: texture_on(self.vGroup[g]["texID"], self.vGroup[g]["tex_coords"], GL_FLOAT)
         
         #TODO enable material colours as well as textures from images
         if self.vGroup[g]["material"] != None:
@@ -265,9 +278,21 @@ def draw(self):
         rval = rotateVec(self.rotx, self.roty, self.rotz, (c.x, c.y, c.z))
         c.x, c.y, c.z = self.x + rval[0], self.y + rval[1], self.z + rval[2]
         c.rotx, c.roty, c.rotz = self.rotx + c.rotx, self.roty + c.roty, self.rotz + c.rotz
-        c.draw()
+        c.draw() #should texture override be passed down to children?
         c.x, c.y, c.z = relx, rely, relz
         c.rotx, c.roty, c.rotz = relrotx, relroty, relrotz
+        
+def texSwap(self, texID, fileName):
+    texToUse = None
+    texToSwap = None
+    for t in self.textureList:
+        if fileName in self.textureList[t]["filename"]: # NB this is a bit slacker than using == but easier to use
+            texToSwap = self.textureList[t]["texID"] 
+            break
+    for g in self.vGroup:
+         if self.vGroup[g]["texID"] == texToSwap: self.vGroup[g]["texID"] = texID
+    return texToSwap # this texture is returned so it can be used or held by the calling code and reinserted if need be
+
 	
 #########################################################################################
 #

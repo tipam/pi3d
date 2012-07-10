@@ -37,7 +37,11 @@ myecube = pi3d.createEnvironmentCube(900.0,"CROSS")
 
 # load model_loadmodel
 mymodel = pi3d.loadModel("models/Buckfast Abbey/BuckfastAbbey.egg","Abbey",0,0,0, -90,160,0, 0.03,0.03,0.03)
-	
+
+# load substitute texture
+newTex = pi3d.loadTexture("textures/TECHY1.PNG")
+mymodel.texSwap(newTex, "chapelside") # subs newTex texture for the texture from filename in path/filename.ext
+
 # Create keyboard and mouse event objects
 mykeys = pi3d.key()
 mymouse = pi3d.mouse()
@@ -71,7 +75,9 @@ while 1:
     myecube.draw(ectex,xm,ym,zm)
     
     mylight.on()
-    mymodel.draw()
+    #mymodel.draw(newTex) # sub newTex texture for all textures in the object
+    #mymodel.draw(None, 2) # use the 2nd texture sorted alphabetically for all textures in model, could be used for animation
+    mymodel.draw() # normal draw
     mylight.off()
     
     mx=mymouse.x

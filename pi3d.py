@@ -786,7 +786,7 @@ class createExtrude(create_shape):
 
 class createElevationMapFromTexture(create_shape):
 
-        def __init__(self, mapfile, width=100.0, depth=100.0, height=10.0, divx=0, divy=0, name="",x=0.0,y=0.0,z=0.0, rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0):
+        def __init__(self, mapfile, width=100.0, depth=100.0, height=10.0, divx=0, divy=0, name="",x=0.0,y=0.0,z=0.0, rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0,nTiles=1):
                 super(createElevationMapFromTexture,self).__init__(name, x,y,z, rx,ry,rz, sx,sy,sz, cx,cy,cz)
                 
                 print "Loading height map ...",mapfile
@@ -824,8 +824,8 @@ class createElevationMapFromTexture(create_shape):
                 ws = width / ix
                 hs = depth / iy
                 ht = height / 255.0
-                tx = 1.0/ix
-                ty = 1.0/iy
+                tx = (1.0 * nTiles)/ix
+                ty = (1.0 * nTiles)/iy
                 
                 verts=[]
                 norms=[]
@@ -904,7 +904,21 @@ class createElevationMapFromTexture(create_shape):
         def draw(self,tex=None):
                 shape_draw(self,tex)
 
-
+#=================================================
+#  experimental clip plane
+class clipPlane():
+    
+    def __init__(self, no=0, x=0, y=0, z=1, w=60):
+        self.no = eglint(GL_CLIP_PLANE0 + no)
+        self.equation = eglfloats((x,y,z,w))
+        opengles.glClipPlanef(self.no, self.equation)
+    
+    def enable(self):
+        opengles.glEnable(self.no)
+        
+    def disable(self):
+        opengles.glDisable(self.no)
+    
                 
 #=====================================================================================================================================================================================  
 # Cameras
@@ -948,8 +962,8 @@ class loadModel(create_shape):
             print self.exf, " file not supported"
             return None
             
-    def draw(self):
-        if self.exf == 'egg': loaderEgg.draw(self)
+    def draw(self, texID=None, n=None):
+        if self.exf == 'egg': loaderEgg.draw(self, texID, n)
         
     def clone(self): 
         newLM = loadModel("__clone__."+self.exf)
@@ -958,6 +972,9 @@ class loadModel(create_shape):
         
     def reparentTo(self, parent):
         if not(self in parent.childModel):  parent.childModel.append(self)
+        
+    def texSwap(self, texID, fileName):
+        return loaderEgg.texSwap(self, texID, fileName)
             
                                         
 #=====================================================================================================================================================================================  
