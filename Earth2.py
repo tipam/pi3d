@@ -17,7 +17,7 @@ import pi3d
 
 # Setup display and initialise pi3d
 display = pi3d.display()
-display.create3D(100,100,1200,900)   	# x,y,width,height
+display.create3D(100,100,1600,900)   	# x,y,width,height
 display.setBackColour(0,0,0,1)    	# r,g,b,alpha
 
 # Load textures
@@ -35,8 +35,6 @@ mysphere2 = pi3d.createSphere(2.05,24,24,0.0,"clouds",0,0,0)
 mymoon = pi3d.createSphere(0.4,16,16,0.0,"moon",0,0,0)
 mymoon2 = pi3d.createSphere(0.1,16,16,0.0,"moon2",0,0,0)
 
-pi3d.save3Dfile("sphere.p3d",mysphere)
-
 arialFont = pi3d.font("AR_CENA","#dd00aa")   #load AR_CENA font and set the font colour to 'raspberry'
 destineFont = pi3d.font("AR_DELANEY", "#0055ff")
 
@@ -49,15 +47,20 @@ rot=0.0
 rot1=0.0
 rot2=0.0
 
+#create a light
+mylight = pi3d.createLight(0,1,1,1,"",10,10,50, .8,.8,.8)
+
 # Display scene
 while 1:
     display.clear()
-
-    pi3d.sprite(starsimg, 0,0,-20, 20,20,rot)
+	
+    mylight.off()
+    pi3d.sprite(starsimg, 0,0,-20, 25,25,rot)
     rot=rot+0.02
     
+    mylight.on()
     mtrx.identity()
-    mtrx.translate(0,0,-7)
+    mtrx.translate(0,0,-6)
     mysphere.draw(earthimg)
     mysphere.rotateIncY( 0.1 )
     mysphere2.draw(cloudimg)
@@ -71,7 +74,7 @@ while 1:
     mtrx.rotate(0,rot2,0)
     mtrx.translate(0.7,0,0)
     mymoon2.draw(watimg)
-    #pi3d.pop()
+    mymoon2.rotateIncY( -20 )
     
     rot1 += 1.0
     rot2 += 5.0
@@ -80,7 +83,6 @@ while 1:
     #pi3d.drawString(arialFont,"The Raspberry Pi ROCKS!",-1.0,0.0,-2.2, 10.0, 0.003,0.003)
     #pi3d.drawString(destineFont,"Some nice OpenGL bitmap fonts to play with!",-1.3,-0.3,-2.2, 10.0, 0.002,0.002)
     
-
     k = mykeys.read()
     if k >-1:
 	if k==112: display.screenshot("earthPic.jpg")

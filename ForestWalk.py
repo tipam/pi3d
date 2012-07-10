@@ -1,8 +1,9 @@
 # Forest walk example using pi3d module
 # =====================================
 # Copyright (c) 2012 - Tim Skillman
-# Version 0.01 - 03Jul12
+# Version 0.02 - 03Jul12
 # 
+# grass added
 # This example does not reflect the finished pi3d module in any way whatsoever!
 # It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
 #

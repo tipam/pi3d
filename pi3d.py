@@ -991,20 +991,20 @@ class createLight(object):
         self.specular = eglfloats((red,grn,blu,1.0))
         self.xyz = eglfloats((x,y,z,1))
         self.no = eglint(GL_LIGHT0 + no)
-	self.name = name
-        #self.mShininess = eglfloat(120.0)
+        self.name = name
+        self.mShininess = eglfloat(120.0)
         self.lighton = False
         
         #opengles.glLightModelfv(GL_LIGHT_MODEL_COLOUR_CONTROL, GL_SEPERATE_SPECULAR_COLOR)   #Turns on specular highlights for textures
-        #opengles.glMaterialfv(GL_FRONT, GL_SHININESS, self.mShininess)#TIM: don't think this works but would like it to
+        opengles.glMaterialfv(GL_FRONT, GL_SHININESS, self.mShininess)#TIM: don't think this works but would like it to
         opengles.glLightModelfv(GL_LIGHT_MODEL_AMBIENT, self.ambient)
-	opengles.glLightfv(self.no,GL_AMBIENT, self.ambient) 
+        opengles.glLightfv(self.no,GL_AMBIENT, self.ambient) 
         opengles.glLightfv(self.no,GL_DIFFUSE,self.diffuse) 
         opengles.glLightfv(self.no,GL_SPECULAR,self.specular) 
         opengles.glLightfv(self.no,GL_POSITION,self.xyz) 
-	# 0 for a distant light and -1 for a spot. LIGHT0 comes predefined as a distant light but that's changed here
-	# I would have thought either w needs to be passed as a parameter to __init__ and not overwritten in position
-	# and/or define global values SPOT, DIST, POINT = -1, 0, 1
+        # 0 for a distant light and -1 for a spot. LIGHT0 comes predefined as a distant light but that's changed here
+        # I would have thought either w needs to be passed as a parameter to __init__ and not overwritten in position
+        # and/or define global values SPOT, DIST, POINT = -1, 0, 1
 
 
     def position(self,x,y,z):
@@ -1166,12 +1166,8 @@ class ball(object):
 	    self.vy = math.sin(cangle)*fspx1+math.sin(cangle+pipi*.5)*fspy1
 	    otherball.vx = math.cos(cangle)*fspx2+math.cos(cangle+pipi*.5)*fspy2
 	    otherball.vy = math.sin(cangle)*fspx2+math.sin(cangle+pipi*.5)*fspy2
-	    
-	    
-	    
 
-	    
-	
+    
 class shader(object):
 
 # This class based on Peter de Rivaz's mandlebrot example
@@ -1180,8 +1176,8 @@ class shader(object):
 		
 	    #Pi3D can only accept shaders with limited parameters as specific parameters
 	    #would require a lot more coding unless there's a way of passing these back.
-	    #Shaders should have there parameters defined in the shader source.
-	    #The only parameters Pi3D can pass is textures.
+	    #Shaders should have their parameters defined in the shader source.
+	    #The only parameters Pi3D can pass (for now) is textures.
 	    
 	    vshader = opengles.glCreateShader(GL_VERTEX_SHADER);
 	    opengles.glShaderSource(vshader, 1, ctypes.byref(vshader_source), 0)

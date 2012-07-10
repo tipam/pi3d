@@ -63,7 +63,6 @@ omy=mymouse.y
 while 1:
     display.clear()
 
-	
     pi3d.identity()
     pi3d.rotate(tilt,0,0)
     pi3d.rotate(0,rot,0)
