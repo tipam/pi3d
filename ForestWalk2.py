@@ -37,7 +37,7 @@ mapheight=60.0
 mountimg1 = pi3d.loadTexture("textures/mountains3_512.jpg")
 surface1 = pi3d.loadTextureAlpha("textures/gravel3.png")
 mymap = pi3d.createElevationMapFromTexture("textures/mountainsHgt.jpg",mapwidth,mapdepth,mapheight,64,64) #testislands.jpg
-mymap2 = pi3d.createElevationMapFromTexture("textures/mountainsHgt.jpg",mapwidth,mapdepth,mapheight,64,64, 128)
+mymap2 = pi3d.createElevationMapFromTexture("textures/mountainsHgt.jpg",mapwidth,mapdepth,mapheight,64,64, 128, "", 0.0, 0.01) # y position just above other map
 
 myclip = pi3d.clipPlane()
 

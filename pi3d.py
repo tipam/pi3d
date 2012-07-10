@@ -787,11 +787,7 @@ class createExtrude(create_shape):
 
 class createElevationMapFromTexture(create_shape):
 
-<<<<<<< HEAD
-        def __init__(self, mapfile, width=100.0, depth=100.0, height=10.0, divx=0, divy=0, name="",x=0.0,y=0.0,z=0.0, rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0,nTiles=1):
-=======
         def __init__(self, mapfile, width=100.0, depth=100.0, height=10.0, divx=0, divy=0, ntiles=1.0, name="",x=0.0,y=0.0,z=0.0, rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0):
->>>>>>> upstream/master
                 super(createElevationMapFromTexture,self).__init__(name, x,y,z, rx,ry,rz, sx,sy,sz, cx,cy,cz)
                 
                 print "Loading height map ...",mapfile
@@ -829,13 +825,8 @@ class createElevationMapFromTexture(create_shape):
                 ws = width / ix
                 hs = depth / iy
                 ht = height / 255.0
-<<<<<<< HEAD
-                tx = (1.0 * nTiles)/ix
-                ty = (1.0 * nTiles)/iy
-=======
                 tx = ntiles/ix
                 ty = ntiles/iy
->>>>>>> upstream/master
                 
                 verts=[]
                 norms=[]
@@ -914,24 +905,6 @@ class createElevationMapFromTexture(create_shape):
         def draw(self,tex=None):
                 shape_draw(self,tex)
 
-<<<<<<< HEAD
-#=================================================
-#  experimental clip plane
-class clipPlane():
-    
-    def __init__(self, no=0, x=0, y=0, z=1, w=60):
-        self.no = eglint(GL_CLIP_PLANE0 + no)
-        self.equation = eglfloats((x,y,z,w))
-        opengles.glClipPlanef(self.no, self.equation)
-    
-    def enable(self):
-        opengles.glEnable(self.no)
-        
-    def disable(self):
-        opengles.glDisable(self.no)
-    
-                
-=======
 
 class clipPlane():
 # Added by Patrick Gaunt, 10-07-2012
@@ -947,7 +920,6 @@ class clipPlane():
     def disable(self):
 	opengles.glDisable(self.no)
 	
->>>>>>> upstream/master
 #=====================================================================================================================================================================================  
 # Cameras
                                 
@@ -990,13 +962,8 @@ class loadModel(create_shape):
             print self.exf, " file not supported"
             return None
             
-<<<<<<< HEAD
-    def draw(self, texID=None, n=None):
-        if self.exf == 'egg': loaderEgg.draw(self, texID, n)
-=======
     def draw(self,tex=None,n=None):
         if self.exf == 'egg': loaderEgg.draw(self,tex,n)
->>>>>>> upstream/master
         
     def clone(self): 
         newLM = loadModel("__clone__."+self.exf)
@@ -1005,15 +972,9 @@ class loadModel(create_shape):
         
     def reparentTo(self, parent):
         if not(self in parent.childModel):  parent.childModel.append(self)
-<<<<<<< HEAD
-        
-    def texSwap(self, texID, fileName):
-        return loaderEgg.texSwap(self, texID, fileName)
-=======
 	
     def texSwap(self, texID, filename):
 	return loaderEgg.texSwap(self, texID, filename)
->>>>>>> upstream/master
             
                                         
 #=====================================================================================================================================================================================  
@@ -1180,7 +1141,11 @@ class ball(object):
 	dy = (self.y+self.vy)-(otherball.y+otherball.vy)
 	rd = self.radius+otherball.radius
 	#print dx,dy #,self.x,otherball.x
-	if (dx**2+dy**2) <= (rd**2):
+	# should really work out if it's converging i.e. angle outside -90 to 90 degrees
+	# angle = arcos(a.b/|a||b|) to stop balls getting 'trapped' inside each other!
+	# check sign of a.b
+	dotP = (self.x - otherball.x) * (self.vx - otherball.vx) + (self.y - otherball.y) * (self.vy - otherball.vy)
+	if dx**2+dy**2 <= rd**2 and dotP < 0:
 	    #sq = 1.0 / math.sqrt(dx**2+dy**2)
 	    #print "dxdy", dx**2+dy**2
 	    #otherball.vx = math.copysign((dx*sq),self.vx)*5.0
