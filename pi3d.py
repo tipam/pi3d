@@ -906,7 +906,7 @@ class createElevationMapFromTexture(create_shape):
                 shape_draw(self,tex)
 
 
-class clipPlane():
+class clipPlane(object):
 # Added by Patrick Gaunt, 10-07-2012
     
     def __init__(self, no=0, x=0, y=0, z=1, w=60):
@@ -1207,3 +1207,17 @@ class shader(object):
         #self.unif_offset = opengles.glGetUniformLocation(program, "offset");
         #self.unif_tex = opengles.glGetUniformLocation(program, "tex");
 
+
+class fog():
+
+    def __init__(self, density=0.01, colr=(0.3, 0.6, 0.8, 0.5)):
+        opengles.glFogf(GL_FOG_MODE, GL_EXP) # defaults to this anyway
+        openegl.glFogf(GL_FOG_DENSITY, eglfloat(density)) # exponent factor
+        opengles.glFogfv(GL_FOG_COLOR, eglfloats(colr)) # don't think the alpha value alters the target object alpha
+	
+    def enable(self):
+        opengles.glEnable(GL_FOG)
+	
+    def disable(self):
+        opengles.glDisable(GL_FOG)
+	
