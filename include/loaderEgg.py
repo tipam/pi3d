@@ -274,7 +274,11 @@ def draw(self, texID=None, n=None):
     
     for c in self.childModel:
         relx, rely, relz = c.x, c.y, c.z
+<<<<<<< HEAD
+        relrotx, relroty, relrotz = c.rotx, c.roty, c.rotz 
+=======
         relrotx, relroty, relrotz = c.rotx, c.roty, c.rotz
+>>>>>>> upstream/master
         rval = rotateVec(self.rotx, self.roty, self.rotz, (c.x, c.y, c.z))
         c.x, c.y, c.z = self.x + rval[0], self.y + rval[1], self.z + rval[2]
         c.rotx, c.roty, c.rotz = self.rotx + c.rotx, self.roty + c.roty, self.rotz + c.rotz
@@ -287,13 +291,22 @@ def texSwap(self, texID, fileName):
     texToSwap = None
     for t in self.textureList:
         if fileName in self.textureList[t]["filename"]: # NB this is a bit slacker than using == but easier to use
+<<<<<<< HEAD
+            texToSwap = self.textureList[t]["texID"] 
+=======
             texToSwap = self.textureList[t]["texID"]
+>>>>>>> upstream/master
             break
     for g in self.vGroup:
          if self.vGroup[g]["texID"] == texToSwap: self.vGroup[g]["texID"] = texID
     return texToSwap # this texture is returned so it can be used or held by the calling code and reinserted if need be
+<<<<<<< HEAD
+
+	
+=======
 
 
+>>>>>>> upstream/master
 #########################################################################################
 #
 #########################################################################################

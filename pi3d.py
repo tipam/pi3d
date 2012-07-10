@@ -906,7 +906,7 @@ class createElevationMapFromTexture(create_shape):
                 shape_draw(self,tex)
 
 
-class clipPlane():
+class clipPlane(object):
 # Added by Patrick Gaunt, 10-07-2012
     
     def __init__(self, no=0, x=0, y=0, z=1, w=60):
@@ -1141,7 +1141,11 @@ class ball(object):
 	dy = (self.y+self.vy)-(otherball.y+otherball.vy)
 	rd = self.radius+otherball.radius
 	#print dx,dy #,self.x,otherball.x
-	if (dx**2+dy**2) <= (rd**2):
+	# should really work out if it's converging i.e. angle outside -90 to 90 degrees
+	# angle = arcos(a.b/|a||b|) to stop balls getting 'trapped' inside each other!
+	# check sign of a.b
+	dotP = (self.x - otherball.x) * (self.vx - otherball.vx) + (self.y - otherball.y) * (self.vy - otherball.vy)
+	if dx**2+dy**2 <= rd**2 and dotP < 0:
 	    #sq = 1.0 / math.sqrt(dx**2+dy**2)
 	    #print "dxdy", dx**2+dy**2
 	    #otherball.vx = math.copysign((dx*sq),self.vx)*5.0
@@ -1203,3 +1207,17 @@ class shader(object):
         #self.unif_offset = opengles.glGetUniformLocation(program, "offset");
         #self.unif_tex = opengles.glGetUniformLocation(program, "tex");
 
+
+class fog():
+
+    def __init__(self, density=0.01, colr=(0.3, 0.6, 0.8, 0.5)):
+        opengles.glFogf(GL_FOG_MODE, GL_EXP) # defaults to this anyway
+        openegl.glFogf(GL_FOG_DENSITY, eglfloat(density)) # exponent factor
+        opengles.glFogfv(GL_FOG_COLOR, eglfloats(colr)) # don't think the alpha value alters the target object alpha
+	
+    def enable(self):
+        opengles.glEnable(GL_FOG)
+	
+    def disable(self):
+        opengles.glDisable(GL_FOG)
+	
