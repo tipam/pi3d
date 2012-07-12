@@ -83,7 +83,7 @@ def check(e):
     """Checks that error is zero"""
     if e==0: return
     if verbose:
-        print 'Error code',hex(e&0xffffffff)
+	print 'Error code',hex(e&0xffffffff)
     raise ValueError
 
 def showerror():
@@ -107,18 +107,19 @@ def load_tex(fileString,RGBv,RGBs,flip,size):
 	if nx>1024: nx=1024
 	if ny>1024: ny=1024
 	
-	if nx<>ix or ny<>iy:
+	if nx<>ix or ny<>iy or size>0:
 	    print ix,iy
+	    if size>0: nx,ny = size,size
 	    ix,iy = nx,ny
 	    im = im.resize((ix,iy),Image.ANTIALIAS)
 	    print "Resizing to:",ix,iy
 	else: print "Bitmap size:",ix,iy
-	        
+		
 	if flip: im = im.transpose(Image.FLIP_TOP_BOTTOM)
 	    
 	image = im.convert(RGBs).tostring("raw",RGBs)
 	tex=eglint()
-        opengles.glGenTextures(1,ctypes.byref(tex))
+	opengles.glGenTextures(1,ctypes.byref(tex))
 	opengles.glBindTexture(GL_TEXTURE_2D,tex)
 	opengles.glTexImage2D(GL_TEXTURE_2D,0,RGBv,ix,iy,0,RGBv,GL_UNSIGNED_BYTE, ctypes.string_at(image,len(image)))
 	return (ix,iy,tex)
@@ -167,17 +168,18 @@ class loadTextureAlpha(object):
 	self.alpha=True
 	self.blend=blend
 
+#Pickle doesn't like the ctypes stuff for now - I'll need to find another way
+#
+#def load3Dfile(fstring):
+#    f = open(fstring, 'r')
+#    model=pickle.load(f)
+#   f.close()
+#    return model
 
-def load3Dfile(fstring):
-    f = open(fstring, 'r')
-    model=pickle.load(f)
-    f.close()
-    return model
-
-def save3Dfile(fstring,model):
-    f = open(fstring, 'w')
-    pickle.dump(model,f)
-    f.close()
+#def save3Dfile(fstring,model):
+#    f = open(fstring, 'w')
+#    pickle.dump(model,f)
+#    f.close()
 		    
 #position, rotate and scale an object
 def transform(x,y,z,rotx,roty,rotz,sx,sy,sz,cx,cy,cz):
@@ -526,60 +528,64 @@ def shape_draw(self,tex,shl=GL_UNSIGNED_SHORT):
 
 def create_display(self,x=0,y=0,w=0,h=0,depth=24):
     
-        self.display = openegl.eglGetDisplay(EGL_DEFAULT_DISPLAY)
+	b = bcm.bcm_host_init()
+	self.display = openegl.eglGetDisplay(EGL_DEFAULT_DISPLAY)
 	assert self.display != EGL_NO_DISPLAY
 	
-        r = openegl.eglInitialize(self.display,0,0)
+	r = openegl.eglInitialize(self.display,0,0)
 	#assert r == EGL_FALSE
 	
-        attribute_list = eglints(     (EGL_RED_SIZE, 8,
-                                      EGL_GREEN_SIZE, 8,
-                                      EGL_BLUE_SIZE, 8,
-                                      EGL_ALPHA_SIZE, 8,
+	attribute_list = eglints(     (EGL_RED_SIZE, 8,
+				      EGL_GREEN_SIZE, 8,
+				      EGL_BLUE_SIZE, 8,
+				      EGL_ALPHA_SIZE, 8,
 				      EGL_DEPTH_SIZE, 24,
 				      EGL_BUFFER_SIZE, 32,
-                                      EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
-                                      EGL_NONE) )
-        numconfig = eglint()
-        config = ctypes.c_void_p()
-	r = openegl.eglChooseConfig(self.display, ctypes.byref(attribute_list), ctypes.byref(config), 1, ctypes.byref(numconfig));
+				      EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
+				      EGL_NONE) )
+	numconfig = eglint()
+	config = ctypes.c_void_p()
+	r = openegl.eglChooseConfig(self.display,
+				    ctypes.byref(attribute_list),
+				    ctypes.byref(config), 1, 
+				    ctypes.byref(numconfig))
    
 	#if verbose: print 'numconfig=',numconfig
-
-        self.context = openegl.eglCreateContext(self.display, config, EGL_NO_CONTEXT, 0 ) 
+	context_attribs = eglints( (EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE) )
+	self.context = openegl.eglCreateContext(self.display, config, EGL_NO_CONTEXT, 0) #ctypes.byref(context_attribs) ) 
 	assert self.context != EGL_NO_CONTEXT
-        
-        #Set the viewport position and size
+	
+	#Set the viewport position and size
 
-        dst_rect = eglints( (x,y,w,h) ) #width.value,height.value) )
-        src_rect = eglints( (x,y,w<<16, h<<16) ) #width.value<<16, height.value<<16) )
+	dst_rect = eglints( (x,y,w,h) ) #width.value,height.value) )
+	src_rect = eglints( (x,y,w<<16, h<<16) ) #width.value<<16, height.value<<16) )
 
-        self.dispman_display = bcm.vc_dispmanx_display_open( 0 ) #LCD setting
-        self.dispman_update = bcm.vc_dispmanx_update_start( 0 )
-        self.dispman_element = bcm.vc_dispmanx_element_add ( self.dispman_update, self.dispman_display,
-                                  0, ctypes.byref(dst_rect), 0,
-                                  ctypes.byref(src_rect),
-                                  DISPMANX_PROTECTION_NONE,
-                                  0 , 0, 0)
+	self.dispman_display = bcm.vc_dispmanx_display_open( 0 ) #LCD setting
+	self.dispman_update = bcm.vc_dispmanx_update_start( 0 )
+	self.dispman_element = bcm.vc_dispmanx_element_add ( self.dispman_update, self.dispman_display,
+				  0, ctypes.byref(dst_rect), 0,
+				  ctypes.byref(src_rect),
+				  DISPMANX_PROTECTION_NONE,
+				  0, 0, 0)
 
-        nativewindow = eglints((self.dispman_element,w,h+1));
-        bcm.vc_dispmanx_update_submit_sync( self.dispman_update )
+	nativewindow = eglints((self.dispman_element,w,h+1));
+	bcm.vc_dispmanx_update_submit_sync( self.dispman_update )
     
-        nw_p = ctypes.pointer(nativewindow)
-        self.nw_p = nw_p
-        
-        self.surface = openegl.eglCreateWindowSurface( self.display, config, nw_p, 0)
-        assert self.surface != EGL_NO_SURFACE
-        
-        r = openegl.eglMakeCurrent(self.display, self.surface, self.surface, self.context)
-        assert r
+	nw_p = ctypes.pointer(nativewindow)
+	self.nw_p = nw_p
+	
+	self.surface = openegl.eglCreateWindowSurface( self.display, config, nw_p, 0)
+	assert self.surface != EGL_NO_SURFACE
+	
+	r = openegl.eglMakeCurrent(self.display, self.surface, self.surface, self.context)
+	assert r
 	
 	#Create viewport
-        opengles.glViewport (0, 0, w, h)
+	opengles.glViewport (0, 0, w, h)
 	
 	#Setup default hints
 	opengles.glEnable(GL_CULL_FACE)	
-        opengles.glShadeModel(GL_FLAT)
+	#opengles.glShadeModel(GL_FLAT)
 	opengles.glEnable(GL_NORMALIZE)
 	opengles.glEnable(GL_DEPTH_TEST)
 	
@@ -595,36 +601,36 @@ def create_display(self,x=0,y=0,w=0,h=0,depth=24):
 class mouse(threading.Thread):
 
     def __init__(self):
-        threading.Thread.__init__(self)
-        self.fd = open('/dev/input/mouse0','r')
-        self.x = 800
-        self.y = 400
-        self.width=1920
-        self.height=1080
-        self.finished=False
-        self.button=False
-        
+	threading.Thread.__init__(self)
+	self.fd = open('/dev/input/mouse0','r')
+	self.x = 800
+	self.y = 400
+	self.width=1920
+	self.height=1080
+	self.finished=False
+	self.button=False
+	
     def run(self):
-        while True:
-            while True:
-                buttons,dx,dy=map(ord,self.fd.read(3))
-                if buttons&8:
-                    break # This bit should always be set
-                self.fd.read(1) # Try to sync up again
-            if buttons&3:
-                self.button=True
-                #break  # Stop if mouse button pressed!
-            if buttons&XSIGN:
-                dx-=256
-            if buttons&YSIGN:
-                dy-=256
-                
-            self.x+=dx
-            self.y+=dy
-            if self.x<0: self.x=0
-            if self.y<0: self.y=0
-            self.x=min(self.x,self.width)
-            self.y=min(self.y,self.height)
+	while True:
+	    while True:
+		buttons,dx,dy=map(ord,self.fd.read(3))
+		if buttons&8:
+		    break # This bit should always be set
+		self.fd.read(1) # Try to sync up again
+	    if buttons&3:
+		self.button=True
+		#break  # Stop if mouse button pressed!
+	    if buttons&XSIGN:
+		dx-=256
+	    if buttons&YSIGN:
+		dy-=256
+		
+	    self.x+=dx
+	    self.y+=dy
+	    if self.x<0: self.x=0
+	    if self.y<0: self.y=0
+	    self.x=min(self.x,self.width)
+	    self.y=min(self.y,self.height)
     
 class key():
     
@@ -695,23 +701,23 @@ class create_shape(object):
 class matrix(object):
     
     def __init__(self):
-        self.mat = []
-        self.mc = 0
-        
+	self.mat = []
+	self.mc = 0
+	
     def identity(self):
-        opengles.glLoadIdentity()
-        self.mc = 0
+	opengles.glLoadIdentity()
+	self.mc = 0
 
     def push(self):
-        self.mat.append((ctypes.c_float*16)())
-        opengles.glGetFloatv(GL_MODELVIEW_MATRIX,ctypes.byref(self.mat[self.mc]))
-        self.mc += 1
-        
+	self.mat.append((ctypes.c_float*16)())
+	opengles.glGetFloatv(GL_MODELVIEW_MATRIX,ctypes.byref(self.mat[self.mc]))
+	self.mc += 1
+	
     def pop(self):
-        opengles.glMatrixMode(GL_MODELVIEW)
-        if self.mc>0:
-            self.mc -= 1
-            opengles.glLoadMatrixf(self.mat[self.mc])
+	opengles.glMatrixMode(GL_MODELVIEW)
+	if self.mc>0:
+	    self.mc -= 1
+	    opengles.glLoadMatrixf(self.mat[self.mc])
 
     def translate(self,x,y,z):
 	opengles.glTranslatef(eglfloat(x),eglfloat(y),eglfloat(z))

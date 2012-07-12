@@ -53,10 +53,6 @@ while 1:
 
 	k = mykeys.read()
 	if k >-1:
-		if k==112: display.screenshot("raspberryRain.jpg")
-	elif k==27:
-	    display.destroy()
-	    mykeys.close()
-	    break
+		if k==112: display.screenshot("raspberryRain.jpg")   
 
 	display.swapBuffers()

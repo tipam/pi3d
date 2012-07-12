@@ -1,9 +1,16 @@
 # Forest walk example using pi3d module
 # =====================================
 # Copyright (c) 2012 - Tim Skillman
+<<<<<<< HEAD
 # Version 0.02 - 03Jul12
 # 
 # grass added
+=======
+# Version 0.03 - 12Jul12
+# 
+# grass added, new environment cube using FACES
+#
+>>>>>>> upstream/master
 # This example does not reflect the finished pi3d module in any way whatsoever!
 # It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
 #
@@ -29,8 +36,11 @@ tree1img = pi3d.loadTextureAlpha("textures/tree1.png")
 grassimg = pi3d.loadTextureAlpha("textures/grass.png")
 hb2img = pi3d.loadTextureAlpha("textures/hornbeam2.png")
 
-ectex = pi3d.loadTexture("textures/SkyBox.png")
-myecube = pi3d.createEnvironmentCube(900.0,"CROSS")
+#ectex = pi3d.loadTexture("textures/SkyBox.png")
+#myecube = pi3d.createEnvironmentCube(900.0,"HALFCROSS")
+
+ectex=pi3d.loadECfiles("textures/ecubes","sbox")
+myecube = pi3d.createEnvironmentCube(900.0,"FACES")
 
 # Create elevation map
 mapwidth=1000.0
@@ -74,10 +84,11 @@ mytrees3.cluster(treemodel2, mymap,0.0,0.0,300.0,300.0,30,"",4.0,2.0)
 mygrass = pi3d.createMergeShape("grass")
 mygrass.cluster(grassmodel, mymap,0.0,0.0,100.0,100.0,100,"",10.0,4.0)
 
-mygrass2 = pi3d.createMergeShape("grass2")
-mygrass2.cluster(mygrass, mymap,100.0,0.0,100.0,100.0,1,"",1.0,1.0)
+#mygrass2 = pi3d.createMergeShape("grass2")
+#mygrass2.cluster(mygrass, mymap,100.0,0.0,100.0,100.0,1,"",1.0,1.0)
 
 #               (shape,elevmap,xpos,zpos,w,d,count,options,minscl,maxscl)
+
 
 #screenshot number
 scshots = 1  

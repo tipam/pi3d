@@ -1,5 +1,5 @@
-# Earth and example shapes using pi3d module
-# ==========================================
+# Shapes using pi3d module
+# ========================
 # Copyright (c) 2012 - Tim Skillman
 # Version 0.02 - 03Jul12
 # 
@@ -44,7 +44,6 @@ destineFont = pi3d.font("AR_Destine", "#0055ff")
 # Fetch key presses
 mykeys = pi3d.key()
 
-
 #create a light
 mylight = pi3d.createLight(0,1,1,1,"",10,10,10)
 mylight.on()
@@ -52,9 +51,6 @@ mylight.on()
 # Display scene
 while 1:
     display.clear()
-
-    #pi3d.sprite(starsimg, 0,0,-20, 20,20,rot)
-    #rot=rot+0.02
     
     mysphere.draw(patimg)
     mysphere.rotateIncY( 0.5 )

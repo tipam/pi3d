@@ -1,7 +1,7 @@
 # Clouds 3D example using pi3d module
 # ===================================
 # Copyright (c) 2012 - Tim Skillman
-# Version 0.02 03Jul12
+# Version 0.03 03Jul12 - z order improved by Paddywwoof - Thanks Paddy!
 # 
 # This example does not reflect the finished pi3d module in any way whatsoever!
 # It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
@@ -23,7 +23,7 @@ widey = 8
 cloudno = 50
 cloud_depth = 60.0
 zd = cloud_depth / cloudno
-    
+
 # Setup display and initialise pi3d
 scnx = 800
 scny = 600
@@ -44,14 +44,14 @@ cxyz = []
 for b in range (0, cloudno):
 	cxyz.append([random.random() * widex - widex*.5, -random.random() * widey, cloud_depth-z, int(random.random() * 4) + 1])
 	z = z + zd
-	
+
 # Fetch key presses
 mykeys = pi3d.key()
 
 while True:
-	
+
 	display.clear()
-	
+
 	maxDepth = 0
 	axDepthIndex = 0
 	# this is easier to understand, the z position of each cloud is (only) held in cxyz[][2]
@@ -62,7 +62,7 @@ while True:
 	    if (cxyz[i][2] > maxDepth):
 		maxDepth = cxyz[i][2]
 		maxDepthIndex = i
-		
+
 	# paint the clouds from background to foreground
 	for i in range(maxDepthIndex, maxDepthIndex + cloudno):
 		c = cxyz[i%cloudno]
@@ -73,6 +73,6 @@ while True:
 	    display.destroy()
 	    mykeys.close()
 	    break
-		
+
 	display.swapBuffers()
 	time.sleep(0.01)

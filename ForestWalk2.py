@@ -27,17 +27,17 @@ tree2img = pi3d.loadTextureAlpha("textures/tree2.png")
 tree1img = pi3d.loadTextureAlpha("textures/tree1.png")
 hb2img = pi3d.loadTextureAlpha("textures/hornbeam2.png")
 
-ectex = pi3d.loadTexture("textures/SkyBox.png")
+ectex = pi3d.loadTexture("textures/ecubes/skybox_stormydays.jpg")
 myecube = pi3d.createEnvironmentCube(900.0,"CROSS")
 
 # Create elevation map
 mapwidth=1000.0
 mapdepth=1000.0
 mapheight=60.0
-mountimg1 = pi3d.loadTexture("textures/mountains3_512.jpg")
+landimg = pi3d.loadTexture("textures/stonygrass.jpg")
 surface1 = pi3d.loadTextureAlpha("textures/gravel3.png")
-mymap = pi3d.createElevationMapFromTexture("textures/mountainsHgt.jpg",mapwidth,mapdepth,mapheight,64,64) #testislands.jpg
-mymap2 = pi3d.createElevationMapFromTexture("textures/mountainsHgt.jpg",mapwidth,mapdepth,mapheight,64,64, 128, "", 0.0, 0.01) # y position just above other map
+mymap = pi3d.createElevationMapFromTexture("textures/mountainsHgt.jpg",mapwidth,mapdepth,mapheight,64,64,10.0) #testislands.jpg
+mymap2 = pi3d.createElevationMapFromTexture("textures/mountainsHgt.jpg",mapwidth,mapdepth,mapheight,64,64, 128, "", 0.0, 0.01) # y position just above other map)
 
 myclip = pi3d.clipPlane() # clip plane used to make the detailed layer dissapear in the distance
 myfog = pi3d.fog(0.01, (0.2,0.2,0.3,0.01)) # fog to make the distant hills smokey!
@@ -100,16 +100,13 @@ while 1:
     pi3d.position(xm,ym,zm)
     
     myecube.draw(ectex,xm,ym,zm)
-    myfog.enable()
-    mymap.draw(mountimg1)
+    mymap.draw(landimg)
     myclip.enable()
     mymap2.draw(surface1)
     myclip.disable()
-
     mytrees1.drawAll(tree2img)
     mytrees2.drawAll(tree1img)
     mytrees3.drawAll(hb2img)
-    myfog.disable()
     
     mx=mymouse.x
     my=mymouse.y
@@ -123,41 +120,32 @@ while 1:
     #Press ESCAPE to terminate
     k = mykeys.read()
     if k >-1:
-        if k==119: #key W
-	    dx = -math.sin(rot*rads)
-	    dz = math.cos(rot*rads)
-	    dy = -(mymap.calcHeight(xm + dx, zm + dz)+avhgt) - ym
-	    if dy > -0.1:
-		xm += dx
-		zm += dz
-		ym += dy
-        elif k==115: #kry S
-	    dx = math.sin(rot*rads)
-	    dz = -math.cos(rot*rads)
-	    dy = -(mymap.calcHeight(xm + dx, zm + dz)+avhgt) - ym
-	    if dy > -0.1:
-		xm += dx
-		zm += dz
-		ym += dy
-        elif k==39: #key '
-            tilt -= 2.0
-            print tilt
-        elif k==47: #key /
+	if k==119: #key W
+	    xm-=math.sin(rot*rads)
+	    zm+=math.cos(rot*rads)
+	    ym = -(mymap.calcHeight(xm,zm)+avhgt)
+	elif k==115: #kry S
+	    xm+=math.sin(rot*rads)
+	    zm-=math.cos(rot*rads)
+	    ym = -(mymap.calcHeight(xm,zm)+avhgt)
+	elif k==39: #key '
+	    tilt -= 2.0
+	    print tilt
+	elif k==47: #key /
 	    tilt += 2.0
-        elif k==97: #key A
+	elif k==97: #key A
 	    rot -= 2
-        elif k==100: #key D
+	elif k==100: #key D
 	    rot += 2
-        elif k==112: #key P
-	    display.screenshot("critters3D"+str(scshots)+".jpg")
-	    scshots += 1
-        elif k==10: #key RETURN
+	elif k==112: #key P
+	    display.screenshot("ForestWalk2.jpg")
+	elif k==10: #key RETURN
 	    mc = 0
-        elif k==27: #Escape key
-            display.destroy()
-            mykeys.close()
-            break
-        else:
+	elif k==27: #Escape key
+	    display.destroy()
+	    mykeys.close()
+	    break
+	else:
 	    print k
    
     display.swapBuffers()
