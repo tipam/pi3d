@@ -825,8 +825,8 @@ class createElevationMapFromTexture(create_shape):
                 ws = width / ix
                 hs = depth / iy
                 ht = height / 255.0
-                tx = ntiles/ix
-                ty = ntiles/iy
+                tx = 1.0*ntiles/ix
+                ty = 1.0*ntiles/iy
                 
                 verts=[]
                 norms=[]
