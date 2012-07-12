@@ -1,8 +1,9 @@
 # Forest walk example using pi3d module
 # =====================================
 # Copyright (c) 2012 - Tim Skillman
-# Version 0.01 - 03Jul12
+# Version 0.02 - 03Jul12
 # 
+# grass added
 # This example does not reflect the finished pi3d module in any way whatsoever!
 # It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
 #
@@ -35,16 +36,9 @@ myecube = pi3d.createEnvironmentCube(900.0,"CROSS")
 mapwidth=1000.0
 mapdepth=1000.0
 mapheight=60.0
-mountimg1 = pi3d.loadTexture("textures/tattybuilding.jpg")
-surface1 = pi3d.loadTextureAlpha("textures/tattybuilding.jpg")
-mymap = pi3d.createElevationMapFromTexture("textures/tattybuilding.jpg",mapwidth,mapdepth,mapheight,64,64) #testislands.jpg
-mymap2 = pi3d.createElevationMapFromTexture("textures/tattybuilding.jpg",mapwidth,mapdepth,mapheight,64,64, "surface", 0.0,0.01,0.0, 0.0,0.0,0.0, 1.0,1.0,1.0, 0.0,0.0,0.0, 128) 
-
-myclip = pi3d.clipPlane()
-
-light = pi3d.createLight(0, 10,10,10, "", 0,100,0)
-light.on()
-
+mountimg1 = pi3d.loadTexture("textures/mountains3_512.jpg")
+mymap = pi3d.createElevationMapFromTexture("textures/mountainsHgt.jpg",mapwidth,mapdepth,mapheight,64,64) #testislands.jpg
+ 
 #Create tree models	
 treeplane = pi3d.createPlane(4.0,5.0)
 
@@ -115,13 +109,7 @@ while 1:
     
     myecube.draw(ectex,xm,ym,zm)
     mymap.draw(mountimg1)
-<<<<<<< HEAD
-    myclip.enable()
-    mymap2.draw(surface1)
-    myclip.disable()
-=======
     mygrass.drawAll(grassimg)
->>>>>>> upstream/master
     mytrees1.drawAll(tree2img)
     mytrees2.drawAll(tree1img)
     mytrees3.drawAll(hb2img)

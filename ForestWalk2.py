@@ -40,7 +40,7 @@ mymap = pi3d.createElevationMapFromTexture("textures/mountainsHgt.jpg",mapwidth,
 mymap2 = pi3d.createElevationMapFromTexture("textures/mountainsHgt.jpg",mapwidth,mapdepth,mapheight,64,64, 128, "", 0.0, 0.01) # y position just above other map
 
 myclip = pi3d.clipPlane() # clip plane used to make the detailed layer dissapear in the distance
-myfog = pi3d.fog(0.01, (0.3,0.6,0.8,0.5)) # fog to make the distant hills smokey!
+myfog = pi3d.fog(0.01, (0.2,0.2,0.3,0.01)) # fog to make the distant hills smokey!
 
 light = pi3d.createLight(0, 10,10,10, "", 0,100,0)
 light.on()
@@ -124,13 +124,21 @@ while 1:
     k = mykeys.read()
     if k >-1:
         if k==119: #key W
-            xm-=math.sin(rot*rads)
-            zm+=math.cos(rot*rads)
-            ym = -(mymap.calcHeight(xm,zm)+avhgt)
+	    dx = -math.sin(rot*rads)
+	    dz = math.cos(rot*rads)
+	    dy = -(mymap.calcHeight(xm + dx, zm + dz)+avhgt) - ym
+	    if dy > -0.1:
+		xm += dx
+		zm += dz
+		ym += dy
         elif k==115: #kry S
-            xm+=math.sin(rot*rads)
-            zm-=math.cos(rot*rads)
-            ym = -(mymap.calcHeight(xm,zm)+avhgt)
+	    dx = math.sin(rot*rads)
+	    dz = -math.cos(rot*rads)
+	    dy = -(mymap.calcHeight(xm + dx, zm + dz)+avhgt) - ym
+	    if dy > -0.1:
+		xm += dx
+		zm += dz
+		ym += dy
         elif k==39: #key '
             tilt -= 2.0
             print tilt
