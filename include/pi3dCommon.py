@@ -528,7 +528,7 @@ def shape_draw(self,tex,shl=GL_UNSIGNED_SHORT):
 
 def create_display(self,x=0,y=0,w=0,h=0,depth=24):
     
-	b = bcm.bcm_host_init()
+	#b = bcm.bcm_host_init()
 	self.display = openegl.eglGetDisplay(EGL_DEFAULT_DISPLAY)
 	assert self.display != EGL_NO_DISPLAY
 	

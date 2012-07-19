@@ -121,7 +121,7 @@ class display(object):
 
     def __init__(self):
         """Opens up the OpenGL library and prepares a window for display"""
-        #b = bcm.bcm_host_init()
+        b = bcm.bcm_host_init()
         
         #Get the width and height of the screen
         width = eglint() 
