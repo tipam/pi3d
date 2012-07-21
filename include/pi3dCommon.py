@@ -65,6 +65,10 @@ def eglints(L): return (eglint*len(L))(*L)
 def eglfloats(L): return (eglfloat*len(L))(*L)
 def eglshorts(L): return (eglshort*len(L))(*L)
 
+def ctypeResize(array, new_size):
+    resize(array, sizeof(array._type_)*new_size)
+    return (array._type_*new_size).from_address(addressof(array))
+    
 egf0 = eglfloat(0)
 egf1 = eglfloat(1)
 
@@ -91,11 +95,18 @@ def showerror():
     print hex(e)
     
 #load a texture specifying RGB or RGBA
-def load_tex(fileString,RGBv,RGBs,flip,size):
-	print "Loading ...",fileString
+def load_tex(fileString,flip,size,blend):
+	s=fileString+" "
 	im = Image.open(fileString)
 	ix,iy = im.size
-	
+	s+="("+im.mode+") "
+	if im.mode=="RGBA" or im.mode=="LA":
+		RGBv=GL_RGBA
+		RGBs="RGBA"
+	else:
+		RGBv=GL_RGB
+		RGBs="RGB"
+
 	#work out if sizes are not to the power of 2 or >512
 	xx=0
 	yy=0
@@ -112,9 +123,11 @@ def load_tex(fileString,RGBv,RGBs,flip,size):
 	    if size>0: nx,ny = size,size
 	    ix,iy = nx,ny
 	    im = im.resize((ix,iy),Image.ANTIALIAS)
-	    print "Resizing to:",ix,iy
-	else: print "Bitmap size:",ix,iy
-		
+	    s+= "Resizing to: "+str(ix)+","+str(iy)
+	else: s+= "Bitmap size: "+str(ix)+","+str(iy)
+	
+	print "Loading ...",s
+	
 	if flip: im = im.transpose(Image.FLIP_TOP_BOTTOM)
 	    
 	image = im.convert(RGBs).tostring("raw",RGBs)
@@ -122,7 +135,7 @@ def load_tex(fileString,RGBv,RGBs,flip,size):
 	opengles.glGenTextures(1,ctypes.byref(tex))
 	opengles.glBindTexture(GL_TEXTURE_2D,tex)
 	opengles.glTexImage2D(GL_TEXTURE_2D,0,RGBv,ix,iy,0,RGBv,GL_UNSIGNED_BYTE, ctypes.string_at(image,len(image)))
-	return (ix,iy,tex)
+	return ix,iy,tex,RGBs=="RGBA",blend
 
 #turn texture on before drawing arrays
 def texture_on(tex, tex_coords, vtype):
@@ -150,36 +163,24 @@ def texture_off():
 
 class loadTexture(object):
     
-    def __init__(self,fileString,flip=False,size=0):
-	xyt=load_tex(fileString,GL_RGB,"RGB",flip,size)
-	self.ix=xyt[0]
-	self.iy=xyt[1]
-	self.tex=xyt[2]
-	self.alpha=False
-	self.blend=False	
+    def __init__(self,fileString,flip=False,size=0,blend=False):
+	self.ix,self.iy,self.tex,self.alpha,self.blend = load_tex(fileString,flip,size,blend)
 
-class loadTextureAlpha(object):
+class textures(object):
     
-    def __init__(self,fileString,blend=False,flip=False,size=0):	
-	xyt=load_tex(fileString,GL_RGBA,"RGBA",flip,size)
-	self.ix=xyt[0]
-	self.iy=xyt[1]
-	self.tex=xyt[2]
-	self.alpha=True
-	self.blend=blend
-
-#Pickle doesn't like the ctypes stuff for now - I'll need to find another way
-#
-#def load3Dfile(fstring):
-#    f = open(fstring, 'r')
-#    model=pickle.load(f)
-#   f.close()
-#    return model
-
-#def save3Dfile(fstring,model):
-#    f = open(fstring, 'w')
-#    pickle.dump(model,f)
-#    f.close()
+    def __init__(self):
+	self.texs=(eglint*1024)()   #maximum of 1024 textures (just to be safe!)
+	self.tc=0
+		
+    def loadTexture(self,fileString,blend=False,flip=False,size=0):
+	map = loadTexture(fileString,flip,size,blend)
+	self.texs[self.tc]=map.tex.value
+	self.tc+=1
+	return map
+	
+    def deleteAll(self):
+	print "[Exit] Deleting textures ..."
+	opengles.glDeleteTextures(self.tc,addressof(self.texs))
 		    
 #position, rotate and scale an object
 def transform(x,y,z,rotx,roty,rotz,sx,sy,sz,cx,cy,cz):
@@ -528,7 +529,7 @@ def shape_draw(self,tex,shl=GL_UNSIGNED_SHORT):
 
 def create_display(self,x=0,y=0,w=0,h=0,depth=24):
     
-	#b = bcm.bcm_host_init()
+	b = bcm.bcm_host_init()
 	self.display = openegl.eglGetDisplay(EGL_DEFAULT_DISPLAY)
 	assert self.display != EGL_NO_DISPLAY
 	

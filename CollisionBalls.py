@@ -35,10 +35,11 @@ maxballsize = 150
 minballsize = 5
 maxspeed = 30
 
+texs=pi3d.textures()
 balltex = []
-balltex.append(pi3d.loadTextureAlpha("textures/red_ball.png"))
-balltex.append(pi3d.loadTextureAlpha("textures/grn_ball.png"))
-balltex.append(pi3d.loadTextureAlpha("textures/blu_ball.png"))
+balltex.append(texs.loadTexture("textures/red_ball.png"))
+balltex.append(texs.loadTexture("textures/grn_ball.png"))
+balltex.append(texs.loadTexture("textures/blu_ball.png"))
 
 #create balls and positions and make sure they don't touch to start with
 balls = []
@@ -91,9 +92,10 @@ while True:
 
     k = mykeys.read()
     if k >-1:
-	if k==27:
-	    display.destroy()
+	if k==27:  #ESCAPE key
 	    mykeys.close()
+	    texs.deleteAll()
+	    display.destroy()
 	    break	
 	if k==112:
 	    display.screenshot("collisionballs.jpg")

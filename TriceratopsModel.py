@@ -2,7 +2,7 @@
 # =================
 # This example - Copyright (c) 2012 - Tim Skillman
 # EGG loader code by Paddy Gaunt, Copyright (c) 2012
-# Version 0.01 - 03Jul12
+# Version 0.02 - 20Jul12
 # 
 # This example does not reflect the finished pi3d module in any way whatsoever!
 # It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
@@ -19,10 +19,11 @@ import pi3d
 # Setup display and initialise pi3d
 display = pi3d.display()
 display.create3D(100,100,1200,900)   	# x,y,width,height
-display.setBackColour(0.2,0.4,0.6,1)    	# r,g,b,alpha
+display.setBackColour(0.2,0.4,0.6,1)    # r,g,b,alpha
 
 # load model_loadmodel
-mymodel = pi3d.loadModel("models/Triceratops/Triceratops.egg","Triceratops", 0,-1,0, -90,0,0, .005,.005,.005)
+texs = pi3d.textures()
+mymodel = pi3d.loadModel("models/Triceratops/Triceratops.egg",texs,"Triceratops", 0,-1,0, -90,0,0, .005,.005,.005)
 	
 # Fetch key presses
 mykeys = pi3d.key()
@@ -48,8 +49,9 @@ while 1:
     if k >-1:
 	if k==112: display.screenshot("Triceratops.jpg")
 	elif k==27:
-	    display.destroy()
 	    mykeys.close()
+	    texs.deleteAll()
+	    display.destroy()
 	    break
 	else:
 	    print k

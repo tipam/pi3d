@@ -1,7 +1,7 @@
 # Robot walkabout example using pi3d module
 # =========================================
 # Copyright (c) 2012 - Tim Skillman
-# Version 0.01 - 12Jul12
+# Version 0.02 - 20Jul12
 # 
 # Demonstrates offset camera to view an avatar moving about a map.  Also includes tiled mapping on landscape
 #
@@ -25,24 +25,25 @@ display.create3D(100,100,1600,800, 0.5, 800.0, 60.0)   	# x,y,width,height,near,
 display.setBackColour(0.4,0.8,0.8,1)    	# r,g,b,alpha
 
 # Load textures
-tree2img = pi3d.loadTextureAlpha("textures/tree2.png")
-tree1img = pi3d.loadTextureAlpha("textures/tree1.png")
-grassimg = pi3d.loadTextureAlpha("textures/grass.png")
-hb2img = pi3d.loadTextureAlpha("textures/hornbeam2.png")
+texs = pi3d.textures()
+tree2img = texs.loadTexture("textures/tree2.png")
+tree1img = texs.loadTexture("textures/tree1.png")
+grassimg = texs.loadTexture("textures/grass.png")
+hb2img = texs.loadTexture("textures/hornbeam2.png")
 
 #load environment cube
-ectex = pi3d.loadECfiles("textures/ecubes","sbox_interstellar")
+ectex = pi3d.loadECfiles("textures/ecubes","sbox_interstellar",texs)
 myecube = pi3d.createEnvironmentCube(900.0,"FACES")
 
 # Create elevation map
 mapwidth=1000.0
 mapdepth=1000.0
 mapheight=60.0
-mountimg1 = pi3d.loadTexture("textures/mars_colour.png")
+mountimg1 = texs.loadTexture("textures/mars_colour.png")
 mymap = pi3d.createElevationMapFromTexture("textures/mars_height.png",mapwidth,mapdepth,mapheight,128,128) #testislands.jpg
 
 #create robot 
-metalimg = pi3d.loadTextureAlpha("textures/metalhull.jpg")
+metalimg = texs.loadTexture("textures/metalhull.jpg")
 robot_head= pi3d.createSphere(2.0,12,12,0.5,"",0,3,0)
 robot_body = pi3d.createCylinder(2.0,4,12,"",0,1,0)
 robot_leg = pi3d.createCuboid(0.7,4.0,1.0,"",0,0.8,0)
@@ -143,9 +144,9 @@ while 1:
 	elif k==112:  #key P
 	    display.screenshot("walkaboutRobot.jpg")
 	elif k==27:    #Escape key
-		#pi3d.quit()
-		display.destroy()
 		mykeys.close()
+		texs.deleteAll()
+		display.destroy()
 		break
 	else:
 	    print k

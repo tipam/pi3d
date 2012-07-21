@@ -1,7 +1,7 @@
 # Earth and example shapes using pi3d module
 # ==========================================
 # Copyright (c) 2012 - Tim Skillman
-# Version 0.02 - 03Jul12
+# Version 0.03 - 20Jul12
 # 
 # This example does not reflect the finished pi3d module in any way whatsoever!
 # It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
@@ -21,14 +21,14 @@ display.create3D(100,100,1600,900)   	# x,y,width,height
 display.setBackColour(0,0,0,1)    	# r,g,b,alpha
 
 # Load textures
-
+texs=pi3d.textures()
 # Setting 2nd param to True renders 'True' Blending
 # (this can be changed later to 'False' with 'cloudimg.blend = False')
-cloudimg = pi3d.loadTextureAlpha("textures/earth_clouds.png",True)   
-earthimg = pi3d.loadTexture("textures/world_map.jpg")
-moonimg = pi3d.loadTexture("textures/moon.jpg")
-starsimg = pi3d.loadTexture("textures/stars2.jpg")
-watimg = pi3d.loadTexture("textures/water.jpg")
+cloudimg = texs.loadTexture("textures/earth_clouds.png",True)   
+earthimg = texs.loadTexture("textures/world_map.jpg")
+moonimg = texs.loadTexture("textures/moon.jpg")
+starsimg = texs.loadTexture("textures/stars2.jpg")
+watimg = texs.loadTexture("textures/water.jpg")
 	
 mysphere = pi3d.createSphere(2,24,24,0.0,"earth",0,0,0)
 mysphere2 = pi3d.createSphere(2.05,24,24,0.0,"clouds",0,0,0)
@@ -87,8 +87,9 @@ while 1:
     if k >-1:
 	if k==112: display.screenshot("earthPic.jpg")
 	elif k==27:
-	    display.destroy()
 	    mykeys.close()
+	    texs.deleteAll()
+	    display.destroy()
 	    break
 	else:
 	    print k

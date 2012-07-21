@@ -1,6 +1,6 @@
 # pi3D module
 # ===========
-# Version 0.04
+# Version 0.05
 #
 # Copyright (c) 2012, Tim Skillman.
 # (Some code initially based on Peter de Rivaz pyopengles example.)
@@ -24,7 +24,7 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 # DEALINGS IN THE SOFTWARE.
 
-pi3d_version = 0.04
+pi3d_version = 0.05
 
 import sys, random
 sys.path.append("include")
@@ -32,16 +32,16 @@ from pi3dCommon import *
 import loaderEgg
 import PIL.ImageOps, ImageDraw
 
-def loadECfiles(path,fname):
+def loadECfiles(path,fname,texs):
     #helper for loading environment cube faces
     filep=path+"/"+fname
     faces=[]
-    faces.append(loadTexture(filep+"_top.jpg"))
-    faces.append(loadTexture(filep+"_left.jpg"))
-    faces.append(loadTexture(filep+"_front.jpg"))
-    faces.append(loadTexture(filep+"_right.jpg"))
-    faces.append(loadTexture(filep+"_back.jpg"))
-    faces.append(loadTexture(filep+"_bottom.jpg"))
+    faces.append(texs.loadTexture(filep+"_top.jpg"))
+    faces.append(texs.loadTexture(filep+"_left.jpg"))
+    faces.append(texs.loadTexture(filep+"_front.jpg"))
+    faces.append(texs.loadTexture(filep+"_right.jpg"))
+    faces.append(texs.loadTexture(filep+"_back.jpg"))
+    faces.append(texs.loadTexture(filep+"_bottom.jpg"))
     return faces
     
 def merge(self,shape, x,y,z, rx=0.0,ry=0.0,rz=0.0, sx=1.0,sy=1.0,sz=1.0, cx=0.0,cy=0.0,cz=0.0):
@@ -1021,24 +1021,25 @@ class camera(create_shape):
 
 class loadModel(create_shape):
         
-    def __init__(self,fileString, name="", x=0.0,y=0.0,z=0.0, rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0):
+    def __init__(self,fileString, texs, name="", x=0.0,y=0.0,z=0.0, rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0):
         super(loadModel,self).__init__(name, x,y,z, rx,ry,rz, sx,sy,sz, cx,cy,cz)
 
         self.exf = fileString[-3:].lower()
+        self.texs = texs
         print "Loading ",fileString
         
         if self.exf == 'egg':
-            self.model = loaderEgg.loadFileEGG(self,fileString)
+            self.model = loaderEgg.loadFileEGG(self,fileString,texs)
             return self.model
         else:
-            print self.exf, " file not supported"
+            print self.exf, "file not supported"
             return None
             
     def draw(self,tex=None,n=None):
         if self.exf == 'egg': loaderEgg.draw(self,tex,n)
         
     def clone(self): 
-        newLM = loadModel("__clone__."+self.exf)
+        newLM = loadModel("__clone__."+self.exf,self.texs)
         newLM.vGroup = self.vGroup
         return newLM
         
@@ -1105,7 +1106,7 @@ class fog():
 # 12-12-2012
     def __init__(self, density=0.005, colour=(0.3, 0.6, 0.8, 0.5)):
         opengles.glFogf(GL_FOG_MODE, GL_EXP) # defaults to this anyway
-        openegl.glFogf(GL_FOG_DENSITY, eglfloat(density)) # exponent factor
+        opengles.glFogf(GL_FOG_DENSITY, eglfloat(density)) # exponent factor
         opengles.glFogfv(GL_FOG_COLOR, eglfloats(colour)) # don't think the alpha value alters the target object alpha
 	
     def on(self):
@@ -1116,6 +1117,7 @@ class fog():
 	
 #=====================================================================================================================================================================================  
 # Text and fonts
+# NEEDS FIXING - TEXTURES NEED CLEANING UP
 
 class font(object):
     
@@ -1222,8 +1224,8 @@ class ball(object):
 	else: return False
 	
     def collisionBounce(self,otherball):
-	dx = (self.x+self.vx)-(otherball.x+otherball.vx)
-	dy = (self.y+self.vy)-(otherball.y+otherball.vy)
+	dx = self.x-otherball.x
+	dy = self.y-otherball.y
 	rd = self.radius+otherball.radius
 	#print dx,dy #,self.x,otherball.x
 	if (dx**2+dy**2) <= (rd**2):

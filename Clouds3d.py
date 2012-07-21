@@ -1,7 +1,7 @@
 # Clouds 3D example using pi3d module
 # ===================================
 # Copyright (c) 2012 - Tim Skillman
-# Version 0.03 03Jul12 - z order improved by Paddywwoof - Thanks Paddy!
+# Version 0.04 20Jul12 - z order improved by Paddywwoof, improved texture management
 # 
 # This example does not reflect the finished pi3d module in any way whatsoever!
 # It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
@@ -25,18 +25,19 @@ cloud_depth = 60.0
 zd = cloud_depth / cloudno
 
 # Setup display and initialise pi3d
-scnx = 800
-scny = 600
+scnx = 1200
+scny = 800
 display = pi3d.display()
-display.create3D()
+display.create3D(100,100,scnx,scny)
 display.setBackColour(0,0.7,1,1)
 
+texs = pi3d.textures()
 clouds = []
-clouds.append(pi3d.loadTextureAlpha("textures/cloud2.png",True))
-clouds.append(pi3d.loadTextureAlpha("textures/cloud3.png",True))
-clouds.append(pi3d.loadTextureAlpha("textures/cloud4.png",True))
-clouds.append(pi3d.loadTextureAlpha("textures/cloud5.png",True))
-clouds.append(pi3d.loadTextureAlpha("textures/cloud6.png",True))
+clouds.append(texs.loadTexture("textures/cloud2.png",True))
+clouds.append(texs.loadTexture("textures/cloud3.png",True))
+clouds.append(texs.loadTexture("textures/cloud4.png",True))
+clouds.append(texs.loadTexture("textures/cloud5.png",True))
+clouds.append(texs.loadTexture("textures/cloud6.png",True))
 
 # Setup cloud positions and cloud image refs
 z = 0.0
@@ -69,9 +70,10 @@ while True:
 		pi3d.sprite(clouds[c[3]], c[0], c[1], -c[2], 8, 5)
 
 	#Press ESCAPE to terminate
-	if mykeys.read() == 27:       
-	    display.destroy()
+	if mykeys.read() == 27:
 	    mykeys.close()
+	    texs.deleteAll()      
+	    display.destroy()
 	    break
 
 	display.swapBuffers()
