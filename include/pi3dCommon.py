@@ -628,21 +628,27 @@ class mouse(threading.Thread):
 		
 	    self.x+=dx
 	    self.y+=dy
-	    if self.x<0: self.x=0
-	    if self.y<0: self.y=0
-	    self.x=min(self.x,self.width)
-	    self.y=min(self.y,self.height)
+	    #if self.x<0: self.x=0
+	    #if self.y<0: self.y=0
+	    #self.x=min(self.x,self.width)
+	    #self.y=min(self.y,self.height)
     
 class key():
     
     def __init__(self):
 	self.key = curses.initscr()
+	curses.cbreak()
+	curses.noecho()
+	self.key.keypad(1)
 	self.key.nodelay(1)
 
     def read(self):
 	return (self.key.getch())
 	
     def close(self):
+	curses.nocbreak()
+	self.key.keypad(0)
+	curses.echo()
 	curses.endwin()
 	
 
