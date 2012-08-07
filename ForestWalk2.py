@@ -23,19 +23,20 @@ display.create3D(100,100,1600,800, 0.5, 800.0, 60.0) # x,y,width,height,near,far
 display.setBackColour(0.4,0.8,0.8,1) # r,g,b,alpha
 
 # Load textures
-tree2img = pi3d.loadTextureAlpha("textures/tree2.png")
-tree1img = pi3d.loadTextureAlpha("textures/tree1.png")
-hb2img = pi3d.loadTextureAlpha("textures/hornbeam2.png")
+texs = pi3d.textures()
+tree2img = texs.loadTexture("textures/tree2.png")
+tree1img = texs.loadTexture("textures/tree1.png")
+hb2img = texs.loadTexture("textures/hornbeam2.png")
 
-ectex = pi3d.loadTexture("textures/ecubes/skybox_stormydays.jpg")
+ectex = texs.loadTexture("textures/ecubes/skybox_stormydays.jpg")
 myecube = pi3d.createEnvironmentCube(900.0,"CROSS")
 
 # Create elevation map
 mapwidth=1000.0
 mapdepth=1000.0
 mapheight=60.0
-landimg = pi3d.loadTexture("textures/stonygrass.jpg")
-surface1 = pi3d.loadTextureAlpha("textures/gravel3.png")
+landimg = texs.loadTexture("textures/stonygrass.jpg")
+#surface1 = pi3d.loadTextureAlpha("textures/gravel3.png")
 mymap = pi3d.createElevationMapFromTexture("textures/mountainsHgt.jpg",mapwidth,mapdepth,mapheight,64,64,10.0) #testislands.jpg
 mymap2 = pi3d.createElevationMapFromTexture("textures/mountainsHgt.jpg",mapwidth,mapdepth,mapheight,64,64, 128, "", 0.0, 0.01) # y position just above other map)
 
@@ -86,6 +87,7 @@ ym= -(mymap.calcHeight(xm,zm)+avhgt)
 mykeys = pi3d.key()
 mymouse = pi3d.mouse()
 mymouse.start()
+mtrx = pi3d.matrix()
 
 omx=mymouse.x
 omy=mymouse.y
@@ -94,16 +96,16 @@ omy=mymouse.y
 while 1:
     display.clear()
     
-    pi3d.identity()
-    pi3d.rotate(tilt,0,0)
-    pi3d.rotate(0,rot,0)
-    pi3d.position(xm,ym,zm)
+    mtrx.identity()
+    mtrx.rotate(tilt,0,0)
+    mtrx.rotate(0,rot,0)
+    mtrx.translate(xm,ym,zm)
     
     myecube.draw(ectex,xm,ym,zm)
     mymap.draw(landimg)
-    myclip.enable()
-    mymap2.draw(surface1)
-    myclip.disable()
+    #myclip.enable()
+    #mymap2.draw(surface1)
+    #myclip.disable()
     mytrees1.drawAll(tree2img)
     mytrees2.drawAll(tree1img)
     mytrees3.drawAll(hb2img)
@@ -142,8 +144,9 @@ while 1:
 	elif k==10: #key RETURN
 	    mc = 0
 	elif k==27: #Escape key
-	    display.destroy()
 	    mykeys.close()
+	    texs.deleteAll()
+	    display.destroy()
 	    break
 	else:
 	    print k

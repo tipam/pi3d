@@ -32,16 +32,13 @@ print ""
 print "Move mouse to pan view.  Click mouse to exit or press ESCAPE"
 print "=============================================================="
 
-ectex = pi3d.loadECfiles("textures/ecubes","sbox")
+texs = pi3d.textures()
+ectex = pi3d.loadECfiles("textures/ecubes","sbox",texs)
 myecube = pi3d.createEnvironmentCube(900.0,"FACES")
 
 # load model_loadmodel
-mymodel = pi3d.loadModel("models/Buckfast Abbey/BuckfastAbbey.egg","Abbey",0,0,0, -90,160,0, 0.03,0.03,0.03)
-
-# load substitute texture
-newTex = pi3d.loadTexture("textures/TECHY1.PNG")
-mymodel.texSwap(newTex, "chapelside") # subs newTex texture for the texture from filename in path/filename.ext
-
+mymodel = pi3d.loadModel("models/Buckfast Abbey/BuckfastAbbey.egg",texs,"Abbey",0,0,0, -90,160,0, 0.03,0.03,0.03)
+	
 # Create keyboard and mouse event objects
 mykeys = pi3d.key()
 mymouse = pi3d.mouse()
@@ -113,9 +110,9 @@ while 1:
 	    display.screenshot("BuckfastAbbey"+str(scshots)+".jpg")
 	    scshots += 1
 	elif k==27:    #Escape key
-		#pi3d.quit()
-		display.destroy()
 		mykeys.close()
+		texs.deleteAll()
+		display.destroy()
 		break
 	else:
 	    print k

@@ -1,16 +1,10 @@
 # Forest walk example using pi3d module
 # =====================================
 # Copyright (c) 2012 - Tim Skillman
-<<<<<<< HEAD
-# Version 0.02 - 03Jul12
-# 
-# grass added
-=======
-# Version 0.03 - 12Jul12
+# Version 0.04 - 20Jul12
 # 
 # grass added, new environment cube using FACES
 #
->>>>>>> upstream/master
 # This example does not reflect the finished pi3d module in any way whatsoever!
 # It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
 #
@@ -31,22 +25,23 @@ display.create3D(100,100,1600,800, 0.5, 800.0, 60.0)   	# x,y,width,height,near,
 display.setBackColour(0.4,0.8,0.8,1)    	# r,g,b,alpha
 
 # Load textures
-tree2img = pi3d.loadTextureAlpha("textures/tree2.png")
-tree1img = pi3d.loadTextureAlpha("textures/tree1.png")
-grassimg = pi3d.loadTextureAlpha("textures/grass.png")
-hb2img = pi3d.loadTextureAlpha("textures/hornbeam2.png")
+texs = pi3d.textures()
+tree2img = texs.loadTexture("textures/tree2.png")
+tree1img = texs.loadTexture("textures/tree1.png")
+grassimg = texs.loadTexture("textures/grass.png")
+hb2img = texs.loadTexture("textures/hornbeam2.png")
 
 #ectex = pi3d.loadTexture("textures/SkyBox.png")
 #myecube = pi3d.createEnvironmentCube(900.0,"HALFCROSS")
 
-ectex=pi3d.loadECfiles("textures/ecubes","sbox")
+ectex=pi3d.loadECfiles("textures/ecubes","sbox",texs)
 myecube = pi3d.createEnvironmentCube(900.0,"FACES")
 
 # Create elevation map
 mapwidth=1000.0
 mapdepth=1000.0
 mapheight=60.0
-mountimg1 = pi3d.loadTexture("textures/mountains3_512.jpg")
+mountimg1 = texs.loadTexture("textures/mountains3_512.jpg")
 mymap = pi3d.createElevationMapFromTexture("textures/mountainsHgt.jpg",mapwidth,mapdepth,mapheight,64,64) #testislands.jpg
  
 #Create tree models	
@@ -101,6 +96,9 @@ xm=0.0
 zm=0.0
 ym= -(mymap.calcHeight(xm,zm)+avhgt)
 
+# setup matrices
+mtrx = pi3d.matrix()
+
 # Fetch key presses
 mykeys = pi3d.key()
 mymouse = pi3d.mouse()
@@ -113,10 +111,10 @@ omy=mymouse.y
 while 1:
     display.clear()
     
-    pi3d.identity()
-    pi3d.rotate(tilt,0,0)
-    pi3d.rotate(0,rot,0)
-    pi3d.position(xm,ym,zm)
+    mtrx.identity()
+    mtrx.rotate(tilt,0,0)
+    mtrx.rotate(0,rot,0)
+    mtrx.translate(xm,ym,zm)
     
     myecube.draw(ectex,xm,ym,zm)
     mymap.draw(mountimg1)
@@ -146,10 +144,10 @@ while 1:
 	    zm-=math.cos(rot*rads)
 	    ym = -(mymap.calcHeight(xm,zm)+avhgt)
 	elif k==39:   #key '
-		tilt -= 2.0
-		print tilt
+	    tilt -= 2.0
+	    print tilt
 	elif k==47:   #key /
-		tilt += 2.0
+	    tilt += 2.0
 	elif k==97:   #key A
 	    rot -= 2
 	elif k==100:  #key D
@@ -160,10 +158,10 @@ while 1:
 	elif k==10:   #key RETURN
 	    mc = 0
 	elif k==27:    #Escape key
-		#pi3d.quit()
-		display.destroy()
-		mykeys.close()
-		break
+	    mykeys.close()
+	    texs.deleteAll()
+	    display.destroy()
+	    break
 	else:
 	    print k
    

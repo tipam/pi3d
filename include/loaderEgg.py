@@ -41,7 +41,7 @@ class polygon():
 ########################################################################
 
 
-def loadFileEGG(self,fileName):
+def loadFileEGG(self,fileName,texs):
         
     self.coordinateSystem = "Y-up"
     self.materialList = {}
@@ -54,6 +54,7 @@ def loadFileEGG(self,fileName):
     self.childModel = [] # don't really need parent and child pointers but will speed up traversing tree
     self.vNormal = False
     self.vGroup = {} # holds the information for each vertex group
+    self.texs = texs
     
     if ("__clone__" in fileName): return #used for cloning this loadModel, i.e. don't need to parse egg file
     # read in the file and parse into some arrays
@@ -223,8 +224,8 @@ def loadFileEGG(self,fileName):
             self.textureList[x[1]] = {}
             for i in xrange(len(x[3])): self.textureList[x[1]][x[3][i][1]] = x[3][i][2]
             self.textureList[x[1]]["filename"] = x[2].strip("\"")
-            print filePath, self.textureList[x[1]]["filename"]
-            self.textureList[x[1]]["texID"] = loadTexture(os.path.join(filePath, self.textureList[x[1]]["filename"]),True) # load from file
+            #print filePath, self.textureList[x[1]]["filename"]
+            self.textureList[x[1]]["texID"] = self.texs.loadTexture(os.path.join(filePath, self.textureList[x[1]]["filename"]),False,True) # load from file
         if "<CoordinateSystem>" in x[0]:
             self.coordinateSystem = x[2]
         if "<Material>" in x[0]:

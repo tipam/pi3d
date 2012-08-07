@@ -21,8 +21,9 @@ display.create3D(100,100,1200,900)   	# x,y,width,height
 display.setBackColour(0,0,0,1)    	# r,g,b,alpha
 
 # Load textures
-patimg = pi3d.loadTexture("textures/PATRN.PNG")   
-coffimg = pi3d.loadTexture("textures/COFFEE.PNG")
+texs = pi3d.textures()
+patimg = texs.loadTexture("textures/PATRN.PNG")   
+coffimg = texs.loadTexture("textures/COFFEE.PNG")
 
 #Create inbuilt shapes
 mysphere = pi3d.createSphere(1,24,24,0.0,"sphere",-4,2,-7)
@@ -97,8 +98,9 @@ while 1:
     if k >-1:
 	if k==112: display.screenshot("shapesPic.jpg")
 	elif k==27:
-	    display.destroy()
 	    mykeys.close()
+	    texs.deleteAll()
+	    display.destroy()
 	    break
 	else:
 	    print k

@@ -55,12 +55,13 @@ for b in range (0, maxballs):
     bs.append(random.random() * maxballsize + minballsize)
     bi.append(int(random.random() * 3))
 
+texs=pi3d.textures()
 ball = []
-ball.append(pi3d.loadTextureAlpha("textures/red_ball.png"))
-ball.append(pi3d.loadTextureAlpha("textures/grn_ball.png"))
-ball.append(pi3d.loadTextureAlpha("textures/blu_ball.png"))
-bar = pi3d.loadTexture("textures/bar.png")
-bbtitle = pi3d.loadTextureAlpha("textures/pi3dbbd.png",True)
+ball.append(texs.loadTexture("textures/red_ball.png"))
+ball.append(texs.loadTexture("textures/grn_ball.png"))
+ball.append(texs.loadTexture("textures/blu_ball.png"))
+bar = texs.loadTexture("textures/bar.png")
+bbtitle = texs.loadTexture("textures/pi3dbbd.png",True)
 
 # Fetch key presses
 mykeys = pi3d.key()
@@ -96,5 +97,10 @@ while True:
 	if k==112:
 	    display.screenshot("screen3D"+str(scshots)+".jpg")
 	    scshots += 1
-	        
+	if k==27:
+		mykeys.close()
+		texs.deleteAll()
+		display.destroy()
+		break
+		
     display.swapBuffers()

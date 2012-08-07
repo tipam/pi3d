@@ -1,7 +1,7 @@
 # Environment Cube examples using pi3d module
 # ===========================================
 # Copyright (c) 2012 - Tim Skillman
-# Version 0.01 - 12Jul12
+# Version 0.02 - 20Jul12
 # 
 # This example does not reflect the finished pi3d module in any way whatsoever!
 # It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
@@ -21,18 +21,18 @@ display.create3D(100,100,1700,800, 0.5, 800.0, 60.0)   	# x,y,width,height,near,
 
 #select the environment cube with 'box'...
 box=3
-
+texs=pi3d.textures()
 if box==0:
-	ectex = pi3d.loadTexture("textures/ecubes/skybox_interstellar.jpg")
+	ectex = texs.loadTexture("textures/ecubes/skybox_interstellar.jpg")
 	myecube = pi3d.createEnvironmentCube(900.0,"CROSS")
 elif box==1:
-	ectex = pi3d.loadTexture("textures/ecubes/SkyBox.jpg")
+	ectex = texs.loadTexture("textures/ecubes/SkyBox.jpg")
 	myecube = pi3d.createEnvironmentCube(900.0,"HALFCROSS")
 elif box==2:
-	ectex=pi3d.loadECfiles("textures/ecubes","sbox_interstellar")
+	ectex=pi3d.loadECfiles("textures/ecubes","sbox_interstellar",texs)
 	myecube = pi3d.createEnvironmentCube(900.0,"FACES")
 else:
-	ectex=pi3d.loadECfiles("textures/ecubes","skybox_hall")
+	ectex=pi3d.loadECfiles("textures/ecubes","skybox_hall",texs)
 	myecube = pi3d.createEnvironmentCube(900.0,"FACES")
 
 
@@ -43,6 +43,7 @@ tilt=0.0
 mykeys = pi3d.key()
 mymouse = pi3d.mouse()
 mymouse.start()
+mtrx=pi3d.matrix()
 
 omx=mymouse.x
 omy=mymouse.y
@@ -51,9 +52,9 @@ omy=mymouse.y
 while 1:
     display.clear()
     
-    pi3d.identity()
-    pi3d.rotate(tilt,0,0)
-    pi3d.rotate(0,rot,0)
+    mtrx.identity()
+    mtrx.rotate(tilt,0,0)
+    mtrx.rotate(0,rot,0)
     #pi3d.position(xm,ym,zm)
     
     myecube.draw(ectex,0.0,0.0,0.0)
@@ -73,8 +74,9 @@ while 1:
 	if k==112:  #key P
 	    display.screenshot("envcube.jpg")
 	elif k==27:    #Escape key
-	    display.destroy()
 	    mykeys.close()
+	    texs.deleteAll()
+	    display.destroy()
 	    break
 	else:
 	    print k

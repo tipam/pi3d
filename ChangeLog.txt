@@ -5,6 +5,8 @@ Tim Skillman
 
 Date      	Amends
 
+2012-07-20  Add textures class so that textures can be deleted correctly
+2012-07-20  Fixed a couple of bugs with latest release of Raspbian Wheezy
 2012-07-12  Amended mergeShape to include shape's existing parameters (x,y,z,rotations, scale)
 2012-07-12  Added Paddy's fog effect
 2012-07-12  ForestWalk2.py - I broke it Paddy! - left tiled texture in

@@ -1,7 +1,7 @@
 # Raspberry Rain example using pi3d module
 # ========================================
 # Copyright (c) 2012 - Tim Skillman
-# Version 0.02 - 03Jul12
+# Version 0.03 - 20Jul12
 # 
 # This example does not reflect the finished pi3d module in any way whatsoever!
 # It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
@@ -26,7 +26,8 @@ display.create3D(0,0,1900,1200)
 display.setBackColour(0,0.7,1,0)	
 
 # Load textures
-raspimg = pi3d.loadTextureAlpha("textures/Raspi256x256.png")
+texs = pi3d.textures()
+raspimg = texs.loadTexture("textures/Raspi256x256.png")
 	
 pino=20
 
@@ -40,19 +41,25 @@ mykeys = pi3d.key()
 
 # Display scene and rotate cuboid
 while 1:
-	display.clear()
+    display.clear()
 
-	for b in range (0, pino):
-		pi3d.sprite(raspimg,xyz[b][0],5-xyz[b][1],-xyz[b][2],1,1,xyz[b][3])	#draw a rectangle(x,y,z,scaleX,scaleY,rotation)
-		r = xyz[b][3]+1
-		y = (xyz[b][1]+0.1) % 10
-		if y<0.06:
-			xyz[b] = ((random.random()*8-4, y, xyz[b][2], r))
-		else:
-			xyz[b] = ((xyz[b][0], y, xyz[b][2], r))
+    for b in range (0, pino):
+	pi3d.sprite(raspimg,xyz[b][0],5-xyz[b][1],-xyz[b][2],1,1,xyz[b][3])	#draw a rectangle(x,y,z,scaleX,scaleY,rotation)
+	r = xyz[b][3]+1
+	y = (xyz[b][1]+0.1) % 10
+	if y<0.06:
+		xyz[b] = ((random.random()*8-4, y, xyz[b][2], r))
+	else:
+		xyz[b] = ((xyz[b][0], y, xyz[b][2], r))
 
-	k = mykeys.read()
-	if k >-1:
-		if k==112: display.screenshot("raspberryRain.jpg")   
+    k = mykeys.read()
+    if k >-1:
+	if k==27:
+		mykeys.close()
+		texs.deleteAll()
+		display.destroy()
+		break
+	elif k==112:
+		display.screenshot("raspberryRain.jpg")   
 
-	display.swapBuffers()
+    display.swapBuffers()
