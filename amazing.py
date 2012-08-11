@@ -23,41 +23,23 @@ display.create3D(10,10,1200,700, 0.5, 800.0, 60.0) # x,y,width,height,near,far,a
 display.setBackColour(0.4,0.8,0.8,1) # r,g,b,alpha
 
 # Load textures
-rockimg = pi3d.loadTexture("textures/rock1.jpg")
-secretimg = pi3d.loadTexture("textures/maze1.jpg")
-tree2img = pi3d.loadTextureAlpha("textures/tree2.png")
-raspimg = pi3d.loadTextureAlpha("textures/Raspi256x256.png")
+texs=pi3d.textures()
+# Setting 2nd param to True renders 'True' Blending
+# (this can be changed later to 'False' with 'cloudimg.blend = False')
+rockimg = texs.loadTexture("textures/rock1.jpg")
+tree2img = texs.loadTexture("textures/tree2.png")
+raspimg = texs.loadTexture("textures/Raspi256x256.png")
 
-ectex = pi3d.loadTexture("textures/SkyBox.png")
+ectex = texs.loadTexture("textures/ecubes/skybox_stormydays.jpg")
 myecube = pi3d.createEnvironmentCube(900.0,"CROSS")
 
 # Create elevation map
 mapwidth=1000.0
 mapdepth=1000.0
-mapheight=60.0
+mapheight=80.0
 mymap = pi3d.createElevationMapFromTexture("textures/maze1.jpg",mapwidth,mapdepth,mapheight,128,128,64) #testislands.jpg
 
 myfog = pi3d.fog(0.05, (0.1,0.1,0.1,1.0)) 
-
-secretmap = pi3d.createPlane(mapwidth, mapdepth)
-secretmap.rotateToX(-90.0)
-secretmap.position(0, -50, 0)
-
-# water cards
-wimg = []
-iFiles = glob.glob("textures/water/water???.png")
-iFiles.sort() # order is vital to animation!
-for f in iFiles:
-    wimg.append(pi3d.loadTextureAlpha(f))
-nImg = len(wimg)
-
-tSize = 5.0
-wTile = pi3d.createPlane(tSize, tSize, "water")
-
-water = pi3d.createMergeShape("water")
-for k in range(7):
-    for j in range(7):
-	water.add(wTile, (k-3.5)*tSize, 0, (j-3.5)*tSize, -90,0,0)
 
 #Create tree models
 treeplane = pi3d.createPlane(4.0,5.0)
@@ -81,7 +63,6 @@ scshots = 1
 
 #energy counter
 hp = 50
-wLevel = -1.0
 
 #avatar camera
 rot=0.0
@@ -102,7 +83,6 @@ omx=mymouse.x
 omy=mymouse.y
 mxMin, mxMax, myMin, myMax = omx, omx, omy, omy
 
-i = 0 #water surface image index
 lastTm = time.time()
 dt = 0.1 #time between frames for water
 m = pi3d.matrix()
@@ -116,29 +96,12 @@ while 1:
     pi3d.position(xm,ym,zm)
     
     myecube.draw(ectex,xm,ym,zm)
-    myfog.enable()
+    myfog.on()
     mymap.draw(rockimg)
     mytrees1.drawAll(tree2img)
     raspberry.drawAll(raspimg)
-
-    x0 = tSize * math.floor((xm -9.0*math.sin(rot*rads))/tSize)
-    z0 = tSize * math.floor((zm + 9.0*math.cos(rot*rads))/tSize)
-    m.push()
-    if x0 != lastX0 or z0 != lastZ0:
-	water.position(-x0, wLevel, -z0)
-	lastX0 = x0
-	lastZ0 = z0
-    water.drawAll(wimg[i])
-    m.pop()
-    myfog.disable()
-    #secretmap.draw(secretimg)
+    myfog.off()
     
-    nowTm = time.time()
-    if (nowTm - lastTm) > dt:
-        i = (i + 1) % nImg
-	if wLevel < 1.5: wLevel += 0.005
-        lastTm = nowTm
-
     mx=mymouse.x
     my=mymouse.y
     if mx > mxMax: mxMax = mx
