@@ -26,7 +26,7 @@ print "(but in the opposite direction to) big holes"
 
 # Setup display and initialise pi3d
 display = pi3d.display()
-display.create3D(10,10,1200,700, 0.5, 800.0, 60.0) # x,y,width,height,near,far,aspect
+display.create3D(10,10,1200,900, 0.5, 800.0, 60.0) # x,y,width,height,near,far,aspect
 display.setBackColour(0.4,0.8,0.8,1) # r,g,b,alpha
 
 # Load textures
@@ -46,7 +46,7 @@ mapwidth=1000.0
 mapdepth=1000.0
 mapheight=80.0
 mymap = pi3d.createElevationMapFromTexture("textures/maze1.jpg",mapwidth,mapdepth,mapheight,128,128,1)
-mymap2 = pi3d.createElevationMapFromTexture("textures/maze1.jpg",mapwidth,mapdepth,mapheight,128,128,64,"detail",0.0, 0.05, 0.0) 
+mymap2 = pi3d.createElevationMapFromTexture("textures/maze1.jpg",mapwidth,mapdepth,mapheight,128,128,64,"detail",0.0, 0.03, 0.0) 
 
 myfog = pi3d.fog(0.02, (0.1,0.1,0.1,1.0)) 
 
@@ -105,7 +105,6 @@ while 1:
     
     myecube.draw(ectex,xm,ym,zm)
     myfog.on()
-    #rockimg1.blend = False
     mymap.draw(rockimg1)
     mymap2.draw(rockimg2)
     mytrees1.drawAll(tree2img)
@@ -128,9 +127,9 @@ while 1:
 			dz = math.cos(rot*rads)
 			if (fly):
 				dy = math.sin(tilt*rads)
-				xm += dx
-				zm += dz
-				ym += dy
+				xm += dx*3
+				zm += dz*3
+				ym += dy*3
 			else:
 				dy = -(mymap.calcHeight(xm + dx, zm + dz)+avhgt) - ym
 				if dy > -0.5: # limit steepness so can't climb up walls
