@@ -387,7 +387,7 @@ class createEnvironmentCube(object):
 		    opengles.glBindTexture(GL_TEXTURE_2D,tex.tex)
 		    opengles.glDrawElements( GL_TRIANGLES, 36, GL_UNSIGNED_SHORT , self.indices)
 		    
-		#opengles.glEnable(GL_LIGHTING)
+		opengles.glEnable(GL_LIGHTING)
 		opengles.glDisable(GL_TEXTURE_2D)
 		#restore to previous matrix
 		opengles.glLoadMatrixf(mtrx)
@@ -417,7 +417,7 @@ class createMergeShape(create_shape):
                         rh = random.random()*maxscl+minscl
                         rt = random.random()*360.0
                         y=elevmap.calcHeight(-x,-z)+rh*2
-                        merge(self,shape, x,y,z, 0,rt,0, rh,rh,rh)
+                        merge(self,shape, x,y,z, shape.rotx,rt+shape.roty,shape.rotz, rh*shape.sx,rh*shape.sy,rh*shape.sz)
         
         def radialCopy(self, shape, x=0,y=0,z=0, startRadius=2.0, endRadius=2.0, startAngle=0.0, endAngle=360.0, step=12):
             
@@ -484,12 +484,15 @@ class createPlane(create_shape):
                 
         
         def draw(self,tex=None):
+                shape_draw(self,tex)
+                """
                 opengles.glVertexPointer( 3, GL_FLOAT, 0, self.verts);
                 opengles.glNormalPointer( GL_FLOAT, 0, self.norms);
                 if tex > 0: texture_on(tex,self.texcoords,GL_FLOAT)
                 transform(self.x,self.y,self.z,self.rotx,self.roty,self.rotz,self.sx,self.sy,1,self.cx,self.cy,self.cz)    
                 opengles.glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, self.inds)
                 if tex > 0: texture_off()
+                """
 
 
 class createLathe(create_shape):
@@ -859,7 +862,7 @@ class createExtrude(create_shape):
 
 class createElevationMapFromTexture(create_shape):
 
-        def __init__(self, mapfile, width=100.0, depth=100.0, height=10.0, divx=0, divy=0, ntiles=1.0, name="",x=0.0,y=0.0,z=0.0, rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0):
+        def __init__(self, mapfile, width=100.0, depth=100.0, height=10.0, divx=0, divy=0, ntiles=1.0, name="",x=0.0,y=0.0,z=0.0, rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0, smooth=False):
                 super(createElevationMapFromTexture,self).__init__(name, x,y,z, rx,ry,rz, sx,sy,sz, cx,cy,cz)
                 
                 print "Loading height map ...",mapfile
@@ -911,12 +914,27 @@ class createElevationMapFromTexture(create_shape):
                                 verts.append(-wh+x*ws)
                                 verts.append(hgt)
                                 verts.append(-hh+y*hs)
-                                norms.append(0.0)
-                                norms.append(1.0)
-                                norms.append(0.0)
+                                
+                                if (smooth and y > 0 and y < (iy-1) and x > 0 and x < (ix-1)):
+									nVec = crossproduct(-ws, self.pixels[x-1, y]*ht - hgt, 0, 0, hgt - self.pixels[x, y-1]*ht ,hs)
+									norms.append(nVec[0])
+									norms.append(nVec[1])
+									norms.append(nVec[2])
+                                else:
+									norms.append(0.0)
+									norms.append(1.0)
+									norms.append(0.0)
                                 tex_coords.append((ix-x) * tx)
                                 tex_coords.append((iy-y) * ty)
-                
+                #smooth normals
+                if smooth:
+					for y in range(0,iy):
+						for x in range(0,ix):
+							p = y*ix+x
+							if (y > 0 and y < (iy-1) and x > 0 and x < (ix-1)):
+								norms[p] = (norms[p-3] + norms[p+3] + norms[p-ix*3] + norms[p+ix*3] + norms[p])/5
+								norms[p+1] = (norms[p-2] + norms[p+4] + norms[p-ix*3+1] + norms[p+ix*3+1])/5
+								norms[p+2] = (norms[p-1] + norms[p+5] + norms[p-ix*3+2] + norms[p+ix*3+2])/5
                 s=0
                 #create one long triangle_strip by alternating X directions     
                 for y in range(0,iy-2,2):
@@ -1080,13 +1098,12 @@ class createLight(object):
 	# and/or define global values SPOT, DIST, POINT = -1, 0, 1
 
 
-    def position(self,x,y,z):
-
+    def position(self,x,y,z,w=1):
 	mtrx =(ctypes.c_float*16)()
 	opengles.glGetFloatv(GL_MODELVIEW_MATRIX,ctypes.byref(mtrx))
 	opengles.glLoadIdentity()
-	self.xyz = eglfloats((x,y,z,1))
-	opengles.glLightfv(self.no, GL_POSITION,self.xyz)
+	self.xyz = eglfloats((x,y,z,w))
+	opengles.glLightfv(self.no, GL_POSITION, self.xyz)
 	opengles.glLoadMatrixf(mtrx)
     
     def on(self):
@@ -1231,7 +1248,7 @@ class ball(object):
 	# should really work out if it's converging i.e. angle outside -90 to 90 degrees
 	# angle = arcos(a.b/|a||b|) to stop balls getting 'trapped' inside each other!
 	# check sign of a.b
-	dotP = (self.x - otherball.x) * (self.vx - otherball.vx) + (self.y - otherball.y) * (self.vy - otherball.vy)
+	dotP = dotproduct((self.x - otherball.x), (self.y - otherball.y), 0, (self.vx - otherball.vx), (self.vy - otherball.vy), 0)
 	if dx**2+dy**2 <= rd**2 and dotP < 0:
 	    #sq = 1.0 / math.sqrt(dx**2+dy**2)
 	    #print "dxdy", dx**2+dy**2
