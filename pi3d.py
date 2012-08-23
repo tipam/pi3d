@@ -30,6 +30,7 @@ import sys, random
 sys.path.append("include")
 from pi3dCommon import *
 import loaderEgg
+import loaderObj
 import PIL.ImageOps, ImageDraw
 
 def loadECfiles(path,fname,texs):
@@ -1049,12 +1050,15 @@ class loadModel(create_shape):
         if self.exf == 'egg':
             self.model = loaderEgg.loadFileEGG(self,fileString,texs)
             return self.model
+        elif self.exf == 'obj':
+            self.model = loaderObj.loadFileOBJ(self,fileString,texs)
+            return self.model
         else:
             print self.exf, "file not supported"
             return None
             
     def draw(self,tex=None,n=None):
-        if self.exf == 'egg': loaderEgg.draw(self,tex,n)
+        if self.exf == 'egg' or self.exf == 'obj': loaderEgg.draw(self,tex,n)
         
     def clone(self): 
         newLM = loadModel("__clone__."+self.exf,self.texs)
