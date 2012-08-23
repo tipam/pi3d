@@ -180,24 +180,27 @@ def loadFileEGG(self,fileName,texs):
                 trianglesArray.append(startV +j +1)
         
         # create group with various egl arrays
-        self.vGroup[np] = {}
+        self.vGroup[np] = create_shape("", self.x, self.y, self.z, self.rotx,self.roty,self.rotz, self.sx,self.sy,self.sz, self.cx,self.cy,self.cz)
 
-        self.vGroup[np]["vertices"] = eglfloats(verticesArray)
+        self.vGroup[np].vertices = eglfloats(verticesArray)
 
-        self.vGroup[np]["normals"] = eglfloats(normalsArray)
+        self.vGroup[np].normals = eglfloats(normalsArray)
 
-        self.vGroup[np]["triangles"] = eglshorts(trianglesArray)
-        self.vGroup[np]["trianglesLen"] = len(self.vGroup[np]["triangles"]) # so speed up calling of glDrawElements
+        self.vGroup[np].indices = eglshorts(trianglesArray)
+        self.vGroup[np].indicesLen = len(self.vGroup[np].indices) # so speed up calling of glDrawElements
 
-        self.vGroup[np]["tex_coords"] = eglfloats(tex_coordsArray)
+        self.vGroup[np].tex_coords = eglfloats(tex_coordsArray)
         
+        self.vGroup[np].ttype = GL_TRIANGLES
+        
+
         # load the texture file TODO check if same as previously loaded files (for other loadModel()s)
         if (gTRef in self.textureList):
-            self.vGroup[np]["texID"] = self.textureList[gTRef]["texID"]
-            self.vGroup[np]["texFile"] = self.textureList[gTRef]["filename"]
+            self.vGroup[np].texID = self.textureList[gTRef]["texID"]
+            self.vGroup[np].texFile = self.textureList[gTRef]["filename"]
         else:
-            self.vGroup[np]["texID"] = None
-            self.vGroup[np]["texFile"] = None
+            self.vGroup[np].texID = None
+            self.vGroup[np].texFile = None
         
         # load materials TODO something more sophisticated
         if (gMRef in self.materialList):
@@ -205,14 +208,14 @@ def loadFileEGG(self,fileName,texs):
             redVal = int(float(self.materialList[gMRef]["diffr"]) * 255.0)
             grnVal = int(float(self.materialList[gMRef]["diffg"]) * 255.0)
             bluVal = int(float(self.materialList[gMRef]["diffb"]) * 255.0)
-            for i in xrange(len(self.vGroup[np]["triangles"])):
+            for i in xrange(len(self.vGroup[np].indices)):
                 materialArray.append(redVal)
                 materialArray.append(grnVal)
                 materialArray.append(bluVal)
                 materialArray.append(255)
-            self.vGroup[np]["material"] = eglbytes(materialArray)
+            self.vGroup[np].material = eglbytes(materialArray)
             materialArray = []
-        else: self.vGroup[np]["material"] = None
+        else: self.vGroup[np].material = None
       ####### end of groupDrill function #####################
 
     bReg = re.finditer("[{}<]",l)
@@ -225,7 +228,7 @@ def loadFileEGG(self,fileName,texs):
             for i in xrange(len(x[3])): self.textureList[x[1]][x[3][i][1]] = x[3][i][2]
             self.textureList[x[1]]["filename"] = x[2].strip("\"")
             #print filePath, self.textureList[x[1]]["filename"]
-            self.textureList[x[1]]["texID"] = self.texs.loadTexture(os.path.join(filePath, self.textureList[x[1]]["filename"]),False,True) # load from file
+            self.textureList[x[1]]["texID"] = self.texs.loadTexture(os.path.join(filePath, self.textureList[x[1]]["filename"]), False, True) # load from file
         if "<CoordinateSystem>" in x[0]:
             self.coordinateSystem = x[2]
         if "<Material>" in x[0]:
@@ -233,6 +236,16 @@ def loadFileEGG(self,fileName,texs):
             for i in xrange(len(x[3])): self.materialList[x[1]][x[3][i][1]] = x[3][i][2]
         if "<Group>" in x[0]:
             groupDrill(x[3], x[1])
+            
+    for g in self.vGroup:
+        #for i in range(len(self.vGroup[g].normals)):
+        #    print self.vGroup[g].normals[i],
+        print
+        print "indices=",len(self.vGroup[g].indices)
+        print "vertices=",len(self.vGroup[g].vertices)
+        print "normals=",len(self.vGroup[g].normals)
+        print "tex_coords=",len(self.vGroup[g].tex_coords)
+
 
 def draw(self, texID=None, n=None):
     texToUse = None
@@ -253,21 +266,21 @@ def draw(self, texID=None, n=None):
     transform(self.x,self.y,self.z, self.rotx,self.roty,self.rotz, self.sx,self.sy,self.sz, self.cx,self.cy,self.cz)
     for g in self.vGroup:
         opengles.glShadeModel(GL_SMOOTH)
-        opengles.glVertexPointer( 3, GL_FLOAT, 0, self.vGroup[g]["vertices"]);
-        opengles.glNormalPointer( GL_FLOAT, 0, self.vGroup[g]["normals"]);
+        opengles.glVertexPointer( 3, GL_FLOAT, 0, self.vGroup[g].vertices);
+        opengles.glNormalPointer( GL_FLOAT, 0, self.vGroup[g].normals);
         
-        if texToUse > 0: texture_on(texToUse, self.vGroup[g]["tex_coords"], GL_FLOAT)
-        elif self.vGroup[g]["texID"] > 0: texture_on(self.vGroup[g]["texID"], self.vGroup[g]["tex_coords"], GL_FLOAT)
+        if texToUse > 0: texture_on(texToUse, self.vGroup[g].tex_coords, GL_FLOAT)
+        elif self.vGroup[g].texID > 0: texture_on(self.vGroup[g].texID, self.vGroup[g].tex_coords, GL_FLOAT)
         
         #TODO enable material colours as well as textures from images
-        if self.vGroup[g]["material"] != None:
-            #opengles.glMaterialfv(GL_FRONT, GL_DIFFUSE, self.vGroup[g]["material"]);
+        if self.vGroup[g].material != None:
+            #opengles.glMaterialfv(GL_FRONT, GL_DIFFUSE, self.vGroup[g].material);
             opengles.glEnableClientState(GL_COLOR_ARRAY)
-            opengles.glColorPointer( 4, GL_UNSIGNED_BYTE, 0, self.vGroup[g]["material"]);
+            opengles.glColorPointer( 4, GL_UNSIGNED_BYTE, 0, self.vGroup[g].material);
         
-        opengles.glDrawElements( GL_TRIANGLES, self.vGroup[g]["trianglesLen"], GL_UNSIGNED_SHORT, self.vGroup[g]["triangles"])
+        opengles.glDrawElements( GL_TRIANGLES, self.vGroup[g].indicesLen, GL_UNSIGNED_SHORT, self.vGroup[g].indices)
         
-        if self.vGroup[g]["texID"] > 0: texture_off()
+        if self.vGroup[g].texID > 0: texture_off()
         opengles.glShadeModel(GL_FLAT)
     mtrx.pop()
     
@@ -289,7 +302,7 @@ def texSwap(self, texID, fileName):
             texToSwap = self.textureList[t]["texID"]
             break
     for g in self.vGroup:
-         if self.vGroup[g]["texID"] == texToSwap: self.vGroup[g]["texID"] = texID
+         if self.vGroup[g].texID == texToSwap: self.vGroup[g].texID = texID
     return texToSwap # this texture is returned so it can be used or held by the calling code and reinserted if need be
 #########################################################################################
 #
