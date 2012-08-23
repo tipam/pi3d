@@ -16,16 +16,19 @@
 
 import pi3d
 from math import sin, cos, hypot
+from time import sleep
 
 # Setup display and initialise pi3d
 display = pi3d.display()
-display.create3D(100,100,1200,900)      # x,y,width,height
+display.create3D(0,0,1200,800)      # x,y,width,height
 display.setBackColour(0.2,0.4,0.6,1)        # r,g,b,alpha
 
 print "\n\n\rpress escape to stop!\n\n\r"
+# Load textures
+texs=pi3d.textures()
 
 # load model_loadmodel
-mymodel = pi3d.loadModel("models/teapot.egg","teapot", 0,-1,-10)
+mymodel = pi3d.loadModel("models/cow2.obj",texs , "teapot", 0,1,0)
 
 # Fetch key presses
 mykeys = pi3d.key()
@@ -36,12 +39,18 @@ mtrx = pi3d.matrix()
 #create a light
 mylight = pi3d.createLight(0,1,1,1,"",10,10,0)
 mylight.on()
-    
+ 
 while 1:
     display.clear()
-
     mtrx.identity()
     mtrx.translate(0,0,-10)
     mymodel.draw()
     mymodel.rotateIncY(3.0)
     display.swapBuffers()
+    k = mykeys.read()
+    if k >-1:
+        if k==27: #Escape key
+            display.destroy()
+            mykeys.close()
+            break
+

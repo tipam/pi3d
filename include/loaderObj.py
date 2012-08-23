@@ -9,37 +9,6 @@ from pi3dCommon import *
 # AlteredQualia http://alteredqualia.com
 #
 #########################################################################################
-#######################################################################
-class vertex():
-    def __init__(self, coords_in, UVcoords_in, normal_in):
-        self.coords = coords_in
-        self.UVcoords = UVcoords_in
-        # self.UVtangent = UVtangent_in
-        # self.UVbinormal = UVbinormal_in
-        self.normal = normal_in
-
-########################################################################
-class polygon():
-    def __init__(self, normal_in, rgba_in, MRef_in, TRef_in, vertexRef_in, vpkey_in):
-        self.normal = [] #should always be three
-        for nVal in normal_in:
-            self.normal.append(nVal)
-            
-        self.rgba = [] #should always be four
-        for rgbVal in rgba_in:
-            self.rgba.append(rgbVal)
-            
-        self.MRef = MRef_in
-            
-        self.TRef = TRef_in
-            
-        self.vref = [] # variable number of indices
-        for v in vertexRef_in:
-            self.vref.append(v)
-            
-        self.vpKey = vpkey_in
-
-########################################################################
 
 def parse_mtl(fname):
     """Parse MTL file.
@@ -136,7 +105,7 @@ def parse_mtl(fname):
 
     return materials
 
-
+#########################################################################################
 def parse_vertex(text):
     """Parse text chunk specifying single vertex.
 
@@ -163,6 +132,7 @@ def parse_vertex(text):
 
     return { 'v':v, 't':t, 'n':n }
 
+#########################################################################################
 def loadFileOBJ(self,fileName,texs):
         
     self.coordinateSystem = "Y-up"
