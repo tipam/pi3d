@@ -94,7 +94,9 @@ def loadFileEGG(self,fileName,texs):
         offsetVList = {}
         structPList = []
         offset = 0
-        for x in gp:
+        numv = 0
+        numi = 0
+        for x in gp:#meaningless var name x for chunks of file converted to array format
             if len(x) == 0: continue
             if ("<Group>" in x[0]): groupDrill(x[3], np+x[1])
             else:
@@ -135,8 +137,14 @@ def loadFileEGG(self,fileName,texs):
                     if ("<MRef>" in p[0]): MRef = p[2].strip()
                     if ("<TRef>" in p[0]): TRef = p[2].strip()
                     if ("<VertexRef>" in p[0]):
-                        vref = [int(n) for n in p[2].strip().split()]
+                        vref = []
+                        for n in p[2].strip().split():
+                            vref.append(int(n))
+                            numv += 1
+                            numi += 3
+                        numi -= 6 # number of corners of triangle = (n-2)*3 where n is the number of corners of face
                         vpKey = p[3][0][2].strip() # ought to do a for r in p[3]; if "Ref in...
+                        #vref = [int(n) for n in p[2].strip().split()]
                 # add to list
                 #while (len(structPList) < (p+1)): structPList.append("")
                 #
@@ -144,14 +152,22 @@ def loadFileEGG(self,fileName,texs):
 
         # now go through the polygons in order of vertexPool+id, trying to ensure that the polygon arrays in each group are built in the order of vertexPool names
         # only cope with one material and one texture per group
-        nP = len(structPList)
-        verticesArray = []
-        normalsArray = []
-        trianglesArray = []
-        tex_coordsArray = []
+        numv -= 1
+        numi -= 1
+        self.vGroup[np] = create_shape("", self.x, self.y, self.z, self.rotx,self.roty,self.rotz, self.sx,self.sy,self.sz, self.cx,self.cy,self.cz)
+        ctype_array1 = eglfloat * (numv * 3 + 3)
+        self.vGroup[np].vertices = ctype_array1()
+        self.vGroup[np].normals = ctype_array1()
+        ctype_array2 = eglfloat * (numv * 2 + 2)
+        self.vGroup[np].tex_coords = ctype_array2()
+        ctype_array3 = eglshort * (numi + 1)
+        self.vGroup[np].indices = ctype_array3()
+        nv = 0 # vertex counter in this material
+        ni = 0 # triangle vertex count in this material
+
         gMRef = ""
         gTRef = ""
-        nV = 0
+        nP = len(structPList)
         for p in xrange(nP):
             if (len(structPList[p].MRef) > 0): gMRef = structPList[p].MRef
             else: gMRef = ""
@@ -160,37 +176,28 @@ def loadFileEGG(self,fileName,texs):
                
             vpKey = structPList[p].vpKey
             vref = structPList[p].vref
+            startV = nv
             for j in vref:
                 if (len(structVList[vpKey][j].normal) > 0): self.vNormal = True
                 else: self.vNormal = False
                 for k in range(3):
-                    verticesArray.append(structVList[vpKey][j].coords[k])
+                    self.vGroup[np].vertices[nv*3+k] = c_float(structVList[vpKey][j].coords[k])
                     if self.vNormal: nml = structVList[vpKey][j].normal[k]
                     else: nml = structPList[p].normal[k]
-                    normalsArray.append(nml)
-                nV += 1
+                    self.vGroup[np].normals[nv*3+k] = c_float(nml)
                 if (len(structVList[vpKey][j].UVcoords) == 2):
                     for k in range(2):
-                        tex_coordsArray.append(structVList[vpKey][j].UVcoords[k])
-            n = len(vref) - 1
-            startV = nV -n -1
+                        self.vGroup[np].tex_coords[nv*2+k] = c_float(structVList[vpKey][j].UVcoords[k])
+                nv += 1
+                
+            n = nv - startV - 1
             for j in range(1,n):
-                trianglesArray.append(startV)
-                trianglesArray.append(startV +j)
-                trianglesArray.append(startV +j +1)
+                self.vGroup[np].indices[ni*3] = c_short(startV)
+                self.vGroup[np].indices[ni*3+1] = c_short(startV + j)
+                self.vGroup[np].indices[ni*3+2] = c_short(startV + j +1)
+                ni += 1
         
-        # create group with various egl arrays
-        self.vGroup[np] = create_shape("", self.x, self.y, self.z, self.rotx,self.roty,self.rotz, self.sx,self.sy,self.sz, self.cx,self.cy,self.cz)
-
-        self.vGroup[np].vertices = eglfloats(verticesArray)
-
-        self.vGroup[np].normals = eglfloats(normalsArray)
-
-        self.vGroup[np].indices = eglshorts(trianglesArray)
-        self.vGroup[np].indicesLen = len(self.vGroup[np].indices) # so speed up calling of glDrawElements
-
-        self.vGroup[np].tex_coords = eglfloats(tex_coordsArray)
-        
+        self.vGroup[np].indicesLen = len(self.vGroup[np].indices)
         self.vGroup[np].ttype = GL_TRIANGLES
         
 
@@ -203,18 +210,18 @@ def loadFileEGG(self,fileName,texs):
             self.vGroup[np].texFile = None
         
         # load materials TODO something more sophisticated
+        #TODO maybe don't create this array if texture being used?
         if (gMRef in self.materialList):
-            materialArray = []
+            ctype_array4 = eglbyte * ((numi + 1)*4)
+            self.vGroup[np].material = ctype_array4()
             redVal = int(float(self.materialList[gMRef]["diffr"]) * 255.0)
             grnVal = int(float(self.materialList[gMRef]["diffg"]) * 255.0)
             bluVal = int(float(self.materialList[gMRef]["diffb"]) * 255.0)
-            for i in xrange(len(self.vGroup[np].indices)):
-                materialArray.append(redVal)
-                materialArray.append(grnVal)
-                materialArray.append(bluVal)
-                materialArray.append(255)
-            self.vGroup[np].material = eglbytes(materialArray)
-            materialArray = []
+            for i in xrange(numi + 1):
+                self.vGroup[np].material[i*4] = eglbyte(redVal)
+                self.vGroup[np].material[i*4 + 1] = eglbyte(grnVal)
+                self.vGroup[np].material[i*4 + 2] = eglbyte(bluVal)
+                self.vGroup[np].material[i*4 + 3] = eglbyte(255)
         else: self.vGroup[np].material = None
       ####### end of groupDrill function #####################
 
@@ -237,15 +244,6 @@ def loadFileEGG(self,fileName,texs):
         if "<Group>" in x[0]:
             groupDrill(x[3], x[1])
             
-    for g in self.vGroup:
-        #for i in range(len(self.vGroup[g].normals)):
-        #    print self.vGroup[g].normals[i],
-        print
-        print "indices=",len(self.vGroup[g].indices)
-        print "vertices=",len(self.vGroup[g].vertices)
-        print "normals=",len(self.vGroup[g].normals)
-        print "tex_coords=",len(self.vGroup[g].tex_coords)
-
 
 def draw(self, texID=None, n=None):
     texToUse = None

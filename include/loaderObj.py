@@ -300,8 +300,9 @@ def loadFileOBJ(self,fileName,texs):
                 for k in range(0,3):
                     self.vGroup[g].vertices[i*3+k] = c_float(vertices[f['vertex'][v]-1][k])
                     self.vGroup[g].normals[i*3+k] = c_float(normals[f['normal'][v]-1][k])
-                for k in range(0,2):
-                    self.vGroup[g].tex_coords[i*2+k] = c_float(uvs[f['uv'][v]-1][k])
+                if (len(uvs[f['uv'][v]-1]) == 2):
+                    for k in range(0,2):
+                        self.vGroup[g].tex_coords[i*2+k] = c_float(uvs[f['uv'][v]-1][k])
                 i += 1
             n = i - iStart - 1
             for t in range(1,n):
@@ -311,7 +312,6 @@ def loadFileOBJ(self,fileName,texs):
                 j += 1
         self.vGroup[g].indicesLen = len(self.vGroup[g].indices)
         self.vGroup[g].material = None
-        #TODO add non texture materials here
         self.vGroup[g].ttype = GL_TRIANGLES
 
         
@@ -326,7 +326,19 @@ def loadFileOBJ(self,fileName,texs):
     material_lib = parse_mtl(os.path.join(filePath, mtllib))
     for m in materials:
         print m
-        tfileName = material_lib[m]['mapDiffuse']
-        self.vGroup[materials[m]].texFile = tfileName
-        self.vGroup[materials[m]].texID = self.texs.loadTexture(os.path.join(filePath, tfileName), False, True) # load from file
+        if 'mapDiffuse' in material_lib[m]:
+            tfileName = material_lib[m]['mapDiffuse']
+            self.vGroup[materials[m]].texFile = tfileName
+            self.vGroup[materials[m]].texID = self.texs.loadTexture(os.path.join(filePath, tfileName), False, True) # load from file
+        if 'colorDiffuse' in material_lib[m]:#TODO maybe don't create this array if texture being used?
+            ctype_array4 = eglbyte * ((numi[materials[m]] + 1)*4)
+            self.vGroup[materials[m]].material = ctype_array4()
+            redVal = int(material_lib[m]['colorDiffuse'][0] * 255.0)
+            grnVal = int(material_lib[m]['colorDiffuse'][1] * 255.0)
+            bluVal = int(material_lib[m]['colorDiffuse'][2] * 255.0)
+            for i in xrange(numi[materials[m]] + 1):
+                self.vGroup[materials[m]].material[i*4] = eglbyte(redVal)
+                self.vGroup[materials[m]].material[i*4 + 1] = eglbyte(grnVal)
+                self.vGroup[materials[m]].material[i*4 + 2] = eglbyte(bluVal)
+                self.vGroup[materials[m]].material[i*4 + 3] = eglbyte(255)
     
