@@ -20,6 +20,9 @@ rads = 0.017453292512 # degrees to radians
 #helpful messages
 print "############################################################"
 print "Esc to quit, W to go forward, Mouse to steer, Space to jump."
+
+print "N.B. W now works as a TOGGLE one press to go one to stop."
+
 print "At the edge you will turn into a ghost and be able to fly "
 print "and pass through rocks! There are limited numbers of jumps."
 print "Good turnings are often greener and tend to be near"
@@ -35,12 +38,12 @@ display.setBackColour(0.4,0.8,0.8,1) # r,g,b,alpha
 # Load textures
 texs=pi3d.textures()
 # Setting 2nd param to True renders 'True' Blending
-# (this can be changed later to 'False' with 'cloudimg.blend = False')
+# (this can be changed later to 'False' with 'rockimg2.blend = False')
 rockimg1 = texs.loadTexture("textures/techy1.jpg")
 rockimg2 = texs.loadTexture("textures/rock1.png", True)
 tree2img = texs.loadTexture("textures/tree2.png")
 raspimg = texs.loadTexture("textures/Raspi256x256.png")
-
+# environment cube
 ectex = texs.loadTexture("textures/ecubes/skybox_stormydays.jpg")
 myecube = pi3d.createEnvironmentCube(900.0,"CROSS")
 
@@ -48,7 +51,7 @@ myecube = pi3d.createEnvironmentCube(900.0,"CROSS")
 mapwidth=1000.0                              
 mapdepth=1000.0
 mapheight=110.0
-mymap = pi3d.createElevationMapFromTexture("textures/maze1.jpg",mapwidth,mapdepth,mapheight,128,128,1,"sub",0,0,0, smooth=True)
+mymap = pi3d.createElevationMapFromTexture("textures/maze1.jpg",mapwidth,mapdepth,mapheight,128,128,1,"sub",0,0,0, smooth=False)
 mymap2 = pi3d.createElevationMapFromTexture("textures/maze1.jpg",mapwidth,mapdepth,mapheight+0.1,128,128 ,64,"detail",0.0, 0.01, 0.0, smooth=True) 
 
 myfog = pi3d.fog(0.02, (0.1,0.1,0.1,1.0)) 
@@ -60,7 +63,7 @@ treemodel1 = pi3d.createMergeShape("baretree")
 treemodel1.add(treeplane, 0,0,0)
 treemodel1.add(treeplane, 0,0,0, 0,90,0)
 
-shed = pi3d.loadModel("models/shed1.egg",texs,"shed",0,3,0, -90,0,0, 2,2,2)
+shed = pi3d.loadModel("models/shed1.obj",texs,"shed",0,3,0, 0,0,0, 2,2,2)
 
 #Scatter them on map using Merge shape's cluster function
 mytrees1 = pi3d.createMergeShape("trees1")
@@ -75,18 +78,19 @@ raspberry.cluster(treemodel1, mymap,-250,+250,470.0,470.0,5,"",8.0,1.0)
 # The cluster method can be used where there is only one vGroup but with more than one the different
 # parts of the object get split up by the randomisation! Here I manually do the same thing as cluster
 # by first generating an array of random locations and y-rotations
+
 shedgp = {}
 xArr = []
 yArr = []
 zArr = []
 rArr = []
-for i in range(10):
-    xval = (random.random()-0.5)*200 + 390
+for i in range(20):
+    xval = (random.random()-0.5)*50 + 19
     xArr.append(xval)
-    zval = (random.random()-0.5)*200 - 390
+    zval = (random.random()-0.5)*50 - 19
     zArr.append(zval)
     yArr.append(mymap.calcHeight(-xval, -zval))
-    rArr.append(random.random()*360)
+    rArr.append(180.0 + random.random()*45)
 for g in shed.vGroup:
     thisAbbGp = pi3d.createMergeShape("shed")
     for i in range(len(xArr)):
@@ -94,8 +98,8 @@ for g in shed.vGroup:
     shedgp[g] = thisAbbGp
 
 # lighting. The default light is a point light but I have made the position method capable of creating
-# a directional light and this is what I do inside the loop. If you wan a torch you don't need to move it about
-light = pi3d.createLight(0, 1, 1, 0.5, "", 0,1,2, 0.2,0.2,0.3) #yellowish 'torch' or 'sun' blueish ambient
+# a directional light and this is what I do inside the loop. If you want a torch you don't need to move it about
+light = pi3d.createLight(0, 4, 4, 2, "", 0,1,2, 0.1,0.1,0.2) #yellowish 'torch' or 'sun' (could be blueish ambient with different env cube)
 light.on()
 
 #screenshot number
@@ -103,7 +107,6 @@ scshots = 1
 
 #energy counter
 hp = 25
-
 #avatar camera
 rot=0.0
 tilt=0.0
@@ -125,6 +128,7 @@ omy=mymouse.y
 lastTm = time.time()
 m = pi3d.matrix()
 fly = False
+walk = False
 # Display scene and rotate cuboid
 angle = 0
 while 1:
@@ -141,9 +145,12 @@ while 1:
     mymap2.draw(rockimg2)
     mytrees1.drawAll(tree2img)
     raspberry.drawAll(raspimg)
+    #shed.draw()
+    
     # draw the sheds
     for g in shed.vGroup:
         shedgp[g].drawAll(shed.vGroup[g].texID)
+    
     myfog.off()
     
     mx=mymouse.x
@@ -157,26 +164,29 @@ while 1:
     v2 = pi3d.rotateVecX(tilt,v1[0], v1[1], v1[2])
     light.position(v2[0], v2[1], v2[2], 0) #fourth parameter in function sets (1=point light , default) or (0=distant light)
     # the light has to be turned as the scene rotates, it took ages to work out how to do this by reversing the rotation order!!!
+    dx = -math.sin(rot*rads)
+    dz = math.cos(rot*rads)
+    dy = math.sin(tilt*rads)
+    if (walk):
+        if (fly):
+            xm += dx*3
+            zm += dz*3
+            ym += dy*3
+        else:
+            dy = -(mymap.calcHeight(xm + dx, zm + dz)+avhgt) - ym
+            if dy > -1.0: # limit steepness so can't climb up walls
+                xm += dx
+                zm += dz
+                ym += dy
+        if (xm < -490 or xm > 490 or zm < -490 or zm > 490): fly = True #reached the edge of the maze!
 
     #Press ESCAPE to terminate
     k = mykeys.read()
     if k >-1:
-        dx = -math.sin(rot*rads)
-        dz = math.cos(rot*rads)
-        dy = math.sin(tilt*rads)
-        if k==119: #key W
-            if (fly):
-                xm += dx*3
-                zm += dz*3
-                ym += dy*3
-            else:
-                dy = -(mymap.calcHeight(xm + dx, zm + dz)+avhgt) - ym
-                if dy > -1.0: # limit steepness so can't climb up walls
-                    xm += dx
-                    zm += dz
-                    ym += dy
-            if (xm < -490 or xm > 490 or zm < -490 or zm > 490): fly = True #reached the edge of the maze!
+        if k==119: #key W toggle NB no longer need to hold down all the time
+            walk = not(walk)
         elif k==115: #kry S
+            walk = False
             dy = -(mymap.calcHeight(xm - dx, zm - dz)+avhgt) - ym
             if dy > -1.0:
                 xm -= dx
@@ -195,6 +205,7 @@ while 1:
             display.screenshot("critters3D"+str(scshots)+".jpg")
             scshots += 1
         elif k==32 and hp > 0: #key SPACE
+            walk = False
             dy = -(mymap.calcHeight(xm + dx, zm + dz)+avhgt) - ym
             xm += dx
             zm += dz
