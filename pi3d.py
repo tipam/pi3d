@@ -478,10 +478,12 @@ class createPlane(create_shape):
                 addTri(self.indices,1,3,2)
                 #plane data - this could be stored locally so that vertices / tex coords an be altered in real-time
 
-                self.verts = eglfloats(self.vertices);
-                self.inds = eglshorts(self.indices);
-                self.norms = eglfloats(self.normals);
-                self.texcoords = eglfloats(self.tex_coords);
+                # self.verts etc swapped for self.vertices PG 2 Nov 2012 so plane would work again
+                self.vertices = eglfloats(self.vertices);
+                self.indices = eglshorts(self.indices);
+                self.normals = eglfloats(self.normals);
+                self.tex_coords = eglfloats(self.tex_coords);
+		self.ssize = 12
                 
         
         def draw(self,tex=None):
@@ -1067,6 +1069,7 @@ class loadModel(create_shape):
         
     def reparentTo(self, parent):
         if not(self in parent.childModel):  parent.childModel.append(self)
+        self.parent = parent
 	
     def texSwap(self, texID, filename):
 	return loaderEgg.texSwap(self, texID, filename)
