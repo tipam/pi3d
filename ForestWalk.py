@@ -2,7 +2,7 @@
 # =====================================
 # Copyright (c) 2012 - Tim Skillman
 # Version 0.04 - 20Jul12
-# 
+#
 # grass added, new environment cube using FACES
 #
 # This example does not reflect the finished pi3d module in any way whatsoever!
@@ -43,8 +43,8 @@ mapdepth=1000.0
 mapheight=60.0
 mountimg1 = texs.loadTexture("textures/mountains3_512.jpg")
 mymap = pi3d.createElevationMapFromTexture("textures/mountainsHgt.jpg",mapwidth,mapdepth,mapheight,64,64) #testislands.jpg
- 
-#Create tree models	
+
+#Create tree models
 treeplane = pi3d.createPlane(4.0,5.0)
 
 treemodel1 = pi3d.createMergeShape("baretree")
@@ -56,7 +56,7 @@ treemodel2.add(treeplane, 0,0,0)
 treemodel2.add(treeplane, 0,0,0, 0,60,0)
 treemodel2.add(treeplane, 0,0,0, 0,120,0)
 
-#Create grass model	
+#Create grass model
 grassplane = pi3d.createPlane(1.0,0.3,"",0,-2,0)
 grassmodel = pi3d.createMergeShape("grass")
 grassmodel.add(grassplane, 0,0,0)
@@ -86,7 +86,7 @@ mygrass.cluster(grassmodel, mymap,0.0,0.0,100.0,100.0,100,"",10.0,4.0)
 
 
 #screenshot number
-scshots = 1  
+scshots = 1
 
 #avatar camera
 rot=0.0
@@ -110,12 +110,12 @@ omy=mymouse.y
 # Display scene and rotate cuboid
 while 1:
     display.clear()
-    
+
     mtrx.identity()
     mtrx.rotate(tilt,0,0)
     mtrx.rotate(0,rot,0)
     mtrx.translate(xm,ym,zm)
-    
+
     myecube.draw(ectex,xm,ym,zm)
     mymap.draw(mountimg1)
     mygrass.drawAll(grassimg)
@@ -125,13 +125,13 @@ while 1:
 
     mx=mymouse.x
     my=mymouse.y
-    
+
     #if mx>display.left and mx<display.right and my>display.top and my<display.bottom:
     rot += (mx-omx)*0.2
     tilt -= (my-omy)*0.2
     omx=mx
     omy=my
-		
+
     #Press ESCAPE to terminate
     k = mykeys.read()
     if k >-1:
@@ -164,5 +164,5 @@ while 1:
 	    break
 	else:
 	    print k
-   
+
     display.swapBuffers()

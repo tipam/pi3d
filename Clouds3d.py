@@ -2,7 +2,7 @@
 # ===================================
 # Copyright (c) 2012 - Tim Skillman
 # Version 0.04 20Jul12 - z order improved by Paddywwoof, improved texture management
-# 
+#
 # This example does not reflect the finished pi3d module in any way whatsoever!
 # It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
 #
@@ -72,7 +72,7 @@ while True:
 	#Press ESCAPE to terminate
 	if mykeys.read() == 27:
 	    mykeys.close()
-	    texs.deleteAll()      
+	    texs.deleteAll()
 	    display.destroy()
 	    break
 

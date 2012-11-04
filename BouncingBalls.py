@@ -2,7 +2,7 @@
 # ========================================
 # Copyright (c) 2012 - Tim Skillman
 # Version 0.02 - 03Jul12
-# 
+#
 # This example does not reflect the finished pi3d module in any way whatsoever!
 # It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
 #
@@ -26,8 +26,8 @@ display = pi3d.display()
 display.create2D(100,100,scnx,scny,0)
 
 # Set last value (alpha) to zero for a transparent background!
-display.setBackColour(0,0.2,0.6,1)    	
-    
+display.setBackColour(0,0.2,0.6,1)
+
 # Ball parameters
 maxballs = 40
 maxballsize = 60
@@ -68,26 +68,26 @@ mykeys = pi3d.key()
 scshots = 1
 
 while True:
-	
+
     display.clear()
-	
+
     for b in range (0, maxballs):
-			    
+
 	# Draw ball (tex,x,y,z,width,height,rotation)
 	pi3d.sprite(ball[bi[b]],bx[b],by[b],-2.0,bs[b],bs[b])
-	
+
 	# Increment ball positions
 	bx[b]=bx[b]+dx[b]
 	by[b]=by[b]+dy[b]
-	
+
 	# X coords outside of drawing area?  Then invert X direction
 	if bx[b]>scnx or bx[b]<0:
 		dx[b]=-dx[b]
-	
+
 	# Y coords outside of drawing area?  Then invert Y direction
 	if by[b]>scny or by[b]<0:
 		dy[b]=-dy[b]
-    
+
     #draw a bar at the top of the screen
     pi3d.rectangle(bar,0,scny,scnx,32)
     pi3d.rectangle(bbtitle,5,scny,256+5,32)
@@ -102,5 +102,5 @@ while True:
 		texs.deleteAll()
 		display.destroy()
 		break
-		
+
     display.swapBuffers()

@@ -2,7 +2,7 @@
 # ========================================
 # Copyright (c) 2012 - Tim Skillman
 # Version 0.03 - 20Jul12
-# 
+#
 # This example does not reflect the finished pi3d module in any way whatsoever!
 # It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
 #
@@ -23,12 +23,12 @@ display = pi3d.display()
 display.create3D(0,0,1900,1200)
 
 # Set last value (alpha) to zero for a transparent background!
-display.setBackColour(0,0.7,1,0)	
+display.setBackColour(0,0.7,1,0)
 
 # Load textures
 texs = pi3d.textures()
 raspimg = texs.loadTexture("textures/Raspi256x256.png")
-	
+
 pino=20
 
 # Setup array of random x,y,z coords and initial rotation
@@ -60,6 +60,6 @@ while 1:
 		display.destroy()
 		break
 	elif k==112:
-		display.screenshot("raspberryRain.jpg")   
+		display.screenshot("raspberryRain.jpg")
 
     display.swapBuffers()

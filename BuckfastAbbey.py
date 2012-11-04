@@ -3,7 +3,7 @@
 # This example - Copyright (c) 2012 - Tim Skillman
 # EGG loader code by Paddy Gaunt, Copyright (c) 2012
 # Version 0.01 - 03Jul12
-# 
+#
 # This example does not reflect the finished pi3d module in any way whatsoever!
 # It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
 #
@@ -38,14 +38,14 @@ myecube = pi3d.createEnvironmentCube(900.0,"FACES")
 
 # load model_loadmodel
 mymodel = pi3d.loadModel("models/Buckfast Abbey/BuckfastAbbey.egg",texs,"Abbey",0,0,0, -90,160,0, 0.03,0.03,0.03)
-	
+
 # Create keyboard and mouse event objects
 mykeys = pi3d.key()
 mymouse = pi3d.mouse()
 mymouse.start()
 
 #screenshot number
-scshots = 1  
+scshots = 1
 
 #avatar camera
 rot=0.0
@@ -61,7 +61,7 @@ mtrx=pi3d.matrix()
 
 omx=mymouse.x
 omy=mymouse.y
-        
+
 while 1:
     display.clear()
 
@@ -72,14 +72,14 @@ while 1:
     mtrx.rotate(0,180,0)
     myecube.draw(ectex,xm,ym,zm)
     mtrx.pop()
-    
+
     mylight.on()
     mymodel.draw()
     mylight.off()
-    
+
     mx=mymouse.x
     my=mymouse.y
-    
+
     if mx>display.left and mx<display.right and my>display.top and my<display.bottom:
 	rot += (mx-omx)*0.5
 	tilt -= (my-omy)*0.5
@@ -114,5 +114,5 @@ while 1:
 		break
 	else:
 	    print k
- 
+
     display.swapBuffers()

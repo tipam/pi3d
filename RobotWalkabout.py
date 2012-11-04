@@ -2,7 +2,7 @@
 # =========================================
 # Copyright (c) 2012 - Tim Skillman
 # Version 0.02 - 20Jul12
-# 
+#
 # Demonstrates offset camera to view an avatar moving about a map.  Also includes tiled mapping on landscape
 #
 # This example does not reflect the finished pi3d module in any way whatsoever!
@@ -42,7 +42,7 @@ mapheight=60.0
 mountimg1 = texs.loadTexture("textures/mars_colour.png")
 mymap = pi3d.createElevationMapFromTexture("textures/mars_height.png",mapwidth,mapdepth,mapheight,128,128) #testislands.jpg
 
-#create robot 
+#create robot
 metalimg = texs.loadTexture("textures/metalhull.jpg")
 robot_head= pi3d.createSphere(2.0,12,12,0.5,"",0,3,0)
 robot_body = pi3d.createCylinder(2.0,4,12,"",0,1,0)
@@ -90,37 +90,37 @@ mylight = pi3d.createLight(0,1,1,1,"",10,10,10, .9,.7,.6)
 # Display scene and rotate cuboid
 while 1:
     display.clear()
-    
+
     mtrx.identity()
     #tilt can be used as a means to prevent the view from going under the landscape!
     if tilt<-1: sf=1.0/-tilt
     else: sf=1.0
     mtrx.translate(0,-10*sf-5.0,-40*sf)   #zoom camera out so we can see our robot
     mtrx.rotate(tilt,0,0)		#Robot still affected by scene tilt
-    
+
     #draw robot
     mylight.on()
     robot.drawAll(metalimg)
     mylight.off()
-    
+
     mtrx.rotate(0,rot,0)		#rotate rest of scene around robot
     mtrx.translate(xm,ym,zm)	#translate rest of scene relative to robot position
-    
+
     myecube.draw(ectex,xm,ym,zm)#Draw environment cube
     myfog.on()
     mymap.draw(mountimg1)		#Draw the landscape
     station.drawAll(metalimg)
     myfog.off()
-    
+
     mx=mymouse.x
     my=mymouse.y
-    
+
     #if mx>display.left and mx<display.right and my>display.top and my<display.bottom:
     rot += (mx-omx)*0.2
     tilt -= (my-omy)*0.2
     omx=mx
     omy=my
-		
+
     #Press ESCAPE to terminate
     k = mykeys.read()
     if k >-1:
@@ -150,5 +150,5 @@ while 1:
 		break
 	else:
 	    print k
-   
+
     display.swapBuffers()

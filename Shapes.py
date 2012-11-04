@@ -2,7 +2,7 @@
 # ========================
 # Copyright (c) 2012 - Tim Skillman
 # Version 0.02 - 03Jul12
-# 
+#
 # This example does not reflect the finished pi3d module in any way whatsoever!
 # It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
 #
@@ -22,7 +22,7 @@ display.setBackColour(0,0,0,1)    	# r,g,b,alpha
 
 # Load textures
 texs = pi3d.textures()
-patimg = texs.loadTexture("textures/PATRN.PNG")   
+patimg = texs.loadTexture("textures/PATRN.PNG")
 coffimg = texs.loadTexture("textures/COFFEE.PNG")
 
 #Create inbuilt shapes
@@ -52,7 +52,7 @@ mylight.on()
 # Display scene
 while 1:
     display.clear()
-    
+
     mysphere.draw(patimg)
     mysphere.rotateIncY( 0.5 )
 
@@ -62,11 +62,11 @@ while 1:
     myspiral.draw(patimg)
     myspiral.rotateIncY(3)
     myspiral.rotateIncZ(1)
-    
+
     mytube.draw(coffimg)
     mytube.rotateIncY(3)
     mytube.rotateIncZ(2)
-    
+
     myextrude.draw(coffimg,patimg,coffimg)
     myextrude.rotateIncY(-2)
     myextrude.rotateIncX(2)
@@ -90,10 +90,10 @@ while 1:
     mylathe.draw(patimg)
     mylathe.rotateIncY(2)
     mylathe.rotateIncZ(1)
-    
+
     pi3d.drawString(arialFont,"Raspberry Pi ROCKS!",-0.8,-0.7,-2.2, 10.0, 0.003,0.003)
     #pi3d.drawString(destineFont,"Some nice OpenGL bitmap fonts to play with",-1.3,-0.3,-2.2, 10.0, 0.002,0.002)
-    
+
     k = mykeys.read()
     if k >-1:
 	if k==112: display.screenshot("shapesPic.jpg")

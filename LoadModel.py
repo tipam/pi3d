@@ -3,7 +3,7 @@
 # This example - Copyright (c) 2012 - Tim Skillman
 # EGG loader code by Paddy Gaunt, Copyright (c) 2012
 # Version 0.01 - 03Jul12
-# 
+#
 # This example does not reflect the finished pi3d module in any way whatsoever!
 # It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
 #
@@ -23,7 +23,7 @@ display.setBackColour(0.2,0.4,0.6,1)    	# r,g,b,alpha
 
 # load model_loadmodel
 mymodel = pi3d.loadModel("models/teapot.egg","teapot", 0,-1,0)
-	
+
 # Fetch key presses
 mykeys = pi3d.key()
 
@@ -33,7 +33,7 @@ mtrx = pi3d.matrix()
 #create a light
 mylight = pi3d.createLight(0,1,1,1,"",10,10,0)
 mylight.on()
-    
+
 while 1:
     display.clear()
 

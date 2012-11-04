@@ -94,12 +94,12 @@ omy=mymouse.y
 # Display scene and rotate cuboid
 while 1:
     display.clear()
-    
+
     mtrx.identity()
     mtrx.rotate(tilt,0,0)
     mtrx.rotate(0,rot,0)
     mtrx.translate(xm,ym,zm)
-    
+
     myecube.draw(ectex,xm,ym,zm)
     mymap.draw(landimg)
     #myclip.enable()
@@ -111,7 +111,7 @@ while 1:
 
     mx=mymouse.x
     my=mymouse.y
-    
+
     #if mx>display.left and mx<display.right and my>display.top and my<display.bottom:
     rot += (mx-omx)*0.2
     tilt -= (my-omy)*0.2
@@ -149,5 +149,5 @@ while 1:
 	    break
 	else:
 	    print k
-   
+
     display.swapBuffers()

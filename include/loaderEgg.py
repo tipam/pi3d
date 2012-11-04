@@ -23,26 +23,26 @@ class polygon():
         self.normal = [] #should always be three
         for nVal in normal_in:
             self.normal.append(nVal)
-            
+
         self.rgba = [] #should always be four
         for rgbVal in rgba_in:
             self.rgba.append(rgbVal)
-            
+
         self.MRef = MRef_in
-            
+
         self.TRef = TRef_in
-            
+
         self.vref = [] # variable number of indices
         for v in vertexRef_in:
             self.vref.append(v)
-            
+
         self.vpKey = vpkey_in
 
 ########################################################################
 
 
 def loadFileEGG(self,fileName,texs):
-        
+
     self.coordinateSystem = "Y-up"
     self.materialList = {}
     self.textureList = {}
@@ -55,15 +55,15 @@ def loadFileEGG(self,fileName,texs):
     self.vNormal = False
     self.vGroup = {} # holds the information for each vertex group
     self.texs = texs
-    
+
     if ("__clone__" in fileName): return #used for cloning this loadModel, i.e. don't need to parse egg file
     # read in the file and parse into some arrays
-    
+
     filePath = os.path.split(os.path.abspath(fileName))[0]
     print filePath
     f = open(fileName, 'r')
     l = f.read() # whole thing as a string in memory this will only work for reasonably small files!!!
-    
+
     ############### function to parse file as one off process to avoid re-traversing string #########
     # convertes the '<a> b { c <d> e {f} <g> h {i} }' structure
     # into nested arrays ['a', 'b', 'c',[['d','e','',['','','f',[]]],['g','h','',['','','i',[]]]]]
@@ -76,7 +76,7 @@ def loadFileEGG(self,fileName,texs):
                 if len(x[3]) == 0: x[2] = l[i:j].strip() # text after "{" and before "<Tabxyz>"
                 i = j+1 # save marker for start of descriptor
                 x[3].append(["","","",[]])
-                
+
             elif c=="{":
                 xn = x[3][len(x[3])-1]
                 tx = l[i-1:j].strip().split()
@@ -87,7 +87,7 @@ def loadFileEGG(self,fileName,texs):
                 if len(x[3]) == 0: x[2] = l[i:j].strip()
                 return j+1
     ################### end of pRec #################
-    
+
     ####### go through all the nested <Groups> ####################
     def groupDrill(gp, np):
         structVList = {}
@@ -157,7 +157,7 @@ def loadFileEGG(self,fileName,texs):
             else: gMRef = ""
             if (len(structPList[p].TRef) > 0): gTRef = structPList[p].TRef
             else: gTRef = ""
-               
+
             vpKey = structPList[p].vpKey
             vref = structPList[p].vref
             for j in vref:
@@ -178,7 +178,7 @@ def loadFileEGG(self,fileName,texs):
                 trianglesArray.append(startV)
                 trianglesArray.append(startV +j)
                 trianglesArray.append(startV +j +1)
-        
+
         # create group with various egl arrays
         self.vGroup[np] = {}
 
@@ -190,7 +190,7 @@ def loadFileEGG(self,fileName,texs):
         self.vGroup[np]["trianglesLen"] = len(self.vGroup[np]["triangles"]) # so speed up calling of glDrawElements
 
         self.vGroup[np]["tex_coords"] = eglfloats(tex_coordsArray)
-        
+
         # load the texture file TODO check if same as previously loaded files (for other loadModel()s)
         if (gTRef in self.textureList):
             self.vGroup[np]["texID"] = self.textureList[gTRef]["texID"]
@@ -198,7 +198,7 @@ def loadFileEGG(self,fileName,texs):
         else:
             self.vGroup[np]["texID"] = None
             self.vGroup[np]["texFile"] = None
-        
+
         # load materials TODO something more sophisticated
         if (gMRef in self.materialList):
             materialArray = []
@@ -234,9 +234,9 @@ def loadFileEGG(self,fileName,texs):
         if "<Group>" in x[0]:
             groupDrill(x[3], x[1])
 
-    
+
 # groupDrill(l, "") # recursively break down groups - TODO this doesn't actually work properly because of split() on <Group>
-    
+
 def draw(self, texID=None, n=None):
     texToUse = None
     if texID != None:
@@ -257,22 +257,22 @@ def draw(self, texID=None, n=None):
         opengles.glShadeModel(GL_SMOOTH)
         opengles.glVertexPointer( 3, GL_FLOAT, 0, self.vGroup[g]["vertices"]);
         opengles.glNormalPointer( GL_FLOAT, 0, self.vGroup[g]["normals"]);
-        
+
         if texToUse > 0: texture_on(texToUse, self.vGroup[g]["tex_coords"], GL_FLOAT)
         elif self.vGroup[g]["texID"] > 0: texture_on(self.vGroup[g]["texID"], self.vGroup[g]["tex_coords"], GL_FLOAT)
-        
+
         #TODO enable material colours as well as textures from images
         if self.vGroup[g]["material"] != None:
             #opengles.glMaterialfv(GL_FRONT, GL_DIFFUSE, self.vGroup[g]["material"]);
             opengles.glEnableClientState(GL_COLOR_ARRAY)
             opengles.glColorPointer( 4, GL_UNSIGNED_BYTE, 0, self.vGroup[g]["material"]);
-        
+
         opengles.glDrawElements( GL_TRIANGLES, self.vGroup[g]["trianglesLen"], GL_UNSIGNED_SHORT, self.vGroup[g]["triangles"])
-        
+
         if self.vGroup[g]["texID"] > 0: texture_off()
         opengles.glShadeModel(GL_FLAT)
     mtrx.pop()
-    
+
     for c in self.childModel:
         relx, rely, relz = c.x, c.y, c.z
         relrotx, relroty, relrotz = c.rotx, c.roty, c.rotz
@@ -282,7 +282,7 @@ def draw(self, texID=None, n=None):
         c.draw() #should texture override be passed down to children?
         c.x, c.y, c.z = relx, rely, relz
         c.rotx, c.roty, c.rotz = relrotx, relroty, relrotz
-        
+
 def texSwap(self, texID, fileName):
     texToUse = None
     texToSwap = None

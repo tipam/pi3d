@@ -2,7 +2,7 @@
 # ==========================================
 # Copyright (c) 2012 - Tim Skillman
 # Version 0.03 - 20Jul12
-# 
+#
 # This example does not reflect the finished pi3d module in any way whatsoever!
 # It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
 #
@@ -24,12 +24,12 @@ display.setBackColour(0,0,0,1)    	# r,g,b,alpha
 texs=pi3d.textures()
 # Setting 2nd param to True renders 'True' Blending
 # (this can be changed later to 'False' with 'cloudimg.blend = False')
-cloudimg = texs.loadTexture("textures/earth_clouds.png",True)   
+cloudimg = texs.loadTexture("textures/earth_clouds.png",True)
 earthimg = texs.loadTexture("textures/world_map.jpg")
 moonimg = texs.loadTexture("textures/moon.jpg")
 starsimg = texs.loadTexture("textures/stars2.jpg")
 watimg = texs.loadTexture("textures/water.jpg")
-	
+
 mysphere = pi3d.createSphere(2,24,24,0.0,"earth",0,0,0)
 mysphere2 = pi3d.createSphere(2.05,24,24,0.0,"clouds",0,0,0)
 mymoon = pi3d.createSphere(0.4,16,16,0.0,"moon",0,0,0)
@@ -53,11 +53,11 @@ mylight = pi3d.createLight(0,1,1,1,"",10,10,50, .8,.8,.8)
 # Display scene
 while 1:
     display.clear()
-	
+
     mylight.off()
     pi3d.sprite(starsimg, 0,0,-20, 25,25,rot)
     rot=rot+0.02
-    
+
     mylight.on()
     mtrx.identity()
     mtrx.translate(0,0,-6)
@@ -75,14 +75,14 @@ while 1:
     mtrx.translate(0.7,0,0)
     mymoon2.draw(watimg)
     mymoon2.rotateIncY( -20 )
-    
+
     rot1 += 1.0
     rot2 += 5.0
-    
+
     #pi3d.identity()
     #pi3d.drawString(arialFont,"The Raspberry Pi ROCKS!",-1.0,0.0,-2.2, 10.0, 0.003,0.003)
     #pi3d.drawString(destineFont,"Some nice OpenGL bitmap fonts to play with!",-1.3,-0.3,-2.2, 10.0, 0.002,0.002)
-    
+
     k = mykeys.read()
     if k >-1:
 	if k==112: display.screenshot("earthPic.jpg")

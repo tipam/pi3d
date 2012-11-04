@@ -68,7 +68,7 @@ def eglshorts(L): return (eglshort*len(L))(*L)
 def ctypeResize(array, new_size):
     resize(array, sizeof(array._type_)*new_size)
     return (array._type_*new_size).from_address(addressof(array))
-    
+
 egf0 = eglfloat(0)
 egf1 = eglfloat(1)
 
@@ -80,7 +80,7 @@ rads = 0.017453292512  # degrees to radians
 XSIGN = 1<<4
 YSIGN = 1<<5
 
-# matrix stack count 
+# matrix stack count
 mtrx_stack = 0
 
 def check(e):
@@ -93,7 +93,7 @@ def check(e):
 def showerror():
     e=opengles.glGetError()
     print hex(e)
-    
+
 #load a texture specifying RGB or RGBA
 def load_tex(fileString,flip,size,blend):
 	s=fileString+" "
@@ -117,7 +117,7 @@ def load_tex(fileString,flip,size,blend):
 	if (2**yy)>ny: ny=2**yy
 	if nx>1024: nx=1024
 	if ny>1024: ny=1024
-	
+
 	if nx<>ix or ny<>iy or size>0:
 	    print ix,iy
 	    if size>0: nx,ny = size,size
@@ -125,11 +125,11 @@ def load_tex(fileString,flip,size,blend):
 	    im = im.resize((ix,iy),Image.ANTIALIAS)
 	    s+= "Resizing to: "+str(ix)+","+str(iy)
 	else: s+= "Bitmap size: "+str(ix)+","+str(iy)
-	
+
 	print "Loading ...",s
-	
+
 	if flip: im = im.transpose(Image.FLIP_TOP_BOTTOM)
-	    
+
 	image = im.convert(RGBs).tostring("raw",RGBs)
 	tex=eglint()
 	opengles.glGenTextures(1,ctypes.byref(tex))
@@ -162,29 +162,29 @@ def texture_off():
 	opengles.glEnable(GL_DEPTH_TEST)
 
 class loadTexture(object):
-    
+
     def __init__(self,fileString,flip=False,size=0,blend=False):
 	self.ix,self.iy,self.tex,self.alpha,self.blend = load_tex(fileString,flip,size,blend)
 
 class textures(object):
-    
+
     def __init__(self):
 	self.texs=(eglint*1024)()   #maximum of 1024 textures (just to be safe!)
 	self.tc=0
-		
+
     def loadTexture(self,fileString,blend=False,flip=False,size=0):
 	map = loadTexture(fileString,flip,size,blend)
 	self.texs[self.tc]=map.tex.value
 	self.tc+=1
 	return map
-	
+
     def deleteAll(self):
 	print "[Exit] Deleting textures ..."
 	opengles.glDeleteTextures(self.tc,addressof(self.texs))
-		    
+
 #position, rotate and scale an object
 def transform(x,y,z,rotx,roty,rotz,sx,sy,sz,cx,cy,cz):
-	opengles.glTranslatef(eglfloat(x-cx), eglfloat(y-cy), eglfloat(z-cz))		
+	opengles.glTranslatef(eglfloat(x-cx), eglfloat(y-cy), eglfloat(z-cz))
 	if rotz <> 0: opengles.glRotatef(eglfloat(rotz),egf0, egf0, egf1)
 	if roty <> 0: opengles.glRotatef(eglfloat(roty),egf0, egf1, egf0)
 	if rotx <> 0: opengles.glRotatef(eglfloat(rotx),egf1, egf0, egf0)
@@ -198,9 +198,9 @@ def rotate(rotx,roty,rotz):
 
 def identity():
 	opengles.glLoadIdentity()
-	
+
 def position(x,y,z):
-	opengles.glTranslatef(eglfloat(x), eglfloat(y), eglfloat(z))		
+	opengles.glTranslatef(eglfloat(x), eglfloat(y), eglfloat(z))
 
 def scale(sx,sy,sz):
 	opengles.glScalef(eglfloat(sx),eglfloat(sy),eglfloat(sz))
@@ -210,7 +210,7 @@ def angleVecs(x1,y1,x2,y2,x3,y3):
 	b=y2-y1
 	c=x2-x3
 	d=y2-y3
-	
+
 	sqab=math.sqrt(a*a+b*b)
 	sqcd=math.sqrt(c*c+d*d)
 	l = sqab*sqcd
@@ -220,7 +220,7 @@ def angleVecs(x1,y1,x2,y2,x3,y3):
 	if aa==0.0: return 0.0
 	dist = (a*y3 - b*x3 + x1*b - y1*a) / sqab
 	angle = math.acos(aa)
-	
+
 	if dist>0.0: return pi2-angle
 	else: return angle
 
@@ -230,10 +230,10 @@ def dot(x1,y1,x2,y2):
 	s = math.sqrt(a*a+b*b)
 	if s>0.0: return a/s, b/s
 	else: return 0.0,0.0
-	
+
 def intersectTriangle(v1,v2,v3,pos):
 	#Function calculates the y intersection of a point on a triangle
-	
+
 	#Z order triangle
 	if v1[2]>v2[2]:
 	    v=v1
@@ -252,7 +252,7 @@ def intersectTriangle(v1,v2,v3,pos):
 	#print "v1:",v1[0],v1[1],v1[2]
 	#print "v2:",v2[0],v2[1],v2[2]
 	#print "v3:",v3[0],v3[1],v3[2]
-	
+
 	if pos[2]>v2[2]:
 	    #test bottom half of triangle
 	    if pos[2]>v3[2]:
@@ -261,7 +261,7 @@ def intersectTriangle(v1,v2,v3,pos):
 	    za = (pos[2]-v1[2])/(v3[2]-v1[2])
 	    dxa = v1[0]+(v3[0]-v1[0])*za
 	    dya = v1[1]+(v3[1]-v1[1])*za
-	    
+
 	    zb = (v3[2]-pos[2])/(v3[2]-v2[2])
 	    dxb = v3[0]-(v3[0]-v2[0])*zb
 	    dyb = v3[1]-(v3[1]-v2[1])*zb
@@ -276,17 +276,17 @@ def intersectTriangle(v1,v2,v3,pos):
 	    za = (pos[2]-v1[2])/(v3[2]-v1[2])
 	    dxa = v1[0]+(v3[0]-v1[0])*za
 	    dya = v1[1]+(v3[1]-v1[1])*za
-	    
+
 	    zb = (v2[2]-pos[2])/((v2[2]+0.00001)-v1[2])  #get rid of FP error!
 	    dxb = v2[0]-(v2[0]-v1[0])*zb
 	    dyb = v2[1]-(v2[1]-v1[1])*zb
 	    if (pos[0]<dxa and pos[0]<dxb) or (pos[0]>dxa and pos[0]>dxb):
 		#print "outside of top triangle range"
 		return -100000
-	
+
 	#return resultant intersecting height
 	return dya+(dyb-dya)*((pos[0]-dxa)/(dxb-dxa))
-	    
+
 def addVertex(v,x,y,z,n,nx,ny,nz,t,tx,ty):
 # add vertex,normal and tex_coords ...
     	v.append(x)
@@ -303,7 +303,7 @@ def addTri(v,x,y,z):
     	v.append(x)
 	v.append(y)
 	v.append(z)
-		
+
 
 rect_normals = eglbytes(( 0,0,-1, 0,0,-1, 0,0,-1, 0,0,-1 ))
 rect_tex_coords = eglbytes(( 0,255, 255,255, 255,0, 0,0))
@@ -314,13 +314,13 @@ rect_triangles = eglbytes(( 3,0,1, 3,1,2 ))
 
 def drawString(font,string,x,y,z,rot,sclx,scly):
 
-	opengles.glNormalPointer( GL_BYTE, 0, rect_normals)	
+	opengles.glNormalPointer( GL_BYTE, 0, rect_normals)
 	opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, eglfloat(GL_LINEAR));
 	opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, eglfloat(GL_LINEAR));
 	opengles.glEnableClientState(GL_TEXTURE_COORD_ARRAY)
 	opengles.glBindTexture(GL_TEXTURE_2D,font.tex)
 	opengles.glEnable(GL_TEXTURE_2D)
-	
+
 	opengles.glDisable(GL_DEPTH_TEST)
 	opengles.glDisable(GL_CULL_FACE)
 	opengles.glEnable(GL_BLEND)
@@ -346,7 +346,7 @@ def drawString(font,string,x,y,z,rot,sclx,scly):
 	opengles.glDisable(GL_BLEND)
 	opengles.glEnable(GL_DEPTH_TEST)
 	opengles.glEnable(GL_CULL_FACE)
-	
+
 def rectangle(tex,x,y,w,h,r=0.0,z=-1.0):
 	opengles.glNormalPointer( GL_BYTE, 0, rect_normals);
 	opengles.glVertexPointer( 3, GL_BYTE, 0, rect_vertsTL);
@@ -413,7 +413,7 @@ def rotateVecZ(r,x,y,z):
 	xx = x*ca-y*sa
 	yy = x*sa+y*ca
 	return xx,yy,z
-		
+
 def calcNormal(x1,y1,z1,x2,y2,z2):
 	xd = x2-x1
 	yd = y2-y1
@@ -421,53 +421,53 @@ def calcNormal(x1,y1,z1,x2,y2,z2):
 	sqt = 1 / math.sqrt(xd^2+yd^2+zd^2)
 	return (xd*sqt,yd*sqt,zd*sqt)
 
-def lathe(path, sides = 12, tris=False, rise = 0.0, coils = 1.0):	    
+def lathe(path, sides = 12, tris=False, rise = 0.0, coils = 1.0):
 	s = len(path)
 	rl = int(sides * coils)
 	if tris:
 	    ssize = rl * 6 * (s-1)
 	else:
 	    ssize = rl * 2 * (s-1)+(s * 2)-2
-	    
+
 	pn = 0
 	pp = 0
 	tcx = 1.0 / sides
 	pr = (pipi / sides) * 2
 	rdiv = rise / rl
 	ss=0
-	
+
 	#find largest and smallest y of the path used for stretching the texture over
 	miny = path[0][1]
 	maxy = path[s-1][1]
 	for p in range (0, s):
 	    if path[p][1] < miny: miny = path[p][1]
 	    if path[p][1] > maxy: maxy = path[p][1]
-	
+
 	verts=[]
 	norms=[]
 	idx=[]
 	tex_coords=[]
-	
+
 	opx=path[0][0]
 	opy=path[0][1]
-	
+
 	for p in range (0, s):
-	    
+
 	    px = path[p][0]
 	    py = path[p][1]
-		
+
 	    tcy = 1.0 - ((py - miny)/(maxy - miny))
 
 	    #normal between path points
 	    dx, dy = dot(opx,opy,px,py)
 
-	    
+
 	    for r in range (0, rl):
 		sinr = math.sin(pr * r)
 		cosr = math.cos(pr * r)
 		verts.append(px * sinr)
 		verts.append(py)
-		verts.append(px * cosr)		
+		verts.append(px * cosr)
 		norms.append(-sinr*dy)
 		norms.append(dx)
 		norms.append(-cosr*dy)
@@ -483,7 +483,7 @@ def lathe(path, sides = 12, tris=False, rise = 0.0, coils = 1.0):
 	    norms.append(-dy)
 	    tex_coords.append(1.0)
 	    tex_coords.append(tcy)
-	    
+
 	    if p < s-1:
 		if tris:
 		    # Create indices for GL_TRIANGLES
@@ -508,7 +508,7 @@ def lathe(path, sides = 12, tris=False, rise = 0.0, coils = 1.0):
 		    idx.append(pn+sides)
 		    ss+=2
 		    pp += (rl+1)
-		    
+
 	    opx=px
 	    opy=py
 
@@ -528,14 +528,14 @@ def shape_draw(self,tex,shl=GL_UNSIGNED_SHORT):
 	    if tex > 0: texture_off()
 
 def create_display(self,x=0,y=0,w=0,h=0,depth=24):
-    
+
 	b = bcm.bcm_host_init()
 	self.display = openegl.eglGetDisplay(EGL_DEFAULT_DISPLAY)
 	assert self.display != EGL_NO_DISPLAY
-	
+
 	r = openegl.eglInitialize(self.display,0,0)
 	#assert r == EGL_FALSE
-	
+
 	attribute_list = eglints(     (EGL_RED_SIZE, 8,
 				      EGL_GREEN_SIZE, 8,
 				      EGL_BLUE_SIZE, 8,
@@ -548,14 +548,14 @@ def create_display(self,x=0,y=0,w=0,h=0,depth=24):
 	config = ctypes.c_void_p()
 	r = openegl.eglChooseConfig(self.display,
 				    ctypes.byref(attribute_list),
-				    ctypes.byref(config), 1, 
+				    ctypes.byref(config), 1,
 				    ctypes.byref(numconfig))
-   
+
 	#if verbose: print 'numconfig=',numconfig
 	context_attribs = eglints( (EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE) )
-	self.context = openegl.eglCreateContext(self.display, config, EGL_NO_CONTEXT, 0) #ctypes.byref(context_attribs) ) 
+	self.context = openegl.eglCreateContext(self.display, config, EGL_NO_CONTEXT, 0) #ctypes.byref(context_attribs) )
 	assert self.context != EGL_NO_CONTEXT
-	
+
 	#Set the viewport position and size
 
 	dst_rect = eglints( (x,y,w,h) ) #width.value,height.value) )
@@ -571,32 +571,32 @@ def create_display(self,x=0,y=0,w=0,h=0,depth=24):
 
 	nativewindow = eglints((self.dispman_element,w,h+1));
 	bcm.vc_dispmanx_update_submit_sync( self.dispman_update )
-    
+
 	nw_p = ctypes.pointer(nativewindow)
 	self.nw_p = nw_p
-	
+
 	self.surface = openegl.eglCreateWindowSurface( self.display, config, nw_p, 0)
 	assert self.surface != EGL_NO_SURFACE
-	
+
 	r = openegl.eglMakeCurrent(self.display, self.surface, self.surface, self.context)
 	assert r
-	
+
 	#Create viewport
 	opengles.glViewport (0, 0, w, h)
-	
+
 	#Setup default hints
-	opengles.glEnable(GL_CULL_FACE)	
+	opengles.glEnable(GL_CULL_FACE)
 	#opengles.glShadeModel(GL_FLAT)
 	opengles.glEnable(GL_NORMALIZE)
 	opengles.glEnable(GL_DEPTH_TEST)
-	
+
 	#switches off alpha blending problem with desktop (is there a bug in the driver?)
 	#Thanks to Roland Humphries who sorted this one!!
-	opengles.glColorMask(1,1,1,0)  
-	
+	opengles.glColorMask(1,1,1,0)
+
 	opengles.glEnableClientState(GL_VERTEX_ARRAY)
 	opengles.glEnableClientState(GL_NORMAL_ARRAY)
-	
+
 	self.active = True
 
 class mouse(threading.Thread):
@@ -610,7 +610,7 @@ class mouse(threading.Thread):
 	self.height=1080
 	self.finished=False
 	self.button=False
-	
+
     def run(self):
 	while True:
 	    while True:
@@ -625,16 +625,16 @@ class mouse(threading.Thread):
 		dx-=256
 	    if buttons&YSIGN:
 		dy-=256
-		
+
 	    self.x+=dx
 	    self.y+=dy
 	    #if self.x<0: self.x=0
 	    #if self.y<0: self.y=0
 	    #self.x=min(self.x,self.width)
 	    #self.y=min(self.y,self.height)
-    
+
 class key():
-    
+
     def __init__(self):
 	self.key = curses.initscr()
 	curses.cbreak()
@@ -644,13 +644,13 @@ class key():
 
     def read(self):
 	return (self.key.getch())
-	
+
     def close(self):
 	curses.nocbreak()
 	self.key.keypad(0)
 	curses.echo()
 	curses.endwin()
-	
+
 
 class create_shape(object):
 
@@ -668,7 +668,7 @@ class create_shape(object):
 		self.cx=cx		#center
 		self.cy=cy
 		self.cz=cz
-		
+
 
 	#this should all be done with matrices!! ... just for testing ...
 
@@ -681,36 +681,36 @@ class create_shape(object):
 		self.x=xp
 		self.y=yp
 		self.z=zp
-	
+
 	def translate(self,tx,ty,tz):
 		self.x=self.x+tx
 		self.y=self.y+ty
 		self.z=self.z+tz
-		
+
 	def rotateToX(self,v):
 		self.rotx = v
-		
+
 	def rotateToY(self,v):
 		self.roty = v
-		
+
 	def rotateToZ(self,v):
 		self.rotz = v
-		
+
 	def rotateIncX(self,v):
 		self.rotx += v
-		
+
 	def rotateIncY(self,v):
 		self.roty += v
-		
+
 	def rotateIncZ(self,v):
 		self.rotz += v
 
 class matrix(object):
-    
+
     def __init__(self):
 	self.mat = []
 	self.mc = 0
-	
+
     def identity(self):
 	opengles.glLoadIdentity()
 	self.mc = 0
@@ -719,7 +719,7 @@ class matrix(object):
 	self.mat.append((ctypes.c_float*16)())
 	opengles.glGetFloatv(GL_MODELVIEW_MATRIX,ctypes.byref(self.mat[self.mc]))
 	self.mc += 1
-	
+
     def pop(self):
 	opengles.glMatrixMode(GL_MODELVIEW)
 	if self.mc>0:
@@ -728,7 +728,7 @@ class matrix(object):
 
     def translate(self,x,y,z):
 	opengles.glTranslatef(eglfloat(x),eglfloat(y),eglfloat(z))
-	
+
     def rotate(self,rx,ry,rz):
 	if rz <> 0: opengles.glRotatef(eglfloat(rz),egf0, egf0, egf1)
 	if rx <> 0: opengles.glRotatef(eglfloat(rx),egf1, egf0, egf0)
@@ -736,4 +736,4 @@ class matrix(object):
 
     def scale(self,sx,sy,sz):
 	opengles.glScalef(eglfloat(sx),eglfloat(sy),eglfloat(sz))
-	
+

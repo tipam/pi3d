@@ -43,29 +43,29 @@ def loadECfiles(path,fname,texs):
     faces.append(texs.loadTexture(filep+"_back.jpg"))
     faces.append(texs.loadTexture(filep+"_bottom.jpg"))
     return faces
-    
+
 def merge(self,shape, x,y,z, rx=0.0,ry=0.0,rz=0.0, sx=1.0,sy=1.0,sz=1.0, cx=0.0,cy=0.0,cz=0.0):
 
         # ONLY WORKS WITH GL_TRIANGLES
         if shape.ttype <> GL_TRIANGLES:
             assert "Only GL_TRIANGLE shapes can be merged"
-            
+
         print "Merging", shape.name
-        
+
         vertices=[]
         normals=[]
         tex_coords=[]
         totindices=[]
-        
+
         #ctypes.restype = ctypes.c_float
         ve = len(self.vertices)
         vi = len(self.indices)
         vc = len(shape.vertices)
         ic = len(shape.indices)
         vp = ve/3
-        
+
         #print vc,ve,vi,ic
-            
+
         for v in range(0,vc,3):
             #Rotate vertices
             vx = shape.vertices[v]
@@ -86,26 +86,26 @@ def merge(self,shape, x,y,z, rx=0.0,ry=0.0,rz=0.0, sx=1.0,sy=1.0,sz=1.0, cx=0.0,
             vz = shape.normals[v+2]
             if rz<>0.0: vx,vy,vz = rotateVecZ(rz,vx,vy,vz)
             if rx<>0.0: vx,vy,vz = rotateVecX(rx,vx,vy,vz)
-            if ry<>0.0: vx,vy,vz = rotateVecY(ry,vx,vy,vz)      
+            if ry<>0.0: vx,vy,vz = rotateVecY(ry,vx,vy,vz)
             self.normals.append(vx)
             self.normals.append(vy)
             self.normals.append(vz)
-            
+
         for v in range(0,len(shape.tex_coords)):
             self.tex_coords.append(shape.tex_coords[v])
-        
-                
+
+
         ctypes.restype = ctypes.c_short
         indices=[]
         for v in range(0,ic):
             ix = shape.indices[v]+vp
             indices.append(ix)
             self.indices.append(ix)
-            
+
         #print "verts:",vertices
         #print "inds",indices
         #print "tcs:",tex_coords
-        
+
         self.totind = ic+vi
         self.verts = eglfloats(self.vertices)
         self.norms = eglfloats(self.normals)
@@ -113,49 +113,49 @@ def merge(self,shape, x,y,z, rx=0.0,ry=0.0,rz=0.0, sx=1.0,sy=1.0,sz=1.0, cx=0.0,
         self.inds = eglshorts(self.indices)
         self.ttype = GL_TRIANGLES
         self.shape.append((eglshorts(indices),ic,shape.ttype))
-                
-#=====================================================================================================================================================================================  
+
+#=====================================================================================================================================================================================
 # Setup EGL display
-    
+
 class display(object):
 
     def __init__(self):
         """Opens up the OpenGL library and prepares a window for display"""
         b = bcm.bcm_host_init()
-        
+
         #Get the width and height of the screen
-        width = eglint() 
-        height = eglint() 
+        width = eglint()
+        height = eglint()
         s = bcm.graphics_get_display_size(0,ctypes.byref(width),ctypes.byref(height))
         assert s>=0
 
         self.max_width = width.value
         self.max_height = height.value
-        
+
         #print startup notices
         print "Pi3D module - version",pi3d_version
         print "Copyright (c) Tim Skillman, 2012"
         print "Updates available from www.github.com/tipam/pi3d"
         print "Screen size",self.max_width, self.max_height
-                
+
     def create3D(self,x=0,y=0,w=0,h=0, near=1.0, far=800.0, aspect=60.0, depth=24):
-        
+
         if w <= 0 or h <= 0:
             w = self.max_width
             h = self.max_height
-        
+
         self.win_width = w
         self.win_height = h
         self.near=near
         self.far=far
-	
+
 	self.left = x
 	self.top = y
 	self.right = x+w
 	self.bottom = y+h
-            
+
         create_display(self,x,y,w,h,depth)
-        
+
         #Setup perspective view
         opengles.glMatrixMode(GL_PROJECTION)
         opengles.glLoadIdentity()
@@ -172,19 +172,19 @@ class display(object):
         if w <= 0 or h <= 0:
             w = self.max_width
             h = self.max_height
-            
+
         self.win_width = w
         self.win_height = h
 
         create_display(self,x,y,w,h,depth)
-        
+
         opengles.glMatrixMode(GL_PROJECTION)
         opengles.glLoadIdentity()
         opengles.glOrthof(eglfloat(0), eglfloat(w), eglfloat(0), eglfloat(h), eglfloat(-1), eglfloat(500))
         opengles.glMatrixMode(GL_MODELVIEW)
         opengles.glLoadIdentity()
-        
-        
+
+
     def destroy(self):
         if self.active:
             openegl.eglSwapBuffers(self.display, self.surface);
@@ -194,19 +194,19 @@ class display(object):
             openegl.eglTerminate(self.display)
             bcm.vc_dispmanx_display_close(self.dispman_display)
             bcm.vc_dispmanx_element_remove(self.dispman_update,self.dispman_element)
-            self.active = False 
-        
-        
+            self.active = False
+
+
     def swapBuffers(self):
         opengles.glFlush()
         opengles.glFinish()
         #clear_matrices
         openegl.eglSwapBuffers(self.display, self.surface)
-    
+
     def clear(self):
 	#opengles.glBindFramebuffer(GL_FRAMEBUFFER,0)
         opengles.glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
-        
+
     def setBackColour(self,r,g,b,a):
         self.backColour=(r,g,b,a)
         opengles.glClearColor ( eglfloat(r), eglfloat(g), eglfloat(b), eglfloat(a) )
@@ -214,30 +214,30 @@ class display(object):
             opengles.glColorMask(1,1,1,1)  #switches off alpha blending with desktop (is there a bug in the driver?)
         else:
             opengles.glColorMask(1,1,1,0)
-            
+
     def screenshot(self,filestring):
-        
+
         print "Taking screenshot to '",filestring,"'"
-        
+
         size = self.win_height * self.win_width * 3
         img = (ctypes.c_char*size)()
         opengles.glReadPixels(0,0,self.win_width,self.win_height, GL_RGB, GL_UNSIGNED_BYTE, ctypes.byref(img))
         im = Image.frombuffer("RGB",(self.win_width,self.win_height), img, "raw", "RGB", 0,1)
         im = im.transpose(Image.FLIP_TOP_BOTTOM)
         im.save(filestring)
-        
 
 
-#=====================================================================================================================================================================================  
+
+#=====================================================================================================================================================================================
 # Creation functions
 
 class createCuboid(create_shape):
-        
+
         def __init__(self, w,h,d, name="", x=0.0,y=0.0,z=0.0, rx=0.0,ry=0.0,rz=0.0, cx=0.0,cy=0.0,cz=0.0):
                 super(createCuboid,self).__init__(name, x,y,z, rx,ry,rz, 1.0,1.0,1.0, cx,cy,cz)
-                
+
                 print "Creating cuboid ..."
-                
+
                 self.width = w
                 self.height = h
                 self.depth = d
@@ -247,11 +247,11 @@ class createCuboid(create_shape):
                 ww=w*.5
                 hh=h*.5
                 dd=d*.5
-                
+
                 tw=1.0 #w       #texture scales (each set to 1 would stretch it over face)
                 th=1.0 #h
                 td=1.0 #d
-                
+
                 #cuboid data - faces are separated out for texturing..
 
                 self.vertices = eglfloats(( -ww,hh,dd, ww,hh,dd, ww,-hh,dd, -ww,-hh,dd,
@@ -261,10 +261,10 @@ class createCuboid(create_shape):
                                           -ww,-hh,dd, -ww,-hh,-dd, -ww,hh,-dd, -ww,hh,dd,
                                           -ww,hh,-dd, ww,hh,-dd, ww,-hh,-dd, -ww,-hh,-dd));
                 self.normals = eglfloats(( 0,0,1, 0,0,1, 0,0,1, 0,0,1,
-                                          1,0,0, 1,0,0, 1,0,0, 1,0,0, 
+                                          1,0,0, 1,0,0, 1,0,0, 1,0,0,
                                           0,1,0, 0,1,0, 0,1,0, 0,1,0,
-                                          0,-1,0, 0,-1,0, 0,-1,0, 0,-1,0, 
-                                          -1,0,0, -1,0,0, -1,0,0, -1,0,0, 
+                                          0,-1,0, 0,-1,0, 0,-1,0, 0,-1,0,
+                                          -1,0,0, -1,0,0, -1,0,0, -1,0,0,
                                           0,0,-1, 0,0,-1, 0,0,-1, 0,0,-1))
                 self.indices = eglshorts(( 1,0,3, 1,3,2, 5,4,7, 5,7,6, 9,8,11, 9,11,10, 13,12,15, 13,15,14, 19,18,17, 19,17,16, 20,21,22, 20,22,23));
                 self.tex_coords = eglfloats(( 0,0, tw,0, tw,th, 0,th,
@@ -273,21 +273,21 @@ class createCuboid(create_shape):
                                           0,0, tw,0, tw,td, 0,td,
                                           td,th, 0,th, 0,0, td,0,
                                           tw,0, 0,0, 0,th, tw,th))
-                                          
+
                 #self.cube_colours = eglbytes(( 0,0,255,255, 0,0,0,255, 0,255,0,255, 0,255,0,255, 0,0,255,255, 255,0,0,255, 255,0,0,255, 0,0,0,255 ));
                 #self.cube_fan1 = eglbytes(( 1,0,3, 1,3,2, 1,2,6, 1,6,5, 1,5,4, 1,4,0 ));
                 #self.cube_fan2 = eglbytes(( 7,4,5, 7,5,6, 7,6,2, 7,2,3, 7,3,0, 7,0,4 ));
-                
+
         def draw(self,tex=None):
                 shape_draw(self,tex)
 
 
 class createEnvironmentCube(object):
-        
+
         def __init__(self,size=500.0,maptype="HALFCROSS",name=""):
-                
+
                 print "Creating Environment Cube ..."
-                
+
                 self.scale = size
                 self.ssize = 36
                 self.ttype = GL_TRIANGLES
@@ -295,7 +295,7 @@ class createEnvironmentCube(object):
                 ww=self.scale*.5
                 hh=self.scale*.5
                 dd=self.scale*.5
-                
+
                 #cuboid data - faces are separated out for texturing..
 
                 self.vertices = eglfloats(( -ww,hh,dd, ww,hh,dd, ww,-hh,dd, -ww,-hh,dd,
@@ -304,12 +304,12 @@ class createEnvironmentCube(object):
                                           ww,-hh,dd, ww,-hh,-dd, -ww,-hh,-dd, -ww,-hh,dd,
                                           -ww,-hh,dd, -ww,-hh,-dd, -ww,hh,-dd, -ww,hh,dd,
                                           -ww,hh,-dd, ww,hh,-dd, ww,-hh,-dd, -ww,-hh,-dd ))
-                                          
+
                 self.normals = eglfloats(( 0,0,1, 0,0,1, 0,0,1, 0,0,1,
-                                          1,0,0, 1,0,0, 1,0,0, 1,0,0, 
+                                          1,0,0, 1,0,0, 1,0,0, 1,0,0,
                                           0,1,0, 0,1,0, 0,1,0, 0,1,0,
-                                          0,-1,0, 0,-1,0, 0,-1,0, 0,-1,0, 
-                                          -1,0,0, -1,0,0, -1,0,0, -1,0,0, 
+                                          0,-1,0, 0,-1,0, 0,-1,0, 0,-1,0,
+                                          -1,0,0, -1,0,0, -1,0,0, -1,0,0,
                                           0,0,-1, 0,0,-1, 0,0,-1, 0,0,-1))
 
                 self.indices = eglshorts(( 3,0,1, 2,3,1, 7,4,5, 6,7,5, 11,8,9, 10,11,9, 15,12,13, 14,15,13, 19,16,17, 18,19,17, 23,22,21, 20,23,21));
@@ -320,7 +320,7 @@ class createEnvironmentCube(object):
 		self.indbot = eglshorts((15,12,13, 14,15,13))  #bottom
 		self.indright = eglshorts((7,4,5, 6,7,5)) #left
 		self.indback = eglshorts((3,0,1, 2,3,1)) #front
-                
+
                 if self.maptype == "HALFCROSS":
                     self.tex_coords = eglfloats(( 0.25,0.25, 0.25,0.75, -0.25,0.75, -0.25,0.25,
                                           0.25,0.75, 0.75,0.75, 0.75,1.25, 0.25,1.25,
@@ -336,13 +336,13 @@ class createEnvironmentCube(object):
                                           0.0,0.661, 0.25,0.661, 0.25,0.34, 0.0,0.34,    #left
                                           0.25,0.34, 0.5,0.34, 0.5,0.661, 0.25,0.661 )) #front
 		else:
-		    self.tex_faces = eglfloats(( .998,0.002, 0.002,0.002, 0.002,.998, .998,.998,  
+		    self.tex_faces = eglfloats(( .998,0.002, 0.002,0.002, 0.002,.998, .998,.998,
 						.998,0.002, 0.002,0.002, 0.002,.998, .998,.998,
 						0.002,0.002, 0.002,.998, .998,.998, .998,0.002,
-						.998,.998, .998,0.002, 0.002,0.002, 0.002,.998,  
+						.998,.998, .998,0.002, 0.002,0.002, 0.002,.998,
 						0.002,.998, .998,.998, .998,0.002, 0.002,0.002,
 						0.002,0.002, .998,0.002, .998,.998, 0.002,.998))
-		    
+
 
         def draw(self,tex,x,y,z):
 		mtrx =(ctypes.c_float*16)()
@@ -355,7 +355,7 @@ class createEnvironmentCube(object):
 		opengles.glEnableClientState(GL_TEXTURE_COORD_ARRAY)
 		opengles.glDisable(GL_LIGHTING)
 		opengles.glEnable(GL_TEXTURE_2D)
-		
+
 		if self.maptype=="FACES":
 		    opengles.glTexCoordPointer(2, GL_FLOAT, 0, self.tex_faces)
 		    opengles.glBindTexture(GL_TEXTURE_2D,tex[0].tex)
@@ -386,26 +386,26 @@ class createEnvironmentCube(object):
 		    opengles.glTexCoordPointer(2, GL_FLOAT, 0, self.tex_coords)
 		    opengles.glBindTexture(GL_TEXTURE_2D,tex.tex)
 		    opengles.glDrawElements( GL_TRIANGLES, 36, GL_UNSIGNED_SHORT , self.indices)
-		    
+
 		#opengles.glEnable(GL_LIGHTING)
 		opengles.glDisable(GL_TEXTURE_2D)
 		#restore to previous matrix
 		opengles.glLoadMatrixf(mtrx)
-	
+
 
 class createMergeShape(create_shape):
-        
+
         def __init__(self,name="",x=0.0,y=0.0,z=0.0, rx=0.0,ry=0.0,rz=0.0, sx=1.0,sy=1.0,sz=1.0, cx=0.0,cy=0.0,cz=0.0):
                 super(createMergeShape,self).__init__(name, x,y,z, rx,ry,rz, sx,sy,sz, cx,cy,cz)
-                
+
                 print "Creating Merge Shape ..."
-                
+
                 self.vertices=[]
                 self.normals=[]
                 self.tex_coords=[]
                 self.indices=[]    #stores all indices for single render
                 self.shape=[]
-            
+
         def add(self,shape, x=0.0,y=0.0,z=0.0, rx=0.0,ry=0.0,rz=0.0, sx=1.0,sy=1.0,sz=1.0, cx=0.0,cy=0.0,cz=0.0):
                 merge(self,shape, x+shape.x,y+shape.y,z+shape.z, rx+shape.rotx,ry+shape.roty,rz+shape.rotz, sx*shape.sx,sy*shape.sy,sz*shape.sz, cx,cy,cz)
 
@@ -418,42 +418,42 @@ class createMergeShape(create_shape):
                         rt = random.random()*360.0
                         y=elevmap.calcHeight(-x,-z)+rh*2
                         merge(self,shape, x,y,z, 0,rt,0, rh,rh,rh)
-        
+
         def radialCopy(self, shape, x=0,y=0,z=0, startRadius=2.0, endRadius=2.0, startAngle=0.0, endAngle=360.0, step=12):
-            
+
                 st = (endAngle-startAngle) / step
                 rst = (endRadius - startRadius) / int(st)
                 rd = startRadius
                 sta = startAngle
-                
+
                 for r in range(0,int(st)):
                     ca = math.cos(sta * rad)
                     sa = math.sin(sta * rad)
                     merge(self,shape, x+ca*rd,y,z+sa*rd, 0,sta,0)
                     sta += st
                     rd += rst
-                    
+
         def draw(self,shapeNo,tex=None):
                 opengles.glVertexPointer( 3, GL_FLOAT, 0, self.verts);
-                opengles.glNormalPointer( GL_FLOAT, 0, self.norms);             
+                opengles.glNormalPointer( GL_FLOAT, 0, self.norms);
                 if tex > 0: texture_on(tex,self.texcoords,GL_FLOAT)
-                transform(self.x,self.y,self.z, self.rotx,self.roty,self.rotz, self.sx,self.sy,self.sz, self.cx,self.cy,self.cz)                
+                transform(self.x,self.y,self.z, self.rotx,self.roty,self.rotz, self.sx,self.sy,self.sz, self.cx,self.cy,self.cz)
                 opengles.glDrawElements( self.shape[shapeNo][2], self.shape[shapeNo][1], GL_UNSIGNED_SHORT, self.shape[shapeNo][0])
                 if tex > 0: texture_off()
 
         def drawAll(self,tex=None):
                 opengles.glVertexPointer( 3, GL_FLOAT, 0, self.verts);
-                opengles.glNormalPointer( GL_FLOAT, 0, self.norms);             
+                opengles.glNormalPointer( GL_FLOAT, 0, self.norms);
                 if tex > 0: texture_on(tex,self.texcoords,GL_FLOAT)
                 opengles.glDisable(GL_CULL_FACE)
-                transform(self.x,self.y,self.z, self.rotx,self.roty,self.rotz, self.sx,self.sy,self.sz, self.cx,self.cy,self.cz)                
+                transform(self.x,self.y,self.z, self.rotx,self.roty,self.rotz, self.sx,self.sy,self.sz, self.cx,self.cy,self.cz)
                 opengles.glDrawElements( self.shape[0][2], self.totind, GL_UNSIGNED_SHORT, self.inds)
                 opengles.glEnable(GL_CULL_FACE)
                 if tex > 0: texture_off()
 
-                
+
 class createPlane(create_shape):
-        
+
         def __init__(self,w=1.0,h=1.0, name="", x=0.0,y=0.0,z=0.0, rx=0.0,ry=0.0,rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0):
                 super(createPlane,self).__init__(name, x,y,z, rx,ry,rz, sx,sy,sz, cx,cy,cz)
 
@@ -468,7 +468,7 @@ class createPlane(create_shape):
                 self.indices=[]
                 ww=w*.5
                 hh=h*.5
-                
+
                 addVertex(self.vertices,-ww+x,hh+y,z,self.normals,0,0,1,self.tex_coords,0.0,0.0)
                 addVertex(self.vertices,ww+x,hh+y,z,self.normals,0,0,1,self.tex_coords,1.0,0.0)
                 addVertex(self.vertices,ww+x,-hh+y,z,self.normals,0,0,1,self.tex_coords,1.0,1.0)
@@ -481,13 +481,13 @@ class createPlane(create_shape):
                 self.inds = eglshorts(self.indices);
                 self.norms = eglfloats(self.normals);
                 self.texcoords = eglfloats(self.tex_coords);
-                
-        
+
+
         def draw(self,tex=None):
                 opengles.glVertexPointer( 3, GL_FLOAT, 0, self.verts);
                 opengles.glNormalPointer( GL_FLOAT, 0, self.norms);
                 if tex > 0: texture_on(tex,self.texcoords,GL_FLOAT)
-                transform(self.x,self.y,self.z,self.rotx,self.roty,self.rotz,self.sx,self.sy,1,self.cx,self.cy,self.cz)    
+                transform(self.x,self.y,self.z,self.rotx,self.roty,self.rotz,self.sx,self.sy,1,self.cx,self.cy,self.cz)
                 opengles.glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, self.inds)
                 if tex > 0: texture_off()
 
@@ -502,25 +502,25 @@ class createLathe(create_shape):
                 self.path = path
                 self.sides = sides
                 self.ttype = GL_TRIANGLES
-                
+
                 results = lathe(path, sides, True)
-                
+
                 self.vertices = eglfloats(results[0])
                 self.normals = eglfloats(results[1])
                 self.indices = eglshorts(results[2])
                 self.tex_coords = eglfloats(results[3])
                 self.ssize = results[4]
-            
+
         def draw(self,tex=None):
 		opengles.glDisable(GL_CULL_FACE)
                 shape_draw(self,tex)
                 opengles.glEnable(GL_CULL_FACE)
 
 class createDisk(create_shape):
-    
+
         def __init__(self,radius=1,sides=12,name="", x=0.0,y=0.0,z=0.0, rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0):
                 super(createDisk,self).__init__(name, x,y,z, rx,ry,rz, sx,sy,sz, cx,cy,cz)
-                
+
                 print "Creating disk ..."
 
                 self.verts=[]
@@ -530,47 +530,47 @@ class createDisk(create_shape):
                 self.ttype = GL_TRIANGLES
                 self.sides = sides
 
-                
+
                 st = pipi/slices
                 addVertex(self.verts,x,y,z,self.norms,0,1,0,self.texcoords,0.5,0.5)
                 for r in range(0,sides+1):
                     ca=math.sin(r*st)
                     sa=math.cos(r*st)
                     addVertex(self.verts,x+radius * ca,y,z+radius * sa,self.norms,0,1,0,self.texcoords,ca*0.5+0.5,sa*0.5+0.5)
-                    
-                for r in range(0,sides):   
+
+                for r in range(0,sides):
                     addTri(self.inds,0,r+1,r+2)
 
                 self.vertices = eglfloats(self.verts);
                 self.indices = eglshorts(self.inds);
                 self.normals = eglfloats(self.norms);
                 self.tex_coords = eglfloats(self.texcoords);
-                self.ssize = sides*3            
-        
+                self.ssize = sides*3
+
         def draw(self,tex=None):
-                shape_draw(self,tex)        
+                shape_draw(self,tex)
 
 
 class createSphere(create_shape):
 
         def __init__(self,radius=1,slices=12,sides=12,hemi=0.0,name="", x=0.0,y=0.0,z=0.0, rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0):
                 super(createSphere,self).__init__(name, x,y,z, rx,ry,rz, sx,sy,sz, cx,cy,cz)
-                
+
                 print "Creating sphere ..."
 
                 path = []
                 st = (pipi*(1.0-hemi))/slices
                 for r in range(0,slices+1):
                     path.append((radius * math.sin(r*st),radius * math.cos(r*st)))
-                        
+
                 self.radius = radius
                 self.slices = slices
                 self.sides = sides
                 self.hemi = hemi
                 self.ttype = GL_TRIANGLES
-                
+
                 results = lathe(path, sides, True)
-                
+
                 self.vertices = eglfloats(results[0])
                 self.normals = eglfloats(results[1])
                 self.indices = eglshorts(results[2])
@@ -585,22 +585,22 @@ class createTorus(create_shape):
 
         def __init__(self,radius=2.0,thickness=0.5, ringrots=6, sides=12,name="", x=0.0,y=0.0,z=0.0, rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0):
                 super(createTorus,self).__init__(name, x,y,z, rx,ry,rz, sx,sy,sz, cx,cy,cz)
-                
+
                 print "Creating Torus ..."
 
                 path = []
                 st = (pipi*2)/ringrots
                 for r in range(0,ringrots+1):
                     path.append((radius + thickness * math.sin(r*st),thickness * math.cos(r*st)))
-                        
+
                 self.radius = radius
                 self.thickness = thickness
                 self.ringrots = ringrots
                 self.sides = sides
                 self.ttype = GL_TRIANGLES
-                
+
                 results = lathe(path, sides, True)
-                
+
                 self.vertices = eglfloats(results[0])
                 self.normals = eglfloats(results[1])
                 self.indices = eglshorts(results[2])
@@ -614,9 +614,9 @@ class createTube(create_shape):
 
         def __init__(self,radius=1.0,thickness=0.5, height=2.0, sides=12,name="", x=0.0,y=0.0,z=0.0, rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0):
                 super(createTube,self).__init__(name, x,y,z, rx,ry,rz, sx,sy,sz, cx,cy,cz)
-                
+
                 print "Creating Tube ..."
-                
+
                 t = thickness * 0.5
                 path = []
                 path.append((radius-t, height * .5))
@@ -624,15 +624,15 @@ class createTube(create_shape):
                 path.append((radius+t, -height * .5))
                 path.append((radius-t, -height * .5))
                 path.append((radius-t, height * .5))
-                        
+
                 self.radius = radius
                 self.thickness = thickness
                 self.height = height
                 self.sides = sides
                 self.ttype = GL_TRIANGLES
-                
+
                 results = lathe(path, sides, True)
-                
+
                 self.vertices = eglfloats(results[0])
                 self.normals = eglfloats(results[1])
                 self.indices = eglshorts(results[2])
@@ -641,12 +641,12 @@ class createTube(create_shape):
 
         def draw(self,tex=None):
                 shape_draw(self,tex)
-                
+
 class createSpiral(create_shape):
 
         def __init__(self,radius=1.0,thickness=0.2, ringrots=6, sides=12, rise=1.0, loops=2.0, name="", x=0.0,y=0.0,z=0.0, rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0):
                 super(createSpiral,self).__init__(name, x,y,z, rx,ry,rz, sx,sy,sz, cx,cy,cz)
-                
+
                 print "Creating Spiral ...", radius,thickness, ringrots, sides
 
                 path = []
@@ -655,15 +655,15 @@ class createSpiral(create_shape):
                 for r in range(0,ringrots+1):
                     path.append((radius + thickness * math.sin(r*st),thickness * math.cos(r*st)-hr))
                     print "path:",path[r][0], path[r][1]
-                        
+
                 self.radius = radius
                 self.thickness = thickness
                 self.ringrots = ringrots
                 self.sides = sides
                 self.ttype = GL_TRIANGLES
-                
+
                 results = lathe(path, sides, True, rise, loops)
-                
+
                 self.vertices = eglfloats(results[0])
                 self.normals = eglfloats(results[1])
                 self.indices = eglshorts(results[2])
@@ -672,12 +672,12 @@ class createSpiral(create_shape):
 
         def draw(self,tex=None):
                 shape_draw(self, tex)
-                                
+
 class createCylinder(create_shape):
 
         def __init__(self,radius=1.0,height=2.0,sides=12, name="",x=0.0,y=0.0,z=0.0, rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0):
                 super(createCylinder,self).__init__(name, x,y,z, rx,ry,rz, sx,sy,sz, cx,cy,cz)
-                
+
                 print "Creating Cylinder ..."
 
                 path = []
@@ -685,14 +685,14 @@ class createCylinder(create_shape):
                 path.append((radius, height * .5))
                 path.append((radius, -height * .5))
                 path.append((0,-height * .5))
-                
+
                 self.radius = radius
                 self.height = height
                 self.sides = sides
                 self.ttype = GL_TRIANGLES
-                
+
                 results = lathe(path, sides, True)
-                
+
                 self.vertices = eglfloats(results[0])
                 self.normals = eglfloats(results[1])
                 self.indices = eglshorts(results[2])
@@ -701,26 +701,26 @@ class createCylinder(create_shape):
 
         def draw(self,tex=None):
                 shape_draw(self,tex)
-                
+
 class createCone(create_shape):
 
         def __init__(self,radius=1.0,height=2.0,sides=12, name="",x=0.0,y=0.0,z=0.0, rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0):
                 super(createCone,self).__init__(name, x,y,z, rx,ry,rz, sx,sy,sz, cx,cy,cz)
-                
+
                 print "Creating Cone ..."
 
                 path = []
                 path.append((0,height * .5))
                 path.append((radius, -height * .5))
                 path.append((0,-height * .5))
-                
+
                 self.radius = radius
                 self.height = height
                 self.sides = sides
                 self.ttype = GL_TRIANGLES
-                
+
                 results = lathe(path, sides, True)
-                
+
                 self.vertices = eglfloats(results[0])
                 self.normals = eglfloats(results[1])
                 self.indices = eglshorts(results[2])
@@ -728,13 +728,13 @@ class createCone(create_shape):
                 self.ssize = results[4]
 
         def draw(self,tex=None):
-                shape_draw(self,tex)            
-        
+                shape_draw(self,tex)
+
 class createTCone(create_shape):
 
         def __init__(self,radiusBot=1.2,radiusTop=0.8,height=2.0,sides=12, name="",x=0.0,y=0.0,z=0.0, rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0):
                 super(createTCone,self).__init__(name, x,y,z, rx,ry,rz, sx,sy,sz, cx,cy,cz)
-                
+
                 print "Creating Truncated Cone ..."
 
                 path = []
@@ -742,15 +742,15 @@ class createTCone(create_shape):
                 path.append((radiusTop, height * .5))
                 path.append((radiusBot, -height * .5))
                 path.append((0,-height * .5))
-                
+
                 self.radiusBot = radiusBot
                 self.radiusTop = radiusTop
                 self.height = height
                 self.sides = sides
                 self.ttype = GL_TRIANGLES
-                
+
                 results = lathe(path, sides, True)
-                
+
                 self.vertices = eglfloats(results[0])
                 self.normals = eglfloats(results[1])
                 self.indices = eglshorts(results[2])
@@ -765,9 +765,9 @@ class createExtrude(create_shape):
 
         def __init__(self, path, height=1.0, name="",x=0.0,y=0.0,z=0.0, rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0):
                 super(createExtrude,self).__init__(name, x,y,z, rx,ry,rz, sx,sy,sz, cx,cy,cz)
-                
+
                 print "Creating Extrude ..."
-                
+
                 s = len(path)
                 ht = height * 0.5
 
@@ -779,12 +779,12 @@ class createExtrude(create_shape):
                 self.tex_coords=[]
                 self.edges = s
                 self.ttype = GL_TRIANGLES
-                
+
                 minx = path[0][0]
                 maxx = path[0][0]
                 miny = path[0][1]
                 maxy = path[0][1]
-                
+
                 #find min/max values for texture coords
                 for p in range(0, s):
                     px = path[p][0]
@@ -793,10 +793,10 @@ class createExtrude(create_shape):
                     if py > maxy: maxy = py
                     if px < minx: minx = px
                     if px > maxx: maxx = px
-                
+
                 tx = 1.0/(maxx-minx)
                 ty = 1.0/(maxy-miny)
-                
+
                 for p in range (0, s):
                     px = path[p][0]
                     py = path[p][1]
@@ -807,8 +807,8 @@ class createExtrude(create_shape):
                     self.norms.append(0.0)
                     self.norms.append(-1.0)
                     self.tex_coords.append((px-minx)*tx)
-                    self.tex_coords.append((py-miny)*ty)                    
-            
+                    self.tex_coords.append((py-miny)*ty)
+
                 for p in range (0, s):
                     px = path[p][0]
                     py = path[p][1]
@@ -819,22 +819,22 @@ class createExtrude(create_shape):
                     self.norms.append(0.0)
                     self.norms.append(1.0)
                     self.tex_coords.append((px-minx)*tx)
-                    self.tex_coords.append((py-miny)*ty)                    
+                    self.tex_coords.append((py-miny)*ty)
 
                 for p in range (0, s):          #top face indices - triangle fan
                     self.topface.append(p)
-                    
+
                 for p in range (0, s):          #bottom face indices - triangle fan
                     b=s+(s-p)
                     print "bi:",b
                     self.botface.append(b-1)
-        
+
                 for p in range (0, s):          #sides - triangle strip
                     self.sidefaces.append(p)
                     self.sidefaces.append(p+s)
                 self.sidefaces.append(0)
                 self.sidefaces.append(s)
-                    
+
                 self.verts = eglfloats(self.verts)
                 self.norms = eglfloats(self.norms)
                 self.tex_coords = eglfloats(self.tex_coords)
@@ -861,14 +861,14 @@ class createElevationMapFromTexture(create_shape):
 
         def __init__(self, mapfile, width=100.0, depth=100.0, height=10.0, divx=0, divy=0, ntiles=1.0, name="",x=0.0,y=0.0,z=0.0, rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0):
                 super(createElevationMapFromTexture,self).__init__(name, x,y,z, rx,ry,rz, sx,sy,sz, cx,cy,cz)
-                
+
                 print "Loading height map ...",mapfile
-                
+
                 if divx>200 or divy>200:
                         print "... Map size can't be bigger than 200x200 divisions"
                         divx=200
                         divy=200
-                        
+
                 im = Image.open(mapfile)
                 im = PIL.ImageOps.invert(im)
                 ix,iy = im.size
@@ -889,7 +889,7 @@ class createElevationMapFromTexture(create_shape):
                 self.ix=ix
                 self.iy=iy
                 self.ttype = GL_TRIANGLE_STRIP
-                
+
                 print "Creating Elevation Map ...", ix,iy
 
                 wh = width*0.5
@@ -899,12 +899,12 @@ class createElevationMapFromTexture(create_shape):
                 ht = height / 255.0
                 tx = ntiles/ix
                 ty = ntiles/iy
-                
+
                 verts=[]
                 norms=[]
                 tex_coords=[]
                 idx=[]
-                
+
                 for y in range(0,iy):
                         for x in range(0,ix):
                                 hgt = (self.pixels[x,y])*ht
@@ -916,9 +916,9 @@ class createElevationMapFromTexture(create_shape):
                                 norms.append(0.0)
                                 tex_coords.append((ix-x) * tx)
                                 tex_coords.append((iy-y) * ty)
-                
+
                 s=0
-                #create one long triangle_strip by alternating X directions     
+                #create one long triangle_strip by alternating X directions
                 for y in range(0,iy-2,2):
                     for x in range(0,ix-1):
                                 i = (y * ix)+x
@@ -937,24 +937,24 @@ class createElevationMapFromTexture(create_shape):
                 self.tex_coords = eglfloats(tex_coords)
                 self.ssize = s  #ix * iy * 2
                 print s, ix * iy * 2
-        
+
         # determines how high an object is when dropped on the map (providing it's inside the map area)
         def dropOn(self,x,z):
-                wh = self.width*0.5 
-                hh = self.depth*0.5 
+                wh = self.width*0.5
+                hh = self.depth*0.5
                 ws = self.width / self.ix
                 hs = self.depth / self.iy
                 ht = self.height / 255.0
-                
+
                 if x > -wh and x < wh and z > -hh and z < hh:
                     pixht = self.pixels[(wh-x)/ws,(hh-z)/hs] * ht
-                
+
                 return pixht
 
         # accurately determines how high an object is when dropped on the map (providing it's inside the map area)
         def calcHeight(self,px,pz):
-                wh = self.width*0.5 
-                hh = self.depth*0.5 
+                wh = self.width*0.5
+                hh = self.depth*0.5
                 ws = self.width / self.ix
                 hs = self.depth / self.iy
                 ht = self.height / 255.0
@@ -966,41 +966,41 @@ class createElevationMapFromTexture(create_shape):
                 #print px,pz,x,z
                 #x = wh-math.floor(x+0.5)/ws
                 #z = hh-math.floor(z+0.5)/hs
-                
+
                 ih=intersectTriangle((x,self.pixels[x,z]*ht,z), (x+1,self.pixels[x+1,z]*ht,z), (x,self.pixels[x,z+1]*ht,z+1), (px,0,pz))
                 if ih == -100000:
                     ih=intersectTriangle((x+1,self.pixels[x+1,z+1]*ht,z+1), (x+1,self.pixels[x+1,z]*ht,z), (x,self.pixels[x,z+1]*ht,z+1), (px,0,pz))
                 if ih == -100000: ih = 0
-                
+
                 return ih
-                
+
         def draw(self,tex=None):
                 shape_draw(self,tex)
 
 
 class clipPlane():
 # Added by Patrick Gaunt, 10-07-2012
-    
+
     def __init__(self, no=0, x=0, y=0, z=1, w=60):
 	self.no = eglint(GL_CLIP_PLANE0 + no)
 	self.equation = eglfloats((x,y,z,w))
 	opengles.glClipPlanef(self.no, self.equation)
-	
+
     def enable(self):
 	opengles.glEnable(self.no)
-	
+
     def disable(self):
 	opengles.glDisable(self.no)
-	
-#=====================================================================================================================================================================================  
+
+#=====================================================================================================================================================================================
 # Cameras
-                                
+
 class camera(create_shape):
-    
+
     def __init__(self,name="",x=0.0,y=0.0,z=0.0, rx=0.0,ry=0.0,rz=0.0):
         super(camera,self).__init__(name, x,y,z, rx,ry,rz, 1,1,1)
         print "Creating camera ..."
-        
+
     def orthographic(self,left,right,bottom,top,zoom=1,near=-1,far=10):
         opengles.glMatrixMode(GL_PROJECTION)
         opengles.glLoadIdentity()
@@ -1016,45 +1016,45 @@ class camera(create_shape):
         hwd = hht * w / h
         opengles.glFrustumf(eglfloat(-hwd), eglfloat(hwd), eglfloat(-hht), eglfloat(hht), eglfloat(near), eglfloat(far))
         opengles.glMatrixMode(GL_MODELVIEW)
-        
-#=====================================================================================================================================================================================    
+
+#=====================================================================================================================================================================================
 
 class loadModel(create_shape):
-        
+
     def __init__(self,fileString, texs, name="", x=0.0,y=0.0,z=0.0, rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0):
         super(loadModel,self).__init__(name, x,y,z, rx,ry,rz, sx,sy,sz, cx,cy,cz)
 
         self.exf = fileString[-3:].lower()
         self.texs = texs
         print "Loading ",fileString
-        
+
         if self.exf == 'egg':
             self.model = loaderEgg.loadFileEGG(self,fileString,texs)
             return self.model
         else:
             print self.exf, "file not supported"
             return None
-            
+
     def draw(self,tex=None,n=None):
         if self.exf == 'egg': loaderEgg.draw(self,tex,n)
-        
-    def clone(self): 
+
+    def clone(self):
         newLM = loadModel("__clone__."+self.exf,self.texs)
         newLM.vGroup = self.vGroup
         return newLM
-        
+
     def reparentTo(self, parent):
         if not(self in parent.childModel):  parent.childModel.append(self)
-	
+
     def texSwap(self, texID, filename):
 	return loaderEgg.texSwap(self, texID, filename)
-            
-                                        
-#=====================================================================================================================================================================================  
+
+
+#=====================================================================================================================================================================================
 # Lights
 
 class createLight(object):
-    
+
     def __init__(self,no=0,red=1.0,grn=1.0,blu=1.0, name="",x=0,y=0,z=0, ambR=0.5,ambG=0.5,ambB=0.5):
 
         print "Creating light ..."
@@ -1067,14 +1067,14 @@ class createLight(object):
 	self.name = name
 	#self.mShininess = eglfloat(120.0)
 	self.lighton = False
-	
+
 	#opengles.glLightModelfv(GL_LIGHT_MODEL_COLOUR_CONTROL, GL_SEPERATE_SPECULAR_COLOR)   #Turns on specular highlights for textures
 	#opengles.glMaterialfv(GL_FRONT, GL_SHININESS, self.mShininess)#TIM: don't think this works but would like it to
 	opengles.glLightModelfv(GL_LIGHT_MODEL_AMBIENT, self.ambient)
-	opengles.glLightfv(self.no,GL_AMBIENT, self.ambient) 
-	opengles.glLightfv(self.no,GL_DIFFUSE,self.diffuse) 
-	opengles.glLightfv(self.no,GL_SPECULAR,self.specular) 
-	opengles.glLightfv(self.no,GL_POSITION,self.xyz) 
+	opengles.glLightfv(self.no,GL_AMBIENT, self.ambient)
+	opengles.glLightfv(self.no,GL_DIFFUSE,self.diffuse)
+	opengles.glLightfv(self.no,GL_SPECULAR,self.specular)
+	opengles.glLightfv(self.no,GL_POSITION,self.xyz)
 	# 0 for a distant light and -1 for a spot. LIGHT0 comes predefined as a distant light but that's changed here
 	# I would have thought either w needs to be passed as a parameter to __init__ and not overwritten in position
 	# and/or define global values SPOT, DIST, POINT = -1, 0, 1
@@ -1088,7 +1088,7 @@ class createLight(object):
 	self.xyz = eglfloats((x,y,z,1))
 	opengles.glLightfv(self.no, GL_POSITION,self.xyz)
 	opengles.glLoadMatrixf(mtrx)
-    
+
     def on(self):
 	#load view matrix
 	opengles.glEnable(GL_LIGHTING)
@@ -1108,25 +1108,25 @@ class fog():
         opengles.glFogf(GL_FOG_MODE, GL_EXP) # defaults to this anyway
         opengles.glFogf(GL_FOG_DENSITY, eglfloat(density)) # exponent factor
         opengles.glFogfv(GL_FOG_COLOR, eglfloats(colour)) # don't think the alpha value alters the target object alpha
-	
+
     def on(self):
         opengles.glEnable(GL_FOG)
-	
+
     def off(self):
         opengles.glDisable(GL_FOG)
-	
-#=====================================================================================================================================================================================  
+
+#=====================================================================================================================================================================================
 # Text and fonts
 # NEEDS FIXING - TEXTURES NEED CLEANING UP
 
 class font(object):
-    
+
     def __init__(self,font,col="#ffffff"):
         self.font=font
         im = Image.open("fonts/"+font+".png")
         ix,iy = im.size
         pixels = im.load()
-                
+
         self.chr = []
         #extract font information from top scanline of font image;
         #Create width,height,tex_coord and vertices for each char ...
@@ -1144,16 +1144,16 @@ class font(object):
         draw = ImageDraw.Draw(im)
         draw.rectangle((0,1,ix,iy),fill=col)
         im.putalpha(alpha)
-        
+
         #im = im.transpose(Image.FLIP_TOP_BOTTOM)
         image = im.convert("RGBA").tostring("raw","RGBA")
         self.tex=eglint()
         opengles.glGenTextures(1,ctypes.byref(self.tex))
         opengles.glBindTexture(GL_TEXTURE_2D,self.tex)
         opengles.glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,ix,iy,0,GL_RGBA,GL_UNSIGNED_BYTE, ctypes.string_at(image,len(image)))
-        
 
-#=====================================================================================================================================================================================  
+
+#=====================================================================================================================================================================================
 # Odd classes
 
 class missile(object):
@@ -1169,7 +1169,7 @@ class missile(object):
         self.ry = 0.0
         self.rz = 0.0
         self.countDown=0
-    
+
     def fire(self, x,y,z, dx,dy,dz, rx,ry,rz, cnt=0):
         self.isActive = True
         self.x = x
@@ -1182,7 +1182,7 @@ class missile(object):
         self.ry = ry
         self.rz = rz
         self.countDown = cnt
-        
+
     def move(self,missile,tex,dy=0.0,dx=0.0,dz=0.0):
         if dx==0.0: self.x += self.dx
         else: self.x=dx
@@ -1204,7 +1204,7 @@ class missile(object):
         missile.draw(tex)
 
 class ball(object):
-    
+
     def __init__(self,radius,x,y,vx=0.0,vy=0.0,decay=0.001):
 	self.radius=radius
 	self.x=x
@@ -1214,7 +1214,7 @@ class ball(object):
 	self.vy = vy
 	self.mass =radius*2
 	self.decay = decay
-	
+
     def hit(self,otherball):
 	#used for pre-checking ball positions
 	dx = (self.x+self.vx)-(otherball.x+otherball.vx)
@@ -1222,7 +1222,7 @@ class ball(object):
 	rd = self.radius+otherball.radius
 	if (dx**2+dy**2) <= (rd**2): return True
 	else: return False
-	
+
     def collisionBounce(self,otherball):
 	dx = self.x-otherball.x
 	dy = self.y-otherball.y
@@ -1235,7 +1235,7 @@ class ball(object):
 	    #otherball.vy = math.copysign((dy*sq),self.vy)*5.0
 	    #self.vx = 0.0 #math.copysign(abs(dy*sq),self.vx)
 	    #self.vy = 0.0 #-math.copysign(abs(dx*sq),self.vy)
-	    
+
 	    cangle = math.atan2(dy,dx)
 	    mag1 = math.sqrt(self.vx**2+self.vy**2)
 	    mag2 = math.sqrt(otherball.vx**2+otherball.vy**2)
@@ -1254,7 +1254,7 @@ class ball(object):
 	    otherball.vx = math.cos(cangle)*fspx2+math.cos(cangle+pipi*.5)*fspy2
 	    otherball.vy = math.sin(cangle)*fspx2+math.sin(cangle+pipi*.5)*fspy2
 
-    
+
 class shader(object):
 
 # This class based on Peter de Rivaz's mandlebrot example
@@ -1274,10 +1274,10 @@ class shader(object):
 	    loglen=ctypes.c_int()
 	    opengles.glGetProgramInfoLog(shader,N,ctypes.byref(loglen),ctypes.byref(log))
 	    print log.value
-            
-    
+
+
 	def __init__(self, vshader_source, fshader_source, tex1=None, tex2=None, param1=None, param2=None, param3=None):
-		
+
 	    #Pi3D can only accept shaders with limited parameters as specific parameters
 	    #would require a lot more coding unless there's a way of passing these back.
 	    #Shaders should have their parameters defined in the shader source.
@@ -1292,18 +1292,18 @@ class shader(object):
               "  gl_Position = pos;"
               "  tcoord = vertex.xy*0.5+0.5;"
               "}")
-	      	    
+
 	    self.tex1 = tex1
 	    self.tex2 = tex2
-	    
+
 	    vshads = ctypes.c_char_p(vshader_source)
 	    fshads = ctypes.c_char_p(fshader_source)
-	    
+
 	    vshader = opengles.glCreateShader(GL_VERTEX_SHADER)
 	    opengles.glShaderSource(vshader, 1, ctypes.byref(self.vshader_source), 0)
 	    opengles.glCompileShader(vshader)
 	    self.showlog(vshader)
-	    
+
 	    fshader = opengles.glCreateShader(GL_FRAGMENT_SHADER)
 	    opengles.glShaderSource(fshader, 1, ctypes.byref(fshads), 0)
 	    opengles.glCompileShader(fshader)
