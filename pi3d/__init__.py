@@ -48,7 +48,6 @@ def merge(self, shape, x, y, z,
           rx=0.0, ry=0.0, rz=0.0,
           sx=1.0, sy=1.0, sz=1.0,
           cx=0.0, cy=0.0, cz=0.0):
-
   assert shape.ttype is GL_TRIANGLES
 
   if VERBOSE:
@@ -61,15 +60,11 @@ def merge(self, shape, x, y, z,
 
   ve = len(self.vertices)
   vi = len(self.indices)
-  vc = len(shape.vertices)
-  ic = len(shape.indices)
   vp = ve / 3
 
-  for v in range(0,vc,3):
+  for v in range(0, len(shape.vertices), 3):
     # Rotate vertices
-    vx = shape.vertices[v]
-    vy = shape.vertices[v+1]
-    vz = shape.vertices[v+2]
+    vx, vy, vz = shape.vertices[v:v + 3]
     if rz:
       vx, vy, vz = rotateVecZ(rz, vx, vy, vz)
     if rx:
@@ -78,26 +73,19 @@ def merge(self, shape, x, y, z,
       vx, vy, vz = rotateVecY(ry, vx, vy, vz)
 
     # Scale, offset and store vertices
-    self.vertices.append(vx * sx + x)
-    self.vertices.append(vy * sy + y)
-    self.vertices.append(vz * sz + z)
+    self.vertices.extend([vx * sx + x, vy * sy + y, vz * sz + z])
 
     # Rotate normals
-    vx = shape.normals[v]
-    vy = shape.normals[v + 1]
-    vz = shape.normals[v + 2]
+    vx, vy, vz = shape.normals[v:v + 3]
     if rz:
       vx, vy, vz = rotateVecZ(rz, vx, vy, vz)
     if rx:
       vx, vy, vz = rotateVecX(rx, vx, vy, vz)
     if ry:
       vx, vy, vz = rotateVecY(ry, vx, vy, vz)
-    self.normals.append(vx)
-    self.normals.append(vy)
-    self.normals.append(vz)
+    self.normals.extend([vx, vy, vz])
 
-  for v in range(len(shape.tex_coords)):
-    self.tex_coords.append(shape.tex_coords[v])
+  self.tex_coords.extend(shape.tex_coords)
 
   ctypes.restype = ctypes.c_short
   indices = [i + vp for i in shape.indices]
