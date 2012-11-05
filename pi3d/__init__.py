@@ -100,19 +100,16 @@ def merge(self, shape, x, y, z,
     self.tex_coords.append(shape.tex_coords[v])
 
   ctypes.restype = ctypes.c_short
-  indices = []
-  for v in range(ic):
-    ix = shape.indices[v] + vp
-    indices.append(ix)
-    self.indices.append(ix)
+  indices = [i + vp for i in shape.indices]
+  self.indices.extend(indices)
 
-  self.totind = ic+vi
+  self.totind = len(self.indices)  # Pointless!
   self.verts = eglfloats(self.vertices)
   self.norms = eglfloats(self.normals)
   self.texcoords = eglfloats(self.tex_coords)
   self.inds = eglshorts(self.indices)
   self.ttype = GL_TRIANGLES
-  self.shape.append((eglshorts(indices),ic,shape.ttype))
+  self.shape.append((eglshorts(indices), len(indices), shape.ttype))
 
 #=====================================================================================================================================================================================
 # Setup EGL display
