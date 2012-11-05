@@ -13,7 +13,7 @@ if __name__ == '__main__':
   home = os.getcwd()
   demodir = os.path.join(home, 'demos')
   if not os.path.isdir(demodir):
-    print('Demo.py must be called from the root directory of pi3d')
+    print('%s must be called from the root directory of pi3d' % sys.argv[0])
     exit(-1)
 
   demofiles = [f for f in os.listdir(demodir) if is_demo(f)]
@@ -22,7 +22,22 @@ if __name__ == '__main__':
     exit(-1)
 
   demos = sorted([f[:-len(SUFFIX)] for f in demofiles])
-
-  if len(sys.argv) is 1:
+  def usage():
     print('Usage: %s [%s]' % (sys.argv[0], ' | '.join(demos)))
 
+  if len(sys.argv) is 1:
+    usage()
+
+  elif len(sys.argv) is 2:
+    demo = sys.argv[1]
+    for d in demos:
+      if d.startswith(demo):
+        __import__('demos.' + d)
+        exit(0)  # None of the demos exit so we'll never get here.
+
+    print("Didn't understand command %s" % demo)
+    usage()
+    exit(-1)
+
+  else:
+    print('Too many arguments to %s' % sys.argv[0])
