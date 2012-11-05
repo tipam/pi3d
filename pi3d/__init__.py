@@ -43,12 +43,12 @@ def loadECfiles(path, fname, textures):
   files = (os.path.join(path, '%s_%s.jpg' % (fname, p)) for p in CUBE_PARTS)
   return [textures.loadTexture(f) for f in files]
 
-
 def merge(self, shape, x, y, z,
           rx=0.0, ry=0.0, rz=0.0,
           sx=1.0, sy=1.0, sz=1.0,
           cx=0.0, cy=0.0, cz=0.0):
-  assert shape.ttype is GL_TRIANGLES
+  assert shape.ttype == GL_TRIANGLES
+  assert len(shape.vertices) == len(shape.normals)
 
   if VERBOSE:
     print "Merging", shape.name
@@ -58,31 +58,26 @@ def merge(self, shape, x, y, z,
   original_vertex_count = len(self.vertices)
 
   for v in range(0, len(shape.vertices), 3):
-    # Rotate vertices
-    vx, vy, vz = shape.vertices[v:v + 3]
-    if rz:
-      vx, vy, vz = rotateVecZ(rz, vx, vy, vz)
-    if rx:
-      vx, vy, vz = rotateVecX(rx, vx, vy, vz)
-    if ry:
-      vx, vy, vz = rotateVecY(ry, vx, vy, vz)
+    def rotate(array):
+      vec = shape.vertices[v:v + 3]
+      if rz:
+        vec = rotateVecZ(rz, *vec)
+      if rx:
+        vec = rotateVecX(rx, *vec)
+      if ry:
+        vec = rotateVecY(ry, *vec)
+      return vec
 
     # Scale, offset and store vertices
+    vx, vy, vz = rotate(shape.vertices)
     self.vertices.extend([vx * sx + x, vy * sy + y, vz * sz + z])
 
     # Rotate normals
-    vx, vy, vz = shape.normals[v:v + 3]
-    if rz:
-      vx, vy, vz = rotateVecZ(rz, vx, vy, vz)
-    if rx:
-      vx, vy, vz = rotateVecX(rx, vx, vy, vz)
-    if ry:
-      vx, vy, vz = rotateVecY(ry, vx, vy, vz)
-    self.normals.extend([vx, vy, vz])
+    self.normals.extend(rotate(shape.normals))
 
   self.tex_coords.extend(shape.tex_coords)
 
-  ctypes.restype = ctypes.c_short
+  ctypes.restype = ctypes.c_short  # TODO: remove this side-effect.
   indices = [i + original_vertex_count / 3 for i in shape.indices]
   self.indices.extend(indices)
 
