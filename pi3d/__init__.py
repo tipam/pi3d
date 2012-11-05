@@ -1,8 +1,8 @@
 # pi3D module
 # ===========
-# Version 0.05
+# Version 0.06
 #
-# Copyright (c) 2012, Tim Skillman.
+# Copyright (c) 2012, Tim Skillman, Tom Swirly
 # (Some code initially based on Peter de Rivaz pyopengles example.)
 #
 #    www.github.com/tipam/pi3d
@@ -24,24 +24,25 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 # DEALINGS IN THE SOFTWARE.
 
-pi3d_version = 0.05
+__version__ = '0.06'
 
-import sys, random
+import os.path
+import random
+import sys
+
 from pi3d.pi3dCommon import *
 from pi3d import loaderEgg
 import PIL.ImageOps, ImageDraw
 
-def loadECfiles(path,fname,texs):
-    #helper for loading environment cube faces
-    filep=path+"/"+fname
-    faces=[]
-    faces.append(texs.loadTexture(filep+"_top.jpg"))
-    faces.append(texs.loadTexture(filep+"_left.jpg"))
-    faces.append(texs.loadTexture(filep+"_front.jpg"))
-    faces.append(texs.loadTexture(filep+"_right.jpg"))
-    faces.append(texs.loadTexture(filep+"_back.jpg"))
-    faces.append(texs.loadTexture(filep+"_bottom.jpg"))
-    return faces
+VERBOSE = True
+
+CUBE_PARTS = ('top', 'left', 'front', 'right', 'back', 'bottom')
+
+def loadECfiles(path, fname, textures):
+  # Helper for loading environment cube faces.
+  files = (os.path.join(path, '%s_%s.jpg' % (fname, p)) for p in CUBE_PARTS)
+  return [textures.loadTexture(f) for f in files]
+
 
 def merge(self,shape, x,y,z, rx=0.0,ry=0.0,rz=0.0, sx=1.0,sy=1.0,sz=1.0, cx=0.0,cy=0.0,cz=0.0):
 
@@ -131,11 +132,12 @@ class display(object):
         self.max_width = width.value
         self.max_height = height.value
 
-        #print startup notices
-        print "Pi3D module - version",pi3d_version
-        print "Copyright (c) Tim Skillman, 2012"
-        print "Updates available from www.github.com/tipam/pi3d"
-        print "Screen size",self.max_width, self.max_height
+        if VERBOSE:
+          print "Pi3D module - version", __version__
+          print "Copyright (c) Tim Skillman, 2012"
+          print "Copyright (c) Tom Swirly, 2012"
+          print "Updates available from www.github.com/rec/pi3d"
+          print "Screen size",self.max_width, self.max_height
 
     def create3D(self,x=0,y=0,w=0,h=0, near=1.0, far=800.0, aspect=60.0, depth=24):
 

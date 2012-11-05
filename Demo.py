@@ -24,6 +24,8 @@ if __name__ == '__main__':
   demos = sorted([f[:-len(SUFFIX)] for f in demofiles])
   def usage():
     print('Usage: %s [%s]' % (sys.argv[0], ' | '.join(demos)))
+    print()
+    print('(Any prefix of a demo will also work)')
 
   if len(sys.argv) is 1:
     usage()
