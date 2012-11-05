@@ -5,7 +5,7 @@
 # Copyright (c) 2012, Tim Skillman, Tom Swirly
 # (Some code initially based on Peter de Rivaz pyopengles example.)
 #
-#    www.github.com/tipam/pi3d
+#    www.github.com/rec/pi3d
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy of
 # this software and associated documentation files (the "Software"), to deal in the
@@ -44,75 +44,75 @@ def loadECfiles(path, fname, textures):
   return [textures.loadTexture(f) for f in files]
 
 
-def merge(self,shape, x,y,z, rx=0.0,ry=0.0,rz=0.0, sx=1.0,sy=1.0,sz=1.0, cx=0.0,cy=0.0,cz=0.0):
+def merge(self, shape, x, y, z,
+          rx=0.0, ry=0.0, rz=0.0,
+          sx=1.0, sy=1.0, sz=1.0,
+          cx=0.0, cy=0.0, cz=0.0):
 
-        # ONLY WORKS WITH GL_TRIANGLES
-        if shape.ttype <> GL_TRIANGLES:
-            assert "Only GL_TRIANGLE shapes can be merged"
+  assert shape.ttype is GL_TRIANGLES
 
-        print "Merging", shape.name
+  if VERBOSE:
+    print "Merging", shape.name
 
-        vertices=[]
-        normals=[]
-        tex_coords=[]
-        totindices=[]
+  vertices = []
+  normals = []
+  tex_coords = []
+  totindices = []
 
-        #ctypes.restype = ctypes.c_float
-        ve = len(self.vertices)
-        vi = len(self.indices)
-        vc = len(shape.vertices)
-        ic = len(shape.indices)
-        vp = ve/3
+  ve = len(self.vertices)
+  vi = len(self.indices)
+  vc = len(shape.vertices)
+  ic = len(shape.indices)
+  vp = ve / 3
 
-        #print vc,ve,vi,ic
+  for v in range(0,vc,3):
+    # Rotate vertices
+    vx = shape.vertices[v]
+    vy = shape.vertices[v+1]
+    vz = shape.vertices[v+2]
+    if rz:
+      vx, vy, vz = rotateVecZ(rz, vx, vy, vz)
+    if rx:
+      vx, vy, vz = rotateVecX(rx, vx, vy, vz)
+    if ry:
+      vx, vy, vz = rotateVecY(ry, vx, vy, vz)
 
-        for v in range(0,vc,3):
-            #Rotate vertices
-            vx = shape.vertices[v]
-            vy = shape.vertices[v+1]
-            vz = shape.vertices[v+2]
-            if rz<>0.0: vx,vy,vz = rotateVecZ(rz,vx,vy,vz)
-            if rx<>0.0: vx,vy,vz = rotateVecX(rx,vx,vy,vz)
-            if ry<>0.0: vx,vy,vz = rotateVecY(ry,vx,vy,vz)
+    # Scale, offset and store vertices
+    self.vertices.append(vx * sx + x)
+    self.vertices.append(vy * sy + y)
+    self.vertices.append(vz * sz + z)
 
-            #Scale, offset and store vertices
-            self.vertices.append(vx*sx+x)
-            self.vertices.append(vy*sy+y)
-            self.vertices.append(vz*sz+z)
+    # Rotate normals
+    vx = shape.normals[v]
+    vy = shape.normals[v + 1]
+    vz = shape.normals[v + 2]
+    if rz:
+      vx, vy, vz = rotateVecZ(rz, vx, vy, vz)
+    if rx:
+      vx, vy, vz = rotateVecX(rx, vx, vy, vz)
+    if ry:
+      vx, vy, vz = rotateVecY(ry, vx, vy, vz)
+    self.normals.append(vx)
+    self.normals.append(vy)
+    self.normals.append(vz)
 
-            #Rotate normals
-            vx = shape.normals[v]
-            vy = shape.normals[v+1]
-            vz = shape.normals[v+2]
-            if rz<>0.0: vx,vy,vz = rotateVecZ(rz,vx,vy,vz)
-            if rx<>0.0: vx,vy,vz = rotateVecX(rx,vx,vy,vz)
-            if ry<>0.0: vx,vy,vz = rotateVecY(ry,vx,vy,vz)
-            self.normals.append(vx)
-            self.normals.append(vy)
-            self.normals.append(vz)
+  for v in range(len(shape.tex_coords)):
+    self.tex_coords.append(shape.tex_coords[v])
 
-        for v in range(0,len(shape.tex_coords)):
-            self.tex_coords.append(shape.tex_coords[v])
+  ctypes.restype = ctypes.c_short
+  indices = []
+  for v in range(ic):
+    ix = shape.indices[v] + vp
+    indices.append(ix)
+    self.indices.append(ix)
 
-
-        ctypes.restype = ctypes.c_short
-        indices=[]
-        for v in range(0,ic):
-            ix = shape.indices[v]+vp
-            indices.append(ix)
-            self.indices.append(ix)
-
-        #print "verts:",vertices
-        #print "inds",indices
-        #print "tcs:",tex_coords
-
-        self.totind = ic+vi
-        self.verts = eglfloats(self.vertices)
-        self.norms = eglfloats(self.normals)
-        self.texcoords = eglfloats(self.tex_coords)
-        self.inds = eglshorts(self.indices)
-        self.ttype = GL_TRIANGLES
-        self.shape.append((eglshorts(indices),ic,shape.ttype))
+  self.totind = ic+vi
+  self.verts = eglfloats(self.vertices)
+  self.norms = eglfloats(self.normals)
+  self.texcoords = eglfloats(self.tex_coords)
+  self.inds = eglshorts(self.indices)
+  self.ttype = GL_TRIANGLES
+  self.shape.append((eglshorts(indices),ic,shape.ttype))
 
 #=====================================================================================================================================================================================
 # Setup EGL display
