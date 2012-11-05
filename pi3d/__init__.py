@@ -27,8 +27,8 @@
 pi3d_version = 0.05
 
 import sys, random
-from include.pi3dCommon import *
-from include import loaderEgg
+from pi3d.pi3dCommon import *
+from pi3d import loaderEgg
 import PIL.ImageOps, ImageDraw
 
 def loadECfiles(path,fname,texs):
