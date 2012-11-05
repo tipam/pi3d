@@ -55,12 +55,7 @@ def merge(self, shape, x, y, z,
 
   vertices = []
   normals = []
-  tex_coords = []
-  totindices = []
-
-  ve = len(self.vertices)
-  vi = len(self.indices)
-  vp = ve / 3
+  original_vertex_count = len(self.vertices)
 
   for v in range(0, len(shape.vertices), 3):
     # Rotate vertices
@@ -88,10 +83,10 @@ def merge(self, shape, x, y, z,
   self.tex_coords.extend(shape.tex_coords)
 
   ctypes.restype = ctypes.c_short
-  indices = [i + vp for i in shape.indices]
+  indices = [i + original_vertex_count / 3 for i in shape.indices]
   self.indices.extend(indices)
 
-  self.totind = len(self.indices)  # Pointless!
+  self.totind = len(self.indices)
   self.verts = eglfloats(self.vertices)
   self.norms = eglfloats(self.normals)
   self.texcoords = eglfloats(self.tex_coords)
@@ -433,7 +428,7 @@ class createMergeShape(create_shape):
                 if tex > 0: texture_on(tex,self.texcoords,GL_FLOAT)
                 opengles.glDisable(GL_CULL_FACE)
                 transform(self.x,self.y,self.z, self.rotx,self.roty,self.rotz, self.sx,self.sy,self.sz, self.cx,self.cy,self.cz)
-                opengles.glDrawElements( self.shape[0][2], self.totind, GL_UNSIGNED_SHORT, self.inds)
+                opengles.glDrawElements( self.shape[0][2], len(self.indices), GL_UNSIGNED_SHORT, self.inds)
                 opengles.glEnable(GL_CULL_FACE)
                 if tex > 0: texture_off()
 
