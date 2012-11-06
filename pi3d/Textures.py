@@ -1,3 +1,4 @@
+import ctypes
 import Image
 
 from pi3d.pi3dCommon import *
@@ -52,7 +53,7 @@ def _load_tex(fileString,flip,size,blend):
     im = im.transpose(Image.FLIP_TOP_BOTTOM)
 
   image = im.convert(RGBs).tostring('raw',RGBs)
-  tex = eglint()
+  tex = ctypes.c_int()
   opengles.glGenTextures(1, ctypes.byref(tex))
   opengles.glBindTexture(GL_TEXTURE_2D, tex)
   opengles.glTexImage2D(GL_TEXTURE_2D, 0, RGBv, ix, iy, 0, RGBv,
@@ -66,7 +67,7 @@ class _Texture(object):
 
 class Textures(object):
   def __init__(self):
-    self.texs = (eglint * 1024)()   #maximum of 1024 textures (just to be safe!)
+    self.texs = (ctypes.c_int * 1024)()   #maximum of 1024 textures (just to be safe!)
     self.tc = 0
 
   def loadTexture(self, fileString, blend=False, flip=False, size=0):

@@ -1,3 +1,4 @@
+import ctypes
 import Image
 
 from pi3d.pi3dCommon import *
@@ -9,8 +10,8 @@ class Display(object):
     b = bcm.bcm_host_init()
 
     #Get the width and height of the screen
-    width = eglint()
-    height = eglint()
+    width = ctypes.c_int()
+    height = ctypes.c_int()
     s = bcm.graphics_get_display_size(0, ctypes.byref(width),
                                       ctypes.byref(height))
     assert s >= 0

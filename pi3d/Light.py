@@ -1,3 +1,5 @@
+import ctypes
+
 from pi3d.pi3dCommon import *
 from pi3d import Constants
 
@@ -12,7 +14,7 @@ class Light(object):
     self.diffuse = eglfloats((red, grn, blu, 1.0))
     self.specular = eglfloats((red, grn, blu, 1.0))
     self.xyz = eglfloats((x, y, z, 1))
-    self.no = eglint(GL_LIGHT0 + no)
+    self.no = ctypes.c_int(GL_LIGHT0 + no)
     self.name = name
     #self.mShininess = eglfloat(120.0)
     self.lighton = False

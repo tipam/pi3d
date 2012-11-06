@@ -46,7 +46,6 @@ bcm = ctypes.CDLL('libbcm_host.so')
 opengles = ctypes.CDLL('libGLESv2.so')
 openegl = ctypes.CDLL('libEGL.so')
 
-eglint = ctypes.c_int
 eglshort = ctypes.c_short
 eglfloat = ctypes.c_float
 eglbyte = ctypes.c_byte
@@ -64,7 +63,7 @@ def eglchars(x):
   return ctypes_array(eglchar, x)
 
 def eglints(x):
-  return ctypes_array(eglint, x)
+  return ctypes_array(ctypes.c_int, x)
 
 def eglfloats(x):
   return ctypes_array(eglfloat, x)
@@ -113,52 +112,65 @@ def texture_off():
 
 #position, rotate and scale an object
 def transform(x,y,z,rotx,roty,rotz,sx,sy,sz,cx,cy,cz):
-	opengles.glTranslatef(eglfloat(x-cx), eglfloat(y-cy), eglfloat(z-cz))
-	if rotz <> 0: opengles.glRotatef(eglfloat(rotz),egf0, egf0, egf1)
-	if roty <> 0: opengles.glRotatef(eglfloat(roty),egf0, egf1, egf0)
-	if rotx <> 0: opengles.glRotatef(eglfloat(rotx),egf1, egf0, egf0)
-	opengles.glScalef(eglfloat(sx),eglfloat(sy),eglfloat(sz))
-	opengles.glTranslatef(eglfloat(cx), eglfloat(cy), eglfloat(cz))
+  opengles.glTranslatef(eglfloat(x-cx), eglfloat(y-cy), eglfloat(z-cz))
+  if rotz:
+    opengles.glRotatef(eglfloat(rotz),egf0, egf0, egf1)
+  if roty:
+    opengles.glRotatef(eglfloat(roty),egf0, egf1, egf0)
+  if rotx:
+    opengles.glRotatef(eglfloat(rotx),egf1, egf0, egf0)
+  opengles.glScalef(eglfloat(sx),eglfloat(sy),eglfloat(sz))
+  opengles.glTranslatef(eglfloat(cx), eglfloat(cy), eglfloat(cz))
 
 def rotate(rotx,roty,rotz):
-	if rotz <> 0: opengles.glRotatef(eglfloat(rotz),egf0, egf0, egf1)
-	if roty <> 0: opengles.glRotatef(eglfloat(roty),egf0, egf1, egf0)
-	if rotx <> 0: opengles.glRotatef(eglfloat(rotx),egf1, egf0, egf0)
+  if rotz:
+    opengles.glRotatef(eglfloat(rotz), egf0, egf0, egf1)
+  if roty:
+    opengles.glRotatef(eglfloat(roty), egf0, egf1, egf0)
+  if rotx:
+    opengles.glRotatef(eglfloat(rotx), egf1, egf0, egf0)
 
 def identity():
-	opengles.glLoadIdentity()
+  opengles.glLoadIdentity()
 
 def position(x,y,z):
-	opengles.glTranslatef(eglfloat(x), eglfloat(y), eglfloat(z))
+  opengles.glTranslatef(eglfloat(x), eglfloat(y), eglfloat(z))
 
 def scale(sx,sy,sz):
-	opengles.glScalef(eglfloat(sx),eglfloat(sy),eglfloat(sz))
+  opengles.glScalef(eglfloat(sx), eglfloat(sy), eglfloat(sz))
 
 def angleVecs(x1,y1,x2,y2,x3,y3):
-	a=x2-x1
-	b=y2-y1
-	c=x2-x3
-	d=y2-y3
+  a=x2-x1
+  b=y2-y1
+  c=x2-x3
+  d=y2-y3
 
-	sqab=math.sqrt(a*a+b*b)
-	sqcd=math.sqrt(c*c+d*d)
-	l = sqab*sqcd
-	if l==0.0: l=0.0001
-	aa=((a*c)+(b*d)) / l
-	if aa==-1.0: return math.pi
-	if aa==0.0: return 0.0
-	dist = (a*y3 - b*x3 + x1*b - y1*a) / sqab
-	angle = math.acos(aa)
+  sqab=math.sqrt(a * a + b * b)
+  sqcd=math.sqrt(c * c + d * d)
+  l = sqab * sqcd
+  if l==0.0:
+    l=0.0001
+  aa=((a*c)+(b*d)) / l
+  if aa==-1.0:
+    return math.pi
+  if aa==0.0:
+    return 0.0
+  dist = (a*y3 - b*x3 + x1*b - y1*a) / sqab
+  angle = math.acos(aa)
 
-	if dist>0.0: return math.pi * 2 - angle
-	else: return angle
+  if dist > 0.0:
+    return math.pi * 2 - angle
+  else:
+    return angle
 
-def dot(x1,y1,x2,y2):
-	a=x2-x1
-	b=y2-y1
-	s = math.sqrt(a*a+b*b)
-	if s>0.0: return a/s, b/s
-	else: return 0.0,0.0
+def dot(x1, y1, x2, y2):
+  a = x2 -x1
+  b = y2 - y1
+  s = math.sqrt(a * a + b * b)
+  if s > 0.0:
+    return a/s, b/s
+  else:
+    return 0.0, 0.0
 
 def intersectTriangle(v1,v2,v3,pos):
 	#Function calculates the y intersection of a point on a triangle
@@ -218,21 +230,13 @@ def intersectTriangle(v1,v2,v3,pos):
 
 def addVertex(v,x,y,z,n,nx,ny,nz,t,tx,ty):
 # add vertex,normal and tex_coords ...
-    	v.append(x)
-	v.append(y)
-	v.append(z)
-    	n.append(nx)
-	n.append(ny)
-	n.append(nz)
-    	t.append(tx)
-	t.append(ty)
+  v.extend([x, y, z])
+  n.extend([nx, ny, nz])
+  t.extend([tx, ty])
 
 def addTri(v,x,y,z):
 # add triangle refs.
-    	v.append(x)
-	v.append(y)
-	v.append(z)
-
+  v.extend([x, y, z])
 
 rect_normals = eglbytes(( 0,0,-1, 0,0,-1, 0,0,-1, 0,0,-1 ))
 rect_tex_coords = eglbytes(( 0,255, 255,255, 255,0, 0,0))
@@ -321,19 +325,19 @@ def rotateVec(rx,ry,rz,xyz):
     return (x,y,z)
 
 
-def rotateVecX(r,x,y,z):
-	sa = math.sin(math.radians(r))
-	ca = math.cos(math.radians(r))
-	yy = y*ca-z*sa
-	zz = y*sa+z*ca
-	return x,yy,zz
+def rotateVecX(r, x, y, z):
+  sa = math.sin(math.radians(r))
+  ca = math.cos(math.radians(r))
+  yy = y * ca - z * sa
+  zz = y * sa + z * ca
+  return x, yy, zz
 
 def rotateVecY(r,x,y,z):
-	sa = math.sin(math.radians(r))
-	ca = math.cos(math.radians(r))
-	zz = z*ca-x*sa
-	xx = z*sa+x*ca
-	return xx,y,zz
+  sa = math.sin(math.radians(r))
+  ca = math.cos(math.radians(r))
+  zz = z*ca-x*sa
+  xx = z*sa+x*ca
+  return xx,y,zz
 
 
 def rotateVecZ(r,x,y,z):
@@ -388,7 +392,7 @@ def lathe(path, sides = 12, tris=False, rise = 0.0, coils = 1.0):
 	    tcy = 1.0 - ((py - miny)/(maxy - miny))
 
 	    #normal between path points
-	    dx, dy = dot(opx,opy,px,py)
+	    dx, dy = dot(opx, opy, px, py)
 
 
 	    for r in range (0, rl):
@@ -473,7 +477,7 @@ def create_display(self,x=0,y=0,w=0,h=0,depth=24):
 				      EGL_BUFFER_SIZE, 32,
 				      EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
 				      EGL_NONE) )
-	numconfig = eglint()
+	numconfig = ctypes.c_int()
 	config = ctypes.c_void_p()
 	r = openegl.eglChooseConfig(self.display,
 				    ctypes.byref(attribute_list),
