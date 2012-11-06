@@ -3,7 +3,7 @@ import random
 from pi3d.pi3dCommon import *
 from pi3d import Constants
 
-class MergeShape(create_shape):
+class MergeShape(Shape):
   def __init__(self,name="",
                x=0.0, y=0.0, z=0.0,
                rx=0.0, ry=0.0, rz=0.0,

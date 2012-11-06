@@ -652,7 +652,7 @@ class key():
 	curses.endwin()
 
 
-class create_shape(object):
+class Shape(object):
 
 	def __init__(self,name, x,y,z, rx,ry,rz, sx,sy,sz, cx,cy,cz):
 		self.name = name

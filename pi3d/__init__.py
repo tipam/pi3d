@@ -48,7 +48,7 @@ def loadECfiles(path, fname, textures):
 #=====================================================================================================================================================================================
 # Creation functions
 
-class createCuboid(create_shape):
+class createCuboid(Shape):
 
         def __init__(self, w,h,d, name="", x=0.0,y=0.0,z=0.0, rx=0.0,ry=0.0,rz=0.0, cx=0.0,cy=0.0,cz=0.0):
                 super(createCuboid,self).__init__(name, x,y,z, rx,ry,rz, 1.0,1.0,1.0, cx,cy,cz)
@@ -99,7 +99,7 @@ class createCuboid(create_shape):
                 shape_draw(self,tex)
 
 
-class createPlane(create_shape):
+class createPlane(Shape):
 
   def __init__(self,w=1.0,h=1.0, name="", x=0.0,y=0.0,z=0.0, rx=0.0,ry=0.0,rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0):
     super(createPlane,self).__init__(name, x,y,z, rx,ry,rz, sx,sy,sz, cx,cy,cz)
@@ -249,7 +249,7 @@ class createEnvironmentCube(object):
 		opengles.glLoadMatrixf(mtrx)
 
 
-class createLathe(create_shape):
+class createLathe(Shape):
 
         def __init__(self,path, sides=12, name="", x=0.0,y=0.0,z=0.0, rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0):
                 super(createLathe,self).__init__(name, x,y,z, rx,ry,rz, sx,sy,sz, cx,cy,cz)
@@ -273,7 +273,7 @@ class createLathe(create_shape):
                 shape_draw(self,tex)
                 opengles.glEnable(GL_CULL_FACE)
 
-class createDisk(create_shape):
+class createDisk(Shape):
 
         def __init__(self,radius=1,sides=12,name="", x=0.0,y=0.0,z=0.0, rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0):
                 super(createDisk,self).__init__(name, x,y,z, rx,ry,rz, sx,sy,sz, cx,cy,cz)
@@ -308,7 +308,7 @@ class createDisk(create_shape):
                 shape_draw(self,tex)
 
 
-class createSphere(create_shape):
+class createSphere(Shape):
 
         def __init__(self,radius=1,slices=12,sides=12,hemi=0.0,name="", x=0.0,y=0.0,z=0.0, rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0):
                 super(createSphere,self).__init__(name, x,y,z, rx,ry,rz, sx,sy,sz, cx,cy,cz)
@@ -338,7 +338,7 @@ class createSphere(create_shape):
                 shape_draw(self,tex)
 
 
-class createTorus(create_shape):
+class createTorus(Shape):
 
         def __init__(self,radius=2.0,thickness=0.5, ringrots=6, sides=12,name="", x=0.0,y=0.0,z=0.0, rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0):
                 super(createTorus,self).__init__(name, x,y,z, rx,ry,rz, sx,sy,sz, cx,cy,cz)
@@ -367,7 +367,7 @@ class createTorus(create_shape):
         def draw(self,tex=None):
                 shape_draw(self,tex)
 
-class createTube(create_shape):
+class createTube(Shape):
 
         def __init__(self,radius=1.0,thickness=0.5, height=2.0, sides=12,name="", x=0.0,y=0.0,z=0.0, rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0):
                 super(createTube,self).__init__(name, x,y,z, rx,ry,rz, sx,sy,sz, cx,cy,cz)
@@ -399,7 +399,7 @@ class createTube(create_shape):
         def draw(self,tex=None):
                 shape_draw(self,tex)
 
-class createSpiral(create_shape):
+class createSpiral(Shape):
 
         def __init__(self,radius=1.0,thickness=0.2, ringrots=6, sides=12, rise=1.0, loops=2.0, name="", x=0.0,y=0.0,z=0.0, rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0):
                 super(createSpiral,self).__init__(name, x,y,z, rx,ry,rz, sx,sy,sz, cx,cy,cz)
@@ -430,7 +430,7 @@ class createSpiral(create_shape):
         def draw(self,tex=None):
                 shape_draw(self, tex)
 
-class createCylinder(create_shape):
+class createCylinder(Shape):
 
         def __init__(self,radius=1.0,height=2.0,sides=12, name="",x=0.0,y=0.0,z=0.0, rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0):
                 super(createCylinder,self).__init__(name, x,y,z, rx,ry,rz, sx,sy,sz, cx,cy,cz)
@@ -459,7 +459,7 @@ class createCylinder(create_shape):
         def draw(self,tex=None):
                 shape_draw(self,tex)
 
-class createCone(create_shape):
+class createCone(Shape):
 
         def __init__(self,radius=1.0,height=2.0,sides=12, name="",x=0.0,y=0.0,z=0.0, rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0):
                 super(createCone,self).__init__(name, x,y,z, rx,ry,rz, sx,sy,sz, cx,cy,cz)
@@ -487,7 +487,7 @@ class createCone(create_shape):
         def draw(self,tex=None):
                 shape_draw(self,tex)
 
-class createTCone(create_shape):
+class createTCone(Shape):
 
         def __init__(self,radiusBot=1.2,radiusTop=0.8,height=2.0,sides=12, name="",x=0.0,y=0.0,z=0.0, rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0):
                 super(createTCone,self).__init__(name, x,y,z, rx,ry,rz, sx,sy,sz, cx,cy,cz)
@@ -518,7 +518,7 @@ class createTCone(create_shape):
         def draw(self,tex=None):
                 shape_draw(self,tex)
 
-class createExtrude(create_shape):
+class createExtrude(Shape):
 
         def __init__(self, path, height=1.0, name="",x=0.0,y=0.0,z=0.0, rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0):
                 super(createExtrude,self).__init__(name, x,y,z, rx,ry,rz, sx,sy,sz, cx,cy,cz)
@@ -614,7 +614,7 @@ class createExtrude(create_shape):
                 if tex1 > 0: texture_off()
 		opengles.glLoadMatrixf(mtrx)
 
-class createElevationMapFromTexture(create_shape):
+class createElevationMapFromTexture(Shape):
 
         def __init__(self, mapfile, width=100.0, depth=100.0, height=10.0, divx=0, divy=0, ntiles=1.0, name="",x=0.0,y=0.0,z=0.0, rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0):
                 super(createElevationMapFromTexture,self).__init__(name, x,y,z, rx,ry,rz, sx,sy,sz, cx,cy,cz)
@@ -752,7 +752,7 @@ class clipPlane():
 #=====================================================================================================================================================================================
 # Cameras
 
-class camera(create_shape):
+class camera(Shape):
 
     def __init__(self,name="",x=0.0,y=0.0,z=0.0, rx=0.0,ry=0.0,rz=0.0):
         super(camera,self).__init__(name, x,y,z, rx,ry,rz, 1,1,1)
@@ -776,7 +776,7 @@ class camera(create_shape):
 
 #=====================================================================================================================================================================================
 
-class loadModel(create_shape):
+class loadModel(Shape):
 
     def __init__(self,fileString, texs, name="", x=0.0,y=0.0,z=0.0, rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0):
         super(loadModel,self).__init__(name, x,y,z, rx,ry,rz, sx,sy,sz, cx,cy,cz)
