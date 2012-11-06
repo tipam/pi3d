@@ -1,3 +1,5 @@
+import ctypes
+
 from pi3d.pi3dCommon import *
 from pi3d import Constants
 
@@ -6,7 +8,7 @@ from pi3d import Constants
 class Fog():
   def __init__(self, density=0.005, colour=(0.3, 0.6, 0.8, 0.5)):
     opengles.glFogf(GL_FOG_MODE, GL_EXP) # defaults to this anyway
-    opengles.glFogf(GL_FOG_DENSITY, eglfloat(density)) # exponent factor
+    opengles.glFogf(GL_FOG_DENSITY, ctypes.c_float(density)) # exponent factor
     opengles.glFogfv(GL_FOG_COLOR, eglfloats(colour))
     # don't think the alpha value alters the target object alpha
 

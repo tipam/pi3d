@@ -1,3 +1,5 @@
+from ctypes import c_float
+
 from pi3d.pi3dCommon import *
 from pi3d import Constants
 from pi3d.shape.Shape import Shape
@@ -11,12 +13,12 @@ class Camera(Shape):
   def orthographic(self, left, right, bottom, top, zoom=1, near=-1, far=10):
     opengles.glMatrixMode(GL_PROJECTION)
     opengles.glLoadIdentity()
-        #opengles.glOrthof(eglfloat(-10), eglfloat(10), eglfloat(10), eglfloat(-10.0), eglfloat(near), eglfloat(far))
-    opengles.glOrthof(eglfloat(left / zoom),
-                      eglfloat(right / zoom),
-                      eglfloat(bottom / zoom),
-                      eglfloat(top / zoom),
-                      eglfloat(near), eglfloat(far))
+        #opengles.glOrthof(c_float(-10), c_float(10), c_float(10), c_float(-10.0), c_float(near), c_float(far))
+    opengles.glOrthof(c_float(left / zoom),
+                      c_float(right / zoom),
+                      c_float(bottom / zoom),
+                      c_float(top / zoom),
+                      c_float(near), c_float(far))
     opengles.glMatrixMode(GL_MODELVIEW)
     opengles.glLoadIdentity()
 
@@ -25,7 +27,7 @@ class Camera(Shape):
     opengles.glLoadIdentity()
     hht = near * math.tan(math.radians(45.0))
     hwd = hht * w / h
-    opengles.glFrustumf(eglfloat(-hwd), eglfloat(hwd),
-                        eglfloat(-hht), eglfloat(hht),
-                        eglfloat(near), eglfloat(far))
+    opengles.glFrustumf(c_float(-hwd), c_float(hwd),
+                        c_float(-hht), c_float(hht),
+                        c_float(near), c_float(far))
     opengles.glMatrixMode(GL_MODELVIEW)

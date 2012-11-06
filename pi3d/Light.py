@@ -16,7 +16,6 @@ class Light(object):
     self.xyz = eglfloats((x, y, z, 1))
     self.no = ctypes.c_int(GL_LIGHT0 + no)
     self.name = name
-    #self.mShininess = eglfloat(120.0)
     self.lighton = False
 
     #opengles.glLightModelfv(GL_LIGHT_MODEL_COLOUR_CONTROL, GL_SEPERATE_SPECULAR_COLOR)   #Turns on specular highlights for textures

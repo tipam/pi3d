@@ -1,4 +1,5 @@
 import os.path
+from ctypes import c_float
 
 from pi3d.pi3dCommon import *
 from pi3d import Constants
@@ -74,9 +75,9 @@ class EnvironmentCube(object):
   def draw(self,tex,x,y,z):
     mtrx =(ctypes.c_float*16)()
     opengles.glGetFloatv(GL_MODELVIEW_MATRIX,ctypes.byref(mtrx))
-    opengles.glTranslatef(eglfloat(-x), eglfloat(-y), eglfloat(-z))
-    opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, eglfloat(GL_LINEAR));
-    opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, eglfloat(GL_LINEAR));
+    opengles.glTranslatef(c_float(-x), c_float(-y), c_float(-z))
+    opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, c_float(GL_LINEAR));
+    opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, c_float(GL_LINEAR));
     opengles.glVertexPointer(3, GL_FLOAT, 0, self.vertices)
     opengles.glNormalPointer(GL_FLOAT, 0, self.normals)
     opengles.glEnableClientState(GL_TEXTURE_COORD_ARRAY)
@@ -87,25 +88,25 @@ class EnvironmentCube(object):
         opengles.glTexCoordPointer(2, GL_FLOAT, 0, self.tex_faces)
         opengles.glBindTexture(GL_TEXTURE_2D,tex[0].tex)
         opengles.glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT , self.indtop)
-        opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, eglfloat(GL_LINEAR));
-        opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, eglfloat(GL_LINEAR));
+        opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, c_float(GL_LINEAR));
+        opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, c_float(GL_LINEAR));
         opengles.glBindTexture(GL_TEXTURE_2D,tex[1].tex)
         opengles.glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT , self.indleft)
-        opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, eglfloat(GL_LINEAR));
-        opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, eglfloat(GL_LINEAR));
+        opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, c_float(GL_LINEAR));
+        opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, c_float(GL_LINEAR));
         opengles.glBindTexture(GL_TEXTURE_2D,tex[2].tex)
         opengles.glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT , self.indfront)
-        opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, eglfloat(GL_LINEAR));
-        opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, eglfloat(GL_LINEAR));
+        opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, c_float(GL_LINEAR));
+        opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, c_float(GL_LINEAR));
         opengles.glBindTexture(GL_TEXTURE_2D,tex[3].tex)
         opengles.glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT , self.indright)
-        opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, eglfloat(GL_LINEAR));
-        opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, eglfloat(GL_LINEAR));
+        opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, c_float(GL_LINEAR));
+        opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, c_float(GL_LINEAR));
         opengles.glBindTexture(GL_TEXTURE_2D,tex[4].tex)
         opengles.glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT , self.indback)
         if tex[5] >0:
-          opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, eglfloat(GL_LINEAR));  #BOTTOM (doesn't have to have one if None)
-          opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, eglfloat(GL_LINEAR));
+          opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, c_float(GL_LINEAR));  #BOTTOM (doesn't have to have one if None)
+          opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, c_float(GL_LINEAR));
           opengles.glBindTexture(GL_TEXTURE_2D,tex[5].tex)
           opengles.glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT , self.indbot)
         else:

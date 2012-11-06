@@ -1,4 +1,6 @@
-import ctypes
+from ctypes import c_int
+from ctypes import c_float
+
 import Image
 
 from pi3d.pi3dCommon import *
@@ -10,8 +12,8 @@ class Display(object):
     b = bcm.bcm_host_init()
 
     #Get the width and height of the screen
-    width = ctypes.c_int()
-    height = ctypes.c_int()
+    width = c_int()
+    height = c_int()
     s = bcm.graphics_get_display_size(0, ctypes.byref(width),
                                       ctypes.byref(height))
     assert s >= 0
@@ -47,7 +49,7 @@ class Display(object):
     opengles.glLoadIdentity()
     hht = near * math.tan(aspect / 2.0 / 180.0 * 3.1415926)
     hwd = hht * w / h
-    opengles.glFrustumf(eglfloat(-hwd), eglfloat(hwd), eglfloat(-hht), eglfloat(hht), eglfloat(near), eglfloat(far))
+    opengles.glFrustumf(c_float(-hwd), c_float(hwd), c_float(-hht), c_float(hht), c_float(near), c_float(far))
     opengles.glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST )
     opengles.glMatrixMode(GL_MODELVIEW)
     opengles.glLoadIdentity()
@@ -65,15 +67,15 @@ class Display(object):
 
     opengles.glMatrixMode(GL_PROJECTION)
     opengles.glLoadIdentity()
-    opengles.glOrthof(eglfloat(0), eglfloat(w), eglfloat(0), eglfloat(h), eglfloat(-1), eglfloat(500))
+    opengles.glOrthof(c_float(0), c_float(w), c_float(0), c_float(h), c_float(-1), c_float(500))
     opengles.glMatrixMode(GL_MODELVIEW)
     opengles.glLoadIdentity()
-
 
   def destroy(self):
     if self.active:
         openegl.eglSwapBuffers(self.display, self.surface);
-        openegl.eglMakeCurrent(self.display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT)
+        openegl.eglMakeCurrent(self.display, EGL_NO_SURFACE, EGL_NO_SURFACE,
+                               EGL_NO_CONTEXT)
         openegl.eglDestroySurface(self.display, self.surface)
         openegl.eglDestroyContext(self.display, self.context)
         openegl.eglTerminate(self.display)
@@ -92,21 +94,24 @@ class Display(object):
     opengles.glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
 
   def setBackColour(self, r, g, b, a):
-    self.backColour=(r,g,b,a)
-    opengles.glClearColor ( eglfloat(r), eglfloat(g), eglfloat(b), eglfloat(a) )
-    if a<1.0:
-        opengles.glColorMask(1,1,1,1)  #switches off alpha blending with desktop (is there a bug in the driver?)
+    self.backColour=(r, g, b, a)
+    opengles.glClearColor(c_float(r), c_float(g), c_float(b), c_float(a))
+    if a < 1.0:
+      opengles.glColorMask(1, 1, 1, 1)
+        #switches off alpha blending with desktop (is there a bug in the driver?)
     else:
-        opengles.glColorMask(1,1,1,0)
+        opengles.glColorMask(1, 1, 1, 0)
 
   def screenshot(self, filestring):
-
-    print "Taking screenshot to '",filestring,"'"
+    if Constants.VERBOSE:
+      print "Taking screenshot to '",filestring,"'"
 
     size = self.win_height * self.win_width * 3
     img = (ctypes.c_char*size)()
-    opengles.glReadPixels(0,0,self.win_width,self.win_height, GL_RGB, GL_UNSIGNED_BYTE, ctypes.byref(img))
-    im = Image.frombuffer("RGB",(self.win_width,self.win_height), img, "raw", "RGB", 0,1)
+    opengles.glReadPixels(0,0,self.win_width,self.win_height,
+                          GL_RGB, GL_UNSIGNED_BYTE, ctypes.byref(img))
+    im = Image.frombuffer("RGB",(self.win_width,self.win_height),
+                          img, "raw", "RGB", 0,1)
     im = im.transpose(Image.FLIP_TOP_BOTTOM)
     im.save(filestring)
 

@@ -26,6 +26,10 @@
 
 import ctypes, math, curses, threading
 
+from ctypes import c_int
+from ctypes import c_float
+from ctypes import c_short
+
 from pi3d import Constants
 
 # Pick up our constants extracted from the header files with prepare_constants.py
@@ -46,7 +50,6 @@ bcm = ctypes.CDLL('libbcm_host.so')
 opengles = ctypes.CDLL('libGLESv2.so')
 openegl = ctypes.CDLL('libEGL.so')
 
-eglfloat = ctypes.c_float
 eglbyte = ctypes.c_byte
 eglchar = ctypes.c_char
 c_char_p = ctypes.c_char_p
@@ -61,20 +64,20 @@ def eglchars(x):
   return ctypes_array(eglchar, x)
 
 def eglints(x):
-  return ctypes_array(ctypes.c_int, x)
+  return ctypes_array(c_int, x)
 
 def eglfloats(x):
-  return ctypes_array(eglfloat, x)
+  return ctypes_array(c_float, x)
 
 def eglshorts(x):
-  return ctypes_array(ctypes.c_short, x)
+  return ctypes_array(c_short, x)
 
 def ctypeResize(array, new_size):
   resize(array, sizeof(array._type_) * new_size)
   return (array._type_ * new_size).from_address(addressof(array))
 
-egf0 = eglfloat(0)
-egf1 = eglfloat(1)
+egf0 = c_float(0)
+egf1 = c_float(1)
 
 #for mouse class
 XSIGN = 1 << 4
@@ -85,8 +88,8 @@ def showerror():
 
 #turn texture on before drawing arrays
 def texture_on(tex, tex_coords, vtype):
-  opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, eglfloat(GL_LINEAR));
-  opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, eglfloat(GL_LINEAR));
+  opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, c_float(GL_LINEAR));
+  opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, c_float(GL_LINEAR));
   opengles.glEnableClientState(GL_TEXTURE_COORD_ARRAY)
   opengles.glTexCoordPointer(2,vtype,0,tex_coords)
   opengles.glBindTexture(GL_TEXTURE_2D,tex.tex)
@@ -97,7 +100,7 @@ def texture_on(tex, tex_coords, vtype):
       opengles.glEnable(GL_BLEND)
       opengles.glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA)
     else:
-      opengles.glAlphaFunc(GL_GREATER,eglfloat(0.6))
+      opengles.glAlphaFunc(GL_GREATER,c_float(0.6))
       opengles.glEnable(GL_ALPHA_TEST)
 
 #turn texture off after drawing arrays
@@ -110,32 +113,32 @@ def texture_off():
 
 #position, rotate and scale an object
 def transform(x,y,z,rotx,roty,rotz,sx,sy,sz,cx,cy,cz):
-  opengles.glTranslatef(eglfloat(x-cx), eglfloat(y-cy), eglfloat(z-cz))
+  opengles.glTranslatef(c_float(x-cx), c_float(y-cy), c_float(z-cz))
   if rotz:
-    opengles.glRotatef(eglfloat(rotz),egf0, egf0, egf1)
+    opengles.glRotatef(c_float(rotz),c_float(0), c_float(0), c_float(1))
   if roty:
-    opengles.glRotatef(eglfloat(roty),egf0, egf1, egf0)
+    opengles.glRotatef(c_float(roty),c_float(0), c_float(1), c_float(0))
   if rotx:
-    opengles.glRotatef(eglfloat(rotx),egf1, egf0, egf0)
-  opengles.glScalef(eglfloat(sx),eglfloat(sy),eglfloat(sz))
-  opengles.glTranslatef(eglfloat(cx), eglfloat(cy), eglfloat(cz))
+    opengles.glRotatef(c_float(rotx),c_float(1), c_float(0), c_float(0))
+  opengles.glScalef(c_float(sx),c_float(sy),c_float(sz))
+  opengles.glTranslatef(c_float(cx), c_float(cy), c_float(cz))
 
 def rotate(rotx,roty,rotz):
   if rotz:
-    opengles.glRotatef(eglfloat(rotz), egf0, egf0, egf1)
+    opengles.glRotatef(c_float(rotz), c_float(0), c_float(0), c_float(1))
   if roty:
-    opengles.glRotatef(eglfloat(roty), egf0, egf1, egf0)
+    opengles.glRotatef(c_float(roty), c_float(0), c_float(1), c_float(0))
   if rotx:
-    opengles.glRotatef(eglfloat(rotx), egf1, egf0, egf0)
+    opengles.glRotatef(c_float(rotx), c_float(1), c_float(0), c_float(0))
 
 def identity():
   opengles.glLoadIdentity()
 
 def position(x,y,z):
-  opengles.glTranslatef(eglfloat(x), eglfloat(y), eglfloat(z))
+  opengles.glTranslatef(c_float(x), c_float(y), c_float(z))
 
 def scale(sx,sy,sz):
-  opengles.glScalef(eglfloat(sx), eglfloat(sy), eglfloat(sz))
+  opengles.glScalef(c_float(sx), c_float(sy), c_float(sz))
 
 def angleVecs(x1,y1,x2,y2,x3,y3):
   a=x2-x1
@@ -246,8 +249,8 @@ rect_triangles = eglbytes(( 3,0,1, 3,1,2 ))
 def drawString(font,string,x,y,z,rot,sclx,scly):
 
 	opengles.glNormalPointer( GL_BYTE, 0, rect_normals)
-	opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, eglfloat(GL_LINEAR));
-	opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, eglfloat(GL_LINEAR));
+	opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, c_float(GL_LINEAR));
+	opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, c_float(GL_LINEAR));
 	opengles.glEnableClientState(GL_TEXTURE_COORD_ARRAY)
 	opengles.glBindTexture(GL_TEXTURE_2D,font.tex)
 	opengles.glEnable(GL_TEXTURE_2D)
@@ -257,11 +260,11 @@ def drawString(font,string,x,y,z,rot,sclx,scly):
 	opengles.glEnable(GL_BLEND)
 	opengles.glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA)
 
-	mtrx =(ctypes.c_float*16)()
+	mtrx =(c_float * 16)()
 	opengles.glGetFloatv(GL_MODELVIEW_MATRIX,ctypes.byref(mtrx))
-	opengles.glTranslatef(eglfloat(x), eglfloat(y), eglfloat(z))
-	opengles.glRotatef(eglfloat(rot), egf0, egf0, egf1)
-	opengles.glScalef(eglfloat(sclx), eglfloat(scly), egf1)
+	opengles.glTranslatef(c_float(x), c_float(y), c_float(z))
+	opengles.glRotatef(c_float(rot), c_float(0), c_float(0), c_float(1))
+	opengles.glScalef(c_float(sclx), c_float(scly), c_float(1))
 
 	for c in range(0,len(string)):
 		v=ord(string[c])-32
@@ -270,7 +273,7 @@ def drawString(font,string,x,y,z,rot,sclx,scly):
 		    opengles.glVertexPointer(3, GL_FLOAT, 0,verts)
 		    opengles.glTexCoordPointer(2, GL_FLOAT,0,texc)
 		    opengles.glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, rect_triangles)
-		opengles.glTranslatef(eglfloat(w), egf0, egf0)
+		opengles.glTranslatef(c_float(w), c_float(0), c_float(0))
 
 	opengles.glLoadMatrixf(mtrx)
 	opengles.glDisable(GL_TEXTURE_2D)
@@ -282,9 +285,9 @@ def rectangle(tex,x,y,w,h,r=0.0,z=-1.0):
 	opengles.glNormalPointer( GL_BYTE, 0, rect_normals);
 	opengles.glVertexPointer( 3, GL_BYTE, 0, rect_vertsTL);
 	opengles.glLoadIdentity()
-	opengles.glTranslatef(eglfloat(x), eglfloat(y), eglfloat(z))
-	opengles.glScalef(eglfloat(w), eglfloat(h), egf1)
-	if r <> 0.0: opengles.glRotatef(eglfloat(r),egf0, egf0, egf1)
+	opengles.glTranslatef(c_float(x), c_float(y), c_float(z))
+	opengles.glScalef(c_float(w), c_float(h), c_float(1))
+	if r <> 0.0: opengles.glRotatef(c_float(r),c_float(0), c_float(0), c_float(1))
 	if tex > 0: texture_on(tex,rect_tex_coords,GL_BYTE)
 	opengles.glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, rect_triangles)
 	if tex > 0: texture_off()
@@ -293,9 +296,9 @@ def sprite(tex,x,y,z=-10.0,w=1.0,h=1.0,r=0.0):
 	opengles.glNormalPointer( GL_BYTE, 0, rect_normals);
 	opengles.glVertexPointer( 3, GL_BYTE, 0, rect_vertsCT);
 	opengles.glLoadIdentity()
-	opengles.glTranslatef(eglfloat(x), eglfloat(y), eglfloat(z))
-	opengles.glScalef(eglfloat(w), eglfloat(h), egf1)
-	if r <> 0.0: opengles.glRotatef(eglfloat(r),egf0, egf0, egf1)
+	opengles.glTranslatef(c_float(x), c_float(y), c_float(z))
+	opengles.glScalef(c_float(w), c_float(h), c_float(1))
+	if r <> 0.0: opengles.glRotatef(c_float(r),c_float(0), c_float(0), c_float(1))
 	if tex > 0: texture_on(tex,rect_tex_coords,GL_BYTE)
 	opengles.glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, rect_triangles)
 	if tex > 0: texture_off()
@@ -451,7 +454,7 @@ def shape_draw(self,tex,shl=GL_UNSIGNED_SHORT):
 	    opengles.glVertexPointer( 3, GL_FLOAT, 0, self.vertices)
 	    opengles.glNormalPointer( GL_FLOAT, 0, self.normals)
 	    if tex > 0: texture_on(tex,self.tex_coords,GL_FLOAT)
-	    mtrx =(ctypes.c_float*16)()
+	    mtrx =(c_float * 16)()
 	    opengles.glGetFloatv(GL_MODELVIEW_MATRIX,ctypes.byref(mtrx))
 	    transform(self.x,self.y,self.z,self.rotx,self.roty,self.rotz,self.sx,self.sy,self.sz,self.cx,self.cy,self.cz)
 	    opengles.glDrawElements( self.ttype, self.ssize, shl , self.indices)
@@ -475,7 +478,7 @@ def create_display(self,x=0,y=0,w=0,h=0,depth=24):
 				      EGL_BUFFER_SIZE, 32,
 				      EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
 				      EGL_NONE) )
-	numconfig = ctypes.c_int()
+	numconfig = c_int()
 	config = ctypes.c_void_p()
 	r = openegl.eglChooseConfig(self.display,
 				    ctypes.byref(attribute_list),
@@ -593,7 +596,7 @@ class matrix(object):
 	self.mc = 0
 
     def push(self):
-	self.mat.append((ctypes.c_float*16)())
+	self.mat.append((c_float * 16)())
 	opengles.glGetFloatv(GL_MODELVIEW_MATRIX,ctypes.byref(self.mat[self.mc]))
 	self.mc += 1
 
@@ -604,16 +607,16 @@ class matrix(object):
 	    opengles.glLoadMatrixf(self.mat[self.mc])
 
     def translate(self,x,y,z):
-	opengles.glTranslatef(eglfloat(x),eglfloat(y),eglfloat(z))
+	opengles.glTranslatef(c_float(x),c_float(y),c_float(z))
 
     def rotate(self,rx,ry,rz):
 	if rz:
-          opengles.glRotatef(eglfloat(rz), egf0, egf0, egf1)
+          opengles.glRotatef(c_float(rz), c_float(0), c_float(0), c_float(1))
 	if rx:
-          opengles.glRotatef(eglfloat(rx), egf1, egf0, egf0)
+          opengles.glRotatef(c_float(rx), c_float(1), c_float(0), c_float(0))
 	if ry:
-          opengles.glRotatef(eglfloat(ry), egf0, egf1, egf0)
+          opengles.glRotatef(c_float(ry), c_float(0), c_float(1), c_float(0))
 
     def scale(self,sx,sy,sz):
-	opengles.glScalef(eglfloat(sx), eglfloat(sy), eglfloat(sz))
+	opengles.glScalef(c_float(sx), c_float(sy), c_float(sz))
 
