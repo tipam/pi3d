@@ -17,6 +17,7 @@
 
 import pi3d,math,random
 
+from pi3d.ElevationMap import ElevationMap
 from pi3d.EnvironmentCube import EnvironmentCube
 from pi3d.MergeShape import MergeShape
 from pi3d.Plane import Plane
@@ -44,7 +45,7 @@ mapwidth=1000.0
 mapdepth=1000.0
 mapheight=60.0
 mountimg1 = texs.loadTexture("textures/mountains3_512.jpg")
-mymap = pi3d.createElevationMapFromTexture("textures/mountainsHgt.jpg",mapwidth,mapdepth,mapheight,64,64) #testislands.jpg
+mymap = ElevationMap("textures/mountainsHgt.jpg",mapwidth,mapdepth,mapheight,64,64) #testislands.jpg
 
 #Create tree models
 treeplane = Plane(4.0,5.0)

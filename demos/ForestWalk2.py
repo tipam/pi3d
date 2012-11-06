@@ -15,6 +15,7 @@
 
 import pi3d,math,random
 
+from pi3d.ElevationMap import ElevationMap
 from pi3d.EnvironmentCube import EnvironmentCube
 from pi3d.MergeShape import MergeShape
 from pi3d.Plane import Plane
@@ -41,8 +42,8 @@ mapdepth=1000.0
 mapheight=60.0
 landimg = texs.loadTexture("textures/stonygrass.jpg")
 #surface1 = pi3d.loadTextureAlpha("textures/gravel3.png")
-mymap = pi3d.createElevationMapFromTexture("textures/mountainsHgt.jpg",mapwidth,mapdepth,mapheight,64,64,10.0) #testislands.jpg
-#mymap2 = pi3d.createElevationMapFromTexture("textures/mountainsHgt.jpg",mapwidth,mapdepth,mapheight,64,64, 128)
+mymap = ElevationMap("textures/mountainsHgt.jpg",mapwidth,mapdepth,mapheight,64,64,10.0) #testislands.jpg
+#mymap2 = ElevationMap("textures/mountainsHgt.jpg",mapwidth,mapdepth,mapheight,64,64, 128)
 
 myclip = pi3d.clipPlane()
 

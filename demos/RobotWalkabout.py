@@ -19,6 +19,7 @@ import pi3d,math,random
 
 from pi3d.Cuboid import Cuboid
 from pi3d.Cylinder import Cylinder
+from pi3d.ElevationMap import ElevationMap
 from pi3d.EnvironmentCube import EnvironmentCube
 from pi3d.MergeShape import MergeShape
 from pi3d.Sphere import Sphere
@@ -44,7 +45,7 @@ mapwidth=1000.0
 mapdepth=1000.0
 mapheight=60.0
 mountimg1 = texs.loadTexture("textures/mars_colour.png")
-mymap = pi3d.createElevationMapFromTexture("textures/mars_height.png",mapwidth,mapdepth,mapheight,128,128) #testislands.jpg
+mymap = ElevationMap("textures/mars_height.png",mapwidth,mapdepth,mapheight,128,128) #testislands.jpg
 
 #create robot
 metalimg = texs.loadTexture("textures/metalhull.jpg")
