@@ -54,24 +54,27 @@ eglchar = ctypes.c_char
 eglshort = ctypes.c_short
 c_char_p = ctypes.c_char_p
 
-def eglbytes(L):
-  return (eglbyte * len(L))(*L)
+def ctypes_array(ct, x):
+  return (ct * len(x))(*x)
 
-def eglchars(L):
-  return (eglchar * len(L))(*L)
+def eglbytes(x):
+  return ctypes_array(eglbyte, x)
 
-def eglints(L):
-  return (eglint * len(L))(*L)
+def eglchars(x):
+  return ctypes_array(eglchar, x)
 
-def eglfloats(L):
-  return (eglfloat * len(L))(*L)
+def eglints(x):
+  return ctypes_array(eglint, x)
 
-def eglshorts(L):
-  return (eglshort * len(L))(*L)
+def eglfloats(x):
+  return ctypes_array(eglfloat, x)
+
+def eglshorts(x):
+  return ctypes_array(eglshort, x)
 
 def ctypeResize(array, new_size):
-  resize(array, sizeof(array._type_)*new_size)
-  return (array._type_*new_size).from_address(addressof(array))
+  resize(array, sizeof(array._type_) * new_size)
+  return (array._type_ * new_size).from_address(addressof(array))
 
 egf0 = eglfloat(0)
 egf1 = eglfloat(1)
@@ -79,9 +82,6 @@ egf1 = eglfloat(1)
 #for mouse class
 XSIGN = 1 << 4
 YSIGN = 1 << 5
-
-# matrix stack count
-mtrx_stack = 0
 
 def showerror():
   return opengles.glGetError()
@@ -597,7 +597,7 @@ class matrix(object):
 
     def pop(self):
 	opengles.glMatrixMode(GL_MODELVIEW)
-	if self.mc>0:
+	if self.mc > 0:
 	    self.mc -= 1
 	    opengles.glLoadMatrixf(self.mat[self.mc])
 
@@ -605,10 +605,13 @@ class matrix(object):
 	opengles.glTranslatef(eglfloat(x),eglfloat(y),eglfloat(z))
 
     def rotate(self,rx,ry,rz):
-	if rz <> 0: opengles.glRotatef(eglfloat(rz),egf0, egf0, egf1)
-	if rx <> 0: opengles.glRotatef(eglfloat(rx),egf1, egf0, egf0)
-	if ry <> 0: opengles.glRotatef(eglfloat(ry),egf0, egf1, egf0)
+	if rz:
+          opengles.glRotatef(eglfloat(rz), egf0, egf0, egf1)
+	if rx:
+          opengles.glRotatef(eglfloat(rx), egf1, egf0, egf0)
+	if ry:
+          opengles.glRotatef(eglfloat(ry), egf0, egf1, egf0)
 
     def scale(self,sx,sy,sz):
-	opengles.glScalef(eglfloat(sx),eglfloat(sy),eglfloat(sz))
+	opengles.glScalef(eglfloat(sx), eglfloat(sy), eglfloat(sz))
 
