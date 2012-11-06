@@ -16,6 +16,7 @@
 import pi3d
 
 from pi3d.Lathe import Lathe
+from pi3d.Helix import Helix
 from pi3d.Sphere import Sphere
 from pi3d.Torus import Torus
 from pi3d.Tube import Tube
@@ -33,7 +34,7 @@ coffimg = texs.loadTexture("textures/COFFEE.PNG")
 #Create inbuilt shapes
 mysphere = Sphere(1,24,24,0.0,"sphere",-4,2,-7)
 mytcone = pi3d.createTCone(0.8,0.6,1,24,"TCone", -2,2,-7)
-myspiral = pi3d.createSpiral(0.4,0.1,12,24,1.5,3.0,"spiral", 0,2,-7)
+myhelix = Helix(0.4,0.1,12,24,1.5,3.0,"helix", 0,2,-7)
 mytube = Tube(0.4,0.1,1.5,24,"tube",2,2,-7, 30,0,0)
 myextrude = pi3d.createExtrude( ((-0.5, 1),(0.5,0),(0.5,-0.2),(-0.5,-0.3)), 0.05,"Extrude",4,2,-7)
 
@@ -64,9 +65,9 @@ while 1:
     myhemisphere.draw(coffimg)
     myhemisphere.rotateIncY( .5 )
 
-    myspiral.draw(patimg)
-    myspiral.rotateIncY(3)
-    myspiral.rotateIncZ(1)
+    myhelix.draw(patimg)
+    myhelix.rotateIncY(3)
+    myhelix.rotateIncZ(1)
 
     mytube.draw(coffimg)
     mytube.rotateIncY(3)
