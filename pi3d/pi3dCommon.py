@@ -34,8 +34,6 @@ from constants.gl2 import *
 from constants.gl2ext import *
 from constants.gl import *
 
-from ctypes import *
-
 # Define some extra constants that the automatic extraction misses
 EGL_DEFAULT_DISPLAY = 0
 EGL_NO_CONTEXT = 0
