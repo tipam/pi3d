@@ -89,49 +89,6 @@ mtrx_stack = 0
 def showerror():
   return opengles.glGetError()
 
-#load a texture specifying RGB or RGBA
-def load_tex(fileString,flip,size,blend):
-	s=fileString+" "
-	im = Image.open(fileString)
-	ix,iy = im.size
-	s+="("+im.mode+") "
-	if im.mode=="RGBA" or im.mode=="LA":
-		RGBv=GL_RGBA
-		RGBs="RGBA"
-	else:
-		RGBv=GL_RGB
-		RGBs="RGB"
-
-	#work out if sizes are not to the power of 2 or >512
-	xx=0
-	yy=0
-	nx,ny=ix,iy
-	while (2**xx)<nx: xx+=1
-	while (2**yy)<ny: yy+=1
-	if (2**xx)>nx: nx=2**xx
-	if (2**yy)>ny: ny=2**yy
-	if nx>1024: nx=1024
-	if ny>1024: ny=1024
-
-	if nx<>ix or ny<>iy or size>0:
-	    print ix,iy
-	    if size>0: nx,ny = size,size
-	    ix,iy = nx,ny
-	    im = im.resize((ix,iy),Image.ANTIALIAS)
-	    s+= "Resizing to: "+str(ix)+","+str(iy)
-	else: s+= "Bitmap size: "+str(ix)+","+str(iy)
-
-	print "Loading ...",s
-
-	if flip: im = im.transpose(Image.FLIP_TOP_BOTTOM)
-
-	image = im.convert(RGBs).tostring("raw",RGBs)
-	tex=eglint()
-	opengles.glGenTextures(1,ctypes.byref(tex))
-	opengles.glBindTexture(GL_TEXTURE_2D,tex)
-	opengles.glTexImage2D(GL_TEXTURE_2D,0,RGBv,ix,iy,0,RGBv,GL_UNSIGNED_BYTE, ctypes.string_at(image,len(image)))
-	return ix,iy,tex,RGBs=="RGBA",blend
-
 #turn texture on before drawing arrays
 def texture_on(tex, tex_coords, vtype):
   opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, eglfloat(GL_LINEAR));
