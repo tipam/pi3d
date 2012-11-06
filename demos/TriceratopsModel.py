@@ -16,6 +16,8 @@
 
 import pi3d
 
+from pi3d.Model import Model
+
 # Setup display and initialise pi3d
 display = pi3d.Display()
 display.create3D(100,100,1200,900)   	# x,y,width,height
@@ -23,7 +25,7 @@ display.setBackColour(0.2,0.4,0.6,1)    # r,g,b,alpha
 
 # load model_loadmodel
 texs = pi3d.textures()
-mymodel = pi3d.loadModel("models/Triceratops/Triceratops.egg",texs,"Triceratops", 0,-1,0, -90,0,0, .005,.005,.005)
+mymodel = Model("models/Triceratops/Triceratops.egg",texs,"Triceratops", 0,-1,0, -90,0,0, .005,.005,.005)
 
 # Fetch key presses
 mykeys = pi3d.key()
