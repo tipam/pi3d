@@ -50,7 +50,8 @@ class createCylinder(Shape):
         def __init__(self,radius=1.0,height=2.0,sides=12, name="",x=0.0,y=0.0,z=0.0, rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0):
                 super(createCylinder,self).__init__(name, x,y,z, rx,ry,rz, sx,sy,sz, cx,cy,cz)
 
-                print "Creating Cylinder ..."
+                if Constants.VERBOSE:
+                  print "Creating Cylinder ..."
 
                 path = []
                 path.append((0,height * .5))
@@ -79,7 +80,8 @@ class createCone(Shape):
         def __init__(self,radius=1.0,height=2.0,sides=12, name="",x=0.0,y=0.0,z=0.0, rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0):
                 super(createCone,self).__init__(name, x,y,z, rx,ry,rz, sx,sy,sz, cx,cy,cz)
 
-                print "Creating Cone ..."
+                if Constants.VERBOSE:
+                  print "Creating Cone ..."
 
                 path = []
                 path.append((0,height * .5))
@@ -107,7 +109,8 @@ class createTCone(Shape):
         def __init__(self,radiusBot=1.2,radiusTop=0.8,height=2.0,sides=12, name="",x=0.0,y=0.0,z=0.0, rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0):
                 super(createTCone,self).__init__(name, x,y,z, rx,ry,rz, sx,sy,sz, cx,cy,cz)
 
-                print "Creating Truncated Cone ..."
+                if Constants.VERBOSE:
+                  print "Creating Truncated Cone ..."
 
                 path = []
                 path.append((0,height * .5))
@@ -138,7 +141,8 @@ class createExtrude(Shape):
         def __init__(self, path, height=1.0, name="",x=0.0,y=0.0,z=0.0, rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0):
                 super(createExtrude,self).__init__(name, x,y,z, rx,ry,rz, sx,sy,sz, cx,cy,cz)
 
-                print "Creating Extrude ..."
+                if Constants.VERBOSE:
+                  print "Creating Extrude ..."
 
                 s = len(path)
                 ht = height * 0.5
@@ -198,7 +202,8 @@ class createExtrude(Shape):
 
                 for p in range (0, s):          #bottom face indices - triangle fan
                     b=s+(s-p)
-                    print "bi:",b
+                    if Constants.VERBOSE:
+                      print "bi:",b
                     self.botface.append(b-1)
 
                 for p in range (0, s):          #sides - triangle strip
@@ -234,7 +239,8 @@ class createElevationMapFromTexture(Shape):
         def __init__(self, mapfile, width=100.0, depth=100.0, height=10.0, divx=0, divy=0, ntiles=1.0, name="",x=0.0,y=0.0,z=0.0, rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0):
                 super(createElevationMapFromTexture,self).__init__(name, x,y,z, rx,ry,rz, sx,sy,sz, cx,cy,cz)
 
-                print "Loading height map ...",mapfile
+                if Constants.VERBOSE:
+                  print "Loading height map ...",mapfile
 
                 if divx>200 or divy>200:
                         print "... Map size can't be bigger than 200x200 divisions"
@@ -262,7 +268,8 @@ class createElevationMapFromTexture(Shape):
                 self.iy=iy
                 self.ttype = GL_TRIANGLE_STRIP
 
-                print "Creating Elevation Map ...", ix,iy
+                if Constants.VERBOSE:
+                  print "Creating Elevation Map ...", ix,iy
 
                 wh = width*0.5
                 hh = depth*0.5
@@ -308,7 +315,8 @@ class createElevationMapFromTexture(Shape):
                 self.indices = eglshorts(idx)
                 self.tex_coords = eglfloats(tex_coords)
                 self.ssize = s  #ix * iy * 2
-                print s, ix * iy * 2
+                if Constants.VERBOSE:
+                  print s, ix * iy * 2
 
         # determines how high an object is when dropped on the map (providing it's inside the map area)
         def dropOn(self,x,z):
@@ -335,9 +343,6 @@ class createElevationMapFromTexture(Shape):
                 pz = (hh - pz)/hs
                 x = math.floor(px)
                 z = math.floor(pz)
-                #print px,pz,x,z
-                #x = wh-math.floor(x+0.5)/ws
-                #z = hh-math.floor(z+0.5)/hs
 
                 ih=intersectTriangle((x,self.pixels[x,z]*ht,z), (x+1,self.pixels[x+1,z]*ht,z), (x,self.pixels[x,z+1]*ht,z+1), (px,0,pz))
                 if ih == -100000:
@@ -371,7 +376,8 @@ class camera(Shape):
 
     def __init__(self,name="",x=0.0,y=0.0,z=0.0, rx=0.0,ry=0.0,rz=0.0):
         super(camera,self).__init__(name, x,y,z, rx,ry,rz, 1,1,1)
-        print "Creating camera ..."
+        if Constants.VERBOSE:
+          print "Creating camera ..."
 
     def orthographic(self,left,right,bottom,top,zoom=1,near=-1,far=10):
         opengles.glMatrixMode(GL_PROJECTION)
@@ -398,7 +404,8 @@ class loadModel(Shape):
 
         self.exf = fileString[-3:].lower()
         self.texs = texs
-        print "Loading ",fileString
+        if Constants.VERBOSE:
+          print "Loading ",fileString
 
         if self.exf == 'egg':
             self.model = loaderEgg.loadFileEGG(self,fileString,texs)
@@ -429,7 +436,8 @@ class createLight(object):
 
     def __init__(self,no=0,red=1.0,grn=1.0,blu=1.0, name="",x=0,y=0,z=0, ambR=0.5,ambG=0.5,ambB=0.5):
 
-        print "Creating light ..."
+        if Constants.VERBOSE:
+          print "Creating light ..."
 
 	self.ambient = eglfloats((ambR,ambG,ambB,1.0))
 	self.diffuse = eglfloats((red,grn,blu,1.0))
@@ -509,7 +517,7 @@ class font(object):
             h=pixels[v*2+1,0][1] * 1.0   #height of this char
             tw=w/ix
             th=h/iy
-            #print chr(v+32),x,y,w,h,tw,th
+
             self.chr.append((w,h,eglfloats((x+tw,y-th, x,y-th, x,y, x+tw,y)),eglfloats((w,0,0, 0,0,0, 0,-h,0, w,-h,0))))
 
         alpha = im.split()[-1]  #keep alpha
@@ -565,7 +573,8 @@ class missile(object):
         if self.countDown > 0:
             self.countDown -= 1
             if self.countDown == 0:
-                print "fizzle"
+                if Constants.VERBOSE:
+                  print "fizzle"
                 self.IsActive = False
         missile.x = self.x
         missile.y = self.y
@@ -599,15 +608,8 @@ class ball(object):
 	dx = self.x-otherball.x
 	dy = self.y-otherball.y
 	rd = self.radius+otherball.radius
-	#print dx,dy #,self.x,otherball.x
-	if (dx**2+dy**2) <= (rd**2):
-	    #sq = 1.0 / math.sqrt(dx**2+dy**2)
-	    #print "dxdy", dx**2+dy**2
-	    #otherball.vx = math.copysign((dx*sq),self.vx)*5.0
-	    #otherball.vy = math.copysign((dy*sq),self.vy)*5.0
-	    #self.vx = 0.0 #math.copysign(abs(dy*sq),self.vx)
-	    #self.vy = 0.0 #-math.copysign(abs(dx*sq),self.vy)
 
+	if (dx**2+dy**2) <= (rd**2):
 	    cangle = math.atan2(dy,dx)
 	    mag1 = math.sqrt(self.vx**2+self.vy**2)
 	    mag2 = math.sqrt(otherball.vx**2+otherball.vy**2)
@@ -674,18 +676,21 @@ class shader(object):
 	    vshader = opengles.glCreateShader(GL_VERTEX_SHADER)
 	    opengles.glShaderSource(vshader, 1, ctypes.byref(self.vshader_source), 0)
 	    opengles.glCompileShader(vshader)
-	    self.showlog(vshader)
+            if Constants.VERBOSE:
+              self.showlog(vshader)
 
 	    fshader = opengles.glCreateShader(GL_FRAGMENT_SHADER)
 	    opengles.glShaderSource(fshader, 1, ctypes.byref(fshads), 0)
 	    opengles.glCompileShader(fshader)
-	    self.showlog(fshader)
+            if Constants.VERBOSE:
+              self.showlog(fshader)
 
 	    self.program = opengles.glCreateProgram()
 	    opengles.glAttachShader(self.program, vshader)
 	    opengles.glAttachShader(self.program, fshader)
 	    opengles.glLinkProgram(self.program)
-	    self.showprogramlog(self.program)
+            if Constants.VERBOSE:
+              self.showprogramlog(self.program)
 
 	def use(self):
 	    if self.tex1<>None: unif_tex1 = opengles.glGetUniformLocation(self.program, "tex1")  #frag shader must have a uniform 'tex1'
