@@ -25,7 +25,7 @@ from pi3d.Key import Key
 from pi3d.Light import Light
 from pi3d.Matrix import Matrix
 from pi3d.Mouse import Mouse
-from pi3d.Textures import Textures
+from pi3d.Texture import Textures
 
 from pi3d.shape.Cuboid import Cuboid
 from pi3d.shape.Cylinder import Cylinder

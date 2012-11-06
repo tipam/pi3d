@@ -19,7 +19,7 @@ from pi3d.Display import Display
 from pi3d.Font import Font
 from pi3d.Key import Key
 from pi3d.Light import Light
-from pi3d.Textures import Textures
+from pi3d.Texture import Textures
 
 from pi3d.shape.Cone import Cone
 from pi3d.shape.Cylinder import Cylinder

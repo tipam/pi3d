@@ -152,7 +152,7 @@ def angleVecs(x1,y1,x2,y2,x3,y3):
     return angle
 
 def dot(x1, y1, x2, y2):
-  a = x2 -x1
+  a = x2 - x1
   b = y2 - y1
   s = math.sqrt(a * a + b * b)
   if s > 0.0:
