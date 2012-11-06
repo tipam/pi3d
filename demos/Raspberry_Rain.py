@@ -16,7 +16,10 @@
 # The sprites make use of the z value in a perspective view
 
 import time, random
+
 import pi3d
+
+from pi3d import Draw
 
 from pi3d.Display import Display
 from pi3d.Key import Key
@@ -48,7 +51,7 @@ while 1:
     display.clear()
 
     for b in range (0, pino):
-	pi3d.sprite(raspimg,xyz[b][0],5-xyz[b][1],-xyz[b][2],1,1,xyz[b][3])	#draw a rectangle(x,y,z,scaleX,scaleY,rotation)
+	Draw.sprite(raspimg,xyz[b][0],5-xyz[b][1],-xyz[b][2],1,1,xyz[b][3])	#draw a rectangle(x,y,z,scaleX,scaleY,rotation)
 	r = xyz[b][3]+1
 	y = (xyz[b][1]+0.1) % 10
 	if y<0.06:

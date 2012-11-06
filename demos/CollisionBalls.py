@@ -19,6 +19,8 @@
 
 import pi3d, sys, random
 
+from pi3d import Draw
+
 from pi3d.Ball import Ball
 from pi3d.Display import Display
 from pi3d.Key import Key
@@ -93,7 +95,8 @@ while True:
 	if balls[b].x>scnx or balls[b].x<0.0: balls[b].vx = -balls[b].vx
 	if balls[b].y>scny or balls[b].y<0.0: balls[b].vy = -balls[b].vy
 
-	pi3d.sprite(balltex[0],balls[b].x,balls[b].y,-1,balls[b].radius,balls[b].radius)
+	Draw.sprite(balltex[0], balls[b].x, balls[b].y, -1,
+                    balls[b].radius, balls[b].radius)
 
     k = mykeys.read()
     if k >-1:

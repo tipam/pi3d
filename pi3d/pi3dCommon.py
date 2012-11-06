@@ -66,6 +66,11 @@ def c_floats(x):
 def c_shorts(x):
   return ctypes_array(c_short, x)
 
+# TODO: not exact sure what this does but we do it a lot.
+def texture_min_mag():
+  for f in [GL_TEXTURE_MIN_FILTER, GL_TEXTURE_MAG_FILTER]:
+    opengles.glTexParameterf(GL_TEXTURE_2D, f, c_float(GL_LINEAR))
+
 def ctypeResize(array, new_size):
   resize(array, sizeof(array._type_) * new_size)
   return (array._type_ * new_size).from_address(addressof(array))
@@ -200,73 +205,6 @@ def addVertex(v,x,y,z,n,nx,ny,nz,t,tx,ty):
 def addTri(v,x,y,z):
 # add triangle refs.
   v.extend([x, y, z])
-
-rect_normals = c_bytes(( 0,0,-1, 0,0,-1, 0,0,-1, 0,0,-1 ))
-rect_tex_coords = c_bytes(( 0,255, 255,255, 255,0, 0,0))
-rect_tex_coords2 = c_floats(( 0,1, 1,1, 1,0, 0,0))
-rect_vertsTL = c_bytes(( 1,0,0, 0,0,0, 0,-1,0, 1,-1,0 ))
-rect_vertsCT = c_bytes(( 1,1,0, -1,1,0, -1,-1,0, 1,-1,0 ))
-rect_triangles = c_bytes(( 3,0,1, 3,1,2 ))
-
-def drawString(font,string,x,y,z,rot,sclx,scly):
-
-	opengles.glNormalPointer( GL_BYTE, 0, rect_normals)
-	opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, c_float(GL_LINEAR));
-	opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, c_float(GL_LINEAR));
-	opengles.glEnableClientState(GL_TEXTURE_COORD_ARRAY)
-	opengles.glBindTexture(GL_TEXTURE_2D,font.tex)
-	opengles.glEnable(GL_TEXTURE_2D)
-
-	opengles.glDisable(GL_DEPTH_TEST)
-	opengles.glDisable(GL_CULL_FACE)
-	opengles.glEnable(GL_BLEND)
-	opengles.glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA)
-
-	mtrx =(c_float * 16)()
-	opengles.glGetFloatv(GL_MODELVIEW_MATRIX,ctypes.byref(mtrx))
-	opengles.glTranslatef(c_float(x), c_float(y), c_float(z))
-	opengles.glRotatef(c_float(rot), c_float(0), c_float(0), c_float(1))
-	opengles.glScalef(c_float(sclx), c_float(scly), c_float(1))
-
-	for c in range(0,len(string)):
-		v=ord(string[c])-32
-		w,h,texc,verts = font.chr[v]
-		if v>0:
-		    opengles.glVertexPointer(3, GL_FLOAT, 0,verts)
-		    opengles.glTexCoordPointer(2, GL_FLOAT,0,texc)
-		    opengles.glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, rect_triangles)
-		opengles.glTranslatef(c_float(w), c_float(0), c_float(0))
-
-	opengles.glLoadMatrixf(mtrx)
-	opengles.glDisable(GL_TEXTURE_2D)
-	opengles.glDisable(GL_BLEND)
-	opengles.glEnable(GL_DEPTH_TEST)
-	opengles.glEnable(GL_CULL_FACE)
-
-def rectangle(tex,x,y,w,h,r=0.0,z=-1.0):
-  from pi3d import Texture
-
-  opengles.glNormalPointer(GL_BYTE, 0, rect_normals);
-  opengles.glVertexPointer(3, GL_BYTE, 0, rect_vertsTL);
-  opengles.glLoadIdentity()
-  opengles.glTranslatef(c_float(x), c_float(y), c_float(z))
-  opengles.glScalef(c_float(w), c_float(h), c_float(1))
-  if r:
-    opengles.glRotatef(c_float(r),c_float(0), c_float(0), c_float(1))
-  with Texture.Loader(tex,rect_tex_coords,GL_BYTE):
-    opengles.glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, rect_triangles)
-
-def sprite(tex,x,y,z=-10.0,w=1.0,h=1.0,r=0.0):
-  from pi3d import Texture
-  opengles.glNormalPointer( GL_BYTE, 0, rect_normals);
-  opengles.glVertexPointer( 3, GL_BYTE, 0, rect_vertsCT);
-  opengles.glLoadIdentity()
-  opengles.glTranslatef(c_float(x), c_float(y), c_float(z))
-  opengles.glScalef(c_float(w), c_float(h), c_float(1))
-  if r:
-    opengles.glRotatef(c_float(r),c_float(0), c_float(0), c_float(1))
-  with Texture.Loader(tex, rect_tex_coords, GL_BYTE):
-    opengles.glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, rect_triangles)
 
 def rotateVec(rx,ry,rz,xyz):
     x,y,z = xyz[0],xyz[1],xyz[2]

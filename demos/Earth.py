@@ -15,6 +15,8 @@
 
 import pi3d
 
+from pi3d import Draw
+
 from pi3d.Display import Display
 from pi3d.Font import Font
 from pi3d.Key import Key
@@ -64,7 +66,7 @@ while 1:
     display.clear()
 
     mylight.off()
-    pi3d.sprite(starsimg, 0,0,-20, 25,25,rot)
+    Draw.sprite(starsimg, 0,0,-20, 25,25,rot)
     rot=rot+0.02
 
     mylight.on()
@@ -89,8 +91,8 @@ while 1:
     rot2 += 5.0
 
     #pi3d.identity()
-    #pi3d.drawString(arialFont,"The Raspberry Pi ROCKS!",-1.0,0.0,-2.2, 10.0, 0.003,0.003)
-    #pi3d.drawString(destineFont,"Some nice OpenGL bitmap fonts to play with!",-1.3,-0.3,-2.2, 10.0, 0.002,0.002)
+    #Draw.drawString(arialFont,"The Raspberry Pi ROCKS!",-1.0,0.0,-2.2, 10.0, 0.003,0.003)
+    #Draw.drawString(destineFont,"Some nice OpenGL bitmap fonts to play with!",-1.3,-0.3,-2.2, 10.0, 0.002,0.002)
 
     k = mykeys.read()
     if k >-1:

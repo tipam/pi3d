@@ -15,6 +15,8 @@
 
 import pi3d
 
+from pi3d import Draw
+
 from pi3d.Display import Display
 from pi3d.Font import Font
 from pi3d.Key import Key
@@ -107,7 +109,8 @@ while 1:
     mylathe.rotateIncY(2)
     mylathe.rotateIncZ(1)
 
-    pi3d.drawString(arialFont,"Raspberry Pi ROCKS!",-0.8,-0.7,-2.2, 10.0, 0.003,0.003)
+    Draw.string(arialFont, "Raspberry Pi ROCKS!",
+                -0.8, -0.7, -2.2, 10.0, 0.003, 0.003)
     #pi3d.drawString(destineFont,"Some nice OpenGL bitmap fonts to play with",-1.3,-0.3,-2.2, 10.0, 0.002,0.002)
 
     k = mykeys.read()

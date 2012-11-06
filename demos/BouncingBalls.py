@@ -19,6 +19,8 @@
 
 import pi3d, sys, random
 
+from pi3d import Draw
+
 from pi3d.Display import Display
 from pi3d.Key import Key
 from pi3d.Texture import Textures
@@ -78,7 +80,7 @@ while True:
     for b in range (0, maxballs):
 
 	# Draw ball (tex,x,y,z,width,height,rotation)
-	pi3d.sprite(ball[bi[b]],bx[b],by[b],-2.0,bs[b],bs[b])
+	Draw.sprite(ball[bi[b]],bx[b],by[b],-2.0,bs[b],bs[b])
 
 	# Increment ball positions
 	bx[b]=bx[b]+dx[b]
@@ -93,8 +95,8 @@ while True:
 		dy[b]=-dy[b]
 
     #draw a bar at the top of the screen
-    pi3d.rectangle(bar,0,scny,scnx,32)
-    pi3d.rectangle(bbtitle,5,scny,256+5,32)
+    Draw.rectangle(bar,0,scny,scnx,32)
+    Draw.rectangle(bbtitle,5,scny,256+5,32)
 
     k = mykeys.read()
     if k >-1:

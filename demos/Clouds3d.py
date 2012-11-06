@@ -15,6 +15,8 @@
 
 import pi3d, random, time
 
+from pi3d import Draw
+
 from pi3d.Display import Display
 from pi3d.Key import Key
 from pi3d.Texture import Textures
@@ -71,7 +73,7 @@ while True:
 	# paint the clouds from background to foreground
 	for i in range(maxDepthIndex, maxDepthIndex + cloudno):
 		c = cxyz[i%cloudno]
-		pi3d.sprite(clouds[c[3]], c[0], c[1], -c[2], 8, 5)
+		Draw.sprite(clouds[c[3]], c[0], c[1], -c[2], 8, 5)
 
 	#Press ESCAPE to terminate
 	if mykeys.read() == 27:

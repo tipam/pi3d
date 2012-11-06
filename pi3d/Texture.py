@@ -94,9 +94,7 @@ class Loader(object):
 
   def __enter__(self):
     if self.texture:
-      for f in [GL_TEXTURE_MIN_FILTER, GL_TEXTURE_MAG_FILTER]:
-        opengles.glTexParameterf(GL_TEXTURE_2D, f, c_float(GL_LINEAR))
-
+      texture_min_mag()
       opengles.glEnableClientState(GL_TEXTURE_COORD_ARRAY)
       opengles.glTexCoordPointer(2, self.vtype, 0, self.coords)
       opengles.glBindTexture(GL_TEXTURE_2D, self.texture.tex)
