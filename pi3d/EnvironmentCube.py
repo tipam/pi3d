@@ -1,6 +1,8 @@
 import os.path
 from ctypes import c_float
 
+import pi3d
+
 from pi3d.pi3dCommon import *
 from pi3d import Constants
 
@@ -75,7 +77,7 @@ class EnvironmentCube(object):
   def draw(self,tex,x,y,z):
     mtrx =(ctypes.c_float*16)()
     opengles.glGetFloatv(GL_MODELVIEW_MATRIX,ctypes.byref(mtrx))
-    opengles.glTranslatef(c_float(-x), c_float(-y), c_float(-z))
+    pi3d.translatef(-x, -y, -z)
     texture_min_mag();
     opengles.glVertexPointer(3, GL_FLOAT, 0, self.vertices)
     opengles.glNormalPointer(GL_FLOAT, 0, self.normals)

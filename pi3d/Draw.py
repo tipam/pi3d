@@ -1,3 +1,5 @@
+import pi3d
+
 from pi3d.pi3dCommon import *
 
 from pi3d import Constants
@@ -24,9 +26,9 @@ def string(font, string, x, y, z, rot, sclx, scly):
 
   mtrx =(c_float * 16)()
   opengles.glGetFloatv(GL_MODELVIEW_MATRIX,ctypes.byref(mtrx))
-  opengles.glTranslatef(c_float(x), c_float(y), c_float(z))
-  opengles.glRotatef(c_float(rot), c_float(0), c_float(0), c_float(1))
-  opengles.glScalef(c_float(sclx), c_float(scly), c_float(1))
+  pi3d.translatef(x, y, z)
+  pi3d.rotatef(rot, 0, 0, 1)
+  pi3d.scalef(sclx, scly, 1)
 
   for c in range(0,len(string)):
     v = ord(string[c])-32
@@ -35,7 +37,7 @@ def string(font, string, x, y, z, rot, sclx, scly):
       opengles.glVertexPointer(3, GL_FLOAT, 0,verts)
       opengles.glTexCoordPointer(2, GL_FLOAT,0,texc)
       opengles.glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, RECT_TRIANGLES)
-    opengles.glTranslatef(c_float(w), c_float(0), c_float(0))
+    pi3d.translatef(w, 0, 0)
 
   opengles.glLoadMatrixf(mtrx)
   opengles.glDisable(GL_TEXTURE_2D)
@@ -46,11 +48,11 @@ def string(font, string, x, y, z, rot, sclx, scly):
 def _draw(verts, tex, x, y, w, h, r, z):
   opengles.glNormalPointer(GL_BYTE, 0, RECT_NORMALS);
   opengles.glVertexPointer(3, GL_BYTE, 0, verts);
-  opengles.glLoadIdentity()
-  opengles.glTranslatef(c_float(x), c_float(y), c_float(z))
-  opengles.glScalef(c_float(w), c_float(h), c_float(1))
+  pi3d.load_identity()
+  pi3d.translatef(x, y, z)
+  pi3d.scalef(w, h, 1)
   if r:
-    opengles.glRotatef(c_float(r), c_float(0), c_float(0), c_float(1))
+    pi3d.rotatef(r, 0, 0, 1)
   with Texture.Loader(tex,RECT_TEX_COORDS,GL_BYTE):
     opengles.glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, RECT_TRIANGLES)
 

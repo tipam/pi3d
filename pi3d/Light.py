@@ -1,5 +1,7 @@
 import ctypes
 
+import pi3d
+
 from pi3d.pi3dCommon import *
 from pi3d import Constants
 
@@ -29,10 +31,10 @@ class Light(object):
     # I would have thought either w needs to be passed as a parameter to __init__ and not overwritten in position
     # and/or define global values SPOT, DIST, POINT = -1, 0, 1
 
-  def position(self,x, y, z):
+  def position(self, x, y, z):
     mtrx = (ctypes.c_float * 16)()
     opengles.glGetFloatv(GL_MODELVIEW_MATRIX, ctypes.byref(mtrx))
-    opengles.glLoadIdentity()
+    pi3d.load_identity()
     self.xyz = c_floats((x, y, z ,1))
     opengles.glLightfv(self.no, GL_POSITION, self.xyz)
     opengles.glLoadMatrixf(mtrx)

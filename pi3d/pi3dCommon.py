@@ -71,41 +71,37 @@ def texture_min_mag():
   for f in [GL_TEXTURE_MIN_FILTER, GL_TEXTURE_MAG_FILTER]:
     opengles.glTexParameterf(GL_TEXTURE_2D, f, c_float(GL_LINEAR))
 
-def ctypeResize(array, new_size):
-  resize(array, sizeof(array._type_) * new_size)
-  return (array._type_ * new_size).from_address(addressof(array))
+def rotatef(angle, x, y, z):
+  opengles.glRotatef(c_float(angle), c_float(x), c_float(y), c_float(z))
 
-def showerror():
-  return opengles.glGetError()
-
-#position, rotate and scale an object
-def transform(x,y,z,rotx,roty,rotz,sx,sy,sz,cx,cy,cz):
-  opengles.glTranslatef(c_float(x-cx), c_float(y-cy), c_float(z-cz))
-  if rotz:
-    opengles.glRotatef(c_float(rotz),c_float(0), c_float(0), c_float(1))
-  if roty:
-    opengles.glRotatef(c_float(roty),c_float(0), c_float(1), c_float(0))
-  if rotx:
-    opengles.glRotatef(c_float(rotx),c_float(1), c_float(0), c_float(0))
-  opengles.glScalef(c_float(sx),c_float(sy),c_float(sz))
-  opengles.glTranslatef(c_float(cx), c_float(cy), c_float(cz))
-
-def rotate(rotx,roty,rotz):
-  if rotz:
-    opengles.glRotatef(c_float(rotz), c_float(0), c_float(0), c_float(1))
-  if roty:
-    opengles.glRotatef(c_float(roty), c_float(0), c_float(1), c_float(0))
-  if rotx:
-    opengles.glRotatef(c_float(rotx), c_float(1), c_float(0), c_float(0))
-
-def identity():
-  opengles.glLoadIdentity()
-
-def position(x,y,z):
+def translatef(x, y, z):
   opengles.glTranslatef(c_float(x), c_float(y), c_float(z))
 
-def scale(sx,sy,sz):
+def scalef(sx,sy,sz):
   opengles.glScalef(c_float(sx), c_float(sy), c_float(sz))
+
+def load_identity():
+  opengles.glLoadIdentity()
+
+#position, rotate and scale an object
+def transform(x, y, z, rotx, roty, rotz, sx, sy, sz, cx, cy, cz):
+  translatef(x - cx, y - cy, z - cz)
+  if rotz:
+    rotatef(rotz, 0, 0, 1)
+  if roty:
+    rotatef(roty, 0, 1, 0)
+  if rotx:
+    rotatef(rotx, 1, 0, 0)
+  scalef(sx, sy, sz)
+  translatef(cx, cy, cz)
+
+def rotate(rotx, roty, rotz):
+  if rotz:
+    rotatef(rotz, 0, 0, 1)
+  if roty:
+    rotatef(roty, 0, 1, 0)
+  if rotx:
+    rotatef(rotx, 1, 0, 0)
 
 def angleVecs(x1,y1,x2,y2,x3,y3):
   a=x2-x1
@@ -435,3 +431,13 @@ def create_display(self,x=0,y=0,w=0,h=0,depth=24):
 	opengles.glEnableClientState(GL_NORMAL_ARRAY)
 
 	self.active = True
+
+# Nothing below this line is ever actually called.
+
+def ctype_resize(array, new_size):
+  resize(array, sizeof(array._type_) * new_size)
+  return (array._type_ * new_size).from_address(addressof(array))
+
+def showerror():
+  return opengles.glGetError()
+

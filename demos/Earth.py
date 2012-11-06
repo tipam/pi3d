@@ -90,7 +90,7 @@ while 1:
     rot1 += 1.0
     rot2 += 5.0
 
-    #pi3d.identity()
+    #pi3d.load_identity()
     #Draw.drawString(arialFont,"The Raspberry Pi ROCKS!",-1.0,0.0,-2.2, 10.0, 0.003,0.003)
     #Draw.drawString(destineFont,"Some nice OpenGL bitmap fonts to play with!",-1.3,-0.3,-2.2, 10.0, 0.002,0.002)
 

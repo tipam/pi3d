@@ -63,7 +63,7 @@ while 1:
     mtrx.identity()
     mtrx.rotate(tilt,0,0)
     mtrx.rotate(0,rot,0)
-    #pi3d.position(xm,ym,zm)
+    #pi3d.translatef(xm, ym, zm)
 
     myecube.draw(ectex,0.0,0.0,0.0)
 
