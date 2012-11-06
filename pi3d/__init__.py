@@ -37,8 +37,6 @@ from pi3d import Constants
 
 from pi3d.Display import Display
 
-display = Display  # old name for Display is deprecated
-
 CUBE_PARTS = ('top', 'left', 'front', 'right', 'back', 'bottom')
 
 def loadECfiles(path, fname, textures):

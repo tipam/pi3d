@@ -19,7 +19,7 @@ import time, random
 import pi3d
 
 # Setup display and initialise pi3d
-display = pi3d.display()
+display = pi3d.Display()
 display.create3D(0,0,1900,1200)
 
 # Set last value (alpha) to zero for a transparent background!

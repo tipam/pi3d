@@ -17,7 +17,7 @@
 import pi3d
 
 # Setup display and initialise pi3d
-display = pi3d.display()
+display = pi3d.Display()
 display.create3D(100,100,1200,900)   	# x,y,width,height
 display.setBackColour(0.2,0.4,0.6,1)    	# r,g,b,alpha
 

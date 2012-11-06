@@ -22,7 +22,7 @@ import pi3d, sys, random, array
 # Setup display and initialise pi3d
 scnx=1920
 scny=1200
-display = pi3d.display()
+display = pi3d.Display()
 display.create2D(0,0,scnx,scny,0)
 
 # Set last value (alpha) to zero for a transparent background!

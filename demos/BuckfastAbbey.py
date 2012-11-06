@@ -19,7 +19,7 @@ import pi3d, math
 rads = 0.017453292512  # degrees to radians
 
 # Setup display and initialise pi3d
-display = pi3d.display()
+display = pi3d.Display()
 display.create3D(100,100,1400,800)   	# x,y,width,height
 display.setBackColour(0.2,0.4,0.6,1)    	# r,g,b,alpha
 
