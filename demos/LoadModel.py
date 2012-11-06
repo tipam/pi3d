@@ -16,6 +16,7 @@
 
 import pi3d
 
+from pi3d.Light import Light
 from pi3d.Model import Model
 
 # Setup display and initialise pi3d
@@ -33,7 +34,7 @@ mykeys = pi3d.key()
 mtrx = pi3d.matrix()
 
 #create a light
-mylight = pi3d.createLight(0,1,1,1,"",10,10,0)
+mylight = Light(0,1,1,1,"",10,10,0)
 mylight.on()
 
 while 1:

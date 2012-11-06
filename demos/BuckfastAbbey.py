@@ -17,6 +17,7 @@
 import pi3d, math
 
 from pi3d.EnvironmentCube import EnvironmentCube
+from pi3d.Light import Light
 from pi3d.Model import Model
 
 # Setup display and initialise pi3d
@@ -57,7 +58,7 @@ zm=0.0
 ym= -avhgt
 
 #create a light
-mylight = pi3d.createLight(0,1,1,1,"",0,200,200,0.4,0.4,0.4)
+mylight = Light(0,1,1,1,"",0,200,200,0.4,0.4,0.4)
 mtrx=pi3d.matrix()
 
 omx=mymouse.x

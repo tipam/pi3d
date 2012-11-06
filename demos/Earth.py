@@ -15,6 +15,7 @@
 
 import pi3d
 
+from pi3d.Light import Light
 from pi3d.Sphere import Sphere
 
 # Setup display and initialise pi3d
@@ -50,7 +51,7 @@ rot1=0.0
 rot2=0.0
 
 #create a light
-mylight = pi3d.createLight(0,1,1,1,"",10,10,50, .8,.8,.8)
+mylight = Light(0,1,1,1,"",10,10,50, .8,.8,.8)
 
 # Display scene
 while 1:

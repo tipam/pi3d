@@ -18,6 +18,7 @@ import pi3d,math,random
 from pi3d.ClipPlane import ClipPlane
 from pi3d.ElevationMap import ElevationMap
 from pi3d.EnvironmentCube import EnvironmentCube
+from pi3d.Light import Light
 from pi3d.MergeShape import MergeShape
 from pi3d.Plane import Plane
 
@@ -46,7 +47,7 @@ mymap = ElevationMap("textures/mountainsHgt.jpg",mapwidth,mapdepth,mapheight,64,
 
 myclip = ClipPlane()
 
-light = pi3d.createLight(0, 10,10,10, "", 0,100,0)
+light = Light(0, 10,10,10, "", 0,100,0)
 light.on()
 
 #Create tree models

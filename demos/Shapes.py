@@ -20,6 +20,7 @@ from pi3d.Cylinder import Cylinder
 from pi3d.Extrude import Extrude
 from pi3d.Helix import Helix
 from pi3d.Lathe import Lathe
+from pi3d.Light import Light
 from pi3d.Sphere import Sphere
 from pi3d.TCone import TCone
 from pi3d.Torus import Torus
@@ -56,7 +57,7 @@ destineFont = pi3d.font("AR_Destine", "#0055ff")
 mykeys = pi3d.key()
 
 #create a light
-mylight = pi3d.createLight(0,1,1,1,"",10,10,10)
+mylight = Light(0,1,1,1,"",10,10,10)
 mylight.on()
 
 # Display scene
