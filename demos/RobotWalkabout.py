@@ -46,7 +46,7 @@ mymap = pi3d.createElevationMapFromTexture("textures/mars_height.png",mapwidth,m
 metalimg = texs.loadTexture("textures/metalhull.jpg")
 robot_head= pi3d.createSphere(2.0,12,12,0.5,"",0,3,0)
 robot_body = pi3d.createCylinder(2.0,4,12,"",0,1,0)
-robot_leg = pi3d.createCuboid(0.7,4.0,1.0,"",0,0.8,0)
+robot_leg = pi3d.Cuboid(0.7,4.0,1.0,"",0,0.8,0)
 
 robot = pi3d.MergeShape()
 robot.add(robot_head)

@@ -36,6 +36,7 @@ from pi3d import loaderEgg
 from pi3d import Constants
 
 from pi3d.Display import Display
+from pi3d.Cuboid import Cuboid
 from pi3d.MergeShape import MergeShape
 
 CUBE_PARTS = ('top', 'left', 'front', 'right', 'back', 'bottom')
@@ -44,59 +45,6 @@ def loadECfiles(path, fname, textures):
   # Helper for loading environment cube faces.
   files = (os.path.join(path, '%s_%s.jpg' % (fname, p)) for p in CUBE_PARTS)
   return [textures.loadTexture(f) for f in files]
-
-#=====================================================================================================================================================================================
-# Creation functions
-
-class createCuboid(Shape):
-
-        def __init__(self, w,h,d, name="", x=0.0,y=0.0,z=0.0, rx=0.0,ry=0.0,rz=0.0, cx=0.0,cy=0.0,cz=0.0):
-                super(createCuboid,self).__init__(name, x,y,z, rx,ry,rz, 1.0,1.0,1.0, cx,cy,cz)
-
-                print "Creating cuboid ..."
-
-                self.width = w
-                self.height = h
-                self.depth = d
-                self.ssize = 36
-                self.ttype = GL_TRIANGLES
-
-                ww=w*.5
-                hh=h*.5
-                dd=d*.5
-
-                tw=1.0 #w       #texture scales (each set to 1 would stretch it over face)
-                th=1.0 #h
-                td=1.0 #d
-
-                #cuboid data - faces are separated out for texturing..
-
-                self.vertices = eglfloats(( -ww,hh,dd, ww,hh,dd, ww,-hh,dd, -ww,-hh,dd,
-                                          ww,hh,dd, ww,hh,-dd, ww,-hh,-dd, ww,-hh,dd,
-                                          -ww,hh,dd, -ww,hh,-dd, ww,hh,-dd, ww,hh,dd,
-                                          ww,-hh,dd, ww,-hh,-dd, -ww,-hh,-dd, -ww,-hh,dd,
-                                          -ww,-hh,dd, -ww,-hh,-dd, -ww,hh,-dd, -ww,hh,dd,
-                                          -ww,hh,-dd, ww,hh,-dd, ww,-hh,-dd, -ww,-hh,-dd));
-                self.normals = eglfloats(( 0,0,1, 0,0,1, 0,0,1, 0,0,1,
-                                          1,0,0, 1,0,0, 1,0,0, 1,0,0,
-                                          0,1,0, 0,1,0, 0,1,0, 0,1,0,
-                                          0,-1,0, 0,-1,0, 0,-1,0, 0,-1,0,
-                                          -1,0,0, -1,0,0, -1,0,0, -1,0,0,
-                                          0,0,-1, 0,0,-1, 0,0,-1, 0,0,-1))
-                self.indices = eglshorts(( 1,0,3, 1,3,2, 5,4,7, 5,7,6, 9,8,11, 9,11,10, 13,12,15, 13,15,14, 19,18,17, 19,17,16, 20,21,22, 20,22,23));
-                self.tex_coords = eglfloats(( 0,0, tw,0, tw,th, 0,th,
-                                          0,0, td,0, td,th, 0,th,
-                                          tw,0, 0,0, 0,td, tw,td,
-                                          0,0, tw,0, tw,td, 0,td,
-                                          td,th, 0,th, 0,0, td,0,
-                                          tw,0, 0,0, 0,th, tw,th))
-
-                #self.cube_colours = eglbytes(( 0,0,255,255, 0,0,0,255, 0,255,0,255, 0,255,0,255, 0,0,255,255, 255,0,0,255, 255,0,0,255, 0,0,0,255 ));
-                #self.cube_fan1 = eglbytes(( 1,0,3, 1,3,2, 1,2,6, 1,6,5, 1,5,4, 1,4,0 ));
-                #self.cube_fan2 = eglbytes(( 7,4,5, 7,5,6, 7,6,2, 7,2,3, 7,3,0, 7,0,4 ));
-
-        def draw(self,tex=None):
-                shape_draw(self,tex)
 
 
 class createPlane(Shape):
