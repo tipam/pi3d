@@ -29,10 +29,10 @@ import ctypes, math, Image, curses, threading, pickle
 from pi3d import Constants
 
 # Pick up our constants extracted from the header files with prepare_constants.py
-from egl import *
-from gl2 import *
-from gl2ext import *
-from gl import *
+from constants.egl import *
+from constants.gl2 import *
+from constants.gl2ext import *
+from constants.gl import *
 from array import *
 from ctypes import *
 import PIL.ImageOps
