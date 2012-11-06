@@ -15,7 +15,7 @@
 # before running this example
 #
 
-import pi3d,math,random
+import pi3d, math
 
 from pi3d.Display import Display
 from pi3d.EnvironmentCube import EnvironmentCube
@@ -28,6 +28,7 @@ from pi3d.shape.Cuboid import Cuboid
 from pi3d.shape.Cylinder import Cylinder
 from pi3d.shape.ElevationMap import ElevationMap
 from pi3d.shape.MergeShape import MergeShape
+from pi3d.shape.Sphere import Sphere
 
 # Setup display and initialise pi3d
 display = Display()

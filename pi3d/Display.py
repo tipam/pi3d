@@ -1,3 +1,5 @@
+import Image
+
 from pi3d.pi3dCommon import *
 from pi3d import Constants
 

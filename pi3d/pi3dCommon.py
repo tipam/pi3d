@@ -24,7 +24,7 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 # DEALINGS IN THE SOFTWARE.
 
-import ctypes, math, Image, curses, threading, pickle
+import ctypes, math, curses, threading
 
 from pi3d import Constants
 
@@ -33,7 +33,7 @@ from constants.egl import *
 from constants.gl2 import *
 from constants.gl2ext import *
 from constants.gl import *
-from array import *
+
 from ctypes import *
 import PIL.ImageOps
 

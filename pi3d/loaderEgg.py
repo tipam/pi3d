@@ -1,4 +1,3 @@
-from pi3d import rotateVec
 import re, os
 from pi3dCommon import *
 
