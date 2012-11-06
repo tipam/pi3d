@@ -59,11 +59,20 @@ eglchar = ctypes.c_char
 eglshort = ctypes.c_short
 c_char_p = ctypes.c_char_p
 
-def eglbytes(L): return (eglbyte*len(L))(*L)
-def eglchars(L): return (eglchar*len(L))(*L)
-def eglints(L): return (eglint*len(L))(*L)
-def eglfloats(L): return (eglfloat*len(L))(*L)
-def eglshorts(L): return (eglshort*len(L))(*L)
+def eglbytes(L):
+  return (eglbyte * len(L))(*L)
+
+def eglchars(L):
+  return (eglchar * len(L))(*L)
+
+def eglints(L):
+  return (eglint * len(L))(*L)
+
+def eglfloats(L):
+  return (eglfloat * len(L))(*L)
+
+def eglshorts(L):
+  return (eglshort * len(L))(*L)
 
 def ctypeResize(array, new_size):
     resize(array, sizeof(array._type_)*new_size)
@@ -71,10 +80,6 @@ def ctypeResize(array, new_size):
 
 egf0 = eglfloat(0)
 egf1 = eglfloat(1)
-
-pipi = 3.14159268
-pi2 = pipi * 2
-rads = 0.017453292512  # degrees to radians
 
 #for mouse class
 XSIGN = 1<<4
@@ -216,12 +221,12 @@ def angleVecs(x1,y1,x2,y2,x3,y3):
 	l = sqab*sqcd
 	if l==0.0: l=0.0001
 	aa=((a*c)+(b*d)) / l
-	if aa==-1.0: return pipi
+	if aa==-1.0: return math.pi
 	if aa==0.0: return 0.0
 	dist = (a*y3 - b*x3 + x1*b - y1*a) / sqab
 	angle = math.acos(aa)
 
-	if dist>0.0: return pi2-angle
+	if dist>0.0: return math.pi * 2 - angle
 	else: return angle
 
 def dot(x1,y1,x2,y2):
@@ -372,20 +377,20 @@ def sprite(tex,x,y,z=-10.0,w=1.0,h=1.0,r=0.0):
 def rotateVec(rx,ry,rz,xyz):
     x,y,z = xyz[0],xyz[1],xyz[2]
     if rx<>0.0:
-	sa = math.sin(rx * rads)
-	ca = math.cos(rx * rads)
+	sa = math.sin(math.radians(rx))
+	ca = math.cos(math.radians(rx))
 	yy = y*ca-z*sa
 	z = y*sa+z*ca
 	y = yy
     if ry<>0.0:
-	sa = math.sin(ry * rads)
-	ca = math.cos(ry * rads)
+	sa = math.sin(math.radians(ry))
+	ca = math.cos(math.radians(ry))
 	zz = z*ca-x*sa
 	x = z*sa+x*ca
 	z = zz
     if rz<>0.0:
-	sa = math.sin(rz * rads)
-	ca = math.cos(rz * rads)
+	sa = math.sin(math.radians(rz))
+	ca = math.cos(math.radians(rz))
 	xx = x*ca-y*sa
 	y = x*sa+y*ca
 	x = xx
@@ -393,23 +398,23 @@ def rotateVec(rx,ry,rz,xyz):
 
 
 def rotateVecX(r,x,y,z):
-	sa = math.sin(r * rads)
-	ca = math.cos(r * rads)
+	sa = math.sin(math.radians(r))
+	ca = math.cos(math.radians(r))
 	yy = y*ca-z*sa
 	zz = y*sa+z*ca
 	return x,yy,zz
 
 def rotateVecY(r,x,y,z):
-	sa = math.sin(r * rads)
-	ca = math.cos(r * rads)
+	sa = math.sin(math.radians(r))
+	ca = math.cos(math.radians(r))
 	zz = z*ca-x*sa
 	xx = z*sa+x*ca
 	return xx,y,zz
 
 
 def rotateVecZ(r,x,y,z):
-	sa = math.sin(r * rads)
-	ca = math.cos(r * rads)
+	sa = math.sin(math.radians(r))
+	ca = math.cos(math.radians(r))
 	xx = x*ca-y*sa
 	yy = x*sa+y*ca
 	return xx,yy,z
@@ -432,7 +437,7 @@ def lathe(path, sides = 12, tris=False, rise = 0.0, coils = 1.0):
 	pn = 0
 	pp = 0
 	tcx = 1.0 / sides
-	pr = (pipi / sides) * 2
+	pr = (math.pi / sides) * 2
 	rdiv = rise / rl
 	ss=0
 

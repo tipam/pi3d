@@ -24,6 +24,7 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 # DEALINGS IN THE SOFTWARE.
 
+import math
 import os.path
 import random
 import sys
@@ -85,7 +86,7 @@ class createDisk(Shape):
                 self.sides = sides
 
 
-                st = pipi/slices
+                st = math.pi/slices
                 addVertex(self.verts,x,y,z,self.norms,0,1,0,self.texcoords,0.5,0.5)
                 for r in range(0,sides+1):
                     ca=math.sin(r*st)
@@ -113,7 +114,7 @@ class createSphere(Shape):
                 print "Creating sphere ..."
 
                 path = []
-                st = (pipi*(1.0-hemi))/slices
+                st = (math.pi*(1.0-hemi))/slices
                 for r in range(0,slices+1):
                     path.append((radius * math.sin(r*st),radius * math.cos(r*st)))
 
@@ -143,7 +144,7 @@ class createTorus(Shape):
                 print "Creating Torus ..."
 
                 path = []
-                st = (pipi*2)/ringrots
+                st = (math.pi*2)/ringrots
                 for r in range(0,ringrots+1):
                     path.append((radius + thickness * math.sin(r*st),thickness * math.cos(r*st)))
 
@@ -204,7 +205,7 @@ class createSpiral(Shape):
                 print "Creating Spiral ...", radius,thickness, ringrots, sides
 
                 path = []
-                st = (pipi*2)/ringrots
+                st = (math.pi*2)/ringrots
                 hr = rise * 0.5
                 for r in range(0,ringrots+1):
                     path.append((radius + thickness * math.sin(r*st),thickness * math.cos(r*st)-hr))
@@ -803,10 +804,10 @@ class ball(object):
 	    fspx2 = ((self.mass*2)*nspx1+(otherball.mass-self.mass)*nspx2)/(self.mass+otherball.mass)
 	    fspy1 = nspy1
 	    fspy2 = nspy2
-	    self.vx = math.cos(cangle)*fspx1+math.cos(cangle+pipi*.5)*fspy1
-	    self.vy = math.sin(cangle)*fspx1+math.sin(cangle+pipi*.5)*fspy1
-	    otherball.vx = math.cos(cangle)*fspx2+math.cos(cangle+pipi*.5)*fspy2
-	    otherball.vy = math.sin(cangle)*fspx2+math.sin(cangle+pipi*.5)*fspy2
+	    self.vx = math.cos(cangle)*fspx1+math.cos(cangle+math.pi*.5)*fspy1
+	    self.vy = math.sin(cangle)*fspx1+math.sin(cangle+math.pi*.5)*fspy1
+	    otherball.vx = math.cos(cangle)*fspx2+math.cos(cangle+math.pi*.5)*fspy2
+	    otherball.vy = math.sin(cangle)*fspx2+math.sin(cangle+math.pi*.5)*fspy2
 
 
 class shader(object):

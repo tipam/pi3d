@@ -126,11 +126,11 @@ while 1:
     k = mykeys.read()
     if k >-1:
 	if k==119: #key W
-	    xm-=math.sin(rot*rads)
-	    zm+=math.cos(rot*rads)
+	    xm-=math.sin(math.radians(rot))
+	    zm+=math.cos(math.radians(rot))
 	    ym = -(mymap.calcHeight(xm,zm)+avhgt)
 	elif k==115: #kry S
-	    xm+=math.sin(rot*rads)
+	    xm+=math.sin(math.radians(rot))
 	    zm-=math.cos(rot*rads)
 	    ym = -(mymap.calcHeight(xm,zm)+avhgt)
 	elif k==39: #key '

@@ -18,8 +18,6 @@ import pi3d, math
 
 from pi3d.EnvironmentCube import EnvironmentCube
 
-rads = 0.017453292512  # degrees to radians
-
 # Setup display and initialise pi3d
 display = pi3d.Display()
 display.create3D(100,100,1400,800)   	# x,y,width,height
@@ -92,11 +90,11 @@ while 1:
     k = mykeys.read()
     if k >-1:
 	if k==119:    #key W
-	    xm-=math.sin(rot*rads)
-	    zm+=math.cos(rot*rads)
+	    xm-=math.sin(math.radians(rot))
+	    zm+=math.cos(math.radians(rot))
 	elif k==115:  #kry S
-	    xm+=math.sin(rot*rads)
-	    zm-=math.cos(rot*rads)
+	    xm+=math.sin(math.radians(rot))
+	    zm-=math.cos(math.radians(rot))
 	elif k==39:   #key '
 		tilt -= 2.0
 		print tilt
