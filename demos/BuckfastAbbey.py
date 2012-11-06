@@ -16,6 +16,8 @@
 
 import pi3d, math
 
+from pi3d.EnvironmentCube import EnvironmentCube
+
 rads = 0.017453292512  # degrees to radians
 
 # Setup display and initialise pi3d
@@ -34,7 +36,7 @@ print "=============================================================="
 
 texs = pi3d.textures()
 ectex = pi3d.loadECfiles("textures/ecubes","sbox",texs)
-myecube = pi3d.createEnvironmentCube(900.0,"FACES")
+myecube = EnvironmentCube(900.0,"FACES")
 
 # load model_loadmodel
 mymodel = pi3d.loadModel("models/Buckfast Abbey/BuckfastAbbey.egg",texs,"Abbey",0,0,0, -90,160,0, 0.03,0.03,0.03)

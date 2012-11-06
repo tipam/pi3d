@@ -17,6 +17,7 @@
 
 import pi3d,math,random
 
+from pi3d.EnvironmentCube import EnvironmentCube
 from pi3d.MergeShape import MergeShape
 from pi3d.Plane import Plane
 
@@ -35,10 +36,10 @@ grassimg = texs.loadTexture("textures/grass.png")
 hb2img = texs.loadTexture("textures/hornbeam2.png")
 
 #ectex = pi3d.loadTexture("textures/SkyBox.png")
-#myecube = pi3d.createEnvironmentCube(900.0,"HALFCROSS")
+#myecube = EnvironmentCube(900.0,"HALFCROSS")
 
 ectex=pi3d.loadECfiles("textures/ecubes","sbox",texs)
-myecube = pi3d.createEnvironmentCube(900.0,"FACES")
+myecube = EnvironmentCube(900.0,"FACES")
 
 # Create elevation map
 mapwidth=1000.0

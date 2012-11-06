@@ -14,6 +14,7 @@
 #
 
 import pi3d
+from pi3d.EnvironmentCube import EnvironmentCube
 
 # Setup display and initialise pi3d
 display = pi3d.Display()
@@ -24,16 +25,16 @@ box=3
 texs=pi3d.textures()
 if box==0:
 	ectex = texs.loadTexture("textures/ecubes/skybox_interstellar.jpg")
-	myecube = pi3d.createEnvironmentCube(900.0,"CROSS")
+	myecube = EnvironmentCube(900.0,"CROSS")
 elif box==1:
 	ectex = texs.loadTexture("textures/ecubes/SkyBox.jpg")
-	myecube = pi3d.createEnvironmentCube(900.0,"HALFCROSS")
+	myecube = EnvironmentCube(900.0,"HALFCROSS")
 elif box==2:
 	ectex=pi3d.loadECfiles("textures/ecubes","sbox_interstellar",texs)
-	myecube = pi3d.createEnvironmentCube(900.0,"FACES")
+	myecube = EnvironmentCube(900.0,"FACES")
 else:
 	ectex=pi3d.loadECfiles("textures/ecubes","skybox_hall",texs)
-	myecube = pi3d.createEnvironmentCube(900.0,"FACES")
+	myecube = EnvironmentCube(900.0,"FACES")
 
 
 rot=0.0

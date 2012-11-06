@@ -14,6 +14,8 @@
 #
 
 import pi3d,math,random
+
+from pi3d.EnvironmentCube import EnvironmentCube
 from pi3d.MergeShape import MergeShape
 from pi3d.Plane import Plane
 
@@ -31,7 +33,7 @@ tree1img = texs.loadTexture("textures/tree1.png")
 hb2img = texs.loadTexture("textures/hornbeam2.png")
 
 ectex = texs.loadTexture("textures/ecubes/skybox_stormydays.jpg")
-myecube = pi3d.createEnvironmentCube(900.0,"CROSS")
+myecube = EnvironmentCube(900.0,"CROSS")
 
 # Create elevation map
 mapwidth=1000.0

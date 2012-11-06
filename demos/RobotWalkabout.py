@@ -18,6 +18,7 @@
 import pi3d,math,random
 
 from pi3d.Cuboid import Cuboid
+from pi3d.EnvironmentCube import EnvironmentCube
 from pi3d.MergeShape import MergeShape
 
 rads = 0.017453292512  # degrees to radians
@@ -36,7 +37,7 @@ hb2img = texs.loadTexture("textures/hornbeam2.png")
 
 #load environment cube
 ectex = pi3d.loadECfiles("textures/ecubes","sbox_interstellar",texs)
-myecube = pi3d.createEnvironmentCube(900.0,"FACES")
+myecube = EnvironmentCube(900.0,"FACES")
 
 # Create elevation map
 mapwidth=1000.0
