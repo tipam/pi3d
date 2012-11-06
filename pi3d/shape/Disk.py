@@ -1,6 +1,6 @@
 from pi3d.pi3dCommon import *
 from pi3d import Constants
-from pi3d.Shape import Shape
+from pi3d.shape.Shape import Shape
 
 class Disk(Shape):
   def __init__(self,radius=1,sides=12,name="", x=0.0,y=0.0,z=0.0, rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0):

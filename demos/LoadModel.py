@@ -18,7 +18,8 @@ import pi3d
 
 from pi3d.Display import Display
 from pi3d.Light import Light
-from pi3d.Model import Model
+
+from pi3d.shape.Model import Model
 
 # Setup display and initialise pi3d
 display = Display()

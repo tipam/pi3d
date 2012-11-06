@@ -17,16 +17,17 @@
 
 import pi3d,math,random
 
-from pi3d.Cuboid import Cuboid
-from pi3d.Cylinder import Cylinder
 from pi3d.Display import Display
-from pi3d.ElevationMap import ElevationMap
 from pi3d.EnvironmentCube import EnvironmentCube
 from pi3d.EnvironmentCube import loadECfiles
 from pi3d.Fog import Fog
 from pi3d.Light import Light
-from pi3d.MergeShape import MergeShape
 from pi3d.Textures import Textures
+
+from pi3d.shape.Cuboid import Cuboid
+from pi3d.shape.Cylinder import Cylinder
+from pi3d.shape.ElevationMap import ElevationMap
+from pi3d.shape.MergeShape import MergeShape
 
 # Setup display and initialise pi3d
 display = Display()

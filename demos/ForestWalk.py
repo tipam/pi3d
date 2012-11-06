@@ -18,12 +18,13 @@
 import pi3d,math,random
 
 from pi3d.Display import Display
-from pi3d.ElevationMap import ElevationMap
 from pi3d.EnvironmentCube import EnvironmentCube
 from pi3d.EnvironmentCube import loadECfiles
-from pi3d.MergeShape import MergeShape
-from pi3d.Plane import Plane
 from pi3d.Textures import Textures
+
+from pi3d.shape.ElevationMap import ElevationMap
+from pi3d.shape.MergeShape import MergeShape
+from pi3d.shape.Plane import Plane
 
 # Setup display and initialise pi3d
 display = Display()

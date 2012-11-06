@@ -1,6 +1,7 @@
 from pi3d.pi3dCommon import *
 from pi3d import Constants
-from pi3d.Shape import Shape
+
+from pi3d.shape.Shape import Shape
 
 class Extrude(Shape):
   def __init__(self, path, height=1.0, name="", x=0.0, y=0.0, z=0.0,

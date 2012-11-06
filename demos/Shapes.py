@@ -15,19 +15,20 @@
 
 import pi3d
 
-from pi3d.Cone import Cone
-from pi3d.Cylinder import Cylinder
 from pi3d.Display import Display
-from pi3d.Extrude import Extrude
 from pi3d.Font import Font
-from pi3d.Helix import Helix
-from pi3d.Lathe import Lathe
 from pi3d.Light import Light
-from pi3d.Sphere import Sphere
-from pi3d.TCone import TCone
 from pi3d.Textures import Textures
-from pi3d.Torus import Torus
-from pi3d.Tube import Tube
+
+from pi3d.shape.Cone import Cone
+from pi3d.shape.Cylinder import Cylinder
+from pi3d.shape.Extrude import Extrude
+from pi3d.shape.Helix import Helix
+from pi3d.shape.Lathe import Lathe
+from pi3d.shape.Sphere import Sphere
+from pi3d.shape.TCone import TCone
+from pi3d.shape.Torus import Torus
+from pi3d.shape.Tube import Tube
 
 # Setup display and initialise pi3d
 display = Display()

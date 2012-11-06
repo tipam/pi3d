@@ -18,8 +18,9 @@ import pi3d
 from pi3d.Display import Display
 from pi3d.Font import Font
 from pi3d.Light import Light
-from pi3d.Sphere import Sphere
 from pi3d.Textures import Textures
+
+from pi3d.shape.Sphere import Sphere
 
 # Setup display and initialise pi3d
 display = Display()

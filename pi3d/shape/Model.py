@@ -1,7 +1,7 @@
 from pi3d.pi3dCommon import *
 from pi3d import Constants
 from pi3d import loaderEgg
-from pi3d.Shape import Shape
+from pi3d.shape.Shape import Shape
 
 class Model(Shape):
   def __init__(self, fileString, texs, name="", x=0.0, y=0.0, z=0.0,

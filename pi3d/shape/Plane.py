@@ -1,6 +1,6 @@
 from pi3d.pi3dCommon import *
 from pi3d import Constants
-from pi3d.Shape import Shape
+from pi3d.shape.Shape import Shape
 
 class Plane(Shape):
   def __init__(self, w=1.0, h=1.0, name="",
