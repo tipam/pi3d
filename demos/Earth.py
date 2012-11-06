@@ -15,6 +15,8 @@
 
 import pi3d
 
+from pi3d.Sphere import Sphere
+
 # Setup display and initialise pi3d
 display = pi3d.Display()
 display.create3D(100,100,1600,900)   	# x,y,width,height
@@ -30,10 +32,10 @@ moonimg = texs.loadTexture("textures/moon.jpg")
 starsimg = texs.loadTexture("textures/stars2.jpg")
 watimg = texs.loadTexture("textures/water.jpg")
 
-mysphere = pi3d.createSphere(2,24,24,0.0,"earth",0,0,0)
-mysphere2 = pi3d.createSphere(2.05,24,24,0.0,"clouds",0,0,0)
-mymoon = pi3d.createSphere(0.4,16,16,0.0,"moon",0,0,0)
-mymoon2 = pi3d.createSphere(0.1,16,16,0.0,"moon2",0,0,0)
+mysphere = Sphere(2,24,24,0.0,"earth",0,0,0)
+mysphere2 = Sphere(2.05,24,24,0.0,"clouds",0,0,0)
+mymoon = Sphere(0.4,16,16,0.0,"moon",0,0,0)
+mymoon2 = Sphere(0.1,16,16,0.0,"moon2",0,0,0)
 
 arialFont = pi3d.font("AR_CENA","#dd00aa")   #load AR_CENA font and set the font colour to 'raspberry'
 destineFont = pi3d.font("AR_DELANEY", "#0055ff")

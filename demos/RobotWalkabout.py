@@ -20,7 +20,7 @@ import pi3d,math,random
 from pi3d.Cuboid import Cuboid
 from pi3d.EnvironmentCube import EnvironmentCube
 from pi3d.MergeShape import MergeShape
-
+from pi3d.Sphere import Sphere
 
 # Setup display and initialise pi3d
 display = pi3d.Display()
@@ -47,7 +47,7 @@ mymap = pi3d.createElevationMapFromTexture("textures/mars_height.png",mapwidth,m
 
 #create robot
 metalimg = texs.loadTexture("textures/metalhull.jpg")
-robot_head= pi3d.createSphere(2.0,12,12,0.5,"",0,3,0)
+robot_head= Sphere(2.0,12,12,0.5,"",0,3,0)
 robot_body = pi3d.createCylinder(2.0,4,12,"",0,1,0)
 robot_leg = Cuboid(0.7,4.0,1.0,"",0,0.8,0)
 
@@ -58,7 +58,7 @@ robot.add(robot_leg, -2.1,0,0)
 robot.add(robot_leg, 2.1,0,0)
 
 #create space station
-ssphere = pi3d.createSphere(10,16,16)
+ssphere = Sphere(10,16,16)
 scorrid = pi3d.createCylinder(4,22,12)
 
 station = MergeShape("",0,mymap.calcHeight(0,0),0, 0,0,0, 4,4,4)
