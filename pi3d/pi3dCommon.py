@@ -26,8 +26,9 @@
 
 import ctypes, math, curses, threading
 
-from ctypes import c_int
+from ctypes import c_byte
 from ctypes import c_float
+from ctypes import c_int
 from ctypes import c_short
 
 from pi3d import Constants
@@ -50,18 +51,11 @@ bcm = ctypes.CDLL('libbcm_host.so')
 opengles = ctypes.CDLL('libGLESv2.so')
 openegl = ctypes.CDLL('libEGL.so')
 
-eglbyte = ctypes.c_byte
-eglchar = ctypes.c_char
-c_char_p = ctypes.c_char_p
-
 def ctypes_array(ct, x):
   return (ct * len(x))(*x)
 
 def eglbytes(x):
-  return ctypes_array(eglbyte, x)
-
-def eglchars(x):
-  return ctypes_array(eglchar, x)
+  return ctypes_array(c_byte, x)
 
 def eglints(x):
   return ctypes_array(c_int, x)
