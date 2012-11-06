@@ -54,26 +54,23 @@ openegl = ctypes.CDLL('libEGL.so')
 def ctypes_array(ct, x):
   return (ct * len(x))(*x)
 
-def eglbytes(x):
+def c_bytes(x):
   return ctypes_array(c_byte, x)
 
-def eglints(x):
+def c_ints(x):
   return ctypes_array(c_int, x)
 
-def eglfloats(x):
+def c_floats(x):
   return ctypes_array(c_float, x)
 
-def eglshorts(x):
+def c_shorts(x):
   return ctypes_array(c_short, x)
 
 def ctypeResize(array, new_size):
   resize(array, sizeof(array._type_) * new_size)
   return (array._type_ * new_size).from_address(addressof(array))
 
-egf0 = c_float(0)
-egf1 = c_float(1)
-
-#for mouse class
+# for mouse class
 XSIGN = 1 << 4
 YSIGN = 1 << 5
 
@@ -233,12 +230,12 @@ def addTri(v,x,y,z):
 # add triangle refs.
   v.extend([x, y, z])
 
-rect_normals = eglbytes(( 0,0,-1, 0,0,-1, 0,0,-1, 0,0,-1 ))
-rect_tex_coords = eglbytes(( 0,255, 255,255, 255,0, 0,0))
-rect_tex_coords2 = eglfloats(( 0,1, 1,1, 1,0, 0,0))
-rect_vertsTL = eglbytes(( 1,0,0, 0,0,0, 0,-1,0, 1,-1,0 ))
-rect_vertsCT = eglbytes(( 1,1,0, -1,1,0, -1,-1,0, 1,-1,0 ))
-rect_triangles = eglbytes(( 3,0,1, 3,1,2 ))
+rect_normals = c_bytes(( 0,0,-1, 0,0,-1, 0,0,-1, 0,0,-1 ))
+rect_tex_coords = c_bytes(( 0,255, 255,255, 255,0, 0,0))
+rect_tex_coords2 = c_floats(( 0,1, 1,1, 1,0, 0,0))
+rect_vertsTL = c_bytes(( 1,0,0, 0,0,0, 0,-1,0, 1,-1,0 ))
+rect_vertsCT = c_bytes(( 1,1,0, -1,1,0, -1,-1,0, 1,-1,0 ))
+rect_triangles = c_bytes(( 3,0,1, 3,1,2 ))
 
 def drawString(font,string,x,y,z,rot,sclx,scly):
 
@@ -464,7 +461,7 @@ def create_display(self,x=0,y=0,w=0,h=0,depth=24):
 	r = openegl.eglInitialize(self.display,0,0)
 	#assert r == EGL_FALSE
 
-	attribute_list = eglints(     (EGL_RED_SIZE, 8,
+	attribute_list = c_ints(     (EGL_RED_SIZE, 8,
 				      EGL_GREEN_SIZE, 8,
 				      EGL_BLUE_SIZE, 8,
 				      EGL_ALPHA_SIZE, 8,
@@ -479,14 +476,14 @@ def create_display(self,x=0,y=0,w=0,h=0,depth=24):
 				    ctypes.byref(config), 1,
 				    ctypes.byref(numconfig))
 
-	context_attribs = eglints( (EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE) )
+	context_attribs = c_ints( (EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE) )
 	self.context = openegl.eglCreateContext(self.display, config, EGL_NO_CONTEXT, 0) #ctypes.byref(context_attribs) )
 	assert self.context != EGL_NO_CONTEXT
 
 	#Set the viewport position and size
 
-	dst_rect = eglints( (x,y,w,h) ) #width.value,height.value) )
-	src_rect = eglints( (x,y,w<<16, h<<16) ) #width.value<<16, height.value<<16) )
+	dst_rect = c_ints( (x,y,w,h) ) #width.value,height.value) )
+	src_rect = c_ints( (x,y,w<<16, h<<16) ) #width.value<<16, height.value<<16) )
 
 	self.dispman_display = bcm.vc_dispmanx_display_open( 0 ) #LCD setting
 	self.dispman_update = bcm.vc_dispmanx_update_start( 0 )
@@ -496,7 +493,7 @@ def create_display(self,x=0,y=0,w=0,h=0,depth=24):
 				  DISPMANX_PROTECTION_NONE,
 				  0, 0, 0)
 
-	nativewindow = eglints((self.dispman_element,w,h+1));
+	nativewindow = c_ints((self.dispman_element,w,h+1));
 	bcm.vc_dispmanx_update_submit_sync( self.dispman_update )
 
 	nw_p = ctypes.pointer(nativewindow)

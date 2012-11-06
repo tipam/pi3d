@@ -37,10 +37,10 @@ class Plane(Shape):
     # plane data - this could be stored locally so that vertices / tex coords an
     # be altered in real-time
 
-    self.verts = eglfloats(self.vertices);
-    self.inds = eglshorts(self.indices);
-    self.norms = eglfloats(self.normals);
-    self.texcoords = eglfloats(self.tex_coords);
+    self.verts = c_floats(self.vertices);
+    self.inds = c_shorts(self.indices);
+    self.norms = c_floats(self.normals);
+    self.texcoords = c_floats(self.tex_coords);
 
   def draw(self, tex=0):
     opengles.glVertexPointer(3, GL_FLOAT, 0, self.verts);

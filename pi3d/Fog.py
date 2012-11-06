@@ -9,7 +9,7 @@ class Fog():
   def __init__(self, density=0.005, colour=(0.3, 0.6, 0.8, 0.5)):
     opengles.glFogf(GL_FOG_MODE, GL_EXP) # defaults to this anyway
     opengles.glFogf(GL_FOG_DENSITY, ctypes.c_float(density)) # exponent factor
-    opengles.glFogfv(GL_FOG_COLOR, eglfloats(colour))
+    opengles.glFogfv(GL_FOG_COLOR, c_floats(colour))
     # don't think the alpha value alters the target object alpha
 
   def on(self):

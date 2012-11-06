@@ -26,10 +26,10 @@ class Torus(Shape):
 
     results = lathe(path, sides, True)
 
-    self.vertices = eglfloats(results[0])
-    self.normals = eglfloats(results[1])
-    self.indices = eglshorts(results[2])
-    self.tex_coords = eglfloats(results[3])
+    self.vertices = c_floats(results[0])
+    self.normals = c_floats(results[1])
+    self.indices = c_shorts(results[2])
+    self.tex_coords = c_floats(results[3])
     self.ssize = results[4]
 
   def draw(self,tex=None):

@@ -23,7 +23,7 @@ class Cuboid(Shape):
 
     #cuboid data - faces are separated out for texturing..
 
-    self.vertices = eglfloats((
+    self.vertices = c_floats((
         -ww, hh, dd,
          ww, hh, dd,
          ww,-hh, dd,
@@ -49,7 +49,7 @@ class Cuboid(Shape):
          ww, -hh, -dd,
          -ww,-hh,-dd,
          ))
-    self.normals = eglfloats((
+    self.normals = c_floats((
         0.0, 0.0, 1,
         0.0, 0.0, 1,
         0.0, 0.0, 1,
@@ -75,7 +75,7 @@ class Cuboid(Shape):
         0.0, 0.0, -1,
         0.0, 0.0, -1,
         ))
-    self.indices = eglshorts((
+    self.indices = c_shorts((
         1, 0, 3,
         1, 3, 2,
         5, 4, 7,
@@ -94,7 +94,7 @@ class Cuboid(Shape):
     th = 1.0 #h
     td = 1.0 #d
 
-    self.tex_coords = eglfloats((
+    self.tex_coords = c_floats((
         0.0, 0.0,
         tw, 0.0,
         tw, th,

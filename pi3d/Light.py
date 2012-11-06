@@ -10,10 +10,10 @@ class Light(object):
     if Constants.VERBOSE:
       print "Creating light ..."
 
-    self.ambient = eglfloats((ambR, ambG, ambB, 1.0))
-    self.diffuse = eglfloats((red, grn, blu, 1.0))
-    self.specular = eglfloats((red, grn, blu, 1.0))
-    self.xyz = eglfloats((x, y, z, 1))
+    self.ambient = c_floats((ambR, ambG, ambB, 1.0))
+    self.diffuse = c_floats((red, grn, blu, 1.0))
+    self.specular = c_floats((red, grn, blu, 1.0))
+    self.xyz = c_floats((x, y, z, 1))
     self.no = ctypes.c_int(GL_LIGHT0 + no)
     self.name = name
     self.lighton = False
@@ -33,7 +33,7 @@ class Light(object):
     mtrx = (ctypes.c_float * 16)()
     opengles.glGetFloatv(GL_MODELVIEW_MATRIX, ctypes.byref(mtrx))
     opengles.glLoadIdentity()
-    self.xyz = eglfloats((x, y, z ,1))
+    self.xyz = c_floats((x, y, z ,1))
     opengles.glLightfv(self.no, GL_POSITION, self.xyz)
     opengles.glLoadMatrixf(mtrx)
 

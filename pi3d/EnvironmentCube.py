@@ -26,45 +26,45 @@ class EnvironmentCube(object):
 
     #cuboid data - faces are separated out for texturing..
 
-    self.vertices = eglfloats((-ww,hh,dd, ww,hh,dd, ww,-hh,dd, -ww,-hh,dd,
+    self.vertices = c_floats((-ww,hh,dd, ww,hh,dd, ww,-hh,dd, -ww,-hh,dd,
             ww,hh,dd, ww,hh,-dd, ww,-hh,-dd, ww,-hh,dd,
             -ww,hh,dd, -ww,hh,-dd, ww,hh,-dd, ww,hh,dd,
             ww,-hh,dd, ww,-hh,-dd, -ww,-hh,-dd, -ww,-hh,dd,
             -ww,-hh,dd, -ww,-hh,-dd, -ww,hh,-dd, -ww,hh,dd,
             -ww,hh,-dd, ww,hh,-dd, ww,-hh,-dd, -ww,-hh,-dd ))
 
-    self.normals = eglfloats((0,0,1, 0,0,1, 0,0,1, 0,0,1,
+    self.normals = c_floats((0,0,1, 0,0,1, 0,0,1, 0,0,1,
             1,0,0, 1,0,0, 1,0,0, 1,0,0,
             0,1,0, 0,1,0, 0,1,0, 0,1,0,
             0,-1,0, 0,-1,0, 0,-1,0, 0,-1,0,
             -1,0,0, -1,0,0, -1,0,0, -1,0,0,
             0,0,-1, 0,0,-1, 0,0,-1, 0,0,-1))
 
-    self.indices = eglshorts((3,0,1, 2,3,1, 7,4,5, 6,7,5, 11,8,9, 10,11,9, 15,12,13, 14,15,13, 19,16,17, 18,19,17, 23,22,21, 20,23,21));
+    self.indices = c_shorts((3,0,1, 2,3,1, 7,4,5, 6,7,5, 11,8,9, 10,11,9, 15,12,13, 14,15,13, 19,16,17, 18,19,17, 23,22,21, 20,23,21));
 
-    self.indfront = eglshorts((23,22,21, 20,23,21 )) #back
-    self.indleft = eglshorts((19,16,17, 18,19,17)) #right
-    self.indtop = eglshorts((11,8,9, 10,11,9))  #top
-    self.indbot = eglshorts((15,12,13, 14,15,13))  #bottom
-    self.indright = eglshorts((7,4,5, 6,7,5)) #left
-    self.indback = eglshorts((3,0,1, 2,3,1)) #front
+    self.indfront = c_shorts((23,22,21, 20,23,21 )) #back
+    self.indleft = c_shorts((19,16,17, 18,19,17)) #right
+    self.indtop = c_shorts((11,8,9, 10,11,9))  #top
+    self.indbot = c_shorts((15,12,13, 14,15,13))  #bottom
+    self.indright = c_shorts((7,4,5, 6,7,5)) #left
+    self.indback = c_shorts((3,0,1, 2,3,1)) #front
 
     if self.maptype == "HALFCROSS":
-        self.tex_coords = eglfloats((0.25,0.25, 0.25,0.75, -0.25,0.75, -0.25,0.25,
+        self.tex_coords = c_floats((0.25,0.25, 0.25,0.75, -0.25,0.75, -0.25,0.25,
             0.25,0.75, 0.75,0.75, 0.75,1.25, 0.25,1.25,
             0.25,0.25, 0.75,0.25, 0.75,0.75, 0.25,0.75,  #top
             0,0, 1,0, 1,1, 0,1,    #bottom
             0.25,-0.25, 0.75,-0.25, 0.75,0.25, 0.25,0.25,
             0.75,0.25, 0.75,0.75, 1.25,0.75, 1.25,0.25))
     elif self.maptype == "CROSS":
-        self.tex_coords = eglfloats((1.0,0.34, 0.75,0.34, 0.75,0.661, 1.0,0.661, #back
+        self.tex_coords = c_floats((1.0,0.34, 0.75,0.34, 0.75,0.661, 1.0,0.661, #back
             0.75,0.34, 0.5,0.34, 0.5,0.661, 0.75,0.661,  #right
             0.251,0.0, 0.251,0.34, 0.498,0.34, 0.498,0.0,  #top
             0.498,.998, 0.498,0.66, 0.251,0.66, 0.251,.998,    #bottom
             0.0,0.661, 0.25,0.661, 0.25,0.34, 0.0,0.34,    #left
             0.25,0.34, 0.5,0.34, 0.5,0.661, 0.25,0.661 )) #front
     else:
-        self.tex_faces = eglfloats((.998,0.002, 0.002,0.002, 0.002,.998, .998,.998,
+        self.tex_faces = c_floats((.998,0.002, 0.002,0.002, 0.002,.998, .998,.998,
             .998,0.002, 0.002,0.002, 0.002,.998, .998,.998,
             0.002,0.002, 0.002,.998, .998,.998, .998,0.002,
             .998,.998, .998,0.002, 0.002,0.002, 0.002,.998,

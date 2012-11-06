@@ -28,10 +28,10 @@ class Disk(Shape):
     for r in range(0,sides):
       addTri(self.inds,0,r+1,r+2)
 
-    self.vertices = eglfloats(self.verts);
-    self.indices = eglshorts(self.inds);
-    self.normals = eglfloats(self.norms);
-    self.tex_coords = eglfloats(self.texcoords);
+    self.vertices = c_floats(self.verts);
+    self.indices = c_shorts(self.inds);
+    self.normals = c_floats(self.norms);
+    self.tex_coords = c_floats(self.texcoords);
     self.ssize = sides * 3
 
   def draw(self,tex=None):

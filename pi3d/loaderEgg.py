@@ -181,14 +181,14 @@ def loadFileEGG(self,fileName,texs):
         # create group with various egl arrays
         self.vGroup[np] = {}
 
-        self.vGroup[np]["vertices"] = eglfloats(verticesArray)
+        self.vGroup[np]["vertices"] = c_floats(verticesArray)
 
-        self.vGroup[np]["normals"] = eglfloats(normalsArray)
+        self.vGroup[np]["normals"] = c_floats(normalsArray)
 
-        self.vGroup[np]["triangles"] = eglshorts(trianglesArray)
+        self.vGroup[np]["triangles"] = c_shorts(trianglesArray)
         self.vGroup[np]["trianglesLen"] = len(self.vGroup[np]["triangles"]) # so speed up calling of glDrawElements
 
-        self.vGroup[np]["tex_coords"] = eglfloats(tex_coordsArray)
+        self.vGroup[np]["tex_coords"] = c_floats(tex_coordsArray)
 
         # load the texture file TODO check if same as previously loaded files (for other loadModel()s)
         if (gTRef in self.textureList):
@@ -209,7 +209,7 @@ def loadFileEGG(self,fileName,texs):
                 materialArray.append(grnVal)
                 materialArray.append(bluVal)
                 materialArray.append(255)
-            self.vGroup[np]["material"] = eglbytes(materialArray)
+            self.vGroup[np]["material"] = c_bytes(materialArray)
             materialArray = []
         else: self.vGroup[np]["material"] = None
       ####### end of groupDrill function #####################

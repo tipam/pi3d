@@ -27,9 +27,9 @@ class Font(object):
       tw = w / ix
       th = h / iy
 
-      self.chr.append((w, h, eglfloats((x + tw, y - th, x, y - th,
+      self.chr.append((w, h, c_floats((x + tw, y - th, x, y - th,
                                         x, y, x + tw, y)),
-                       eglfloats((w, 0,0, 0 , 0, 0, 0, -h, 0, w, -h, 0))))
+                       c_floats((w, 0,0, 0 , 0, 0, 0, -h, 0, w, -h, 0))))
 
     alpha = im.split()[-1]  #keep alpha
     draw = ImageDraw.Draw(im)

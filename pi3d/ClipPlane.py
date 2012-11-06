@@ -8,7 +8,7 @@ from pi3d import Constants
 class ClipPlane():
   def __init__(self, no=0, x=0, y=0, z=1, w=60):
     self.no = ctypes.c_int(GL_CLIP_PLANE0 + no)
-    self.equation = eglfloats((x, y, z, w))
+    self.equation = c_floats((x, y, z, w))
     opengles.glClipPlanef(self.no, self.equation)
 
   def enable(self):

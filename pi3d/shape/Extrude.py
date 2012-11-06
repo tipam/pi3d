@@ -81,12 +81,12 @@ class Extrude(Shape):
     self.sidefaces.append(0)
     self.sidefaces.append(s)
 
-    self.verts = eglfloats(self.verts)
-    self.norms = eglfloats(self.norms)
-    self.tex_coords = eglfloats(self.tex_coords)
-    self.topface = eglshorts(self.topface)
-    self.botface = eglshorts(self.botface)
-    self.sidefaces = eglshorts(self.sidefaces)
+    self.verts = c_floats(self.verts)
+    self.norms = c_floats(self.norms)
+    self.tex_coords = c_floats(self.tex_coords)
+    self.topface = c_shorts(self.topface)
+    self.botface = c_shorts(self.botface)
+    self.sidefaces = c_shorts(self.sidefaces)
 
   def draw(self, tex1=0, tex2=0, tex3=0):
     opengles.glVertexPointer(3, GL_FLOAT, 0, self.verts)

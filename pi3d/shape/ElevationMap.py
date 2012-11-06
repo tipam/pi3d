@@ -84,10 +84,10 @@ class ElevationMap(Shape):
         idx.append(i)
         s += 2
 
-    self.vertices = eglfloats(verts)
-    self.normals = eglfloats(norms)
-    self.indices = eglshorts(idx)
-    self.tex_coords = eglfloats(tex_coords)
+    self.vertices = c_floats(verts)
+    self.normals = c_floats(norms)
+    self.indices = c_shorts(idx)
+    self.tex_coords = c_floats(tex_coords)
     self.ssize = s  #ix * iy * 2
     print s, ix * iy * 2
 

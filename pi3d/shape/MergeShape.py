@@ -62,12 +62,12 @@ class MergeShape(Shape):
     self.indices.extend(indices)
 
     self.totind = len(self.indices)
-    self.verts = eglfloats(self.vertices)
-    self.norms = eglfloats(self.normals)
-    self.texcoords = eglfloats(self.tex_coords)
-    self.inds = eglshorts(self.indices)
+    self.verts = c_floats(self.vertices)
+    self.norms = c_floats(self.normals)
+    self.texcoords = c_floats(self.tex_coords)
+    self.inds = c_shorts(self.indices)
     self.ttype = GL_TRIANGLES
-    self.shape.append((eglshorts(indices), len(indices), shape.ttype))
+    self.shape.append((c_shorts(indices), len(indices), shape.ttype))
 
   def add(self, shape, x=0.0, y=0.0, z=0.0, rx=0.0, ry=0.0, rz=0.0,
           sx=1.0, sy=1.0, sz=1.0, cx=0.0, cy=0.0, cz=0.0):
