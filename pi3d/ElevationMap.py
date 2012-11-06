@@ -1,5 +1,6 @@
 from pi3d.pi3dCommon import *
 from pi3d import Constants
+from pi3d.Shape import Shape
 
 class ElevationMap(Shape):
   def __init__(self, mapfile, width=100.0, depth=100.0, height=10.0,

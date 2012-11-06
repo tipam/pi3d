@@ -1,5 +1,6 @@
 from pi3d.pi3dCommon import *
 from pi3d import Constants
+from pi3d.Shape import Shape
 
 class TCone(Shape):
   def __init__(self, radiusBot=1.2, radiusTop=0.8, height=2.0, sides=12,

@@ -2,6 +2,7 @@ import math
 
 from pi3d.pi3dCommon import *
 from pi3d import Constants
+from pi3d.Shape import Shape
 
 class Sphere(Shape):
   def __init__(self, radius=1, slices=12, sides=12, hemi=0.0, name="",

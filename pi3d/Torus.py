@@ -1,5 +1,6 @@
 from pi3d.pi3dCommon import *
 from pi3d import Constants
+from pi3d.Shape import Shape
 
 class Torus(Shape):
   def __init__(self,radius=2.0, thickness=0.5, ringrots=6, sides=12, name="",
