@@ -1,5 +1,14 @@
+import os.path
+
 from pi3d.pi3dCommon import *
 from pi3d import Constants
+
+CUBE_PARTS = ('top', 'left', 'front', 'right', 'back', 'bottom')
+
+def loadECfiles(path, fname, textures):
+  # Helper for loading environment cube faces.
+  files = (os.path.join(path, '%s_%s.jpg' % (fname, p)) for p in CUBE_PARTS)
+  return [textures.loadTexture(f) for f in files]
 
 class EnvironmentCube(object):
   def __init__(self, size=500.0, maptype="HALFCROSS", name=""):

@@ -14,7 +14,9 @@
 #
 
 import pi3d
+
 from pi3d.EnvironmentCube import EnvironmentCube
+from pi3d.EnvironmentCube import loadECfiles
 
 # Setup display and initialise pi3d
 display = pi3d.Display()
@@ -30,10 +32,10 @@ elif box==1:
 	ectex = texs.loadTexture("textures/ecubes/SkyBox.jpg")
 	myecube = EnvironmentCube(900.0,"HALFCROSS")
 elif box==2:
-	ectex=pi3d.loadECfiles("textures/ecubes","sbox_interstellar",texs)
+	ectex=loadECfiles("textures/ecubes","sbox_interstellar",texs)
 	myecube = EnvironmentCube(900.0,"FACES")
 else:
-	ectex=pi3d.loadECfiles("textures/ecubes","skybox_hall",texs)
+	ectex=loadECfiles("textures/ecubes","skybox_hall",texs)
 	myecube = EnvironmentCube(900.0,"FACES")
 
 

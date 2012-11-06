@@ -21,6 +21,7 @@ from pi3d.Cuboid import Cuboid
 from pi3d.Cylinder import Cylinder
 from pi3d.ElevationMap import ElevationMap
 from pi3d.EnvironmentCube import EnvironmentCube
+from pi3d.EnvironmentCube import loadECfiles
 from pi3d.Fog import Fog
 from pi3d.Light import Light
 from pi3d.MergeShape import MergeShape
@@ -39,7 +40,7 @@ grassimg = texs.loadTexture("textures/grass.png")
 hb2img = texs.loadTexture("textures/hornbeam2.png")
 
 #load environment cube
-ectex = pi3d.loadECfiles("textures/ecubes","sbox_interstellar",texs)
+ectex = loadECfiles("textures/ecubes","sbox_interstellar",texs)
 myecube = EnvironmentCube(900.0,"FACES")
 
 # Create elevation map
