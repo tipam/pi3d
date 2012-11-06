@@ -101,22 +101,25 @@ class ElevationMap(Shape):
     return pixht
 
   # accurately determines how high an object is when dropped on the map (providing it's inside the map area)
-  def calcHeight(self,px,pz):
-    wh = self.width*0.5
-    hh = self.depth*0.5
+  def calcHeight(self, px, pz):
+    wh = self.width * 0.5
+    hh = self.depth * 0.5
     ws = self.width / self.ix
     hs = self.depth / self.iy
     ht = self.height / 255.0
     #round off to nearest integer
-    px = (wh - px)/ws
-    pz = (hh - pz)/hs
+    px = (wh - px) / ws
+    pz = (hh - pz) / hs
     x = math.floor(px)
     z = math.floor(pz)
     #print px,pz,x,z
     #x = wh-math.floor(x+0.5)/ws
     #z = hh-math.floor(z+0.5)/hs
 
-    ih=intersectTriangle((x,self.pixels[x,z]*ht,z), (x+1,self.pixels[x+1,z]*ht,z), (x,self.pixels[x,z+1]*ht,z+1), (px,0,pz))
+    ih = intersectTriangle((x, self.pixels[x, z] * ht, z),
+                           (x + 1, self.pixels[x + 1, z] * ht, z),
+                           (x, self.pixels[x, z + 1] * ht, z + 1),
+                           (px, 0, pz))
     if ih == -100000:
         ih=intersectTriangle((x+1,self.pixels[x+1,z+1]*ht,z+1), (x+1,self.pixels[x+1,z]*ht,z), (x,self.pixels[x,z+1]*ht,z+1), (px,0,pz))
     if ih == -100000:
