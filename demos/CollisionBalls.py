@@ -19,6 +19,8 @@
 
 import pi3d, sys, random, array
 
+from pi3d.Ball import Ball
+
 # Setup display and initialise pi3d
 scnx=1920
 scny=1200
@@ -53,7 +55,7 @@ for b in range (0,maxballs):
 
     vx = random.random() * 20.0-10.0
     vy = random.random() * 20.0-10.0
-    balls.append(pi3d.ball(r,x,y,vx,vy,0.0))
+    balls.append(Ball(r,x,y,vx,vy,0.0))
     c=0
     hit = False
     while c<b and not hit:
