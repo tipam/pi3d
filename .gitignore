@@ -1,3 +1,6 @@
+# Emacs backup files.
+*#*
+
 *.py[co]
 
 # Packages
