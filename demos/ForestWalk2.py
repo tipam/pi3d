@@ -15,12 +15,11 @@
 
 import pi3d,math,random
 
+from pi3d.ClipPlane import ClipPlane
 from pi3d.ElevationMap import ElevationMap
 from pi3d.EnvironmentCube import EnvironmentCube
 from pi3d.MergeShape import MergeShape
 from pi3d.Plane import Plane
-
-rads = 0.017453292512 # degrees to radians
 
 # Setup display and initialise pi3d
 display = pi3d.Display()
@@ -45,7 +44,7 @@ landimg = texs.loadTexture("textures/stonygrass.jpg")
 mymap = ElevationMap("textures/mountainsHgt.jpg",mapwidth,mapdepth,mapheight,64,64,10.0) #testislands.jpg
 #mymap2 = ElevationMap("textures/mountainsHgt.jpg",mapwidth,mapdepth,mapheight,64,64, 128)
 
-myclip = pi3d.clipPlane()
+myclip = ClipPlane()
 
 light = pi3d.createLight(0, 10,10,10, "", 0,100,0)
 light.on()
@@ -132,7 +131,7 @@ while 1:
 	    ym = -(mymap.calcHeight(xm,zm)+avhgt)
 	elif k==115: #kry S
 	    xm+=math.sin(math.radians(rot))
-	    zm-=math.cos(rot*rads)
+	    zm-=math.cos(math.radians(rot))
 	    ym = -(mymap.calcHeight(xm,zm)+avhgt)
 	elif k==39: #key '
 	    tilt -= 2.0
