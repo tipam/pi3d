@@ -22,6 +22,7 @@ from pi3d.EnvironmentCube import EnvironmentCube
 from pi3d.Light import Light
 from pi3d.MergeShape import MergeShape
 from pi3d.Plane import Plane
+from pi3d.Textures import Textures
 
 # Setup display and initialise pi3d
 display = Display()
@@ -29,7 +30,7 @@ display.create3D(100,100,1600,800, 0.5, 800.0, 60.0) # x,y,width,height,near,far
 display.setBackColour(0.4,0.8,0.8,1) # r,g,b,alpha
 
 # Load textures
-texs = pi3d.textures()
+texs = Textures()
 tree2img = texs.loadTexture("textures/tree2.png")
 tree1img = texs.loadTexture("textures/tree1.png")
 hb2img = texs.loadTexture("textures/hornbeam2.png")
@@ -42,7 +43,7 @@ mapwidth=1000.0
 mapdepth=1000.0
 mapheight=60.0
 landimg = texs.loadTexture("textures/stonygrass.jpg")
-mymap = ElevationMap("textures/mountainsHgt.jpg",mapwidth,mapdepth,mapheight,64,64,10.0) #testislands.jpg
+mymap = ElevationMap("textures/mountainsHgt.jpg", mapwidth, mapdepth, mapheight, 64, 64, 10.0) #testislands.jpg
 #mymap2 = ElevationMap("textures/mountainsHgt.jpg",mapwidth,mapdepth,mapheight,64,64, 128)
 
 myclip = ClipPlane()

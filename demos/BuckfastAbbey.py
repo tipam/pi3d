@@ -21,6 +21,7 @@ from pi3d.EnvironmentCube import EnvironmentCube
 from pi3d.EnvironmentCube import loadECfiles
 from pi3d.Light import Light
 from pi3d.Model import Model
+from pi3d.Textures import Textures
 
 # Setup display and initialise pi3d
 display = Display()
@@ -36,7 +37,7 @@ print ""
 print "Move mouse to pan view.  Click mouse to exit or press ESCAPE"
 print "=============================================================="
 
-texs = pi3d.textures()
+texs = Textures()
 ectex = loadECfiles("textures/ecubes","sbox",texs)
 myecube = EnvironmentCube(900.0,"FACES")
 

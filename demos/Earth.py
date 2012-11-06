@@ -19,6 +19,7 @@ from pi3d.Display import Display
 from pi3d.Font import Font
 from pi3d.Light import Light
 from pi3d.Sphere import Sphere
+from pi3d.Textures import Textures
 
 # Setup display and initialise pi3d
 display = Display()
@@ -26,7 +27,7 @@ display.create3D(100,100,1600,900)   	# x,y,width,height
 display.setBackColour(0,0,0,1)    	# r,g,b,alpha
 
 # Load textures
-texs=pi3d.textures()
+texs=Textures()
 # Setting 2nd param to True renders 'True' Blending
 # (this can be changed later to 'False' with 'cloudimg.blend = False')
 cloudimg = texs.loadTexture("textures/earth_clouds.png",True)

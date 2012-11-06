@@ -16,6 +16,7 @@
 import pi3d, random, time
 
 from pi3d.Display import Display
+from pi3d.Textures import Textures
 
 z=0
 x=0
@@ -33,7 +34,7 @@ display = Display()
 display.create3D(100,100,scnx,scny)
 display.setBackColour(0,0.7,1,1)
 
-texs = pi3d.textures()
+texs = Textures()
 clouds = []
 clouds.append(texs.loadTexture("textures/cloud2.png",True))
 clouds.append(texs.loadTexture("textures/cloud3.png",True))

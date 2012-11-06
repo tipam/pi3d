@@ -25,6 +25,7 @@ from pi3d.Lathe import Lathe
 from pi3d.Light import Light
 from pi3d.Sphere import Sphere
 from pi3d.TCone import TCone
+from pi3d.Textures import Textures
 from pi3d.Torus import Torus
 from pi3d.Tube import Tube
 
@@ -34,7 +35,7 @@ display.create3D(100,100,1200,900)   	# x,y,width,height
 display.setBackColour(0,0,0,1)    	# r,g,b,alpha
 
 # Load textures
-texs = pi3d.textures()
+texs = Textures()
 patimg = texs.loadTexture("textures/PATRN.PNG")
 coffimg = texs.loadTexture("textures/COFFEE.PNG")
 

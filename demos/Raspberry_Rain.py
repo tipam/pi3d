@@ -19,6 +19,7 @@ import time, random
 import pi3d
 
 from pi3d.Display import Display
+from pi3d.Textures import Textures
 
 # Setup display and initialise pi3d
 display = Display()
@@ -28,7 +29,7 @@ display.create3D(0,0,1900,1200)
 display.setBackColour(0,0.7,1,0)
 
 # Load textures
-texs = pi3d.textures()
+texs = Textures()
 raspimg = texs.loadTexture("textures/Raspi256x256.png")
 
 pino=20

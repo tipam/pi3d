@@ -23,6 +23,7 @@ from pi3d.EnvironmentCube import EnvironmentCube
 from pi3d.EnvironmentCube import loadECfiles
 from pi3d.MergeShape import MergeShape
 from pi3d.Plane import Plane
+from pi3d.Textures import Textures
 
 # Setup display and initialise pi3d
 display = Display()
@@ -30,7 +31,7 @@ display.create3D(100,100,1600,800, 0.5, 800.0, 60.0)   	# x,y,width,height,near,
 display.setBackColour(0.4,0.8,0.8,1)    	# r,g,b,alpha
 
 # Load textures
-texs = pi3d.textures()
+texs = Textures()
 tree2img = texs.loadTexture("textures/tree2.png")
 tree1img = texs.loadTexture("textures/tree1.png")
 grassimg = texs.loadTexture("textures/grass.png")

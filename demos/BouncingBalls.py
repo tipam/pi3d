@@ -20,6 +20,7 @@
 import pi3d, sys, random, array
 
 from pi3d.Display import Display
+from pi3d.Textures import Textures
 
 # Setup display and initialise pi3d
 scnx=800
@@ -57,7 +58,7 @@ for b in range (0, maxballs):
     bs.append(random.random() * maxballsize + minballsize)
     bi.append(int(random.random() * 3))
 
-texs=pi3d.textures()
+texs = Textures()
 ball = []
 ball.append(texs.loadTexture("textures/red_ball.png"))
 ball.append(texs.loadTexture("textures/grn_ball.png"))
