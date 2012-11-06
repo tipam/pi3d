@@ -42,7 +42,6 @@ mapwidth=1000.0
 mapdepth=1000.0
 mapheight=60.0
 landimg = texs.loadTexture("textures/stonygrass.jpg")
-#surface1 = pi3d.loadTextureAlpha("textures/gravel3.png")
 mymap = ElevationMap("textures/mountainsHgt.jpg",mapwidth,mapdepth,mapheight,64,64,10.0) #testislands.jpg
 #mymap2 = ElevationMap("textures/mountainsHgt.jpg",mapwidth,mapdepth,mapheight,64,64, 128)
 

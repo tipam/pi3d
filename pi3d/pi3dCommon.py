@@ -26,6 +26,8 @@
 
 import ctypes, math, Image, curses, threading, pickle
 
+from pi3d import Constants
+
 # Pick up our constants extracted from the header files with prepare_constants.py
 from egl import *
 from gl2 import *
@@ -34,10 +36,6 @@ from gl import *
 from array import *
 from ctypes import *
 import PIL.ImageOps
-
-
-# Define verbose=True to get debug messages
-verbose = True
 
 # Define some extra constants that the automatic extraction misses
 EGL_DEFAULT_DISPLAY = 0
@@ -75,29 +73,21 @@ def eglshorts(L):
   return (eglshort * len(L))(*L)
 
 def ctypeResize(array, new_size):
-    resize(array, sizeof(array._type_)*new_size)
-    return (array._type_*new_size).from_address(addressof(array))
+  resize(array, sizeof(array._type_)*new_size)
+  return (array._type_*new_size).from_address(addressof(array))
 
 egf0 = eglfloat(0)
 egf1 = eglfloat(1)
 
 #for mouse class
-XSIGN = 1<<4
-YSIGN = 1<<5
+XSIGN = 1 << 4
+YSIGN = 1 << 5
 
 # matrix stack count
 mtrx_stack = 0
 
-def check(e):
-    """Checks that error is zero"""
-    if e==0: return
-    if verbose:
-	print 'Error code',hex(e&0xffffffff)
-    raise ValueError
-
 def showerror():
-    e=opengles.glGetError()
-    print hex(e)
+  return opengles.glGetError()
 
 #load a texture specifying RGB or RGBA
 def load_tex(fileString,flip,size,blend):
@@ -144,48 +134,48 @@ def load_tex(fileString,flip,size,blend):
 
 #turn texture on before drawing arrays
 def texture_on(tex, tex_coords, vtype):
-	opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, eglfloat(GL_LINEAR));
-	opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, eglfloat(GL_LINEAR));
-	opengles.glEnableClientState(GL_TEXTURE_COORD_ARRAY)
-	opengles.glTexCoordPointer(2,vtype,0,tex_coords)
-	opengles.glBindTexture(GL_TEXTURE_2D,tex.tex)
-	opengles.glEnable(GL_TEXTURE_2D)
-	if tex.alpha:
-	    if tex.blend:
-		opengles.glDisable(GL_DEPTH_TEST)
-		opengles.glEnable(GL_BLEND)
-		opengles.glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA)
-	    else:
-		opengles.glAlphaFunc(GL_GREATER,eglfloat(0.6))
-		opengles.glEnable(GL_ALPHA_TEST)
+  opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, eglfloat(GL_LINEAR));
+  opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, eglfloat(GL_LINEAR));
+  opengles.glEnableClientState(GL_TEXTURE_COORD_ARRAY)
+  opengles.glTexCoordPointer(2,vtype,0,tex_coords)
+  opengles.glBindTexture(GL_TEXTURE_2D,tex.tex)
+  opengles.glEnable(GL_TEXTURE_2D)
+  if tex.alpha:
+    if tex.blend:
+      opengles.glDisable(GL_DEPTH_TEST)
+      opengles.glEnable(GL_BLEND)
+      opengles.glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA)
+    else:
+      opengles.glAlphaFunc(GL_GREATER,eglfloat(0.6))
+      opengles.glEnable(GL_ALPHA_TEST)
 
 #turn texture off after drawing arrays
 def texture_off():
-	opengles.glDisable(GL_TEXTURE_2D)
-	opengles.glDisable(GL_ALPHA_TEST)
-	opengles.glDisable(GL_BLEND)
-	opengles.glEnable(GL_DEPTH_TEST)
+  opengles.glDisable(GL_TEXTURE_2D)
+  opengles.glDisable(GL_ALPHA_TEST)
+  opengles.glDisable(GL_BLEND)
+  opengles.glEnable(GL_DEPTH_TEST)
 
-class loadTexture(object):
-
-    def __init__(self,fileString,flip=False,size=0,blend=False):
-	self.ix,self.iy,self.tex,self.alpha,self.blend = load_tex(fileString,flip,size,blend)
+class Texture(object):
+  def __init__(self, fileString, flip=False, size=0, blend=False):
+    t = load_tex(fileString, flip, size, blend)
+    self.ix, self.iy, self.tex, self.alpha, self.blend = t
 
 class textures(object):
+  def __init__(self):
+    self.texs=(eglint*1024)()   #maximum of 1024 textures (just to be safe!)
+    self.tc=0
 
-    def __init__(self):
-	self.texs=(eglint*1024)()   #maximum of 1024 textures (just to be safe!)
-	self.tc=0
+  def loadTexture(self,fileString,blend=False,flip=False,size=0):
+    texture = Texture(fileString, flip, size, blend)
+    self.texs[self.tc] = texture.tex.value
+    self.tc+=1
+    return texture
 
-    def loadTexture(self,fileString,blend=False,flip=False,size=0):
-	map = loadTexture(fileString,flip,size,blend)
-	self.texs[self.tc]=map.tex.value
-	self.tc+=1
-	return map
-
-    def deleteAll(self):
-	print "[Exit] Deleting textures ..."
-	opengles.glDeleteTextures(self.tc,addressof(self.texs))
+  def deleteAll(self):
+    if Constants.VERBOSE:
+      print "[Exit] Deleting textures ..."
+      opengles.glDeleteTextures(self.tc, addressof(self.texs))
 
 #position, rotate and scale an object
 def transform(x,y,z,rotx,roty,rotz,sx,sy,sz,cx,cy,cz):
@@ -556,7 +546,6 @@ def create_display(self,x=0,y=0,w=0,h=0,depth=24):
 				    ctypes.byref(config), 1,
 				    ctypes.byref(numconfig))
 
-	#if verbose: print 'numconfig=',numconfig
 	context_attribs = eglints( (EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE) )
 	self.context = openegl.eglCreateContext(self.display, config, EGL_NO_CONTEXT, 0) #ctypes.byref(context_attribs) )
 	assert self.context != EGL_NO_CONTEXT
