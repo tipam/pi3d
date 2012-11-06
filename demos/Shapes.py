@@ -18,6 +18,7 @@ import pi3d
 from pi3d.Cone import Cone
 from pi3d.Cylinder import Cylinder
 from pi3d.Extrude import Extrude
+from pi3d.Font import Font
 from pi3d.Helix import Helix
 from pi3d.Lathe import Lathe
 from pi3d.Light import Light
@@ -49,8 +50,8 @@ myhemisphere = Sphere(1,24,24,0.5,"hsphere",0,-1,-7)
 mytorus = Torus(1,0.3,12,24,"Torus", 2,-1,-7)
 mylathe = Lathe( ((1,0),(0.1,0.2),(0.08,0.21),(0.08,1),(0.7,1.2),(0.9, 1.4), (1.1,1.7)), 24,"Cup",4,-1,-7, 0,0,0, 0.8,0.8,0.8)
 
-arialFont = pi3d.font("AR_CENA","#dd00aa")   #load AR_CENA font and set the font colour to 'raspberry'
-destineFont = pi3d.font("AR_Destine", "#0055ff")
+arialFont = Font("AR_CENA","#dd00aa")   #load AR_CENA font and set the font colour to 'raspberry'
+destineFont = Font("AR_Destine", "#0055ff")
 
 
 # Fetch key presses

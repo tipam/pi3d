@@ -15,6 +15,7 @@
 
 import pi3d
 
+from pi3d.Font import Font
 from pi3d.Light import Light
 from pi3d.Sphere import Sphere
 
@@ -38,8 +39,8 @@ mysphere2 = Sphere(2.05,24,24,0.0,"clouds",0,0,0)
 mymoon = Sphere(0.4,16,16,0.0,"moon",0,0,0)
 mymoon2 = Sphere(0.1,16,16,0.0,"moon2",0,0,0)
 
-arialFont = pi3d.font("AR_CENA","#dd00aa")   #load AR_CENA font and set the font colour to 'raspberry'
-destineFont = pi3d.font("AR_DELANEY", "#0055ff")
+arialFont = Font("AR_CENA","#dd00aa")   #load AR_CENA font and set the font colour to 'raspberry'
+destineFont = Font("AR_DELANEY", "#0055ff")
 
 # Fetch key presses
 mykeys = pi3d.key()
