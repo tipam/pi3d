@@ -31,20 +31,27 @@ class Ball(object):
 
     if sqsum(dx, dy) <= (rd ** 2):
       cangle = math.atan2(dy, dx)
-      mag1 = math.sqrt(self.vx ** 2 + self.vy ** 2)
-      mag2 = math.sqrt(otherball.vx ** 2 + otherball.vy ** 2)
+      mag1 = distance(self.vx, self.vy)
+      mag2 = distance(otherball.vx, otherball.vy)
       dir1 = math.atan2(self.vy, self.vx)
       dir2 = math.atan2(otherball.vy, otherball.vx)
       nspx1 = mag1 * math.cos(dir1 - cangle)
       nspy1 = mag1 * math.sin(dir1 - cangle)
       nspx2 = mag2 * math.cos(dir2 - cangle)
       nspy2 = mag2 * math.sin(dir2 - cangle)
-      fspx1 = ((self.mass - otherball.mass) * nspx1 + (otherball.mass * 2) * nspx2) / (self.mass + otherball.mass)
-      fspx2 = ((self.mass * 2) * nspx1 + (otherball.mass - self.mass) * nspx2) / (self.mass + otherball.mass)
+      fspx1 = (((self.mass - otherball.mass) * nspx1 +
+                (otherball.mass * 2) * nspx2) / (self.mass + otherball.mass))
+      fspx2 = (((self.mass * 2) * nspx1 +
+                (otherball.mass - self.mass) * nspx2) /
+               (self.mass + otherball.mass))
       fspy1 = nspy1
       fspy2 = nspy2
-      self.vx = math.cos(cangle) * fspx1 + math.cos(cangle + math.pi * .5) * fspy1
-      self.vy = math.sin(cangle) * fspx1 + math.sin(cangle + math.pi * .5) * fspy1
-      otherball.vx = math.cos(cangle) * fspx2 + math.cos(cangle + math.pi * .5) * fspy2
-      otherball.vy = math.sin(cangle) * fspx2 + math.sin(cangle + math.pi * .5) * fspy2
+      self.vx = (math.cos(cangle) * fspx1 +
+                 math.cos(cangle + math.pi * .5) * fspy1)
+      self.vy = (math.sin(cangle) * fspx1 +
+                 math.sin(cangle + math.pi * .5) * fspy1)
+      otherball.vx = (math.cos(cangle) * fspx2 +
+                      math.cos(cangle + math.pi * .5) * fspy2)
+      otherball.vy = (math.sin(cangle) * fspx2 +
+                      math.sin(cangle + math.pi * .5) * fspy2)
 
