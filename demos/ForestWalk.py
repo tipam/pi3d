@@ -47,39 +47,39 @@ mymap = pi3d.createElevationMapFromTexture("textures/mountainsHgt.jpg",mapwidth,
 #Create tree models
 treeplane = pi3d.createPlane(4.0,5.0)
 
-treemodel1 = pi3d.createMergeShape("baretree")
+treemodel1 = pi3d.MergeShape("baretree")
 treemodel1.add(treeplane, 0,0,0)
 treemodel1.add(treeplane, 0,0,0, 0,90,0)
 
-treemodel2 = pi3d.createMergeShape("bushytree")
+treemodel2 = pi3d.MergeShape("bushytree")
 treemodel2.add(treeplane, 0,0,0)
 treemodel2.add(treeplane, 0,0,0, 0,60,0)
 treemodel2.add(treeplane, 0,0,0, 0,120,0)
 
 #Create grass model
 grassplane = pi3d.createPlane(1.0,0.3,"",0,-2,0)
-grassmodel = pi3d.createMergeShape("grass")
+grassmodel = pi3d.MergeShape("grass")
 grassmodel.add(grassplane, 0,0,0)
 grassmodel.add(grassplane, 0,0,0, 0,60,0)
 grassmodel.add(grassplane, 0,0,0, 0,120,0)
 
 #Scatter them on map using Merge shape's cluster function
-mytrees1 = pi3d.createMergeShape("trees1")
+mytrees1 = pi3d.MergeShape("trees1")
 mytrees1.cluster(treemodel1, mymap,0.0,0.0,200.0,200.0,30,"",8.0,3.0)
 #               (shape,elevmap,xpos,zpos,w,d,count,options,minscl,maxscl)
 
-mytrees2 = pi3d.createMergeShape("trees2")
+mytrees2 = pi3d.MergeShape("trees2")
 mytrees2.cluster(treemodel2, mymap,0.0,0.0,200.0,200.0,30,"",6.0,3.0)
 #               (shape,elevmap,xpos,zpos,w,d,count,options,minscl,maxscl)
 
-mytrees3 = pi3d.createMergeShape("trees3")
+mytrees3 = pi3d.MergeShape("trees3")
 mytrees3.cluster(treemodel2, mymap,0.0,0.0,300.0,300.0,30,"",4.0,2.0)
 #               (shape,elevmap,xpos,zpos,w,d,count,options,minscl,maxscl)
 
-mygrass = pi3d.createMergeShape("grass")
+mygrass = pi3d.MergeShape("grass")
 mygrass.cluster(grassmodel, mymap,0.0,0.0,100.0,100.0,100,"",10.0,4.0)
 
-#mygrass2 = pi3d.createMergeShape("grass2")
+#mygrass2 = pi3d.MergeShape("grass2")
 #mygrass2.cluster(mygrass, mymap,100.0,0.0,100.0,100.0,1,"",1.0,1.0)
 
 #               (shape,elevmap,xpos,zpos,w,d,count,options,minscl,maxscl)
