@@ -14,6 +14,8 @@
 #
 
 import pi3d,math,random
+from pi3d.MergeShape import MergeShape
+from pi3d.Plane import Plane
 
 rads = 0.017453292512 # degrees to radians
 
@@ -46,27 +48,27 @@ light = pi3d.createLight(0, 10,10,10, "", 0,100,0)
 light.on()
 
 #Create tree models
-treeplane = pi3d.createPlane(4.0,5.0)
+treeplane = Plane(4.0,5.0)
 
-treemodel1 = pi3d.MergeShape("baretree")
+treemodel1 = MergeShape("baretree")
 treemodel1.add(treeplane, 0,0,0)
 treemodel1.add(treeplane, 0,0,0, 0,90,0)
 
-treemodel2 = pi3d.MergeShape("bushytree")
+treemodel2 = MergeShape("bushytree")
 treemodel2.add(treeplane, 0,0,0)
 treemodel2.add(treeplane, 0,0,0, 0,60,0)
 treemodel2.add(treeplane, 0,0,0, 0,120,0)
 
 #Scatter them on map using Merge shape's cluster function
-mytrees1 = pi3d.MergeShape("trees1")
+mytrees1 = MergeShape("trees1")
 mytrees1.cluster(treemodel1, mymap,0.0,0.0,200.0,200.0,30,"",8.0,3.0)
 # (shape,elevmap,xpos,zpos,w,d,count,options,minscl,maxscl)
 
-mytrees2 = pi3d.MergeShape("trees2")
+mytrees2 = MergeShape("trees2")
 mytrees2.cluster(treemodel2, mymap,0.0,0.0,200.0,200.0,30,"",6.0,3.0)
 # (shape,elevmap,xpos,zpos,w,d,count,options,minscl,maxscl)
 
-mytrees3 = pi3d.MergeShape("trees3")
+mytrees3 = MergeShape("trees3")
 mytrees3.cluster(treemodel2, mymap,0.0,0.0,300.0,300.0,30,"",4.0,2.0)
 # (shape,elevmap,xpos,zpos,w,d,count,options,minscl,maxscl)
 

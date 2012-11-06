@@ -17,6 +17,9 @@
 
 import pi3d,math,random
 
+from pi3d.MergeShape import MergeShape
+from pi3d.Plane import Plane
+
 rads = 0.017453292512  # degrees to radians
 
 # Setup display and initialise pi3d
@@ -45,41 +48,41 @@ mountimg1 = texs.loadTexture("textures/mountains3_512.jpg")
 mymap = pi3d.createElevationMapFromTexture("textures/mountainsHgt.jpg",mapwidth,mapdepth,mapheight,64,64) #testislands.jpg
 
 #Create tree models
-treeplane = pi3d.createPlane(4.0,5.0)
+treeplane = Plane(4.0,5.0)
 
-treemodel1 = pi3d.MergeShape("baretree")
+treemodel1 = MergeShape("baretree")
 treemodel1.add(treeplane, 0,0,0)
 treemodel1.add(treeplane, 0,0,0, 0,90,0)
 
-treemodel2 = pi3d.MergeShape("bushytree")
+treemodel2 = MergeShape("bushytree")
 treemodel2.add(treeplane, 0,0,0)
 treemodel2.add(treeplane, 0,0,0, 0,60,0)
 treemodel2.add(treeplane, 0,0,0, 0,120,0)
 
 #Create grass model
-grassplane = pi3d.createPlane(1.0,0.3,"",0,-2,0)
-grassmodel = pi3d.MergeShape("grass")
+grassplane = Plane(1.0,0.3,"",0,-2,0)
+grassmodel = MergeShape("grass")
 grassmodel.add(grassplane, 0,0,0)
 grassmodel.add(grassplane, 0,0,0, 0,60,0)
 grassmodel.add(grassplane, 0,0,0, 0,120,0)
 
 #Scatter them on map using Merge shape's cluster function
-mytrees1 = pi3d.MergeShape("trees1")
+mytrees1 = MergeShape("trees1")
 mytrees1.cluster(treemodel1, mymap,0.0,0.0,200.0,200.0,30,"",8.0,3.0)
 #               (shape,elevmap,xpos,zpos,w,d,count,options,minscl,maxscl)
 
-mytrees2 = pi3d.MergeShape("trees2")
+mytrees2 = MergeShape("trees2")
 mytrees2.cluster(treemodel2, mymap,0.0,0.0,200.0,200.0,30,"",6.0,3.0)
 #               (shape,elevmap,xpos,zpos,w,d,count,options,minscl,maxscl)
 
-mytrees3 = pi3d.MergeShape("trees3")
+mytrees3 = MergeShape("trees3")
 mytrees3.cluster(treemodel2, mymap,0.0,0.0,300.0,300.0,30,"",4.0,2.0)
 #               (shape,elevmap,xpos,zpos,w,d,count,options,minscl,maxscl)
 
-mygrass = pi3d.MergeShape("grass")
+mygrass = MergeShape("grass")
 mygrass.cluster(grassmodel, mymap,0.0,0.0,100.0,100.0,100,"",10.0,4.0)
 
-#mygrass2 = pi3d.MergeShape("grass2")
+#mygrass2 = MergeShape("grass2")
 #mygrass2.cluster(mygrass, mymap,100.0,0.0,100.0,100.0,1,"",1.0,1.0)
 
 #               (shape,elevmap,xpos,zpos,w,d,count,options,minscl,maxscl)
