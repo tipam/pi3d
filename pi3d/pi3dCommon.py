@@ -46,11 +46,9 @@ bcm = ctypes.CDLL('libbcm_host.so')
 opengles = ctypes.CDLL('libGLESv2.so')
 openegl = ctypes.CDLL('libEGL.so')
 
-eglshort = ctypes.c_short
 eglfloat = ctypes.c_float
 eglbyte = ctypes.c_byte
 eglchar = ctypes.c_char
-eglshort = ctypes.c_short
 c_char_p = ctypes.c_char_p
 
 def ctypes_array(ct, x):
@@ -69,7 +67,7 @@ def eglfloats(x):
   return ctypes_array(eglfloat, x)
 
 def eglshorts(x):
-  return ctypes_array(eglshort, x)
+  return ctypes_array(ctypes.c_short, x)
 
 def ctypeResize(array, new_size):
   resize(array, sizeof(array._type_) * new_size)
