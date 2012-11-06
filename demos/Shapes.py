@@ -17,6 +17,7 @@ import pi3d
 
 from pi3d.Lathe import Lathe
 from pi3d.Sphere import Sphere
+from pi3d.Torus import Torus
 
 # Setup display and initialise pi3d
 display = pi3d.Display()
@@ -38,7 +39,7 @@ myextrude = pi3d.createExtrude( ((-0.5, 1),(0.5,0),(0.5,-0.2),(-0.5,-0.3)), 0.05
 mycone = pi3d.createCone(1,2,24,"Cone",-4,-1,-7)
 mycylinder = pi3d.createCylinder(.7,1.5,24,"Cyli",-2,-1,-7)
 myhemisphere = Sphere(1,24,24,0.5,"hsphere",0,-1,-7)
-mytorus = pi3d.createTorus(1,0.3,12,24,"Torus", 2,-1,-7)
+mytorus = Torus(1,0.3,12,24,"Torus", 2,-1,-7)
 mylathe = Lathe( ((1,0),(0.1,0.2),(0.08,0.21),(0.08,1),(0.7,1.2),(0.9, 1.4), (1.1,1.7)), 24,"Cup",4,-1,-7, 0,0,0, 0.8,0.8,0.8)
 
 arialFont = pi3d.font("AR_CENA","#dd00aa")   #load AR_CENA font and set the font colour to 'raspberry'
