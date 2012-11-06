@@ -2,7 +2,6 @@ from pi3d.pi3dCommon import *
 from pi3d import Constants
 
 class Helix(Shape):
-
   def __init__(self,radius=1.0, thickness=0.2, ringrots=6, sides=12, rise=1.0,
                loops=2.0, name="", x=0.0, y=0.0, z=0.0, rx=0.0, ry=0.0, rz=0.0,
                sx=1.0, sy=1.0, sz=1.0, cx=0.0, cy=0.0, cz=0.0):
