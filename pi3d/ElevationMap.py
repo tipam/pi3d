@@ -54,31 +54,31 @@ class ElevationMap(Shape):
     tex_coords = []
     idx = []
 
-    for y in range(0,iy):
-      for x in range(0,ix):
-        hgt = (self.pixels[x,y])*ht
-        verts.append(-wh+x*ws)
+    for y in range(iy):
+      for x in range(ix):
+        hgt = (self.pixels[x, y]) * ht
+        verts.append(-wh + x * ws)
         verts.append(hgt)
-        verts.append(-hh+y*hs)
+        verts.append(-hh + y * hs)
         norms.append(0.0)
         norms.append(1.0)
         norms.append(0.0)
-        tex_coords.append((ix-x) * tx)
-        tex_coords.append((iy-y) * ty)
+        tex_coords.append((ix - x) * tx)
+        tex_coords.append((iy - y) * ty)
 
-    s=0
+    s = 0
     #create one long triangle_strip by alternating X directions
-    for y in range(0,iy-2,2):
-      for x in range(0,ix-1):
-        i = (y * ix)+x
+    for y in range(0, iy - 2, 2):
+      for x in range(0, ix - 1):
+        i = (y * ix) + x
         idx.append(i)
-        idx.append(i+ix)
+        idx.append(i + ix)
         s+=2
-      for x in range(ix-1,0,-1):
-        i = ((y+1) * ix)+x
-        idx.append(i+ix)
+      for x in range(ix - 1, 0, -1):
+        i = ((y + 1) * ix) + x
+        idx.append(i + ix)
         idx.append(i)
-        s+=2
+        s += 2
 
     self.vertices = eglfloats(verts)
     self.normals = eglfloats(norms)
@@ -89,14 +89,14 @@ class ElevationMap(Shape):
 
   # determines how high an object is when dropped on the map (providing it's inside the map area)
   def dropOn(self,x,z):
-    wh = self.width*0.5
-    hh = self.depth*0.5
+    wh = self.width * 0.5
+    hh = self.depth * 0.5
     ws = self.width / self.ix
     hs = self.depth / self.iy
     ht = self.height / 255.0
 
     if x > -wh and x < wh and z > -hh and z < hh:
-      pixht = self.pixels[(wh-x)/ws,(hh-z)/hs] * ht
+      pixht = self.pixels[(wh - x) / ws,(hh - z) / hs] * ht
 
     return pixht
 
