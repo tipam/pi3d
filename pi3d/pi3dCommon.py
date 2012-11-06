@@ -35,7 +35,6 @@ from constants.gl2ext import *
 from constants.gl import *
 
 from ctypes import *
-import PIL.ImageOps
 
 # Define some extra constants that the automatic extraction misses
 EGL_DEFAULT_DISPLAY = 0
