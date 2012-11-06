@@ -22,14 +22,14 @@ class Ball(object):
     dx = (self.x + self.vx) - (otherball.x + otherball.vx)
     dy = (self.y + self.vy) - (otherball.y + otherball.vy)
     rd = self.radius + otherball.radius
-    return (dx**2+dy**2) <= (rd**2)
+    return sqsum(dx, dy) <= (rd ** 2)
 
   def collisionBounce(self,otherball):
     dx = self.x - otherball.x
     dy = self.y - otherball.y
     rd = self.radius + otherball.radius
 
-    if (dx ** 2 + dy **2) <= (rd ** 2):
+    if sqsum(dx, dy) <= (rd ** 2):
       cangle = math.atan2(dy, dx)
       mag1 = math.sqrt(self.vx ** 2 + self.vy ** 2)
       mag2 = math.sqrt(otherball.vx ** 2 + otherball.vy ** 2)
