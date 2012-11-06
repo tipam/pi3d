@@ -2,25 +2,29 @@ from pi3d.pi3dCommon import *
 from pi3d import Constants
 
 class ElevationMap(Shape):
-  def __init__(self, mapfile, width=100.0, depth=100.0, height=10.0, divx=0, divy=0, ntiles=1.0, name="",x=0.0,y=0.0,z=0.0, rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0):
-    super(ElevationMap,self).__init__(name, x,y,z, rx,ry,rz, sx,sy,sz, cx,cy,cz)
+  def __init__(self, mapfile, width=100.0, depth=100.0, height=10.0,
+               divx=0, divy=0, ntiles=1.0, name="",
+               x=0.0, y=0.0, z=0.0, rx=0.0, ry=0.0, rz=0.0,
+               sx=1.0, sy=1.0, sz=1.0, cx=0.0, cy=0.0, cz=0.0):
+    super(ElevationMap,self).__init__(name, x, y, z, rx, ry, rz,
+                                      sx, sy, sz, cx, cy, cz)
     if Constants.VERBOSE:
       print "Loading height map ...",mapfile
 
     if divx>200 or divy>200:
       print "... Map size can't be bigger than 200x200 divisions"
-      divx=200
-      divy=200
+      divx = 200
+      divy = 200
 
     im = Image.open(mapfile)
     im = PIL.ImageOps.invert(im)
-    ix,iy = im.size
+    ix, iy = im.size
     if (ix>200 and divx==0) or (divx > 0):
-      if divx==0:
-        divx=200
-        divy=200
-      im = im.resize((divx,divy),Image.ANTIALIAS)
-      ix,iy = im.size
+      if divx == 0:
+        divx = 200
+        divy = 200
+      im = im.resize((divx, divy), Image.ANTIALIAS)
+      ix, iy = im.size
     if not im.mode == "P":
       im = im.convert('P', palette=Image.ADAPTIVE)
 
@@ -37,18 +41,18 @@ class ElevationMap(Shape):
     if Constants.VERBOSE:
       print "Creating Elevation Map ...", ix, iy
 
-    wh = width*0.5
-    hh = depth*0.5
+    wh = width * 0.5
+    hh = depth * 0.5
     ws = width / ix
     hs = depth / iy
     ht = height / 255.0
-    tx = ntiles/ix
-    ty = ntiles/iy
+    tx = ntiles / ix
+    ty = ntiles / iy
 
-    verts=[]
-    norms=[]
-    tex_coords=[]
-    idx=[]
+    verts = []
+    norms = []
+    tex_coords = []
+    idx = []
 
     for y in range(0,iy):
       for x in range(0,ix):
