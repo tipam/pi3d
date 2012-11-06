@@ -18,6 +18,7 @@ import pi3d,math,random
 from pi3d.ClipPlane import ClipPlane
 from pi3d.Display import Display
 from pi3d.EnvironmentCube import EnvironmentCube
+from pi3d.Key import Key
 from pi3d.Light import Light
 from pi3d.Textures import Textures
 
@@ -90,7 +91,7 @@ zm=0.0
 ym= -(mymap.calcHeight(xm,zm)+avhgt)
 
 # Fetch key presses
-mykeys = pi3d.key()
+mykeys = Key()
 mymouse = pi3d.mouse()
 mymouse.start()
 mtrx = pi3d.matrix()

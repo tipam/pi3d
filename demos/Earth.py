@@ -17,6 +17,7 @@ import pi3d
 
 from pi3d.Display import Display
 from pi3d.Font import Font
+from pi3d.Key import Key
 from pi3d.Light import Light
 from pi3d.Textures import Textures
 
@@ -46,7 +47,7 @@ arialFont = Font("AR_CENA","#dd00aa")   #load AR_CENA font and set the font colo
 destineFont = Font("AR_DELANEY", "#0055ff")
 
 # Fetch key presses
-mykeys = pi3d.key()
+mykeys = Key()
 
 mtrx = pi3d.matrix()
 

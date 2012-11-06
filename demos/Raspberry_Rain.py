@@ -19,6 +19,7 @@ import time, random
 import pi3d
 
 from pi3d.Display import Display
+from pi3d.Key import Key
 from pi3d.Textures import Textures
 
 # Setup display and initialise pi3d
@@ -40,7 +41,7 @@ for b in range (0, pino):
 	xyz.append((random.random()*8-4,random.random() * 8,random.random() * 4 + 3, random.random() * 360))
 
 # Fetch key presses
-mykeys = pi3d.key()
+mykeys = Key()
 
 # Display scene and rotate cuboid
 while 1:

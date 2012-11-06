@@ -17,6 +17,7 @@ import pi3d
 
 from pi3d.Display import Display
 from pi3d.Font import Font
+from pi3d.Key import Key
 from pi3d.Light import Light
 from pi3d.Textures import Textures
 
@@ -58,7 +59,7 @@ destineFont = Font("AR_Destine", "#0055ff")
 
 
 # Fetch key presses
-mykeys = pi3d.key()
+mykeys = Key()
 
 #create a light
 mylight = Light(0,1,1,1,"",10,10,10)

@@ -17,6 +17,7 @@
 import pi3d
 
 from pi3d.Display import Display
+from pi3d.Key import Key
 from pi3d.Light import Light
 
 from pi3d.shape.Model import Model
@@ -30,7 +31,7 @@ display.setBackColour(0.2,0.4,0.6,1)    	# r,g,b,alpha
 mymodel = Model("models/teapot.egg","teapot", 0,-1,0)
 
 # Fetch key presses
-mykeys = pi3d.key()
+mykeys = Key()
 
 # setup matrices
 mtrx = pi3d.matrix()

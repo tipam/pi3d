@@ -20,6 +20,7 @@
 import pi3d, sys, random
 
 from pi3d.Display import Display
+from pi3d.Key import Key
 from pi3d.Textures import Textures
 
 # Setup display and initialise pi3d
@@ -67,7 +68,7 @@ bar = texs.loadTexture("textures/bar.png")
 bbtitle = texs.loadTexture("textures/pi3dbbd.png",True)
 
 # Fetch key presses
-mykeys = pi3d.key()
+mykeys = Key()
 scshots = 1
 
 while True:

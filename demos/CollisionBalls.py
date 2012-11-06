@@ -21,6 +21,7 @@ import pi3d, sys, random
 
 from pi3d.Ball import Ball
 from pi3d.Display import Display
+from pi3d.Key import Key
 from pi3d.Textures import Textures
 
 # Setup display and initialise pi3d
@@ -73,7 +74,7 @@ for b in range (0,maxballs):
 
 
 # Fetch key presses
-mykeys = pi3d.key()
+mykeys = Key()
 scshots = 1
 
 print balls[0].x, balls[0].vx

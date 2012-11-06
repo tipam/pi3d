@@ -24,7 +24,7 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 # DEALINGS IN THE SOFTWARE.
 
-import ctypes, math, curses, threading
+import ctypes, math, threading
 
 from ctypes import c_byte
 from ctypes import c_float
@@ -556,24 +556,6 @@ class mouse(threading.Thread):
 	    #if self.y<0: self.y=0
 	    #self.x=min(self.x,self.width)
 	    #self.y=min(self.y,self.height)
-
-class key():
-
-    def __init__(self):
-	self.key = curses.initscr()
-	curses.cbreak()
-	curses.noecho()
-	self.key.keypad(1)
-	self.key.nodelay(1)
-
-    def read(self):
-	return (self.key.getch())
-
-    def close(self):
-	curses.nocbreak()
-	self.key.keypad(0)
-	curses.echo()
-	curses.endwin()
 
 
 class matrix(object):
