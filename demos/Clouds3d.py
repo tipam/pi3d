@@ -15,6 +15,8 @@
 
 import pi3d, random, time
 
+from pi3d.Display import Display
+
 z=0
 x=0
 speed=1
@@ -27,7 +29,7 @@ zd = cloud_depth / cloudno
 # Setup display and initialise pi3d
 scnx = 1200
 scny = 800
-display = pi3d.Display()
+display = Display()
 display.create3D(100,100,scnx,scny)
 display.setBackColour(0,0.7,1,1)
 

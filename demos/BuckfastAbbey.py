@@ -16,13 +16,14 @@
 
 import pi3d, math
 
+from pi3d.Display import Display
 from pi3d.EnvironmentCube import EnvironmentCube
 from pi3d.EnvironmentCube import loadECfiles
 from pi3d.Light import Light
 from pi3d.Model import Model
 
 # Setup display and initialise pi3d
-display = pi3d.Display()
+display = Display()
 display.create3D(100,100,1400,800)   	# x,y,width,height
 display.setBackColour(0.2,0.4,0.6,1)    	# r,g,b,alpha
 

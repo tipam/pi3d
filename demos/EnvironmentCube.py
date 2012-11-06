@@ -15,11 +15,12 @@
 
 import pi3d
 
+from pi3d.Display import Display
 from pi3d.EnvironmentCube import EnvironmentCube
 from pi3d.EnvironmentCube import loadECfiles
 
 # Setup display and initialise pi3d
-display = pi3d.Display()
+display = Display()
 display.create3D(100,100,1700,800, 0.5, 800.0, 60.0)   	# x,y,width,height,near,far,aspect
 
 #select the environment cube with 'box'...

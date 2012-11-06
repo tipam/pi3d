@@ -17,6 +17,7 @@
 
 import pi3d,math,random
 
+from pi3d.Display import Display
 from pi3d.ElevationMap import ElevationMap
 from pi3d.EnvironmentCube import EnvironmentCube
 from pi3d.EnvironmentCube import loadECfiles
@@ -24,7 +25,7 @@ from pi3d.MergeShape import MergeShape
 from pi3d.Plane import Plane
 
 # Setup display and initialise pi3d
-display = pi3d.Display()
+display = Display()
 display.create3D(100,100,1600,800, 0.5, 800.0, 60.0)   	# x,y,width,height,near,far,aspect
 display.setBackColour(0.4,0.8,0.8,1)    	# r,g,b,alpha
 

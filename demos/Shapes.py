@@ -17,6 +17,7 @@ import pi3d
 
 from pi3d.Cone import Cone
 from pi3d.Cylinder import Cylinder
+from pi3d.Display import Display
 from pi3d.Extrude import Extrude
 from pi3d.Font import Font
 from pi3d.Helix import Helix
@@ -28,7 +29,7 @@ from pi3d.Torus import Torus
 from pi3d.Tube import Tube
 
 # Setup display and initialise pi3d
-display = pi3d.Display()
+display = Display()
 display.create3D(100,100,1200,900)   	# x,y,width,height
 display.setBackColour(0,0,0,1)    	# r,g,b,alpha
 
