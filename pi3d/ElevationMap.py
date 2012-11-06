@@ -121,7 +121,10 @@ class ElevationMap(Shape):
                            (x, self.pixels[x, z + 1] * ht, z + 1),
                            (px, 0, pz))
     if ih == -100000:
-        ih=intersectTriangle((x+1,self.pixels[x+1,z+1]*ht,z+1), (x+1,self.pixels[x+1,z]*ht,z), (x,self.pixels[x,z+1]*ht,z+1), (px,0,pz))
+        ih=intersectTriangle((x + 1, self.pixels[x + 1, z + 1] * ht, z + 1),
+                             (x + 1, self.pixels[x + 1, z] * ht, z),
+                             (x, self.pixels[x, z + 1] * ht, z + 1),
+                             (px,0,pz))
     if ih == -100000:
       ih = 0
 
