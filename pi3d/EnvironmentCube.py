@@ -2,7 +2,7 @@ from pi3d.pi3dCommon import *
 from pi3d import Constants
 
 class EnvironmentCube(object):
-  def __init__(self,size=500.0,maptype="HALFCROSS",name=""):
+  def __init__(self, size=500.0, maptype="HALFCROSS", name=""):
     if Constants.VERBOSE:
       print "Creating Environment Cube ..."
 
@@ -10,9 +10,9 @@ class EnvironmentCube(object):
     self.ssize = 36
     self.ttype = GL_TRIANGLES
     self.maptype = maptype
-    ww = self.scale*.5
-    hh = self.scale*.5
-    dd = self.scale*.5
+    ww = self.scale / 2.0 # TODO: this seems wrong...!
+    hh = self.scale / 2.0
+    dd = self.scale / 2.0
 
     #cuboid data - faces are separated out for texturing..
 

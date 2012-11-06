@@ -15,6 +15,8 @@
 
 import pi3d
 
+from pi3d.Lathe import Lathe
+
 # Setup display and initialise pi3d
 display = pi3d.Display()
 display.create3D(100,100,1200,900)   	# x,y,width,height
@@ -36,7 +38,7 @@ mycone = pi3d.createCone(1,2,24,"Cone",-4,-1,-7)
 mycylinder = pi3d.createCylinder(.7,1.5,24,"Cyli",-2,-1,-7)
 myhemisphere = pi3d.createSphere(1,24,24,0.5,"hsphere",0,-1,-7)
 mytorus = pi3d.createTorus(1,0.3,12,24,"Torus", 2,-1,-7)
-mylathe = pi3d.createLathe( ((1,0),(0.1,0.2),(0.08,0.21),(0.08,1),(0.7,1.2),(0.9, 1.4), (1.1,1.7)), 24,"Cup",4,-1,-7, 0,0,0, 0.8,0.8,0.8)
+mylathe = Lathe( ((1,0),(0.1,0.2),(0.08,0.21),(0.08,1),(0.7,1.2),(0.9, 1.4), (1.1,1.7)), 24,"Cup",4,-1,-7, 0,0,0, 0.8,0.8,0.8)
 
 arialFont = pi3d.font("AR_CENA","#dd00aa")   #load AR_CENA font and set the font colour to 'raspberry'
 destineFont = pi3d.font("AR_Destine", "#0055ff")
