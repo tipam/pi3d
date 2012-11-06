@@ -21,6 +21,7 @@ from pi3d.Cuboid import Cuboid
 from pi3d.Cylinder import Cylinder
 from pi3d.ElevationMap import ElevationMap
 from pi3d.EnvironmentCube import EnvironmentCube
+from pi3d.Fog import Fog
 from pi3d.Light import Light
 from pi3d.MergeShape import MergeShape
 from pi3d.Sphere import Sphere
@@ -90,7 +91,7 @@ mtrx = pi3d.matrix()
 omx=mymouse.x
 omy=mymouse.y
 
-myfog = pi3d.fog(0.002,(0.3,0.8,0.6,0.5))
+myfog = Fog(0.002,(0.3,0.8,0.6,0.5))
 mylight = Light(0,1,1,1,"",10,10,10, .9,.7,.6)
 
 # Display scene and rotate cuboid
