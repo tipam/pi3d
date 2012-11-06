@@ -1,5 +1,6 @@
 from pi3d.pi3dCommon import *
 from pi3d import Constants
+from pi3d import Texture
 
 from pi3d.shape.Shape import Shape
 
@@ -95,18 +96,15 @@ class Extrude(Shape):
     opengles.glGetFloatv(GL_MODELVIEW_MATRIX, ctypes.byref(mtrx))
     transform(self.x, self.y, self.z, self.rotx, self.roty, self.rotz,
               self.sx, self.sy, self.sz, self.cx, self.cy, self.cz)
-    if tex1 > 0:
-      texture_on(tex1, self.tex_coords, GL_FLOAT)
-    opengles.glDrawElements(GL_TRIANGLE_STRIP, self.edges * 2 + 2,
-                            GL_UNSIGNED_SHORT, self.sidefaces)
-    if tex2 > 0:
-      texture_on(tex2, self.tex_coords, GL_FLOAT)
-    opengles.glDrawElements(GL_TRIANGLE_FAN, self.edges,
-                            GL_UNSIGNED_SHORT, self.topface)
-    if tex3 > 0:
-      texture_on(tex3, self.tex_coords, GL_FLOAT)
-    opengles.glDrawElements(GL_TRIANGLE_FAN, self.edges,
-                            GL_UNSIGNED_SHORT, self.botface)
-    if tex1 > 0:
-      texture_off()
+
+    with Texture.Loader(tex1, self.tex_coords):
+      opengles.glDrawElements(GL_TRIANGLE_STRIP, self.edges * 2 + 2,
+                              GL_UNSIGNED_SHORT, self.sidefaces)
+      with Texture.Loader(tex2, self.tex_coords):
+        opengles.glDrawElements(GL_TRIANGLE_FAN, self.edges,
+                                GL_UNSIGNED_SHORT, self.topface)
+        with Texture.Loader(tex3, self.tex_coords):
+          opengles.glDrawElements(GL_TRIANGLE_FAN, self.edges,
+                                  GL_UNSIGNED_SHORT, self.botface)
+
     opengles.glLoadMatrixf(mtrx)

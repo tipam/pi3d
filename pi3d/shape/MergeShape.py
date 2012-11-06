@@ -2,6 +2,7 @@ import random
 
 from pi3d.pi3dCommon import *
 from pi3d import Constants
+from pi3d import Texture
 from pi3d.shape.Shape import Shape
 
 class MergeShape(Shape):
@@ -103,27 +104,21 @@ class MergeShape(Shape):
   def draw(self, shapeNo, tex=0):
     opengles.glVertexPointer(3, GL_FLOAT, 0, self.verts);
     opengles.glNormalPointer(GL_FLOAT, 0, self.norms);
-    if tex > 0:
-      texture_on(tex, self.texcoords, GL_FLOAT)
-    transform(self.x, self.y, self.z, self.rotx, self.roty, self.rotz,
-              self.sx, self.sy, self.sz, self.cx, self.cy, self.cz)
-    opengles.glDrawElements(self.shape[shapeNo][2],
-                            self.shape[shapeNo][1],
-                            GL_UNSIGNED_SHORT,
-                            self.shape[shapeNo][0])
-    if tex > 0:
-      texture_off()
+    with Texture.Loader(tex, self.texcoords, GL_FLOAT):
+      transform(self.x, self.y, self.z, self.rotx, self.roty, self.rotz,
+                self.sx, self.sy, self.sz, self.cx, self.cy, self.cz)
+      opengles.glDrawElements(self.shape[shapeNo][2],
+                              self.shape[shapeNo][1],
+                              GL_UNSIGNED_SHORT,
+                              self.shape[shapeNo][0])
 
   def drawAll(self, tex=0):
     opengles.glVertexPointer(3, GL_FLOAT, 0, self.verts);
     opengles.glNormalPointer(GL_FLOAT, 0, self.norms);
-    if tex > 0:
-      texture_on(tex,self.texcoords,GL_FLOAT)
-    opengles.glDisable(GL_CULL_FACE)
-    transform(self.x, self.y, self.z, self.rotx, self.roty, self.rotz,
-              self.sx, self.sy, self.sz, self.cx, self.cy, self.cz)
-    opengles.glDrawElements(self.shape[0][2], len(self.indices),
-                            GL_UNSIGNED_SHORT, self.inds)
-    opengles.glEnable(GL_CULL_FACE)
-    if tex > 0:
-      texture_off()
+    with Texture.Loader(tex, self.texcoords):
+      opengles.glDisable(GL_CULL_FACE)
+      transform(self.x, self.y, self.z, self.rotx, self.roty, self.rotz,
+                self.sx, self.sy, self.sz, self.cx, self.cy, self.cz)
+      opengles.glDrawElements(self.shape[0][2], len(self.indices),
+                              GL_UNSIGNED_SHORT, self.inds)
+      opengles.glEnable(GL_CULL_FACE)

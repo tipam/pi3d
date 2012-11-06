@@ -1,6 +1,7 @@
 import re, os
 from pi3dCommon import *
 
+from pi3d import Texture
 from pi3d.Matrix import Matrix
 
 #########################################################################################
@@ -238,6 +239,7 @@ def loadFileEGG(self,fileName,texs):
 
 # groupDrill(l, "") # recursively break down groups - TODO this doesn't actually work properly because of split() on <Group>
 
+# TODO: this has a self paramter, it should be a method on a class.
 def draw(self, texID=None, n=None):
     texToUse = None
     if texID != None:
@@ -253,24 +255,28 @@ def draw(self, texID=None, n=None):
 
     mtrx = Matrix()
     mtrx.push()
-    transform(self.x,self.y,self.z, self.rotx,self.roty,self.rotz, self.sx,self.sy,self.sz, self.cx,self.cy,self.cz)
+    transform(self.x, self.y, self.z,
+              self.rotx, self.roty, self.rotz,
+              self.sx, self.sy, self.sz,
+              self.cx, self.cy, self.cz)
     for g in self.vGroup:
         opengles.glShadeModel(GL_SMOOTH)
         opengles.glVertexPointer( 3, GL_FLOAT, 0, self.vGroup[g]["vertices"]);
         opengles.glNormalPointer( GL_FLOAT, 0, self.vGroup[g]["normals"]);
 
-        if texToUse > 0: texture_on(texToUse, self.vGroup[g]["tex_coords"], GL_FLOAT)
-        elif self.vGroup[g]["texID"] > 0: texture_on(self.vGroup[g]["texID"], self.vGroup[g]["tex_coords"], GL_FLOAT)
+        texture = texToUse or self.vGroup[g]["texID"]
+        with Texture.Loader(texture, self.vGroup[g]["tex_coords"]):
+          #TODO enable material colours as well as textures from images
+          material = self.vGroup[g]["material"]
+          if material:
+              #opengles.glMaterialfv(GL_FRONT, GL_DIFFUSE, material);
+              opengles.glEnableClientState(GL_COLOR_ARRAY)
+              opengles.glColorPointer( 4, GL_UNSIGNED_BYTE, 0, material);
 
-        #TODO enable material colours as well as textures from images
-        if self.vGroup[g]["material"] != None:
-            #opengles.glMaterialfv(GL_FRONT, GL_DIFFUSE, self.vGroup[g]["material"]);
-            opengles.glEnableClientState(GL_COLOR_ARRAY)
-            opengles.glColorPointer( 4, GL_UNSIGNED_BYTE, 0, self.vGroup[g]["material"]);
+          opengles.glDrawElements( GL_TRIANGLES, self.vGroup[g]["trianglesLen"],
+                                   GL_UNSIGNED_SHORT, self.vGroup[g]["triangles"])
 
-        opengles.glDrawElements( GL_TRIANGLES, self.vGroup[g]["trianglesLen"], GL_UNSIGNED_SHORT, self.vGroup[g]["triangles"])
 
-        if self.vGroup[g]["texID"] > 0: texture_off()
         opengles.glShadeModel(GL_FLAT)
     mtrx.pop()
 

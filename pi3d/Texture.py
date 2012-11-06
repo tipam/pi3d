@@ -20,7 +20,7 @@ def _load_tex(fileString,flip,size,blend):
     RGBs = 'RGB'
 
   # work out if sizes are not to the power of 2 or >512
-  # TODO: why does this have to happen?
+  # TODO: why must texture sizes be a power of 2?
   xx = 0
   yy = 0
   nx, ny = ix, iy
@@ -82,3 +82,43 @@ class Textures(object):
     if Constants.VERBOSE:
       print '[Exit] Deleting textures ...'
       opengles.glDeleteTextures(self.tc, addressof(self.texs))
+
+class Loader(object):
+  ALPHA_VALUE = c_float(0.6)  # TODO: where does this come from?
+  TEXTURE_SET = False
+
+  def __init__(self, texture, coords, vtype=GL_FLOAT):
+    self.texture = texture
+    self.coords = coords
+    self.vtype = vtype
+
+  def __enter__(self):
+    if self.texture:
+      for f in [GL_TEXTURE_MIN_FILTER, GL_TEXTURE_MAG_FILTER]:
+        opengles.glTexParameterf(GL_TEXTURE_2D, f, c_float(GL_LINEAR))
+
+      opengles.glEnableClientState(GL_TEXTURE_COORD_ARRAY)
+      opengles.glTexCoordPointer(2, self.vtype, 0, self.coords)
+      opengles.glBindTexture(GL_TEXTURE_2D, self.texture.tex)
+      opengles.glEnable(GL_TEXTURE_2D)
+      if self.texture.alpha:
+        if self.texture.blend:
+          opengles.glDisable(GL_DEPTH_TEST)
+          opengles.glEnable(GL_BLEND)
+          opengles.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+        else:
+          opengles.glAlphaFunc(GL_GREATER, c_float(0.6))
+          opengles.glEnable(GL_ALPHA_TEST)
+      Loader.TEXTURE_SET = True
+
+  def __exit__(self, type, value, traceback):
+    if Loader.TEXTURE_SET:
+      opengles.glDisable(GL_TEXTURE_2D)
+      opengles.glDisable(GL_ALPHA_TEST)
+      opengles.glDisable(GL_BLEND)
+      opengles.glEnable(GL_DEPTH_TEST)
+
+      Loader.TEXTURE_SET = False
+      # This is why we have Loader.TEXTURE_SET - so that we can nest
+      # Loaders without calling the _exit__ function twice.
+

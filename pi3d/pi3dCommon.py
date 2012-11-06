@@ -73,31 +73,6 @@ def ctypeResize(array, new_size):
 def showerror():
   return opengles.glGetError()
 
-#turn texture on before drawing arrays
-def texture_on(tex, tex_coords, vtype):
-  opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, c_float(GL_LINEAR));
-  opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, c_float(GL_LINEAR));
-  opengles.glEnableClientState(GL_TEXTURE_COORD_ARRAY)
-  opengles.glTexCoordPointer(2,vtype,0,tex_coords)
-  opengles.glBindTexture(GL_TEXTURE_2D,tex.tex)
-  opengles.glEnable(GL_TEXTURE_2D)
-  if tex.alpha:
-    if tex.blend:
-      opengles.glDisable(GL_DEPTH_TEST)
-      opengles.glEnable(GL_BLEND)
-      opengles.glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA)
-    else:
-      opengles.glAlphaFunc(GL_GREATER,c_float(0.6))
-      opengles.glEnable(GL_ALPHA_TEST)
-
-#turn texture off after drawing arrays
-def texture_off():
-  opengles.glDisable(GL_TEXTURE_2D)
-  opengles.glDisable(GL_ALPHA_TEST)
-  opengles.glDisable(GL_BLEND)
-  opengles.glEnable(GL_DEPTH_TEST)
-
-
 #position, rotate and scale an object
 def transform(x,y,z,rotx,roty,rotz,sx,sy,sz,cx,cy,cz):
   opengles.glTranslatef(c_float(x-cx), c_float(y-cy), c_float(z-cz))
@@ -269,26 +244,29 @@ def drawString(font,string,x,y,z,rot,sclx,scly):
 	opengles.glEnable(GL_CULL_FACE)
 
 def rectangle(tex,x,y,w,h,r=0.0,z=-1.0):
-	opengles.glNormalPointer( GL_BYTE, 0, rect_normals);
-	opengles.glVertexPointer( 3, GL_BYTE, 0, rect_vertsTL);
-	opengles.glLoadIdentity()
-	opengles.glTranslatef(c_float(x), c_float(y), c_float(z))
-	opengles.glScalef(c_float(w), c_float(h), c_float(1))
-	if r <> 0.0: opengles.glRotatef(c_float(r),c_float(0), c_float(0), c_float(1))
-	if tex > 0: texture_on(tex,rect_tex_coords,GL_BYTE)
-	opengles.glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, rect_triangles)
-	if tex > 0: texture_off()
+  from pi3d import Texture
+
+  opengles.glNormalPointer(GL_BYTE, 0, rect_normals);
+  opengles.glVertexPointer(3, GL_BYTE, 0, rect_vertsTL);
+  opengles.glLoadIdentity()
+  opengles.glTranslatef(c_float(x), c_float(y), c_float(z))
+  opengles.glScalef(c_float(w), c_float(h), c_float(1))
+  if r:
+    opengles.glRotatef(c_float(r),c_float(0), c_float(0), c_float(1))
+  with Texture.Loader(tex,rect_tex_coords,GL_BYTE):
+    opengles.glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, rect_triangles)
 
 def sprite(tex,x,y,z=-10.0,w=1.0,h=1.0,r=0.0):
-	opengles.glNormalPointer( GL_BYTE, 0, rect_normals);
-	opengles.glVertexPointer( 3, GL_BYTE, 0, rect_vertsCT);
-	opengles.glLoadIdentity()
-	opengles.glTranslatef(c_float(x), c_float(y), c_float(z))
-	opengles.glScalef(c_float(w), c_float(h), c_float(1))
-	if r <> 0.0: opengles.glRotatef(c_float(r),c_float(0), c_float(0), c_float(1))
-	if tex > 0: texture_on(tex,rect_tex_coords,GL_BYTE)
-	opengles.glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, rect_triangles)
-	if tex > 0: texture_off()
+  from pi3d import Texture
+  opengles.glNormalPointer( GL_BYTE, 0, rect_normals);
+  opengles.glVertexPointer( 3, GL_BYTE, 0, rect_vertsCT);
+  opengles.glLoadIdentity()
+  opengles.glTranslatef(c_float(x), c_float(y), c_float(z))
+  opengles.glScalef(c_float(w), c_float(h), c_float(1))
+  if r:
+    opengles.glRotatef(c_float(r),c_float(0), c_float(0), c_float(1))
+  with Texture.Loader(tex, rect_tex_coords, GL_BYTE):
+    opengles.glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, rect_triangles)
 
 def rotateVec(rx,ry,rz,xyz):
     x,y,z = xyz[0],xyz[1],xyz[2]
@@ -437,16 +415,17 @@ def lathe(path, sides = 12, tris=False, rise = 0.0, coils = 1.0):
 	return (verts, norms, idx, tex_coords, ssize)
 
 def shape_draw(self,tex,shl=GL_UNSIGNED_SHORT):
-	    opengles.glShadeModel(GL_SMOOTH)
-	    opengles.glVertexPointer( 3, GL_FLOAT, 0, self.vertices)
-	    opengles.glNormalPointer( GL_FLOAT, 0, self.normals)
-	    if tex > 0: texture_on(tex,self.tex_coords,GL_FLOAT)
-	    mtrx =(c_float * 16)()
-	    opengles.glGetFloatv(GL_MODELVIEW_MATRIX,ctypes.byref(mtrx))
-	    transform(self.x,self.y,self.z,self.rotx,self.roty,self.rotz,self.sx,self.sy,self.sz,self.cx,self.cy,self.cz)
-	    opengles.glDrawElements( self.ttype, self.ssize, shl , self.indices)
-	    opengles.glLoadMatrixf(mtrx)
-	    if tex > 0: texture_off()
+  from pi3d import Texture
+  opengles.glShadeModel(GL_SMOOTH)
+  opengles.glVertexPointer(3, GL_FLOAT, 0, self.vertices)
+  opengles.glNormalPointer(GL_FLOAT, 0, self.normals)
+  with Texture.Loader(tex, self.tex_coords):
+    mtrx = (c_float * 16)()
+    opengles.glGetFloatv(GL_MODELVIEW_MATRIX, ctypes.byref(mtrx))
+    transform(self.x, self.y, self.z, self.rotx, self.roty, self.rotz,
+              self.sx, self.sy, self.sz, self.cx, self.cy, self.cz)
+    opengles.glDrawElements( self.ttype, self.ssize, shl , self.indices)
+    opengles.glLoadMatrixf(mtrx)
 
 def create_display(self,x=0,y=0,w=0,h=0,depth=24):
 

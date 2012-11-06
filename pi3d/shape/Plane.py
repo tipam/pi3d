@@ -1,5 +1,6 @@
 from pi3d.pi3dCommon import *
 from pi3d import Constants
+from pi3d import Texture
 from pi3d.shape.Shape import Shape
 
 class Plane(Shape):
@@ -45,12 +46,8 @@ class Plane(Shape):
   def draw(self, tex=0):
     opengles.glVertexPointer(3, GL_FLOAT, 0, self.verts);
     opengles.glNormalPointer(GL_FLOAT, 0, self.norms);
-    if tex > 0:
-      texture_on(tex, self.texcoords, GL_FLOAT)
-    transform(self.x, self.y, self.z, self.rotx, self.roty, self.rotz,
-              self.sx, self.sy, 1.0, self.cx, self.cy, self.cz)
-    opengles.glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, self.inds)
-    if tex > 0:
-      texture_off()
-
+    with Texture.Loader(tex, self.texcoords):
+      transform(self.x, self.y, self.z, self.rotx, self.roty, self.rotz,
+                self.sx, self.sy, 1.0, self.cx, self.cy, self.cz)
+      opengles.glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, self.inds)
 
