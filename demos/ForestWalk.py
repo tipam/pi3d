@@ -21,6 +21,7 @@ from pi3d.Display import Display
 from pi3d.EnvironmentCube import EnvironmentCube
 from pi3d.EnvironmentCube import loadECfiles
 from pi3d.Key import Key
+from pi3d.Matrix import Matrix
 from pi3d.Mouse import Mouse
 from pi3d.Textures import Textures
 
@@ -105,7 +106,7 @@ zm=0.0
 ym= -(mymap.calcHeight(xm,zm)+avhgt)
 
 # setup matrices
-mtrx = pi3d.matrix()
+mtrx = Matrix()
 
 # Fetch key presses
 mykeys = Key()

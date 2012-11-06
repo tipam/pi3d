@@ -20,6 +20,7 @@ from pi3d.Display import Display
 from pi3d.EnvironmentCube import EnvironmentCube
 from pi3d.Key import Key
 from pi3d.Light import Light
+from pi3d.Matrix import Matrix
 from pi3d.Mouse import Mouse
 from pi3d.Textures import Textures
 
@@ -95,7 +96,7 @@ ym= -(mymap.calcHeight(xm,zm)+avhgt)
 mykeys = Key()
 mymouse = Mouse()
 mymouse.start()
-mtrx = pi3d.matrix()
+mtrx = Matrix()
 
 omx=mymouse.x
 omy=mymouse.y

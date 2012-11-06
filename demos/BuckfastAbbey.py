@@ -21,6 +21,7 @@ from pi3d.EnvironmentCube import EnvironmentCube
 from pi3d.EnvironmentCube import loadECfiles
 from pi3d.Key import Key
 from pi3d.Light import Light
+from pi3d.Matrix import Matrix
 from pi3d.Mouse import Mouse
 from pi3d.Textures import Textures
 
@@ -65,7 +66,7 @@ ym= -avhgt
 
 #create a light
 mylight = Light(0,1,1,1,"",0,200,200,0.4,0.4,0.4)
-mtrx=pi3d.matrix()
+mtrx=Matrix()
 
 omx=mymouse.x
 omy=mymouse.y

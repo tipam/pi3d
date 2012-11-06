@@ -1,6 +1,8 @@
 import re, os
 from pi3dCommon import *
 
+from pi3d.Matrix import Matrix
+
 #########################################################################################
 #
 # this block added by paddy gaunt 15 June 2012
@@ -249,7 +251,7 @@ def draw(self, texID=None, n=None):
                 break
             i += 1
 
-    mtrx = matrix()
+    mtrx = Matrix()
     mtrx.push()
     transform(self.x,self.y,self.z, self.rotx,self.roty,self.rotz, self.sx,self.sy,self.sz, self.cx,self.cy,self.cz)
     for g in self.vGroup:
