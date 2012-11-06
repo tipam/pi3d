@@ -21,6 +21,7 @@ from pi3d.EnvironmentCube import EnvironmentCube
 from pi3d.EnvironmentCube import loadECfiles
 from pi3d.Key import Key
 from pi3d.Light import Light
+from pi3d.Mouse import Mouse
 from pi3d.Textures import Textures
 
 from pi3d.shape.Model import Model
@@ -48,7 +49,7 @@ mymodel = Model("models/Buckfast Abbey/BuckfastAbbey.egg",texs,"Abbey",0,0,0, -9
 
 # Create keyboard and mouse event objects
 mykeys = Key()
-mymouse = pi3d.mouse()
+mymouse = Mouse()
 mymouse.start()
 
 #screenshot number

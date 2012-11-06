@@ -23,6 +23,7 @@ from pi3d.EnvironmentCube import loadECfiles
 from pi3d.Fog import Fog
 from pi3d.Key import Key
 from pi3d.Light import Light
+from pi3d.Mouse import Mouse
 from pi3d.Textures import Textures
 
 from pi3d.shape.Cuboid import Cuboid
@@ -89,7 +90,7 @@ ym= -(mymap.calcHeight(xm,zm)+avhgt)
 
 # Fetch key presses
 mykeys = Key()
-mymouse = pi3d.mouse()
+mymouse = Mouse()
 mymouse.start()
 mtrx = pi3d.matrix()
 
