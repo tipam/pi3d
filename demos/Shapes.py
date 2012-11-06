@@ -17,6 +17,7 @@ import pi3d
 
 from pi3d.Cone import Cone
 from pi3d.Cylinder import Cylinder
+from pi3d.Extrude import Extrude
 from pi3d.Helix import Helix
 from pi3d.Lathe import Lathe
 from pi3d.Sphere import Sphere
@@ -39,7 +40,7 @@ mysphere = Sphere(1,24,24,0.0,"sphere",-4,2,-7)
 mytcone = TCone(0.8,0.6,1,24,"TCone", -2,2,-7)
 myhelix = Helix(0.4,0.1,12,24,1.5,3.0,"helix", 0,2,-7)
 mytube = Tube(0.4,0.1,1.5,24,"tube",2,2,-7, 30,0,0)
-myextrude = pi3d.createExtrude( ((-0.5, 1),(0.5,0),(0.5,-0.2),(-0.5,-0.3)), 0.05,"Extrude",4,2,-7)
+myextrude = Extrude( ((-0.5, 1),(0.5,0),(0.5,-0.2),(-0.5,-0.3)), 0.05,"Extrude",4,2,-7)
 
 mycone = Cone(1,2,24,"Cone",-4,-1,-7)
 mycylinder = Cylinder(.7,1.5,24,"Cyli",-2,-1,-7)
