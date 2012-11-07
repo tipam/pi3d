@@ -11,7 +11,7 @@ class Ball(object):
     self.x = x
     self.vx = vx
     self.vy = vy
-    self.mass = radius * 2
+    self.mass = radius ** 2
     self.decay = decay
 
   def hit(self, otherball):
@@ -22,30 +22,22 @@ class Ball(object):
     return Utility.sqsum(dx, dy) <= (rd * rd)
 
   def collisionBounce(self,otherball):
-    dx = self.x - otherball.x
-    dy = self.y - otherball.y
-    rd = self.radius + otherball.radius
+    # relative positions
+    dx = self.x-otherball.x
+    dy = self.y-otherball.y
+    rd = self.radius+otherball.radius
+    # check sign of a.b to see if converging
+    dotP = Utility.dotproduct(dx, dy, 0, (self.vx - otherball.vx), (self.vy - otherball.vy), 0)
+    if dx**2+dy**2 <= rd**2 and dotP < 0:
+      R = otherball.mass/self.mass #ratio of masses
+      D = dx/dy #glancing angle for equating angular momentum before and after collision
+      #three more simultaneous equations for x and y components of momentum and k.e. give:
+      delta2y = 2 * (D*self.vx + self.vy - D*otherball.vx - otherball.vy)/(1 + D*D + D*D*R + R)
+      delta2x = D * delta2y
+      delta1y = -1 * R * delta2y
+      delta1x = -1 * R * D * delta2y
 
-    if Utility.sqsum(dx, dy) <= (rd * rd):
-      cangle = math.atan2(dy, dx)
-      mag1 = Utility.magnitude(self.vx, self.vy)
-      mag2 = Utility.magnitude(otherball.vx, otherball.vy)
-      dir1 = math.atan2(self.vy, self.vx)
-      dir2 = math.atan2(otherball.vy, otherball.vx)
-      nspx1, nspy1 = Utility.from_polar_rad(dir1 - cangle, mag1)
-      nspx2, nspy2 = Utility.from_polar_rad(dir2 - cangle, mag2)
-      fspx1 = (((self.mass - otherball.mass) * nspx1 +
-                (otherball.mass * 2) * nspx2) / (self.mass + otherball.mass))
-      fspx2 = (((self.mass * 2) * nspx1 +
-                (otherball.mass - self.mass) * nspx2) /
-               (self.mass + otherball.mass))
-      fspy1 = nspy1
-      fspy2 = nspy2
-      def normal_pair(fx1, fx2):
-        x1, y1 = Utility.from_polar_rad(cangle, fx1)
-        x2, y2 = Utility.from_polar_rad(cangle + math.pi / 2, fx2)
-        return x1 + x2, y1 + y2
-
-      self.vx, self.vy = normal_pair(fspx1, fspy1)
-      otherball.vx, otherball.vy = normal_pair(fspx2, fspy2)
-
+      self.vx += delta1x
+      self.vy += delta1y
+      otherball.vx += delta2x
+      otherball.vy += delta2y
