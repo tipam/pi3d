@@ -1,5 +1,7 @@
 import math
 
+import pi3d
+
 from pi3d.pi3dCommon import *
 from pi3d import Constants
 from pi3d.shape.Shape import Shape
@@ -16,9 +18,9 @@ class Sphere(Shape):
 
     path = []
     st = (math.pi * (1.0 - hemi)) / slices
-    for r in range(0,slices+1):
-        path.append((radius * math.sin(r * st),
-                     radius * math.cos(r * st)))
+    for r in range(slices + 1):
+      x, y = pi3d.from_polar_rad(r * st, radius)
+      path.append((y, x))  # TODO: why is the reversal here?
 
     self.radius = radius
     self.slices = slices

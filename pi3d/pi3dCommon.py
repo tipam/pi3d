@@ -71,13 +71,26 @@ def texture_min_mag():
   for f in [GL_TEXTURE_MIN_FILTER, GL_TEXTURE_MAG_FILTER]:
     opengles.glTexParameterf(GL_TEXTURE_2D, f, c_float(GL_LINEAR))
 
+def sqsum(*args):
+  return sum(x * x for x in args)
+
+def magnitude(*args):
+  return math.sqrt(sqsum(*args))
+
+def from_polar(direction=0.0, magnitude=1.0):
+  return from_polar_rad(math.radians(direction), magnitude)
+
+def from_polar_rad(direction=0.0, magnitude=1.0):
+  return magnitude * math.cos(direction), magnitude * math.sin(direction)
+
 def rotatef(angle, x, y, z):
-  opengles.glRotatef(c_float(angle), c_float(x), c_float(y), c_float(z))
+  if angle:
+    opengles.glRotatef(c_float(angle), c_float(x), c_float(y), c_float(z))
 
 def translatef(x, y, z):
   opengles.glTranslatef(c_float(x), c_float(y), c_float(z))
 
-def scalef(sx,sy,sz):
+def scalef(sx, sy, sz):
   opengles.glScalef(c_float(sx), c_float(sy), c_float(sz))
 
 def load_identity():
@@ -86,31 +99,25 @@ def load_identity():
 #position, rotate and scale an object
 def transform(x, y, z, rotx, roty, rotz, sx, sy, sz, cx, cy, cz):
   translatef(x - cx, y - cy, z - cz)
-  if rotz:
-    rotatef(rotz, 0, 0, 1)
-  if roty:
-    rotatef(roty, 0, 1, 0)
-  if rotx:
-    rotatef(rotx, 1, 0, 0)
+  rotatef(rotz, 0, 0, 1)
+  rotatef(roty, 0, 1, 0)
+  rotatef(rotx, 1, 0, 0)
   scalef(sx, sy, sz)
   translatef(cx, cy, cz)
 
 def rotate(rotx, roty, rotz):
-  if rotz:
-    rotatef(rotz, 0, 0, 1)
-  if roty:
-    rotatef(roty, 0, 1, 0)
-  if rotx:
-    rotatef(rotx, 1, 0, 0)
+  rotatef(rotz, 0, 0, 1)
+  rotatef(roty, 0, 1, 0)
+  rotatef(rotx, 1, 0, 0)
 
-def angleVecs(x1,y1,x2,y2,x3,y3):
-  a=x2-x1
-  b=y2-y1
-  c=x2-x3
-  d=y2-y3
+def angleVecs(x1, y1, x2, y2, x3, y3):
+  a = x2 - x1
+  b = y2 - y1
+  c = x2 - x3
+  d = y2 - y3
 
-  sqab=math.sqrt(a * a + b * b)
-  sqcd=math.sqrt(c * c + d * d)
+  sqab = magnitude(a, b)
+  sqcd = magnitude(c, d)
   l = sqab * sqcd
   if l==0.0:
     l=0.0001
@@ -130,7 +137,7 @@ def angleVecs(x1,y1,x2,y2,x3,y3):
 def dot(x1, y1, x2, y2):
   a = x2 - x1
   b = y2 - y1
-  s = math.sqrt(a * a + b * b)
+  s = magnitude(a, b)
   if s > 0.0:
     return a/s, b/s
   else:
@@ -239,20 +246,19 @@ def rotateVecY(r,x,y,z):
   xx = z*sa+x*ca
   return xx,y,zz
 
-
 def rotateVecZ(r,x,y,z):
-	sa = math.sin(math.radians(r))
-	ca = math.cos(math.radians(r))
-	xx = x*ca-y*sa
-	yy = x*sa+y*ca
-	return xx,yy,z
+  sa = math.sin(math.radians(r))
+  ca = math.cos(math.radians(r))
+  xx = x*ca-y*sa
+  yy = x*sa+y*ca
+  return xx,yy,z
 
 def calcNormal(x1,y1,z1,x2,y2,z2):
-	xd = x2-x1
-	yd = y2-y1
-	zd = z2-z1
-	sqt = 1 / math.sqrt(xd^2+yd^2+zd^2)
-	return (xd*sqt,yd*sqt,zd*sqt)
+  xd = x2-x1
+  yd = y2-y1
+  zd = z2-z1
+  sqt = 1 / magnitude(xd, yd, zd)
+  return (xd * sqt, yd * sqt, zd * sqt)
 
 def lathe(path, sides = 12, tris=False, rise = 0.0, coils = 1.0):
 	s = len(path)

@@ -1,10 +1,6 @@
 import math
 
-def sqsum(x, y):
-  return x * x + y * y
-
-def distance(x, y):
-  return math.sqrt(sqsum(x, y))
+import pi3d
 
 class Ball(object):
   def __init__(self, radius, x, y, vx=0.0, vy=0.0, decay=0.001):
@@ -22,23 +18,21 @@ class Ball(object):
     dx = (self.x + self.vx) - (otherball.x + otherball.vx)
     dy = (self.y + self.vy) - (otherball.y + otherball.vy)
     rd = self.radius + otherball.radius
-    return sqsum(dx, dy) <= (rd ** 2)
+    return pi3d.sqsum(dx, dy) <= (rd * rd)
 
   def collisionBounce(self,otherball):
     dx = self.x - otherball.x
     dy = self.y - otherball.y
     rd = self.radius + otherball.radius
 
-    if sqsum(dx, dy) <= (rd ** 2):
+    if pi3d.sqsum(dx, dy) <= (rd * rd):
       cangle = math.atan2(dy, dx)
-      mag1 = distance(self.vx, self.vy)
-      mag2 = distance(otherball.vx, otherball.vy)
+      mag1 = pi3d.magnitude(self.vx, self.vy)
+      mag2 = pi3d.magnitude(otherball.vx, otherball.vy)
       dir1 = math.atan2(self.vy, self.vx)
       dir2 = math.atan2(otherball.vy, otherball.vx)
-      nspx1 = mag1 * math.cos(dir1 - cangle)
-      nspy1 = mag1 * math.sin(dir1 - cangle)
-      nspx2 = mag2 * math.cos(dir2 - cangle)
-      nspy2 = mag2 * math.sin(dir2 - cangle)
+      nspx1, nspy1 = pi3d.from_polar_rad(dir1 - cangle, mag1)
+      nspx2, nspy2 = pi3d.from_polar_rad(dir2 - cangle, mag2)
       fspx1 = (((self.mass - otherball.mass) * nspx1 +
                 (otherball.mass * 2) * nspx2) / (self.mass + otherball.mass))
       fspx2 = (((self.mass * 2) * nspx1 +
@@ -46,12 +40,11 @@ class Ball(object):
                (self.mass + otherball.mass))
       fspy1 = nspy1
       fspy2 = nspy2
-      self.vx = (math.cos(cangle) * fspx1 +
-                 math.cos(cangle + math.pi * .5) * fspy1)
-      self.vy = (math.sin(cangle) * fspx1 +
-                 math.sin(cangle + math.pi * .5) * fspy1)
-      otherball.vx = (math.cos(cangle) * fspx2 +
-                      math.cos(cangle + math.pi * .5) * fspy2)
-      otherball.vy = (math.sin(cangle) * fspx2 +
-                      math.sin(cangle + math.pi * .5) * fspy2)
+      def normal_pair(fx1, fx2):
+        x1, y1 = pi3d.from_polar_rad(cangle, fx1)
+        x2, y2 = pi3d.from_polar_rad(cangle + math.pi / 2, fx2)
+        return x1 + x2, y1 + y2
+
+      self.vx, self.vy = normal_pair(fspx1, fspy1)
+      otherball.vx, otherball.vy = normal_pair(fspx2, fspy2)
 

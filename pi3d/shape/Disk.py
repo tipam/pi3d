@@ -17,16 +17,17 @@ class Disk(Shape):
 
 
     st = math.pi/slices
-    addVertex(self.verts,x,y,z,self.norms,0,1,0,self.texcoords,0.5,0.5)
-    for r in range(0,sides+1):
-      ca=math.sin(r*st)
-      sa=math.cos(r*st)
-      addVertex(self.verts, x + radius * ca, y, z + radius * sa,
+    addVertex(self.verts, x, y, z, self.norms,
+              0, 1, 0, self.texcoords, 0.5, 0.5)
+    for r in range(sides+1):
+      xa, ya = pi3d.from_polar_rad(r * st)
+      addVertex(self.verts, x + radius * ya, y, z + radius * xa,
                 self.norms, 0, 1, 0,
-                self.texcoords, ca * 0.5 + 0.5, sa * 0.5 + 0.5)
+                self.texcoords, ya * 0.5 + 0.5, xa * 0.5 + 0.5)
+      # TODO: why the reversal?
 
     for r in range(0,sides):
-      addTri(self.inds,0,r+1,r+2)
+      addTri(self.inds, 0, r + 1, r + 2)
 
     self.vertices = c_floats(self.verts);
     self.indices = c_shorts(self.inds);
