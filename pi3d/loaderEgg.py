@@ -283,7 +283,7 @@ def draw(self, texID=None, n=None):
     for c in self.childModel:
         relx, rely, relz = c.x, c.y, c.z
         relrotx, relroty, relrotz = c.rotx, c.roty, c.rotz
-        rval = rotateVec(self.rotx, self.roty, self.rotz, (c.x, c.y, c.z))
+        rval = rotate_vec(self.rotx, self.roty, self.rotz, (c.x, c.y, c.z))
         c.x, c.y, c.z = self.x + rval[0], self.y + rval[1], self.z + rval[2]
         c.rotx, c.roty, c.rotz = self.rotx + c.rotx, self.roty + c.roty, self.rotz + c.rotz
         c.draw() #should texture override be passed down to children?

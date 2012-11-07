@@ -42,11 +42,11 @@ class MergeShape(Shape):
       def rotate(array):
         vec = shape.vertices[v:v + 3]
         if rz:
-          vec = rotateVecZ(rz, *vec)
+          vec = rotate_vec_z(rz, *vec)
         if rx:
-          vec = rotateVecX(rx, *vec)
+          vec = rotate_vec_x(rx, *vec)
         if ry:
-          vec = rotateVecY(ry, *vec)
+          vec = rotate_vec_y(ry, *vec)
         return vec
 
       # Scale, offset and store vertices

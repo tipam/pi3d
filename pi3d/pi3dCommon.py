@@ -96,7 +96,7 @@ def scalef(sx, sy, sz):
 def load_identity():
   opengles.glLoadIdentity()
 
-#position, rotate and scale an object
+# position, rotate and scale an object
 def transform(x, y, z, rotx, roty, rotz, sx, sy, sz, cx, cy, cz):
   translatef(x - cx, y - cy, z - cz)
 
@@ -118,122 +118,115 @@ def normalize_vector(begin, end):
   mag = magnitude(*diff)
   return [(x / mag if mag > 0.0 else 0.0) for x in diff]
 
-def intersectTriangle(v1,v2,v3,pos):
-	#Function calculates the y intersection of a point on a triangle
+def intersect_triangle(v1, v2, v3, pos):
+  #Function calculates the y intersection of a point on a triangle
 
-	#Z order triangle
-	if v1[2]>v2[2]:
-	    v=v1
-	    v1=v2
-	    v2=v
-	if v1[2]>v3[2]:
-	    v=v1
-	    v1=v3
-	    v3=v
-	if v2[2]>v3[2]:
-	    v=v2
-	    v2=v3
-	    v3=v
+  #Z order triangle
+  if v1[2] > v2[2]:
+    v1, v2 = v2, v1
 
-	#print "pos:",pos[0],pos[2]
-	#print "v1:",v1[0],v1[1],v1[2]
-	#print "v2:",v2[0],v2[1],v2[2]
-	#print "v3:",v3[0],v3[1],v3[2]
+  if v1[2] > v3[2]:
+    v1, v3 = v3, v1
 
-	if pos[2]>v2[2]:
-	    #test bottom half of triangle
-	    if pos[2]>v3[2]:
-		#print "z below triangle"
-		return -100000  # point completely out
-	    za = (pos[2]-v1[2])/(v3[2]-v1[2])
-	    dxa = v1[0]+(v3[0]-v1[0])*za
-	    dya = v1[1]+(v3[1]-v1[1])*za
+  if v2[2] > v3[2]:
+    v2, v3 = v3, v2
 
-	    zb = (v3[2]-pos[2])/(v3[2]-v2[2])
-	    dxb = v3[0]-(v3[0]-v2[0])*zb
-	    dyb = v3[1]-(v3[1]-v2[1])*zb
-	    if (pos[0]<dxa and pos[0]<dxb) or (pos[0]>dxa and pos[0]>dxb):
-		#print "outside of bottom triangle range"
-		return -100000
-	else:
-	    #test top half of triangle
-	    if pos[2]<v1[2]:
-		#print "z above triangle",pos[2],v1[2]
-		return -100000  # point completely out
-	    za = (pos[2]-v1[2])/(v3[2]-v1[2])
-	    dxa = v1[0]+(v3[0]-v1[0])*za
-	    dya = v1[1]+(v3[1]-v1[1])*za
+  if pos[2] > v2[2]:
+    #test bottom half of triangle
+    if pos[2] > v3[2]:
+      #print "z below triangle"
+      return -100000  # point completely out
 
-	    zb = (v2[2]-pos[2])/((v2[2]+0.00001)-v1[2])  #get rid of FP error!
-	    dxb = v2[0]-(v2[0]-v1[0])*zb
-	    dyb = v2[1]-(v2[1]-v1[1])*zb
-	    if (pos[0]<dxa and pos[0]<dxb) or (pos[0]>dxa and pos[0]>dxb):
-		#print "outside of top triangle range"
-		return -100000
+    za = (pos[2] - v1[2]) / (v3[2] - v1[2])
+    dxa = v1[0] + (v3[0] - v1[0]) * za
+    dya = v1[1] + (v3[1] - v1[1]) * za
 
-	#return resultant intersecting height
-	return dya+(dyb-dya)*((pos[0]-dxa)/(dxb-dxa))
+    zb = (v3[2] - pos[2]) / (v3[2] - v2[2])
+    dxb = v3[0] - (v3[0] - v2[0]) * zb
+    dyb = v3[1] - (v3[1] - v2[1]) * zb
+    if (pos[0] < dxa and pos[0] < dxb) or (pos[0] > dxa and pos[0] > dxb):
+      #print "outside of bottom triangle range"
+      return -100000
+  else:
+    #test top half of triangle
+    if pos[2] < v1[2]:
+        #print "z above triangle",pos[2],v1[2]
+        return -100000  # point completely out
+    za = (pos[2] - v1[2]) / (v3[2] - v1[2])
+    dxa = v1[0] + (v3[0] - v1[0]) * za
+    dya = v1[1] + (v3[1] - v1[1]) * za
 
-def addVertex(v,x,y,z,n,nx,ny,nz,t,tx,ty):
+    zb = (v2[2] - pos[2]) / ((v2[2] + 0.00001) - v1[2])  #get rid of FP error!
+    dxb = v2[0] - (v2[0] - v1[0]) * zb
+    dyb = v2[1] - (v2[1] - v1[1]) * zb
+    if (pos[0] < dxa and pos[0] < dxb) or (pos[0] > dxa and pos[0] > dxb):
+      #print "outside of top triangle range"
+      return -100000
+
+  #return resultant intersecting height
+  return dya + (dyb - dya) * ((pos[0] - dxa)/(dxb - dxa))
+
+def rotate_vec(rx, ry, rz, xyz):
+  x, y, z = xyz
+  if rx:
+    ca, sa = from_polar(rx)
+    yy = y * ca-z * sa
+    z = y * sa+z * ca
+    y = yy
+
+  if ry:
+    ca, sa = from_polar(ry)
+    zz = z * ca - x * sa
+    x = z * sa + x * ca
+    z = zz
+
+  if rz:
+    ca, sa = from_polar(rz)
+    xx = x * ca - y * sa
+    y = x * sa + y * ca
+    x = xx
+
+  return x, y, z
+
+def rotate_vec_x(r, x, y, z):
+  ca, sa = from_polar(r)
+  return x, y * ca - z * sa, y * sa + z * ca
+
+def rotate_vec_y(r, x, y, z):
+  ca, sa = from_polar(r)
+  return z * sa + x * ca, y, z * ca - x * sa
+
+def rotate_vec_z(r,x,y,z):
+  ca, sa = from_polar(r)
+  return x * ca - y * sa, x * sa + y * ca, z
+
+# TODO: should be a method on Shape.
+def addVertex(v, x, y, z, n, nx, ny, nz, t, tx, ty):
 # add vertex,normal and tex_coords ...
   v.extend([x, y, z])
   n.extend([nx, ny, nz])
   t.extend([tx, ty])
 
-def addTri(v,x,y,z):
+# TODO: should be a method on Shape.
+def addTri(v, x, y, z):
 # add triangle refs.
   v.extend([x, y, z])
 
-def rotateVec(rx,ry,rz,xyz):
-    x,y,z = xyz[0],xyz[1],xyz[2]
-    if rx<>0.0:
-	sa = math.sin(math.radians(rx))
-	ca = math.cos(math.radians(rx))
-	yy = y*ca-z*sa
-	z = y*sa+z*ca
-	y = yy
-    if ry<>0.0:
-	sa = math.sin(math.radians(ry))
-	ca = math.cos(math.radians(ry))
-	zz = z*ca-x*sa
-	x = z*sa+x*ca
-	z = zz
-    if rz<>0.0:
-	sa = math.sin(math.radians(rz))
-	ca = math.cos(math.radians(rz))
-	xx = x*ca-y*sa
-	y = x*sa+y*ca
-	x = xx
-    return (x,y,z)
+# TODO: Should be a method on shape.
+def shape_draw(self, tex, shl=GL_UNSIGNED_SHORT):
+  from pi3d import Texture
+  opengles.glShadeModel(GL_SMOOTH)
+  opengles.glVertexPointer(3, GL_FLOAT, 0, self.vertices)
+  opengles.glNormalPointer(GL_FLOAT, 0, self.normals)
+  with Texture.Loader(tex, self.tex_coords):
+    mtrx = (c_float * 16)()
+    opengles.glGetFloatv(GL_MODELVIEW_MATRIX, ctypes.byref(mtrx))
+    transform(self.x, self.y, self.z, self.rotx, self.roty, self.rotz,
+              self.sx, self.sy, self.sz, self.cx, self.cy, self.cz)
+    opengles.glDrawElements( self.ttype, self.ssize, shl , self.indices)
+    opengles.glLoadMatrixf(mtrx)
 
-def rotateVecX(r, x, y, z):
-  sa = math.sin(math.radians(r))
-  ca = math.cos(math.radians(r))
-  yy = y * ca - z * sa
-  zz = y * sa + z * ca
-  return x, yy, zz
-
-def rotateVecY(r,x,y,z):
-  sa = math.sin(math.radians(r))
-  ca = math.cos(math.radians(r))
-  zz = z*ca-x*sa
-  xx = z*sa+x*ca
-  return xx,y,zz
-
-def rotateVecZ(r,x,y,z):
-  sa = math.sin(math.radians(r))
-  ca = math.cos(math.radians(r))
-  xx = x*ca-y*sa
-  yy = x*sa+y*ca
-  return xx,yy,z
-
-def calcNormal(x1,y1,z1,x2,y2,z2):
-  xd = x2-x1
-  yd = y2-y1
-  zd = z2-z1
-  sqt = 1 / magnitude(xd, yd, zd)
-  return (xd * sqt, yd * sqt, zd * sqt)
-
+# Should be a function in shape.
 def lathe(path, sides = 12, tris = False, rise = 0.0, coils = 1.0):
   s = len(path)
   rl = int(sides * coils)
@@ -312,20 +305,6 @@ def lathe(path, sides = 12, tris = False, rise = 0.0, coils = 1.0):
     print ssize, ss
   return (verts, norms, idx, tex_coords, ssize)
 
-# TODO: contains a self argument, should probably be a class method.
-def shape_draw(self, tex, shl=GL_UNSIGNED_SHORT):
-  from pi3d import Texture
-  opengles.glShadeModel(GL_SMOOTH)
-  opengles.glVertexPointer(3, GL_FLOAT, 0, self.vertices)
-  opengles.glNormalPointer(GL_FLOAT, 0, self.normals)
-  with Texture.Loader(tex, self.tex_coords):
-    mtrx = (c_float * 16)()
-    opengles.glGetFloatv(GL_MODELVIEW_MATRIX, ctypes.byref(mtrx))
-    transform(self.x, self.y, self.z, self.rotx, self.roty, self.rotz,
-              self.sx, self.sy, self.sz, self.cx, self.cy, self.cz)
-    opengles.glDrawElements( self.ttype, self.ssize, shl , self.indices)
-    opengles.glLoadMatrixf(mtrx)
-
 # TODO: Nothing below this line is ever actually called.
 
 def ctype_resize(array, new_size):
@@ -338,7 +317,7 @@ def showerror():
 def limit(x, below, above):
   return max(min(x, above), below)
 
-def angleVecs(x1, y1, x2, y2, x3, y3):
+def angle_vecs(x1, y1, x2, y2, x3, y3):
   a = x2 - x1
   b = y2 - y1
   c = x2 - x3
@@ -361,3 +340,11 @@ def angleVecs(x1, y1, x2, y2, x3, y3):
     return math.pi * 2 - angle
   else:
     return angle
+
+def calc_normal(x1, y1, z1, x2, y2, z2):
+  dx = x2 - x1
+  dy = y2 - y1
+  dz = z2 - z1
+  mag = magnitude(dx, dy, dz)
+  return (dx / mag, dy / mag, dz / mag)
+

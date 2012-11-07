@@ -120,16 +120,16 @@ class ElevationMap(Shape):
     #x = wh-math.floor(x+0.5)/ws
     #z = hh-math.floor(z+0.5)/hs
 
-    ih = intersectTriangle((x, self.pixels[x, z] * ht, z),
-                           (x + 1, self.pixels[x + 1, z] * ht, z),
-                           (x, self.pixels[x, z + 1] * ht, z + 1),
-                           (px, 0, pz))
-    if ih == -100000:
-      ih = intersectTriangle((x + 1, self.pixels[x + 1, z + 1] * ht, z + 1),
-                             (x + 1, self.pixels[x + 1, z] * ht, z),
-                             (x, self.pixels[x, z + 1] * ht, z + 1),
-                             (px,0,pz))
-    if ih == -100000:
+    ih = intersect_triangle((x, self.pixels[x, z] * ht, z),
+                            (x + 1, self.pixels[x + 1, z] * ht, z),
+                            (x, self.pixels[x, z + 1] * ht, z + 1),
+                            (px, 0, pz))
+    if ih == -100000:  # TODO: magic number
+      ih = intersect_triangle((x + 1, self.pixels[x + 1, z + 1] * ht, z + 1),
+                              (x + 1, self.pixels[x + 1, z] * ht, z),
+                              (x, self.pixels[x, z + 1] * ht, z + 1),
+                              (px, 0, pz))
+    if ih == -100000:  # TODO: magic number
       ih = 0
 
     return ih
