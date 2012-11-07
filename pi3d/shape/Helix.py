@@ -13,13 +13,13 @@ class Helix(Shape):
       print "Creating Helix ...", radius, thickness, ringrots, sides
 
     path = []
-    st = (math.pi*2)/ringrots
+    st = (math.pi * 2) / ringrots
     hr = rise * 0.5
-    for r in range(0,ringrots+1):
+    for r in range(ringrots + 1):
       path.append((radius + thickness * math.sin(r * st),
                    thickness * math.cos(r * st) - hr))
       if Constants.VERBOSE:
-        print "path:",path[r][0], path[r][1]
+        print "path:", path[r][0], path[r][1]
 
     self.radius = radius
     self.thickness = thickness
@@ -27,7 +27,7 @@ class Helix(Shape):
     self.sides = sides
     self.ttype = GL_TRIANGLES
 
-    results = lathe(path, sides, True, rise, loops)
+    results = self.lathe(path, rise=rise, loops=loops)
 
     self.vertices = c_floats(results[0])
     self.normals = c_floats(results[1])

@@ -3,30 +3,33 @@ from pi3d import Constants
 from pi3d.shape.Shape import Shape
 
 class Disk(Shape):
-  def __init__(self,radius=1,sides=12,name="", x=0.0,y=0.0,z=0.0, rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0):
-    super(Disk, self).__init__(name, x,y,z, rx,ry,rz, sx,sy,sz, cx,cy,cz)
+  def __init__(self, radius=1, sides=12, name="", x=0.0, y=0.0, z=0.0,
+               rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0,
+               cx=0.0, cy=0.0, cz=0.0):
+    super(Disk, self).__init__(name, x, y, z, rx, ry, rz, sx, sy, sz,
+                               cx, cy, cz)
 
-    print "Creating disk ..."
+    if Constants.VERBOSE:
+      print "Creating disk ..."
 
-    self.verts=[]
-    self.norms=[]
-    self.inds=[]
-    self.texcoords=[]
+    self.verts = []
+    self.norms = []
+    self.inds = []
+    self.texcoords = []
     self.ttype = GL_TRIANGLES
     self.sides = sides
 
-
-    st = math.pi/slices
+    st = math.pi / slices
     addVertex(self.verts, x, y, z, self.norms,
               0, 1, 0, self.texcoords, 0.5, 0.5)
     for r in range(sides+1):
-      xa, ya = pi3d.from_polar_rad(r * st)
-      addVertex(self.verts, x + radius * ya, y, z + radius * xa,
+      ca, sa = pi3d.from_polar_rad(r * st)
+      addVertex(self.verts, x + radius * sa, y, z + radius * ca,
                 self.norms, 0, 1, 0,
-                self.texcoords, ya * 0.5 + 0.5, xa * 0.5 + 0.5)
+                self.texcoords, sa * 0.5 + 0.5, ca * 0.5 + 0.5)
       # TODO: why the reversal?
 
-    for r in range(0,sides):
+    for r in range(sides):
       addTri(self.inds, 0, r + 1, r + 2)
 
     self.vertices = c_floats(self.verts);

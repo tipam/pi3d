@@ -28,7 +28,7 @@ class Sphere(Shape):
     self.hemi = hemi
     self.ttype = GL_TRIANGLES
 
-    results = lathe(path, sides, True)
+    results = self.lathe(path)
 
     self.vertices = c_floats(results[0])
     self.normals = c_floats(results[1])

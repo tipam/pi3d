@@ -64,3 +64,81 @@ class Shape(object):
   def rotateIncZ(self,v):
     self.rotz += v
 
+  def lathe(self, path, rise=0.0, loops=1.0, tris=True):
+    s = len(path)
+    rl = int(self.sides * loops)
+    if tris:
+      ssize = rl * 6 * (s - 1)
+    else:
+      ssize = rl * 2 * (s - 1) + (s * 2) - 2
+
+    pn = 0
+    pp = 0
+    tcx = 1.0 / self.sides
+    pr = (math.pi / self.sides) * 2
+    rdiv = rise / rl
+    ss = 0
+
+    # Find largest and smallest y of the path used for stretching the texture over
+    p = [i[1] for i in path]
+    miny = min(*p)
+    maxy = max(*p)
+
+    verts = []
+    norms = []
+    idx = []
+    tex_coords = []
+
+    opx = path[0][0]
+    opy = path[0][1]
+
+    for p in range(s):
+      px = path[p][0]
+      py = path[p][1]
+
+      tcy = 1.0 - ((py - miny) / (maxy - miny))
+
+      #normal between path points
+      dx, dy = normalize_vector((opx, opy), (px, py))
+
+      for r in range (0, rl):
+        cosr, sinr = from_polar_rad(pr * r)
+        # TODO: why the reversal?
+
+        verts.extend([px * sinr, py, px * cosr])
+        norms.extend([-sinr * dy, dx, -cosr * dy])
+        tex_coords.extend([tcx * r, tcy])
+        py += rdiv
+
+      #last path profile (tidies texture coords)
+      verts.extend([0, py, px])
+      norms.extend([0, dx, -dy])
+      tex_coords.extend([1.0, tcy])
+
+      if p < s-1:
+        if tris:
+          # Create indices for GL_TRIANGLES
+          pn += (rl + 1)
+          for r in range(rl):
+            idx.extend([pp + r + 1, pp + r,
+                        pn + r, pn + r,
+                        pn + r + 1, pp + r + 1])
+            ss += 6
+          pp += (rl + 1)
+        else:
+          #Create indices for GL_TRIANGLE_STRIP
+          pn += (rl + 1)
+          for r in range(rl):
+            idx.extend([pp + r, pn + r])
+            ss += 2
+          idx.extend([pp + self.sides, pn + self.sides])
+          ss += 2
+          pp += (rl + 1)
+
+      opx = px
+      opy = py
+
+    if Constants.VERBOSE:
+      print ssize, ss
+
+    return (verts, norms, idx, tex_coords, ssize)
