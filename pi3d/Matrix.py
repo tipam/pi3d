@@ -1,6 +1,5 @@
-import pi3d
-
 from pi3d import *
+from pi3d import Utility
 
 class Matrix(object):
   def __init__(self):
@@ -8,7 +7,7 @@ class Matrix(object):
     self.mc = 0
 
   def identity(self):
-    pi3d.load_identity()
+    Utility.load_identity()
     self.mc = 0
 
   def push(self):
@@ -24,17 +23,17 @@ class Matrix(object):
 
   def translate(self,x,y,z):
     # TODO: get rid of this.
-    pi3d.translatef(x, y, z)
+    Utility.translatef(x, y, z)
 
   def rotate(self, rx, ry, rz):
     if rz:
-      pi3d.rotatef(rz, 0, 0, 1)
+      Utility.rotatef(rz, 0, 0, 1)
     if rx:
-      pi3d.rotatef(rx, 1, 0, 0)
+      Utility.rotatef(rx, 1, 0, 0)
     if ry:
-      pi3d.rotatef(ry, 0, 1, 0)
+      Utility.rotatef(ry, 0, 1, 0)
 
   def scale(self, sx, sy, sz):
     # TODO: get rid of this.
-    pi3d.scalef(sx, sy, sz)
+    Utility.scalef(sx, sy, sz)
 

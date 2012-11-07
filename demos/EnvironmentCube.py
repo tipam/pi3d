@@ -13,8 +13,7 @@
 # before running this example
 #
 
-import pi3d
-
+from pi3d import Utility
 from pi3d.Display import Display
 from pi3d.EnvironmentCube import EnvironmentCube
 from pi3d.EnvironmentCube import loadECfiles
@@ -63,7 +62,7 @@ while 1:
     mtrx.identity()
     mtrx.rotate(tilt, 0, 0)
     mtrx.rotate(0, rot, 0)
-    #pi3d.translatef(xm, ym, zm)
+    #Utility.translatef(xm, ym, zm)
 
     myecube.draw(ectex, 0.0, 0.0, 0.0)
 

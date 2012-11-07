@@ -13,7 +13,7 @@
 # before running this example
 #
 
-import pi3d,math,random
+import math, random
 
 from pi3d.ClipPlane import ClipPlane
 from pi3d.Display import Display

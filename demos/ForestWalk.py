@@ -15,7 +15,7 @@
 # before running this example
 #
 
-import pi3d,math,random
+import math,random
 
 from pi3d.Display import Display
 from pi3d.EnvironmentCube import EnvironmentCube

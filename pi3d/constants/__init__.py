@@ -10,7 +10,7 @@ Updates available from www.github.com/rec/pi3d
 Screen size %(width)d, %(height)d.
 """
 
-VERBOSE = True
+VERBOSE = False
 
 # Pick up our constants extracted from the header files with prepare_constants.py
 from pi3d.constants.egl import *

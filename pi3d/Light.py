@@ -1,8 +1,7 @@
 import ctypes
 
-import pi3d
-
 from pi3d import *
+from pi3d import Utility
 
 class Light(object):
   def __init__(self, no=0, red=1.0, grn=1.0, blu=1.0, name="",
@@ -33,7 +32,7 @@ class Light(object):
   def position(self, x, y, z):
     mtrx = (ctypes.c_float * 16)()
     opengles.glGetFloatv(GL_MODELVIEW_MATRIX, ctypes.byref(mtrx))
-    pi3d.load_identity()
+    Utility.load_identity()
     self.xyz = c_floats((x, y, z ,1))
     opengles.glLightfv(self.no, GL_POSITION, self.xyz)
     opengles.glLoadMatrixf(mtrx)

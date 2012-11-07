@@ -17,7 +17,7 @@
 # this means that sprites can be drawn at pixel resolution
 # which is more common for 2D.  Also demonstrates a mock title bar.
 
-import pi3d, sys, random
+import sys, random
 
 from pi3d import Draw
 

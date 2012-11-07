@@ -15,9 +15,7 @@
 # Rasperry rain demonstrates pi3d sprites over the desktop.
 # The sprites make use of the z value in a perspective view
 
-import time, random
-
-import pi3d
+import random, time
 
 from pi3d import Draw
 

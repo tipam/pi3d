@@ -1,9 +1,8 @@
 import os.path
 from ctypes import c_float
 
-import pi3d
-
 from pi3d import *
+from pi3d import Utility
 
 CUBE_PARTS = ('top', 'left', 'front', 'right', 'back', 'bottom')
 
@@ -76,8 +75,8 @@ class EnvironmentCube(object):
   def draw(self,tex, x, y, z):
     mtrx = (ctypes.c_float*16)()
     opengles.glGetFloatv(GL_MODELVIEW_MATRIX,ctypes.byref(mtrx))
-    pi3d.translatef(-x, -y, -z)
-    texture_min_mag();
+    Utility.translatef(-x, -y, -z)
+    Utility.texture_min_mag();
     opengles.glVertexPointer(3, GL_FLOAT, 0, self.vertices)
     opengles.glNormalPointer(GL_FLOAT, 0, self.normals)
     opengles.glEnableClientState(GL_TEXTURE_COORD_ARRAY)
@@ -89,23 +88,23 @@ class EnvironmentCube(object):
         opengles.glBindTexture(GL_TEXTURE_2D,tex[0].tex)
         opengles.glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT , self.indtop)
 
-        texture_min_mag()
+        Utility.texture_min_mag()
         opengles.glBindTexture(GL_TEXTURE_2D,tex[1].tex)
         opengles.glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT , self.indleft)
 
-        texture_min_mag()
+        Utility.texture_min_mag()
         opengles.glBindTexture(GL_TEXTURE_2D,tex[2].tex)
         opengles.glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT , self.indfront)
 
-        texture_min_mag()
+        Utility.texture_min_mag()
         opengles.glBindTexture(GL_TEXTURE_2D,tex[3].tex)
         opengles.glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT , self.indright)
 
-        texture_min_mag()
+        Utility.texture_min_mag()
         opengles.glBindTexture(GL_TEXTURE_2D,tex[4].tex)
         opengles.glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT , self.indback)
         if tex[5] >0:
-          texture_min_mag()
+          Utility.texture_min_mag()
           opengles.glBindTexture(GL_TEXTURE_2D,tex[5].tex)
           opengles.glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT , self.indbot)
         else:

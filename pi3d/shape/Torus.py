@@ -1,6 +1,5 @@
-import pi3d
-
 from pi3d import *
+from pi3d import Utility
 from pi3d.shape.Shape import Shape
 
 class Torus(Shape):
@@ -16,7 +15,7 @@ class Torus(Shape):
     path = []
     st = (math.pi * 2)/ringrots
     for r in range(ringrots + 1):
-      x, y = pi3d.from_polar_rad(r * st, thickness)
+      x, y = Utility.from_polar_rad(r * st, thickness)
       path.append((radius + y, x))  # TODO: why the reversal?
 
     self.radius = radius

@@ -13,7 +13,7 @@
 # before running this example
 #
 
-import pi3d, random, time
+import random, time
 
 from pi3d import Draw
 

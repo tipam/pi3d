@@ -14,8 +14,7 @@
 # before running this example
 #
 
-import pi3d
-
+from pi3d import Utility
 from pi3d.Display import Display
 from pi3d.Key import Key
 from pi3d.Light import Light
@@ -45,9 +44,9 @@ mylight.on()
 while 1:
     display.clear()
 
-    pi3d.load_identity()
-    pi3d.translatef(0,0, -40)
-    pi3d.rotatef(rot, 0, 1, 0)
+    Utility.load_identity()
+    Utility.translatef(0,0, -40)
+    Utility.rotatef(rot, 0, 1, 0)
     rot += 3
 
     mymodel.draw()

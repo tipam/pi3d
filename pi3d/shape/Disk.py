@@ -1,4 +1,5 @@
 from pi3d import *
+from pi3d import Utility
 from pi3d.shape.Shape import Shape
 
 class Disk(Shape):
@@ -21,7 +22,7 @@ class Disk(Shape):
     st = math.pi / slices
     self.add_vertex(x, y, z, 0, 1, 0, 0.5, 0.5)
     for r in range(sides+1):
-      ca, sa = pi3d.from_polar_rad(r * st)
+      ca, sa = Utility.from_polar_rad(r * st)
       self.add_vertex(x + radius * sa, y, z + radius * ca,
                       0, 1, 0, sa * 0.5 + 0.5, ca * 0.5 + 0.5)
       # TODO: why the reversal?

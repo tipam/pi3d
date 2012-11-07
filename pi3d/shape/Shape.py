@@ -1,5 +1,6 @@
-from pi3d import Texture
 from pi3d import *
+from pi3d import Texture
+from pi3d import Utility
 
 class Shape(object):
   def __init__(self, name, x, y, z, rx, ry, rz, sx, sy, sz, cx, cy, cz):
@@ -77,14 +78,14 @@ class Shape(object):
 
   # position, rotate and scale an object
   def transform(self):
-    translatef(self.x - self.cx, self.y - self.cy, self.z - self.cz)
+    Utility.translatef(self.x - self.cx, self.y - self.cy, self.z - self.cz)
 
     # TODO: why the reverse order?
-    rotatef(self.rotz, 0, 0, 1)
-    rotatef(self.roty, 0, 1, 0)
-    rotatef(self.rotx, 1, 0, 0)
-    scalef(self.sx, self.sy, self.sz)
-    translatef(self.cx, self.cy, self.cz)
+    Utility.rotatef(self.rotz, 0, 0, 1)
+    Utility.rotatef(self.roty, 0, 1, 0)
+    Utility.rotatef(self.rotx, 1, 0, 0)
+    Utility.scalef(self.sx, self.sy, self.sz)
+    Utility.translatef(self.cx, self.cy, self.cz)
 
   def lathe(self, path, rise=0.0, loops=1.0, tris=True):
     s = len(path)
@@ -124,7 +125,7 @@ class Shape(object):
       dx, dy = normalize_vector((opx, opy), (px, py))
 
       for r in range (0, rl):
-        cosr, sinr = from_polar_rad(pr * r)
+        cosr, sinr = Utility.from_polar_rad(pr * r)
         # TODO: why the reversal?
 
         verts.extend([px * sinr, py, px * cosr])
@@ -167,7 +168,7 @@ class Shape(object):
 
 def normalize_vector(begin, end):
   diff = [e - b for b, e in zip(begin, end)]
-  mag = magnitude(*diff)
+  mag = Utility.magnitude(*diff)
   mult = 1 / mag if mag > 0.0 else 0.0
   return [x * mult for x in diff]
 

@@ -2,6 +2,7 @@ import ctypes
 import Image
 
 from pi3d import *
+from pi3d import Utility
 
 MAX_SIZE = 1024
 
@@ -93,7 +94,7 @@ class Loader(object):
 
   def __enter__(self):
     if self.texture:
-      texture_min_mag()
+      Utility.texture_min_mag()
       opengles.glEnableClientState(GL_TEXTURE_COORD_ARRAY)
       opengles.glTexCoordPointer(2, self.vtype, 0, self.coords)
       opengles.glBindTexture(GL_TEXTURE_2D, self.texture.tex)

@@ -13,8 +13,6 @@
 # before running this example
 #
 
-import pi3d
-
 from pi3d import Draw
 
 from pi3d.Display import Display

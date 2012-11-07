@@ -14,8 +14,6 @@
 # before running this example
 #
 
-import pi3d
-
 from pi3d.Display import Display
 from pi3d.Key import Key
 from pi3d.Light import Light
