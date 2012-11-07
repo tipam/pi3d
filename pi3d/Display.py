@@ -1,6 +1,4 @@
-from ctypes import c_int
-from ctypes import c_float
-
+import math
 import Image
 
 from pi3d import *

@@ -1,5 +1,4 @@
 import os.path
-from ctypes import c_float
 
 from pi3d import *
 from pi3d import Utility

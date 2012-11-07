@@ -1,3 +1,5 @@
+import math
+
 from pi3d import *
 
 # TODO: not exact sure what this does but we do it a lot.

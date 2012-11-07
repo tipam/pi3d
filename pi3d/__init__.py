@@ -1,5 +1,4 @@
 import ctypes
-import math
 
 from ctypes import c_byte
 from ctypes import c_float
@@ -17,13 +16,13 @@ def _ctypes_array(ct, x):
   return (ct * len(x))(*x)
 
 def c_bytes(x):
-  return _ctypes_array(c_byte, x)
+  return _ctypes_array(ctypes.c_byte, x)
 
 def c_ints(x):
-  return _ctypes_array(c_int, x)
+  return _ctypes_array(ctypes.c_int, x)
 
 def c_floats(x):
-  return _ctypes_array(c_float, x)
+  return _ctypes_array(ctypes.c_float, x)
 
 def c_shorts(x):
-  return _ctypes_array(c_short, x)
+  return _ctypes_array(ctypes.c_short, x)

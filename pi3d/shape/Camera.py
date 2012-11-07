@@ -1,5 +1,3 @@
-from ctypes import c_float
-
 from pi3d import *
 from pi3d import Utility
 from pi3d.shape.Shape import Shape
