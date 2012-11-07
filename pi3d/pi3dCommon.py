@@ -99,6 +99,8 @@ def load_identity():
 #position, rotate and scale an object
 def transform(x, y, z, rotx, roty, rotz, sx, sy, sz, cx, cy, cz):
   translatef(x - cx, y - cy, z - cz)
+
+  # TODO: why the reverse order?
   rotatef(rotz, 0, 0, 1)
   rotatef(roty, 0, 1, 0)
   rotatef(rotx, 1, 0, 0)
@@ -106,6 +108,7 @@ def transform(x, y, z, rotx, roty, rotz, sx, sy, sz, cx, cy, cz):
   translatef(cx, cy, cz)
 
 def rotate(rotx, roty, rotz):
+  # TODO: why the reverse order?
   rotatef(rotz, 0, 0, 1)
   rotatef(roty, 0, 1, 0)
   rotatef(rotx, 1, 0, 0)
@@ -119,12 +122,12 @@ def angleVecs(x1, y1, x2, y2, x3, y3):
   sqab = magnitude(a, b)
   sqcd = magnitude(c, d)
   l = sqab * sqcd
-  if l==0.0:
-    l=0.0001
-  aa=((a*c)+(b*d)) / l
-  if aa==-1.0:
+  if l == 0.0:
+    l = 0.0001
+  aa = ((a*c)+(b*d)) / l
+  if aa == -1.0:
     return math.pi
-  if aa==0.0:
+  if aa == 0.0:
     return 0.0
   dist = (a*y3 - b*x3 + x1*b - y1*a) / sqab
   angle = math.acos(aa)
@@ -134,14 +137,10 @@ def angleVecs(x1, y1, x2, y2, x3, y3):
   else:
     return angle
 
-def dot(x1, y1, x2, y2):
-  a = x2 - x1
-  b = y2 - y1
-  s = magnitude(a, b)
-  if s > 0.0:
-    return a/s, b/s
-  else:
-    return 0.0, 0.0
+def normalize_vector(begin, end):
+  diff = [e - b for b, e in zip(begin, end)]
+  mag = magnitude(*diff)
+  return [(x / mag if mag > 0.0 else 0.0) for x in diff]
 
 def intersectTriangle(v1,v2,v3,pos):
 	#Function calculates the y intersection of a point on a triangle
@@ -260,99 +259,102 @@ def calcNormal(x1,y1,z1,x2,y2,z2):
   sqt = 1 / magnitude(xd, yd, zd)
   return (xd * sqt, yd * sqt, zd * sqt)
 
-def lathe(path, sides = 12, tris=False, rise = 0.0, coils = 1.0):
-	s = len(path)
-	rl = int(sides * coils)
-	if tris:
-	    ssize = rl * 6 * (s-1)
-	else:
-	    ssize = rl * 2 * (s-1)+(s * 2)-2
+def lathe(path, sides = 12, tris = False, rise = 0.0, coils = 1.0):
+  s = len(path)
+  rl = int(sides * coils)
+  if tris:
+    ssize = rl * 6 * (s - 1)
+  else:
+    ssize = rl * 2 * (s - 1) + (s * 2) - 2
 
-	pn = 0
-	pp = 0
-	tcx = 1.0 / sides
-	pr = (math.pi / sides) * 2
-	rdiv = rise / rl
-	ss=0
+  pn = 0
+  pp = 0
+  tcx = 1.0 / sides
+  pr = (math.pi / sides) * 2
+  rdiv = rise / rl
+  ss=0
 
-	#find largest and smallest y of the path used for stretching the texture over
-	miny = path[0][1]
-	maxy = path[s-1][1]
-	for p in range (0, s):
-	    if path[p][1] < miny: miny = path[p][1]
-	    if path[p][1] > maxy: maxy = path[p][1]
+  #find largest and smallest y of the path used for stretching the texture over
+  miny = path[0][1]
+  maxy = path[s - 1][1]
+  for p in range (0, s):
+    if path[p][1] < miny:
+      miny = path[p][1]
+    if path[p][1] > maxy:
+      maxy = path[p][1]
 
-	verts=[]
-	norms=[]
-	idx=[]
-	tex_coords=[]
+  verts = []
+  norms = []
+  idx = []
+  tex_coords = []
 
-	opx=path[0][0]
-	opy=path[0][1]
+  opx = path[0][0]
+  opy = path[0][1]
 
-	for p in range (0, s):
+  for p in range (s):
+    px = path[p][0]
+    py = path[p][1]
 
-	    px = path[p][0]
-	    py = path[p][1]
+    tcy = 1.0 - ((py - miny)/(maxy - miny))
 
-	    tcy = 1.0 - ((py - miny)/(maxy - miny))
-
-	    #normal between path points
-	    dx, dy = dot(opx, opy, px, py)
+    #normal between path points
+    dx, dy = normalize_vector((opx, opy), (px, py))
 
 
-	    for r in range (0, rl):
-		sinr = math.sin(pr * r)
-		cosr = math.cos(pr * r)
-		verts.append(px * sinr)
-		verts.append(py)
-		verts.append(px * cosr)
-		norms.append(-sinr*dy)
-		norms.append(dx)
-		norms.append(-cosr*dy)
-		tex_coords.append(tcx * r)
-		tex_coords.append(tcy)
-		py += rdiv
-	    #last path profile (tidies texture coords)
-	    verts.append(0)
-	    verts.append(py)
-	    verts.append(px)
-	    norms.append(0)
-	    norms.append(dx)
-	    norms.append(-dy)
-	    tex_coords.append(1.0)
-	    tex_coords.append(tcy)
+    for r in range (0, rl):
+      sinr = math.sin(pr * r)
+      cosr = math.cos(pr * r)
+      verts.append(px * sinr)
+      verts.append(py)
+      verts.append(px * cosr)
+      norms.append(-sinr * dy)
+      norms.append(dx)
+      norms.append(-cosr * dy)
+      tex_coords.append(tcx * r)
+      tex_coords.append(tcy)
+      py += rdiv
 
-	    if p < s-1:
-		if tris:
-		    # Create indices for GL_TRIANGLES
-		    pn += (rl+1)
-		    for r in range (0, rl):
-			idx.append(pp+r+1)
-			idx.append(pp+r)
-			idx.append(pn+r)
-			idx.append(pn+r)
-			idx.append(pn+r+1)
-			idx.append(pp+r+1)
-			ss+=6
-		    pp += (rl+1)
-		else:
-		    #Create indices for GL_TRIANGLE_STRIP
-		    pn += (rl+1)
-		    for r in range (0, rl):
-			idx.append(pp+r)
-			idx.append(pn+r)
-			ss+=2
-		    idx.append(pp+sides)
-		    idx.append(pn+sides)
-		    ss+=2
-		    pp += (rl+1)
+    #last path profile (tidies texture coords)
+    verts.append(0)
+    verts.append(py)
+    verts.append(px)
+    norms.append(0)
+    norms.append(dx)
+    norms.append(-dy)
+    tex_coords.append(1.0)
+    tex_coords.append(tcy)
 
-	    opx=px
-	    opy=py
+    if p < s-1:
+      if tris:
+        # Create indices for GL_TRIANGLES
+        pn += (rl + 1)
+        for r in range(rl):
+          idx.append(pp + r + 1)
+          idx.append(pp + r)
+          idx.append(pn + r)
+          idx.append(pn + r)
+          idx.append(pn + r + 1)
+          idx.append(pp + r + 1)
+          ss += 6
+        pp += (rl + 1)
+      else:
+        #Create indices for GL_TRIANGLE_STRIP
+        pn += (rl + 1)
+        for r in range(rl):
+          idx.append(pp + r)
+          idx.append(pn + r)
+          ss += 2
+        idx.append(pp + sides)
+        idx.append(pn + sides)
+        ss += 2
+        pp += (rl + 1)
 
-	print ssize, ss
-	return (verts, norms, idx, tex_coords, ssize)
+    opx = px
+    opy = py
+
+  if Constants.VERBOSE:
+    print ssize, ss
+  return (verts, norms, idx, tex_coords, ssize)
 
 def shape_draw(self,tex,shl=GL_UNSIGNED_SHORT):
   from pi3d import Texture
