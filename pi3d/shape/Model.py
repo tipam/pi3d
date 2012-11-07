@@ -1,6 +1,7 @@
 from pi3d import Constants
 from pi3d import Texture
 from pi3d import loaderEgg
+from pi3d.RotateVec import rotate_vec
 
 from pi3d.Matrix import Matrix
 from pi3d.pi3dCommon import *
