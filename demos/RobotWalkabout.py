@@ -110,14 +110,14 @@ while 1:
     if tilt<-1: sf=1.0/-tilt
     else: sf=1.0
     mtrx.translate(0,-10*sf-5.0,-40*sf)   #zoom camera out so we can see our robot
-    mtrx.rotate(tilt,0,0)		#Robot still affected by scene tilt
+    mtrx.rotate(tilt, 0, 0)		#Robot still affected by scene tilt
 
     #draw robot
     mylight.on()
     robot.drawAll(metalimg)
     mylight.off()
 
-    mtrx.rotate(0,rot,0)		#rotate rest of scene around robot
+    mtrx.rotate(0, rot, 0)		#rotate rest of scene around robot
     mtrx.translate(xm,ym,zm)	#translate rest of scene relative to robot position
 
     myecube.draw(ectex,xm,ym,zm)#Draw environment cube

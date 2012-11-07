@@ -121,8 +121,8 @@ while 1:
     display.clear()
 
     mtrx.identity()
-    mtrx.rotate(tilt,0,0)
-    mtrx.rotate(0,rot,0)
+    mtrx.rotate(tilt, 0, 0)
+    mtrx.rotate(0, rot, 0)
     mtrx.translate(xm,ym,zm)
 
     myecube.draw(ectex,xm,ym,zm)

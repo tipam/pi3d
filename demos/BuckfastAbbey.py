@@ -75,10 +75,10 @@ while 1:
     display.clear()
 
     mtrx.identity()
-    mtrx.rotate(tilt,rot,0)
+    mtrx.rotate(tilt, rot, 0)
     mtrx.translate(xm,ym,zm)
     mtrx.push()
-    mtrx.rotate(0,180,0)
+    mtrx.rotate(0, 180, 0)
     myecube.draw(ectex,xm,ym,zm)
     mtrx.pop()
 

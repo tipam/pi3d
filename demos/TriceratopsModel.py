@@ -47,7 +47,7 @@ while 1:
 
     pi3d.load_identity()
     pi3d.translatef(0,0, -40)
-    pi3d.rotate(0, rot, 0)
+    pi3d.rotatef(rot, 0, 1, 0)
     rot += 3
 
     mymodel.draw()

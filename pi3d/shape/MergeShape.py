@@ -39,8 +39,8 @@ class MergeShape(Shape):
     original_vertex_count = len(self.vertices)
 
     for v in range(0, len(shape.vertices), 3):
-      def rotate(array):
-        vec = shape.vertices[v:v + 3]
+      def rotate_slice(array):
+        vec = array[v:v + 3]
         if rz:
           vec = rotate_vec_z(rz, *vec)
         if rx:
@@ -50,11 +50,11 @@ class MergeShape(Shape):
         return vec
 
       # Scale, offset and store vertices
-      vx, vy, vz = rotate(shape.vertices)
+      vx, vy, vz = rotate_slice(shape.vertices)
       self.vertices.extend([vx * sx + x, vy * sy + y, vz * sz + z])
 
       # Rotate normals
-      self.normals.extend(rotate(shape.normals))
+      self.normals.extend(rotate_slice(shape.normals))
 
     self.tex_coords.extend(shape.tex_coords)
 

@@ -96,12 +96,6 @@ def scalef(sx, sy, sz):
 def load_identity():
   opengles.glLoadIdentity()
 
-def rotate(rotx, roty, rotz):
-  # TODO: why the reverse order?
-  rotatef(rotz, 0, 0, 1)
-  rotatef(roty, 0, 1, 0)
-  rotatef(rotx, 1, 0, 0)
-
 def intersect_triangle(v1, v2, v3, pos):
   #Function calculates the y intersection of a point on a triangle
 
@@ -239,3 +233,8 @@ def calc_normal(x1, y1, z1, x2, y2, z2):
   mag = magnitude(dx, dy, dz)
   return (dx / mag, dy / mag, dz / mag)
 
+def rotate(rotx, roty, rotz):
+  # TODO: why the reverse order?
+  rotatef(rotz, 0, 0, 1)
+  rotatef(roty, 0, 1, 0)
+  rotatef(rotx, 1, 0, 0)

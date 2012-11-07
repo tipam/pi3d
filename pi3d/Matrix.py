@@ -26,7 +26,7 @@ class Matrix(object):
     # TODO: get rid of this.
     pi3d.translatef(x, y, z)
 
-  def rotate(self,rx,ry,rz):
+  def rotate(self, rx, ry, rz):
     if rz:
       pi3d.rotatef(rz, 0, 0, 1)
     if rx:
