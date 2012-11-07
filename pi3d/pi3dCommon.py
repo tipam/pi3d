@@ -96,53 +96,6 @@ def scalef(sx, sy, sz):
 def load_identity():
   opengles.glLoadIdentity()
 
-def intersect_triangle(v1, v2, v3, pos):
-  #Function calculates the y intersection of a point on a triangle
-
-  #Z order triangle
-  if v1[2] > v2[2]:
-    v1, v2 = v2, v1
-
-  if v1[2] > v3[2]:
-    v1, v3 = v3, v1
-
-  if v2[2] > v3[2]:
-    v2, v3 = v3, v2
-
-  if pos[2] > v2[2]:
-    #test bottom half of triangle
-    if pos[2] > v3[2]:
-      #print "z below triangle"
-      return -100000  # point completely out
-
-    za = (pos[2] - v1[2]) / (v3[2] - v1[2])
-    dxa = v1[0] + (v3[0] - v1[0]) * za
-    dya = v1[1] + (v3[1] - v1[1]) * za
-
-    zb = (v3[2] - pos[2]) / (v3[2] - v2[2])
-    dxb = v3[0] - (v3[0] - v2[0]) * zb
-    dyb = v3[1] - (v3[1] - v2[1]) * zb
-    if (pos[0] < dxa and pos[0] < dxb) or (pos[0] > dxa and pos[0] > dxb):
-      #print "outside of bottom triangle range"
-      return -100000
-  else:
-    #test top half of triangle
-    if pos[2] < v1[2]:
-        #print "z above triangle",pos[2],v1[2]
-        return -100000  # point completely out
-    za = (pos[2] - v1[2]) / (v3[2] - v1[2])
-    dxa = v1[0] + (v3[0] - v1[0]) * za
-    dya = v1[1] + (v3[1] - v1[1]) * za
-
-    zb = (v2[2] - pos[2]) / ((v2[2] + 0.00001) - v1[2])  #get rid of FP error!
-    dxb = v2[0] - (v2[0] - v1[0]) * zb
-    dyb = v2[1] - (v2[1] - v1[1]) * zb
-    if (pos[0] < dxa and pos[0] < dxb) or (pos[0] > dxa and pos[0] > dxb):
-      #print "outside of top triangle range"
-      return -100000
-
-  #return resultant intersecting height
-  return dya + (dyb - dya) * ((pos[0] - dxa)/(dxb - dxa))
 
 def rotate_vec(rx, ry, rz, xyz):
   x, y, z = xyz
