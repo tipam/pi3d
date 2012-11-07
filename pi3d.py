@@ -149,11 +149,11 @@ class display(object):
         self.win_height = h
         self.near=near
         self.far=far
-	
-	self.left = x
-	self.top = y
-	self.right = x+w
-	self.bottom = y+h
+        
+        self.left = x
+        self.top = y
+        self.right = x+w
+        self.bottom = y+h
             
         create_display(self,x,y,w,h,depth)
         
@@ -205,7 +205,7 @@ class display(object):
         openegl.eglSwapBuffers(self.display, self.surface)
     
     def clear(self):
-	#opengles.glBindFramebuffer(GL_FRAMEBUFFER,0)
+        #opengles.glBindFramebuffer(GL_FRAMEBUFFER,0)
         opengles.glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
         
     def setBackColour(self,r,g,b,a):
@@ -292,7 +292,7 @@ class createEnvironmentCube(object):
                 self.scale = size
                 self.ssize = 36
                 self.ttype = GL_TRIANGLES
-		self.maptype = maptype
+                self.maptype = maptype
                 ww=self.scale*.5
                 hh=self.scale*.5
                 dd=self.scale*.5
@@ -316,11 +316,11 @@ class createEnvironmentCube(object):
                 self.indices = eglshorts(( 3,0,1, 2,3,1, 7,4,5, 6,7,5, 11,8,9, 10,11,9, 15,12,13, 14,15,13, 19,16,17, 18,19,17, 23,22,21, 20,23,21));
 
                 self.indfront = eglshorts((23,22,21, 20,23,21 )) #back
-		self.indleft = eglshorts((19,16,17, 18,19,17)) #right
-		self.indtop = eglshorts((11,8,9, 10,11,9))  #top
-		self.indbot = eglshorts((15,12,13, 14,15,13))  #bottom
-		self.indright = eglshorts((7,4,5, 6,7,5)) #left
-		self.indback = eglshorts((3,0,1, 2,3,1)) #front
+                self.indleft = eglshorts((19,16,17, 18,19,17)) #right
+                self.indtop = eglshorts((11,8,9, 10,11,9))  #top
+                self.indbot = eglshorts((15,12,13, 14,15,13))  #bottom
+                self.indright = eglshorts((7,4,5, 6,7,5)) #left
+                self.indback = eglshorts((3,0,1, 2,3,1)) #front
                 
                 if self.maptype == "HALFCROSS":
                     self.tex_coords = eglfloats(( 0.25,0.25, 0.25,0.75, -0.25,0.75, -0.25,0.25,
@@ -329,70 +329,70 @@ class createEnvironmentCube(object):
                                           0,0, 1,0, 1,1, 0,1,    #bottom
                                           0.25,-0.25, 0.75,-0.25, 0.75,0.25, 0.25,0.25,
                                           0.75,0.25, 0.75,0.75, 1.25,0.75, 1.25,0.25))
-		elif self.maptype == "CROSS":
+                elif self.maptype == "CROSS":
                     self.tex_coords = eglfloats(( 1.0,0.34, 0.75,0.34, 0.75,0.661, 1.0,0.661, #back
                                           0.75,0.34, 0.5,0.34, 0.5,0.661, 0.75,0.661,  #right
                                           0.251,0.0, 0.251,0.34, 0.498,0.34, 0.498,0.0,  #top
                                           0.498,.998, 0.498,0.66, 0.251,0.66, 0.251,.998,    #bottom
                                           0.0,0.661, 0.25,0.661, 0.25,0.34, 0.0,0.34,    #left
                                           0.25,0.34, 0.5,0.34, 0.5,0.661, 0.25,0.661 )) #front
-		else:
-		    self.tex_faces = eglfloats(( .998,0.002, 0.002,0.002, 0.002,.998, .998,.998,  
-						.998,0.002, 0.002,0.002, 0.002,.998, .998,.998,
-						0.002,0.002, 0.002,.998, .998,.998, .998,0.002,
-						.998,.998, .998,0.002, 0.002,0.002, 0.002,.998,  
-						0.002,.998, .998,.998, .998,0.002, 0.002,0.002,
-						0.002,0.002, .998,0.002, .998,.998, 0.002,.998))
-		    
+                else:
+                    self.tex_faces = eglfloats(( .998,0.002, 0.002,0.002, 0.002,.998, .998,.998,  
+                                                .998,0.002, 0.002,0.002, 0.002,.998, .998,.998,
+                                                0.002,0.002, 0.002,.998, .998,.998, .998,0.002,
+                                                .998,.998, .998,0.002, 0.002,0.002, 0.002,.998,  
+                                                0.002,.998, .998,.998, .998,0.002, 0.002,0.002,
+                                                0.002,0.002, .998,0.002, .998,.998, 0.002,.998))
+                    
 
         def draw(self,tex,x,y,z):
-		mtrx =(ctypes.c_float*16)()
-		opengles.glGetFloatv(GL_MODELVIEW_MATRIX,ctypes.byref(mtrx))
-		opengles.glTranslatef(eglfloat(-x), eglfloat(-y), eglfloat(-z))
-		opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, eglfloat(GL_LINEAR));
-		opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, eglfloat(GL_LINEAR));
-		opengles.glVertexPointer( 3, GL_FLOAT, 0, self.vertices)
-		opengles.glNormalPointer( GL_FLOAT, 0, self.normals)
-		opengles.glEnableClientState(GL_TEXTURE_COORD_ARRAY)
-		opengles.glDisable(GL_LIGHTING)
-		opengles.glEnable(GL_TEXTURE_2D)
-		
-		if self.maptype=="FACES":
-		    opengles.glTexCoordPointer(2, GL_FLOAT, 0, self.tex_faces)
-		    opengles.glBindTexture(GL_TEXTURE_2D,tex[0].tex)
-		    opengles.glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_SHORT , self.indtop)
-		    opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, eglfloat(GL_LINEAR));
-		    opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, eglfloat(GL_LINEAR));
-		    opengles.glBindTexture(GL_TEXTURE_2D,tex[1].tex)
-		    opengles.glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_SHORT , self.indleft)
-		    opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, eglfloat(GL_LINEAR));
-		    opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, eglfloat(GL_LINEAR));
-		    opengles.glBindTexture(GL_TEXTURE_2D,tex[2].tex)
-		    opengles.glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_SHORT , self.indfront)
-		    opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, eglfloat(GL_LINEAR));
-		    opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, eglfloat(GL_LINEAR));
-		    opengles.glBindTexture(GL_TEXTURE_2D,tex[3].tex)
-		    opengles.glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_SHORT , self.indright)
-		    opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, eglfloat(GL_LINEAR));
-		    opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, eglfloat(GL_LINEAR));
-		    opengles.glBindTexture(GL_TEXTURE_2D,tex[4].tex)
-		    opengles.glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_SHORT , self.indback)
-		    if tex[5] >0:
-			opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, eglfloat(GL_LINEAR));  #BOTTOM (doesn't have to have one if None)
-			opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, eglfloat(GL_LINEAR));
-			opengles.glBindTexture(GL_TEXTURE_2D,tex[5].tex)
-			opengles.glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_SHORT , self.indbot)
-		else:
-		    #load view matrix
-		    opengles.glTexCoordPointer(2, GL_FLOAT, 0, self.tex_coords)
-		    opengles.glBindTexture(GL_TEXTURE_2D,tex.tex)
-		    opengles.glDrawElements( GL_TRIANGLES, 36, GL_UNSIGNED_SHORT , self.indices)
-		    
-		opengles.glEnable(GL_LIGHTING)
-		opengles.glDisable(GL_TEXTURE_2D)
-		#restore to previous matrix
-		opengles.glLoadMatrixf(mtrx)
-	
+                mtrx =(ctypes.c_float*16)()
+                opengles.glGetFloatv(GL_MODELVIEW_MATRIX,ctypes.byref(mtrx))
+                opengles.glTranslatef(eglfloat(-x), eglfloat(-y), eglfloat(-z))
+                opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, eglfloat(GL_LINEAR));
+                opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, eglfloat(GL_LINEAR));
+                opengles.glVertexPointer( 3, GL_FLOAT, 0, self.vertices)
+                opengles.glNormalPointer( GL_FLOAT, 0, self.normals)
+                opengles.glEnableClientState(GL_TEXTURE_COORD_ARRAY)
+                opengles.glDisable(GL_LIGHTING)
+                opengles.glEnable(GL_TEXTURE_2D)
+                
+                if self.maptype=="FACES":
+                    opengles.glTexCoordPointer(2, GL_FLOAT, 0, self.tex_faces)
+                    opengles.glBindTexture(GL_TEXTURE_2D,tex[0].tex)
+                    opengles.glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_SHORT , self.indtop)
+                    opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, eglfloat(GL_LINEAR));
+                    opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, eglfloat(GL_LINEAR));
+                    opengles.glBindTexture(GL_TEXTURE_2D,tex[1].tex)
+                    opengles.glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_SHORT , self.indleft)
+                    opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, eglfloat(GL_LINEAR));
+                    opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, eglfloat(GL_LINEAR));
+                    opengles.glBindTexture(GL_TEXTURE_2D,tex[2].tex)
+                    opengles.glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_SHORT , self.indfront)
+                    opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, eglfloat(GL_LINEAR));
+                    opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, eglfloat(GL_LINEAR));
+                    opengles.glBindTexture(GL_TEXTURE_2D,tex[3].tex)
+                    opengles.glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_SHORT , self.indright)
+                    opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, eglfloat(GL_LINEAR));
+                    opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, eglfloat(GL_LINEAR));
+                    opengles.glBindTexture(GL_TEXTURE_2D,tex[4].tex)
+                    opengles.glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_SHORT , self.indback)
+                    if tex[5] >0:
+                        opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, eglfloat(GL_LINEAR));  #BOTTOM (doesn't have to have one if None)
+                        opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, eglfloat(GL_LINEAR));
+                        opengles.glBindTexture(GL_TEXTURE_2D,tex[5].tex)
+                        opengles.glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_SHORT , self.indbot)
+                else:
+                    #load view matrix
+                    opengles.glTexCoordPointer(2, GL_FLOAT, 0, self.tex_coords)
+                    opengles.glBindTexture(GL_TEXTURE_2D,tex.tex)
+                    opengles.glDrawElements( GL_TRIANGLES, 36, GL_UNSIGNED_SHORT , self.indices)
+                    
+                opengles.glEnable(GL_LIGHTING)
+                opengles.glDisable(GL_TEXTURE_2D)
+                #restore to previous matrix
+                opengles.glLoadMatrixf(mtrx)
+        
 
 class createMergeShape(create_shape):
         
@@ -483,7 +483,7 @@ class createPlane(create_shape):
                 self.indices = eglshorts(self.indices);
                 self.normals = eglfloats(self.normals);
                 self.tex_coords = eglfloats(self.tex_coords);
-		self.ssize = 12
+                self.ssize = 12
                 
         
         def draw(self,tex=None):
@@ -518,7 +518,7 @@ class createLathe(create_shape):
                 self.ssize = results[4]
             
         def draw(self,tex=None):
-		opengles.glDisable(GL_CULL_FACE)
+                opengles.glDisable(GL_CULL_FACE)
                 shape_draw(self,tex)
                 opengles.glEnable(GL_CULL_FACE)
 
@@ -851,8 +851,8 @@ class createExtrude(create_shape):
         def draw(self,tex1=None,tex2=None,tex3=None):
                 opengles.glVertexPointer( 3, GL_FLOAT, 0, self.verts)
                 opengles.glNormalPointer( GL_FLOAT, 0, self.norms)
-		mtrx =(ctypes.c_float*16)()
-		opengles.glGetFloatv(GL_MODELVIEW_MATRIX,ctypes.byref(mtrx))
+                mtrx =(ctypes.c_float*16)()
+                opengles.glGetFloatv(GL_MODELVIEW_MATRIX,ctypes.byref(mtrx))
                 transform(self.x,self.y,self.z,self.rotx,self.roty,self.rotz,self.sx,self.sy,self.sz,self.cx,self.cy,self.cz)
                 if tex1 > 0: texture_on(tex1,self.tex_coords,GL_FLOAT)
                 opengles.glDrawElements( GL_TRIANGLE_STRIP, self.edges * 2+2, GL_UNSIGNED_SHORT, self.sidefaces)
@@ -861,7 +861,7 @@ class createExtrude(create_shape):
                 if tex3 > 0: texture_on(tex3,self.tex_coords,GL_FLOAT)
                 opengles.glDrawElements( GL_TRIANGLE_FAN, self.edges, GL_UNSIGNED_SHORT, self.botface)
                 if tex1 > 0: texture_off()
-		opengles.glLoadMatrixf(mtrx)
+                opengles.glLoadMatrixf(mtrx)
 
 class createElevationMapFromTexture(create_shape):
 
@@ -919,25 +919,25 @@ class createElevationMapFromTexture(create_shape):
                                 verts.append(-hh+y*hs)
                                 
                                 if (smooth and y > 0 and y < (iy-1) and x > 0 and x < (ix-1)):
-									nVec = crossproduct(-ws, self.pixels[x-1, y]*ht - hgt, 0, 0, hgt - self.pixels[x, y-1]*ht ,hs)
-									norms.append(nVec[0])
-									norms.append(nVec[1])
-									norms.append(nVec[2])
+                                                                        nVec = crossproduct(-ws, self.pixels[x-1, y]*ht - hgt, 0, 0, hgt - self.pixels[x, y-1]*ht ,hs)
+                                                                        norms.append(nVec[0])
+                                                                        norms.append(nVec[1])
+                                                                        norms.append(nVec[2])
                                 else:
-									norms.append(0.0)
-									norms.append(1.0)
-									norms.append(0.0)
+                                                                        norms.append(0.0)
+                                                                        norms.append(1.0)
+                                                                        norms.append(0.0)
                                 tex_coords.append((ix-x) * tx)
                                 tex_coords.append((iy-y) * ty)
                 #smooth normals
                 if smooth:
-					for y in range(0,iy):
-						for x in range(0,ix):
-							p = y*ix+x
-							if (y > 0 and y < (iy-1) and x > 0 and x < (ix-1)):
-								norms[p] = (norms[p-3] + norms[p+3] + norms[p-ix*3] + norms[p+ix*3] + norms[p])/5
-								norms[p+1] = (norms[p-2] + norms[p+4] + norms[p-ix*3+1] + norms[p+ix*3+1])/5
-								norms[p+2] = (norms[p-1] + norms[p+5] + norms[p-ix*3+2] + norms[p+ix*3+2])/5
+                                        for y in range(0,iy):
+                                                for x in range(0,ix):
+                                                        p = y*ix+x
+                                                        if (y > 0 and y < (iy-1) and x > 0 and x < (ix-1)):
+                                                                norms[p] = (norms[p-3] + norms[p+3] + norms[p-ix*3] + norms[p+ix*3] + norms[p])/5
+                                                                norms[p+1] = (norms[p-2] + norms[p+4] + norms[p-ix*3+1] + norms[p+ix*3+1])/5
+                                                                norms[p+2] = (norms[p-1] + norms[p+5] + norms[p-ix*3+2] + norms[p+ix*3+2])/5
                 s=0
                 #create one long triangle_strip by alternating X directions     
                 for y in range(0,iy-2,2):
@@ -984,6 +984,10 @@ class createElevationMapFromTexture(create_shape):
                 pz = (hh - pz)/hs
                 x = math.floor(px)
                 z = math.floor(pz)
+		if x < 0: x = 0
+		if x > self.ix: x = self.ix
+		if z < 0: z = 0
+		if z > self.iy: z = self.iy
                 #print px,pz,x,z
                 #x = wh-math.floor(x+0.5)/ws
                 #z = hh-math.floor(z+0.5)/hs
@@ -995,6 +999,52 @@ class createElevationMapFromTexture(create_shape):
                 
                 return ih
                 
+        def clashTest(self, px, py, pz, rad):
+                # added Patrick Gaunt 2012-11-05
+                ht = self.height/255
+                halfw = self.width/2
+                halfd = self.depth/2
+                # work out x and z ranges to check
+                x0 = int(math.floor((px - rad - self.x + halfw)/self.width * self.ix + 0.5)) - 1
+                if x0 < 0: x0 = 0
+                x1 = int(math.floor((px + rad - self.x + halfw)/self.width * self.ix + 0.5)) + 1
+                if x1 > self.ix: x1 = self.ix
+                z0 = int(math.floor((pz - rad - self.z + halfd)/self.depth * self.iy + 0.5)) - 1
+                if z0 < 0: z0 = 0
+                z1 = int(math.floor((pz + rad - self.z + halfd)/self.depth * self.iy + 0.5)) + 1
+                if z1 > self.iy: z1 = self.iy
+                dx = self.width/self.ix
+                dz = self.depth/self.iy
+                minDist, minLoc = 1000000, (0,0)
+                for i in xrange(x0, x1):
+                    for j in xrange(z0, z1):
+                        yy = py - self.pixels[i, j]*ht - self.y
+                        xx = px - dx*i + halfw - self.x
+                        zz = pz - dz*j + halfd - self.z
+                        distSq = yy*yy + xx*xx + zz*zz
+                        if distSq < minDist:
+                            minDist = distSq
+                            minLoc = (i,j)
+                            
+                gLevel = self.calcHeight(px, pz) #check it hasn't tunnelled through by going fast
+                if gLevel > (py-rad):
+                    minDist = rad*rad - 1.0
+                    minLoc = (int((x0+x1)/2), int((z0+z1)/2))
+                
+                if minDist < (rad*rad): #i.e. near enough to clash so work out normal
+                    xoff, zoff = 1, 1
+                    if i == self.ix: xoff = -1
+                    if j == self.iy: zoff = -1
+                    ya = (self.pixels[minLoc[0]+xoff, minLoc[1]] - self.pixels[minLoc[0], minLoc[1]])*ht
+                    yb = (self.pixels[minLoc[0], minLoc[1]+zoff] - self.pixels[minLoc[0], minLoc[1]])*ht
+                    nx = ya * zoff * dz
+                    ny = -1 * xoff * dx * zoff * dz
+                    nz = yb * xoff * dx
+                    nfact = math.sqrt(nx*nx + ny*ny + nz*nz)
+                    return (True, nx/nfact, ny/nfact, nz/nfact, gLevel)
+                else:
+                    return (False, 0, 0, 0, gLevel)
+            
         def draw(self,tex=None):
                 shape_draw(self,tex)
 
@@ -1003,16 +1053,16 @@ class clipPlane(object):
 # Added by Patrick Gaunt, 10-07-2012
     
     def __init__(self, no=0, x=0, y=0, z=1, w=60):
-	self.no = eglint(GL_CLIP_PLANE0 + no)
-	self.equation = eglfloats((x,y,z,w))
-	opengles.glClipPlanef(self.no, self.equation)
-	
+        self.no = eglint(GL_CLIP_PLANE0 + no)
+        self.equation = eglfloats((x,y,z,w))
+        opengles.glClipPlanef(self.no, self.equation)
+        
     def enable(self):
-	opengles.glEnable(self.no)
-	
+        opengles.glEnable(self.no)
+        
     def disable(self):
-	opengles.glDisable(self.no)
-	
+        opengles.glDisable(self.no)
+        
 #=====================================================================================================================================================================================  
 # Cameras
                                 
@@ -1070,9 +1120,9 @@ class loadModel(create_shape):
     def reparentTo(self, parent):
         if not(self in parent.childModel):  parent.childModel.append(self)
         self.parent = parent
-	
+        
     def texSwap(self, texID, filename):
-	return loaderEgg.texSwap(self, texID, filename)
+        return loaderEgg.texSwap(self, texID, filename)
             
                                         
 #=====================================================================================================================================================================================  
@@ -1084,46 +1134,46 @@ class createLight(object):
 
         print "Creating light ..."
 
-	self.ambient = eglfloats((ambR,ambG,ambB,1.0))
-	self.diffuse = eglfloats((red,grn,blu,1.0))
-	self.specular = eglfloats((red,grn,blu,1.0))
-	self.xyz = eglfloats((x,y,z,1))
-	self.no = eglint(GL_LIGHT0 + no)
-	self.name = name
-	#self.mShininess = eglfloat(120.0)
-	self.lighton = False
-	
-	#opengles.glLightModelfv(GL_LIGHT_MODEL_COLOUR_CONTROL, GL_SEPERATE_SPECULAR_COLOR)   #Turns on specular highlights for textures
-	#opengles.glMaterialfv(GL_FRONT, GL_SHININESS, self.mShininess)#TIM: don't think this works but would like it to
-	opengles.glLightModelfv(GL_LIGHT_MODEL_AMBIENT, self.ambient)
-	opengles.glLightfv(self.no,GL_AMBIENT, self.ambient) 
-	opengles.glLightfv(self.no,GL_DIFFUSE,self.diffuse) 
-	opengles.glLightfv(self.no,GL_SPECULAR,self.specular) 
-	opengles.glLightfv(self.no,GL_POSITION,self.xyz) 
-	# 0 for a distant light and -1 for a spot. LIGHT0 comes predefined as a distant light but that's changed here
-	# I would have thought either w needs to be passed as a parameter to __init__ and not overwritten in position
-	# and/or define global values SPOT, DIST, POINT = -1, 0, 1
+        self.ambient = eglfloats((ambR,ambG,ambB,1.0))
+        self.diffuse = eglfloats((red,grn,blu,1.0))
+        self.specular = eglfloats((red,grn,blu,1.0))
+        self.xyz = eglfloats((x,y,z,1))
+        self.no = eglint(GL_LIGHT0 + no)
+        self.name = name
+        #self.mShininess = eglfloat(120.0)
+        self.lighton = False
+        
+        #opengles.glLightModelfv(GL_LIGHT_MODEL_COLOUR_CONTROL, GL_SEPERATE_SPECULAR_COLOR)   #Turns on specular highlights for textures
+        #opengles.glMaterialfv(GL_FRONT, GL_SHININESS, self.mShininess)#TIM: don't think this works but would like it to
+        opengles.glLightModelfv(GL_LIGHT_MODEL_AMBIENT, self.ambient)
+        opengles.glLightfv(self.no,GL_AMBIENT, self.ambient) 
+        opengles.glLightfv(self.no,GL_DIFFUSE,self.diffuse) 
+        opengles.glLightfv(self.no,GL_SPECULAR,self.specular) 
+        opengles.glLightfv(self.no,GL_POSITION,self.xyz) 
+        # 0 for a distant light and -1 for a spot. LIGHT0 comes predefined as a distant light but that's changed here
+        # I would have thought either w needs to be passed as a parameter to __init__ and not overwritten in position
+        # and/or define global values SPOT, DIST, POINT = -1, 0, 1
 
 
     def position(self,x,y,z,w=1):
-	mtrx =(ctypes.c_float*16)()
-	opengles.glGetFloatv(GL_MODELVIEW_MATRIX,ctypes.byref(mtrx))
-	opengles.glLoadIdentity()
-	self.xyz = eglfloats((x,y,z,w))
-	opengles.glLightfv(self.no, GL_POSITION, self.xyz)
-	opengles.glLoadMatrixf(mtrx)
+        mtrx =(ctypes.c_float*16)()
+        opengles.glGetFloatv(GL_MODELVIEW_MATRIX,ctypes.byref(mtrx))
+        opengles.glLoadIdentity()
+        self.xyz = eglfloats((x,y,z,w))
+        opengles.glLightfv(self.no, GL_POSITION, self.xyz)
+        opengles.glLoadMatrixf(mtrx)
     
     def on(self):
-	#load view matrix
-	opengles.glEnable(GL_LIGHTING)
-	opengles.glEnable(self.no)
-	opengles.glLightfv(self.no,GL_POSITION,self.xyz) #TIM: fv
-	self.lighton = True
+        #load view matrix
+        opengles.glEnable(GL_LIGHTING)
+        opengles.glEnable(self.no)
+        opengles.glLightfv(self.no,GL_POSITION,self.xyz) #TIM: fv
+        self.lighton = True
 
     def off(self):
-	opengles.glDisable(self.no)
-	opengles.glDisable(GL_LIGHTING)
-	self.lighton = False
+        opengles.glDisable(self.no)
+        opengles.glDisable(GL_LIGHTING)
+        self.lighton = False
 
 class fog():
 # By paddywwoof
@@ -1132,13 +1182,13 @@ class fog():
         opengles.glFogf(GL_FOG_MODE, GL_EXP) # defaults to this anyway
         opengles.glFogf(GL_FOG_DENSITY, eglfloat(density)) # exponent factor
         opengles.glFogfv(GL_FOG_COLOR, eglfloats(colour)) # don't think the alpha value alters the target object alpha
-	
+        
     def on(self):
         opengles.glEnable(GL_FOG)
-	
+        
     def off(self):
         opengles.glDisable(GL_FOG)
-	
+        
 #=====================================================================================================================================================================================  
 # Text and fonts
 # NEEDS FIXING - TEXTURES NEED CLEANING UP
@@ -1230,88 +1280,74 @@ class missile(object):
 class ball(object):
     
     def __init__(self,radius,x,y,vx=0.0,vy=0.0,decay=0.001):
-	self.radius=radius
-	self.x=x
-	self.y=y
-	self.x=x
-	self.vx = vx
-	self.vy = vy
-	self.mass =radius*2
-	self.decay = decay
-	
+        self.radius=radius
+        self.x=x
+        self.y=y
+        self.x=x
+        self.vx = vx
+        self.vy = vy
+        self.mass =radius**2
+        self.decay = decay
+        
     def hit(self,otherball):
-	#used for pre-checking ball positions
-	dx = (self.x+self.vx)-(otherball.x+otherball.vx)
-	dy = (self.y+self.vy)-(otherball.y+otherball.vy)
-	rd = self.radius+otherball.radius
-	if (dx**2+dy**2) <= (rd**2): return True
-	else: return False
-	
+        #used for pre-checking ball positions
+        dx = (self.x+self.vx)-(otherball.x+otherball.vx)
+        dy = (self.y+self.vy)-(otherball.y+otherball.vy)
+        rd = self.radius+otherball.radius
+        if (dx**2+dy**2) <= (rd**2): return True
+        else: return False
+        
     def collisionBounce(self,otherball):
-	dx = self.x-otherball.x
-	dy = self.y-otherball.y
-	rd = self.radius+otherball.radius
-	#print dx,dy #,self.x,otherball.x
-	# should really work out if it's converging i.e. angle outside -90 to 90 degrees
-	# angle = arcos(a.b/|a||b|) to stop balls getting 'trapped' inside each other!
-	# check sign of a.b
-	dotP = dotproduct((self.x - otherball.x), (self.y - otherball.y), 0, (self.vx - otherball.vx), (self.vy - otherball.vy), 0)
-	if dx**2+dy**2 <= rd**2 and dotP < 0:
-	    #sq = 1.0 / math.sqrt(dx**2+dy**2)
-	    #print "dxdy", dx**2+dy**2
-	    #otherball.vx = math.copysign((dx*sq),self.vx)*5.0
-	    #otherball.vy = math.copysign((dy*sq),self.vy)*5.0
-	    #self.vx = 0.0 #math.copysign(abs(dy*sq),self.vx)
-	    #self.vy = 0.0 #-math.copysign(abs(dx*sq),self.vy)
-	    
-	    cangle = math.atan2(dy,dx)
-	    mag1 = math.sqrt(self.vx**2+self.vy**2)
-	    mag2 = math.sqrt(otherball.vx**2+otherball.vy**2)
-	    dir1 = math.atan2(self.vy,self.vx)
-	    dir2 = math.atan2(otherball.vy,otherball.vx)
-	    nspx1 = mag1 * math.cos(dir1-cangle)
-	    nspy1 = mag1 * math.sin(dir1-cangle)
-	    nspx2 = mag2 * math.cos(dir2-cangle)
-	    nspy2 = mag2 * math.sin(dir2-cangle)
-	    fspx1 = ((self.mass-otherball.mass)*nspx1+(otherball.mass*2)*nspx2)/(self.mass+otherball.mass)
-	    fspx2 = ((self.mass*2)*nspx1+(otherball.mass-self.mass)*nspx2)/(self.mass+otherball.mass)
-	    fspy1 = nspy1
-	    fspy2 = nspy2
-	    self.vx = math.cos(cangle)*fspx1+math.cos(cangle+pipi*.5)*fspy1
-	    self.vy = math.sin(cangle)*fspx1+math.sin(cangle+pipi*.5)*fspy1
-	    otherball.vx = math.cos(cangle)*fspx2+math.cos(cangle+pipi*.5)*fspy2
-	    otherball.vy = math.sin(cangle)*fspx2+math.sin(cangle+pipi*.5)*fspy2
+	# relative positions
+        dx = self.x-otherball.x
+        dy = self.y-otherball.y
+        rd = self.radius+otherball.radius
+        # check sign of a.b see if converging
+        dotP = dotproduct(dx, dy, 0, (self.vx - otherball.vx), (self.vy - otherball.vy), 0)
+        if dx**2+dy**2 <= rd**2 and dotP < 0:
+	    R = otherball.mass/self.mass #ratio of masses
+	    D = dx/dy #glancing angle for equating angular momentum before and after collision
+	    #three more simultaneous equations for x and y components of momentum and k.e. give:
+	    delta2y = 2 * (D*self.vx + self.vy - D*otherball.vx - otherball.vy)/(1 + D*D + D*D*R + R)
+	    delta2x = D * delta2y
+	    delta1y = -1 * R * delta2y
+	    delta1x = -1 * R * D * delta2y
+
+            self.vx += delta1x
+            self.vy += delta1y
+            otherball.vx += delta2x
+            otherball.vy += delta2y
 
     
 class shader(object):
 
 # This class based on Peter de Rivaz's mandlebrot example
 
-	def showlog(self,shader):
-	    """Prints the compile log for a shader"""
-	    N=1024
-	    log=(ctypes.c_char*N)()
-	    loglen=ctypes.c_int()
-	    opengles.glGetShaderInfoLog(shader,N,ctypes.byref(loglen),ctypes.byref(log))
-	    print "Shader log:",log.value
+        def showlog(self,shader):
+            """Prints the compile log for a shader"""
+            N=1024
+            log=(ctypes.c_char*N)()
+            loglen=ctypes.c_int()
+            opengles.glGetShaderInfoLog(shader,N,ctypes.byref(loglen),ctypes.byref(log))
+            print "Shader log:",log.value
 
-	def showprogramlog(self,shader):
-	    """Prints the compile log for a shader"""
-	    N=1024
-	    log=(ctypes.c_char*N)()
-	    loglen=ctypes.c_int()
-	    opengles.glGetProgramInfoLog(shader,N,ctypes.byref(loglen),ctypes.byref(log))
-	    print log.value
+        def showprogramlog(self,shader):
+            """Prints the compile log for a shader"""
+            N=1024
+            log=(ctypes.c_char*N)()
+            loglen=ctypes.c_int()
+            opengles.glGetProgramInfoLog(shader,N,ctypes.byref(loglen),ctypes.byref(log))
+            print log.value
             
     
-	def __init__(self, vshader_source, fshader_source, tex1=None, tex2=None, param1=None, param2=None, param3=None):
-		
-	    #Pi3D can only accept shaders with limited parameters as specific parameters
-	    #would require a lot more coding unless there's a way of passing these back.
-	    #Shaders should have their parameters defined in the shader source.
-	    #The only parameters Pi3D can pass (for now) is textures.
+        def __init__(self, vshader_source, fshader_source, tex1=None, tex2=None, param1=None, param2=None, param3=None):
+                
+            #Pi3D can only accept shaders with limited parameters as specific parameters
+            #would require a lot more coding unless there's a way of passing these back.
+            #Shaders should have their parameters defined in the shader source.
+            #The only parameters Pi3D can pass (for now) is textures.
 
-	    self.vshader_source = ctypes.c_char_p(
+            self.vshader_source = ctypes.c_char_p(
               "attribute vec4 vertex;"
               "varying vec2 tcoord;"
               "void main(void) {"
@@ -1320,33 +1356,33 @@ class shader(object):
               "  gl_Position = pos;"
               "  tcoord = vertex.xy*0.5+0.5;"
               "}")
-	      	    
-	    self.tex1 = tex1
-	    self.tex2 = tex2
-	    
-	    vshads = ctypes.c_char_p(vshader_source)
-	    fshads = ctypes.c_char_p(fshader_source)
-	    
-	    vshader = opengles.glCreateShader(GL_VERTEX_SHADER)
-	    opengles.glShaderSource(vshader, 1, ctypes.byref(self.vshader_source), 0)
-	    opengles.glCompileShader(vshader)
-	    self.showlog(vshader)
-	    
-	    fshader = opengles.glCreateShader(GL_FRAGMENT_SHADER)
-	    opengles.glShaderSource(fshader, 1, ctypes.byref(fshads), 0)
-	    opengles.glCompileShader(fshader)
-	    self.showlog(fshader)
+                    
+            self.tex1 = tex1
+            self.tex2 = tex2
+            
+            vshads = ctypes.c_char_p(vshader_source)
+            fshads = ctypes.c_char_p(fshader_source)
+            
+            vshader = opengles.glCreateShader(GL_VERTEX_SHADER)
+            opengles.glShaderSource(vshader, 1, ctypes.byref(self.vshader_source), 0)
+            opengles.glCompileShader(vshader)
+            self.showlog(vshader)
+            
+            fshader = opengles.glCreateShader(GL_FRAGMENT_SHADER)
+            opengles.glShaderSource(fshader, 1, ctypes.byref(fshads), 0)
+            opengles.glCompileShader(fshader)
+            self.showlog(fshader)
 
-	    self.program = opengles.glCreateProgram()
-	    opengles.glAttachShader(self.program, vshader)
-	    opengles.glAttachShader(self.program, fshader)
-	    opengles.glLinkProgram(self.program)
-	    self.showprogramlog(self.program)
+            self.program = opengles.glCreateProgram()
+            opengles.glAttachShader(self.program, vshader)
+            opengles.glAttachShader(self.program, fshader)
+            opengles.glLinkProgram(self.program)
+            self.showprogramlog(self.program)
 
-	def use(self):
-	    if self.tex1<>None: unif_tex1 = opengles.glGetUniformLocation(self.program, "tex1")  #frag shader must have a uniform 'tex1'
-	    if self.tex2<>None: unif_tex2 = opengles.glGetUniformLocation(self.program, "tex2")  #frag shader must have a uniform 'tex2'
-	    opengles.glUseProgram ( self.program );
+        def use(self):
+            if self.tex1<>None: unif_tex1 = opengles.glGetUniformLocation(self.program, "tex1")  #frag shader must have a uniform 'tex1'
+            if self.tex2<>None: unif_tex2 = opengles.glGetUniformLocation(self.program, "tex2")  #frag shader must have a uniform 'tex2'
+            opengles.glUseProgram ( self.program );
 
         #self.program = program
         #self.unif_color = opengles.glGetUniformLocation(program, "color");

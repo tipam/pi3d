@@ -19,13 +19,14 @@ rads = 0.017453292512 # degrees to radians
 
 #helpful messages
 print "############################################################"
-print "Mouse to move left and right"
+print "Mouse to move left and right and up and down"
 print "############################################################"
 print
 
 # Setup display and initialise pi3d
 display = pi3d.display()
 display.create3D(10,10,1200,900, 0.5, 800.0, 60.0) # x,y,width,height,near,far,aspect
+#display.create3D(10,10,1200,900, 0.5, 800.0, 60.0) # x,y,width,height,near,far,aspect
 display.setBackColour(0.4,0.8,0.8,1) # r,g,b,alpha
 
 # Load textures
@@ -45,12 +46,14 @@ monster = pi3d.createPlane(5.0, 5.0, "monster", 0,0,0, 0,0,0)
 # Create elevation map
 mapwidth=50.0                              
 mapdepth=50.0
-maphalf=20.0
+maphalf=23.0
 mapheight=20.0
-mymap = pi3d.createElevationMapFromTexture("textures/pong.jpg",mapwidth,mapdepth,mapheight,128,128,2,"sub",0,0,0, smooth=False)
+#set smooth to give proper normals
+mymap = pi3d.createElevationMapFromTexture("textures/pong.jpg",mapwidth,mapdepth,mapheight,64,64,2,"sub",0,0,0, smooth=True)
 # lighting. The default light is a point light but I have made the position method capable of creating
 # a directional light and this is what I do inside the loop. If you want a torch you don't need to move it about
-light = pi3d.createLight(0, 2, 2, 1, "", 0,1,2, 0.1,0.1,0.2) #yellowish 'torch' or 'sun' (could be blueish ambient with different env cube)
+light = pi3d.createLight(0, 2, 2, 1, "", 1,2,3, 0.1,0.1,0.2) #yellowish 'torch' or 'sun' with low level blueish ambient
+light.position(1,2,3,0) # set to directional light by settin position with 0 fourth parameter
 light.on()
 
 #avatar camera
@@ -70,7 +73,7 @@ gravity = 0.02
 #monster loc and speed
 rx, ry, rz = 0, 0, -maphalf
 drx, dry, drz = 0, 0, 0
-max_speed = 0.05
+max_speed = 0.1
 
 # Fetch key presses
 mykeys = pi3d.key()
@@ -80,18 +83,11 @@ mymouse.start()
 omx=mymouse.x
 omy=mymouse.y
 
-lastTm = time.time()
-m = pi3d.matrix()
-fly = False
-walk = False
-# Display scene and rotate cuboid
-angle = 0
-light.position(1, 1, 1, 0)
 while 1:
     display.clear()
     
     pi3d.identity()
-    pi3d.position(xm,-2+ym-mapheight,-maphalf-radius)
+    pi3d.position(xm,-2+ym-mapheight,-maphalf+2)
     
     myecube.draw(ectex,xm,ym,zm)
     mymap.draw(groundimg)
@@ -100,7 +96,6 @@ while 1:
     ball.draw(groundimg)
     
     #monster movement
-    
     drx = sx - rx
     if abs(drx) > max_speed: drx = drx/abs(drx) * max_speed
     dry = sy - ry
@@ -114,37 +109,24 @@ while 1:
     sx += dsx
     sy += dsy
     sz += dsz
-    grndy = mymap.calcHeight(sx, sz)
+    # now uses the clashTest method from elevationMap
+    clash = mymap.clashTest(sx, sy, sz, radius)
     # bouncing physics
-    if sy < grndy + 2*radius: 
-		# find map height one unit N and E to get two vectors on surace at 90 degree
-		y_a = mymap.calcHeight(sx+1, sz) - grndy
-		y_b = mymap.calcHeight(sx, sz+1) - grndy
-		# get the cross product of these two tangen vectors to create normal vector
-		nx = y_a
-		ny = -1
-		nz = y_b
-		# renormalise normal vector!
-		nfact = math.sqrt(nx*nx + ny*ny + nz*nz)
-		nx, ny, nz = nx/nfact, ny/nfact, nz/nfact
-		# use R = I - 2(N.I)N
-		rfact = 2*(nx*dsx + ny*dsy + nz*dsz)
-		dsx, dsy, dsz = dsx - rfact*nx, dsy - rfact*ny, dsz - rfact*nz
-		if dsx > 0.3: dsx = 0.2
-		if dsz > 0.3: dsz = 0.2
-		print dsx,
-		sy = grndy + 2*radius
-    # bounce off edges
-    if sx > maphalf: dsx = -1 * abs(dsx) * (1 + random.random())
-    if sx < -maphalf: dsx = abs(dsx)
-    
-    if sz > maphalf: dsz = -1 * abs(dsz) * (1 + random.random())
-    if sz < -maphalf: dsz = abs(dsz)
-    
-    ball.position(sx, sy, sz)
-    ball.rotateIncX(dsx*-10)
-    ball.rotateIncZ(dsz*-10)
+    if clash[0]:
+        # returns the components of normal vector if clash
+        nx, ny, nz =  clash[1], clash[2], clash[3]
+        # move it away a bit to stop it getting trapped inside if it has tunelled
+        sx, sy, sz = sx - 0.1*radius*nx, sy - 0.1*radius*ny, sz - 0.1*radius*nz
+        # clash[4] is also the ground level below the mid point of the object so this could be used to 'lift' it up
 
+        # use R = I - 2(N.I)N
+        rfact = 2.01*(nx*dsx + ny*dsy + nz*dsz) #small extra boost by using value > 2 to top up energy in defiance of 1st LOT
+        dsx, dsy, dsz = dsx - rfact*nx, dsy - rfact*ny, dsz - rfact*nz
+        # stop the speed increasing too much
+        if dsx > 0.3: dsx = 0.2
+        if dsz > 0.3: dsz = 0.2        
+        
+    # mouse movement checking here to get bat movment values
     mx=mymouse.x
     dx = -(mx-omx)*0.02
     omx=mx
@@ -155,11 +137,34 @@ while 1:
     omy=my
     if ((ym >= (0) and dy < 0) or (ym <= mapheight and dy > 0)):  ym += dy
 
+    # bounce off edges and give a random boost
+    if sx > maphalf: dsx = -1 * abs(dsx) * (1 + random.random())
+    if sx < -maphalf: dsx = abs(dsx)
+    if sz > maphalf: #player end
+        #check if bat in position
+        if (sx + xm)**2 + (sy - mapheight+ym)**2 < 10: #NB xm and ym are positions to move 'everthing else' so negative and offset height
+            dsz = -1 * abs(dsz) * (1 + random.random())
+            dsx += dx
+            dsy += dy
+        else:
+            sx, sy, sz = 0, 5, 0
+            dsx, dsy, dsz = 0.1*random.random(), 0, 0.2
+    if sz < -maphalf: #monster end
+        if (sx-rx)**2 + (sy-ry)**2 < 10:
+            dsz = abs(dsz)
+        else:
+            sx, sy, sz = 0, 5, 0
+            dsx, dsy, dsz = 0.1*random.random(), 0, -0.2
+
+    ball.position(sx, sy, sz)
+    ball.rotateIncX(dsx*-10)
+    ball.rotateIncZ(dsz*-10)
+
     #Press ESCAPE to terminate
     k = mykeys.read()
     if k==27: #Escape key
-		display.destroy()
-		mykeys.close()
-		break
+        display.destroy()
+        mykeys.close()
+        break
   
     display.swapBuffers()
