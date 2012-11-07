@@ -3,7 +3,7 @@ from ctypes import c_float
 
 import pi3d
 
-from pi3d.pi3dCommon import *
+from pi3d import *
 from pi3d import Constants
 
 CUBE_PARTS = ('top', 'left', 'front', 'right', 'back', 'bottom')
@@ -29,11 +29,11 @@ class EnvironmentCube(object):
     #cuboid data - faces are separated out for texturing..
 
     self.vertices = c_floats((-ww,hh,dd, ww,hh,dd, ww,-hh,dd, -ww,-hh,dd,
-            ww,hh,dd, ww,hh,-dd, ww,-hh,-dd, ww,-hh,dd,
-            -ww,hh,dd, -ww,hh,-dd, ww,hh,-dd, ww,hh,dd,
-            ww,-hh,dd, ww,-hh,-dd, -ww,-hh,-dd, -ww,-hh,dd,
-            -ww,-hh,dd, -ww,-hh,-dd, -ww,hh,-dd, -ww,hh,dd,
-            -ww,hh,-dd, ww,hh,-dd, ww,-hh,-dd, -ww,-hh,-dd ))
+                               ww,hh,dd, ww,hh,-dd, ww,-hh,-dd, ww,-hh,dd,
+                               -ww,hh,dd, -ww,hh,-dd, ww,hh,-dd, ww,hh,dd,
+                               ww,-hh,dd, ww,-hh,-dd, -ww,-hh,-dd, -ww,-hh,dd,
+                               -ww,-hh,dd, -ww,-hh,-dd, -ww,hh,-dd, -ww,hh,dd,
+                               -ww,hh,-dd, ww,hh,-dd, ww,-hh,-dd, -ww,-hh,-dd))
 
     self.normals = c_floats((0,0,1, 0,0,1, 0,0,1, 0,0,1,
             1,0,0, 1,0,0, 1,0,0, 1,0,0,

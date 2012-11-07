@@ -1,5 +1,5 @@
 from pi3d import Texture
-from pi3d.pi3dCommon import *
+from pi3d import *
 
 class Shape(object):
   def __init__(self, name, x, y, z, rx, ry, rz, sx, sy, sz, cx, cy, cz):

@@ -1,6 +1,6 @@
 import ctypes
 
-from pi3d.pi3dCommon import *
+from pi3d import *
 from pi3d import Constants
 
 # By paddywwoof 12-12-2012

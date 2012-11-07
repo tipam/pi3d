@@ -1,6 +1,6 @@
 import pi3d
 
-from pi3d.pi3dCommon import *
+from pi3d import *
 
 class Matrix(object):
   def __init__(self):

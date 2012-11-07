@@ -1,32 +1,59 @@
-# pi3D module
-# ===========
-# Version 0.06
-#
-# Copyright (c) 2012, Tim Skillman, Tom Swirly
-# (Some code initially based on Peter de Rivaz pyopengles example.)
-#
-#    www.github.com/rec/pi3d
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy of
-# this software and associated documentation files (the "Software"), to deal in the
-# Software without restriction, including without limitation the rights to use, copy,
-# modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
-# and to permit persons to whom the Software is furnished to do so, subject to the
-# following conditions:
-#
-# The above copyright notice and this permission notice shall be included in all copies
-# or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-# INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
-# PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
-# FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-# OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-# DEALINGS IN THE SOFTWARE.
+import ctypes
+import math
 
-from pi3d.pi3dCommon import *
+from ctypes import c_byte
+from ctypes import c_float
+from ctypes import c_int
+from ctypes import c_short
 
+from pi3d.Constants import *
 
+# Open the libraries
+bcm = ctypes.CDLL('libbcm_host.so')
+opengles = ctypes.CDLL('libGLESv2.so')
+openegl = ctypes.CDLL('libEGL.so')
 
+def ctypes_array(ct, x):
+  return (ct * len(x))(*x)
 
+def c_bytes(x):
+  return ctypes_array(c_byte, x)
 
+def c_ints(x):
+  return ctypes_array(c_int, x)
+
+def c_floats(x):
+  return ctypes_array(c_float, x)
+
+def c_shorts(x):
+  return ctypes_array(c_short, x)
+
+# TODO: not exact sure what this does but we do it a lot.
+def texture_min_mag():
+  for f in [GL_TEXTURE_MIN_FILTER, GL_TEXTURE_MAG_FILTER]:
+    opengles.glTexParameterf(GL_TEXTURE_2D, f, c_float(GL_LINEAR))
+
+def sqsum(*args):
+  return sum(x * x for x in args)
+
+def magnitude(*args):
+  return math.sqrt(sqsum(*args))
+
+def from_polar(direction=0.0, magnitude=1.0):
+  return from_polar_rad(math.radians(direction), magnitude)
+
+def from_polar_rad(direction=0.0, magnitude=1.0):
+  return magnitude * math.cos(direction), magnitude * math.sin(direction)
+
+def rotatef(angle, x, y, z):
+  if angle:
+    opengles.glRotatef(c_float(angle), c_float(x), c_float(y), c_float(z))
+
+def translatef(x, y, z):
+  opengles.glTranslatef(c_float(x), c_float(y), c_float(z))
+
+def scalef(sx, sy, sz):
+  opengles.glScalef(c_float(sx), c_float(sy), c_float(sz))
+
+def load_identity():
+  opengles.glLoadIdentity()

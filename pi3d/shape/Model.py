@@ -4,7 +4,7 @@ from pi3d import loaderEgg
 from pi3d.RotateVec import rotate_vec
 
 from pi3d.Matrix import Matrix
-from pi3d.pi3dCommon import *
+from pi3d import *
 from pi3d.shape.Shape import Shape
 
 class Model(Shape):
