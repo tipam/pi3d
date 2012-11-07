@@ -2,7 +2,6 @@ import ctypes
 import Image
 
 from pi3d import *
-from pi3d import Constants
 
 MAX_SIZE = 1024
 
@@ -36,7 +35,7 @@ def _load_tex(fileString,flip,size,blend):
   ny = min(ny, MAX_SIZE)
 
   if nx != ix or ny != iy or size>0:
-    if Constants.VERBOSE:
+    if VERBOSE:
       print ix, iy
     if size > 0:
       nx, ny = size, size
@@ -46,7 +45,7 @@ def _load_tex(fileString,flip,size,blend):
   else:
     s += 'Bitmap size: %d, %d' % (ix, iy)
 
-  if Constants.VERBOSE:
+  if VERBOSE:
     print 'Loading ...',s
 
   if flip:
@@ -79,7 +78,7 @@ class Textures(object):
     return texture
 
   def deleteAll(self):
-    if Constants.VERBOSE:
+    if VERBOSE:
       print '[Exit] Deleting textures ...'
       opengles.glDeleteTextures(self.tc, addressof(self.texs))
 

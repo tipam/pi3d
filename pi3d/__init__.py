@@ -6,7 +6,7 @@ from ctypes import c_float
 from ctypes import c_int
 from ctypes import c_short
 
-from pi3d.Constants import *
+from pi3d.constants import *
 
 # Open the libraries
 bcm = ctypes.CDLL('libbcm_host.so')

@@ -3,7 +3,6 @@ import math
 import pi3d
 
 from pi3d import *
-from pi3d import Constants
 from pi3d.shape.Shape import Shape
 
 class Sphere(Shape):
@@ -13,7 +12,7 @@ class Sphere(Shape):
     super(Sphere,self).__init__(name, x, y, z, rx, ry, rz,
                                 sx, sy, sz, cx, cy, cz)
 
-    if Constants.VERBOSE:
+    if VERBOSE:
       print "Creating sphere ..."
 
     path = []

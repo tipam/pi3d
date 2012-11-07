@@ -1,5 +1,4 @@
 from pi3d import *
-from pi3d import Constants
 from pi3d.shape.Shape import Shape
 
 class Cuboid(Shape):
@@ -8,7 +7,7 @@ class Cuboid(Shape):
     super(Cuboid,self).__init__(name, x, y, z, rx, ry, rz,
                                 1.0, 1.0, 1.0, cx, cy, cz)
 
-    if Constants.VERBOSE:
+    if VERBOSE:
       print "Creating cuboid ..."
 
     self.width = w

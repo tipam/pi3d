@@ -1,5 +1,4 @@
 from pi3d import *
-from pi3d import Constants
 
 # This class based on Peter de Rivaz's mandlebrot example
 
@@ -49,20 +48,20 @@ class Shader(object):
     vshader = opengles.glCreateShader(GL_VERTEX_SHADER)
     opengles.glShaderSource(vshader, 1, ctypes.byref(self.vshader_source), 0)
     opengles.glCompileShader(vshader)
-    if Constants.VERBOSE:
+    if VERBOSE:
       self.showlog(vshader)
 
     fshader = opengles.glCreateShader(GL_FRAGMENT_SHADER)
     opengles.glShaderSource(fshader, 1, ctypes.byref(fshads), 0)
     opengles.glCompileShader(fshader)
-    if Constants.VERBOSE:
+    if VERBOSE:
       self.showlog(fshader)
 
     self.program = opengles.glCreateProgram()
     opengles.glAttachShader(self.program, vshader)
     opengles.glAttachShader(self.program, fshader)
     opengles.glLinkProgram(self.program)
-    if Constants.VERBOSE:
+    if VERBOSE:
       self.showprogramlog(self.program)
 
   def use(self):

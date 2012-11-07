@@ -1,11 +1,11 @@
-from pi3d import Constants
+from pi3d import *
+
 from pi3d import Texture
 from pi3d import loaderEgg
 from pi3d.RotateVec import rotate_vec
 
-from pi3d.Matrix import Matrix
-from pi3d import *
 from pi3d.shape.Shape import Shape
+from pi3d.Matrix import Matrix
 
 class Model(Shape):
   def __init__(self, fileString, texs, name="", x=0.0, y=0.0, z=0.0,
@@ -16,7 +16,7 @@ class Model(Shape):
 
     self.exf = fileString[-3:].lower()
     self.texs = texs
-    if Constants.VERBOSE:
+    if VERBOSE:
       print "Loading ",fileString
 
     if self.exf == 'egg':

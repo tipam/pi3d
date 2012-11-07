@@ -4,7 +4,6 @@ from ctypes import c_float
 import pi3d
 
 from pi3d import *
-from pi3d import Constants
 
 CUBE_PARTS = ('top', 'left', 'front', 'right', 'back', 'bottom')
 
@@ -15,7 +14,7 @@ def loadECfiles(path, fname, textures):
 
 class EnvironmentCube(object):
   def __init__(self, size=500.0, maptype="HALFCROSS", name=""):
-    if Constants.VERBOSE:
+    if VERBOSE:
       print "Creating Environment Cube ..."
 
     self.scale = size

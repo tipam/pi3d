@@ -2,7 +2,6 @@ import Image
 import PIL.ImageOps
 
 from pi3d import *
-from pi3d import Constants
 from pi3d.shape.Shape import Shape
 
 class ElevationMap(Shape):
@@ -12,7 +11,7 @@ class ElevationMap(Shape):
                sx=1.0, sy=1.0, sz=1.0, cx=0.0, cy=0.0, cz=0.0):
     super(ElevationMap,self).__init__(name, x, y, z, rx, ry, rz,
                                       sx, sy, sz, cx, cy, cz)
-    if Constants.VERBOSE:
+    if VERBOSE:
       print "Loading height map ...",mapfile
 
     if divx>200 or divy>200:
@@ -42,7 +41,7 @@ class ElevationMap(Shape):
     self.iy=iy
     self.ttype = GL_TRIANGLE_STRIP
 
-    if Constants.VERBOSE:
+    if VERBOSE:
       print "Creating Elevation Map ...", ix, iy
 
     wh = width * 0.5

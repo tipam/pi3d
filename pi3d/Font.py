@@ -4,7 +4,6 @@ import Image
 from PIL import ImageDraw
 
 from pi3d import *
-from pi3d import Constants
 
 # Text and fonts
 # NEEDS FIXING - TEXTURES NEED CLEANING UP

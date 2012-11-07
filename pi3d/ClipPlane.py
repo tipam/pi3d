@@ -3,7 +3,7 @@
 import ctypes
 
 from pi3d import *
-from pi3d import Constants
+from pi3d.constants import *
 
 class ClipPlane():
   def __init__(self, no=0, x=0, y=0, z=1, w=60):

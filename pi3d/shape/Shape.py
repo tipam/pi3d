@@ -160,7 +160,7 @@ class Shape(object):
       opx = px
       opy = py
 
-    if Constants.VERBOSE:
+    if VERBOSE:
       print ssize, ss
 
     return (verts, norms, idx, tex_coords, ssize)

@@ -3,13 +3,12 @@ import ctypes
 import pi3d
 
 from pi3d import *
-from pi3d import Constants
 
 class Light(object):
   def __init__(self, no=0, red=1.0, grn=1.0, blu=1.0, name="",
                x=0, y=0, z=0, ambR=0.5, ambG=0.5, ambB=0.5):
 
-    if Constants.VERBOSE:
+    if VERBOSE:
       print "Creating light ..."
 
     self.ambient = c_floats((ambR, ambG, ambB, 1.0))

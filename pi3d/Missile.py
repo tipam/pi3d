@@ -1,4 +1,4 @@
-from pi3d import Constants
+from pi3d.constants import *
 
 # TODO: This code isn't used anywhere else.
 
@@ -46,7 +46,7 @@ class Missile(object):
     if self.countDown > 0:
       self.countDown -= 1
       if self.countDown == 0:
-        if Constants.VERBOSE:
+        if VERBOSE:
           print "fizzle"
         self.IsActive = False
     missile.x = self.x

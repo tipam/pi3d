@@ -1,5 +1,4 @@
 from pi3d import *
-from pi3d import Constants
 from pi3d.shape.Shape import Shape
 
 class Tube(Shape):
@@ -8,7 +7,7 @@ class Tube(Shape):
                sx=1.0, sy=1.0, sz=1.0, cx=0.0, cy=0.0, cz=0.0):
     super(Tube,self).__init__(name, x, y, z, rx, ry, rz, sx, sy, sz, cx, cy, cz)
 
-    if Constants.VERBOSE:
+    if VERBOSE:
       print "Creating Tube ..."
 
     t = thickness * 0.5

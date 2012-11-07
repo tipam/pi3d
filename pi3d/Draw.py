@@ -2,7 +2,7 @@ import pi3d
 
 from pi3d import *
 
-from pi3d import Constants
+from pi3d.constants import *
 from pi3d import Texture
 
 RECT_NORMALS = c_bytes(( 0,0,-1, 0,0,-1, 0,0,-1, 0,0,-1 ))

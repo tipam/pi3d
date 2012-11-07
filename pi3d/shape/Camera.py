@@ -3,13 +3,12 @@ from ctypes import c_float
 import pi3d
 
 from pi3d import *
-from pi3d import Constants
 from pi3d.shape.Shape import Shape
 
 class Camera(Shape):
   def __init__(self, name="", x=0.0, y=0.0, z=0.0, rx=0.0, ry=0.0, rz=0.0):
     super(Camera, self).__init__(name, x, y, z, rx, ry, rz, 1, 1, 1)
-    if Constants.VERBOSE:
+    if VERBOSE:
       print "Creating camera ..."
 
   def orthographic(self, left, right, bottom, top, zoom=1, near=-1, far=10):

@@ -4,9 +4,7 @@ from ctypes import c_float
 import Image
 
 import pi3d
-
 from pi3d import *
-from pi3d import Constants
 
 class Display(object):
   def __init__(self):
@@ -23,10 +21,10 @@ class Display(object):
     self.max_width = width.value
     self.max_height = height.value
 
-    if Constants.VERBOSE:
-      print Constants.STARTUP_MESSAGE % dict(version=Constants.__version__,
-                                             width=self.max_width,
-                                             height=self.max_height)
+    if VERBOSE:
+      print STARTUP_MESSAGE % dict(version=VERSION,
+                                   width=self.max_width,
+                                   height=self.max_height)
 
   def create_display(self, x=0, y=0, w=0, h=0, depth=24):
     b = bcm.bcm_host_init()
@@ -184,7 +182,7 @@ class Display(object):
         opengles.glColorMask(1, 1, 1, 0)
 
   def screenshot(self, filestring):
-    if Constants.VERBOSE:
+    if VERBOSE:
       print "Taking screenshot to '",filestring,"'"
 
     size = self.win_height * self.win_width * 3
