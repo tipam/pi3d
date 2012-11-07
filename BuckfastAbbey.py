@@ -74,7 +74,9 @@ while 1:
     mtrx.pop()
     
     mylight.on()
-    mymodel.draw()
+    #mymodel.draw(newTex) # sub newTex texture for all textures in the object
+    #mymodel.draw(None, 2) # use the 2nd texture sorted alphabetically for all textures in model, could be used for animation
+    mymodel.draw() # normal draw
     mylight.off()
     
     mx=mymouse.x

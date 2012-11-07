@@ -38,9 +38,10 @@ mapheight=60.0
 landimg = texs.loadTexture("textures/stonygrass.jpg")
 #surface1 = pi3d.loadTextureAlpha("textures/gravel3.png")
 mymap = pi3d.createElevationMapFromTexture("textures/mountainsHgt.jpg",mapwidth,mapdepth,mapheight,64,64,10.0) #testislands.jpg
-#mymap2 = pi3d.createElevationMapFromTexture("textures/mountainsHgt.jpg",mapwidth,mapdepth,mapheight,64,64, 128)
+mymap2 = pi3d.createElevationMapFromTexture("textures/mountainsHgt.jpg",mapwidth,mapdepth,mapheight,64,64, 128, "", 0.0, 0.01) # y position just above other map)
 
-myclip = pi3d.clipPlane()
+myclip = pi3d.clipPlane() # clip plane used to make the detailed layer dissapear in the distance
+myfog = pi3d.fog(0.01, (0.2,0.2,0.3,0.01)) # fog to make the distant hills smokey!
 
 light = pi3d.createLight(0, 10,10,10, "", 0,100,0)
 light.on()
@@ -108,7 +109,7 @@ while 1:
     mytrees1.drawAll(tree2img)
     mytrees2.drawAll(tree1img)
     mytrees3.drawAll(hb2img)
-
+    
     mx=mymouse.x
     my=mymouse.y
     

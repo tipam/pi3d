@@ -147,7 +147,7 @@ def texture_on(tex, tex_coords, vtype):
 	opengles.glEnable(GL_TEXTURE_2D)
 	if tex.alpha:
 	    if tex.blend:
-		opengles.glDisable(GL_DEPTH_TEST)
+		#opengles.glDisable(GL_DEPTH_TEST)
 		opengles.glEnable(GL_BLEND)
 		opengles.glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA)
 	    else:
@@ -230,6 +230,12 @@ def dot(x1,y1,x2,y2):
 	s = math.sqrt(a*a+b*b)
 	if s>0.0: return a/s, b/s
 	else: return 0.0,0.0
+	
+def dotproduct(x1,y1,z1,x2,y2,z2):
+	return x1*x2 + y1*y2 + z1*z2
+	
+def crossproduct(x1,y1,z1,x2,y2,z2):
+	return y1*z2 - z1*y2, z1*x2 - x1*z2, x1*y2 - y1*x2
 	
 def intersectTriangle(v1,v2,v3,pos):
 	#Function calculates the y intersection of a point on a triangle
