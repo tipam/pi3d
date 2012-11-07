@@ -113,30 +113,6 @@ def rotate(rotx, roty, rotz):
   rotatef(roty, 0, 1, 0)
   rotatef(rotx, 1, 0, 0)
 
-def angleVecs(x1, y1, x2, y2, x3, y3):
-  a = x2 - x1
-  b = y2 - y1
-  c = x2 - x3
-  d = y2 - y3
-
-  sqab = magnitude(a, b)
-  sqcd = magnitude(c, d)
-  l = sqab * sqcd
-  if l == 0.0:
-    l = 0.0001
-  aa = ((a*c)+(b*d)) / l
-  if aa == -1.0:
-    return math.pi
-  if aa == 0.0:
-    return 0.0
-  dist = (a*y3 - b*x3 + x1*b - y1*a) / sqab
-  angle = math.acos(aa)
-
-  if dist > 0.0:
-    return math.pi * 2 - angle
-  else:
-    return angle
-
 def normalize_vector(begin, end):
   diff = [e - b for b, e in zip(begin, end)]
   mag = magnitude(*diff)
@@ -229,7 +205,6 @@ def rotateVec(rx,ry,rz,xyz):
 	y = x*sa+y*ca
 	x = xx
     return (x,y,z)
-
 
 def rotateVecX(r, x, y, z):
   sa = math.sin(math.radians(r))
@@ -351,81 +326,6 @@ def shape_draw(self, tex, shl=GL_UNSIGNED_SHORT):
     opengles.glDrawElements( self.ttype, self.ssize, shl , self.indices)
     opengles.glLoadMatrixf(mtrx)
 
-# TODO: contains a self argument, should probably be a class method.
-def create_display(self, x=0, y=0, w=0, h=0, depth=24):
-  b = bcm.bcm_host_init()
-  self.display = openegl.eglGetDisplay(EGL_DEFAULT_DISPLAY)
-  assert self.display != EGL_NO_DISPLAY
-
-  r = openegl.eglInitialize(self.display,0,0)
-  #assert r == EGL_FALSE
-
-  attribute_list = c_ints((EGL_RED_SIZE, 8,
-                           EGL_GREEN_SIZE, 8,
-                           EGL_BLUE_SIZE, 8,
-                           EGL_ALPHA_SIZE, 8,
-                           EGL_DEPTH_SIZE, 24,
-                           EGL_BUFFER_SIZE, 32,
-                           EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
-                           EGL_NONE))
-  numconfig = c_int()
-  config = ctypes.c_void_p()
-  r = openegl.eglChooseConfig(self.display,
-                              ctypes.byref(attribute_list),
-                              ctypes.byref(config), 1,
-                              ctypes.byref(numconfig))
-
-  context_attribs = c_ints( (EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE) )
-  self.context = openegl.eglCreateContext(self.display, config, EGL_NO_CONTEXT, 0)
-  #ctypes.byref(context_attribs) )
-  assert self.context != EGL_NO_CONTEXT
-
-  #Set the viewport position and size
-
-  dst_rect = c_ints( (x,y,w,h) ) #width.value,height.value) )
-  src_rect = c_ints( (x,y,w<<16, h<<16) ) #width.value<<16, height.value<<16) )
-
-  self.dispman_display = bcm.vc_dispmanx_display_open( 0 ) #LCD setting
-  self.dispman_update = bcm.vc_dispmanx_update_start( 0 )
-  self.dispman_element = bcm.vc_dispmanx_element_add(self.dispman_update,
-                                                     self.dispman_display,
-                                                     0, ctypes.byref(dst_rect),
-                                                     0, ctypes.byref(src_rect),
-                                                     DISPMANX_PROTECTION_NONE,
-                                                     0, 0, 0)
-
-  nativewindow = c_ints((self.dispman_element, w, h + 1));
-  bcm.vc_dispmanx_update_submit_sync(self.dispman_update)
-
-  nw_p = ctypes.pointer(nativewindow)
-  self.nw_p = nw_p
-
-  self.surface = openegl.eglCreateWindowSurface(self.display, config, nw_p, 0)
-  assert self.surface != EGL_NO_SURFACE
-
-  r = openegl.eglMakeCurrent(self.display, self.surface, self.surface,
-                             self.context)
-  assert r
-
-  #Create viewport
-  opengles.glViewport(0, 0, w, h)
-
-  #Setup default hints
-  opengles.glEnable(GL_CULL_FACE)
-  #opengles.glShadeModel(GL_FLAT)
-  opengles.glEnable(GL_NORMALIZE)
-  opengles.glEnable(GL_DEPTH_TEST)
-
-  #switches off alpha blending problem with desktop (is there a bug in the driver?)
-  #Thanks to Roland Humphries who sorted this one!!
-  opengles.glColorMask(1, 1, 1, 0)
-
-  opengles.glEnableClientState(GL_VERTEX_ARRAY)
-  opengles.glEnableClientState(GL_NORMAL_ARRAY)
-
-  self.active = True
-
-
 # TODO: Nothing below this line is ever actually called.
 
 def ctype_resize(array, new_size):
@@ -438,3 +338,26 @@ def showerror():
 def limit(x, below, above):
   return max(min(x, above), below)
 
+def angleVecs(x1, y1, x2, y2, x3, y3):
+  a = x2 - x1
+  b = y2 - y1
+  c = x2 - x3
+  d = y2 - y3
+
+  sqab = magnitude(a, b)
+  sqcd = magnitude(c, d)
+  l = sqab * sqcd
+  if l == 0.0:  # TODO: comparison between floats.
+    l = 0.0001
+  aa = ((a * c) + (b * d)) / l
+  if aa == -1.0:  # TODO: comparison between floats.
+    return math.pi
+  if aa == 0.0:   # TODO: comparison between floats.
+    return 0.0
+  dist = (a * y3 - b * x3 + x1 * b - y1 * a) / sqab
+  angle = math.acos(aa)
+
+  if dist > 0.0:
+    return math.pi * 2 - angle
+  else:
+    return angle
