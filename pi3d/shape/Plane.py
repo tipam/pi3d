@@ -18,35 +18,32 @@ class Plane(Shape):
     self.width = w
     self.height = h
     self.ttype = GL_TRIANGLES
-    self.vertices = []
-    self.normals = []
-    self.tex_coords = []
-    self.indices = []
+    self.verts = []
+    self.norms = []
+    self.texcoords = []
+    self.inds = []
+
     ww = w / 2.0
     hh = h / 2.0
 
-    addVertex(self.vertices, -ww + x, hh + y, z,
-              self.normals, 0, 0, 1, self.tex_coords, 0.0, 0.0)
-    addVertex(self.vertices, ww + x, hh + y, z,
-              self.normals, 0, 0, 1, self.tex_coords, 1.0, 0.0)
-    addVertex(self.vertices, ww + x, -hh + y, z,
-              self.normals, 0, 0, 1, self.tex_coords, 1.0, 1.0)
-    addVertex(self.vertices, -ww + x,-hh + y, z,
-              self.normals, 0, 0, 1, self.tex_coords, 0.0 ,1.0)
-    addTri(self.indices, 1, 0, 3)
-    addTri(self.indices, 1, 3, 2)
+    self.add_vertex(-ww + x, hh + y, z, 0, 0, 1, 0.0, 0.0)
+    self.add_vertex(ww + x, hh + y, z, 0, 0, 1, 1.0, 0.0)
+    self.add_vertex(ww + x, -hh + y, z, 0, 0, 1, 1.0, 1.0)
+    self.add_vertex(-ww + x,-hh + y, z, 0, 0, 1, 0.0 ,1.0)
+    self.add_tri(1, 0, 3)
+    self.add_tri(1, 3, 2)
     # plane data - this could be stored locally so that vertices / tex coords an
     # be altered in real-time
 
-    self.verts = c_floats(self.vertices);
-    self.inds = c_shorts(self.indices);
-    self.norms = c_floats(self.normals);
-    self.texcoords = c_floats(self.tex_coords);
+    self.vertices = c_floats(self.verts)
+    self.indices = c_shorts(self.inds)
+    self.normals = c_floats(self.norms)
+    self.tex_coords = c_floats(self.texcoords)
 
   def draw(self, tex=0):
-    opengles.glVertexPointer(3, GL_FLOAT, 0, self.verts);
-    opengles.glNormalPointer(GL_FLOAT, 0, self.norms);
-    with Texture.Loader(tex, self.texcoords):
+    opengles.glVertexPointer(3, GL_FLOAT, 0, self.vertices);
+    opengles.glNormalPointer(GL_FLOAT, 0, self.normals);
+    with Texture.Loader(tex, self.tex_coords):
       self.transform()
-      opengles.glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, self.inds)
+      opengles.glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, self.indices)
 

@@ -96,18 +96,6 @@ def scalef(sx, sy, sz):
 def load_identity():
   opengles.glLoadIdentity()
 
-# TODO: should be a method on Shape.
-def addVertex(v, x, y, z, n, nx, ny, nz, t, tx, ty):
-# add vertex,normal and tex_coords ...
-  v.extend([x, y, z])
-  n.extend([nx, ny, nz])
-  t.extend([tx, ty])
-
-# TODO: should be a method on Shape.
-def addTri(v, x, y, z):
-# add triangle refs.
-  v.extend([x, y, z])
-
 # TODO: Nothing below this line is ever actually called.
 
 def ctype_resize(array, new_size):
