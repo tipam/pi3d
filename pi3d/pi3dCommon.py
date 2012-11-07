@@ -272,16 +272,12 @@ def lathe(path, sides = 12, tris = False, rise = 0.0, coils = 1.0):
   tcx = 1.0 / sides
   pr = (math.pi / sides) * 2
   rdiv = rise / rl
-  ss=0
+  ss = 0
 
   #find largest and smallest y of the path used for stretching the texture over
-  miny = path[0][1]
-  maxy = path[s - 1][1]
-  for p in range (0, s):
-    if path[p][1] < miny:
-      miny = path[p][1]
-    if path[p][1] > maxy:
-      maxy = path[p][1]
+  p = [i[1] for i in path]
+  miny = min(*p)
+  maxy = max(*p)
 
   verts = []
   norms = []
@@ -291,61 +287,46 @@ def lathe(path, sides = 12, tris = False, rise = 0.0, coils = 1.0):
   opx = path[0][0]
   opy = path[0][1]
 
-  for p in range (s):
+  for p in range(s):
     px = path[p][0]
     py = path[p][1]
 
-    tcy = 1.0 - ((py - miny)/(maxy - miny))
+    tcy = 1.0 - ((py - miny) / (maxy - miny))
 
     #normal between path points
     dx, dy = normalize_vector((opx, opy), (px, py))
 
-
     for r in range (0, rl):
-      sinr = math.sin(pr * r)
-      cosr = math.cos(pr * r)
-      verts.append(px * sinr)
-      verts.append(py)
-      verts.append(px * cosr)
-      norms.append(-sinr * dy)
-      norms.append(dx)
-      norms.append(-cosr * dy)
-      tex_coords.append(tcx * r)
-      tex_coords.append(tcy)
+      cosr, sinr = from_polar_rad(pr * r)
+      # TODO: why the reversal?
+
+      verts.extend([px * sinr, py, px * cosr])
+      norms.extend([-sinr * dy, dx, -cosr * dy])
+      tex_coords.extend([tcx * r, tcy])
       py += rdiv
 
     #last path profile (tidies texture coords)
-    verts.append(0)
-    verts.append(py)
-    verts.append(px)
-    norms.append(0)
-    norms.append(dx)
-    norms.append(-dy)
-    tex_coords.append(1.0)
-    tex_coords.append(tcy)
+    verts.extend([0, py, px])
+    norms.extend([0, dx, -dy])
+    tex_coords.extend([1.0, tcy])
 
     if p < s-1:
       if tris:
         # Create indices for GL_TRIANGLES
         pn += (rl + 1)
         for r in range(rl):
-          idx.append(pp + r + 1)
-          idx.append(pp + r)
-          idx.append(pn + r)
-          idx.append(pn + r)
-          idx.append(pn + r + 1)
-          idx.append(pp + r + 1)
+          idx.extend([pp + r + 1, pp + r,
+                      pn + r, pn + r,
+                      pn + r + 1, pp + r + 1])
           ss += 6
         pp += (rl + 1)
       else:
         #Create indices for GL_TRIANGLE_STRIP
         pn += (rl + 1)
         for r in range(rl):
-          idx.append(pp + r)
-          idx.append(pn + r)
+          idx.extend([pp + r, pn + r])
           ss += 2
-        idx.append(pp + sides)
-        idx.append(pn + sides)
+        idx.extend([pp + sides, pn + sides])
         ss += 2
         pp += (rl + 1)
 
@@ -356,7 +337,8 @@ def lathe(path, sides = 12, tris = False, rise = 0.0, coils = 1.0):
     print ssize, ss
   return (verts, norms, idx, tex_coords, ssize)
 
-def shape_draw(self,tex,shl=GL_UNSIGNED_SHORT):
+# TODO: contains a self argument, should probably be a class method.
+def shape_draw(self, tex, shl=GL_UNSIGNED_SHORT):
   from pi3d import Texture
   opengles.glShadeModel(GL_SMOOTH)
   opengles.glVertexPointer(3, GL_FLOAT, 0, self.vertices)
@@ -369,78 +351,82 @@ def shape_draw(self,tex,shl=GL_UNSIGNED_SHORT):
     opengles.glDrawElements( self.ttype, self.ssize, shl , self.indices)
     opengles.glLoadMatrixf(mtrx)
 
-def create_display(self,x=0,y=0,w=0,h=0,depth=24):
+# TODO: contains a self argument, should probably be a class method.
+def create_display(self, x=0, y=0, w=0, h=0, depth=24):
+  b = bcm.bcm_host_init()
+  self.display = openegl.eglGetDisplay(EGL_DEFAULT_DISPLAY)
+  assert self.display != EGL_NO_DISPLAY
 
-	b = bcm.bcm_host_init()
-	self.display = openegl.eglGetDisplay(EGL_DEFAULT_DISPLAY)
-	assert self.display != EGL_NO_DISPLAY
+  r = openegl.eglInitialize(self.display,0,0)
+  #assert r == EGL_FALSE
 
-	r = openegl.eglInitialize(self.display,0,0)
-	#assert r == EGL_FALSE
+  attribute_list = c_ints((EGL_RED_SIZE, 8,
+                           EGL_GREEN_SIZE, 8,
+                           EGL_BLUE_SIZE, 8,
+                           EGL_ALPHA_SIZE, 8,
+                           EGL_DEPTH_SIZE, 24,
+                           EGL_BUFFER_SIZE, 32,
+                           EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
+                           EGL_NONE))
+  numconfig = c_int()
+  config = ctypes.c_void_p()
+  r = openegl.eglChooseConfig(self.display,
+                              ctypes.byref(attribute_list),
+                              ctypes.byref(config), 1,
+                              ctypes.byref(numconfig))
 
-	attribute_list = c_ints(     (EGL_RED_SIZE, 8,
-				      EGL_GREEN_SIZE, 8,
-				      EGL_BLUE_SIZE, 8,
-				      EGL_ALPHA_SIZE, 8,
-				      EGL_DEPTH_SIZE, 24,
-				      EGL_BUFFER_SIZE, 32,
-				      EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
-				      EGL_NONE) )
-	numconfig = c_int()
-	config = ctypes.c_void_p()
-	r = openegl.eglChooseConfig(self.display,
-				    ctypes.byref(attribute_list),
-				    ctypes.byref(config), 1,
-				    ctypes.byref(numconfig))
+  context_attribs = c_ints( (EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE) )
+  self.context = openegl.eglCreateContext(self.display, config, EGL_NO_CONTEXT, 0)
+  #ctypes.byref(context_attribs) )
+  assert self.context != EGL_NO_CONTEXT
 
-	context_attribs = c_ints( (EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE) )
-	self.context = openegl.eglCreateContext(self.display, config, EGL_NO_CONTEXT, 0) #ctypes.byref(context_attribs) )
-	assert self.context != EGL_NO_CONTEXT
+  #Set the viewport position and size
 
-	#Set the viewport position and size
+  dst_rect = c_ints( (x,y,w,h) ) #width.value,height.value) )
+  src_rect = c_ints( (x,y,w<<16, h<<16) ) #width.value<<16, height.value<<16) )
 
-	dst_rect = c_ints( (x,y,w,h) ) #width.value,height.value) )
-	src_rect = c_ints( (x,y,w<<16, h<<16) ) #width.value<<16, height.value<<16) )
+  self.dispman_display = bcm.vc_dispmanx_display_open( 0 ) #LCD setting
+  self.dispman_update = bcm.vc_dispmanx_update_start( 0 )
+  self.dispman_element = bcm.vc_dispmanx_element_add(self.dispman_update,
+                                                     self.dispman_display,
+                                                     0, ctypes.byref(dst_rect),
+                                                     0, ctypes.byref(src_rect),
+                                                     DISPMANX_PROTECTION_NONE,
+                                                     0, 0, 0)
 
-	self.dispman_display = bcm.vc_dispmanx_display_open( 0 ) #LCD setting
-	self.dispman_update = bcm.vc_dispmanx_update_start( 0 )
-	self.dispman_element = bcm.vc_dispmanx_element_add ( self.dispman_update, self.dispman_display,
-				  0, ctypes.byref(dst_rect), 0,
-				  ctypes.byref(src_rect),
-				  DISPMANX_PROTECTION_NONE,
-				  0, 0, 0)
+  nativewindow = c_ints((self.dispman_element, w, h + 1));
+  bcm.vc_dispmanx_update_submit_sync(self.dispman_update)
 
-	nativewindow = c_ints((self.dispman_element,w,h+1));
-	bcm.vc_dispmanx_update_submit_sync( self.dispman_update )
+  nw_p = ctypes.pointer(nativewindow)
+  self.nw_p = nw_p
 
-	nw_p = ctypes.pointer(nativewindow)
-	self.nw_p = nw_p
+  self.surface = openegl.eglCreateWindowSurface(self.display, config, nw_p, 0)
+  assert self.surface != EGL_NO_SURFACE
 
-	self.surface = openegl.eglCreateWindowSurface( self.display, config, nw_p, 0)
-	assert self.surface != EGL_NO_SURFACE
+  r = openegl.eglMakeCurrent(self.display, self.surface, self.surface,
+                             self.context)
+  assert r
 
-	r = openegl.eglMakeCurrent(self.display, self.surface, self.surface, self.context)
-	assert r
+  #Create viewport
+  opengles.glViewport(0, 0, w, h)
 
-	#Create viewport
-	opengles.glViewport (0, 0, w, h)
+  #Setup default hints
+  opengles.glEnable(GL_CULL_FACE)
+  #opengles.glShadeModel(GL_FLAT)
+  opengles.glEnable(GL_NORMALIZE)
+  opengles.glEnable(GL_DEPTH_TEST)
 
-	#Setup default hints
-	opengles.glEnable(GL_CULL_FACE)
-	#opengles.glShadeModel(GL_FLAT)
-	opengles.glEnable(GL_NORMALIZE)
-	opengles.glEnable(GL_DEPTH_TEST)
+  #switches off alpha blending problem with desktop (is there a bug in the driver?)
+  #Thanks to Roland Humphries who sorted this one!!
+  opengles.glColorMask(1, 1, 1, 0)
 
-	#switches off alpha blending problem with desktop (is there a bug in the driver?)
-	#Thanks to Roland Humphries who sorted this one!!
-	opengles.glColorMask(1,1,1,0)
+  opengles.glEnableClientState(GL_VERTEX_ARRAY)
+  opengles.glEnableClientState(GL_NORMAL_ARRAY)
 
-	opengles.glEnableClientState(GL_VERTEX_ARRAY)
-	opengles.glEnableClientState(GL_NORMAL_ARRAY)
+  self.active = True
 
-	self.active = True
 
-# Nothing below this line is ever actually called.
+# TODO: Nothing below this line is ever actually called.
 
 def ctype_resize(array, new_size):
   resize(array, sizeof(array._type_) * new_size)
@@ -448,4 +434,7 @@ def ctype_resize(array, new_size):
 
 def showerror():
   return opengles.glGetError()
+
+def limit(x, below, above):
+  return max(min(x, above), below)
 
