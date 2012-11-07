@@ -95,8 +95,7 @@ class Extrude(Shape):
     opengles.glNormalPointer(GL_FLOAT, 0, self.norms)
     mtrx =(ctypes.c_float * 16)()
     opengles.glGetFloatv(GL_MODELVIEW_MATRIX, ctypes.byref(mtrx))
-    transform(self.x, self.y, self.z, self.rotx, self.roty, self.rotz,
-              self.sx, self.sy, self.sz, self.cx, self.cy, self.cz)
+    self.transform()
 
     with Texture.Loader(tex1, self.tex_coords):
       opengles.glDrawElements(GL_TRIANGLE_STRIP, self.edges * 2 + 2,

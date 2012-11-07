@@ -96,27 +96,11 @@ def scalef(sx, sy, sz):
 def load_identity():
   opengles.glLoadIdentity()
 
-# position, rotate and scale an object
-def transform(x, y, z, rotx, roty, rotz, sx, sy, sz, cx, cy, cz):
-  translatef(x - cx, y - cy, z - cz)
-
-  # TODO: why the reverse order?
-  rotatef(rotz, 0, 0, 1)
-  rotatef(roty, 0, 1, 0)
-  rotatef(rotx, 1, 0, 0)
-  scalef(sx, sy, sz)
-  translatef(cx, cy, cz)
-
 def rotate(rotx, roty, rotz):
   # TODO: why the reverse order?
   rotatef(rotz, 0, 0, 1)
   rotatef(roty, 0, 1, 0)
   rotatef(rotx, 1, 0, 0)
-
-def normalize_vector(begin, end):
-  diff = [e - b for b, e in zip(begin, end)]
-  mag = magnitude(*diff)
-  return [(x / mag if mag > 0.0 else 0.0) for x in diff]
 
 def intersect_triangle(v1, v2, v3, pos):
   #Function calculates the y intersection of a point on a triangle

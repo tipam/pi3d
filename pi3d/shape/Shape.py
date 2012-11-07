@@ -26,8 +26,7 @@ class Shape(object):
     with Texture.Loader(tex, self.tex_coords):
       mtrx = (c_float * 16)()
       opengles.glGetFloatv(GL_MODELVIEW_MATRIX, ctypes.byref(mtrx))
-      transform(self.x, self.y, self.z, self.rotx, self.roty, self.rotz,
-                self.sx, self.sy, self.sz, self.cx, self.cy, self.cz)
+      self.transform()
       opengles.glDrawElements( self.ttype, self.ssize, shl , self.indices)
       opengles.glLoadMatrixf(mtrx)
 
@@ -63,6 +62,17 @@ class Shape(object):
 
   def rotateIncZ(self,v):
     self.rotz += v
+
+  # position, rotate and scale an object
+  def transform(self):
+    translatef(self.x - self.cx, self.y - self.cy, self.z - self.cz)
+
+    # TODO: why the reverse order?
+    rotatef(self.rotz, 0, 0, 1)
+    rotatef(self.roty, 0, 1, 0)
+    rotatef(self.rotx, 1, 0, 0)
+    scalef(self.sx, self.sy, self.sz)
+    translatef(self.cx, self.cy, self.cz)
 
   def lathe(self, path, rise=0.0, loops=1.0, tris=True):
     s = len(path)
@@ -142,3 +152,10 @@ class Shape(object):
       print ssize, ss
 
     return (verts, norms, idx, tex_coords, ssize)
+
+def normalize_vector(begin, end):
+  diff = [e - b for b, e in zip(begin, end)]
+  mag = magnitude(*diff)
+  mult = 1 / mag if mag > 0.0 else 0.0
+  return [x * mult for x in diff]
+

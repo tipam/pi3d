@@ -106,8 +106,7 @@ class MergeShape(Shape):
     opengles.glVertexPointer(3, GL_FLOAT, 0, self.verts);
     opengles.glNormalPointer(GL_FLOAT, 0, self.norms);
     with Texture.Loader(tex, self.texcoords, GL_FLOAT):
-      transform(self.x, self.y, self.z, self.rotx, self.roty, self.rotz,
-                self.sx, self.sy, self.sz, self.cx, self.cy, self.cz)
+      self.transform()
       opengles.glDrawElements(self.shape[shapeNo][2],
                               self.shape[shapeNo][1],
                               GL_UNSIGNED_SHORT,
@@ -118,8 +117,7 @@ class MergeShape(Shape):
     opengles.glNormalPointer(GL_FLOAT, 0, self.norms);
     with Texture.Loader(tex, self.texcoords):
       opengles.glDisable(GL_CULL_FACE)
-      transform(self.x, self.y, self.z, self.rotx, self.roty, self.rotz,
-                self.sx, self.sy, self.sz, self.cx, self.cy, self.cz)
+      self.transform()
       opengles.glDrawElements(self.shape[0][2], len(self.indices),
                               GL_UNSIGNED_SHORT, self.inds)
       opengles.glEnable(GL_CULL_FACE)

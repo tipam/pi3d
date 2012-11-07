@@ -47,7 +47,6 @@ class Plane(Shape):
     opengles.glVertexPointer(3, GL_FLOAT, 0, self.verts);
     opengles.glNormalPointer(GL_FLOAT, 0, self.norms);
     with Texture.Loader(tex, self.texcoords):
-      transform(self.x, self.y, self.z, self.rotx, self.roty, self.rotz,
-                self.sx, self.sy, 1.0, self.cx, self.cy, self.cz)
+      self.transform()
       opengles.glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, self.inds)
 
