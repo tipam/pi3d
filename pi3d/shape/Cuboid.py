@@ -121,6 +121,3 @@ class Cuboid(Shape):
         tw, th,
         ))
 
-  def draw(self,tex=None):
-    shape_draw(self, tex)
-

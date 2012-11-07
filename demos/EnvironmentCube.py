@@ -65,7 +65,7 @@ while 1:
     mtrx.rotate(0,rot,0)
     #pi3d.translatef(xm, ym, zm)
 
-    myecube.draw(ectex,0.0,0.0,0.0)
+    myecube.draw(ectex, 0.0, 0.0, 0.0)
 
     mx=mymouse.x
     my=mymouse.y

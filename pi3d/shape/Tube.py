@@ -33,6 +33,3 @@ class Tube(Shape):
     self.tex_coords = c_floats(results[3])
     self.ssize = results[4]
 
-  def draw(self,tex=None):
-    shape_draw(self,tex)
-

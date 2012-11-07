@@ -24,8 +24,8 @@ class Lathe(Shape):
     self.tex_coords = c_floats(results[3])
     self.ssize = results[4]
 
-  def draw(self,tex=None):
+  def draw(self, tex=None, shl=GL_UNSIGNED_SHORT):
     opengles.glDisable(GL_CULL_FACE)
-    shape_draw(self, tex)
+    super(Lathe, self).draw(tex, shl)
     opengles.glEnable(GL_CULL_FACE)
 

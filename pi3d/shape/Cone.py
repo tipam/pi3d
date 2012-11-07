@@ -29,6 +29,3 @@ class Cone(Shape):
     self.indices = c_shorts(results[2])
     self.tex_coords = c_floats(results[3])
     self.ssize = results[4]
-
-  def draw(self,tex=None):
-    shape_draw(self,tex)

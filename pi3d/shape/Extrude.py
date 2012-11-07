@@ -89,7 +89,8 @@ class Extrude(Shape):
     self.botface = c_shorts(self.botface)
     self.sidefaces = c_shorts(self.sidefaces)
 
-  def draw(self, tex1=0, tex2=0, tex3=0):
+  def draw(self, tex1 = None, tex2 = None, tex3 = None):
+    # TODO: shadows Shape.draw
     opengles.glVertexPointer(3, GL_FLOAT, 0, self.verts)
     opengles.glNormalPointer(GL_FLOAT, 0, self.norms)
     mtrx =(ctypes.c_float * 16)()

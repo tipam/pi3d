@@ -1,5 +1,7 @@
 from pi3d import Constants
 
+# TODO: This code isn't used anywhere else.
+
 class Missile(object):
   def __init__(self):
     self.isActive = False
@@ -53,4 +55,5 @@ class Missile(object):
     missile.rotx = self.rx
     missile.roty = self.ry
     missile.rotz = self.rz
-    missile.draw(tex)
+
+    missile.draw(tex)  # TODO: draw method not defined.

@@ -74,8 +74,8 @@ class EnvironmentCube(object):
             0.002,0.002, .998,0.002, .998,.998, 0.002,.998))
 
 
-  def draw(self,tex,x,y,z):
-    mtrx =(ctypes.c_float*16)()
+  def draw(self,tex, x, y, z):
+    mtrx = (ctypes.c_float*16)()
     opengles.glGetFloatv(GL_MODELVIEW_MATRIX,ctypes.byref(mtrx))
     pi3d.translatef(-x, -y, -z)
     texture_min_mag();

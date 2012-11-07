@@ -35,6 +35,3 @@ class Disk(Shape):
     self.tex_coords = c_floats(self.texcoords);
     self.ssize = sides * 3
 
-  def draw(self,tex=None):
-    shape_draw(self,tex)
-

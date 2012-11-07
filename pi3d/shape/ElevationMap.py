@@ -133,6 +133,3 @@ class ElevationMap(Shape):
       ih = 0
 
     return ih
-
-  def draw(self,tex=None):
-    shape_draw(self,tex)

@@ -212,20 +212,6 @@ def addTri(v, x, y, z):
 # add triangle refs.
   v.extend([x, y, z])
 
-# TODO: Should be a method on shape.
-def shape_draw(self, tex, shl=GL_UNSIGNED_SHORT):
-  from pi3d import Texture
-  opengles.glShadeModel(GL_SMOOTH)
-  opengles.glVertexPointer(3, GL_FLOAT, 0, self.vertices)
-  opengles.glNormalPointer(GL_FLOAT, 0, self.normals)
-  with Texture.Loader(tex, self.tex_coords):
-    mtrx = (c_float * 16)()
-    opengles.glGetFloatv(GL_MODELVIEW_MATRIX, ctypes.byref(mtrx))
-    transform(self.x, self.y, self.z, self.rotx, self.roty, self.rotz,
-              self.sx, self.sy, self.sz, self.cx, self.cy, self.cz)
-    opengles.glDrawElements( self.ttype, self.ssize, shl , self.indices)
-    opengles.glLoadMatrixf(mtrx)
-
 # Should be a function in shape.
 def lathe(path, sides = 12, tris = False, rise = 0.0, coils = 1.0):
   s = len(path)

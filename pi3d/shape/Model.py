@@ -22,7 +22,8 @@ class Model(Shape):
       print self.exf, "file not supported"
       return None
 
-  def draw(self,tex=None,n=None):
+  def draw(self, tex=None, n=None):
+    # TODO: shadows Shape.draw.
     if self.exf == 'egg':
       loaderEgg.draw(self, tex, n)
 

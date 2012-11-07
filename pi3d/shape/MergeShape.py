@@ -101,7 +101,8 @@ class MergeShape(Shape):
       sta += st
       rd += rst
 
-  def draw(self, shapeNo, tex=0):
+  def draw(self, shapeNo, tex=None):
+    # TODO: shadows Shape.draw, with a different parameter list!
     opengles.glVertexPointer(3, GL_FLOAT, 0, self.verts);
     opengles.glNormalPointer(GL_FLOAT, 0, self.norms);
     with Texture.Loader(tex, self.texcoords, GL_FLOAT):
@@ -112,7 +113,7 @@ class MergeShape(Shape):
                               GL_UNSIGNED_SHORT,
                               self.shape[shapeNo][0])
 
-  def drawAll(self, tex=0):
+  def drawAll(self, tex=None):
     opengles.glVertexPointer(3, GL_FLOAT, 0, self.verts);
     opengles.glNormalPointer(GL_FLOAT, 0, self.norms);
     with Texture.Loader(tex, self.texcoords):
