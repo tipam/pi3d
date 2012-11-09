@@ -9,7 +9,7 @@ class ElevationMap(Shape):
   def __init__(self, mapfile, width=100.0, depth=100.0, height=10.0,
                divx=0, divy=0, ntiles=1.0, name="",
                x=0.0, y=0.0, z=0.0, rx=0.0, ry=0.0, rz=0.0,
-               sx=1.0, sy=1.0, sz=1.0, cx=0.0, cy=0.0, cz=0.0):
+               sx=1.0, sy=1.0, sz=1.0, cx=0.0, cy=0.0, cz=0.0, smooth=False):
     super(ElevationMap,self).__init__(name, x, y, z, rx, ry, rz,
                                       sx, sy, sz, cx, cy, cz)
     if VERBOSE:
@@ -50,8 +50,8 @@ class ElevationMap(Shape):
     ws = width / ix
     hs = depth / iy
     ht = height / 255.0
-    tx = ntiles / ix
-    ty = ntiles / iy
+    tx = 1.0*ntiles / ix
+    ty = 1.0*ntiles / iy
 
     verts = []
     norms = []
@@ -64,12 +64,26 @@ class ElevationMap(Shape):
         verts.append(-wh + x * ws)
         verts.append(hgt)
         verts.append(-hh + y * hs)
-        norms.append(0.0)
-        norms.append(1.0)
-        norms.append(0.0)
+        if (smooth and y > 0 and y < (iy-1) and x > 0 and x < (ix-1)):
+          nVec = Utility.crossproduct(-ws, self.pixels[x-1, y]*ht - hgt, 0, 0, hgt - self.pixels[x, y-1]*ht ,hs)
+          norms.append(nVec[0])
+          norms.append(nVec[1])
+          norms.append(nVec[2])
+        else:
+          norms.append(0.0)
+          norms.append(1.0)
+          norms.append(0.0)
         tex_coords.append((ix - x) * tx)
         tex_coords.append((iy - y) * ty)
-
+    #smooth normals
+    if smooth:
+      for y in range(0,iy):
+        for x in range(0,ix):
+          p = y*ix+x
+          if (y > 0 and y < (iy-1) and x > 0 and x < (ix-1)):
+            norms[p] = (norms[p-3] + norms[p+3] + norms[p-ix*3] + norms[p+ix*3] + norms[p])/5
+            norms[p+1] = (norms[p-2] + norms[p+4] + norms[p-ix*3+1] + norms[p+ix*3+1])/5
+            norms[p+2] = (norms[p-1] + norms[p+5] + norms[p-ix*3+2] + norms[p+ix*3+2])/5
     s = 0
     #create one long triangle_strip by alternating X directions
     for y in range(0, iy - 2, 2):
@@ -116,6 +130,10 @@ class ElevationMap(Shape):
     pz = (hh - pz) / hs
     x = math.floor(px)
     z = math.floor(pz)
+    if x < 0: x = 0
+    if x > self.ix: x = self.ix
+    if z < 0: z = 0
+    if z > self.iy: z = self.iy
     #print px,pz,x,z
     #x = wh-math.floor(x+0.5)/ws
     #z = hh-math.floor(z+0.5)/hs
@@ -133,6 +151,52 @@ class ElevationMap(Shape):
       ih = 0
 
     return ih
+
+  def clashTest(self, px, py, pz, rad):
+    # added Patrick Gaunt 2012-11-05
+    ht = self.height/255
+    halfw = self.width/2
+    halfd = self.depth/2
+    # work out x and z ranges to check
+    x0 = int(math.floor((px - rad - self.x + halfw)/self.width * self.ix + 0.5)) - 1
+    if x0 < 0: x0 = 0
+    x1 = int(math.floor((px + rad - self.x + halfw)/self.width * self.ix + 0.5)) + 1
+    if x1 > self.ix: x1 = self.ix
+    z0 = int(math.floor((pz - rad - self.z + halfd)/self.depth * self.iy + 0.5)) - 1
+    if z0 < 0: z0 = 0
+    z1 = int(math.floor((pz + rad - self.z + halfd)/self.depth * self.iy + 0.5)) + 1
+    if z1 > self.iy: z1 = self.iy
+    dx = self.width/self.ix
+    dz = self.depth/self.iy
+    minDist, minLoc = 1000000, (0,0)
+    for i in xrange(x0, x1):
+      for j in xrange(z0, z1):
+        yy = py - self.pixels[i, j]*ht - self.y
+        xx = px - dx*i + halfw - self.x
+        zz = pz - dz*j + halfd - self.z
+        distSq = yy*yy + xx*xx + zz*zz
+        if distSq < minDist:
+          minDist = distSq
+          minLoc = (i,j)
+                
+    gLevel = self.calcHeight(px, pz) #check it hasn't tunnelled through by going fast
+    if gLevel > (py-rad):
+      minDist = rad*rad - 1.0
+      minLoc = (int((x0+x1)/2), int((z0+z1)/2))
+    
+    if minDist < (rad*rad): #i.e. near enough to clash so work out normal
+      xoff, zoff = 1, 1
+      if i == self.ix: xoff = -1
+      if j == self.iy: zoff = -1
+      ya = (self.pixels[minLoc[0]+xoff, minLoc[1]] - self.pixels[minLoc[0], minLoc[1]])*ht
+      yb = (self.pixels[minLoc[0], minLoc[1]+zoff] - self.pixels[minLoc[0], minLoc[1]])*ht
+      nx = ya * zoff * dz
+      ny = -1 * xoff * dx * zoff * dz
+      nz = yb * xoff * dx
+      nfact = math.sqrt(nx*nx + ny*ny + nz*nz)
+      return (True, nx/nfact, ny/nfact, nz/nfact, gLevel)
+    else:
+      return (False, 0, 0, 0, gLevel)
 
 def intersect_triangle(v1, v2, v3, pos):
   #Function calculates the y intersection of a point on a triangle

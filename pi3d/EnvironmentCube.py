@@ -106,13 +106,13 @@ class EnvironmentCube(object):
           Utility.texture_min_mag()
           opengles.glBindTexture(GL_TEXTURE_2D,tex[5].tex)
           opengles.glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT , self.indbot)
-        else:
-          #load view matrix
-          opengles.glTexCoordPointer(2, GL_FLOAT, 0, self.tex_coords)
-          opengles.glBindTexture(GL_TEXTURE_2D,tex.tex)
-          opengles.glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_SHORT , self.indices)
+    else:
+      #load view matrix
+      opengles.glTexCoordPointer(2, GL_FLOAT, 0, self.tex_coords)
+      opengles.glBindTexture(GL_TEXTURE_2D,tex.tex)
+      opengles.glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_SHORT , self.indices)
 
-    #opengles.glEnable(GL_LIGHTING)
+    opengles.glEnable(GL_LIGHTING)
     opengles.glDisable(GL_TEXTURE_2D)
     #restore to previous matrix
     opengles.glLoadMatrixf(mtrx)

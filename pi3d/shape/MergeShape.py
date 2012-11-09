@@ -85,7 +85,8 @@ class MergeShape(Shape):
       rh = random.random() * maxscl + minscl
       rt = random.random() * 360.0
       y=elevmap.calcHeight(-x, -z) + rh * 2
-      self.merge(shape, x, y, z, 0, rt, 0, rh, rh, rh)
+      #self.merge(shape, x, y, z, 0, rt, 0, rh, rh, rh)
+      self.merge(shape, x,y,z, shape.rotx,rt+shape.roty,shape.rotz, rh*shape.sx,rh*shape.sy,rh*shape.sz)
 
   def radialCopy(self, shape, x=0, y=0, z=0, startRadius=2.0, endRadius=2.0,
                  startAngle=0.0, endAngle=360.0, step=12):

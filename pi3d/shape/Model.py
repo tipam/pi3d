@@ -2,6 +2,7 @@ from pi3d import *
 
 from pi3d import Texture
 from pi3d import loaderEgg
+from pi3d import loaderObj
 from pi3d.RotateVec import rotate_vec
 
 from pi3d.shape.Shape import Shape
@@ -22,13 +23,16 @@ class Model(Shape):
     if self.exf == 'egg':
       self.model = loaderEgg.loadFileEGG(self, fileString, texs)
       return self.model
+    elif self.exf == 'obj':
+      self.model = loaderObj.loadFileOBJ(self, fileString, texs)
+      return self.model
     else:
       print self.exf, "file not supported"
       return None
 
   def draw(self, texID=None, n=None):
     # TODO: shadows Shape.draw.
-    if self.exf != 'egg':
+    if self.exf != 'egg' and self.exf != 'obj':
       return
 
     # From loaderEgg.draw, probably added by paddy gaunt 15 June 2012
@@ -40,7 +44,7 @@ class Model(Shape):
       i = 0
       for t in self.textureList:
         if i == n:
-          texToUse = self.textureList[t]["texID"]
+          texToUse = self.textureList[t].texID
           break
         i += 1
 
@@ -49,20 +53,20 @@ class Model(Shape):
     self.transform()
     for g in self.vGroup:
       opengles.glShadeModel(GL_SMOOTH)
-      opengles.glVertexPointer( 3, GL_FLOAT, 0, self.vGroup[g]["vertices"]);
-      opengles.glNormalPointer( GL_FLOAT, 0, self.vGroup[g]["normals"]);
+      opengles.glVertexPointer( 3, GL_FLOAT, 0, self.vGroup[g].vertices);
+      opengles.glNormalPointer( GL_FLOAT, 0, self.vGroup[g].normals);
 
-      texture = texToUse or self.vGroup[g]["texID"]
-      with Texture.Loader(texture, self.vGroup[g]["tex_coords"]):
+      texture = texToUse or self.vGroup[g].texID
+      with Texture.Loader(texture, self.vGroup[g].tex_coords):
         #TODO enable material colours as well as textures from images
-        material = self.vGroup[g]["material"]
+        material = self.vGroup[g].material
         if material:
           #opengles.glMaterialfv(GL_FRONT, GL_DIFFUSE, material);
           opengles.glEnableClientState(GL_COLOR_ARRAY)
           opengles.glColorPointer(4, GL_UNSIGNED_BYTE, 0, material);
 
-        opengles.glDrawElements(GL_TRIANGLES, self.vGroup[g]["trianglesLen"],
-                                GL_UNSIGNED_SHORT, self.vGroup[g]["triangles"])
+        opengles.glDrawElements(GL_TRIANGLES, self.vGroup[g].indicesLen,
+                                GL_UNSIGNED_SHORT, self.vGroup[g].indices)
 
 
         opengles.glShadeModel(GL_FLAT)

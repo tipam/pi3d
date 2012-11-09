@@ -101,7 +101,7 @@ class Loader(object):
       opengles.glEnable(GL_TEXTURE_2D)
       if self.texture.alpha:
         if self.texture.blend:
-          opengles.glDisable(GL_DEPTH_TEST)
+          #opengles.glDisable(GL_DEPTH_TEST)
           opengles.glEnable(GL_BLEND)
           opengles.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
         else:

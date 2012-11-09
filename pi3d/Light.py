@@ -29,11 +29,11 @@ class Light(object):
     # I would have thought either w needs to be passed as a parameter to __init__ and not overwritten in position
     # and/or define global values SPOT, DIST, POINT = -1, 0, 1
 
-  def position(self, x, y, z):
+  def position(self, x, y, z, w=1):
     mtrx = (ctypes.c_float * 16)()
     opengles.glGetFloatv(GL_MODELVIEW_MATRIX, ctypes.byref(mtrx))
     Utility.load_identity()
-    self.xyz = c_floats((x, y, z ,1))
+    self.xyz = c_floats((x, y, z ,w))
     opengles.glLightfv(self.no, GL_POSITION, self.xyz)
     opengles.glLoadMatrixf(mtrx)
 
