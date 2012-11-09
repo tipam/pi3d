@@ -47,12 +47,12 @@ mapwidth=1000.0
 mapdepth=1000.0
 mapheight=60.0
 landimg = texs.loadTexture("textures/stonygrass.jpg")
-mymap = ElevationMap("textures/mountainsHgt.jpg", mapwidth, mapdepth, mapheight, 64, 64, 10.0) #testislands.jpg
+mymap = ElevationMap("textures/mountainsHgt.jpg", mapwidth, mapdepth, mapheight, 64, 64, 10.0, "fw", 0,0,0,0,0,0,1,1,1,0,0,0,True) #testislands.jpg
 #mymap2 = ElevationMap("textures/mountainsHgt.jpg",mapwidth,mapdepth,mapheight,64,64, 128)
 
 myclip = ClipPlane()
 
-light = Light(0, 10,10,10, "", 0,100,0)
+light = Light(0, 2,2,3, "", 5,5,0)
 light.on()
 
 #Create tree models

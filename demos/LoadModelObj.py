@@ -1,8 +1,8 @@
 # Loading EGG model
 # =================
 # This example - Copyright (c) 2012 - Tim Skillman
-# EGG loader code by Paddy Gaunt, Copyright (c) 2012
-# Version 0.01 - 03Jul12
+# OBJ loader code by Paddy Gaunt, Copyright (c) 2012
+# Version 0.01 - 08Nov12
 #
 # This example does not reflect the finished pi3d module in any way whatsoever!
 # It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
@@ -30,7 +30,7 @@ display.setBackColour(0.2,0.4,0.6,1)    	# r,g,b,alpha
 texs = Textures()
 
 # load model_loadmodel
-mymodel = Model("models/teapot.egg",texs ,"teapot", 0,-1,0)
+mymodel = Model("models/teapot.obj",texs ,"teapot", 0,-1.0,0)
 
 # Fetch key presses
 mykeys = Key()
@@ -46,7 +46,7 @@ while 1:
     display.clear()
 
     mtrx.identity()
-    mtrx.translate(0,0,-10)
+    mtrx.translate(0,2,-5)
 
     mymodel.draw()
     mymodel.rotateIncY(3.0)

@@ -21,6 +21,7 @@ from pi3d.Display import Display
 from pi3d.EnvironmentCube import EnvironmentCube
 from pi3d.EnvironmentCube import loadECfiles
 from pi3d.Key import Key
+from pi3d.Light import Light
 from pi3d.Matrix import Matrix
 from pi3d.Mouse import Mouse
 from pi3d.Texture import Textures
@@ -45,6 +46,9 @@ hb2img = texs.loadTexture("textures/hornbeam2.png")
 
 ectex=loadECfiles("textures/ecubes","sbox",texs)
 myecube = EnvironmentCube(900.0,"FACES")
+
+light = Light(0, 10,10,10, "", 0,100,0)
+light.on()
 
 # Create elevation map
 mapwidth=1000.0
