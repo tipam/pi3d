@@ -54,7 +54,7 @@ ball = Sphere(radius,12,12,0.0,"sphere",-4,2,-7)
 #monster
 monster = Plane(5.0, 5.0, "monster", 0,0,0, 0,0,0)
 # Create elevation map
-mapwidth=50.0                              
+mapwidth=50.0                
 mapdepth=50.0
 maphalf=23.0
 mapheight=20.0
@@ -95,87 +95,87 @@ omy=mymouse.y
 
 matrix = Matrix()
 while 1:
-    display.clear()
-    
-    matrix.identity()
-    matrix.translate(xm,-2+ym-mapheight,-maphalf+2)
-    
-    myecube.draw(ectex,xm,ym,zm)
-    mymap.draw(groundimg)
-    
-    monster.draw(monstimg)
-    ball.draw(groundimg)
-    
-    #monster movement
-    drx = sx - rx
-    if abs(drx) > max_speed: drx = drx/abs(drx) * max_speed
-    dry = sy - ry
-    if abs(dry) > max_speed: dry = dry/abs(dry) * max_speed
-    rx += drx
-    ry += dry
-    
-    monster.position(rx, ry, -maphalf)
-    
-    dsy -= gravity
-    sx += dsx
-    sy += dsy
-    sz += dsz
-    # now uses the clashTest method from elevationMap
-    clash = mymap.clashTest(sx, sy, sz, radius)
-    # bouncing physics
-    if clash[0]:
-        # returns the components of normal vector if clash
-        nx, ny, nz =  clash[1], clash[2], clash[3]
-        # move it away a bit to stop it getting trapped inside if it has tunelled
-        sx, sy, sz = sx - 0.1*radius*nx, sy - 0.1*radius*ny, sz - 0.1*radius*nz
-        # clash[4] is also the ground level below the mid point of the object so this could be used to 'lift' it up
-
-        # use R = I - 2(N.I)N
-        rfact = 2.01*(nx*dsx + ny*dsy + nz*dsz) #small extra boost by using value > 2 to top up energy in defiance of 1st LOT
-        dsx, dsy, dsz = dsx - rfact*nx, dsy - rfact*ny, dsz - rfact*nz
-        # stop the speed increasing too much
-        if dsx > 0.3: dsx = 0.2
-        if dsz > 0.3: dsz = 0.2        
-        
-    # mouse movement checking here to get bat movment values
-    mx=mymouse.x
-    dx = -(mx-omx)*0.02
-    omx=mx
-    if ((xm >= (-1*maphalf) and dx < 0) or (xm <= maphalf and dx > 0)):  xm += dx
-
-    my=mymouse.y
-    dy = -(my-omy)*0.01
-    omy=my
-    if ((ym >= (0) and dy < 0) or (ym <= mapheight and dy > 0)):  ym += dy
-
-    # bounce off edges and give a random boost
-    if sx > maphalf: dsx = -1 * abs(dsx) * (1 + random.random())
-    if sx < -maphalf: dsx = abs(dsx)
-    if sz > maphalf: #player end
-        #check if bat in position
-        if (sx + xm)**2 + (sy - mapheight+ym)**2 < 10: #NB xm and ym are positions to move 'everthing else' so negative and offset height
-            dsz = -1 * abs(dsz) * (1 + random.random())
-            dsx += dx
-            dsy += dy
-        else:
-            sx, sy, sz = 0, 5, 0
-            dsx, dsy, dsz = 0.1*random.random(), 0, 0.2
-    if sz < -maphalf: #monster end
-        if (sx-rx)**2 + (sy-ry)**2 < 10:
-            dsz = abs(dsz)
-        else:
-            sx, sy, sz = 0, 5, 0
-            dsx, dsy, dsz = 0.1*random.random(), 0, -0.2
-
-    ball.position(sx, sy, sz)
-    ball.rotateIncX(dsx*-10)
-    ball.rotateIncZ(dsz*-10)
-
-    #Press ESCAPE to terminate
-    k = mykeys.read()
-    if k==27: #Escape key
-        display.destroy()
-        mykeys.close()
-        break
+  display.clear()
   
-    display.swapBuffers()
+  matrix.identity()
+  matrix.translate(xm,-2+ym-mapheight,-maphalf+2)
+  
+  myecube.draw(ectex,xm,ym,zm)
+  mymap.draw(groundimg)
+  
+  monster.draw(monstimg)
+  ball.draw(groundimg)
+  
+  #monster movement
+  drx = sx - rx
+  if abs(drx) > max_speed: drx = drx/abs(drx) * max_speed
+  dry = sy - ry
+  if abs(dry) > max_speed: dry = dry/abs(dry) * max_speed
+  rx += drx
+  ry += dry
+  
+  monster.position(rx, ry, -maphalf)
+  
+  dsy -= gravity
+  sx += dsx
+  sy += dsy
+  sz += dsz
+  # now uses the clashTest method from elevationMap
+  clash = mymap.clashTest(sx, sy, sz, radius)
+  # bouncing physics
+  if clash[0]:
+    # returns the components of normal vector if clash
+    nx, ny, nz =  clash[1], clash[2], clash[3]
+    # move it away a bit to stop it getting trapped inside if it has tunelled
+    sx, sy, sz = sx - 0.1*radius*nx, sy - 0.1*radius*ny, sz - 0.1*radius*nz
+    # clash[4] is also the ground level below the mid point of the object so this could be used to 'lift' it up
+
+    # use R = I - 2(N.I)N
+    rfact = 2.01*(nx*dsx + ny*dsy + nz*dsz) #small extra boost by using value > 2 to top up energy in defiance of 1st LOT
+    dsx, dsy, dsz = dsx - rfact*nx, dsy - rfact*ny, dsz - rfact*nz
+    # stop the speed increasing too much
+    if dsx > 0.3: dsx = 0.2
+    if dsz > 0.3: dsz = 0.2    
+    
+  # mouse movement checking here to get bat movment values
+  mx=mymouse.x
+  dx = -(mx-omx)*0.02
+  omx=mx
+  if ((xm >= (-1*maphalf) and dx < 0) or (xm <= maphalf and dx > 0)):  xm += dx
+
+  my=mymouse.y
+  dy = -(my-omy)*0.01
+  omy=my
+  if ((ym >= (0) and dy < 0) or (ym <= mapheight and dy > 0)):  ym += dy
+
+  # bounce off edges and give a random boost
+  if sx > maphalf: dsx = -1 * abs(dsx) * (1 + random.random())
+  if sx < -maphalf: dsx = abs(dsx)
+  if sz > maphalf: #player end
+    #check if bat in position
+    if (sx + xm)**2 + (sy - mapheight+ym)**2 < 10: #NB xm and ym are positions to move 'everthing else' so negative and offset height
+      dsz = -1 * abs(dsz) * (1 + random.random())
+      dsx += dx
+      dsy += dy
+    else:
+      sx, sy, sz = 0, 5, 0
+      dsx, dsy, dsz = 0.1*random.random(), 0, 0.2
+  if sz < -maphalf: #monster end
+    if (sx-rx)**2 + (sy-ry)**2 < 10:
+      dsz = abs(dsz)
+    else:
+      sx, sy, sz = 0, 5, 0
+      dsx, dsy, dsz = 0.1*random.random(), 0, -0.2
+
+  ball.position(sx, sy, sz)
+  ball.rotateIncX(dsx*-10)
+  ball.rotateIncZ(dsz*-10)
+
+  #Press ESCAPE to terminate
+  k = mykeys.read()
+  if k==27: #Escape key
+    display.destroy()
+    mykeys.close()
+    break
+  
+  display.swapBuffers()

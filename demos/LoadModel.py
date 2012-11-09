@@ -9,7 +9,7 @@
 #
 # PLEASE INSTALL PIL imaging with:
 #
-#      $ sudo apt-get install python-imaging
+#    $ sudo apt-get install python-imaging
 #
 # before running this example
 #
@@ -24,8 +24,8 @@ from pi3d.shape.Model import Model
 
 # Setup display and initialise pi3d
 display = Display()
-display.create3D(100,100,1200,900)   	# x,y,width,height
-display.setBackColour(0.2,0.4,0.6,1)    	# r,g,b,alpha
+display.create3D(100,100,1200,900)    # x,y,width,height
+display.setBackColour(0.2,0.4,0.6,1)      # r,g,b,alpha
 
 texs = Textures()
 
@@ -43,23 +43,23 @@ mylight = Light(0,1,1,1,"",10,10,0)
 mylight.on()
 
 while 1:
-    display.clear()
+  display.clear()
 
-    mtrx.identity()
-    mtrx.translate(0,0,-10)
+  mtrx.identity()
+  mtrx.translate(0,0,-10)
 
-    mymodel.draw()
-    mymodel.rotateIncY(3.0)
+  mymodel.draw()
+  mymodel.rotateIncY(3.0)
 
-    k = mykeys.read()
-    if k >-1:
-	if k==112: display.screenshot("teapot.jpg")
-	elif k==27:
-	    mykeys.close()
-	    texs.deleteAll()
-	    display.destroy()
-	    break
-	else:
-	    print k
+  k = mykeys.read()
+  if k >-1:
+    if k==112: display.screenshot("teapot.jpg")
+    elif k==27:
+      mykeys.close()
+      texs.deleteAll()
+      display.destroy()
+      break
+    else:
+      print k
 
-    display.swapBuffers()
+  display.swapBuffers()

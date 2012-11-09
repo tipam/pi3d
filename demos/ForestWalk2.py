@@ -103,61 +103,61 @@ omy=mymouse.y
 
 # Display scene and rotate cuboid
 while 1:
-    display.clear()
+  display.clear()
 
-    mtrx.identity()
-    mtrx.rotate(tilt, 0, 0)
-    mtrx.rotate(0, rot, 0)
-    mtrx.translate(xm,ym,zm)
+  mtrx.identity()
+  mtrx.rotate(tilt, 0, 0)
+  mtrx.rotate(0, rot, 0)
+  mtrx.translate(xm,ym,zm)
 
-    myecube.draw(ectex,xm,ym,zm)
-    mymap.draw(landimg)
-    #myclip.enable()
-    #mymap2.draw(surface1)
-    #myclip.disable()
-    mytrees1.drawAll(tree2img)
-    mytrees2.drawAll(tree1img)
-    mytrees3.drawAll(hb2img)
+  myecube.draw(ectex,xm,ym,zm)
+  mymap.draw(landimg)
+  #myclip.enable()
+  #mymap2.draw(surface1)
+  #myclip.disable()
+  mytrees1.drawAll(tree2img)
+  mytrees2.drawAll(tree1img)
+  mytrees3.drawAll(hb2img)
 
-    mx=mymouse.x
-    my=mymouse.y
+  mx=mymouse.x
+  my=mymouse.y
 
-    #if mx>display.left and mx<display.right and my>display.top and my<display.bottom:
-    rot += (mx-omx)*0.2
-    tilt -= (my-omy)*0.2
-    omx=mx
-    omy=my
+  #if mx>display.left and mx<display.right and my>display.top and my<display.bottom:
+  rot += (mx-omx)*0.2
+  tilt -= (my-omy)*0.2
+  omx=mx
+  omy=my
 
-    #Press ESCAPE to terminate
-    k = mykeys.read()
-    if k >-1:
-	if k==119: #key W
-	    xm-=math.sin(math.radians(rot))
-	    zm+=math.cos(math.radians(rot))
-	    ym = -(mymap.calcHeight(xm,zm)+avhgt)
-	elif k==115: #kry S
-	    xm+=math.sin(math.radians(rot))
-	    zm-=math.cos(math.radians(rot))
-	    ym = -(mymap.calcHeight(xm,zm)+avhgt)
-	elif k==39: #key '
-	    tilt -= 2.0
-	    print tilt
-	elif k==47: #key /
-	    tilt += 2.0
-	elif k==97: #key A
-	    rot -= 2
-	elif k==100: #key D
-	    rot += 2
-	elif k==112: #key P
-	    display.screenshot("ForestWalk2.jpg")
-	elif k==10: #key RETURN
-	    mc = 0
-	elif k==27: #Escape key
-	    mykeys.close()
-	    texs.deleteAll()
-	    display.destroy()
-	    break
-	else:
-	    print k
+  #Press ESCAPE to terminate
+  k = mykeys.read()
+  if k >-1:
+    if k==119: #key W
+      xm-=math.sin(math.radians(rot))
+      zm+=math.cos(math.radians(rot))
+      ym = -(mymap.calcHeight(xm,zm)+avhgt)
+    elif k==115: #kry S
+      xm+=math.sin(math.radians(rot))
+      zm-=math.cos(math.radians(rot))
+      ym = -(mymap.calcHeight(xm,zm)+avhgt)
+    elif k==39: #key '
+      tilt -= 2.0
+      print tilt
+    elif k==47: #key /
+      tilt += 2.0
+    elif k==97: #key A
+      rot -= 2
+    elif k==100: #key D
+      rot += 2
+    elif k==112: #key P
+      display.screenshot("ForestWalk2.jpg")
+    elif k==10: #key RETURN
+      mc = 0
+    elif k==27: #Escape key
+      mykeys.close()
+      texs.deleteAll()
+      display.destroy()
+      break
+    else:
+      print k
 
-    display.swapBuffers()
+  display.swapBuffers()
