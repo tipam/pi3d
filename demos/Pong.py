@@ -35,8 +35,8 @@ print
 
 # Setup display and initialise pi3d
 display = Display()
+#display.create3D(10,10,600,450, 0.5, 800.0, 60.0) # x,y,width,height,near,far,aspect
 display.create3D(10,10,1200,900, 0.5, 800.0, 60.0) # x,y,width,height,near,far,aspect
-#display.create3D(10,10,1200,900, 0.5, 800.0, 60.0) # x,y,width,height,near,far,aspect
 display.setBackColour(0.4,0.8,0.8,1) # r,g,b,alpha
 
 # Load textures
@@ -50,7 +50,7 @@ ectex = texs.loadTexture("textures/ecubes/skybox_stormydays.jpg")
 myecube = EnvironmentCube(900.0,"CROSS")
 #ball
 radius = 1
-ball = Sphere(radius,12,12,0.0,"sphere",-4,2,-7)
+ball = Sphere(radius,12,12,0.0,"sphere",-4,8,-7)
 #monster
 monster = Plane(5.0, 5.0, "monster", 0,0,0, 0,0,0)
 # Create elevation map
@@ -63,7 +63,7 @@ mymap = ElevationMap("textures/pong.jpg",mapwidth,mapdepth,mapheight,64,64,2,"su
 # lighting. The default light is a point light but I have made the position method capable of creating
 # a directional light and this is what I do inside the loop. If you want a torch you don't need to move it about
 light = Light(0, 2, 2, 1, "", 1,2,3, 0.1,0.1,0.2) #yellowish 'torch' or 'sun' with low level blueish ambient
-light.position(1,2,3,0) # set to directional light by settin position with 0 fourth parameter
+light.position(1,2,3,0) # set to directional light by setting position with 0 fourth parameter
 light.on()
 
 #avatar camera
@@ -94,7 +94,7 @@ omx=mymouse.x
 omy=mymouse.y
 
 matrix = Matrix()
-while 1:
+while True:
   display.clear()
   
   matrix.identity()
@@ -127,11 +127,13 @@ while 1:
     # returns the components of normal vector if clash
     nx, ny, nz =  clash[1], clash[2], clash[3]
     # move it away a bit to stop it getting trapped inside if it has tunelled
-    sx, sy, sz = sx - 0.1*radius*nx, sy - 0.1*radius*ny, sz - 0.1*radius*nz
+    jDist = clash[4]*radius
+    sx, sy, sz = sx - jDist*nx, sy - jDist*ny, sz - jDist*nz
     # clash[4] is also the ground level below the mid point of the object so this could be used to 'lift' it up
+    #if sy < clash[4]+radius: sy = clash[4]+radius
 
     # use R = I - 2(N.I)N
-    rfact = 2.01*(nx*dsx + ny*dsy + nz*dsz) #small extra boost by using value > 2 to top up energy in defiance of 1st LOT
+    rfact = 2.02*(nx*dsx + ny*dsy + nz*dsz) #small extra boost by using value > 2 to top up energy in defiance of 1st LOT
     dsx, dsy, dsz = dsx - rfact*nx, dsy - rfact*ny, dsz - rfact*nz
     # stop the speed increasing too much
     if dsx > 0.3: dsx = 0.2
@@ -158,14 +160,14 @@ while 1:
       dsx += dx
       dsy += dy
     else:
-      sx, sy, sz = 0, 5, 0
-      dsx, dsy, dsz = 0.1*random.random(), 0, 0.2
+      sx, sy, sz = 0, 10, 0
+      dsx, dsy, dsz = 0.2*random.random(), 0, 0.1
   if sz < -maphalf: #monster end
     if (sx-rx)**2 + (sy-ry)**2 < 10:
       dsz = abs(dsz)
     else:
-      sx, sy, sz = 0, 5, 0
-      dsx, dsy, dsz = 0.1*random.random(), 0, -0.2
+      sx, sy, sz = 0, mapheight, 0
+      dsx, dsy, dsz = 0.2*random.random(), 0, -0.1
 
   ball.position(sx, sy, sz)
   ball.rotateIncX(dsx*-10)
@@ -179,3 +181,6 @@ while 1:
     break
   
   display.swapBuffers()
+
+display.destroy()
+quit()

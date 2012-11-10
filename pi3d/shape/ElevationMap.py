@@ -131,9 +131,9 @@ class ElevationMap(Shape):
     x = math.floor(px)
     z = math.floor(pz)
     if x < 0: x = 0
-    if x > self.ix: x = self.ix
+    if x > self.ix-1: x = self.ix-1
     if z < 0: z = 0
-    if z > self.iy: z = self.iy
+    if z > self.iy-1: z = self.iy-1
     #print px,pz,x,z
     #x = wh-math.floor(x+0.5)/ws
     #z = hh-math.floor(z+0.5)/hs
@@ -153,21 +153,35 @@ class ElevationMap(Shape):
     return ih
 
   def clashTest(self, px, py, pz, rad):
+    """ Works out if an object at a given location and radius will overlap with the map
+    it does not interpolate between points so object can 'sink' into steep sections with no
+    intermediate points. Also the height calculation is the equivalent of passing -px, -pz
+    to calcHeight() which was designed around 'reverse' positioning for the viewing matrix
+    
+    returns four values:
+    boolean whether there is a clash
+    x, y, z components of the normal vector
+    the height of the map at the x,z location
+    
+    attributes:
+    px, py, pz -- location of object to test
+    rad -- radius of object to test
+    """
     # added Patrick Gaunt 2012-11-05
     ht = self.height/255
-    halfw = self.width/2
-    halfd = self.depth/2
-    # work out x and z ranges to check
-    x0 = int(math.floor((px - rad - self.x + halfw)/self.width * self.ix + 0.5)) - 1
-    if x0 < 0: x0 = 0
-    x1 = int(math.floor((px + rad - self.x + halfw)/self.width * self.ix + 0.5)) + 1
-    if x1 > self.ix: x1 = self.ix
-    z0 = int(math.floor((pz - rad - self.z + halfd)/self.depth * self.iy + 0.5)) - 1
-    if z0 < 0: z0 = 0
-    z1 = int(math.floor((pz + rad - self.z + halfd)/self.depth * self.iy + 0.5)) + 1
-    if z1 > self.iy: z1 = self.iy
+    halfw = self.width/2.0
+    halfd = self.depth/2.0
     dx = self.width/self.ix
     dz = self.depth/self.iy
+    # work out x and z ranges to check
+    x0 = int(math.floor((halfw + px - rad)/dx + 0.5)) - 1
+    if x0 < 0: x0 = 0
+    x1 = int(math.floor((halfw + px + rad)/dx + 0.5)) + 1
+    if x1 > self.ix-1: x1 = self.ix-1
+    z0 = int(math.floor((halfd + pz - rad)/dz + 0.5)) - 1
+    if z0 < 0: z0 = 0
+    z1 = int(math.floor((halfd + pz + rad)/dz + 0.5)) + 1
+    if z1 > self.iy-1: z1 = self.iy-1
     minDist, minLoc = 1000000, (0,0)
     for i in xrange(x0, x1):
       for j in xrange(z0, z1):
@@ -179,7 +193,7 @@ class ElevationMap(Shape):
           minDist = distSq
           minLoc = (i,j)
                 
-    gLevel = self.calcHeight(px, pz) #check it hasn't tunnelled through by going fast
+    gLevel = self.calcHeight(-px, -pz) #check it hasn't tunnelled through by going fast
     if gLevel > (py-rad):
       minDist = rad*rad - 1.0
       minLoc = (int((x0+x1)/2), int((z0+z1)/2))
@@ -194,9 +208,11 @@ class ElevationMap(Shape):
       ny = -1 * xoff * dx * zoff * dz
       nz = yb * xoff * dx
       nfact = math.sqrt(nx*nx + ny*ny + nz*nz)
-      return (True, nx/nfact, ny/nfact, nz/nfact, gLevel)
+      #return (True, nx/nfact, ny/nfact, nz/nfact, gLevel)
+      return (True, nx/nfact, ny/nfact, nz/nfact, rad - math.sqrt(minDist))
     else:
-      return (False, 0, 0, 0, gLevel)
+      #return (False, 0, 0, 0, gLevel)
+      return (False, 0, 0, 0, 0)
 
 def intersect_triangle(v1, v2, v3, pos):
   #Function calculates the y intersection of a point on a triangle
