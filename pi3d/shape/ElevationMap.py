@@ -131,10 +131,9 @@ class ElevationMap(Shape):
     x = math.floor(px)
     z = math.floor(pz)
     if x < 0: x = 0
-    if x > self.ix-1: x = self.ix-1
+    if x > (self.ix-2): x = self.ix-2
     if z < 0: z = 0
-    if z > self.iy-1: z = self.iy-1
-    #print px,pz,x,z
+    if z > (self.iy-2): z = self.iy-2
     #x = wh-math.floor(x+0.5)/ws
     #z = hh-math.floor(z+0.5)/hs
 
@@ -153,15 +152,15 @@ class ElevationMap(Shape):
     return ih
 
   def clashTest(self, px, py, pz, rad):
-    """ Works out if an object at a given location and radius will overlap with the map
-    it does not interpolate between points so object can 'sink' into steep sections with no
+    """ Works out if an object at a given location and radius will overlap with the map surface,
+    it does not interpolate between points so objects can 'sink' into steep sections with no
     intermediate points. Also the height calculation is the equivalent of passing -px, -pz
     to calcHeight() which was designed around 'reverse' positioning for the viewing matrix
     
     returns four values:
     boolean whether there is a clash
     x, y, z components of the normal vector
-    the height of the map at the x,z location
+    the amount of overlap at the x,z location
     
     attributes:
     px, py, pz -- location of object to test
