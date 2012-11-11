@@ -12,21 +12,21 @@
 #
 # before running this example
 #
+from math import sin, cos
 
 from pi3d import Draw
 
 from pi3d.Display import Display
-from pi3d.Font import Font
 from pi3d.Key import Key
 from pi3d.Light import Light
-from pi3d.Matrix import Matrix
 from pi3d.Texture import Textures
 
 from pi3d.shape.Sphere import Sphere
+from pi3d.shape.Plane import Plane
 
 # Setup display and initialise pi3d
 display = Display()
-display.create3D(100,100,1600,900)   	# x,y,width,height
+display.create3D(100,100,1200,900)   	# x,y,width,height
 display.setBackColour(0,0,0,1)    	# r,g,b,alpha
 
 # Load textures
@@ -39,68 +39,58 @@ moonimg = texs.loadTexture("textures/moon.jpg")
 starsimg = texs.loadTexture("textures/stars2.jpg")
 watimg = texs.loadTexture("textures/water.jpg")
 
-mysphere = Sphere(2,24,24,0.0,"earth",0,0,0)
-mysphere2 = Sphere(2.05,24,24,0.0,"clouds",0,0,0)
+mysphere = Sphere(2,24,24,0.0,"earth",0,0,-5.8)
+mysphere2 = Sphere(2.05,24,24,0.0,"clouds",0,0,-5.8)
 mymoon = Sphere(0.4,16,16,0.0,"moon",0,0,0)
 mymoon2 = Sphere(0.1,16,16,0.0,"moon2",0,0,0)
-
-arialFont = Font("AR_CENA","#dd00aa")   #load AR_CENA font and set the font colour to 'raspberry'
-destineFont = Font("AR_DELANEY", "#0055ff")
+myplane = Plane(50,50, "stars", 0,0,-10)
 
 # Fetch key presses
 mykeys = Key()
 
-mtrx = Matrix()
-
 rot=0.0
-rot1=0.0
+rot1=90.0
 rot2=0.0
+m1Rad = 4 # radius of moon orbit
+m2Rad = 0.55 # radius moon's moon orbit
+
 
 #create a light
-mylight = Light(0,1,1,1,"",10,10,50, .8,.8,.8)
+mylight = Light(0,5,5,5,"sun",10,0,6, .1,.1,.2, 0)
+mylight.on()
 
 # Display scene
 while 1:
     display.clear()
 
-    mylight.off()
-    Draw.sprite(starsimg, 0,0,-20, 25,25,rot)
-    rot=rot+0.02
+    myplane.draw(starsimg)
+    myplane.rotateIncZ(0.01)
 
-    mylight.on()
-    mtrx.identity()
-    mtrx.translate(0,0,-6)
     mysphere.draw(earthimg)
-    mysphere.rotateIncY( 0.1 )
+    mysphere.rotateIncY(0.1)
     mysphere2.draw(cloudimg)
-    mysphere2.rotateIncY( .2 )
-    mtrx.rotate(0, 0, 10)
-    mtrx.rotate(0, rot1, 0)
-    mtrx.translate(4,0,0)
+    mysphere2.rotateIncY(.15)
+
     mymoon.draw(moonimg)
-    mymoon.rotateIncY( 0.2 )
-    mtrx.rotate(30, 0, 0)
-    mtrx.rotate(0, rot2, 0)
-    mtrx.translate(0.7,0,0)
+    mymoon.position(mysphere.x+m1Rad*sin(rot1),mysphere.y+0,mysphere.z-m1Rad*cos(rot1))
+    mymoon.rotateIncY(0.2)
+
     mymoon2.draw(watimg)
-    mymoon2.rotateIncY( -20 )
+    mymoon2.position(mymoon.x+m2Rad*sin(rot2),mymoon.y+0,mymoon.z-m2Rad*cos(rot2))
+    mymoon2.rotateIncY(3)
 
-    rot1 += 1.0
-    rot2 += 5.0
-
-    #pi3d.load_identity()
-    #Draw.drawString(arialFont,"The Raspberry Pi ROCKS!",-1.0,0.0,-2.2, 10.0, 0.003,0.003)
-    #Draw.drawString(destineFont,"Some nice OpenGL bitmap fonts to play with!",-1.3,-0.3,-2.2, 10.0, 0.002,0.002)
+    rot1 -= 0.005
+    rot2 -= 0.021
 
     k = mykeys.read()
     if k >-1:
-	if k==112: display.screenshot("earthPic.jpg")
-	elif k==27:
-	    mykeys.close()
-	    texs.deleteAll()
-	    display.destroy()
-	    break
-	else:
-	    print k
+      if k==112: display.screenshot("earthPic.jpg")
+      elif k==27:
+          mykeys.close()
+          texs.deleteAll()
+          display.destroy()
+          break
+      else:
+          print k
 
     display.swapBuffers()
