@@ -15,6 +15,8 @@
 
 import math, random
 
+from pi3d import Draw
+
 from pi3d.Display import Display
 from pi3d.EnvironmentCube import EnvironmentCube
 from pi3d.Key import Key
@@ -22,6 +24,7 @@ from pi3d.Light import Light
 from pi3d.Matrix import Matrix
 from pi3d.Mouse import Mouse
 from pi3d.Texture import Textures
+from pi3d.Font import Font
 
 from pi3d.shape.ElevationMap import ElevationMap
 from pi3d.shape.Plane import Plane
@@ -35,7 +38,7 @@ print
 
 # Setup display and initialise pi3d
 display = Display()
-#display.create3D(10,10,600,450, 0.5, 800.0, 60.0) # x,y,width,height,near,far,aspect
+#display.create3D(10,10,900,700, 0.5, 800.0, 60.0) # x,y,width,height,near,far,aspect
 display.create3D(10,10,1200,900, 0.5, 800.0, 60.0) # x,y,width,height,near,far,aspect
 display.setBackColour(0.4,0.8,0.8,1) # r,g,b,alpha
 
@@ -53,13 +56,15 @@ radius = 1
 ball = Sphere(radius,12,12,0.0,"sphere",-4,8,-7)
 #monster
 monster = Plane(5.0, 5.0, "monster", 0,0,0, 0,0,0)
+
 # Create elevation map
 mapwidth=50.0                
 mapdepth=50.0
 maphalf=23.0
-mapheight=20.0
-#set smooth to give proper normals
+mapheight=40.0
+#set smooth to give proper normals the bouncing won't work properly without and it doesn't look as good
 mymap = ElevationMap("textures/pong.jpg",mapwidth,mapdepth,mapheight,64,64,2,"sub",0,0,0, smooth=True)
+
 # lighting. The default light is a point light but I have made the position method capable of creating
 # a directional light and this is what I do inside the loop. If you want a torch you don't need to move it about
 light = Light(0, 2, 2, 1, "", 1,2,3, 0.1,0.1,0.2) #yellowish 'torch' or 'sun' with low level blueish ambient
@@ -76,14 +81,17 @@ ym=mapheight
 lastX0=0.0
 lastZ0=0.0
 
+arialFont = Font("AR_CENA","#dd00aa")   #load AR_CENA font and set the font colour to 'raspberry'
+score = [0,0]
+
 #sphere loc and speed
 sx, sy, sz = 0, 5, 0
-dsx, dsy, dsz = 0.1, 0.0, -0.1
+dsx, dsy, dsz = 0.2, 0.0, -0.1
 gravity = 0.02
 #monster loc and speed
 rx, ry, rz = 0, 0, -maphalf
 drx, dry, drz = 0, 0, 0
-max_speed = 0.1
+max_speed = 0.2
 
 # Fetch key presses
 mykeys = Key()
@@ -93,12 +101,13 @@ mymouse.start()
 omx=mymouse.x
 omy=mymouse.y
 
-matrix = Matrix()
+camera = Matrix()
+
 while True:
   display.clear()
   
-  matrix.identity()
-  matrix.translate(xm,-2+ym-mapheight,-maphalf+2)
+  camera.identity()
+  camera.translate(xm,-2+ym-mapheight,-maphalf-2.5)
   
   myecube.draw(ectex,xm,ym,zm)
   mymap.draw(groundimg)
@@ -129,8 +138,6 @@ while True:
     # move it away a bit to stop it getting trapped inside if it has tunelled
     jDist = clash[4]*radius
     sx, sy, sz = sx - jDist*nx, sy - jDist*ny, sz - jDist*nz
-    # clash[4] is also the ground level below the mid point of the object so this could be used to 'lift' it up
-    #if sy < clash[4]+radius: sy = clash[4]+radius
 
     # use R = I - 2(N.I)N
     rfact = 2.02*(nx*dsx + ny*dsy + nz*dsz) #small extra boost by using value > 2 to top up energy in defiance of 1st LOT
@@ -151,7 +158,9 @@ while True:
   if ((ym >= (0) and dy < 0) or (ym <= mapheight and dy > 0)):  ym += dy
 
   # bounce off edges and give a random boost
-  if sx > maphalf: dsx = -1 * abs(dsx) * (1 + random.random())
+  if sx > maphalf: 
+    dsx = -1 * abs(dsx) * (1 + random.random())
+    dsz += 0.1*random.random()-0.05
   if sx < -maphalf: dsx = abs(dsx)
   if sz > maphalf: #player end
     #check if bat in position
@@ -160,27 +169,35 @@ while True:
       dsx += dx
       dsy += dy
     else:
-      sx, sy, sz = 0, 10, 0
-      dsx, dsy, dsz = 0.2*random.random(), 0, 0.1
+      sx, sy, sz = 0, mapheight/3, 0
+      dsx, dsy, dsz = 0.3*random.random()-0.15, 0, 0.1
+      score[1] += 1
   if sz < -maphalf: #monster end
     if (sx-rx)**2 + (sy-ry)**2 < 10:
       dsz = abs(dsz)
     else:
-      sx, sy, sz = 0, mapheight, 0
-      dsx, dsy, dsz = 0.2*random.random(), 0, -0.1
+      sx, sy, sz = 0, mapheight/3, 0
+      dsx, dsy, dsz = 0.3*random.random()-0.15, 0, -0.1
+      score[0] += 1
 
   ball.position(sx, sy, sz)
   ball.rotateIncX(dsx*-10)
   ball.rotateIncZ(dsz*-10)
+  
+  # write up the score
+  Draw.string(arialFont, str(score[0]), -10, 20, -5, 0.0, 0.05, 0.05)
+  Draw.string(arialFont, str(score[1]), 10, 20, -5, 0.0, 0.05, 0.05)
 
+  display.swapBuffers()
+  
   #Press ESCAPE to terminate
   k = mykeys.read()
+
   if k==27: #Escape key
     display.destroy()
     mykeys.close()
     break
-  
-  display.swapBuffers()
-
+      
+# attempt to tidy up!
 display.destroy()
 quit()
