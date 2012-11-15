@@ -6,74 +6,88 @@ from pi3d import Utility
 
 MAX_SIZE = 1024
 
-#load a texture specifying RGB or RGBA
-def _load_tex(fileString,flip,size,blend):
-  s = fileString + ' '
-  im = Image.open(fileString)
-  ix, iy = im.size
-  s += '(%s)' % im.mode
-  if im.mode == 'RGBA' or im.mode == 'LA':
-    RGBv = GL_RGBA
-    RGBs = 'RGBA'
-  else:
-    RGBv = GL_RGB
-    RGBs = 'RGB'
-
-  # work out if sizes are not to the power of 2 or >512
-  # TODO: why must texture sizes be a power of 2?
-  xx = 0
-  yy = 0
-  nx, ny = ix, iy
-  while (2**xx) < nx:
-    xx += 1
-  while (2**yy) < ny:
-    yy+=1
-  if (2 ** xx) > nx:
-    nx = 2 ** xx
-  if (2 ** yy) > ny:
-    ny=2 ** yy
-  nx = min(nx, MAX_SIZE)
-  ny = min(ny, MAX_SIZE)
-
-  if nx != ix or ny != iy or size>0:
-    if VERBOSE:
-      print ix, iy
-    if size > 0:
-      nx, ny = size, size
-    ix, iy = nx, ny
-    im = im.resize((ix, iy), Image.ANTIALIAS)
-    s += 'Resizing to: %d, %d' % (ix, iy)
-  else:
-    s += 'Bitmap size: %d, %d' % (ix, iy)
-
-  if VERBOSE:
-    print 'Loading ...',s
-
-  if flip:
-    im = im.transpose(Image.FLIP_TOP_BOTTOM)
-
-  image = im.convert(RGBs).tostring('raw',RGBs)
-  tex = ctypes.c_int()
-  opengles.glGenTextures(1, ctypes.byref(tex))
-  opengles.glBindTexture(GL_TEXTURE_2D, tex)
-  opengles.glTexImage2D(GL_TEXTURE_2D, 0, RGBv, ix, iy, 0, RGBv,
-                        GL_UNSIGNED_BYTE, ctypes.string_at(image, len(image)))
-  return ix, iy, tex, RGBs=='RGBA', blend
 
 class _Texture(object):
-  def __init__(self, fileString, flip=False, size=0, blend=False):
-    t = _load_tex(fileString, flip, size, blend)
-    self.ix, self.iy, self.tex, self.alpha, self.blend = t
+  def __init__(self, file_string, flip=False, size=0, blend=False):
+    self.file_string = file_string
+    self.flip = flip
+    self.size = size
+    self.blend = blend
+    self.loaded = self.preloaded = False
+
+  def preload(self):
+    if self.preloaded:
+      return
+
+    s = self.file_string + ' '
+    im = Image.open(self.file_string)
+    self.ix, self.iy = im.size
+    s += '(%s)' % im.mode
+    self.alpha = (im.mode == 'RGBA' or im.mode == 'LA')
+
+    # work out if sizes are not to the power of 2 or >512
+    # TODO: why must texture sizes be a power of 2?
+    xx = 0
+    yy = 0
+    nx, ny = self.ix, self.iy
+    while (2**xx) < nx:
+      xx += 1
+    while (2**yy) < ny:
+      yy += 1
+    if (2 ** xx) > nx:
+      nx = 2 ** xx
+    if (2 ** yy) > ny:
+      ny=2 ** yy
+    nx = min(nx, MAX_SIZE)
+    ny = min(ny, MAX_SIZE)
+
+    if nx != self.ix or ny != self.iy or self.size > 0:
+      if VERBOSE:
+        print self.self.ix, self.iy
+      if self.size > 0:
+        nx, ny = self.size, self.size
+      self.ix, self.iy = nx, ny
+      im = im.resize((self.ix, self.iy), Image.ANTIALIAS)
+      s += 'Resizing to: %d, %d' % (self.ix, self.iy)
+    else:
+      s += 'Bitmap size: %d, %d' % (self.ix, self.iy)
+
+    if VERBOSE:
+      print 'Loading ...',s
+
+    if self.flip:
+      im = im.transpose(Image.FLIP_TOP_BOTTOM)
+
+    RGBs = 'RGBA' if self.alpha else 'RGB'
+    self.image = im.convert(RGBs).tostring('raw',RGBs)
+    self.tex = ctypes.c_int()
+    self.preloaded = True
+
+  def load_on_display_thread(self):
+    if self.loaded:
+      return
+
+    self.preload()
+    opengles.glGenTextures(1, ctypes.byref(self.tex))
+    opengles.glBindTexture(GL_TEXTURE_2D, self.tex)
+    RGBv = GL_RGBA if self.alpha else GL_RGB
+    opengles.glTexImage2D(GL_TEXTURE_2D, 0, RGBv, self.ix, self.iy, 0, RGBv,
+                          GL_UNSIGNED_BYTE, ctypes.string_at(self.image,
+                                                             len(self.image)))
+    self.loaded = True
+
 
 class Textures(object):
   def __init__(self):
-    self.texs = (ctypes.c_int * 1024)()   #maximum of 1024 textures (just to be safe!)
+    # maximum of 1024 textures (just to be safe!)
+    self.texs = (ctypes.c_int * 1024)()
     self.tc = 0
 
   def loadTexture(self, fileString, blend=False, flip=False, size=0):
     # TODO: why are all these textures 'cached' without being retrievable?
     # If they are cached at all, it should be keyed by the fileString.
     texture = _Texture(fileString, flip, size, blend)
+    texture.load_on_display_thread()
     self.texs[self.tc] = texture.tex.value
     self.tc += 1
     return texture
@@ -82,6 +96,7 @@ class Textures(object):
     if VERBOSE:
       print '[Exit] Deleting textures ...'
       opengles.glDeleteTextures(self.tc, addressof(self.texs))
+
 
 class Loader(object):
   ALPHA_VALUE = c_float(0.6)  # TODO: where does this come from?
