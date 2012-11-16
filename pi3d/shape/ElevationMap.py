@@ -236,15 +236,22 @@ class ElevationMap(Shape):
           if pDistSq < minDist:
             minDist = pDistSq
             minLoc = (i,j)
-            
+         
+        #if minDist < radSq:
+        #  minDist = radSq
+        
     gLevel = self.calcHeight(-px, -pz) #check it hasn't tunnelled through by going fast
     if gLevel > (py-rad):
-      minDist = radSq - 1.0
+      minDist = py - gLevel
       minLoc = (int((x0+x1)/2), int((z0+z1)/2))
     
     if minDist <= radSq: #i.e. near enough to clash so return normal
       p = (minLoc[1]*self.ix + minLoc[0])*3
-      return(True, -self.normals[p], -self.normals[p+1], -self.normals[p+2],  rad - math.sqrt(minDist))
+      if minDist < 0:
+        jump = rad - minDist
+      else:
+        jump = 0
+      return(True, -self.normals[p], -self.normals[p+1], -self.normals[p+2],  jump)
     else:
       return (False, 0, 0, 0, 0)
 

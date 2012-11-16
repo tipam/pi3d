@@ -46,13 +46,15 @@ display.setBackColour(0.4,0.8,0.8,1) # r,g,b,alpha
 texs = Textures()
 # Setting 2nd param to True renders 'True' Blending
 # (this can be changed later to 'False' with 'rockimg2.blend = False')
-groundimg = texs.loadTexture("textures/pong2.jpg")
+groundimg = texs.loadTexture("textures/straw1.jpg")
 monstimg = texs.loadTexture("textures/pong3.png")
+ballimg = texs.loadTexture("textures/nauseating1.jpg")
 # environment cube
 ectex = texs.loadTexture("textures/ecubes/skybox_stormydays.jpg")
 myecube = EnvironmentCube(900.0,"CROSS")
 #ball
-radius = 1
+maxdsz = 0.3
+radius = 1.0
 ball = Sphere(radius,12,12,0.0,"sphere",-4,8,-7)
 #monster
 monster = Plane(5.0, 5.0, "monster", 0,0,0, 0,0,0)
@@ -60,10 +62,10 @@ monster = Plane(5.0, 5.0, "monster", 0,0,0, 0,0,0)
 # Create elevation map
 mapwidth=50.0                
 mapdepth=50.0
-maphalf=23.0
+maphalf=22.0
 mapheight=40.0
 #set smooth to give proper normals the bouncing won't work properly without and it doesn't look as good
-mymap = ElevationMap("textures/pong.jpg",mapwidth,mapdepth,mapheight,64,64,2,"sub",0,0,0, smooth=True)
+mymap = ElevationMap("textures/pong.jpg",mapwidth,mapdepth,mapheight,32,32,4,"sub",0,0,0, smooth=True)
 
 # lighting. The default light is a point light but I have made the position method capable of creating
 # a directional light and this is what I do inside the loop. If you want a torch you don't need to move it about
@@ -112,9 +114,6 @@ while True:
   myecube.draw(ectex,xm,ym,zm)
   mymap.draw(groundimg)
   
-  monster.draw(monstimg)
-  ball.draw(groundimg)
-  
   #monster movement
   drx = sx - rx
   if abs(drx) > max_speed: drx = drx/abs(drx) * max_speed
@@ -136,15 +135,16 @@ while True:
     # returns the components of normal vector if clash
     nx, ny, nz =  clash[1], clash[2], clash[3]
     # move it away a bit to stop it getting trapped inside if it has tunelled
-    jDist = clash[4]*radius
+    jDist = clash[4] + 0.1
     sx, sy, sz = sx - jDist*nx, sy - jDist*ny, sz - jDist*nz
 
     # use R = I - 2(N.I)N
-    rfact = 2.02*(nx*dsx + ny*dsy + nz*dsz) #small extra boost by using value > 2 to top up energy in defiance of 1st LOT
+    rfact = 2.05*(nx*dsx + ny*dsy + nz*dsz) #small extra boost by using value > 2 to top up energy in defiance of 1st LOT
     dsx, dsy, dsz = dsx - rfact*nx, dsy - rfact*ny, dsz - rfact*nz
     # stop the speed increasing too much
+    if dsz > 0.4: dsz = 0.4
     if dsx > 0.3: dsx = 0.2
-    if dsz > 0.3: dsz = 0.2    
+    if dsz > maxdsz: dsz = maxdsz
     
   # mouse movement checking here to get bat movment values
   mx=mymouse.x
@@ -176,13 +176,19 @@ while True:
     if (sx-rx)**2 + (sy-ry)**2 < 10:
       dsz = abs(dsz)
     else:
+      score[0] += 1
+      radius = 0.1 + (radius - 0.1)*0.75 # ball gets smaller each time you score
+      ball = Sphere(radius,12,12,0.0,"sphere",0,0,0)
+      maxdsz += 0.01 # max speed in z direction increases too
       sx, sy, sz = 0, mapheight/3, 0
       dsx, dsy, dsz = 0.3*random.random()-0.15, 0, -0.1
-      score[0] += 1
 
   ball.position(sx, sy, sz)
-  ball.rotateIncX(dsx*-10)
-  ball.rotateIncZ(dsz*-10)
+  
+  ball.rotateIncX(dsz/radius*50)
+  
+  monster.draw(monstimg)
+  ball.draw(ballimg)
   
   # write up the score
   Draw.string(arialFont, str(score[0]), -10, 20, -5, 0.0, 0.05, 0.05)
@@ -197,6 +203,8 @@ while True:
     display.destroy()
     mykeys.close()
     break
+  elif k==112:  #key P
+    display.screenshot("pong.jpg")
       
 # attempt to tidy up!
 display.destroy()
