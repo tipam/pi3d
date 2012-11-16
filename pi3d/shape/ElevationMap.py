@@ -175,6 +175,7 @@ class ElevationMap(Shape):
 
     return ih
 
+  # TODO these functions need to take into account the location (and really scale and rotation and offset) of the map
   # Works out if an object at a given location and radius will overlap with the map surface
   def clashTest(self, px, py, pz, rad):
     """
