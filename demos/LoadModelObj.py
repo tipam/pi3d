@@ -49,7 +49,8 @@ while 1:
   mtrx.translate(0,2,-5)
 
   mymodel.draw()
-  mymodel.rotateIncY(3.0)
+  mymodel.rotateIncY(1.0)
+  mymodel.rotateIncX(1.3)
 
   k = mykeys.read()
   if k >-1:
