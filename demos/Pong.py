@@ -46,9 +46,9 @@ display.setBackColour(0.4,0.8,0.8,1) # r,g,b,alpha
 texs = Textures()
 # Setting 2nd param to True renders 'True' Blending
 # (this can be changed later to 'False' with 'rockimg2.blend = False')
-groundimg = texs.loadTexture("textures/straw1.jpg")
+groundimg = texs.loadTexture("textures/stripwood.jpg")
 monstimg = texs.loadTexture("textures/pong3.png")
-ballimg = texs.loadTexture("textures/nauseating1.jpg")
+ballimg = texs.loadTexture("textures/cloud6.png", True)
 # environment cube
 ectex = texs.loadTexture("textures/ecubes/skybox_stormydays.jpg")
 myecube = EnvironmentCube(900.0,"CROSS")
@@ -112,7 +112,7 @@ while True:
   camera.translate(xm,-2+ym-mapheight,-maphalf-2.5)
   
   myecube.draw(ectex,xm,ym,zm)
-  mymap.draw(groundimg)
+  mymap.draw(ballimg)
   
   #monster movement
   drx = sx - rx
