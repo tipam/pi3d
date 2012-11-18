@@ -1,5 +1,6 @@
 import re, os
 from pi3d import *
+from pi3d.parse_mtl import parse_mtl
 from pi3d.shape.Shape import Shape
 
 #########################################################################################
@@ -11,100 +12,6 @@ from pi3d.shape.Shape import Shape
 #
 #########################################################################################
 
-def parse_mtl(fname):
-  """Parse MTL file.
-  """
-
-  materials = {}
-
-  f = open(fname, 'r')
-  for line in f:
-    chunks = line.split()
-    if len(chunks) > 0:
-
-      # Material start
-      # newmtl identifier
-      if chunks[0] == "newmtl":
-        if len(chunks) > 1:
-          identifier = chunks[1]
-        else:
-          identifier = ""
-        if not identifier in materials:
-          materials[identifier] = {}
-
-      # Diffuse color
-      # Kd 1.000 1.000 1.000
-      if chunks[0] == "Kd" and len(chunks) == 4:
-        materials[identifier]["colorDiffuse"] = [float(chunks[1]), float(chunks[2]), float(chunks[3])]
-
-      # Ambient color
-      # Ka 1.000 1.000 1.000
-      if chunks[0] == "Ka" and len(chunks) == 4:
-        materials[identifier]["colorAmbient"] = [float(chunks[1]), float(chunks[2]), float(chunks[3])]
-
-      # Specular color
-      # Ks 1.000 1.000 1.000
-      if chunks[0] == "Ks" and len(chunks) == 4:
-        materials[identifier]["colorSpecular"] = [float(chunks[1]), float(chunks[2]), float(chunks[3])]
-
-      # Specular coefficient
-      # Ns 154.000
-      if chunks[0] == "Ns" and len(chunks) == 2:
-        materials[identifier]["specularCoef"] = float(chunks[1])
-
-      # Transparency
-      # Tr 0.9 or d 0.9
-      if (chunks[0] == "Tr" or chunks[0] == "d") and len(chunks) == 2:
-        materials[identifier]["transparency"] = float(chunks[1])
-
-      # Optical density
-      # Ni 1.0
-      if chunks[0] == "Ni" and len(chunks) == 2:
-        materials[identifier]["opticalDensity"] = float(chunks[1])
-
-      # Diffuse texture
-      # map_Kd texture_diffuse.jpg
-      if chunks[0] == "map_Kd" and len(chunks) == 2:
-        materials[identifier]["mapDiffuse"] = chunks[1]
-
-      # Ambient texture
-      # map_Ka texture_ambient.jpg
-      if chunks[0] == "map_Ka" and len(chunks) == 2:
-        materials[identifier]["mapAmbient"] = chunks[1]
-
-      # Specular texture
-      # map_Ks texture_specular.jpg
-      if chunks[0] == "map_Ks" and len(chunks) == 2:
-        materials[identifier]["mapSpecular"] = chunks[1]
-
-      # Alpha texture
-      # map_d texture_alpha.png
-      if chunks[0] == "map_d" and len(chunks) == 2:
-        materials[identifier]["mapAlpha"] = chunks[1]
-
-      # Bump texture
-      # map_bump texture_bump.jpg or bump texture_bump.jpg
-      if (chunks[0] == "map_bump" or chunks[0] == "bump") and len(chunks) == 2:
-        materials[identifier]["mapBump"] = chunks[1]
-
-      # Illumination
-      # illum 2
-      #
-      # 0. Color on and Ambient off
-      # 1. Color on and Ambient on
-      # 2. Highlight on
-      # 3. Reflection on and Ray trace on
-      # 4. Transparency: Glass on, Reflection: Ray trace on
-      # 5. Reflection: Fresnel on and Ray trace on
-      # 6. Transparency: Refraction on, Reflection: Fresnel off and Ray trace on
-      # 7. Transparency: Refraction on, Reflection: Fresnel on and Ray trace on
-      # 8. Reflection on and Ray trace off
-      # 9. Transparency: Glass on, Reflection: Ray trace off
-      # 10. Casts shadows onto invisible surfaces
-      if chunks[0] == "illum" and len(chunks) == 2:
-        materials[identifier]["illumination"] = int(chunks[1])
-
-  return materials
 
 #########################################################################################
 def parse_vertex(text):
@@ -135,17 +42,17 @@ def parse_vertex(text):
 
 #########################################################################################
 def loadFileOBJ(model,fileName,texs):
-    
+
   model.coordinateSystem = "Y-up"
   model.parent = None
   model.childModel = [] # don't really need parent and child pointers but will speed up traversing tree
   model.vNormal = False
   model.vGroup = {} # holds the information for each vertex group
   model.texs = texs
-  
+
   if ("__clone__" in fileName): return #used for cloning this loadModel, i.e. don't need to parse egg file
   # read in the file and parse into some arrays
-    
+
   filePath = os.path.split(os.path.abspath(fileName))[0]
   print filePath
   f = open(fileName, 'r')
@@ -210,8 +117,8 @@ def loadFileOBJ(model,fileName,texs):
         normlen = len(normals) + 1
         uvlen = len(uvs) + 1
 
-        if len(numv) < (mcurrent+1): numv.append(0)    
-        if len(numi) < (mcurrent+1): numi.append(0)    
+        if len(numv) < (mcurrent+1): numv.append(0)
+        if len(numi) < (mcurrent+1): numi.append(0)
 
         for v in chunks[1:]:
           numv[mcurrent] += 1
@@ -231,7 +138,7 @@ def loadFileOBJ(model,fileName,texs):
             normal_index.append(vertex['n'])
         numi[mcurrent] -= 6 # number of corners of triangle = (n-2)*3 where n is the number of corners of face
         if not mcurrent in faces: faces[mcurrent] = []
-        
+
         faces[mcurrent].append({
           'vertex':vertex_index,
           'uv':uv_index,
@@ -270,10 +177,10 @@ def loadFileOBJ(model,fileName,texs):
       # Smooth shading
       if chunks[0] == "s" and len(chunks) == 2:
         smooth = chunks[1]
-    
+
   print "materials:  ", materials
   print "numv: ", numv
-  
+
   for g in faces:
     numv[g] -= 1
     numi[g] -= 1
@@ -308,7 +215,7 @@ def loadFileOBJ(model,fileName,texs):
     model.vGroup[g].material = None
     model.vGroup[g].ttype = GL_TRIANGLES
 
-    
+
     #for i in range(len(model.vGroup[g].normals)):
     #  print model.vGroup[g].normals[i],
     print
@@ -316,8 +223,8 @@ def loadFileOBJ(model,fileName,texs):
     print "vertices=",len(model.vGroup[g].vertices)
     print "normals=",len(model.vGroup[g].normals)
     print "tex_coords=",len(model.vGroup[g].tex_coords)
-    
-  material_lib = parse_mtl(os.path.join(filePath, mtllib))
+
+  material_lib = parse_mtl(open(os.path.join(filePath, mtllib), 'r'))
   for m in materials:
     print m
     if 'mapDiffuse' in material_lib[m]:
@@ -339,5 +246,5 @@ def loadFileOBJ(model,fileName,texs):
         model.vGroup[materials[m]].material[i + 1] = c_byte(grnVal)
         model.vGroup[materials[m]].material[i + 2] = c_byte(bluVal)
         model.vGroup[materials[m]].material[i + 3] = c_byte(255)
-  
+
 
