@@ -65,7 +65,7 @@ mapdepth=50.0
 maphalf=22.0
 mapheight=40.0
 #set smooth to give proper normals the bouncing won't work properly without and it doesn't look as good
-mymap = ElevationMap("textures/pong.jpg",mapwidth,mapdepth,mapheight,32,32,4,"sub",5,0,0, smooth=True)
+mymap = ElevationMap("textures/pong.jpg",mapwidth,mapdepth,mapheight,32,32,4,"sub",0,0,0, smooth=True)
 
 # lighting. The default light is a point light but I have made the position method capable of creating
 # a directional light and this is what I do inside the loop. If you want a torch you don't need to move it about
@@ -112,7 +112,7 @@ while True:
   camera.translate(xm,-2+ym-mapheight,-maphalf-2.5)
   
   myecube.draw(ectex,xm,ym,zm)
-  mymap.draw(ballimg)
+  mymap.draw(groundimg)
   
   #monster movement
   drx = sx - rx
