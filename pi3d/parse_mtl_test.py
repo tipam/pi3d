@@ -2,7 +2,7 @@ import unittest
 
 from pi3d.parse_mtl import parse_mtl
 
-class TestParseMtl(unittest.TestCase):
+class ParseMtlTest(unittest.TestCase):
   def setUp(self):
     pass
 
