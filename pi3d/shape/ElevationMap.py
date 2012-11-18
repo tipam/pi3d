@@ -129,6 +129,10 @@ class ElevationMap(Shape):
 
   # determines how high an object is when dropped on the map (providing it's inside the map area)
   def dropOn(self,x,z):
+    #adjust for map not set at origin
+    px += self.x
+    pz += self.z
+    
     wh = self.width * 0.5
     hh = self.depth * 0.5
     ws = self.width / self.ix
@@ -138,10 +142,14 @@ class ElevationMap(Shape):
     if x > -wh and x < wh and z > -hh and z < hh:
       pixht = self.pixels[(wh - x) / ws,(hh - z) / hs] * ht
 
-    return pixht
+    return pixht + self.y
 
   # accurately determines how high an object is when dropped on the map (providing it's inside the map area)
   def calcHeight(self, px, pz):
+    #adjust for map not set at origin
+    px += self.x
+    pz += self.z
+    
     wh = self.width * 0.5
     hh = self.depth * 0.5
     ws = self.width / self.ix
@@ -173,16 +181,12 @@ class ElevationMap(Shape):
     if ih == -100000:  # TODO: magic number
       ih = 0
 
-    return ih
+    return ih + self.y
 
-  # TODO these functions need to take into account the location (and really scale and rotation and offset) of the map
+  # TODO these functions will be scrambled by any scaling, rotation or offset, either print warning or stop these operations applying
   # Works out if an object at a given location and radius will overlap with the map surface
   def clashTest(self, px, py, pz, rad):
     """
-    it does not interpolate between points so objects can 'sink' into steep sections with no
-    intermediate points. Also the height calculation is the equivalent of passing -px, -pz
-    to calcHeight() which was designed around 'reverse' positioning for the viewing matrix
-    
     returns four values:
     boolean whether there is a clash
     x, y, z components of the normal vector
@@ -194,6 +198,10 @@ class ElevationMap(Shape):
     """
     # added Patrick Gaunt 2012-11-05
     radSq = rad**2
+    # adjust for map not set at origin
+    px -= self.x
+    py -= self.y
+    pz -= self.z
     ht = self.height/255
     halfw = self.width/2.0
     halfd = self.depth/2.0
