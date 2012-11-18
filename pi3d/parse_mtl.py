@@ -1,93 +1,90 @@
-def parse_mtl(lines):
-  """Parse lines from an MTL model file.
-  """
+from collections import namedtuple
 
-  materials = {}
+from pi3d.util import Log
 
-  for line in lines:
-    chunks = line.split()
-    if len(chunks) > 0:
+RAISE_EXCEPTION_ON_ERROR = True
+LOGGER = Log.logger(__name__)
 
-      # Material start
-      # newmtl identifier
-      if chunks[0] == "newmtl":
-        if len(chunks) > 1:
-          identifier = chunks[1]
+def _error(args, exception=None):
+  LOGGER.error(*args)
+  if RAISE_EXCEPTION_ON_ERROR:
+    raise exception or Exception()
+
+class Materials(object):
+  NEW_MATERIAL_CHUNK = 'newmtl'
+
+  float3_f = lambda x, y, z: [float(x), float(y), float(z)]
+  float_f = lambda x: float(x)
+  int_f = lambda x: int(x)
+  str_f = lambda x: str(x)
+
+  Prop = namedtuple('Prop', ['name', 'func'])
+  PROPERTIES = {
+    'Ka': Prop('colorAmbient', float3_f),
+    'Kd': Prop('colorDiffuse', float3_f),
+    'Ks': Prop('colorSpecular', float3_f),
+    'Ni': Prop('opticalDensity', float_f),
+    'Ns': Prop('specularCoef', float_f),
+    'Tr': Prop('transparency', float_f),
+    'bump': Prop('mapBump', str_f),
+    'd': Prop('transparency', float_f),
+    'illum': Prop('illumination', int_f),
+    'map_Ka': Prop('mapAmbient', str_f),
+    'map_Kd': Prop('mapDiffuse', str_f),
+    'map_Ks': Prop('mapSpecular', str_f),
+    'map_bump': Prop('mapBump', str_f),
+    'map_d': Prop('mapAlpha', str_f),
+    }
+
+  def __init__(self):
+    self.identifier = None
+    self.materials = {}
+    self.material = {}
+
+  def parse_lines(self, lines):
+    for line in lines:
+      self.parse_line(line)
+    return self.materials
+
+  def parse_line(self, line):
+    line = line.strip()
+    if not line.startswith('#'):
+      chunks = line.strip().split()
+      if chunks:
+        name = chunks[0]
+        args = chunks[1:]
+        if name == Materials.NEW_MATERIAL_CHUNK:
+          self.set_identifier(args, line)
         else:
-          identifier = ""
-        if not identifier in materials:
-          materials[identifier] = {}
+          self.set_property(name, args)
 
-      # Diffuse color
-      # Kd 1.000 1.000 1.000
-      if chunks[0] == "Kd" and len(chunks) == 4:
-        materials[identifier]["colorDiffuse"] = [float(chunks[1]), float(chunks[2]), float(chunks[3])]
+  def set_identifier(self, args, line):
+    if not args:
+      self.identifier = ''
+    else:
+      self.identifier = args[0].strip()
+      if len(args) > 1:
+        LOGGER.warning('too many arguments in identifier line "%s"', line)
+    self.material = self.materials.get(self.identifier, {})
+    self.materials[self.identifier] = self.material
 
-      # Ambient color
-      # Ka 1.000 1.000 1.000
-      if chunks[0] == "Ka" and len(chunks) == 4:
-        materials[identifier]["colorAmbient"] = [float(chunks[1]), float(chunks[2]), float(chunks[3])]
+  def set_property(self, name, args):
+    prop = Materials.PROPERTIES.get(name, None)
+    if not prop:
+      LOGGER.error('ERROR: Don\'t understand property "%s"', name)
+      if RAISE_EXCEPTION_ON_ERROR:
+        raise Exception()
+    else:
+      if prop.name in self.material:
+        LOGGER.warning('duplicate property %s in %s', prop.name, name)
+      try:
+        self.material[prop.name] = prop.func(*args)
+      except:
+        LOGGER.error('Couldn\'t set %s with args "%s"', name, args)
+        if RAISE_EXCEPTION_ON_ERROR:
+          raise
 
-      # Specular color
-      # Ks 1.000 1.000 1.000
-      if chunks[0] == "Ks" and len(chunks) == 4:
-        materials[identifier]["colorSpecular"] = [float(chunks[1]), float(chunks[2]), float(chunks[3])]
-
-      # Specular coefficient
-      # Ns 154.000
-      if chunks[0] == "Ns" and len(chunks) == 2:
-        materials[identifier]["specularCoef"] = float(chunks[1])
-
-      # Transparency
-      # Tr 0.9 or d 0.9
-      if (chunks[0] == "Tr" or chunks[0] == "d") and len(chunks) == 2:
-        materials[identifier]["transparency"] = float(chunks[1])
-
-      # Optical density
-      # Ni 1.0
-      if chunks[0] == "Ni" and len(chunks) == 2:
-        materials[identifier]["opticalDensity"] = float(chunks[1])
-
-      # Diffuse texture
-      # map_Kd texture_diffuse.jpg
-      if chunks[0] == "map_Kd" and len(chunks) == 2:
-        materials[identifier]["mapDiffuse"] = chunks[1]
-
-      # Ambient texture
-      # map_Ka texture_ambient.jpg
-      if chunks[0] == "map_Ka" and len(chunks) == 2:
-        materials[identifier]["mapAmbient"] = chunks[1]
-
-      # Specular texture
-      # map_Ks texture_specular.jpg
-      if chunks[0] == "map_Ks" and len(chunks) == 2:
-        materials[identifier]["mapSpecular"] = chunks[1]
-
-      # Alpha texture
-      # map_d texture_alpha.png
-      if chunks[0] == "map_d" and len(chunks) == 2:
-        materials[identifier]["mapAlpha"] = chunks[1]
-
-      # Bump texture
-      # map_bump texture_bump.jpg or bump texture_bump.jpg
-      if (chunks[0] == "map_bump" or chunks[0] == "bump") and len(chunks) == 2:
-        materials[identifier]["mapBump"] = chunks[1]
-
-      # Illumination
-      # illum 2
-      #
-      # 0. Color on and Ambient off
-      # 1. Color on and Ambient on
-      # 2. Highlight on
-      # 3. Reflection on and Ray trace on
-      # 4. Transparency: Glass on, Reflection: Ray trace on
-      # 5. Reflection: Fresnel on and Ray trace on
-      # 6. Transparency: Refraction on, Reflection: Fresnel off and Ray trace on
-      # 7. Transparency: Refraction on, Reflection: Fresnel on and Ray trace on
-      # 8. Reflection on and Ray trace off
-      # 9. Transparency: Glass on, Reflection: Ray trace off
-      # 10. Casts shadows onto invisible surfaces
-      if chunks[0] == "illum" and len(chunks) == 2:
-        materials[identifier]["illumination"] = int(chunks[1])
-
-  return materials
+def parse_mtl(lines):
+  """Parse MTL file.
+  """
+  return Materials().parse_lines(lines)
