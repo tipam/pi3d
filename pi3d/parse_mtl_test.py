@@ -2,6 +2,19 @@ import unittest
 
 from pi3d.parse_mtl import parse_mtl
 
+class TestParseMtl(unittest.TestCase):
+  def setUp(self):
+    pass
+
+  def test_cow(self):
+    self.assertEqual(COW_RESULT, parse_mtl(COW_MTL.splitlines()))
+
+  def test_teapot(self):
+    self.assertEqual(TEAPOT_RESULT, parse_mtl(TEAPOT_MTL.splitlines()))
+
+if __name__ == '__main__':
+    unittest.main()
+
 COW_MTL = """
 # Blender3D MTL File: LD_COW_CC0_2012.blend
 # Material Count: 1
@@ -29,12 +42,26 @@ COW_RESULT = {
     }
     }
 
-class TestParseMtl(unittest.TestCase):
-  def setUp(self):
-    pass
+TEAPOT_MTL = """
+# Blender MTL File: 'None'
+# Material Count: 1
+newmtl
+Ns 0
+Ka 0.000000 0.000000 0.000000
+Kd 0.8 0.8 0.8
+Ks 0.8 0.8 0.8
+d 1
+illum 2
+map_Kd ../textures/Raspi256x256.png
+"""
 
-  def test_simple(self):
-    self.assertEqual(COW_RESULT, parse_mtl(COW_MTL.splitlines()))
-
-if __name__ == '__main__':
-    unittest.main()
+TEAPOT_RESULT = {
+  '': {
+    'colorAmbient': [0.0, 0.0, 0.0],
+    'colorDiffuse': [0.8, 0.8, 0.8],
+    'colorSpecular': [0.8, 0.8, 0.8],
+    'illumination': 2,
+    'mapDiffuse': '../textures/Raspi256x256.png',
+    'specularCoef': 0.0,
+    'transparency': 1.0,
+    }}
