@@ -146,6 +146,12 @@ class ElevationMap(Shape):
 
   # accurately determines how high an object is when dropped on the map (providing it's inside the map area)
   def calcHeight(self, px, pz):
+    """
+    returns the hight of the map at the point specified
+    
+    parameters
+    px, pz -- location of the point to calculate height
+    """
     #adjust for map not set at origin
     px += self.x
     pz += self.z
@@ -169,19 +175,16 @@ class ElevationMap(Shape):
     p1 = p0 + 3
     p2 = p0 + 3*self.ix
     p3 = p0 + 3*self.ix + 3
-    ih = intersect_triangle((x, self.vertices[p0], z),
+
+    if pz > (z + 1 - px + x): #i.e. this point is in the triangle on the opposite side of the diagonal so swap base corners
+      x0, y0, z0 = x + 1, self.vertices[p3], z + 1
+    else:
+      x0, y0, z0 = x, self.vertices[p0], z
+    return self.y + intersect_triangle((x0, y0, z0),
                             (x + 1, self.vertices[p1], z),
                             (x, self.vertices[p2], z + 1),
                             (px, 0, pz))
-    if ih == -100000:  # TODO: magic number
-      ih = intersect_triangle((x + 1, self.vertices[p3], z + 1),
-                              (x + 1, self.vertices[p1], z),
-                              (x, self.vertices[p2], z + 1),
-                              (px, 0, pz))
-    if ih == -100000:  # TODO: magic number
-      ih = 0
-
-    return ih + self.y
+    
 
   # TODO these functions will be scrambled by any scaling, rotation or offset, either print warning or stop these operations applying
   # Works out if an object at a given location and radius will overlap with the map surface
@@ -263,51 +266,21 @@ class ElevationMap(Shape):
       return(True, -self.normals[p], -self.normals[p+1], -self.normals[p+2],  jump)
     else:
       return (False, 0, 0, 0, 0)
-
+      
+      
+#Function calculates the y intersection of a point on a triangle
 def intersect_triangle(v1, v2, v3, pos):
-  #Function calculates the y intersection of a point on a triangle
+  """
+  returns the y value of the intersection of the line defined by x,z of pos through the triange defined by v1,v2,v3
+  
+  parameters
+  v1,v2,v3 -- xyz tuples defining the corners of the triange
+  pos -- xyz tuple defining the x,z of the line
+  """
 
-  #Z order triangle
-  if v1[2] > v2[2]:
-    v1, v2 = v2, v1
-
-  if v1[2] > v3[2]:
-    v1, v3 = v3, v1
-
-  if v2[2] > v3[2]:
-    v2, v3 = v3, v2
-
-  if pos[2] > v2[2]:
-    #test bottom half of triangle
-    if pos[2] > v3[2]:
-      #print "z below triangle"
-      return -100000  # point completely out
-
-    za = (pos[2] - v1[2]) / (v3[2] - v1[2])
-    dxa = v1[0] + (v3[0] - v1[0]) * za
-    dya = v1[1] + (v3[1] - v1[1]) * za
-
-    zb = (v3[2] - pos[2]) / (v3[2] - v2[2])
-    dxb = v3[0] - (v3[0] - v2[0]) * zb
-    dyb = v3[1] - (v3[1] - v2[1]) * zb
-    if (pos[0] < dxa and pos[0] < dxb) or (pos[0] > dxa and pos[0] > dxb):
-      #print "outside of bottom triangle range"
-      return -100000
-  else:
-    #test top half of triangle
-    if pos[2] < v1[2]:
-        #print "z above triangle",pos[2],v1[2]
-        return -100000  # point completely out
-    za = (pos[2] - v1[2]) / (v3[2] - v1[2])
-    dxa = v1[0] + (v3[0] - v1[0]) * za
-    dya = v1[1] + (v3[1] - v1[1]) * za
-
-    zb = (v2[2] - pos[2]) / ((v2[2] + 0.00001) - v1[2])  #get rid of FP error!
-    dxb = v2[0] - (v2[0] - v1[0]) * zb
-    dyb = v2[1] - (v2[1] - v1[1]) * zb
-    if (pos[0] < dxa and pos[0] < dxb) or (pos[0] > dxa and pos[0] > dxb):
-      #print "outside of top triangle range"
-      return -100000
-
-  #return resultant intersecting height
-  return dya + (dyb - dya) * ((pos[0] - dxa)/(dxb - dxa))
+  #calc normal from two edge vectors v2-v1 and v3-v1
+  nVec = Utility.crossproduct(v2[0]-v1[0], v2[1]-v1[1], v2[2]-v1[2], v3[0]-v1[0],  v3[1]-v1[1], v3[2]-v1[2])
+  #equation of plane: Ax + By + Cz = kVal where A,B,C are components of normal. x,y,z for point v1 to find kVal
+  kVal = nVec[0]*v1[0] + nVec[1]*v1[1] + nVec[2]*v1[2]
+  #return y val i.e. y = (kVal - Ax - Cz)/B
+  return (kVal - nVec[0]*pos[0] - nVec[2]*pos[2])/nVec[1]
