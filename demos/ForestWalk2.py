@@ -161,3 +161,6 @@ while 1:
       print k
 
   display.swapBuffers()
+
+display.destroy()
+quit()

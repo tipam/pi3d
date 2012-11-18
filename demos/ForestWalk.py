@@ -14,6 +14,7 @@
 #
 # before running this example
 #
+from __future__ import absolute_import
 
 import math,random
 
@@ -32,7 +33,7 @@ from pi3d.shape.Plane import Plane
 
 # Setup display and initialise pi3d
 display = Display()
-display.create3D(100,100,1600,800, 0.5, 800.0, 60.0)  # x,y,width,height,near,far,aspect
+display.create3D(100,100,800,600, 0.5, 800.0, 60.0)  # x,y,width,height,near,far,aspect
 display.setBackColour(0.4,0.8,0.8,1)      # r,g,b,alpha
 
 # Load textures
@@ -179,3 +180,4 @@ while 1:
       print k
 
   display.swapBuffers()
+

@@ -187,7 +187,7 @@ while 1:
       zm += dz*3
       ym += dy*3
     else:
-      dy = -(mymap.calcHeight(xm + dx, zm + dz)+avhgt) - ym
+      dy = -(mymap.calcHeight(xm + dx*1.5, zm + dz*1.5)+avhgt) - ym
       if dy > -1.0: # limit steepness so can't climb up walls
         xm += dx
         zm += dz
