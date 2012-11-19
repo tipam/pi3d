@@ -14,6 +14,8 @@ class TCone(Shape):
     path = []
     path.append((0, height * .5))
     path.append((radiusTop, height * .5))
+    path.append((radiusTop, height * .4999))
+    path.append((radiusBot, -height * .4999))
     path.append((radiusBot, -height * .5))
     path.append((0, -height * .5))
 

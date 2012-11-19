@@ -14,8 +14,12 @@ class Tube(Shape):
     path = []
     path.append((radius - t, height * .5))
     path.append((radius + t, height * .5))
+    path.append((radius + t, height * .4999))
+    path.append((radius + t, -height * .4999))
     path.append((radius + t, -height * .5))
     path.append((radius - t, -height * .5))
+    path.append((radius - t, -height * .4999))
+    path.append((radius - t, height * .4999))
     path.append((radius - t, height * .5))
 
     self.radius = radius

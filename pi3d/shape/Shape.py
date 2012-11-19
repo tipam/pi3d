@@ -124,7 +124,10 @@ class Shape(object):
       tcy = 1.0 - ((py - miny) / (maxy - miny))
 
       #normal between path points
-      dx, dy = normalize_vector((opx, opy), (px, py))
+      if p > 0: 
+        dx, dy = normalize_vector((path[p-1][0], path[p-1][1]), (px, py))
+      else:
+        dx, dy = normalize_vector((px, py), (path[p+1][0], path[p+1][1]))
 
       for r in range (0, rl):
         cosr, sinr = Utility.from_polar_rad(pr * r)

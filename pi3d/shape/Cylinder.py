@@ -14,6 +14,8 @@ class Cylinder(Shape):
     path = []
     path.append((0, height * .5))
     path.append((radius, height * .5))
+    path.append((radius, height * .4999))
+    path.append((radius, -height * .4999))
     path.append((radius, -height * .5))
     path.append((0, -height * .5))
 
