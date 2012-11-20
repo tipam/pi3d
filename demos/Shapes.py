@@ -34,7 +34,7 @@ from pi3d.shape.Plane import Plane
 
 # Setup display and initialise pi3d
 display = Display()
-display.create3D(100,100,1200,900)   	# x,y,width,height
+display.create3D(0,0)   	# x,y,width,height
 display.setBackColour(0,0,0,1)    	# r,g,b,alpha
 
 # Load textures

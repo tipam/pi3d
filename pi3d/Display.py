@@ -138,6 +138,13 @@ class Display(object):
 
     self.win_width = w
     self.win_height = h
+    self.near = near
+    self.far = far
+
+    self.left = x
+    self.top = y
+    self.right = x + w
+    self.bottom = y + h
 
     self.create_display(x, y, w, h, depth)
 
