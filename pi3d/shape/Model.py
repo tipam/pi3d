@@ -3,9 +3,9 @@ from pi3d import *
 from pi3d import Texture
 from pi3d import loaderEgg
 from pi3d import loaderObj
-from pi3d.RotateVec import rotate_vec
 
 from pi3d.shape.Shape import Shape
+from pi3d.util.RotateVec import rotate_vec
 from pi3d.Matrix import Matrix
 
 class Model(Shape):

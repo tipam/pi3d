@@ -22,7 +22,6 @@ from pi3d.Light import Light
 from pi3d.Matrix import Matrix
 from pi3d.Mouse import Mouse
 from pi3d.Texture import Textures
-from pi3d.RotateVec import *
 
 from pi3d.shape.ElevationMap import ElevationMap
 from pi3d.shape.EnvironmentCube import EnvironmentCube
@@ -30,6 +29,8 @@ from pi3d.shape.MergeShape import MergeShape
 from pi3d.shape.Plane import Plane
 from pi3d.shape.Model import Model
 from pi3d.shape.TCone import TCone
+
+from pi3d.util.RotateVec import *
 
 rads = 0.017453292512 # degrees to radians
 

@@ -4,7 +4,7 @@ from pi3d import *
 from pi3d import Texture
 from pi3d.shape.Shape import Shape
 
-from pi3d.RotateVec import rotate_vec_x, rotate_vec_y, rotate_vec_z
+from pi3d.util.RotateVec import rotate_vec_x, rotate_vec_y, rotate_vec_z
 
 class MergeShape(Shape):
   def __init__(self,name="",
