@@ -1,6 +1,6 @@
 import unittest
 
-from pi3d.parse_mtl_test import ParseMtlTest
+from pi3d.loader.parse_mtl_test import ParseMtlTest
 
 def test_suite():
   suite = unittest.TestLoader().loadTestsFromTestCase(ParseMtlTest)

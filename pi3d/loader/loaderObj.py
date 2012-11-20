@@ -1,6 +1,6 @@
 import re, os
 from pi3d import *
-from pi3d.parse_mtl import parse_mtl
+from pi3d.loader.parse_mtl import parse_mtl
 from pi3d.shape.Shape import Shape
 
 #########################################################################################
