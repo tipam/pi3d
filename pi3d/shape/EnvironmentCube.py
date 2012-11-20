@@ -1,7 +1,7 @@
 import os.path
 
 from pi3d import *
-from pi3d import Utility
+from pi3d.util import Utility
 
 CUBE_PARTS = ('top', 'left', 'front', 'right', 'back', 'bottom')
 

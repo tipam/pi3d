@@ -4,12 +4,13 @@ import PIL.ImageOps
 
 from pi3d import *
 from pi3d.shape.Shape import Shape
+from pi3d.util import Utility
 
 # a rectangular surface where elevation is defined by a greyscal image
 class ElevationMap(Shape):
-  """ 
+  """
   parameters:
-  mapfile -- greyscale image path/file, string 
+  mapfile -- greyscale image path/file, string
   width -- of the map in world units, float (default 100.0)
   depth -- of the map in world units, float (default 100.0)
   height -- of the map in world units, float (default 10.0)
@@ -132,7 +133,7 @@ class ElevationMap(Shape):
     #adjust for map not set at origin
     px += self.x
     pz += self.z
-    
+
     wh = self.width * 0.5
     hh = self.depth * 0.5
     ws = self.width / self.ix
@@ -148,14 +149,14 @@ class ElevationMap(Shape):
   def calcHeight(self, px, pz):
     """
     returns the hight of the map at the point specified
-    
+
     parameters
     px, pz -- location of the point to calculate height
     """
     #adjust for map not set at origin
     px += self.x
     pz += self.z
-    
+
     wh = self.width * 0.5
     hh = self.depth * 0.5
     ws = self.width / self.ix
@@ -184,7 +185,7 @@ class ElevationMap(Shape):
                             (x + 1, self.vertices[p1], z),
                             (x, self.vertices[p2], z + 1),
                             (px, 0, pz))
-    
+
 
   # TODO these functions will be scrambled by any scaling, rotation or offset, either print warning or stop these operations applying
   # Works out if an object at a given location and radius will overlap with the map surface
@@ -194,7 +195,7 @@ class ElevationMap(Shape):
     boolean whether there is a clash
     x, y, z components of the normal vector
     the amount of overlap at the x,z location
-    
+
     parameters:
     px, py, pz -- location of object to test
     rad -- radius of object to test
@@ -210,7 +211,7 @@ class ElevationMap(Shape):
     halfd = self.depth/2.0
     dx = self.width/self.ix
     dz = self.depth/self.iy
-    
+
     # work out x and z ranges to check
     x0 = int(math.floor((halfw + px - rad)/dx + 0.5)) - 1
     if x0 < 0: x0 = 0
@@ -220,7 +221,7 @@ class ElevationMap(Shape):
     if z0 < 0: z0 = 0
     z1 = int(math.floor((halfd + pz + rad)/dz + 0.5)) + 1
     if z1 > self.iy-1: z1 = self.iy-1
-    
+
     minDist, minLoc = 1000000, (0,0)
     for i in xrange(x0+1, x1):
       for j in xrange(z0+1, z1):
@@ -233,7 +234,7 @@ class ElevationMap(Shape):
         if distSq < minDist: # this vertex is nearest so keep a record
           minDist = distSq
           minLoc = (i,j)
-        
+
         # now find the distance between the point and the plane perpendicular to the normal at this vertex
         pDist = Utility.dotproduct((px - self.vertices[p]),(py - self.vertices[p+1]),(pz - self.vertices[p+2]),
                                   -self.normals[p],-self.normals[p+1],-self.normals[p+2])
@@ -248,15 +249,15 @@ class ElevationMap(Shape):
           if pDistSq < minDist:
             minDist = pDistSq
             minLoc = (i,j)
-         
+
         #if minDist < radSq:
         #  minDist = radSq
-        
+
     gLevel = self.calcHeight(-px, -pz) #check it hasn't tunnelled through by going fast
     if gLevel > (py-rad):
       minDist = py - gLevel
       minLoc = (int((x0+x1)/2), int((z0+z1)/2))
-    
+
     if minDist <= radSq: #i.e. near enough to clash so return normal
       p = (minLoc[1]*self.ix + minLoc[0])*3
       if minDist < 0:
@@ -266,13 +267,13 @@ class ElevationMap(Shape):
       return(True, -self.normals[p], -self.normals[p+1], -self.normals[p+2],  jump)
     else:
       return (False, 0, 0, 0, 0)
-      
-      
+
+
 #Function calculates the y intersection of a point on a triangle
 def intersect_triangle(v1, v2, v3, pos):
   """
   returns the y value of the intersection of the line defined by x,z of pos through the triange defined by v1,v2,v3
-  
+
   parameters
   v1,v2,v3 -- xyz tuples defining the corners of the triange
   pos -- xyz tuple defining the x,z of the line

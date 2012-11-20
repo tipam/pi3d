@@ -15,22 +15,23 @@
 
 import math, random
 
-from pi3d.Fog import Fog
 from pi3d.Display import Display
-from pi3d.EnvironmentCube import EnvironmentCube
-from pi3d.Key import Key
-from pi3d.Light import Light
-from pi3d.Matrix import Matrix
+from pi3d.Keyboard import Keyboard
 from pi3d.Mouse import Mouse
 from pi3d.Texture import Textures
-from pi3d.RotateVec import *
-from pi3d.Missile import Missile
+
+from pi3d.context.Fog import Fog
+from pi3d.context.Light import Light
 
 from pi3d.shape.ElevationMap import ElevationMap
+from pi3d.shape.EnvironmentCube import EnvironmentCube
 from pi3d.shape.MergeShape import MergeShape
 from pi3d.shape.Plane import Plane
 from pi3d.shape.Model import Model
 from pi3d.shape.TCone import TCone
+
+from pi3d.util.Matrix import Matrix
+from pi3d.util.RotateVec import *
 
 rads = 0.017453292512 # degrees to radians
 
@@ -70,14 +71,14 @@ ectex = texs.loadTexture("textures/ecubes/skybox_stormydays.jpg")
 myecube = EnvironmentCube(900.0,"CROSS")
 
 # Create elevation map
-mapwidth=1000.0                
+mapwidth=1000.0
 mapdepth=1000.0
 mapheight=100.0
 mymap = ElevationMap("textures/maze1.jpg",mapwidth,mapdepth,mapheight,128,128,1,"sub",0,0,0, smooth=True)
-mymap2 = ElevationMap("textures/maze1.jpg",mapwidth,mapdepth,mapheight+0.1,128,128 ,64,"detail",0.0, 0.01, 0.0, smooth=True) 
+mymap2 = ElevationMap("textures/maze1.jpg",mapwidth,mapdepth,mapheight+0.1,128,128 ,64,"detail",0.0, 0.01, 0.0, smooth=True)
 
 # Crete fog for more realistic fade in distance. This can be turned on and off between drawing different object (i.e backgound not foggy)
-myfog = Fog(0.02, (0.1,0.1,0.1,1.0)) 
+myfog = Fog(0.02, (0.1,0.1,0.1,1.0))
 
 #Create tree models
 treeplane = Plane(4.0,5.0)
@@ -98,7 +99,7 @@ raspberry.cluster(treemodel1, mymap,-250,+250,470.0,470.0,5,"",8.0,1.0)
 # createMergeShape can be used to join loadModel object for much greater rendering speed
 # however, because these objects can contain multiple vGroups, each with their own texture image
 # it is necessary to make a merge for each vGroup and, later, draw each merged object using each
-# of the textures 
+# of the textures
 # The cluster method can be used where there is only one vGroup but with more than one the different
 # parts of the object get split up by the randomisation! Here I manually do the same thing as cluster
 # by first generating an array of random locations and y-rotations
@@ -153,7 +154,7 @@ lastX0=0.0
 lastZ0=0.0
 
 # Fetch key presses
-mykeys = Key()
+mykeys = Keyboard()
 mymouse = Mouse()
 mymouse.start()
 
@@ -168,12 +169,12 @@ angle = 0
 #################################################### LOOP ###############################################
 while 1:
   display.clear()
-  
+
   camera.identity()
   camera.rotate(tilt,0,0)
   camera.rotate(0,rot,0)
   camera.translate(xm,ym,zm)
-  
+
   myecube.draw(ectex,xm,ym,zm)
   myfog.on()
   mymap.draw(rockimg1)
@@ -197,7 +198,7 @@ while 1:
     if mSz > mapdepth/2: mSz = mapdepth/2
   if mDist < 3: #it's got you, return to GO
     xm, ym, zm = 0, -(mymap.calcHeight(0,0)+avhgt), 0
-  
+
   clash = mymap.clashTest(monst.x, monst.y, monst.z, 1.5)
   if clash[0]:
     # returns the components of normal vector if clash
@@ -217,20 +218,17 @@ while 1:
   mSy += mDy
   mSz += mDz
   monst.position(mSx, mSy, mSz)
-  
-  # missile movement
-  missile.move(raspimg)
-  
+
   # draw the sheds
   for g in shed.vGroup:
     shedgp[g].drawAll(shed.vGroup[g].texID)
-  
+
   # movement and rotations of light
   myfog.off()
-  
+
   mx=mymouse.x
   my=mymouse.y
-  
+
   rot += (mx-omx)*0.2
   tilt -= (my-omy)*0.2
   omx=mx
@@ -286,6 +284,6 @@ while 1:
       break
     #else:
     #print k
-   
+
   display.swapBuffers()
 quit()

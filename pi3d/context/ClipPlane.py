@@ -12,6 +12,7 @@ class ClipPlane():
     opengles.glClipPlanef(self.no, self.equation)
 
   def enable(self):
+    # TODO: perhaps a context manager?
     opengles.glEnable(self.no)
 
   def disable(self):

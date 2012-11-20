@@ -1,13 +1,13 @@
 import ctypes
 
 from pi3d import *
-from pi3d import Utility
+from pi3d.util import Utility
 
 class Light(object):
   def __init__(self, no=0, red=1.0, grn=1.0, blu=1.0, name="",
                x=0, y=0, z=0, ambR=0.5, ambG=0.5, ambB=0.5, w=1):
     """ Set up Light object
-    
+
     arguments:
     no -- each Light has to be assigned a unique int (default 0)
     red -- red value of light, can be greater than 1.0 (default 1.0)
@@ -43,7 +43,7 @@ class Light(object):
 
   def position(self, x, y, z, w=1):
     """ move or rotate the light and change its type
-    
+
     x,y,z -- location or direction components
     w -- type 0 for directional, 1 for point (default 1)
     """
@@ -55,7 +55,7 @@ class Light(object):
     opengles.glLoadMatrixf(mtrx)
 
   def on(self):
-    """ Switch light on. Defaults to off in __init__ 
+    """ Switch light on. Defaults to off in __init__
     """
     #load view matrix
     opengles.glEnable(GL_LIGHTING)
@@ -64,7 +64,7 @@ class Light(object):
     self.lighton = True
 
   def off(self):
-    """ Switch light off. Default value in _init__ 
+    """ Switch light off. Default value in _init__
     """
     opengles.glDisable(self.no)
     opengles.glDisable(GL_LIGHTING)

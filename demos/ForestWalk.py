@@ -19,17 +19,19 @@ from __future__ import absolute_import
 import math,random
 
 from pi3d.Display import Display
-from pi3d.EnvironmentCube import EnvironmentCube
-from pi3d.EnvironmentCube import loadECfiles
-from pi3d.Key import Key
-from pi3d.Light import Light
-from pi3d.Matrix import Matrix
+from pi3d.Keyboard import Keyboard
 from pi3d.Mouse import Mouse
 from pi3d.Texture import Textures
 
+from pi3d.context.Light import Light
+
 from pi3d.shape.ElevationMap import ElevationMap
+from pi3d.shape.EnvironmentCube import EnvironmentCube
+from pi3d.shape.EnvironmentCube import loadECfiles
 from pi3d.shape.MergeShape import MergeShape
 from pi3d.shape.Plane import Plane
+
+from pi3d.util.Matrix import Matrix
 
 # Setup display and initialise pi3d
 display = Display()
@@ -114,7 +116,7 @@ ym= -(mymap.calcHeight(xm,zm)+avhgt)
 mtrx = Matrix()
 
 # Fetch key presses
-mykeys = Key()
+mykeys = Keyboard()
 mymouse = Mouse()
 mymouse.start()
 

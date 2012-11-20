@@ -1,6 +1,6 @@
 import curses
 
-class Key():
+class Keyboard():
   def __init__(self):
     self.key = curses.initscr()
     curses.cbreak()

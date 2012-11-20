@@ -19,12 +19,13 @@
 
 import sys, random
 
-from pi3d import Draw
-
-from pi3d.Ball import Ball
 from pi3d.Display import Display
-from pi3d.Key import Key
+from pi3d.Keyboard import Keyboard
 from pi3d.Texture import Textures
+
+from pi3d.sprite.Ball import Ball
+
+from pi3d.util import Draw
 
 # Setup display and initialise pi3d
 display = Display()
@@ -77,7 +78,7 @@ for b in range (0,maxballs):
 
 
 # Fetch key presses
-mykeys = Key()
+mykeys = Keyboard()
 scshots = 1
 
 print balls[0].x, balls[0].vx

@@ -15,20 +15,21 @@
 
 import math, random
 
-from pi3d import Draw
-
 from pi3d.Display import Display
-from pi3d.EnvironmentCube import EnvironmentCube
-from pi3d.Key import Key
-from pi3d.Light import Light
-from pi3d.Matrix import Matrix
+from pi3d.Keyboard import Keyboard
 from pi3d.Mouse import Mouse
 from pi3d.Texture import Textures
 from pi3d.Font import Font
 
+from pi3d.context.Light import Light
+
 from pi3d.shape.ElevationMap import ElevationMap
+from pi3d.shape.EnvironmentCube import EnvironmentCube
 from pi3d.shape.Plane import Plane
 from pi3d.shape.Sphere import Sphere
+
+from pi3d.util import Draw
+from pi3d.util.Matrix import Matrix
 
 #helpful messages
 print "############################################################"
@@ -60,7 +61,7 @@ ball = Sphere(radius,12,12,0.0,"sphere",-4,8,-7)
 monster = Plane(5.0, 5.0, "monster", 0,0,0, 0,0,0)
 
 # Create elevation map
-mapwidth=50.0                
+mapwidth=50.0
 mapdepth=50.0
 maphalf=22.0
 mapheight=40.0
@@ -96,7 +97,7 @@ drx, dry, drz = 0, 0, 0
 max_speed = 0.2
 
 # Fetch key presses
-mykeys = Key()
+mykeys = Keyboard()
 mymouse = Mouse()
 mymouse.start()
 
@@ -107,13 +108,13 @@ camera = Matrix()
 
 while True:
   display.clear()
-  
+
   camera.identity()
   camera.translate(xm,-2+ym-mapheight,-maphalf-2.5)
-  
+
   myecube.draw(ectex,xm,ym,zm)
   mymap.draw(groundimg)
-  
+
   #monster movement
   drx = sx - rx
   if abs(drx) > max_speed: drx = drx/abs(drx) * max_speed
@@ -121,9 +122,9 @@ while True:
   if abs(dry) > max_speed: dry = dry/abs(dry) * max_speed
   rx += drx
   ry += dry
-  
+
   monster.position(rx, ry, -maphalf)
-  
+
   dsy -= gravity
   sx += dsx
   sy += dsy
@@ -145,7 +146,7 @@ while True:
     if dsz > 0.4: dsz = 0.4
     if dsx > 0.3: dsx = 0.2
     if dsz > maxdsz: dsz = maxdsz
-    
+
   # mouse movement checking here to get bat movment values
   mx=mymouse.x
   dx = -(mx-omx)*0.02
@@ -158,7 +159,7 @@ while True:
   if ((ym >= (0) and dy < 0) or (ym <= mapheight and dy > 0)):  ym += dy
 
   # bounce off edges and give a random boost
-  if sx > maphalf: 
+  if sx > maphalf:
     dsx = -1 * abs(dsx) * (1 + random.random())
     dsz += 0.1*random.random()-0.05
   if sx < -maphalf: dsx = abs(dsx)
@@ -184,18 +185,18 @@ while True:
       dsx, dsy, dsz = 0.3*random.random()-0.15, 0, -0.1
 
   ball.position(sx, sy, sz)
-  
+
   ball.rotateIncX(dsz/radius*50)
-  
+
   monster.draw(monstimg)
   ball.draw(ballimg)
-  
+
   # write up the score
   Draw.string(arialFont, str(score[0]), -10, 20, -5, 0.0, 0.05, 0.05)
   Draw.string(arialFont, str(score[1]), 10, 20, -5, 0.0, 0.05, 0.05)
 
   display.swapBuffers()
-  
+
   #Press ESCAPE to terminate
   k = mykeys.read()
 
@@ -206,6 +207,6 @@ while True:
     break
   elif k==112:  #key P
     display.screenshot("pong.jpg")
-      
+
 # attempt to tidy up!
 quit()

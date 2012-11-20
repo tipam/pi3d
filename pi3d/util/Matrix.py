@@ -1,5 +1,5 @@
 from pi3d import *
-from pi3d import Utility
+from pi3d.util import Utility
 
 class Matrix(object):
   def __init__(self):

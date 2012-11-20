@@ -2,7 +2,7 @@ import math
 
 from pi3d import *
 from pi3d import Texture
-from pi3d import Utility
+from pi3d.util import Utility
 
 class Shape(object):
   def __init__(self, name, x, y, z, rx, ry, rz, sx, sy, sz, cx, cy, cz):
@@ -124,7 +124,7 @@ class Shape(object):
       tcy = 1.0 - ((py - miny) / (maxy - miny))
 
       #normal between path points
-      if p > 0: 
+      if p > 0:
         dx, dy = normalize_vector((path[p-1][0], path[p-1][1]), (px, py))
       else:
         dx, dy = normalize_vector((px, py), (path[p+1][0], path[p+1][1]))

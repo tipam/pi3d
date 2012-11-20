@@ -15,11 +15,11 @@
 
 import random, time
 
-from pi3d import Draw
-
 from pi3d.Display import Display
-from pi3d.Key import Key
+from pi3d.Keyboard import Keyboard
 from pi3d.Texture import Textures
+
+from pi3d.util import Draw
 
 z=0
 x=0
@@ -54,7 +54,7 @@ for b in range (0, cloudno):
   z = z + zd
 
 # Fetch key presses
-mykeys = Key()
+mykeys = Keyboard()
 
 while True:
 

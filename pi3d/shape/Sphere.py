@@ -1,7 +1,7 @@
 import math
 
 from pi3d import *
-from pi3d import Utility
+from pi3d.util import Utility
 from pi3d.shape.Shape import Shape
 
 class Sphere(Shape):

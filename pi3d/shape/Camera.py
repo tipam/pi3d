@@ -1,6 +1,6 @@
 from pi3d import *
-from pi3d import Utility
 from pi3d.shape.Shape import Shape
+from pi3d.util import Utility
 
 class Camera(Shape):
   def __init__(self, name="", x=0.0, y=0.0, z=0.0, rx=0.0, ry=0.0, rz=0.0):

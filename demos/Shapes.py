@@ -13,13 +13,12 @@
 # before running this example
 #
 
-from pi3d import Draw
-
 from pi3d.Display import Display
 from pi3d.Font import Font
-from pi3d.Key import Key
-from pi3d.Light import Light
+from pi3d.Keyboard import Keyboard
 from pi3d.Texture import Textures
+
+from pi3d.context.Light import Light
 
 from pi3d.shape.Cone import Cone
 from pi3d.shape.Cylinder import Cylinder
@@ -31,6 +30,8 @@ from pi3d.shape.TCone import TCone
 from pi3d.shape.Torus import Torus
 from pi3d.shape.Tube import Tube
 from pi3d.shape.Plane import Plane
+
+from pi3d.util import Draw
 
 # Setup display and initialise pi3d
 display = Display()
@@ -64,7 +65,7 @@ destineFont = Font("AR_Destine", "#0055ff")
 
 
 # Fetch key presses
-mykeys = Key()
+mykeys = Keyboard()
 
 #create a light
 mylight = Light(0, 2,2,2, "", 1,0,0, 0.1,0.1,0.1, 0)
@@ -111,7 +112,7 @@ while 1:
   mylathe.draw(patimg)
   mylathe.rotateIncY(2)
   mylathe.rotateIncZ(1)
-  
+
   myPlane.draw(coffimg)
   myPlane.rotateIncY(9)
 

@@ -13,14 +13,16 @@
 # before running this example
 #
 
-from pi3d import Utility
 from pi3d.Display import Display
-from pi3d.EnvironmentCube import EnvironmentCube
-from pi3d.EnvironmentCube import loadECfiles
-from pi3d.Key import Key
-from pi3d.Matrix import Matrix
+from pi3d.Keyboard import Keyboard
 from pi3d.Mouse import Mouse
 from pi3d.Texture import Textures
+
+from pi3d.shape.EnvironmentCube import EnvironmentCube
+from pi3d.shape.EnvironmentCube import loadECfiles
+
+from pi3d.util.Matrix import Matrix
+from pi3d.util import Utility
 
 # Setup display and initialise pi3d
 display = Display()
@@ -46,13 +48,13 @@ rot=0.0
 tilt=0.0
 
 # Fetch key presses
-mykeys = Key()
+mykeys = Keyboard()
 mymouse = Mouse()
 mymouse.start()
-mtrx=Matrix()
+mtrx = Matrix()
 
-omx=mymouse.x
-omy=mymouse.y
+omx = mymouse.x
+omy = mymouse.y
 
 # Display scene and rotate cuboid
 while 1:

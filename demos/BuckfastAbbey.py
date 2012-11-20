@@ -17,15 +17,17 @@
 import math
 
 from pi3d.Display import Display
-from pi3d.EnvironmentCube import EnvironmentCube
-from pi3d.EnvironmentCube import loadECfiles
-from pi3d.Key import Key
-from pi3d.Light import Light
-from pi3d.Matrix import Matrix
+from pi3d.Keyboard import Keyboard
 from pi3d.Mouse import Mouse
 from pi3d.Texture import Textures
 
+from pi3d.context.Light import Light
+
+from pi3d.shape.EnvironmentCube import loadECfiles
+from pi3d.shape.EnvironmentCube import EnvironmentCube
 from pi3d.shape.Model import Model
+
+from pi3d.util.Matrix import Matrix
 
 # Setup display and initialise pi3d
 display = Display()
@@ -49,7 +51,7 @@ myecube = EnvironmentCube(900.0,"FACES")
 mymodel = Model("models/Buckfast Abbey/BuckfastAbbey.egg",texs,"Abbey",0,0,0, -90,160,0, 0.03,0.03,0.03)
 
 # Create keyboard and mouse event objects
-mykeys = Key()
+mykeys = Keyboard()
 mymouse = Mouse()
 mymouse.start()
 
