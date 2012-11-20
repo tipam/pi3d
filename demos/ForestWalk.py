@@ -20,9 +20,10 @@ import math,random
 
 from pi3d.Display import Display
 from pi3d.Key import Key
-from pi3d.Light import Light
 from pi3d.Mouse import Mouse
 from pi3d.Texture import Textures
+
+from pi3d.context.Light import Light
 
 from pi3d.shape.ElevationMap import ElevationMap
 from pi3d.shape.EnvironmentCube import EnvironmentCube

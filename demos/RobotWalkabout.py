@@ -18,11 +18,12 @@
 import math
 
 from pi3d.Display import Display
-from pi3d.Fog import Fog
 from pi3d.Key import Key
-from pi3d.Light import Light
 from pi3d.Mouse import Mouse
 from pi3d.Texture import Textures
+
+from pi3d.context.Fog import Fog
+from pi3d.context.Light import Light
 
 from pi3d.shape.Cuboid import Cuboid
 from pi3d.shape.Cylinder import Cylinder
