@@ -173,6 +173,7 @@ while 1:
       mc = 0
     elif k==27:  #Escape key
       mykeys.close()
+      mymouse.stop()
       texs.deleteAll()
       display.destroy()
       break
@@ -180,4 +181,4 @@ while 1:
       print k
 
   display.swapBuffers()
-
+quit()

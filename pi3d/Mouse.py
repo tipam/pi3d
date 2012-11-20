@@ -35,4 +35,8 @@ class Mouse(threading.Thread):
       #if self.y<0: self.y=0
       #self.x=min(self.x,self.width)
       #self.y=min(self.y,self.height)
+    
+  # possibly not ideal to do without semaphore and checking for exceptions but probably safe here
+  def stop(self):
+    self._Thread__stop()
 

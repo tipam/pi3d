@@ -202,10 +202,10 @@ while True:
   if k==27: #Escape key
     display.destroy()
     mykeys.close()
+    mymouse.stop()
     break
   elif k==112:  #key P
     display.screenshot("pong.jpg")
       
 # attempt to tidy up!
-display.destroy()
 quit()

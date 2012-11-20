@@ -153,6 +153,7 @@ while 1:
     elif k==10: #key RETURN
       mc = 0
     elif k==27: #Escape key
+      mymouse.stop()
       mykeys.close()
       texs.deleteAll()
       display.destroy()
@@ -162,5 +163,4 @@ while 1:
 
   display.swapBuffers()
 
-display.destroy()
 quit()

@@ -72,56 +72,58 @@ omx=mymouse.x
 omy=mymouse.y
 
 while 1:
-    display.clear()
+  display.clear()
 
-    mtrx.identity()
-    mtrx.rotate(tilt, rot, 0)
-    mtrx.translate(xm,ym,zm)
-    mtrx.push()
-    mtrx.rotate(0, 180, 0)
-    myecube.draw(ectex,xm,ym,zm)
-    mtrx.pop()
+  mtrx.identity()
+  mtrx.rotate(tilt, rot, 0)
+  mtrx.translate(xm,ym,zm)
+  mtrx.push()
+  mtrx.rotate(0, 180, 0)
+  myecube.draw(ectex,xm,ym,zm)
+  mtrx.pop()
 
-    mylight.on()
-    mymodel.draw()
-    mylight.off()
+  mylight.on()
+  mymodel.draw()
+  mylight.off()
 
-    mx=mymouse.x
-    my=mymouse.y
+  mx=mymouse.x
+  my=mymouse.y
 
-    if mx>display.left and mx<display.right and my>display.top and my<display.bottom:
-	rot += (mx-omx)*0.5
-	tilt -= (my-omy)*0.5
-	omx=mx
-	omy=my
+  if mx>display.left and mx<display.right and my>display.top and my<display.bottom:
+    rot += (mx-omx)*0.5
+    tilt -= (my-omy)*0.5
+    omx=mx
+    omy=my
 
-    #Press ESCAPE to terminate
-    k = mykeys.read()
-    if k >-1:
-	if k==119:    #key W
-	    xm-=math.sin(math.radians(rot))
-	    zm+=math.cos(math.radians(rot))
-	elif k==115:  #kry S
-	    xm+=math.sin(math.radians(rot))
-	    zm-=math.cos(math.radians(rot))
-	elif k==39:   #key '
-		tilt -= 2.0
-		print tilt
-	elif k==47:   #key /
-		tilt += 2.0
-	elif k==97:   #key A
-	    rot -= 2
-	elif k==100:  #key D
-	    rot += 2
-	elif k==112:  #key P
-	    display.screenshot("BuckfastAbbey"+str(scshots)+".jpg")
-	    scshots += 1
-	elif k==27:    #Escape key
-		mykeys.close()
-		texs.deleteAll()
-		display.destroy()
-		break
-	else:
-	    print k
+  #Press ESCAPE to terminate
+  k = mykeys.read()
+  if k >-1:
+    if k==119:    #key W
+      xm-=math.sin(math.radians(rot))
+      zm+=math.cos(math.radians(rot))
+    elif k==115:  #kry S
+      xm+=math.sin(math.radians(rot))
+      zm-=math.cos(math.radians(rot))
+    elif k==39:   #key '
+      tilt -= 2.0
+      print tilt
+    elif k==47:   #key /
+      tilt += 2.0
+    elif k==97:   #key A
+      rot -= 2
+    elif k==100:  #key D
+      rot += 2
+    elif k==112:  #key P
+      display.screenshot("BuckfastAbbey"+str(scshots)+".jpg")
+      scshots += 1
+    elif k==27:    #Escape key
+      mykeys.close()
+      mymouse.stop()
+      texs.deleteAll()
+      display.destroy()
+      break
+    else:
+      print k
 
-    display.swapBuffers()
+  display.swapBuffers()
+quit()

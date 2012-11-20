@@ -27,9 +27,9 @@ from pi3d.Key import Key
 from pi3d.Texture import Textures
 
 # Setup display and initialise pi3d
-scnx=1920
-scny=1200
 display = Display()
+scnx=display.max_width
+scny=display.max_height
 display.create2D(0,0,scnx,scny,0)
 
 # Set last value (alpha) to zero for a transparent background!
@@ -38,7 +38,7 @@ display.setBackColour(0,0.2,0.6,0)
 
 # Ball parameters
 maxballs = 15
-maxballsize = 150
+maxballsize = 100
 minballsize = 5
 maxspeed = 30
 
@@ -63,16 +63,17 @@ for b in range (0,maxballs):
     balls.append(Ball(r,x,y,vx,vy,0.0))
     c=0
     hit = False
-    while c<b and not hit:
-	if balls[b].hit(balls[c]):
-	    balls[b].r=random.random() * maxballsize+minballsize
-	    balls[b].x=random.random() * scnx
-	    balls[b].y=random.random() * scny
-	    c=0
-	    hit = True
-	else:
-	    c+=1
-	    hit = False
+    while c < b and not hit:
+      Bb = balls[b]
+      if Bb.hit(balls[c]):
+        Bb.radius = random.random() * maxballsize + minballsize
+        Bb.x = random.random() * scnx
+        Bb.y = random.random() * scny
+        c=0
+        hit = True
+      else:
+        c+=1
+        hit = False
 
 
 # Fetch key presses
@@ -82,30 +83,31 @@ scshots = 1
 print balls[0].x, balls[0].vx
 
 while True:
-    display.clear()
+  display.clear()
 
-    for b in range (0,len(balls)):
-	#if balls[b].vx<>0.0 or balls[b].vy<>0.0:
-	    #check collisions with other balls and bounce if necessary
-	for c in range (b+1,len(balls)):
-	    balls[b].collisionBounce(balls[c])
-	balls[b].x += balls[b].vx
-	balls[b].y += balls[b].vy
-	#check if ball hits wall
-	if balls[b].x>scnx or balls[b].x<0.0: balls[b].vx = -balls[b].vx
-	if balls[b].y>scny or balls[b].y<0.0: balls[b].vy = -balls[b].vy
+  for b in range (0,len(balls)):
+    Bb = balls[b]
+    #check collisions with other balls and bounce if necessary
+    for c in range (b+1,len(balls)):
+      Bb.collisionBounce(balls[c])
+    Bb.x += Bb.vx
+    Bb.y += Bb.vy
+    #check if ball hits wall (to avoid getting stuck just off the edge)
+    if Bb.x > (scnx - Bb.radius): Bb.vx = -abs(Bb.vx)
+    elif Bb.x < Bb.radius: Bb.vx = abs(Bb.vx)
+    if Bb.y > (scny - Bb.radius): Bb.vy = -abs(Bb.vy)
+    elif Bb.y < Bb.radius: Bb.vy = abs(Bb.vy)
 
-	Draw.sprite(balltex[0], balls[b].x, balls[b].y, -1,
-                    balls[b].radius, balls[b].radius)
+    Draw.sprite(balltex[0], Bb.x, Bb.y, -1, Bb.radius, Bb.radius)
 
-    k = mykeys.read()
-    if k >-1:
-	if k==27:  #ESCAPE key
-	    mykeys.close()
-	    texs.deleteAll()
-	    display.destroy()
-	    break
-	if k==112:
-	    display.screenshot("collisionballs.jpg")
+  k = mykeys.read()
+  if k >-1:
+    if k==27:  #ESCAPE key
+      mykeys.close()
+      texs.deleteAll()
+      display.destroy()
+      break
+    if k==112:
+      display.screenshot("collisionballs.jpg")
 
-    display.swapBuffers()
+  display.swapBuffers()

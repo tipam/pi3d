@@ -26,7 +26,7 @@ from pi3d.shape.Plane import Plane
 
 # Setup display and initialise pi3d
 display = Display()
-display.create3D(100,100,1200,900)   	# x,y,width,height
+display.create3D(0,0)   	# x,y,width,height defaults to full screen if w,h ommitted
 display.setBackColour(0,0,0,1)    	# r,g,b,alpha
 
 # Load textures
@@ -61,36 +61,36 @@ mylight.on()
 
 # Display scene
 while 1:
-    display.clear()
+  display.clear()
 
-    myplane.draw(starsimg)
-    myplane.rotateIncZ(0.01)
+  myplane.draw(starsimg)
+  myplane.rotateIncZ(0.01)
 
-    mysphere.draw(earthimg)
-    mysphere.rotateIncY(0.1)
-    mysphere2.draw(cloudimg)
-    mysphere2.rotateIncY(.15)
+  mysphere.draw(earthimg)
+  mysphere.rotateIncY(0.1)
+  mysphere2.draw(cloudimg)
+  mysphere2.rotateIncY(.15)
 
-    mymoon.draw(moonimg)
-    mymoon.position(mysphere.x+m1Rad*sin(rot1),mysphere.y+0,mysphere.z-m1Rad*cos(rot1))
-    mymoon.rotateIncY(0.2)
+  mymoon.draw(moonimg)
+  mymoon.position(mysphere.x+m1Rad*sin(rot1),mysphere.y+0,mysphere.z-m1Rad*cos(rot1))
+  mymoon.rotateIncY(0.2)
 
-    mymoon2.draw(watimg)
-    mymoon2.position(mymoon.x+m2Rad*sin(rot2),mymoon.y+0,mymoon.z-m2Rad*cos(rot2))
-    mymoon2.rotateIncY(3)
+  mymoon2.draw(watimg)
+  mymoon2.position(mymoon.x+m2Rad*sin(rot2),mymoon.y+0,mymoon.z-m2Rad*cos(rot2))
+  mymoon2.rotateIncY(3)
 
-    rot1 -= 0.005
-    rot2 -= 0.021
+  rot1 -= 0.005
+  rot2 -= 0.021
 
-    k = mykeys.read()
-    if k >-1:
-      if k==112: display.screenshot("earthPic.jpg")
-      elif k==27:
-          mykeys.close()
-          texs.deleteAll()
-          display.destroy()
-          break
-      else:
-          print k
+  k = mykeys.read()
+  if k >-1:
+    if k==112: display.screenshot("earthPic.jpg")
+    elif k==27:
+      mykeys.close()
+      texs.deleteAll()
+      display.destroy()
+      break
+    else:
+      print k
 
-    display.swapBuffers()
+  display.swapBuffers()

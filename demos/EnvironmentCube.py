@@ -24,24 +24,23 @@ from pi3d.Texture import Textures
 
 # Setup display and initialise pi3d
 display = Display()
-display.create3D(100,100,1700,800, 0.5, 800.0, 60.0)   	# x,y,width,height,near,far,aspect
+display.create3D(50,50,display.max_width-100,display.max_height-100, 0.5, 800.0, 60.0)   	# x,y,width,height,near,far,aspect
 
 #select the environment cube with 'box'...
 box=3
 texs=Textures()
 if box==0:
-	ectex = texs.loadTexture("textures/ecubes/skybox_interstellar.jpg")
-	myecube = EnvironmentCube(900.0,"CROSS")
+  ectex = texs.loadTexture("textures/ecubes/skybox_interstellar.jpg")
+  myecube = EnvironmentCube(900.0,"CROSS")
 elif box==1:
-	ectex = texs.loadTexture("textures/ecubes/SkyBox.jpg")
-	myecube = EnvironmentCube(900.0,"HALFCROSS")
+  ectex = texs.loadTexture("textures/ecubes/SkyBox.jpg")
+  myecube = EnvironmentCube(900.0,"HALFCROSS")
 elif box==2:
-	ectex=loadECfiles("textures/ecubes","sbox_interstellar",texs)
-	myecube = EnvironmentCube(900.0,"FACES")
+  ectex=loadECfiles("textures/ecubes","sbox_interstellar",texs)
+  myecube = EnvironmentCube(900.0,"FACES")
 else:
-	ectex=loadECfiles("textures/ecubes","skybox_hall",texs)
-	myecube = EnvironmentCube(900.0,"FACES")
-
+  ectex=loadECfiles("textures/ecubes","skybox_hall",texs)
+  myecube = EnvironmentCube(900.0,"FACES")
 
 rot=0.0
 tilt=0.0
@@ -57,35 +56,37 @@ omy=mymouse.y
 
 # Display scene and rotate cuboid
 while 1:
-    display.clear()
+  display.clear()
 
-    mtrx.identity()
-    mtrx.rotate(tilt, 0, 0)
-    mtrx.rotate(0, rot, 0)
-    #Utility.translatef(xm, ym, zm)
+  mtrx.identity()
+  mtrx.rotate(tilt, 0, 0)
+  mtrx.rotate(0, rot, 0)
+  #Utility.translatef(xm, ym, zm)
 
-    myecube.draw(ectex, 0.0, 0.0, 0.0)
+  myecube.draw(ectex, 0.0, 0.0, 0.0)
 
-    mx=mymouse.x
-    my=mymouse.y
+  mx=mymouse.x
+  my=mymouse.y
 
-    #if mx>display.left and mx<display.right and my>display.top and my<display.bottom:
-    rot += (mx-omx)*0.2
-    tilt -= (my-omy)*0.2
-    omx=mx
-    omy=my
+  #if mx>display.left and mx<display.right and my>display.top and my<display.bottom:
+  rot += (mx-omx)*0.2
+  tilt -= (my-omy)*0.2
+  omx=mx
+  omy=my
 
-    #Press ESCAPE to terminate
-    k = mykeys.read()
-    if k >-1:
-	if k==112:  #key P
-	    display.screenshot("envcube.jpg")
-	elif k==27:    #Escape key
-	    mykeys.close()
-	    texs.deleteAll()
-	    display.destroy()
-	    break
-	else:
-	    print k
+  #Press ESCAPE to terminate
+  k = mykeys.read()
+  if k >-1:
+    if k==112:  #key P
+      display.screenshot("envcube.jpg")
+    elif k==27:    #Escape key
+      mykeys.close()
+      mymouse.stop()
+      texs.deleteAll()
+      display.destroy()
+      break
+    else:
+      print k
 
-    display.swapBuffers()
+  display.swapBuffers()
+quit()

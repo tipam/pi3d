@@ -273,8 +273,10 @@ while 1:
     elif k==27: #Escape key
       display.destroy()
       mykeys.close()
+      mymouse.stop()
       break
     #else:
     #print k
    
   display.swapBuffers()
+quit()

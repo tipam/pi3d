@@ -31,10 +31,11 @@ cloud_depth = 60.0
 zd = cloud_depth / cloudno
 
 # Setup display and initialise pi3d
-scnx = 1200
-scny = 800
 display = Display()
-display.create3D(100,100,scnx,scny)
+margin = 100
+scnx = display.max_width - 2*margin
+scny = display.max_height - 2*margin
+display.create3D(margin,margin,scnx,scny)
 display.setBackColour(0,0.7,1,1)
 
 texs = Textures()
@@ -49,38 +50,38 @@ clouds.append(texs.loadTexture("textures/cloud6.png",True))
 z = 0.0
 cxyz = []
 for b in range (0, cloudno):
-	cxyz.append([random.random() * widex - widex*.5, -random.random() * widey, cloud_depth-z, int(random.random() * 4) + 1])
-	z = z + zd
+  cxyz.append([random.random() * widex - widex*.5, -random.random() * widey, cloud_depth-z, int(random.random() * 4) + 1])
+  z = z + zd
 
 # Fetch key presses
 mykeys = Key()
 
 while True:
 
-	display.clear()
+  display.clear()
 
-	maxDepth = 0
-	axDepthIndex = 0
-	# this is easier to understand, the z position of each cloud is (only) held in cxyz[][2]
-	# it stops the clouds appearing in front of nearer clouds!
-	# first go through the clouds to find index of furthest away
-	for i in range(len(cxyz)):
-	    cxyz[i][2] = (cxyz[i][2] - speed) % cloud_depth
-	    if (cxyz[i][2] > maxDepth):
-		maxDepth = cxyz[i][2]
-		maxDepthIndex = i
+  maxDepth = 0
+  axDepthIndex = 0
+  # this is easier to understand, the z position of each cloud is (only) held in cxyz[][2]
+  # it stops the clouds appearing in front of nearer clouds!
+  # first go through the clouds to find index of furthest away
+  for i in range(len(cxyz)):
+    cxyz[i][2] = (cxyz[i][2] - speed) % cloud_depth
+    if (cxyz[i][2] > maxDepth):
+      maxDepth = cxyz[i][2]
+      maxDepthIndex = i
 
-	# paint the clouds from background to foreground
-	for i in range(maxDepthIndex, maxDepthIndex + cloudno):
-		c = cxyz[i%cloudno]
-		Draw.sprite(clouds[c[3]], c[0], c[1], -c[2], 8, 5)
+  # paint the clouds from background to foreground
+  for i in range(maxDepthIndex, maxDepthIndex + cloudno):
+    c = cxyz[i%cloudno]
+    Draw.sprite(clouds[c[3]], c[0], c[1], -c[2], 8, 5)
 
-	#Press ESCAPE to terminate
-	if mykeys.read() == 27:
-	    mykeys.close()
-	    texs.deleteAll()
-	    display.destroy()
-	    break
+  #Press ESCAPE to terminate
+  if mykeys.read() == 27:
+    mykeys.close()
+    texs.deleteAll()
+    display.destroy()
+    break
 
-	display.swapBuffers()
-	time.sleep(0.01)
+  display.swapBuffers()
+  time.sleep(0.01)

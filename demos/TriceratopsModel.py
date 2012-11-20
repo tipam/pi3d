@@ -24,7 +24,7 @@ from pi3d.shape.Model import Model
 
 # Setup display and initialise pi3d
 display = Display()
-display.create3D(100,100,1200,900)   	# x,y,width,height
+display.create3D(50,50,display.max_width-100,display.max_height-100)   	# x,y,width,height
 display.setBackColour(0.2,0.4,0.6,1)    # r,g,b,alpha
 
 # load model_loadmodel
@@ -42,24 +42,24 @@ mylight = Light(0,1,1,1,"",10,10,0)
 mylight.on()
 
 while 1:
-    display.clear()
+  display.clear()
 
-    Utility.load_identity()
-    Utility.translatef(0,0, -40)
-    Utility.rotatef(rot, 0, 1, 0)
-    rot += 3
+  Utility.load_identity()
+  Utility.translatef(0,0, -40)
+  Utility.rotatef(rot, 0, 1, 0)
+  rot += 3
 
-    mymodel.draw()
+  mymodel.draw()
 
-    k = mykeys.read()
-    if k >-1:
-	if k==112: display.screenshot("Triceratops.jpg")
-	elif k==27:
-	    mykeys.close()
-	    texs.deleteAll()
-	    display.destroy()
-	    break
-	else:
-	    print k
+  k = mykeys.read()
+  if k >-1:
+    if k==112: display.screenshot("Triceratops.jpg")
+    elif k==27:
+      mykeys.close()
+      texs.deleteAll()
+      display.destroy()
+      break
+    else:
+      print k
 
-    display.swapBuffers()
+  display.swapBuffers()

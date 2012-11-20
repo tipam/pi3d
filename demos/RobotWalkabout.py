@@ -35,7 +35,7 @@ from pi3d.shape.Sphere import Sphere
 
 # Setup display and initialise pi3d
 display = Display()
-display.create3D(100,100,1600,800, 0.5, 800.0, 60.0)   	# x,y,width,height,near,far,aspect
+display.create3D(50,50,display.max_width-100,display.max_height-100, 0.5, 800.0, 60.0)   	# x,y,width,height,near,far,aspect
 display.setBackColour(0.4,0.8,0.8,1)    	# r,g,b,alpha
 
 # Load textures
@@ -103,66 +103,67 @@ mylight = Light(0,1,1,1,"",10,10,10, .9,.7,.6)
 
 # Display scene and rotate cuboid
 while 1:
-    display.clear()
+  display.clear()
 
-    mtrx.identity()
-    #tilt can be used as a means to prevent the view from going under the landscape!
-    if tilt<-1: sf=1.0/-tilt
-    else: sf=1.0
-    mtrx.translate(0,-10*sf-5.0,-40*sf)   #zoom camera out so we can see our robot
-    mtrx.rotate(tilt, 0, 0)		#Robot still affected by scene tilt
+  mtrx.identity()
+  #tilt can be used as a means to prevent the view from going under the landscape!
+  if tilt<-1: sf=1.0/-tilt
+  else: sf=1.0
+  mtrx.translate(0,-10*sf-5.0,-40*sf)   #zoom camera out so we can see our robot
+  mtrx.rotate(tilt, 0, 0)		#Robot still affected by scene tilt
 
-    #draw robot
-    mylight.on()
-    robot.drawAll(metalimg)
-    mylight.off()
+  #draw robot
+  mylight.on()
+  robot.drawAll(metalimg)
+  mylight.off()
 
-    mtrx.rotate(0, rot, 0)		#rotate rest of scene around robot
-    mtrx.translate(xm,ym,zm)	#translate rest of scene relative to robot position
+  mtrx.rotate(0, rot, 0)		#rotate rest of scene around robot
+  mtrx.translate(xm,ym,zm)	#translate rest of scene relative to robot position
 
-    myecube.draw(ectex,xm,ym,zm)#Draw environment cube
-    myfog.on()
-    mymap.draw(mountimg1)		#Draw the landscape
-    station.drawAll(metalimg)
-    myfog.off()
+  myecube.draw(ectex,xm,ym,zm)#Draw environment cube
+  myfog.on()
+  mymap.draw(mountimg1)		#Draw the landscape
+  station.drawAll(metalimg)
+  myfog.off()
 
-    mx=mymouse.x
-    my=mymouse.y
+  mx=mymouse.x
+  my=mymouse.y
 
-    #if mx>display.left and mx<display.right and my>display.top and my<display.bottom:
-    rot += (mx-omx)*0.2
-    tilt -= (my-omy)*0.2
-    omx=mx
-    omy=my
+  #if mx>display.left and mx<display.right and my>display.top and my<display.bottom:
+  rot += (mx-omx)*0.2
+  tilt -= (my-omy)*0.2
+  omx=mx
+  omy=my
 
-    #Press ESCAPE to terminate
-    k = mykeys.read()
-    if k >-1:
-	if k==119:    #key W
-	    xm-=math.sin(math.radians(rot))
-	    zm+=math.cos(math.radians(rot))
-	    ym = -(mymap.calcHeight(xm,zm)+avhgt)
-	elif k==115:  #kry S
-	    xm+=math.sin(math.radians(rot))
-	    zm-=math.cos(math.radians(rot))
-	    ym = -(mymap.calcHeight(xm,zm)+avhgt)
-	elif k==39:   #key '
-		tilt -= 2.0
-		print tilt
-	elif k==47:   #key /
-		tilt += 2.0
-	elif k==97:   #key A
-	    rot -= 2
-	elif k==100:  #key D
-	    rot += 2
-	elif k==112:  #key P
-	    display.screenshot("walkaboutRobot.jpg")
-	elif k==27:    #Escape key
-		mykeys.close()
-		texs.deleteAll()
-		display.destroy()
-		break
-	else:
-	    print k
+  #Press ESCAPE to terminate
+  k = mykeys.read()
+  if k >-1:
+    if k==119:    #key W
+      xm-=math.sin(math.radians(rot))
+      zm+=math.cos(math.radians(rot))
+      ym = -(mymap.calcHeight(xm,zm)+avhgt)
+    elif k==115:  #kry S
+      xm+=math.sin(math.radians(rot))
+      zm-=math.cos(math.radians(rot))
+      ym = -(mymap.calcHeight(xm,zm)+avhgt)
+    elif k==39:   #key '
+      tilt -= 2.0
+      print tilt
+    elif k==47:   #key /
+      tilt += 2.0
+    elif k==97:   #key A
+        rot -= 2
+    elif k==100:  #key D
+        rot += 2
+    elif k==112:  #key P
+        display.screenshot("walkaboutRobot.jpg")
+    elif k==27:    #Escape key
+      mykeys.close()
+      mymouse.stop()
+      texs.deleteAll()
+      display.destroy()
+      break
+    else:
+        print k
 
-    display.swapBuffers()
+  display.swapBuffers()
