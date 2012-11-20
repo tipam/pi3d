@@ -18,8 +18,6 @@
 import math
 
 from pi3d.Display import Display
-from pi3d.EnvironmentCube import EnvironmentCube
-from pi3d.EnvironmentCube import loadECfiles
 from pi3d.Fog import Fog
 from pi3d.Key import Key
 from pi3d.Light import Light
@@ -30,6 +28,8 @@ from pi3d.Texture import Textures
 from pi3d.shape.Cuboid import Cuboid
 from pi3d.shape.Cylinder import Cylinder
 from pi3d.shape.ElevationMap import ElevationMap
+from pi3d.shape.EnvironmentCube import EnvironmentCube
+from pi3d.shape.EnvironmentCube import loadECfiles
 from pi3d.shape.MergeShape import MergeShape
 from pi3d.shape.Sphere import Sphere
 

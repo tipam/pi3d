@@ -1,4 +1,4 @@
-from pi3d.Utility import from_polar
+from pi3d.util.Utility import from_polar
 
 def rotate_vec(rx, ry, rz, xyz):
   x, y, z = xyz

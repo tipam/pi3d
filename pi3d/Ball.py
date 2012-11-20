@@ -1,7 +1,7 @@
 import math
 
 from pi3d import *
-from pi3d import Utility
+from pi3d.util import Utility
 
 class Ball(object):
   def __init__(self, radius, x, y, vx=0.0, vy=0.0, decay=0.001):

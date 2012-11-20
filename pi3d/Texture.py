@@ -2,7 +2,7 @@ import ctypes
 import Image
 
 from pi3d import *
-from pi3d import Utility
+from pi3d.util import Utility
 
 MAX_SIZE = 1024
 

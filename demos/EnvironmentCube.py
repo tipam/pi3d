@@ -13,14 +13,14 @@
 # before running this example
 #
 
-from pi3d import Utility
 from pi3d.Display import Display
-from pi3d.EnvironmentCube import EnvironmentCube
-from pi3d.EnvironmentCube import loadECfiles
 from pi3d.Key import Key
 from pi3d.Matrix import Matrix
 from pi3d.Mouse import Mouse
 from pi3d.Texture import Textures
+from pi3d.shape.EnvironmentCube import EnvironmentCube
+from pi3d.shape.EnvironmentCube import loadECfiles
+from pi3d.util import Utility
 
 # Setup display and initialise pi3d
 display = Display()

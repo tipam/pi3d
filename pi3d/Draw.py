@@ -1,6 +1,6 @@
 from pi3d import *
 from pi3d import Texture
-from pi3d import Utility
+from pi3d.util import Utility
 
 RECT_NORMALS = c_bytes(( 0,0,-1, 0,0,-1, 0,0,-1, 0,0,-1 ))
 RECT_TEX_COORDS = c_bytes(( 0,255, 255,255, 255,0, 0,0))
