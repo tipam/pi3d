@@ -24,6 +24,7 @@ from pi3d.Matrix import Matrix
 from pi3d.Mouse import Mouse
 from pi3d.Texture import Textures
 from pi3d.RotateVec import *
+from pi3d.Missile import Missile
 
 from pi3d.shape.ElevationMap import ElevationMap
 from pi3d.shape.MergeShape import MergeShape
@@ -50,8 +51,8 @@ print
 
 # Setup display and initialise pi3d
 display = Display()
-display.create3D(10,10,display.max_width-20,display.max_height-20, 0.5, 800.0, 60.0) # x,y,width,height,near,far,aspect
-#display.create3D(10,10,800,600, 0.5, 800.0, 60.0) # small window so terminal can be viewed for errors!
+#display.create3D(10,10,display.max_width-20,display.max_height-100, 0.5, 800.0, 60.0) # x,y,width,height,near,far,aspect
+display.create3D(10,10,800,600, 0.5, 800.0, 60.0) # small window so terminal can be viewed for errors!
 display.setBackColour(0.4,0.8,0.8,1) # r,g,b,alpha
 
 # Load textures
@@ -136,6 +137,9 @@ scshots = 1
 #energy counter
 hp = 25
 
+#missile
+missile = Missile(50,50)
+
 #avatar camera NB this isn't really moving as an object in the scene - it's staying still and used to move everything else
 #relative to it. So -xm, -ym, -zm all need to be used for calcualtions of real object relative to the camera!
 camera = Matrix()
@@ -214,6 +218,9 @@ while 1:
   mSz += mDz
   monst.position(mSx, mSy, mSz)
   
+  # missile movement
+  missile.move(raspimg)
+  
   # draw the sheds
   for g in shed.vGroup:
     shedgp[g].drawAll(shed.vGroup[g].texID)
@@ -270,6 +277,8 @@ while 1:
       zm += dz
       ym += dy
       hp -= 1
+    elif k==102: #f key to fire
+      missile.fire(xm, ym, zm, -dx, -math.sin(tilt*rads), -dz, 10)
     elif k==27: #Escape key
       display.destroy()
       mykeys.close()
