@@ -6,7 +6,6 @@ from pi3d.util import Utility
 
 MAX_SIZE = 1024
 
-
 class _Texture(object):
   def __init__(self, file_string, flip=False, size=0, blend=False):
     self.file_string = file_string
@@ -97,7 +96,7 @@ class Textures(object):
       print '[Exit] Deleting textures ...'
       opengles.glDeleteTextures(self.tc, addressof(self.texs))
 
-
+# TODO: this should move to context
 class Loader(object):
   ALPHA_VALUE = c_float(0.6)  # TODO: where does this come from?
   TEXTURE_SET = False

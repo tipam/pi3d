@@ -15,7 +15,7 @@
 from math import sin, cos
 
 from pi3d.Display import Display
-from pi3d.Key import Key
+from pi3d.Keyboard import Keyboard
 from pi3d.Texture import Textures
 
 from pi3d.context.Light import Light
@@ -47,7 +47,7 @@ mymoon2 = Sphere(0.1,16,16,0.0,"moon2",0,0,0)
 myplane = Plane(50,50, "stars", 0,0,-10)
 
 # Fetch key presses
-mykeys = Key()
+mykeys = Keyboard()
 
 rot=0.0
 rot1=90.0

@@ -14,7 +14,7 @@
 #
 
 from pi3d.Display import Display
-from pi3d.Key import Key
+from pi3d.Keyboard import Keyboard
 from pi3d.Mouse import Mouse
 from pi3d.Texture import Textures
 
@@ -48,13 +48,13 @@ rot=0.0
 tilt=0.0
 
 # Fetch key presses
-mykeys = Key()
+mykeys = Keyboard()
 mymouse = Mouse()
 mymouse.start()
-mtrx=Matrix()
+mtrx = Matrix()
 
-omx=mymouse.x
-omy=mymouse.y
+omx = mymouse.x
+omy = mymouse.y
 
 # Display scene and rotate cuboid
 while 1:

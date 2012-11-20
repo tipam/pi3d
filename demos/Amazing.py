@@ -16,7 +16,7 @@
 import math, random
 
 from pi3d.Display import Display
-from pi3d.Key import Key
+from pi3d.Keyboard import Keyboard
 from pi3d.Mouse import Mouse
 from pi3d.Texture import Textures
 
@@ -151,7 +151,7 @@ lastX0=0.0
 lastZ0=0.0
 
 # Fetch key presses
-mykeys = Key()
+mykeys = Keyboard()
 mymouse = Mouse()
 mymouse.start()
 

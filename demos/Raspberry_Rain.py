@@ -18,7 +18,7 @@
 import random, time
 
 from pi3d.Display import Display
-from pi3d.Key import Key
+from pi3d.Keyboard import Keyboard
 from pi3d.Texture import Textures
 
 from pi3d.util import Draw
@@ -42,7 +42,7 @@ for b in range (0, pino):
   xyz.append((random.random()*8-4,random.random() * 8,random.random() * 4 + 3, random.random() * 360))
 
 # Fetch key presses
-mykeys = Key()
+mykeys = Keyboard()
 
 # Display scene and rotate cuboid
 while 1:

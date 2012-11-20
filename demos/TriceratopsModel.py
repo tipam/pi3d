@@ -16,7 +16,7 @@
 
 from pi3d.util import Utility
 from pi3d.Display import Display
-from pi3d.Key import Key
+from pi3d.Keyboard import Keyboard
 from pi3d.Texture import Textures
 
 from pi3d.context.Light import Light
@@ -33,7 +33,7 @@ texs = Textures()
 mymodel = Model("models/Triceratops/Triceratops.egg",texs,"Triceratops", 0,-1,0, -90,0,0, .005,.005,.005)
 
 # Fetch key presses
-mykeys = Key()
+mykeys = Keyboard()
 
 # mastrix and rotate variables
 rot=0

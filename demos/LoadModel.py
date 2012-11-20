@@ -15,7 +15,7 @@
 #
 
 from pi3d.Display import Display
-from pi3d.Key import Key
+from pi3d.Keyboard import Keyboard
 from pi3d.Texture import Textures
 
 from pi3d.context.Light import Light
@@ -33,7 +33,7 @@ texs = Textures()
 mymodel = Model("models/teapot.egg",texs ,"teapot", 0,-1,0)
 
 # Fetch key presses
-mykeys = Key()
+mykeys = Keyboard()
 
 # setup matrices
 mtrx = Matrix()

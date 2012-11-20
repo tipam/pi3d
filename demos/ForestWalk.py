@@ -19,7 +19,7 @@ from __future__ import absolute_import
 import math,random
 
 from pi3d.Display import Display
-from pi3d.Key import Key
+from pi3d.Keyboard import Keyboard
 from pi3d.Mouse import Mouse
 from pi3d.Texture import Textures
 
@@ -116,7 +116,7 @@ ym= -(mymap.calcHeight(xm,zm)+avhgt)
 mtrx = Matrix()
 
 # Fetch key presses
-mykeys = Key()
+mykeys = Keyboard()
 mymouse = Mouse()
 mymouse.start()
 
