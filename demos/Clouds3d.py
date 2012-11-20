@@ -15,11 +15,11 @@
 
 import random, time
 
-from pi3d import Draw
-
 from pi3d.Display import Display
 from pi3d.Key import Key
 from pi3d.Texture import Textures
+
+from pi3d.util import Draw
 
 z=0
 x=0

@@ -13,8 +13,6 @@
 # before running this example
 #
 
-from pi3d import Draw
-
 from pi3d.Display import Display
 from pi3d.Font import Font
 from pi3d.Key import Key
@@ -31,6 +29,8 @@ from pi3d.shape.TCone import TCone
 from pi3d.shape.Torus import Torus
 from pi3d.shape.Tube import Tube
 from pi3d.shape.Plane import Plane
+
+from pi3d.util import Draw
 
 # Setup display and initialise pi3d
 display = Display()
@@ -111,7 +111,7 @@ while 1:
   mylathe.draw(patimg)
   mylathe.rotateIncY(2)
   mylathe.rotateIncZ(1)
-  
+
   myPlane.draw(coffimg)
   myPlane.rotateIncY(9)
 
