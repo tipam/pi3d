@@ -6,7 +6,7 @@ from pi3d import loaderObj
 
 from pi3d.shape.Shape import Shape
 from pi3d.util.RotateVec import rotate_vec
-from pi3d.Matrix import Matrix
+from pi3d.util.Matrix import Matrix
 
 class Model(Shape):
   def __init__(self, fileString, texs, name="", x=0.0, y=0.0, z=0.0,

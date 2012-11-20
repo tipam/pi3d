@@ -20,7 +20,6 @@ from pi3d import Draw
 from pi3d.Display import Display
 from pi3d.Key import Key
 from pi3d.Light import Light
-from pi3d.Matrix import Matrix
 from pi3d.Mouse import Mouse
 from pi3d.Texture import Textures
 from pi3d.Font import Font
@@ -29,6 +28,8 @@ from pi3d.shape.ElevationMap import ElevationMap
 from pi3d.shape.EnvironmentCube import EnvironmentCube
 from pi3d.shape.Plane import Plane
 from pi3d.shape.Sphere import Sphere
+
+from pi3d.util.Matrix import Matrix
 
 #helpful messages
 print "############################################################"
