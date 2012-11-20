@@ -19,10 +19,11 @@
 
 import sys, random
 
-from pi3d.Ball import Ball
 from pi3d.Display import Display
 from pi3d.Keyboard import Keyboard
 from pi3d.Texture import Textures
+
+from pi3d.sprite.Ball import Ball
 
 from pi3d.util import Draw
 
