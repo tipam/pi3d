@@ -20,8 +20,8 @@ from pi3d.Keyboard import Keyboard
 from pi3d.Mouse import Mouse
 from pi3d.Texture import Textures
 
-from pi3d.context.Fog import Fog
 from pi3d.context.Light import Light
+from pi3d.context.Fog import Fog
 
 from pi3d.shape.ElevationMap import ElevationMap
 from pi3d.shape.EnvironmentCube import EnvironmentCube
