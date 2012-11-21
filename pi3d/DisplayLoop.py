@@ -1,3 +1,4 @@
+import threading
 import time
 import traceback
 
@@ -5,6 +6,7 @@ from pi3d.util import Log
 from pi3d.Keyboard import Keyboard
 
 LOGGER = Log.logger(__name__)
+CHECK_IF_DISPLAY_THREAD = True
 
 class DisplayLoop(object):
   def __init__(self, display,
@@ -18,12 +20,14 @@ class DisplayLoop(object):
     self.frames_per_second = frames_per_second
     self.check_for_close = check_for_close
     self.is_on = True
+    self.display_thread = None
 
   def stop(self):
     self.is_on = False
 
   def loop(self):
     LOGGER.info('starting')
+    self.display_thread = threading.current_thread()
     self.next_time = time.time()
     while self._is_running():
       # We run our update loop in three separate parts so that we can get
@@ -50,6 +54,10 @@ class DisplayLoop(object):
 
   def remove_sprite(self, sprite):
     self.sprites.remove(sprite)
+
+  def check_if_display_thread(self):
+    return (not CHECK_IF_DISPLAY_THREAD or
+            threading.current_thread() == self.display_thread)
 
   def _for_each_sprite(self, function):
     # TODO: do we need locking here in case self.sprites is updated in another

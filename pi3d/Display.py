@@ -5,15 +5,10 @@ from pi3d import *
 from pi3d.util import Utility
 from pi3d.DisplayLoop import DisplayLoop
 
-class Display(object):
+class Display(DisplayLoop):
   def __init__(self, **kwds):
     """Opens up the OpenGL library and prepares a window for display."""
-    self.display_loop = DisplayLoop(self, **kwds)
-    self.loop = self.display_loop.loop
-    self.stop = self.display_loop.stop
-    self.add_sprite = self.display_loop.add_sprite
-    self.remove_sprite = self.display_loop.remove_sprite
-
+    super(Display, self).__init__(self, **kwds)
     b = bcm.bcm_host_init()
 
     #Get the width and height of the screen
