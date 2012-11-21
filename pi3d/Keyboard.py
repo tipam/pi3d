@@ -17,3 +17,15 @@ class Keyboard():
     curses.echo()
     curses.endwin()
 
+
+def make_closer(screenshot=''):
+  mykeys = Keyboard()
+  def closer(display_loop):
+    k = mykeys.read()
+    if k == 112 and screenshot:
+      display_loop.display.screenshot(screenshot)
+    if k == 27:
+      mykeys.close()
+      return True
+
+  return closer
