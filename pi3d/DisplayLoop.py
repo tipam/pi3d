@@ -34,7 +34,7 @@ class DisplayLoop(object):
 
       if self.is_on:
         t = time.time()
-        self._for_each_sprite(lambda s: s.repaint(self, t))
+        self._for_each_sprite(lambda s: s.repaint(self.display, t))
         self.display.swapBuffers()
 
       if self.is_on and self.frames_per_second:

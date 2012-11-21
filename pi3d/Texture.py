@@ -29,14 +29,14 @@ class _Texture(object):
     xx = 0
     yy = 0
     nx, ny = self.ix, self.iy
-    while (2**xx) < nx:
+    while (2 ** xx) < nx:
       xx += 1
-    while (2**yy) < ny:
+    while (2 ** yy) < ny:
       yy += 1
     if (2 ** xx) > nx:
       nx = 2 ** xx
     if (2 ** yy) > ny:
-      ny=2 ** yy
+      ny = 2 ** yy
     nx = min(nx, MAX_SIZE)
     ny = min(ny, MAX_SIZE)
 

@@ -61,8 +61,7 @@ class Ball(object):
     elif self.y < self.radius:
       self.vy = abs(self.vy)
 
-  def repaint(self, display_loop, t):
+  def repaint(self, display, t):
     self.move()
-    disp = display_loop.display
-    self.bounce_wall(disp.max_width, disp.max_height)
+    self.bounce_wall(display.max_width, display.max_height)
     Draw.sprite(self.texture, self.x, self.y, -1, self.radius, self.radius)
