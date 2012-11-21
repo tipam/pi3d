@@ -10,7 +10,7 @@ class DisplayLoop(object):
   def __init__(self, display,
                raise_exceptions=True,
                frames_per_second=0,
-               check_for_close=lambda x: None,
+               check_for_close=None,
                sprites=None):
     self.sprites = sprites or []
     self.display = display
@@ -25,7 +25,7 @@ class DisplayLoop(object):
   def loop(self):
     LOGGER.info('starting')
     self.next_time = time.time()
-    while self.is_on and not self.check_for_close(self):
+    while self._is_running():
       # We run our update loop in three separate parts so that we can get
       # the most acccurate values for time in the last two parts.
       self._for_each_sprite(lambda i, s: s.load())
@@ -69,3 +69,6 @@ class DisplayLoop(object):
     if delta > 0:
       time.sleep(delta)
 
+  def _is_running(self):
+    return self.is_on and (self.check_for_close and not
+                           self.check_for_close(self))
