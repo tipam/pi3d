@@ -44,7 +44,9 @@ class RandomBall(Ball):
     self.mass = self.radius * self.radius
     self.x = random.uniform(0.0, scnx)
     self.y = random.uniform(0.0, scny)
-
+  
+  # this was only really needed for the old collision testing function. Vector system works fine if they overlap
+  """
   def separate(self, balls, max_tries=MAX_RANDOMIZATION_TRIES):
     for i in range(max_tries):
       for b in balls:
@@ -53,6 +55,7 @@ class RandomBall(Ball):
           break
       else:
         return
+  """
 
   def update(self, display_loop, index, t):
     for ball in display_loop.sprites[0:index]:
@@ -63,11 +66,11 @@ class RandomBall(Ball):
     pass
 
 
-# create balls and positions and make sure they don't touch to start with.
-balls = [RandomBall(balltex[0]) for b in range(MAX_BALLS)]
-for i, ball in enumerate(balls):
-  if i:
-    ball.separate(balls[0:i])
+# create balls and positions and colours.
+balls = [RandomBall(balltex[random.randint(0,2)]) for b in range(MAX_BALLS)]
+#for i, ball in enumerate(balls):
+#  if i:
+#    ball.separate(balls[0:i])
 
 DisplayLoop(display,
             check_for_close=Keyboard.make_closer(),
