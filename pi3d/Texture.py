@@ -6,6 +6,12 @@ from pi3d.util import Utility
 
 MAX_SIZE = 1024
 
+def round_up_to_power_of_2(x):
+  p = 1
+  while p <= x:
+    p += p
+  return p
+
 class _Texture(object):
   def __init__(self, file_string, flip=False, size=0, blend=False):
     self.file_string = file_string

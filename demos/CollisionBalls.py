@@ -52,9 +52,6 @@ class RandomBall(Ball):
       self.bounce_collision(ball)
     super(RandomBall, self).repaint(display_loop, t)
 
-  def load(self):
-    pass
-
 # create balls and positions and colours.
 for b in range(MAX_BALLS):
   RandomBall()

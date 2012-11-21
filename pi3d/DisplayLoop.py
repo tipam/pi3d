@@ -6,14 +6,15 @@ from pi3d.util import Log
 from pi3d.Keyboard import Keyboard
 
 LOGGER = Log.logger(__name__)
-CHECK_IF_DISPLAY_THREAD = True
+MAIN_THREAD = threading.current_thread()
 
 class DisplayLoop(object):
   def __init__(self, display,
                raise_exceptions=True,
                frames_per_second=0,
                check_for_close=None,
-               sprites=None):
+               sprites=None,
+               check_if_display_thread=True):
     self.sprites = sprites or []
     self.display = display
     self.raise_exceptions = raise_exceptions
@@ -21,28 +22,21 @@ class DisplayLoop(object):
     self.check_for_close = check_for_close
     self.is_on = True
     self.display_thread = None
+    self.check_if_display_thread = check_if_display_thread
 
   def stop(self):
     self.is_on = False
 
   def loop(self):
     LOGGER.info('starting')
-    self.display_thread = threading.current_thread()
     self.next_time = time.time()
+
+    display_phases = (self._load_opengl, self.display.clear, self._repaint,
+                      self.display.swapBuffers, self._sleep)
+    i = 0
     while self._is_running():
-      # We run our update loop in three separate parts so that we can get
-      # the most acccurate values for time in the last two parts.
-      self._for_each_sprite(lambda s: s.load())
-
-      self.display.clear()
-
-      if self.is_on:
-        t = time.time()
-        self._for_each_sprite(lambda s: s.repaint(self.display, t))
-        self.display.swapBuffers()
-
-      if self.is_on and self.frames_per_second:
-        self._sleep()
+      display_phases[i]()
+      i = (i + 1) % len(display_phases)
 
     self.display.destroy()
     LOGGER.info('stopped')
@@ -55,9 +49,9 @@ class DisplayLoop(object):
   def remove_sprite(self, sprite):
     self.sprites.remove(sprite)
 
-  def check_if_display_thread(self):
-    return (not CHECK_IF_DISPLAY_THREAD or
-            threading.current_thread() == self.display_thread)
+  def is_display_thread(self):
+    return (not self.check_if_display_thread or
+            threading.current_thread() is MAIN_THREAD)
 
   def _for_each_sprite(self, function):
     # TODO: do we need locking here in case self.sprites is updated in another
@@ -71,11 +65,19 @@ class DisplayLoop(object):
         if self.raise_exceptions:
           raise
 
+  def _load_opengl(self):
+    self._for_each_sprite(lambda s: s.load_opengl(self.display))
+
+  def _repaint(self):
+    t = time.time()
+    self._for_each_sprite(lambda s: s.repaint(self.display, t))
+
   def _sleep(self):
-    self.next_time += 1.0 / self.frames_per_second
-    delta = self.next_time - time.time()
-    if delta > 0:
-      time.sleep(delta)
+    if self.frames_per_second:
+      self.next_time += 1.0 / self.frames_per_second
+      delta = self.next_time - time.time()
+      if delta > 0:
+        time.sleep(delta)
 
   def _is_running(self):
     return self.is_on and (self.check_for_close and not
