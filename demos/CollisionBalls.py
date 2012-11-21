@@ -38,8 +38,8 @@ display.setBackColour(0,0.2,0.6,0)
 
 
 # Ball parameters
-maxballs = 15
-maxballsize = 100
+maxballs = 50
+maxballsize = 50
 minballsize = 5
 maxspeed = 30
 
@@ -53,7 +53,7 @@ balltex.append(texs.loadTexture("textures/blu_ball.png"))
 balls = []
 b=0
 hit = True
-for b in range (0,maxballs):
+for b in xrange (0,maxballs):
 
     r = random.random() * maxballsize+minballsize
     x = random.random() * scnx
@@ -81,23 +81,22 @@ for b in range (0,maxballs):
 mykeys = Keyboard()
 scshots = 1
 
-print balls[0].x, balls[0].vx
-
 while True:
   display.clear()
 
-  for b in range (0,len(balls)):
+  for b in xrange (maxballs):
     Bb = balls[b]
+
     #check collisions with other balls and bounce if necessary
-    for c in range (b+1,len(balls)):
+    for c in xrange (b+1,maxballs):
       Bb.collisionBounce(balls[c])
-    Bb.x += Bb.vx
-    Bb.y += Bb.vy
     #check if ball hits wall (to avoid getting stuck just off the edge)
     if Bb.x > (scnx - Bb.radius): Bb.vx = -abs(Bb.vx)
     elif Bb.x < Bb.radius: Bb.vx = abs(Bb.vx)
     if Bb.y > (scny - Bb.radius): Bb.vy = -abs(Bb.vy)
     elif Bb.y < Bb.radius: Bb.vy = abs(Bb.vy)
+    Bb.x += Bb.vx
+    Bb.y += Bb.vy
 
     Draw.sprite(balltex[0], Bb.x, Bb.y, -1, Bb.radius, Bb.radius)
 
