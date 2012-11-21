@@ -7,11 +7,17 @@ def texture_min_mag():
   for f in [GL_TEXTURE_MIN_FILTER, GL_TEXTURE_MAG_FILTER]:
     opengles.glTexParameterf(GL_TEXTURE_2D, f, c_float(GL_LINEAR))
 
+def dot(x, y):
+  return sum(xi * yi for x, y in zip(x, y))
+
 def sqsum(*args):
-  return sum(x * x for x in args)
+  return dot(args, args)
 
 def magnitude(*args):
   return math.sqrt(sqsum(*args))
+
+def distance(v1, v2):
+  return magnitude((c1 - c2) for c1, c2 in zip(v1, v2))
 
 def from_polar(direction=0.0, magnitude=1.0):
   return from_polar_rad(math.radians(direction), magnitude)
@@ -32,12 +38,13 @@ def scalef(sx, sy, sz):
 def load_identity():
   opengles.glLoadIdentity()
 
-def dotproduct(x1,y1,z1,x2,y2,z2):
-	return x1*x2 + y1*y2 + z1*z2
-	
-def crossproduct(x1,y1,z1,x2,y2,z2):
-	return y1*z2 - z1*y2, z1*x2 - x1*z2, x1*y2 - y1*x2
-	
+def dotproduct(x1 ,y1, z1, x2, y2, z2):
+  return x1 * x2 + y1 * y2 + z1 * z2
+
+def crossproduct(x1, y1, z1, x2, y2, z2):
+  return y1 * z2 - z1 * y2, z1 * x2 - x1 * z2, x1 * y2 - y1 * x2
+
+
 # TODO: None of these functions is actually called in the codebase.
 
 def ctype_resize(array, new_size):
