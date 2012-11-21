@@ -61,7 +61,7 @@ class Ball(object):
     elif self.y < self.radius:
       self.vy = abs(self.vy)
 
-  def update(self, display_loop, index, t):
+  def repaint(self, display_loop, t):
     self.move()
     disp = display_loop.display
     self.bounce_wall(disp.max_width, disp.max_height)

@@ -28,13 +28,13 @@ class DisplayLoop(object):
     while self._is_running():
       # We run our update loop in three separate parts so that we can get
       # the most acccurate values for time in the last two parts.
-      self._for_each_sprite(lambda i, s: s.load())
+      self._for_each_sprite(lambda s: s.load())
 
       self.display.clear()
 
       if self.is_on:
         t = time.time()
-        self._for_each_sprite(lambda i, s: s.update(self, i, t))
+        self._for_each_sprite(lambda s: s.repaint(self, t))
         self.display.swapBuffers()
 
       if self.is_on and self.frames_per_second:
@@ -57,7 +57,7 @@ class DisplayLoop(object):
     # been removed...
     for i, s in enumerate(self.sprites):
       try:
-        function(i, s)
+        function(s)
       except:
         LOGGER.error(traceback.format_exc())
         if self.raise_exceptions:

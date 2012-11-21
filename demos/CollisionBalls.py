@@ -11,9 +11,9 @@ from pi3d.sprite.Ball import Ball
 
 # Setup display and initialise pi3d
 display = Display()
-scnx =  display.max_width
-scny = display.max_height
-display.create2D(0,0,scnx,scny,0)
+SCNX =  display.max_width
+SCNY = display.max_height
+display.create2D(0, 0, SCNX, SCNY, 0)
 
 # Set last value (alpha) to zero for a transparent background!
 display.setBackColour(0,0.2,0.6,0)
@@ -24,55 +24,42 @@ MIN_BALL_SIZE = 5
 MAX_BALL_SIZE = 100
 MAX_RANDOMIZATION_TRIES = 20
 
-texs = Textures()
-balltex = []
-balltex.append(texs.loadTexture("textures/red_ball.png"))
-balltex.append(texs.loadTexture("textures/grn_ball.png"))
-balltex.append(texs.loadTexture("textures/blu_ball.png"))
-
+TEXS = Textures()
 
 class RandomBall(Ball):
-  def __init__(self, texture):
-    super(RandomBall, self).__init__(texture, 1.0, 0, 0,
+  BALLS = []
+  TEXTURES = [TEXS.loadTexture("textures/red_ball.png"),
+              TEXS.loadTexture("textures/grn_ball.png"),
+              TEXS.loadTexture("textures/blu_ball.png")]
+
+  def __init__(self):
+    super(RandomBall, self).__init__(random.choice(RandomBall.TEXTURES),
+                                     1.0, 0, 0,
                                      random.uniform(-10.0, 10.0),
                                      random.uniform(-10.0, 10.0))
-    self.texture = texture
     self.randomize()
+    self.index = len(RandomBall.BALLS)
+    RandomBall.BALLS.append(self)
 
   def randomize(self):
     self.radius = random.uniform(MIN_BALL_SIZE, MAX_BALL_SIZE)
     self.mass = self.radius * self.radius
-    self.x = random.uniform(0.0, scnx)
-    self.y = random.uniform(0.0, scny)
-  
-  # this was only really needed for the old collision testing function. Vector system works fine if they overlap
-  """
-  def separate(self, balls, max_tries=MAX_RANDOMIZATION_TRIES):
-    for i in range(max_tries):
-      for b in balls:
-        if b.hit(self):
-          self.randomize()
-          break
-      else:
-        return
-  """
+    self.x = random.uniform(0.0, SCNX)
+    self.y = random.uniform(0.0, SCNY)
 
-  def update(self, display_loop, index, t):
-    for ball in display_loop.sprites[0:index]:
+  def repaint(self, display_loop, t):
+    for ball in RandomBall.BALLS[0:self.index]:
       self.bounce_collision(ball)
-    super(RandomBall, self).update(display_loop, index, t)
+    super(RandomBall, self).repaint(display_loop, t)
 
   def load(self):
     pass
 
-
 # create balls and positions and colours.
-balls = [RandomBall(balltex[random.randint(0,2)]) for b in range(MAX_BALLS)]
-#for i, ball in enumerate(balls):
-#  if i:
-#    ball.separate(balls[0:i])
+for b in range(MAX_BALLS):
+  RandomBall()
 
 DisplayLoop(display,
             check_for_close=Keyboard.make_closer(),
-            sprites=balls).loop()
+            sprites=RandomBall.BALLS).loop()
 
