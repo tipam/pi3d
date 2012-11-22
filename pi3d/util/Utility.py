@@ -8,7 +8,7 @@ def texture_min_mag():
     opengles.glTexParameterf(GL_TEXTURE_2D, f, c_float(GL_LINEAR))
 
 def dot(x, y):
-  return sum(xi * yi for x, y in zip(x, y))
+  return sum(xi * yi for xi, yi in zip(x, y))
 
 def sqsum(*args):
   return dot(args, args)
