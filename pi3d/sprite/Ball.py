@@ -1,6 +1,7 @@
 import math
 
 from pi3d import *
+from pi3d import Display
 from pi3d.util import Draw
 from pi3d.util import Utility
 
@@ -18,12 +19,16 @@ class Ball(Loadable):
     self.mass = radius * radius
     self.decay = decay
 
+
+  def _load_opengl(self):
+    self.texture.load_opengl()
+
   def move(self):
     self.x += self.vx
     self.y += self.vy
 
   def hit(self, otherball):
-    #used for pre-checking ball positions
+    # Used for pre-checking ball positions.
     dx = (self.x + self.vx) - (otherball.x + otherball.vx)
     dy = (self.y + self.vy) - (otherball.y + otherball.vy)
     rd = self.radius + otherball.radius
@@ -40,10 +45,12 @@ class Ball(Loadable):
                               (self.vy - otherball.vy), 0)
     if dx * dx + dy * dy <= rd * rd and dotP < 0:
       R = otherball.mass/self.mass #ratio of masses
-      D = dx/dy #glancing angle for equating angular momentum before and after collision
-      #three more simultaneous equations for x and y components of momentum and k.e. give:
+      D = dx/dy
+      # Glancing angle for equating angular momentum before and after collision.
+      # Three more simultaneous equations for x and y components of momentum and
+      # kinetic energy give:
       delta2y = 2 * (D * self.vx + self.vy - D * otherball.vx - otherball.vy) / (
-        1 + D * D + D * D * R + R)
+        (1 + D * D) * (R + 1))
       delta2x = D * delta2y
       delta1y = -1 * R * delta2y
       delta1x = -1 * R * D * delta2y
@@ -64,7 +71,7 @@ class Ball(Loadable):
     elif self.y < self.radius:
       self.vy = abs(self.vy)
 
-  def repaint(self, display, t):
+  def repaint(self, t):
     self.move()
-    self.bounce_wall(display.max_width, display.max_height)
+    self.bounce_wall(Display.DISPLAY.max_width, Display.DISPLAY.max_height)
     Draw.sprite(self.texture, self.x, self.y, -1, self.radius, self.radius)

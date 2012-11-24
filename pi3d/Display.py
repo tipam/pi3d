@@ -1,17 +1,38 @@
 import math
+import threading
+
 import Image
 
 from pi3d import *
+from pi3d.util import Log
 from pi3d.util import Utility
 from pi3d.DisplayLoop import DisplayLoop
+
+LOGGER = Log.logger(__name__)
+
+CHECK_IF_DISPLAY_THREAD = True
+DISPLAY_THREAD = threading.current_thread()
+DISPLAY = None
+ALLOW_MULTIPLE_DISPLAYS = False
+
+def is_display_thread():
+  return not CHECK_IF_DISPLAY_THREAD or (
+    DISPLAY_THREAD is threading.current_thread())
 
 class Display(DisplayLoop):
   def __init__(self, **kwds):
     """Opens up the OpenGL library and prepares a window for display."""
     super(Display, self).__init__(self, **kwds)
+    if not ALLOW_MULTIPLE_DISPLAYS:
+      global DISPLAY
+      if DISPLAY:
+        LOGGER.warning('A second instance of Display was created')
+      else:
+        DISPLAY = self
+
     b = bcm.bcm_host_init()
 
-    #Get the width and height of the screen
+    # Get the width and height of the screen
     width = c_int()
     height = c_int()
     s = bcm.graphics_get_display_size(0, ctypes.byref(width),
@@ -21,10 +42,9 @@ class Display(DisplayLoop):
     self.max_width = width.value
     self.max_height = height.value
 
-    if VERBOSE:
-      print STARTUP_MESSAGE % dict(version=VERSION,
-                                   width=self.max_width,
-                                   height=self.max_height)
+    LOGGER.info(STARTUP_MESSAGE % {'version': VERSION,
+                                   'width': self.max_width,
+                                   'height': self.max_height})
 
   def create_display(self, x=0, y=0, w=0, h=0, depth=24):
     b = bcm.bcm_host_init()

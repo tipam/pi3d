@@ -47,16 +47,16 @@ class RandomBall(Ball):
     self.x = random.uniform(0.0, SCNX)
     self.y = random.uniform(0.0, SCNY)
 
-  def repaint(self, display_loop, t):
+  def repaint(self, t):
     for ball in RandomBall.BALLS[0:self.index]:
       self.bounce_collision(ball)
-    super(RandomBall, self).repaint(display_loop, t)
+    super(RandomBall, self).repaint(t)
 
 # create balls and positions and colours.
 for b in range(MAX_BALLS):
   RandomBall()
 
 DisplayLoop(display,
-            check_for_close=Keyboard.make_closer(),
+            check_if_close_requested=Keyboard.make_closer(),
             sprites=RandomBall.BALLS).loop()
 

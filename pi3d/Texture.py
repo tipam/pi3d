@@ -1,7 +1,9 @@
 import ctypes
 import Image
 
+import pi3d
 from pi3d import *
+from pi3d.util.Loadable import Loadable
 from pi3d.util import Utility
 
 MAX_SIZE = 1024
@@ -12,18 +14,20 @@ def round_up_to_power_of_2(x):
     p += p
   return p
 
-class _Texture(object):
+class _Texture(Loadable):
   def __init__(self, file_string, flip=False, size=0, blend=False):
+    super(_Texture, self).__init__()
     self.file_string = file_string
     self.flip = flip
     self.size = size
     self.blend = blend
-    self.loaded = self.preloaded = False
+    self.load_disk()
 
-  def preload(self):
-    if self.preloaded:
-      return
+  def _unload_opengl(self):
+    texs = pi3d.c_ints([self.tex.value])
+    opengles.glDeleteTextures(1, addressof(texs))
 
+  def _load_disk(self):
     s = self.file_string + ' '
     im = Image.open(self.file_string)
     self.ix, self.iy = im.size
@@ -66,41 +70,21 @@ class _Texture(object):
     RGBs = 'RGBA' if self.alpha else 'RGB'
     self.image = im.convert(RGBs).tostring('raw',RGBs)
     self.tex = ctypes.c_int()
-    self.preloaded = True
 
-  def load_on_display_thread(self):
-    if self.loaded:
-      return
-
-    self.preload()
+  def _load_opengl(self):
     opengles.glGenTextures(1, ctypes.byref(self.tex))
     opengles.glBindTexture(GL_TEXTURE_2D, self.tex)
     RGBv = GL_RGBA if self.alpha else GL_RGB
     opengles.glTexImage2D(GL_TEXTURE_2D, 0, RGBv, self.ix, self.iy, 0, RGBv,
-                          GL_UNSIGNED_BYTE, ctypes.string_at(self.image,
-                                                             len(self.image)))
-    self.loaded = True
+                          GL_UNSIGNED_BYTE,
+                          ctypes.string_at(self.image, len(self.image)))
 
 
 class Textures(object):
-  def __init__(self):
-    # maximum of 1024 textures (just to be safe!)
-    self.texs = (ctypes.c_int * 1024)()
-    self.tc = 0
-
   def loadTexture(self, fileString, blend=False, flip=False, size=0):
-    # TODO: why are all these textures 'cached' without being retrievable?
-    # If they are cached at all, it should be keyed by the fileString.
-    texture = _Texture(fileString, flip, size, blend)
-    texture.load_on_display_thread()
-    self.texs[self.tc] = texture.tex.value
-    self.tc += 1
-    return texture
+    return _Texture(fileString, flip, size, blend)
 
-  def deleteAll(self):
-    if VERBOSE:
-      print '[Exit] Deleting textures ...'
-      opengles.glDeleteTextures(self.tc, addressof(self.texs))
+
 
 # TODO: this should move to context
 class Loader(object):
