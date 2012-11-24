@@ -19,7 +19,7 @@ import random, time
 
 from pi3d.Display import Display
 from pi3d.Keyboard import Keyboard
-from pi3d.Texture import Textures
+from pi3d.Texture import Texture
 
 from pi3d.util import Draw
 
@@ -31,8 +31,7 @@ display.create3D(0,0)
 display.setBackColour(0,0.7,1,0)
 
 # Load textures
-texs = Textures()
-raspimg = texs.loadTexture("textures/Raspi256x256.png")
+raspimg = Texture("textures/Raspi256x256.png")
 
 pino=10
 
@@ -61,7 +60,6 @@ while 1:
   if k >-1:
     if k==27:
       mykeys.close()
-      texs.deleteAll()
       display.destroy()
       break
     elif k==112:

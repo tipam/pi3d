@@ -21,7 +21,7 @@ import sys, random
 
 from pi3d.Display import Display
 from pi3d.Keyboard import Keyboard
-from pi3d.Texture import Textures
+from pi3d.Texture import Texture
 
 from pi3d.util import Draw
 
@@ -61,13 +61,14 @@ for b in range (0, maxballs):
     bs.append(random.random() * maxballsize + minballsize)
     bi.append(int(random.random() * 3))
 
-texs = Textures()
 ball = []
-ball.append(texs.loadTexture("textures/red_ball.png"))
-ball.append(texs.loadTexture("textures/grn_ball.png"))
-ball.append(texs.loadTexture("textures/blu_ball.png"))
-bar = texs.loadTexture("textures/bar.png")
-bbtitle = texs.loadTexture("textures/pi3dbbd.png",True)
+ball.append(Texture("textures/red_ball.png"))
+ball.append(Texture("textures/grn_ball.png"))
+ball.append(Texture("textures/blu_ball.png"))
+
+bar = Texture("textures/bar.png")
+bbtitle = Texture("textures/pi3dbbd.png",True)
+
 
 # Fetch key presses
 mykeys = Keyboard()
@@ -105,7 +106,6 @@ while True:
 	    scshots += 1
 	if k==27:
 		mykeys.close()
-		texs.deleteAll()
 		display.destroy()
 		break
 

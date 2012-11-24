@@ -16,7 +16,7 @@
 from pi3d.Display import Display
 from pi3d.Keyboard import Keyboard
 from pi3d.Mouse import Mouse
-from pi3d.Texture import Textures
+from pi3d.Texture import Texture
 
 from pi3d.shape.EnvironmentCube import EnvironmentCube
 from pi3d.shape.EnvironmentCube import loadECfiles
@@ -30,18 +30,17 @@ display.create3D(50,50,display.max_width-100,display.max_height-100, 0.5, 800.0,
 
 #select the environment cube with 'box'...
 box=3
-texs=Textures()
 if box==0:
-  ectex = texs.loadTexture("textures/ecubes/skybox_interstellar.jpg")
+  ectex = Texture("textures/ecubes/skybox_interstellar.jpg")
   myecube = EnvironmentCube(900.0,"CROSS")
 elif box==1:
-  ectex = texs.loadTexture("textures/ecubes/SkyBox.jpg")
+  ectex = Texture("textures/ecubes/SkyBox.jpg")
   myecube = EnvironmentCube(900.0,"HALFCROSS")
 elif box==2:
-  ectex=loadECfiles("textures/ecubes","sbox_interstellar",texs)
+  ectex=loadECfiles("textures/ecubes","sbox_interstellar")
   myecube = EnvironmentCube(900.0,"FACES")
 else:
-  ectex=loadECfiles("textures/ecubes","skybox_hall",texs)
+  ectex=loadECfiles("textures/ecubes","skybox_hall")
   myecube = EnvironmentCube(900.0,"FACES")
 
 rot=0.0
@@ -84,7 +83,6 @@ while 1:
     elif k==27:    #Escape key
       mykeys.close()
       mymouse.stop()
-      texs.deleteAll()
       display.destroy()
       break
     else:
@@ -92,3 +90,5 @@ while 1:
 
   display.swapBuffers()
 quit()
+
+

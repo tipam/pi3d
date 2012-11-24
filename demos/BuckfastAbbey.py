@@ -19,7 +19,6 @@ import math
 from pi3d.Display import Display
 from pi3d.Keyboard import Keyboard
 from pi3d.Mouse import Mouse
-from pi3d.Texture import Textures
 
 from pi3d.context.Light import Light
 
@@ -43,12 +42,12 @@ print ""
 print "Move mouse to pan view.  Click mouse to exit or press ESCAPE"
 print "=============================================================="
 
-texs = Textures()
-ectex = loadECfiles("textures/ecubes","sbox",texs)
+ectex = loadECfiles("textures/ecubes","sbox")
 myecube = EnvironmentCube(900.0,"FACES")
 
 # load model_loadmodel
-mymodel = Model("models/Buckfast Abbey/BuckfastAbbey.egg",texs,"Abbey",0,0,0, -90,160,0, 0.03,0.03,0.03)
+mymodel = Model("models/Buckfast Abbey/BuckfastAbbey.egg", "Abbey",
+                0, 0, 0, -90, 160, 0, 0.03, 0.03, 0.03)
 
 # Create keyboard and mouse event objects
 mykeys = Keyboard()
@@ -121,7 +120,6 @@ while 1:
     elif k==27:    #Escape key
       mykeys.close()
       mymouse.stop()
-      texs.deleteAll()
       display.destroy()
       break
     else:

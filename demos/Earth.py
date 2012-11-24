@@ -16,7 +16,7 @@ from math import sin, cos
 
 from pi3d.Display import Display
 from pi3d.Keyboard import Keyboard
-from pi3d.Texture import Textures
+from pi3d.Texture import Texture
 
 from pi3d.context.Light import Light
 
@@ -30,15 +30,13 @@ display = Display()
 display.create3D(0,0)   	# x,y,width,height defaults to full screen if w,h ommitted
 display.setBackColour(0,0,0,1)    	# r,g,b,alpha
 
-# Load textures
-texs=Textures()
 # Setting 2nd param to True renders 'True' Blending
 # (this can be changed later to 'False' with 'cloudimg.blend = False')
-cloudimg = texs.loadTexture("textures/earth_clouds.png",True)
-earthimg = texs.loadTexture("textures/world_map.jpg")
-moonimg = texs.loadTexture("textures/moon.jpg")
-starsimg = texs.loadTexture("textures/stars2.jpg")
-watimg = texs.loadTexture("textures/water.jpg")
+cloudimg = Texture("textures/earth_clouds.png",True)
+earthimg = Texture("textures/world_map.jpg")
+moonimg = Texture("textures/moon.jpg")
+starsimg = Texture("textures/stars2.jpg")
+watimg = Texture("textures/water.jpg")
 
 mysphere = Sphere(2,24,24,0.0,"earth",0,0,-5.8)
 mysphere2 = Sphere(2.05,24,24,0.0,"clouds",0,0,-5.8)
@@ -88,7 +86,6 @@ while 1:
     if k==112: display.screenshot("earthPic.jpg")
     elif k==27:
       mykeys.close()
-      texs.deleteAll()
       display.destroy()
       break
     else:

@@ -16,7 +16,6 @@
 
 from pi3d.Display import Display
 from pi3d.Keyboard import Keyboard
-from pi3d.Texture import Textures
 
 from pi3d.context.Light import Light
 
@@ -26,13 +25,12 @@ from pi3d.util.Matrix import Matrix
 
 # Setup display and initialise pi3d
 display = Display()
-display.create3D(100,100,1200,900)    # x,y,width,height
-display.setBackColour(0.2,0.4,0.6,1)      # r,g,b,alpha
+display.create3D(100, 100, 1200, 900)    # x,y,width,height
+display.setBackColour(0.2, 0.4, 0.6, 1)      # r,g,b,alpha
 
-texs = Textures()
 
 # load model_loadmodel
-mymodel = Model("models/teapot.obj",texs ,"teapot", 0,-1.0,0)
+mymodel = Model('models/teapot.obj' ,'teapot', 0, -1.0, 0)
 
 # Fetch key presses
 mykeys = Keyboard()
@@ -41,7 +39,7 @@ mykeys = Keyboard()
 mtrx = Matrix()
 
 #create a light
-mylight = Light(0,1,1,1,"",10,10,0)
+mylight = Light(0,1,1,1,'',10,10,0)
 mylight.on()
 
 while 1:
@@ -56,10 +54,9 @@ while 1:
 
   k = mykeys.read()
   if k >-1:
-    if k==112: display.screenshot("teapot.jpg")
+    if k==112: display.screenshot('teapot.jpg')
     elif k==27:
       mykeys.close()
-      texs.deleteAll()
       display.destroy()
       break
     else:

@@ -18,7 +18,7 @@ import math, random
 from pi3d.Display import Display
 from pi3d.Keyboard import Keyboard
 from pi3d.Mouse import Mouse
-from pi3d.Texture import Textures
+from pi3d.Texture import Texture
 from pi3d.Font import Font
 
 from pi3d.context.Light import Light
@@ -43,15 +43,13 @@ display = Display()
 display.create3D(10,10,1200,900, 0.5, 800.0, 60.0) # x,y,width,height,near,far,aspect
 display.setBackColour(0.4,0.8,0.8,1) # r,g,b,alpha
 
-# Load textures
-texs = Textures()
 # Setting 2nd param to True renders 'True' Blending
 # (this can be changed later to 'False' with 'rockimg2.blend = False')
-groundimg = texs.loadTexture("textures/stripwood.jpg")
-monstimg = texs.loadTexture("textures/pong3.png")
-ballimg = texs.loadTexture("textures/cloud6.png", True)
+groundimg = Texture("textures/stripwood.jpg")
+monstimg = Texture("textures/pong3.png")
+ballimg = Texture("textures/cloud6.png", True)
 # environment cube
-ectex = texs.loadTexture("textures/ecubes/skybox_stormydays.jpg")
+ectex = Texture("textures/ecubes/skybox_stormydays.jpg")
 myecube = EnvironmentCube(900.0,"CROSS")
 #ball
 maxdsz = 0.3

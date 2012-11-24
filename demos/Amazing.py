@@ -18,7 +18,7 @@ import math, random
 from pi3d.Display import Display
 from pi3d.Keyboard import Keyboard
 from pi3d.Mouse import Mouse
-from pi3d.Texture import Textures
+from pi3d.Texture import Texture
 
 from pi3d.context.Fog import Fog
 from pi3d.context.Light import Light
@@ -56,18 +56,16 @@ display.create3D(10,10,display.max_width-20,display.max_height-100, 0.5, 800.0, 
 #display.create3D(10,10,800,600, 0.5, 800.0, 60.0) # small window so terminal can be viewed for errors!
 display.setBackColour(0.4,0.8,0.8,1) # r,g,b,alpha
 
-# Load textures
-texs = Textures()
 # Setting 2nd param to True renders 'True' Blending
 # (this can be changed later to 'False' with 'rockimg2.blend = False')
-rockimg1 = texs.loadTexture("textures/techy1.jpg")
-rockimg2 = texs.loadTexture("textures/rock1.png", True)
-tree2img = texs.loadTexture("textures/tree2.png")
-raspimg = texs.loadTexture("textures/Raspi256x256.png")
-monstimg = texs.loadTexture("textures/pong2.jpg")
+rockimg1 = Texture("textures/techy1.jpg")
+rockimg2 = Texture("textures/rock1.png", True)
+tree2img = Texture("textures/tree2.png")
+raspimg = Texture("textures/Raspi256x256.png")
+monstimg = Texture("textures/pong2.jpg")
 
 # environment cube
-ectex = texs.loadTexture("textures/ecubes/skybox_stormydays.jpg")
+ectex = Texture("textures/ecubes/skybox_stormydays.jpg")
 myecube = EnvironmentCube(900.0,"CROSS")
 
 # Create elevation map
@@ -87,7 +85,7 @@ treemodel1 = MergeShape("baretree")
 treemodel1.add(treeplane, 0,0,0)
 treemodel1.add(treeplane, 0,0,0, 0,90,0)
 
-shed = Model("models/shed1.obj",texs,"shed",0,3,0, 0,0,0, 2,2,2)
+shed = Model("models/shed1.obj","shed",0,3,0, 0,0,0, 2,2,2)
 
 #Scatter them on map using Merge shape's cluster function
 mytrees1 = MergeShape("trees1")

@@ -16,7 +16,7 @@
 from pi3d.Display import Display
 from pi3d.Font import Font
 from pi3d.Keyboard import Keyboard
-from pi3d.Texture import Textures
+from pi3d.Texture import Texture
 
 from pi3d.context.Light import Light
 
@@ -39,9 +39,8 @@ display.create3D(0,0)   	# x,y,width,height
 display.setBackColour(0,0,0,1)    	# r,g,b,alpha
 
 # Load textures
-texs = Textures()
-patimg = texs.loadTexture("textures/PATRN.PNG")
-coffimg = texs.loadTexture("textures/COFFEE.PNG")
+patimg = Texture("textures/PATRN.PNG")
+coffimg = Texture("textures/COFFEE.PNG")
 
 #Create inbuilt shapes
 mysphere = Sphere(1,24,24,0.0,"sphere",-4,2,-7)
@@ -125,7 +124,6 @@ while 1:
     if k==112: display.screenshot("shapesPic.jpg")
     elif k==27:
       mykeys.close()
-      texs.deleteAll()
       display.destroy()
       break
     else:

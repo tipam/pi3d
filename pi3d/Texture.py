@@ -14,18 +14,19 @@ def round_up_to_power_of_2(x):
     p += p
   return p
 
-class _Texture(Loadable):
-  def __init__(self, file_string, flip=False, size=0, blend=False):
-    super(_Texture, self).__init__()
+class Texture(Loadable):
+  def __init__(self, file_string, blend=False, flip=False, size=0):
+    super(Texture, self).__init__()
     self.file_string = file_string
+    self.blend = blend
     self.flip = flip
     self.size = size
-    self.blend = blend
-    self.load_disk()
+    self.load_opengl()
+    # self.load_disk()
 
   def _unload_opengl(self):
-    texs = pi3d.c_ints([self.tex.value])
-    opengles.glDeleteTextures(1, addressof(texs))
+    texture_array = pi3d.c_ints([self.tex.value])
+    opengles.glDeleteTextures(1, ctypes.addressof(texture_array))
 
   def _load_disk(self):
     s = self.file_string + ' '
@@ -78,13 +79,6 @@ class _Texture(Loadable):
     opengles.glTexImage2D(GL_TEXTURE_2D, 0, RGBv, self.ix, self.iy, 0, RGBv,
                           GL_UNSIGNED_BYTE,
                           ctypes.string_at(self.image, len(self.image)))
-
-
-class Textures(object):
-  def loadTexture(self, fileString, blend=False, flip=False, size=0):
-    return _Texture(fileString, flip, size, blend)
-
-
 
 # TODO: this should move to context
 class Loader(object):

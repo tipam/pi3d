@@ -1,6 +1,8 @@
 import re, os
 from pi3d import *
 import ctypes
+
+from pi3d.Texture import Texture
 from pi3d.shape.Shape import Shape
 
 #########################################################################################
@@ -42,7 +44,7 @@ class polygon():
 ########################################################################
 
 
-def loadFileEGG(model, fileName, texs):
+def loadFileEGG(model, fileName):
   model.coordinateSystem = "Y-up"
   model.materialList = {}
   model.textureList = {}
@@ -54,7 +56,6 @@ def loadFileEGG(model, fileName, texs):
   model.childModel = [] # don't really need parent and child pointers but will speed up traversing tree
   model.vNormal = False
   model.vGroup = {} # holds the information for each vertex group
-  model.texs = texs
 
   if ("__clone__" in fileName): return #used for cloning this loadModel, i.e. don't need to parse egg file
   # read in the file and parse into some arrays
@@ -188,17 +189,17 @@ def loadFileEGG(model, fileName, texs):
           for k in range(2):
             model.vGroup[np].tex_coords[nv*2+k] = c_float(structVList[vpKey][j].UVcoords[k])
         nv += 1
-        
+
       n = nv - startV - 1
       for j in range(1,n):
         model.vGroup[np].indices[ni*3] = c_short(startV)
         model.vGroup[np].indices[ni*3+1] = c_short(startV + j)
         model.vGroup[np].indices[ni*3+2] = c_short(startV + j +1)
         ni += 1
-    
+
     model.vGroup[np].indicesLen = len(model.vGroup[np].indices)
     model.vGroup[np].ttype = GL_TRIANGLES
-    
+
     # load the texture file TODO check if same as previously loaded files (for other loadModel()s)
     if (gTRef in model.textureList):
       model.vGroup[np].texID = model.textureList[gTRef]["texID"]
@@ -206,7 +207,7 @@ def loadFileEGG(model, fileName, texs):
     else:
       model.vGroup[np].texID = None
       model.vGroup[np].texFile = None
-    
+
     # load materials TODO something more sophisticated
     #TODO maybe don't create this array if texture being used?
     if (gMRef in model.materialList):
@@ -233,7 +234,7 @@ def loadFileEGG(model, fileName, texs):
       for i in xrange(len(x[3])): model.textureList[x[1]][x[3][i][1]] = x[3][i][2]
       model.textureList[x[1]]["filename"] = x[2].strip("\"")
       #print filePath, model.textureList[x[1]]["filename"]
-      model.textureList[x[1]]["texID"] = model.texs.loadTexture(os.path.join(filePath, model.textureList[x[1]]["filename"]),False,True) # load from file
+      model.textureList[x[1]]["texID"] = Texture(os.path.join(filePath, model.textureList[x[1]]["filename"]),False,True) # load from file
     if "<CoordinateSystem>" in x[0]:
       model.coordinateSystem = x[2]
     if "<Material>" in x[0]:

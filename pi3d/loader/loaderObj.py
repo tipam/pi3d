@@ -2,6 +2,7 @@ import re, os
 from pi3d import *
 from pi3d.loader.parse_mtl import parse_mtl
 from pi3d.shape.Shape import Shape
+from pi3d.Texture import Texture
 
 #########################################################################################
 #
@@ -41,14 +42,12 @@ def parse_vertex(text):
   return { 'v':v, 't':t, 'n':n }
 
 #########################################################################################
-def loadFileOBJ(model,fileName,texs):
-
+def loadFileOBJ(model, fileName):
   model.coordinateSystem = "Y-up"
   model.parent = None
   model.childModel = [] # don't really need parent and child pointers but will speed up traversing tree
   model.vNormal = False
   model.vGroup = {} # holds the information for each vertex group
-  model.texs = texs
 
   if ("__clone__" in fileName): return #used for cloning this loadModel, i.e. don't need to parse egg file
   # read in the file and parse into some arrays
@@ -230,7 +229,7 @@ def loadFileOBJ(model,fileName,texs):
     if 'mapDiffuse' in material_lib[m]:
       tfileName = material_lib[m]['mapDiffuse']
       model.vGroup[materials[m]].texFile = tfileName
-      model.vGroup[materials[m]].texID = model.texs.loadTexture(os.path.join(filePath, tfileName), False, True) # load from file
+      model.vGroup[materials[m]].texID = Texture(os.path.join(filePath, tfileName), False, True) # load from file
     else:
       model.vGroup[materials[m]].texFile = None
       model.vGroup[materials[m]].texID = None

@@ -21,7 +21,7 @@ import math,random
 from pi3d.Display import Display
 from pi3d.Keyboard import Keyboard
 from pi3d.Mouse import Mouse
-from pi3d.Texture import Textures
+from pi3d.Texture import Texture
 
 from pi3d.context.Light import Light
 
@@ -38,16 +38,14 @@ display = Display()
 display.create3D(100,100,800,600, 0.5, 800.0, 60.0)  # x,y,width,height,near,far,aspect
 display.setBackColour(0.4,0.8,0.8,1)      # r,g,b,alpha
 
-# Load textures
-texs = Textures()
-tree2img = texs.loadTexture("textures/tree2.png")
-tree1img = texs.loadTexture("textures/tree1.png")
-grassimg = texs.loadTexture("textures/grass.png")
-hb2img = texs.loadTexture("textures/hornbeam2.png")
+tree2img = Texture("textures/tree2.png")
+tree1img = Texture("textures/tree1.png")
+grassimg = Texture("textures/grass.png")
+hb2img = Texture("textures/hornbeam2.png")
 
 #myecube = EnvironmentCube(900.0,"HALFCROSS")
 
-ectex=loadECfiles("textures/ecubes","sbox",texs)
+ectex=loadECfiles("textures/ecubes","sbox")
 myecube = EnvironmentCube(900.0,"FACES")
 
 light = Light(0, 10,10,10, "", 0,100,0)
@@ -57,7 +55,7 @@ light.on()
 mapwidth=1000.0
 mapdepth=1000.0
 mapheight=60.0
-mountimg1 = texs.loadTexture("textures/mountains3_512.jpg")
+mountimg1 = Texture("textures/mountains3_512.jpg")
 mymap = ElevationMap("textures/mountainsHgt.jpg",mapwidth,mapdepth,mapheight,64,64) #testislands.jpg
 
 #Create tree models
@@ -176,7 +174,6 @@ while 1:
     elif k==27:  #Escape key
       mykeys.close()
       mymouse.stop()
-      texs.deleteAll()
       display.destroy()
       break
     else:

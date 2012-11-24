@@ -4,8 +4,9 @@ import sys
 from pi3d import Keyboard
 
 from pi3d.Display import Display
+from pi3d.Display import DISPLAY
 from pi3d.DisplayLoop import DisplayLoop
-from pi3d.Texture import Textures
+from pi3d.Texture import Texture
 
 from pi3d.sprite.Ball import Ball
 
@@ -22,15 +23,12 @@ display.setBackColour(0,0.2,0.6,0)
 MAX_BALLS = 15
 MIN_BALL_SIZE = 5
 MAX_BALL_SIZE = 100
-MAX_RANDOMIZATION_TRIES = 20
-
-TEXS = Textures()
 
 class RandomBall(Ball):
   BALLS = []
-  TEXTURES = [TEXS.loadTexture("textures/red_ball.png"),
-              TEXS.loadTexture("textures/grn_ball.png"),
-              TEXS.loadTexture("textures/blu_ball.png")]
+  TEXTURES = [Texture("textures/red_ball.png"),
+              Texture("textures/grn_ball.png"),
+              Texture("textures/blu_ball.png")]
 
   def __init__(self):
     super(RandomBall, self).__init__(random.choice(RandomBall.TEXTURES),

@@ -17,7 +17,7 @@ import random, time
 
 from pi3d.Display import Display
 from pi3d.Keyboard import Keyboard
-from pi3d.Texture import Textures
+from pi3d.Texture import Texture
 
 from pi3d.util import Draw
 
@@ -38,13 +38,12 @@ scny = display.max_height - 2*margin
 display.create3D(margin,margin,scnx,scny)
 display.setBackColour(0,0.7,1,1)
 
-texs = Textures()
 clouds = []
-clouds.append(texs.loadTexture("textures/cloud2.png",True))
-clouds.append(texs.loadTexture("textures/cloud3.png",True))
-clouds.append(texs.loadTexture("textures/cloud4.png",True))
-clouds.append(texs.loadTexture("textures/cloud5.png",True))
-clouds.append(texs.loadTexture("textures/cloud6.png",True))
+clouds.append(Texture("textures/cloud2.png",True))
+clouds.append(Texture("textures/cloud3.png",True))
+clouds.append(Texture("textures/cloud4.png",True))
+clouds.append(Texture("textures/cloud5.png",True))
+clouds.append(Texture("textures/cloud6.png",True))
 
 # Setup cloud positions and cloud image refs
 z = 0.0
@@ -79,7 +78,6 @@ while True:
   #Press ESCAPE to terminate
   if mykeys.read() == 27:
     mykeys.close()
-    texs.deleteAll()
     display.destroy()
     break
 

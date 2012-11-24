@@ -20,7 +20,7 @@ import math
 from pi3d.Display import Display
 from pi3d.Keyboard import Keyboard
 from pi3d.Mouse import Mouse
-from pi3d.Texture import Textures
+from pi3d.Texture import Texture
 
 from pi3d.context.Fog import Fog
 from pi3d.context.Light import Light
@@ -41,25 +41,24 @@ display.create3D(50,50,display.max_width-100,display.max_height-100, 0.5, 800.0,
 display.setBackColour(0.4,0.8,0.8,1)    	# r,g,b,alpha
 
 # Load textures
-texs = Textures()
-tree2img = texs.loadTexture("textures/tree2.png")
-tree1img = texs.loadTexture("textures/tree1.png")
-grassimg = texs.loadTexture("textures/grass.png")
-hb2img = texs.loadTexture("textures/hornbeam2.png")
+tree2img = Texture("textures/tree2.png")
+tree1img = Texture("textures/tree1.png")
+grassimg = Texture("textures/grass.png")
+hb2img = Texture("textures/hornbeam2.png")
 
 #load environment cube
-ectex = loadECfiles("textures/ecubes","sbox_interstellar",texs)
+ectex = loadECfiles("textures/ecubes","sbox_interstellar")
 myecube = EnvironmentCube(900.0,"FACES")
 
 # Create elevation map
 mapwidth=1000.0
 mapdepth=1000.0
 mapheight=60.0
-mountimg1 = texs.loadTexture("textures/mars_colour.png")
+mountimg1 = Texture("textures/mars_colour.png")
 mymap = ElevationMap("textures/mars_height.png",mapwidth,mapdepth,mapheight,128,128) #testislands.jpg
 
 #create robot
-metalimg = texs.loadTexture("textures/metalhull.jpg")
+metalimg = Texture("textures/metalhull.jpg")
 robot_head= Sphere(2.0,12,12,0.5,"",0,3,0)
 robot_body = Cylinder(2.0,4,12,"",0,1,0)
 robot_leg = Cuboid(0.7,4.0,1.0,"",0,0.8,0)
@@ -162,7 +161,6 @@ while 1:
     elif k==27:    #Escape key
       mykeys.close()
       mymouse.stop()
-      texs.deleteAll()
       display.destroy()
       break
     else:

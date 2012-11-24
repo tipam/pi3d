@@ -17,7 +17,6 @@
 from pi3d.util import Utility
 from pi3d.Display import Display
 from pi3d.Keyboard import Keyboard
-from pi3d.Texture import Textures
 
 from pi3d.context.Light import Light
 
@@ -29,8 +28,8 @@ display.create3D(50,50,display.max_width-100,display.max_height-100)   	# x,y,wi
 display.setBackColour(0.2,0.4,0.6,1)    # r,g,b,alpha
 
 # load model_loadmodel
-texs = Textures()
-mymodel = Model("models/Triceratops/Triceratops.egg",texs,"Triceratops", 0,-1,0, -90,0,0, .005,.005,.005)
+mymodel = Model('models/Triceratops/Triceratops.egg',
+                'Triceratops', 0, -1, 0, -90, 0, 0, .005, .005, .005)
 
 # Fetch key presses
 mykeys = Keyboard()
@@ -39,7 +38,7 @@ mykeys = Keyboard()
 rot=0
 
 #create a light
-mylight = Light(0,1,1,1,"",10,10,0)
+mylight = Light(0,1,1,1,'',10,10,0)
 mylight.on()
 
 while 1:
@@ -54,10 +53,9 @@ while 1:
 
   k = mykeys.read()
   if k >-1:
-    if k==112: display.screenshot("Triceratops.jpg")
+    if k==112: display.screenshot('Triceratops.jpg')
     elif k==27:
       mykeys.close()
-      texs.deleteAll()
       display.destroy()
       break
     else:
