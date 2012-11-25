@@ -14,7 +14,7 @@ class DisplayLoop(object):
                check_if_close_requested=None,
                sprites=None):
     self.sprites = sprites or []
-    self.display = display
+    self.main_display = display
     self.frames_per_second = frames_per_second
     self.check_if_close_requested = check_if_close_requested
     self.is_on = True
@@ -28,21 +28,24 @@ class DisplayLoop(object):
     LOGGER.info('starting')
     self.next_time = time.time()
 
-    display_phases = (self._load_opengl, self.display.clear, self._repaint,
-                      self.display.swapBuffers, self._unload_opengl,
+    display_phases = (self._load_opengl, self.main_display.clear, self._repaint,
+                      self.main_display.swapBuffers, self._unload_opengl,
                       self._sleep)
     i = 0
     while self._is_running():
       display_phases[i]()
       i = (i + 1) % len(display_phases)
 
-    self.display.destroy()
+    self.main_display.destroy()
     LOGGER.info('stopped')
 
   def add_sprite(self, sprite, position=None):
     if position is None:
       position = len(self.sprites)
     self.sprites.insert(position, sprite)
+
+  def add_sprites(self, *sprites):
+    self.sprites.extend(sprites)
 
   def remove_sprite(self, sprite):
     self.sprites.remove(sprite)

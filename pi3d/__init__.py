@@ -16,6 +16,9 @@ def _ctypes_array(ct, x):
 def c_bytes(x):
   return _ctypes_array(ctypes.c_byte, x)
 
+def c_chars(x):
+  return _ctypes_array(ctypes.c_char, x)
+
 def c_ints(x):
   return _ctypes_array(ctypes.c_int, x)
 

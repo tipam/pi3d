@@ -1,33 +1,34 @@
+import ctypes
+
 from pi3d import *
+from pi3d.util import Log
 
 # This class based on Peter de Rivaz's mandlebrot example
+LOGGER = Log.logger(__name__)
+
+MAX_LOG_SIZE = 1024
+
+def _opengl_log(shader, function, caption):
+  log = c_chars(MAX_LOG_SIZE)
+  loglen = ctypes.c_int()
+  function(shader, MAX_LOG_SIZE, ctypes.byref(loglen), ctypes.byref(log))
+  LOGGER.info('%s: %s', caption, log.value)
 
 class Shader(object):
-  def showlog(self,shader):
+  def showlog(self, shader):
     """Prints the compile log for a shader"""
-    N = 1024
-    log = (ctypes.c_char * N)()
-    loglen=ctypes.c_int()
-    opengles.glGetShaderInfoLog(shader, N,
-                                ctypes.byref(loglen), ctypes.byref(log))
-    print "Shader log:",log.value
+    _opengl_log(shader, opengles.glGetShaderInfoLog, 'Shader log')
 
   def showprogramlog(self,shader):
     """Prints the compile log for a shader"""
-    N = 1024
-    log = (ctypes.c_char * N)()
-    loglen = ctypes.c_int()
-    opengles.glGetProgramInfoLog(shader, N,
-                                 ctypes.byref(loglen), ctypes.byref(log))
-    print log.value
-
+    _opengl_log(shader, opengles.glGetProgramInfoLog, 'Program log')
 
   def __init__(self, vshader_source, fshader_source,
                tex1=None, tex2=None, param1=None, param2=None, param3=None):
-    #Pi3D can only accept shaders with limited parameters as specific parameters
-    #would require a lot more coding unless there's a way of passing these back.
-    #Shaders should have their parameters defined in the shader source.
-    #The only parameters Pi3D can pass (for now) is textures.
+    # Pi3D can only accept shaders with limited parameters as specific
+    # parameters would require a lot more coding unless there's a way of passing
+    # these back.  Shaders should have their parameters defined in the shader
+    # source.  The only parameters Pi3D can pass (for now) is textures.
 
     self.vshader_source = ctypes.c_char_p(
       "attribute vec4 vertex;"
@@ -72,7 +73,7 @@ class Shader(object):
     if self.tex2 is not None:
       unif_tex2 = opengles.glGetUniformLocation(self.program, "tex2")
       # frag shader must have a uniform 'tex2'
-    opengles.glUseProgram( self.program );
+    opengles.glUseProgram(self.program)
 
   #self.program = program
   #self.unif_color = opengles.glGetUniformLocation(program, "color");
