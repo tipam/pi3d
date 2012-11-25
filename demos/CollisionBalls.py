@@ -11,7 +11,7 @@ from pi3d.Texture import Texture
 from pi3d.sprite.Ball import Ball
 
 # Setup display and initialise pi3d
-display = Display(check_if_close_requested=Keyboard.make_closer())
+display = Display()
 SCNX =  display.max_width
 SCNY = display.max_height
 display.create2D(0, 0, SCNX, SCNY, 0)
@@ -55,5 +55,5 @@ for b in range(MAX_BALLS):
   RandomBall()
 
 display.add_sprites(*RandomBall.BALLS)
-display.loop()
+display.loop(Keyboard.make_closer())
 

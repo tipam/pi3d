@@ -24,9 +24,11 @@ class DisplayLoop(object):
   def stop(self):
     self.is_on = False
 
-  def loop(self):
+  def loop(self, check_if_close_required=None):
     LOGGER.info('starting')
     self.next_time = time.time()
+    if check_if_close_required:
+      self.check_if_close_required = check_if_close_required
 
     display_phases = (self._load_opengl, self.main_display.clear, self._repaint,
                       self.main_display.swapBuffers, self._unload_opengl,
