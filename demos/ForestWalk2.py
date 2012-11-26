@@ -32,7 +32,7 @@ from pi3d.util.Matrix import Matrix
 from pi3d.util.Screenshot import screenshot
 
 # Setup display and initialise pi3d
-DISPLAY = Display.create(x=100, y=100, w=1600, h=800, near=0.5)
+DISPLAY = Display.create(x=100, y=100, w=1600, h=800)
 DISPLAY.setBackColour(0.4,0.8,0.8,1) # r,g,b,alpha
 
 # Load textures
