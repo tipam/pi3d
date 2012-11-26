@@ -9,7 +9,7 @@ from pi3d.Texture import Texture
 from pi3d.sprite.Ball import Ball
 
 # Setup display and initialise pi3d
-DISPLAY = Display.create(is_3d=False, depth=0)
+DISPLAY = Display.create(is_3d=False)
 
 # Set last value (alpha) to zero for a transparent background!
 DISPLAY.setBackColour(0,0.2,0.6,0)
