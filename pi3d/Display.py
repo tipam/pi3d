@@ -126,57 +126,52 @@ class Display(DisplayLoop):
 
     self.active = True
 
+  def create(self, is_3d=True, x=0, y=0, w=0, h=0,
+             near=None, far=None, aspect=60.0, depth=24):
+    if w <= 0:
+       w = self.max_width
+    if h <= 0:
+       h = self.max_height
+    if near is None:
+      near = 1.0 if is_3d else -1.0
+    if far is None:
+      far = 800.0 if is_3d else 100.0
+
+    self.win_width = w
+    self.win_height = h
+    self.near = near
+    self.far = far
+
+    self.left = x
+    self.top = y
+    self.right = x + w
+    self.bottom = y + h
+
+    self.create_display(x, y, w, h)
+
+    opengles.glMatrixMode(GL_PROJECTION)
+    Utility.load_identity()
+    if is_3d:
+      hht = near * math.tan(math.radians(aspect / 2.0))
+      hwd = hht * w / h
+      call_float(opengles.glFrustumf, -hwd, hwd, -hht, hht, near, far)
+      opengles.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
+    else:
+      call_float(opengles.glOrthof, 0, w, 0, h, -1, 500)
+
+    opengles.glMatrixMode(GL_MODELVIEW)
+    Utility.load_identity()
+
+
   def create3D(self, x=0, y=0, w=0, h=0,
                near=1.0, far=800.0, aspect=60.0, depth=24):
-    if w <= 0 or h <= 0:
-      w = self.max_width
-      h = self.max_height
-
-    self.win_width = w
-    self.win_height = h
-    self.near = near
-    self.far = far
-
-    self.left = x
-    self.top = y
-    self.right = x + w
-    self.bottom = y + h
-
-    self.create_display(x, y, w, h)
-
-    #Setup perspective view
-    opengles.glMatrixMode(GL_PROJECTION)
-    Utility.load_identity()
-    hht = near * math.tan(math.radians(aspect / 2.0))
-    hwd = hht * w / h
-    call_float(opengles.glFrustumf, -hwd, hwd, -hht, hht, near, far)
-    opengles.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
-    opengles.glMatrixMode(GL_MODELVIEW)
-    Utility.load_identity()
-
+    self.create(is_3d=True, x=x, y=y, w=w, h=h, near=near, far=far,
+                aspect=aspect, depth=depth)
 
   def create2D(self, x=0, y=0, w=0, h=0, depth=24, near=-1.0, far=100.0):
-    if w <= 0 or h <= 0:
-        w = self.max_width
-        h = self.max_height
+    self.create(is_3d=False, x=x, y=y, w=w, h=h, near=near, far=far,
+                depth=depth)
 
-    self.win_width = w
-    self.win_height = h
-    self.near = near
-    self.far = far
-
-    self.left = x
-    self.top = y
-    self.right = x + w
-    self.bottom = y + h
-
-    self.create_display(x, y, w, h)
-
-    opengles.glMatrixMode(GL_PROJECTION)
-    Utility.load_identity()
-    call_float(opengles.glOrthof, 0, w, 0, h, -1, 500)
-    opengles.glMatrixMode(GL_MODELVIEW)
-    Utility.load_identity()
 
   def destroy(self):
     if self.active:
