@@ -17,7 +17,7 @@
 
 import random, time
 
-from pi3d.Display import Display
+from pi3d import Display
 from pi3d.Keyboard import Keyboard
 from pi3d.Texture import Texture
 
@@ -25,11 +25,10 @@ from pi3d.util import Draw
 from pi3d.util.Screenshot import screenshot
 
 # Setup display and initialise pi3d
-display = Display()
-display.create3D(0,0)
+DISPLAY = Display.create()
 
 # Set last value (alpha) to zero for a transparent background!
-display.setBackColour(0,0.7,1,0)
+DISPLAY.setBackColour(0,0.7,1,0)
 
 # Load textures
 raspimg = Texture("textures/Raspi256x256.png")
@@ -46,7 +45,7 @@ mykeys = Keyboard()
 
 # Display scene and rotate cuboid
 while 1:
-  display.clear()
+  DISPLAY.clear()
 
   for b in range (0, pino):
     Draw.sprite(raspimg,xyz[b][0],5-xyz[b][1],-xyz[b][2],1,1,xyz[b][3])	#draw a rectangle(x,y,z,scaleX,scaleY,rotation)
@@ -61,9 +60,9 @@ while 1:
   if k >-1:
     if k==27:
       mykeys.close()
-      display.destroy()
+      DISPLAY.destroy()
       break
     elif k==112:
       screenshot("raspberryRain.jpg")
 
-  display.swapBuffers()
+  DISPLAY.swapBuffers()

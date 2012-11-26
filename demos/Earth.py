@@ -14,7 +14,7 @@
 #
 from math import sin, cos
 
-from pi3d.Display import Display
+from pi3d import Display
 from pi3d.Keyboard import Keyboard
 from pi3d.Texture import Texture
 
@@ -27,9 +27,8 @@ from pi3d.util import Draw
 from pi3d.util.Screenshot import screenshot
 
 # Setup display and initialise pi3d
-display = Display()
-display.create3D(0,0)   	# x,y,width,height defaults to full screen if w,h ommitted
-display.setBackColour(0,0,0,1)    	# r,g,b,alpha
+DISPLAY = Display.create()
+DISPLAY.setBackColour(0,0,0,1)    	# r,g,b,alpha
 
 # Setting 2nd param to True renders 'True' Blending
 # (this can be changed later to 'False' with 'cloudimg.blend = False')
@@ -61,7 +60,7 @@ mylight.on()
 
 # Display scene
 while 1:
-  display.clear()
+  DISPLAY.clear()
 
   myplane.draw(starsimg)
   myplane.rotateIncZ(0.01)
@@ -87,9 +86,9 @@ while 1:
     if k==112: screenshot("earthPic.jpg")
     elif k==27:
       mykeys.close()
-      display.destroy()
+      DISPLAY.destroy()
       break
     else:
       print k
 
-  display.swapBuffers()
+  DISPLAY.swapBuffers()

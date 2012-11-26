@@ -15,7 +15,7 @@
 
 import math, random
 
-from pi3d.Display import Display
+from pi3d import Display
 from pi3d.Keyboard import Keyboard
 from pi3d.Mouse import Mouse
 from pi3d.Texture import Texture
@@ -52,10 +52,9 @@ print "############################################################"
 print
 
 # Setup display and initialise pi3d
-display = Display()
-display.create3D(10,10,display.max_width-20,display.max_height-100, 0.5, 800.0, 60.0) # x,y,width,height,near,far,aspect
-#display.create3D(10,10,800,600, 0.5, 800.0, 60.0) # small window so terminal can be viewed for errors!
-display.setBackColour(0.4,0.8,0.8,1) # r,g,b,alpha
+DISPLAY = Display.create(x=10, y=10, w=-20, h=-100, near=0.5, far=800.0, aspect=60.0)
+#Display.create(x=10, x=10, x=800, x=600, near=0.5, far=800.0, aspect=60.0) # small window so terminal can be viewed for errors!
+DISPLAY.setBackColour(0.4,0.8,0.8,1) # r,g,b,alpha
 
 # Setting 2nd param to True renders 'True' Blending
 # (this can be changed later to 'False' with 'rockimg2.blend = False')
@@ -164,7 +163,7 @@ angle = 0
 
 #################################################### LOOP ###############################################
 while 1:
-  display.clear()
+  DISPLAY.clear()
 
   camera.identity()
   camera.rotate(tilt,0,0)
@@ -274,12 +273,12 @@ while 1:
     elif k==102: #f key to fire
       missile.fire(xm, ym, zm, -dx, -math.sin(tilt*rads), -dz, 10)
     elif k==27: #Escape key
-      display.destroy()
+      DISPLAY.destroy()
       mykeys.close()
       mymouse.stop()
       break
     #else:
     #print k
 
-  display.swapBuffers()
+  DISPLAY.swapBuffers()
 quit()

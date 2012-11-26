@@ -15,7 +15,7 @@
 
 import math, random
 
-from pi3d.Display import Display
+from pi3d import Display
 from pi3d.Keyboard import Keyboard
 from pi3d.Mouse import Mouse
 from pi3d.Texture import Texture
@@ -39,10 +39,9 @@ print "############################################################"
 print
 
 # Setup display and initialise pi3d
-display = Display()
-#display.create3D(10,10,900,700, 0.5, 800.0, 60.0) # x,y,width,height,near,far,aspect
-display.create3D(10,10,1200,900, 0.5, 800.0, 60.0) # x,y,width,height,near,far,aspect
-display.setBackColour(0.4,0.8,0.8,1) # r,g,b,alpha
+DISPLAY = Display.create(x=10, y=10, w=1200, h=900, near=0.5, far=800.0,
+                         aspect=60.0)
+DISPLAY.setBackColour(0.4,0.8,0.8,1) # r,g,b,alpha
 
 # Setting 2nd param to True renders 'True' Blending
 # (this can be changed later to 'False' with 'rockimg2.blend = False')
@@ -106,7 +105,7 @@ omy=mymouse.y
 camera = Matrix()
 
 while True:
-  display.clear()
+  DISPLAY.clear()
 
   camera.identity()
   camera.translate(xm,-2+ym-mapheight,-maphalf-2.5)
@@ -194,13 +193,13 @@ while True:
   Draw.string(arialFont, str(score[0]), -10, 20, -5, 0.0, 0.05, 0.05)
   Draw.string(arialFont, str(score[1]), 10, 20, -5, 0.0, 0.05, 0.05)
 
-  display.swapBuffers()
+  DISPLAY.swapBuffers()
 
   #Press ESCAPE to terminate
   k = mykeys.read()
 
   if k==27: #Escape key
-    display.destroy()
+    DISPLAY.destroy()
     mykeys.close()
     mymouse.stop()
     break
