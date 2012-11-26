@@ -14,20 +14,25 @@ def _ctypes_array(ct, x):
   return (ct * len(x))(*x)
 
 def c_bytes(x):
-  return _ctypes_array(ctypes.c_byte, x)
+  return _ctypes_array(c_byte, x)
 
 def c_chars(x):
-  return _ctypes_array(ctypes.c_char, x)
+  return _ctypes_array(c_char, x)
 
 def c_ints(x):
-  return _ctypes_array(ctypes.c_int, x)
+  return _ctypes_array(c_int, x)
 
 def c_floats(x):
-  return _ctypes_array(ctypes.c_float, x)
+  return _ctypes_array(c_float, x)
 
 def c_shorts(x):
-  return _ctypes_array(ctypes.c_short, x)
+  return _ctypes_array(c_short, x)
 
+def call(ctype, f, *args):
+  return f(*(ctype(a) for a in args))
+
+def call_float(f, *args):
+  return f(*(c_float(a) for a in args))
 
 def _load_library(name):
   """Try to load a shared library, report an error on failure."""
