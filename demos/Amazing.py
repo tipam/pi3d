@@ -52,8 +52,8 @@ print "############################################################"
 print
 
 # Setup display and initialise pi3d
-DISPLAY = Display.create(x=10, y=10, w=-20, h=-100, near=0.5, far=800.0, aspect=60.0)
-#Display.create(x=10, x=10, x=800, x=600, near=0.5, far=800.0, aspect=60.0) # small window so terminal can be viewed for errors!
+DISPLAY = Display.create(x=10, y=10, w=-20, h=-100, near=0.5, far=800.0)
+#Display.create(x=10, x=10, x=800, x=600, near=0.5, far=800.0) # small window so terminal can be viewed for errors!
 DISPLAY.setBackColour(0.4,0.8,0.8,1) # r,g,b,alpha
 
 # Setting 2nd param to True renders 'True' Blending

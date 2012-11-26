@@ -36,7 +36,7 @@ from pi3d.util.Screenshot import screenshot
 
 # Setup display and initialise pi3d
 DISPLAY = Display.create(x=100, y=100, w=800, h=600, near=0.5,
-                         far=800.0, aspect=60.0)
+                         far=800.0)
 DISPLAY.setBackColour(0.4,0.8,0.8,1)      # r,g,b,alpha
 
 tree2img = Texture("textures/tree2.png")

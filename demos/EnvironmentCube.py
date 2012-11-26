@@ -27,7 +27,7 @@ from pi3d.util import Utility
 
 # Setup display and initialise pi3d
 DISPLAY = Display.create(x=50, y=50, w=-100, h=-100,
-                         near=0.5, far=800.0, aspect=60.0)
+                         near=0.5, far=800.0)
 
 #select the environment cube with 'box'...
 box = 3
