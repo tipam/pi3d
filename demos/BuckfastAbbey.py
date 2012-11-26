@@ -16,7 +16,7 @@
 
 import math
 
-from pi3d.Display import Display
+from pi3d import Display
 from pi3d.Keyboard import Keyboard
 from pi3d.Mouse import Mouse
 
@@ -30,9 +30,8 @@ from pi3d.util.Matrix import Matrix
 from pi3d.util.Screenshot import screenshot
 
 # Setup display and initialise pi3d
-display = Display()
-display.create3D(100,100,1400,800)   	# x,y,width,height
-display.setBackColour(0.2,0.4,0.6,1)    	# r,g,b,alpha
+DISPLAY = Display.create(x=100, y=100, w=1400, h=800)
+DISPLAY.setBackColour(0.2,0.4,0.6,1)    	# r,g,b,alpha
 
 print "=============================================================="
 print "Instructions:"
@@ -74,7 +73,7 @@ omx=mymouse.x
 omy=mymouse.y
 
 while 1:
-  display.clear()
+  DISPLAY.clear()
 
   mtrx.identity()
   mtrx.rotate(tilt, rot, 0)
@@ -91,7 +90,7 @@ while 1:
   mx=mymouse.x
   my=mymouse.y
 
-  if mx>display.left and mx<display.right and my>display.top and my<display.bottom:
+  if mx>DISPLAY.left and mx<DISPLAY.right and my>DISPLAY.top and my<DISPLAY.bottom:
     rot += (mx-omx)*0.5
     tilt -= (my-omy)*0.5
     omx=mx
@@ -121,10 +120,10 @@ while 1:
     elif k==27:    #Escape key
       mykeys.close()
       mymouse.stop()
-      display.destroy()
+      DISPLAY.destroy()
       break
     else:
       print k
 
-  display.swapBuffers()
+  DISPLAY.swapBuffers()
 quit()
