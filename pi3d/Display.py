@@ -7,6 +7,7 @@ from pi3d import *
 from pi3d.util import Log
 from pi3d.util import Utility
 from pi3d.DisplayLoop import DisplayLoop
+from pi3d.DisplayOpenGL import DisplayOpenGL
 
 LOGGER = Log.logger(__name__)
 
@@ -33,19 +34,8 @@ class Display(DisplayLoop):
     """Opens up the OpenGL library and prepares a window for display."""
     super(Display, self).__init__(**kwds)
     _set_global_display(self)
-
-    b = bcm.bcm_host_init()
-    assert b >= 0
-
-    # Get the width and height of the screen
-    width = c_int()
-    height = c_int()
-    s = bcm.graphics_get_display_size(0, ctypes.byref(width),
-                                      ctypes.byref(height))
-    assert s >= 0
-
-    self.max_width = width.value
-    self.max_height = height.value
+    self.opengl = DisplayOpenGL()
+    self.max_width, self.max_height = self.opengl.width, self.opengl.height
 
     LOGGER.info(STARTUP_MESSAGE % {'version': VERSION,
                                    'width': self.max_width,
