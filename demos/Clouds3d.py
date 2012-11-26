@@ -15,7 +15,7 @@
 
 import random, time
 
-from pi3d.Display import Display
+from pi3d import Display
 from pi3d.Keyboard import Keyboard
 from pi3d.Texture import Texture
 
@@ -30,13 +30,14 @@ cloudno = 50
 cloud_depth = 60.0
 zd = cloud_depth / cloudno
 
+MARGIN = 100
+
 # Setup display and initialise pi3d
-display = Display()
-margin = 100
-scnx = display.max_width - 2*margin
-scny = display.max_height - 2*margin
-display.create3D(margin,margin,scnx,scny)
-display.setBackColour(0,0.7,1,1)
+DISPLAY = Display.create(x=MARGIN, y=MARGIN, w=-MARGIN, h=-MARGIN)
+scnx = DISPLAY.win_width
+scny = DISPLAY.win_height
+
+DISPLAY.setBackColour(0,0.7,1,1)
 
 clouds = []
 clouds.append(Texture("textures/cloud2.png",True))
@@ -57,7 +58,7 @@ mykeys = Keyboard()
 
 while True:
 
-  display.clear()
+  DISPLAY.clear()
 
   maxDepth = 0
   axDepthIndex = 0
@@ -78,8 +79,8 @@ while True:
   #Press ESCAPE to terminate
   if mykeys.read() == 27:
     mykeys.close()
-    display.destroy()
+    DISPLAY.destroy()
     break
 
-  display.swapBuffers()
+  DISPLAY.swapBuffers()
   time.sleep(0.01)
