@@ -13,7 +13,7 @@
 # before running this example
 #
 
-from pi3d.Display import Display
+from pi3d import Display
 from pi3d.Keyboard import Keyboard
 from pi3d.Mouse import Mouse
 from pi3d.Texture import Texture
@@ -26,22 +26,22 @@ from pi3d.util.Screenshot import screenshot
 from pi3d.util import Utility
 
 # Setup display and initialise pi3d
-display = Display()
-display.create3D(50,50,display.max_width-100,display.max_height-100, 0.5, 800.0, 60.0)   	# x,y,width,height,near,far,aspect
+DISPLAY = Display.create(x=50, y=50, w=-100, h=-100,
+                         near=0.5, far=800.0, aspect=60.0)
 
 #select the environment cube with 'box'...
-box=3
-if box==0:
+box = 3
+if box == 0:
   ectex = Texture("textures/ecubes/skybox_interstellar.jpg")
   myecube = EnvironmentCube(900.0,"CROSS")
-elif box==1:
+elif box == 1:
   ectex = Texture("textures/ecubes/SkyBox.jpg")
   myecube = EnvironmentCube(900.0,"HALFCROSS")
-elif box==2:
-  ectex=loadECfiles("textures/ecubes","sbox_interstellar")
+elif box == 2:
+  ectex = loadECfiles("textures/ecubes","sbox_interstellar")
   myecube = EnvironmentCube(900.0,"FACES")
 else:
-  ectex=loadECfiles("textures/ecubes","skybox_hall")
+  ectex = loadECfiles("textures/ecubes","skybox_hall")
   myecube = EnvironmentCube(900.0,"FACES")
 
 rot=0.0
@@ -58,7 +58,7 @@ omy = mymouse.y
 
 # Display scene and rotate cuboid
 while 1:
-  display.clear()
+  DISPLAY.clear()
 
   mtrx.identity()
   mtrx.rotate(tilt, 0, 0)
@@ -84,12 +84,13 @@ while 1:
     elif k==27:    #Escape key
       mykeys.close()
       mymouse.stop()
-      display.destroy()
+      DISPLAY.destroy()
       break
     else:
       print k
 
-  display.swapBuffers()
+  DISPLAY.swapBuffers()
+
 quit()
 
 
