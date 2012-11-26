@@ -200,19 +200,16 @@ class Display(DisplayLoop):
     opengles.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
   def setBackColour(self, r, g, b, a):
-    opengles.glClearColor(c_float(r), c_float(g), c_float(b), c_float(a))
-    if a < 1.0:
-      opengles.glColorMask(1, 1, 1, 1)
-      #switches off alpha blending with desktop (is there a bug in the driver?)
-    else:
-      opengles.glColorMask(1, 1, 1, 0)
+    call_float(opengles.glClearColor, r, g, b, a)
+    opengles.glColorMask(1, 1, 1, 1 if a < 1.0 else 0)
+    #switches off alpha blending with desktop (is there a bug in the driver?)
 
   def screenshot(self, filestring):
     LOGGER.info('Taking screenshot of "%s"', filestring)
 
     size = self.win_height * self.win_width * 3
     img = c_chars(size)
-    opengles.glReadPixels(0,0,self.win_width,self.win_height,
+    opengles.glReadPixels(0, 0, self.win_width, self.win_height,
                           GL_RGB, GL_UNSIGNED_BYTE, ctypes.byref(img))
     im = Image.frombuffer('RGB', (self.win_width, self.win_height),
                           img, 'raw', 'RGB', 0,1)
