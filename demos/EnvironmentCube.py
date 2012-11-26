@@ -22,6 +22,7 @@ from pi3d.shape.EnvironmentCube import EnvironmentCube
 from pi3d.shape.EnvironmentCube import loadECfiles
 
 from pi3d.util.Matrix import Matrix
+from pi3d.util.Screenshot import screenshot
 from pi3d.util import Utility
 
 # Setup display and initialise pi3d
@@ -79,7 +80,7 @@ while 1:
   k = mykeys.read()
   if k >-1:
     if k==112:  #key P
-      display.screenshot("envcube.jpg")
+      screenshot("envcube.jpg")
     elif k==27:    #Escape key
       mykeys.close()
       mymouse.stop()

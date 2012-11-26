@@ -27,6 +27,7 @@ from pi3d.shape.EnvironmentCube import EnvironmentCube
 from pi3d.shape.Model import Model
 
 from pi3d.util.Matrix import Matrix
+from pi3d.util.Screenshot import screenshot
 
 # Setup display and initialise pi3d
 display = Display()
@@ -115,7 +116,7 @@ while 1:
     elif k==100:  #key D
       rot += 2
     elif k==112:  #key P
-      display.screenshot("BuckfastAbbey"+str(scshots)+".jpg")
+      screenshot("BuckfastAbbey"+str(scshots)+".jpg")
       scshots += 1
     elif k==27:    #Escape key
       mykeys.close()

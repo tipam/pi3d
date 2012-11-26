@@ -22,6 +22,7 @@ from pi3d.context.Light import Light
 from pi3d.shape.Model import Model
 
 from pi3d.util.Matrix import Matrix
+from pi3d.util.Screenshot import screenshot
 
 # Setup display and initialise pi3d
 display = Display()
@@ -54,7 +55,7 @@ while 1:
 
   k = mykeys.read()
   if k >-1:
-    if k==112: display.screenshot('teapot.jpg')
+    if k==112: screenshot('teapot.jpg')
     elif k==27:
       mykeys.close()
       display.destroy()

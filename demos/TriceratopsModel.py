@@ -21,6 +21,7 @@ from pi3d.Keyboard import Keyboard
 from pi3d.context.Light import Light
 
 from pi3d.shape.Model import Model
+from pi3d.util.Screenshot import screenshot
 
 # Setup display and initialise pi3d
 display = Display()
@@ -53,7 +54,7 @@ while 1:
 
   k = mykeys.read()
   if k >-1:
-    if k==112: display.screenshot('Triceratops.jpg')
+    if k==112: screenshot('Triceratops.jpg')
     elif k==27:
       mykeys.close()
       display.destroy()

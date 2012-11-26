@@ -30,6 +30,7 @@ from pi3d.shape.Sphere import Sphere
 
 from pi3d.util import Draw
 from pi3d.util.Matrix import Matrix
+from pi3d.util.Screenshot import screenshot
 
 #helpful messages
 print "############################################################"
@@ -204,7 +205,7 @@ while True:
     mymouse.stop()
     break
   elif k==112:  #key P
-    display.screenshot("pong.jpg")
+    screenshot("pong.jpg")
 
 # attempt to tidy up!
 quit()

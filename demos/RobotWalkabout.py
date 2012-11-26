@@ -34,6 +34,7 @@ from pi3d.shape.MergeShape import MergeShape
 from pi3d.shape.Sphere import Sphere
 
 from pi3d.util.Matrix import Matrix
+from pi3d.util.Screenshot import screenshot
 
 # Setup display and initialise pi3d
 display = Display()
@@ -157,7 +158,7 @@ while 1:
     elif k==100:  #key D
         rot += 2
     elif k==112:  #key P
-        display.screenshot("walkaboutRobot.jpg")
+        screenshot("walkaboutRobot.jpg")
     elif k==27:    #Escape key
       mykeys.close()
       mymouse.stop()

@@ -1,5 +1,7 @@
 import curses
 
+from pi3d.util.Screenshot import screenshot
+
 class Keyboard():
   def __init__(self):
     self.key = curses.initscr()
@@ -23,8 +25,7 @@ def make_closer(screenshot=''):
   def closer():
     k = mykeys.read()
     if k == 112 and screenshot:
-      from pi3d.Display import DISPLAY
-      DISPLAY.screenshot(screenshot)
+      screenshot(screenshot)
     if k == 27:
       mykeys.close()
       return True

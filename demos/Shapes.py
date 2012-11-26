@@ -32,6 +32,7 @@ from pi3d.shape.Tube import Tube
 from pi3d.shape.Plane import Plane
 
 from pi3d.util import Draw
+from pi3d.util.Screenshot import screenshot
 
 # Setup display and initialise pi3d
 display = Display()
@@ -121,7 +122,7 @@ while 1:
 
   k = mykeys.read()
   if k >-1:
-    if k==112: display.screenshot("shapesPic.jpg")
+    if k==112: screenshot("shapesPic.jpg")
     elif k==27:
       mykeys.close()
       display.destroy()

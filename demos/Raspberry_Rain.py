@@ -22,6 +22,7 @@ from pi3d.Keyboard import Keyboard
 from pi3d.Texture import Texture
 
 from pi3d.util import Draw
+from pi3d.util.Screenshot import screenshot
 
 # Setup display and initialise pi3d
 display = Display()
@@ -63,6 +64,6 @@ while 1:
       display.destroy()
       break
     elif k==112:
-      display.screenshot("raspberryRain.jpg")
+      screenshot("raspberryRain.jpg")
 
   display.swapBuffers()

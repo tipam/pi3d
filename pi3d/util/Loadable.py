@@ -36,14 +36,17 @@ class Loadable(object):
     if not self.opengl_loaded:
       return True
 
-    elif Display.is_display_thread():
-      self._unload_opengl()
-      self.opengl_loaded = False
-      return True
-
-    elif report_error:
-      LOGGER.error('unload_opengl must be called on main thread for %s', self)
-      return False
+    else:
+      try:
+        if Display.is_display_thread():
+          self._unload_opengl()
+          self.opengl_loaded = False
+          return True
+        elif report_error:
+          LOGGER.error('unload_opengl must be called on main thread for %s', self)
+          return False
+      except:
+        pass  # Throws exception if called during shutdown.
 
   def _load_disk(self):
     """Override this to load assets from disk."""

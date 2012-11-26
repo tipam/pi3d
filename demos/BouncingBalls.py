@@ -24,6 +24,7 @@ from pi3d.Keyboard import Keyboard
 from pi3d.Texture import Texture
 
 from pi3d.util import Draw
+from pi3d.util.Screenshot import screenshot
 
 # Setup display and initialise pi3d
 scnx=800
@@ -102,7 +103,7 @@ while True:
     k = mykeys.read()
     if k >-1:
 	if k==112:
-	    display.screenshot("screen3D"+str(scshots)+".jpg")
+	    screenshot("screen3D"+str(scshots)+".jpg")
 	    scshots += 1
 	if k==27:
 		mykeys.close()

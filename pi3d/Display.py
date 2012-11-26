@@ -1,8 +1,6 @@
 import math
 import threading
 
-import Image
-
 from pi3d import *
 from pi3d.util import Log
 from pi3d.util import Utility
@@ -34,7 +32,6 @@ def _set_global_display(display):
       LOGGER.warning('A second instance of Display was created')
     else:
       DISPLAY = display
-
 
 class Display(DisplayLoop):
   def __init__(self):
@@ -111,18 +108,6 @@ class Display(DisplayLoop):
     call_float(opengles.glClearColor, r, g, b, a)
     opengles.glColorMask(1, 1, 1, 1 if a < 1.0 else 0)
     #switches off alpha blending with desktop (is there a bug in the driver?)
-
-  def screenshot(self, filestring):
-    LOGGER.info('Taking screenshot of "%s"', filestring)
-
-    size = self.win_height * self.win_width * 3
-    img = c_chars(size)
-    opengles.glReadPixels(0, 0, self.win_width, self.win_height,
-                          GL_RGB, GL_UNSIGNED_BYTE, ctypes.byref(img))
-    im = Image.frombuffer('RGB', (self.win_width, self.win_height),
-                          img, 'raw', 'RGB', 0,1)
-    im = im.transpose(Image.FLIP_TOP_BOTTOM)
-    im.save(filestring)
 
 def create(self, **kwds):
   display = Display()

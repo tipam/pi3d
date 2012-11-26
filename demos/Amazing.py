@@ -32,6 +32,7 @@ from pi3d.shape.TCone import TCone
 
 from pi3d.util.Matrix import Matrix
 from pi3d.util.RotateVec import *
+from pi3d.util.Screenshot import screenshot
 
 rads = 0.017453292512 # degrees to radians
 
@@ -261,7 +262,7 @@ while 1:
         zm -= dz
         ym += dy
     elif k==112: #key P
-      display.screenshot("critters3D"+str(scshots)+".jpg")
+      screenshot("critters3D"+str(scshots)+".jpg")
       scshots += 1
     elif k==32 and hp > 0: #key SPACE
       walk = False
