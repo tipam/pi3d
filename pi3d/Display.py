@@ -19,18 +19,23 @@ def is_display_thread():
   return not CHECK_IF_DISPLAY_THREAD or (
     DISPLAY_THREAD is threading.current_thread())
 
+def _set_global_display(display):
+  if not ALLOW_MULTIPLE_DISPLAYS:
+    global DISPLAY
+    if DISPLAY:
+      LOGGER.warning('A second instance of Display was created')
+    else:
+      DISPLAY = display
+
+
 class Display(DisplayLoop):
   def __init__(self, **kwds):
     """Opens up the OpenGL library and prepares a window for display."""
     super(Display, self).__init__(**kwds)
-    if not ALLOW_MULTIPLE_DISPLAYS:
-      global DISPLAY
-      if DISPLAY:
-        LOGGER.warning('A second instance of Display was created')
-      else:
-        DISPLAY = self
+    _set_global_display(self)
 
     b = bcm.bcm_host_init()
+    assert b >= 0
 
     # Get the width and height of the screen
     width = c_int()
@@ -47,7 +52,6 @@ class Display(DisplayLoop):
                                    'height': self.max_height})
 
   def create_display(self, x=0, y=0, w=0, h=0):
-    b = bcm.bcm_host_init()
     self.display = openegl.eglGetDisplay(EGL_DEFAULT_DISPLAY)
     assert self.display != EGL_NO_DISPLAY
 
