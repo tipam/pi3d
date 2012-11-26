@@ -2,8 +2,9 @@ import random
 
 from pi3d import *
 from pi3d import Texture
-from pi3d.shape.Shape import Shape
 
+from pi3d.context.TextureLoader import TextureLoader
+from pi3d.shape.Shape import Shape
 from pi3d.util.RotateVec import rotate_vec_x, rotate_vec_y, rotate_vec_z
 
 class MergeShape(Shape):
@@ -107,7 +108,7 @@ class MergeShape(Shape):
     # TODO: shadows Shape.draw, with a different parameter list!
     opengles.glVertexPointer(3, GL_FLOAT, 0, self.verts);
     opengles.glNormalPointer(GL_FLOAT, 0, self.norms);
-    with Texture.Loader(tex, self.texcoords, GL_FLOAT):
+    with TextureLoader(tex, self.texcoords, GL_FLOAT):
       self.transform()
       opengles.glDrawElements(self.shape[shapeNo][2],
                               self.shape[shapeNo][1],
@@ -117,7 +118,7 @@ class MergeShape(Shape):
   def drawAll(self, tex=None):
     opengles.glVertexPointer(3, GL_FLOAT, 0, self.verts);
     opengles.glNormalPointer(GL_FLOAT, 0, self.norms);
-    with Texture.Loader(tex, self.texcoords):
+    with TextureLoader(tex, self.texcoords):
       opengles.glDisable(GL_CULL_FACE)
       self.transform()
       opengles.glDrawElements(self.shape[0][2], len(self.indices),

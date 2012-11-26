@@ -1,7 +1,7 @@
 import math
 
 from pi3d import *
-from pi3d import Texture
+from pi3d.context.TextureLoader import TextureLoader
 from pi3d.util import Utility
 
 class Shape(object):
@@ -26,7 +26,7 @@ class Shape(object):
     opengles.glShadeModel(GL_SMOOTH)
     opengles.glVertexPointer(3, GL_FLOAT, 0, self.vertices)
     opengles.glNormalPointer(GL_FLOAT, 0, self.normals)
-    with Texture.Loader(tex, self.tex_coords):
+    with TextureLoader(tex, self.tex_coords):
       mtrx = (c_float * 16)()
       opengles.glGetFloatv(GL_MODELVIEW_MATRIX, ctypes.byref(mtrx))
       self.transform()

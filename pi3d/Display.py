@@ -6,7 +6,7 @@ import traceback
 from pi3d import *
 from pi3d.util import Log
 from pi3d.util import Utility
-from pi3d.DisplayOpenGL import DisplayOpenGL
+from pi3d.util.DisplayOpenGL import DisplayOpenGL
 
 LOGGER = Log.logger(__name__)
 

@@ -1,6 +1,8 @@
 from pi3d import *
 from pi3d import Texture
 
+from pi3d.context.TextureLoader import TextureLoader
+
 from pi3d.shape.Shape import Shape
 
 class Extrude(Shape):
@@ -53,14 +55,14 @@ class Extrude(Shape):
         self.verts.append(px)
         self.verts.append(i*ht)
         self.verts.append(pz)
-        
+
         self.norms.append(-dz)
         self.norms.append(0.0)
         self.norms.append(dx)
-        
+
         self.tex_coords.append(1.0*p/s)
         self.tex_coords.append(i*0.5)
-        
+
     #vertices for edges of top and bottom, bottom first (n=2s to 3s-1) then top (3s to 4s-1)
     for i in (-1, 1):
       for p in range(s):
@@ -69,20 +71,20 @@ class Extrude(Shape):
         self.verts.append(px)
         self.verts.append(i*ht)
         self.verts.append(pz)
-        
+
         self.norms.append(0.0)
         self.norms.append(i)
         self.norms.append(0.0)
-        
+
         self.tex_coords.append((px - minx) * tx)
         self.tex_coords.append((pz - minz) * tz)
-        
+
     #top and bottom face mid points verts number 4*s and 4*s+1 (bottom and top respectively)
     for i in (-1, 1):
       self.verts.append((minx+maxx)/2)
       self.verts.append(i*ht)
       self.verts.append((minz+maxz)/2)
-      
+
       self.norms.append(0)
       self.norms.append(i)
       self.norms.append(0)
@@ -96,7 +98,7 @@ class Extrude(Shape):
       self.sidefaces.append(v1)
       self.sidefaces.append(v3)
       self.sidefaces.append(v2)
-      
+
       self.sidefaces.append(v2)
       self.sidefaces.append(v4)
       self.sidefaces.append(v3)
@@ -107,7 +109,7 @@ class Extrude(Shape):
       self.botface.append(p0)
       self.botface.append(p1 + (p+1)%s)
       self.botface.append(p1 + p)
-      
+
     for p in range(s):    #top face indices - triangle fan
       p0 = 4*s+1 #middle vertex
       p1 = 3*s
@@ -131,13 +133,13 @@ class Extrude(Shape):
     opengles.glGetFloatv(GL_MODELVIEW_MATRIX, ctypes.byref(mtrx))
     self.transform()
 
-    with Texture.Loader(tex1, self.tex_coords):
+    with TextureLoader(tex1, self.tex_coords):
       opengles.glDrawElements(GL_TRIANGLE_STRIP, self.edges * 6,
                               GL_UNSIGNED_SHORT, self.sidefaces)
-      with Texture.Loader(tex2, self.tex_coords):
+      with TextureLoader(tex2, self.tex_coords):
         opengles.glDrawElements(GL_TRIANGLE_FAN, self.edges * 3,
                                 GL_UNSIGNED_SHORT, self.topface)
-        with Texture.Loader(tex3, self.tex_coords):
+        with TextureLoader(tex3, self.tex_coords):
           opengles.glDrawElements(GL_TRIANGLE_FAN, self.edges * 3,
                                   GL_UNSIGNED_SHORT, self.botface)
 

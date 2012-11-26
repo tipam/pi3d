@@ -39,11 +39,11 @@ class Plane(Shape):
     self.normals = c_floats(self.norms)
     self.tex_coords = c_floats(self.texcoords)
     self.ssize = 12
-  """  
+  """
   def draw(self, tex=0):
     opengles.glVertexPointer(3, GL_FLOAT, 0, self.vertices);
     opengles.glNormalPointer(GL_FLOAT, 0, self.normals);
-    with Texture.Loader(tex, self.tex_coords):
+    with TextureLoader(tex, self.tex_coords):
       self.transform()
       opengles.glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, self.indices)
   """

@@ -14,7 +14,6 @@
 #
 
 from pi3d import Display
-from pi3d.Font import Font
 from pi3d.Keyboard import Keyboard
 from pi3d.Texture import Texture
 
@@ -32,6 +31,7 @@ from pi3d.shape.Tube import Tube
 from pi3d.shape.Plane import Plane
 
 from pi3d.util import Draw
+from pi3d.util.Font import Font
 from pi3d.util.Screenshot import screenshot
 
 # Setup display and initialise pi3d

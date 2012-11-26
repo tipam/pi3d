@@ -1,5 +1,5 @@
 from pi3d import *
-from pi3d import Texture
+from pi3d.context.TextureLoader import TextureLoader
 from pi3d.util import Utility
 
 RECT_NORMALS = c_bytes(( 0,0,-1, 0,0,-1, 0,0,-1, 0,0,-1 ))
@@ -50,7 +50,7 @@ def _draw(verts, tex, x, y, w, h, r, z):
   Utility.scalef(w, h, 1)
   if r:
     Utility.rotatef(r, 0, 0, 1)
-  with Texture.Loader(tex,RECT_TEX_COORDS,GL_BYTE):
+  with TextureLoader(tex,RECT_TEX_COORDS,GL_BYTE):
     opengles.glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, RECT_TRIANGLES)
 
 def rectangle(tex, x, y, w, h, r=0.0, z=-1.0):

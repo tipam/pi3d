@@ -2,6 +2,7 @@ from pi3d import *
 
 from pi3d import Texture
 
+from pi3d.context.TextureLoader import TextureLoader
 from pi3d.loader import loaderEgg
 from pi3d.loader import loaderObj
 from pi3d.shape.Shape import Shape
@@ -56,7 +57,7 @@ class Model(Shape):
       opengles.glNormalPointer( GL_FLOAT, 0, self.vGroup[g].normals);
 
       texture = texToUse or self.vGroup[g].texID
-      with Texture.Loader(texture, self.vGroup[g].tex_coords):
+      with TextureLoader(texture, self.vGroup[g].tex_coords):
         #TODO enable material colours as well as textures from images
         material = self.vGroup[g].material
         if material:
