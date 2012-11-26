@@ -89,11 +89,6 @@ class Display(DisplayLoop):
     self.create(is_3d=True, x=x, y=y, w=w, h=h, near=near, far=far,
                 aspect=aspect, depth=depth)
 
-  def create2D(self, x=0, y=0, w=0, h=0, depth=DEFAULT_DEPTH,
-               near=DEFAULT_NEAR_2D, far=DEFAULT_FAR_2D):
-    self.create(is_3d=False, x=x, y=y, w=w, h=h, near=near, far=far,
-                depth=depth)
-
   def destroy(self):
     self.opengl.destroy()
 

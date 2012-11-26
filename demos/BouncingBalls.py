@@ -19,7 +19,7 @@
 
 import sys, random
 
-from pi3d.Display import Display
+from pi3d import Display
 from pi3d.Keyboard import Keyboard
 from pi3d.Texture import Texture
 
@@ -27,13 +27,12 @@ from pi3d.util import Draw
 from pi3d.util.Screenshot import screenshot
 
 # Setup display and initialise pi3d
-scnx=800
-scny=600
-display = Display()
-display.create2D(100,100,scnx,scny,0)
+scnx = 800
+scny = 600
+DISPLAY = Display.create(is_3d=False, x=100, y=100, w=scnx, h=scny)
 
 # Set last value (alpha) to zero for a transparent background!
-display.setBackColour(0,0.2,0.6,1)
+DISPLAY.setBackColour(0,0.2,0.6,1)
 
 # Ball parameters
 maxballs = 40
@@ -70,14 +69,13 @@ ball.append(Texture("textures/blu_ball.png"))
 bar = Texture("textures/bar.png")
 bbtitle = Texture("textures/pi3dbbd.png",True)
 
-
 # Fetch key presses
 mykeys = Keyboard()
 scshots = 1
 
 while True:
 
-    display.clear()
+    DISPLAY.clear()
 
     for b in range (0, maxballs):
 
@@ -107,7 +105,7 @@ while True:
 	    scshots += 1
 	if k==27:
 		mykeys.close()
-		display.destroy()
+		DISPLAY.destroy()
 		break
 
-    display.swapBuffers()
+    DISPLAY.swapBuffers()
