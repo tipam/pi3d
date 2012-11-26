@@ -25,19 +25,17 @@ def is_display_thread():
   return not CHECK_IF_DISPLAY_THREAD or (
     DISPLAY_THREAD is threading.current_thread())
 
-def _set_global_display(display):
-  if not ALLOW_MULTIPLE_DISPLAYS:
-    global DISPLAY
-    if DISPLAY:
-      LOGGER.warning('A second instance of Display was created')
-    else:
-      DISPLAY = display
 
 class Display(DisplayLoop):
   def __init__(self):
     """Opens up the OpenGL library and prepares a window for display."""
     super(Display, self).__init__()
-    _set_global_display(self)
+    if not ALLOW_MULTIPLE_DISPLAYS:
+      global DISPLAY
+      if DISPLAY:
+        LOGGER.warning('A second instance of Display was created')
+      else:
+        DISPLAY = display
     self.opengl = DisplayOpenGL()
     self.max_width, self.max_height = self.opengl.width, self.opengl.height
 
