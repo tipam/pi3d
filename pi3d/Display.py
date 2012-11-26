@@ -46,19 +46,19 @@ class Display(DisplayLoop):
                                    'width': self.max_width,
                                    'height': self.max_height})
 
-  def create_display(self, x=0, y=0, w=0, h=0, depth=24):
+  def create_display(self, x=0, y=0, w=0, h=0):
     b = bcm.bcm_host_init()
     self.display = openegl.eglGetDisplay(EGL_DEFAULT_DISPLAY)
     assert self.display != EGL_NO_DISPLAY
 
-    r = openegl.eglInitialize(self.display,0,0)
+    r = openegl.eglInitialize(self.display, 0, 0)
     #assert r == EGL_FALSE
 
     attribute_list = c_ints((EGL_RED_SIZE, 8,
                              EGL_GREEN_SIZE, 8,
                              EGL_BLUE_SIZE, 8,
+                             EGL_DEPTH_SIZE, 24,  # TOD: use self.depth?
                              EGL_ALPHA_SIZE, 8,
-                             EGL_DEPTH_SIZE, 24,
                              EGL_BUFFER_SIZE, 32,
                              EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
                              EGL_NONE))
@@ -138,7 +138,7 @@ class Display(DisplayLoop):
     self.right = x + w
     self.bottom = y + h
 
-    self.create_display(x, y, w, h, depth)
+    self.create_display(x, y, w, h)
 
     #Setup perspective view
     opengles.glMatrixMode(GL_PROJECTION)
@@ -168,7 +168,7 @@ class Display(DisplayLoop):
     self.right = x + w
     self.bottom = y + h
 
-    self.create_display(x, y, w, h, depth)
+    self.create_display(x, y, w, h)
 
     opengles.glMatrixMode(GL_PROJECTION)
     Utility.load_identity()
