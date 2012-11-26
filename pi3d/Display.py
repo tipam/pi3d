@@ -200,7 +200,6 @@ class Display(DisplayLoop):
     opengles.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
   def setBackColour(self, r, g, b, a):
-    self.backColour = (r, g, b, a)
     opengles.glClearColor(c_float(r), c_float(g), c_float(b), c_float(a))
     if a < 1.0:
       opengles.glColorMask(1, 1, 1, 1)
