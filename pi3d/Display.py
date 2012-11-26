@@ -83,12 +83,6 @@ class Display(DisplayLoop):
     opengles.glMatrixMode(GL_MODELVIEW)
     Utility.load_identity()
 
-  def create3D(self, x=0, y=0, w=0, h=0,
-               near=DEFAULT_NEAR_3D, far=DEFAULT_FAR_3D,
-               aspect=DEFAULT_ASPECT, depth=DEFAULT_DEPTH):
-    self.create(is_3d=True, x=x, y=y, w=w, h=h, near=near, far=far,
-                aspect=aspect, depth=depth)
-
   def destroy(self):
     self.opengl.destroy()
 

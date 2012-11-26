@@ -17,7 +17,7 @@
 
 import math
 
-from pi3d.Display import Display
+from pi3d import Display
 from pi3d.Keyboard import Keyboard
 from pi3d.Mouse import Mouse
 from pi3d.Texture import Texture
@@ -37,9 +37,9 @@ from pi3d.util.Matrix import Matrix
 from pi3d.util.Screenshot import screenshot
 
 # Setup display and initialise pi3d
-display = Display()
-display.create3D(50,50,display.max_width-100,display.max_height-100, 0.5, 800.0, 60.0)   	# x,y,width,height,near,far,aspect
-display.setBackColour(0.4,0.8,0.8,1)    	# r,g,b,alpha
+DISPLAY = Display.create(x=50, y=50, w=-100, h=-100, near=0.5, far=800.0,
+                         aspect=60.0)
+DISPLAY.setBackColour(0.4,0.8,0.8,1)    	# r,g,b,alpha
 
 # Load textures
 tree2img = Texture("textures/tree2.png")
@@ -105,7 +105,7 @@ mylight = Light(0,1,1,1,"",10,10,10, .9,.7,.6)
 
 # Display scene and rotate cuboid
 while 1:
-  display.clear()
+  DISPLAY.clear()
 
   mtrx.identity()
   #tilt can be used as a means to prevent the view from going under the landscape!
@@ -131,7 +131,7 @@ while 1:
   mx=mymouse.x
   my=mymouse.y
 
-  #if mx>display.left and mx<display.right and my>display.top and my<display.bottom:
+  #if mx>DISPLAY.left and mx<DISPLAY.right and my>DISPLAY.top and my<DISPLAY.bottom:
   rot += (mx-omx)*0.2
   tilt -= (my-omy)*0.2
   omx=mx
@@ -162,9 +162,9 @@ while 1:
     elif k==27:    #Escape key
       mykeys.close()
       mymouse.stop()
-      display.destroy()
+      DISPLAY.destroy()
       break
     else:
         print k
 
-  display.swapBuffers()
+  DISPLAY.swapBuffers()
