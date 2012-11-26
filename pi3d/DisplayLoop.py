@@ -43,10 +43,11 @@ class DisplayLoop(object):
     self.destroy()
     LOGGER.info('stopped')
 
-  def add_sprite(self, sprite, position=None):
-    if position is None:
-      position = len(self.sprites)
-    self.sprites.insert(position, sprite)
+  def add_sprite(self, sprite, index=None):
+    if index is None:
+      self.sprites.append(sprite)
+    else:
+      self.sprites.insert(index, sprite)
 
   def add_sprites(self, *sprites):
     self.sprites.extend(sprites)
