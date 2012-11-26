@@ -16,6 +16,13 @@ DISPLAY_THREAD = threading.current_thread()
 DISPLAY = None
 ALLOW_MULTIPLE_DISPLAYS = False
 
+DEFAULT_ASPECT = 60.0
+DEFAULT_DEPTH = 24
+DEFAULT_NEAR_3D = 1.0
+DEFAULT_FAR_3D = 800.0
+DEFAULT_NEAR_2D = -1.0
+DEFAULT_FAR_2D = 500.0
+
 def is_display_thread():
   return not CHECK_IF_DISPLAY_THREAD or (
     DISPLAY_THREAD is threading.current_thread())
@@ -30,9 +37,9 @@ def _set_global_display(display):
 
 
 class Display(DisplayLoop):
-  def __init__(self, **kwds):
+  def __init__(self):
     """Opens up the OpenGL library and prepares a window for display."""
-    super(Display, self).__init__(**kwds)
+    super(Display, self).__init__()
     _set_global_display(self)
     self.opengl = DisplayOpenGL()
     self.max_width, self.max_height = self.opengl.width, self.opengl.height
@@ -41,91 +48,18 @@ class Display(DisplayLoop):
                                    'width': self.max_width,
                                    'height': self.max_height})
 
-  def create_display(self, x=0, y=0, w=0, h=0):
-    self.display = openegl.eglGetDisplay(EGL_DEFAULT_DISPLAY)
-    assert self.display != EGL_NO_DISPLAY
-
-    r = openegl.eglInitialize(self.display, 0, 0)
-    #assert r == EGL_FALSE
-
-    attribute_list = c_ints((EGL_RED_SIZE, 8,
-                             EGL_GREEN_SIZE, 8,
-                             EGL_BLUE_SIZE, 8,
-                             EGL_DEPTH_SIZE, 24,  # TOD: use self.depth?
-                             EGL_ALPHA_SIZE, 8,
-                             EGL_BUFFER_SIZE, 32,
-                             EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
-                             EGL_NONE))
-    numconfig = c_int()
-    config = ctypes.c_void_p()
-    r = openegl.eglChooseConfig(self.display,
-                                ctypes.byref(attribute_list),
-                                ctypes.byref(config), 1,
-                                ctypes.byref(numconfig))
-
-    context_attribs = c_ints((EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE))
-    self.context = openegl.eglCreateContext(self.display, config,
-                                            EGL_NO_CONTEXT, 0)
-    #ctypes.byref(context_attribs) )
-    assert self.context != EGL_NO_CONTEXT
-
-    #Set the viewport position and size
-
-    dst_rect = c_ints((x, y, w, h))
-    src_rect = c_ints((x, y, w << 16, h << 16))
-
-    self.dispman_display = bcm.vc_dispmanx_display_open(0) #LCD setting
-    self.dispman_update = bcm.vc_dispmanx_update_start(0)
-    self.dispman_element = bcm.vc_dispmanx_element_add(
-      self.dispman_update,
-      self.dispman_display,
-      0, ctypes.byref(dst_rect),
-      0, ctypes.byref(src_rect),
-      DISPMANX_PROTECTION_NONE,
-      0, 0, 0)
-
-    nativewindow = c_ints((self.dispman_element, w, h + 1));
-    bcm.vc_dispmanx_update_submit_sync(self.dispman_update)
-
-    nw_p = ctypes.pointer(nativewindow)
-    self.nw_p = nw_p
-
-    self.surface = openegl.eglCreateWindowSurface(self.display, config, nw_p, 0)
-    assert self.surface != EGL_NO_SURFACE
-
-    r = openegl.eglMakeCurrent(self.display, self.surface, self.surface,
-                               self.context)
-    assert r
-
-    #Create viewport
-    opengles.glViewport(0, 0, w, h)
-
-    #Setup default hints
-    opengles.glEnable(GL_CULL_FACE)
-    #opengles.glShadeModel(GL_FLAT)
-    opengles.glEnable(GL_NORMALIZE)
-    opengles.glEnable(GL_DEPTH_TEST)
-
-    # Switches off alpha blending problem with desktop - is there a bug in the
-    # driver?
-    # Thanks to Roland Humphries who sorted this one!!
-    opengles.glColorMask(1, 1, 1, 0)
-
-    opengles.glEnableClientState(GL_VERTEX_ARRAY)
-    opengles.glEnableClientState(GL_NORMAL_ARRAY)
-
     self.active = True
 
   def create(self, is_3d=True, x=0, y=0, w=0, h=0,
-             near=None, far=None, aspect=60.0, depth=24):
+             near=None, far=None, aspect=DEFAULT_ASPECT, depth=DEFAULT_DEPTH):
     if w <= 0:
        w = self.max_width
     if h <= 0:
        h = self.max_height
     if near is None:
-      near = 1.0 if is_3d else -1.0
+      near = DEFAULT_NEAR_3D if is_3d else DEFAULT_NEAR_2D
     if far is None:
-      far = 800.0 if is_3d else 100.0
+      far = DEFAULT_FAR_3D if is_3d else DEFAULT_FAR_2D
 
     self.win_width = w
     self.win_height = h
@@ -137,7 +71,7 @@ class Display(DisplayLoop):
     self.right = x + w
     self.bottom = y + h
 
-    self.create_display(x, y, w, h)
+    self.opengl.create_display(x, y, w, h)
 
     opengles.glMatrixMode(GL_PROJECTION)
     Utility.load_identity()
@@ -147,39 +81,27 @@ class Display(DisplayLoop):
       call_float(opengles.glFrustumf, -hwd, hwd, -hht, hht, near, far)
       opengles.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
     else:
-      call_float(opengles.glOrthof, 0, w, 0, h, -1, 500)
+      call_float(opengles.glOrthof, 0, w, 0, h, near, far)
 
     opengles.glMatrixMode(GL_MODELVIEW)
     Utility.load_identity()
 
-
   def create3D(self, x=0, y=0, w=0, h=0,
-               near=1.0, far=800.0, aspect=60.0, depth=24):
+               near=DEFAULT_NEAR_3D, far=DEFAULT_FAR_3D,
+               aspect=DEFAULT_ASPECT, depth=DEFAULT_DEPTH):
     self.create(is_3d=True, x=x, y=y, w=w, h=h, near=near, far=far,
                 aspect=aspect, depth=depth)
 
-  def create2D(self, x=0, y=0, w=0, h=0, depth=24, near=-1.0, far=100.0):
+  def create2D(self, x=0, y=0, w=0, h=0, depth=DEFAULT_DEPTH,
+               near=DEFAULT_NEAR_2D, far=DEFAULT_FAR_2D):
     self.create(is_3d=False, x=x, y=y, w=w, h=h, near=near, far=far,
                 depth=depth)
 
-
   def destroy(self):
-    if self.active:
-      openegl.eglSwapBuffers(self.display, self.surface);
-      openegl.eglMakeCurrent(self.display, EGL_NO_SURFACE, EGL_NO_SURFACE,
-                             EGL_NO_CONTEXT)
-      openegl.eglDestroySurface(self.display, self.surface)
-      openegl.eglDestroyContext(self.display, self.context)
-      openegl.eglTerminate(self.display)
-      bcm.vc_dispmanx_display_close(self.dispman_display)
-      bcm.vc_dispmanx_element_remove(self.dispman_update, self.dispman_element)
-      self.active = False
+    self.opengl.destroy()
 
   def swapBuffers(self):
-    opengles.glFlush()
-    opengles.glFinish()
-    #clear_matrices
-    openegl.eglSwapBuffers(self.display, self.surface)
+    self.opengl.swapBuffers()
 
   def clear(self):
     # opengles.glBindFramebuffer(GL_FRAMEBUFFER,0)
@@ -202,3 +124,7 @@ class Display(DisplayLoop):
     im = im.transpose(Image.FLIP_TOP_BOTTOM)
     im.save(filestring)
 
+def create(self, **kwds):
+  display = Display()
+  display.create(**kwds)
+  return display
