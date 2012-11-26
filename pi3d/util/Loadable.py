@@ -54,5 +54,5 @@ class Loadable(object):
     pass
 
   def _unload_opengl(self):
-    """Override this to load assets into Open GL."""
+    """Override this to unload assets from Open GL."""
     pass
