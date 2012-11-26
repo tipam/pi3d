@@ -9,13 +9,9 @@ LOGGER = Log.logger(__name__)
 RAISE_EXCEPTIONS = True
 
 class DisplayLoop(object):
-  def __init__(self,
-               frames_per_second=0,
-               check_if_close_requested=None,
-               sprites=None):
-    self.sprites = sprites or []
-    self.frames_per_second = frames_per_second
-    self.check_if_close_requested = check_if_close_requested
+  def __init__(self):
+    self.sprites = []
+    self.frames_per_second = 0
     self.is_on = True
     self.display_thread = None
     self.to_unload = set()
@@ -23,11 +19,9 @@ class DisplayLoop(object):
   def stop(self):
     self.is_on = False
 
-  def loop(self, check_if_close_required=None):
+  def loop(self, is_stop_requested=lambda: False):
     LOGGER.info('starting')
     self.next_time = time.time()
-    if check_if_close_required:
-      self.check_if_close_required = check_if_close_required
 
     display_phases = (self._load_opengl,
                       self.clear,
@@ -36,7 +30,7 @@ class DisplayLoop(object):
                       self._unload_opengl,
                       self._sleep)
     i = 0
-    while self._is_running():
+    while self.is_on and not is_stop_requested():
       display_phases[i]()
       i = (i + 1) % len(display_phases)
 
@@ -76,10 +70,6 @@ class DisplayLoop(object):
       delta = self.next_time - time.time()
       if delta > 0:
         time.sleep(delta)
-
-  def _is_running(self):
-    return self.is_on and not (self.check_if_close_requested and
-                               self.check_if_close_requested(self))
 
   def _for_each_sprite(self, function):
     for s in self.sprites:

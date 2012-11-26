@@ -20,10 +20,11 @@ class Keyboard():
 
 def make_closer(screenshot=''):
   mykeys = Keyboard()
-  def closer(display_loop):
+  def closer():
     k = mykeys.read()
     if k == 112 and screenshot:
-      display_loop.display.screenshot(screenshot)
+      from pi3d.Display import DISPLAY
+      DISPLAY.screenshot(screenshot)
     if k == 27:
       mykeys.close()
       return True
