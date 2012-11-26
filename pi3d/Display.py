@@ -149,9 +149,7 @@ class Display(DisplayLoop):
     Utility.load_identity()
     hht = near * math.tan(math.radians(aspect / 2.0))
     hwd = hht * w / h
-    opengles.glFrustumf(c_float(-hwd), c_float(hwd),
-                        c_float(-hht), c_float(hht),
-                        c_float(near), c_float(far))
+    call_float(opengles.glFrustumf, -hwd, hwd, -hht, hht, near, far)
     opengles.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
     opengles.glMatrixMode(GL_MODELVIEW)
     Utility.load_identity()
@@ -176,8 +174,7 @@ class Display(DisplayLoop):
 
     opengles.glMatrixMode(GL_PROJECTION)
     Utility.load_identity()
-    opengles.glOrthof(c_float(0), c_float(w), c_float(0),
-                      c_float(h), c_float(-1), c_float(500))
+    call_float(opengles.glOrthof, 0, w, 0, h, -1, 500)
     opengles.glMatrixMode(GL_MODELVIEW)
     Utility.load_identity()
 
