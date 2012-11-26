@@ -3,7 +3,6 @@ import time
 import traceback
 
 from pi3d.util import Log
-from pi3d.Keyboard import Keyboard
 
 LOGGER = Log.logger(__name__)
 RAISE_EXCEPTIONS = True

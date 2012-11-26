@@ -47,42 +47,6 @@ class Display(DisplayLoop):
 
     self.active = True
 
-  def create(self, is_3d=True, x=0, y=0, w=0, h=0,
-             near=None, far=None, aspect=DEFAULT_ASPECT, depth=DEFAULT_DEPTH):
-    if w <= 0:
-       w = self.max_width
-    if h <= 0:
-       h = self.max_height
-    if near is None:
-      near = DEFAULT_NEAR_3D if is_3d else DEFAULT_NEAR_2D
-    if far is None:
-      far = DEFAULT_FAR_3D if is_3d else DEFAULT_FAR_2D
-
-    self.win_width = w
-    self.win_height = h
-    self.near = near
-    self.far = far
-
-    self.left = x
-    self.top = y
-    self.right = x + w
-    self.bottom = y + h
-
-    self.opengl.create_display(x, y, w, h)
-
-    opengles.glMatrixMode(GL_PROJECTION)
-    Utility.load_identity()
-    if is_3d:
-      hht = near * math.tan(math.radians(aspect / 2.0))
-      hwd = hht * w / h
-      call_float(opengles.glFrustumf, -hwd, hwd, -hht, hht, near, far)
-      opengles.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
-    else:
-      call_float(opengles.glOrthof, 0, w, 0, h, near, far)
-
-    opengles.glMatrixMode(GL_MODELVIEW)
-    Utility.load_identity()
-
   def destroy(self):
     self.opengl.destroy()
 
@@ -98,7 +62,42 @@ class Display(DisplayLoop):
     opengles.glColorMask(1, 1, 1, 1 if alpha < 1.0 else 0)
     #switches off alpha blending with desktop (is there a bug in the driver?)
 
-def create(**kwds):
+
+def create(is_3d=True, x=0, y=0, w=0, h=0, near=None, far=None,
+           aspect=DEFAULT_ASPECT, depth=DEFAULT_DEPTH):
   display = Display()
-  display.create(**kwds)
+  if w <= 0:
+     w = display.max_width
+  if h <= 0:
+     h = display.max_height
+  if near is None:
+    near = DEFAULT_NEAR_3D if is_3d else DEFAULT_NEAR_2D
+  if far is None:
+    far = DEFAULT_FAR_3D if is_3d else DEFAULT_FAR_2D
+
+  display.win_width = w
+  display.win_height = h
+  display.near = near
+  display.far = far
+
+  display.left = x
+  display.top = y
+  display.right = x + w
+  display.bottom = y + h
+
+  display.opengl.create_display(x, y, w, h)
+
+  opengles.glMatrixMode(GL_PROJECTION)
+  Utility.load_identity()
+  if is_3d:
+    hht = near * math.tan(math.radians(aspect / 2.0))
+    hwd = hht * w / h
+    call_float(opengles.glFrustumf, -hwd, hwd, -hht, hht, near, far)
+    opengles.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
+  else:
+    call_float(opengles.glOrthof, 0, w, 0, h, near, far)
+
+  opengles.glMatrixMode(GL_MODELVIEW)
+  Utility.load_identity()
+
   return display
