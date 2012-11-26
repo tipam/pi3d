@@ -109,7 +109,7 @@ class Display(DisplayLoop):
     opengles.glColorMask(1, 1, 1, 1 if a < 1.0 else 0)
     #switches off alpha blending with desktop (is there a bug in the driver?)
 
-def create(self, **kwds):
+def create(**kwds):
   display = Display()
   display.create(**kwds)
   return display
