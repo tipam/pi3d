@@ -99,9 +99,9 @@ class Display(DisplayLoop):
     # opengles.glBindFramebuffer(GL_FRAMEBUFFER,0)
     opengles.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
-  def setBackColour(self, r, g, b, a):
-    call_float(opengles.glClearColor, r, g, b, a)
-    opengles.glColorMask(1, 1, 1, 1 if a < 1.0 else 0)
+  def setBackColour(self, r, g, b, alpha):
+    call_float(opengles.glClearColor, r, g, b, alpha)
+    opengles.glColorMask(1, 1, 1, 1 if alpha < 1.0 else 0)
     #switches off alpha blending with desktop (is there a bug in the driver?)
 
 def create(**kwds):

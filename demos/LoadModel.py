@@ -14,7 +14,7 @@
 # before running this example
 #
 
-from pi3d.Display import Display
+from pi3d import Display
 from pi3d.Keyboard import Keyboard
 
 from pi3d.context.Light import Light
@@ -23,9 +23,8 @@ from pi3d.util.Matrix import Matrix
 from pi3d.util.Screenshot import screenshot
 
 # Setup display and initialise pi3d
-display = Display()
-display.create3D(100,100,1200,900)    # x,y,width,height
-display.setBackColour(0.2,0.4,0.6,1)      # r,g,b,alpha
+DISPLAY = Display.create(x=100, y=100, w=1200, h=900)
+DISPLAY.setBackColour(r=0.2, g=0.4, b=0.6, alpha=1)
 
 # load model_loadmodel
 mymodel = Model('models/teapot.egg' ,'teapot', 0,-1,0)
@@ -41,7 +40,7 @@ mylight = Light(0,1,1,1,'',10,10,0)
 mylight.on()
 
 while 1:
-  display.clear()
+  DISPLAY.clear()
 
   mtrx.identity()
   mtrx.translate(0,0,-10)
@@ -55,9 +54,9 @@ while 1:
       screenshot('teapot.jpg')
     elif k==27:
       mykeys.close()
-      display.destroy()
+      DISPLAY.destroy()
       break
     else:
       print k
 
-  display.swapBuffers()
+  DISPLAY.swapBuffers()
