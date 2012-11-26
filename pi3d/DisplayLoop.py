@@ -9,12 +9,11 @@ LOGGER = Log.logger(__name__)
 RAISE_EXCEPTIONS = True
 
 class DisplayLoop(object):
-  def __init__(self, display,
+  def __init__(self,
                frames_per_second=0,
                check_if_close_requested=None,
                sprites=None):
     self.sprites = sprites or []
-    self.main_display = display
     self.frames_per_second = frames_per_second
     self.check_if_close_requested = check_if_close_requested
     self.is_on = True
@@ -30,15 +29,18 @@ class DisplayLoop(object):
     if check_if_close_required:
       self.check_if_close_required = check_if_close_required
 
-    display_phases = (self._load_opengl, self.main_display.clear, self._repaint,
-                      self.main_display.swapBuffers, self._unload_opengl,
+    display_phases = (self._load_opengl,
+                      self.clear,
+                      self._repaint,
+                      self.swapBuffers,
+                      self._unload_opengl,
                       self._sleep)
     i = 0
     while self._is_running():
       display_phases[i]()
       i = (i + 1) % len(display_phases)
 
-    self.main_display.destroy()
+    self.destroy()
     LOGGER.info('stopped')
 
   def add_sprite(self, sprite, position=None):

@@ -9,10 +9,10 @@ class Mouse(threading.Thread):
     self.fd = open('/dev/input/mouse0','r')
     self.x = 800
     self.y = 400
-    self.width=1920
-    self.height=1080
-    self.finished=False
-    self.button=False
+    self.width = 1920
+    self.height = 1080
+    self.finished = False
+    self.button = False
 
   def run(self):
     while True:
@@ -35,7 +35,7 @@ class Mouse(threading.Thread):
       #if self.y<0: self.y=0
       #self.x=min(self.x,self.width)
       #self.y=min(self.y,self.height)
-    
+
   # possibly not ideal to do without semaphore and checking for exceptions but probably safe here
   def stop(self):
     self._Thread__stop()

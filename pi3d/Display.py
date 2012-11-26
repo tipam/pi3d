@@ -22,7 +22,7 @@ def is_display_thread():
 class Display(DisplayLoop):
   def __init__(self, **kwds):
     """Opens up the OpenGL library and prepares a window for display."""
-    super(Display, self).__init__(self, **kwds)
+    super(Display, self).__init__(**kwds)
     if not ALLOW_MULTIPLE_DISPLAYS:
       global DISPLAY
       if DISPLAY:
@@ -179,15 +179,15 @@ class Display(DisplayLoop):
 
   def destroy(self):
     if self.active:
-        openegl.eglSwapBuffers(self.display, self.surface);
-        openegl.eglMakeCurrent(self.display, EGL_NO_SURFACE, EGL_NO_SURFACE,
-                               EGL_NO_CONTEXT)
-        openegl.eglDestroySurface(self.display, self.surface)
-        openegl.eglDestroyContext(self.display, self.context)
-        openegl.eglTerminate(self.display)
-        bcm.vc_dispmanx_display_close(self.dispman_display)
-        bcm.vc_dispmanx_element_remove(self.dispman_update,self.dispman_element)
-        self.active = False
+      openegl.eglSwapBuffers(self.display, self.surface);
+      openegl.eglMakeCurrent(self.display, EGL_NO_SURFACE, EGL_NO_SURFACE,
+                             EGL_NO_CONTEXT)
+      openegl.eglDestroySurface(self.display, self.surface)
+      openegl.eglDestroyContext(self.display, self.context)
+      openegl.eglTerminate(self.display)
+      bcm.vc_dispmanx_display_close(self.dispman_display)
+      bcm.vc_dispmanx_element_remove(self.dispman_update, self.dispman_element)
+      self.active = False
 
   def swapBuffers(self):
     opengles.glFlush()
@@ -196,29 +196,27 @@ class Display(DisplayLoop):
     openegl.eglSwapBuffers(self.display, self.surface)
 
   def clear(self):
-    #opengles.glBindFramebuffer(GL_FRAMEBUFFER,0)
-    opengles.glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
+    # opengles.glBindFramebuffer(GL_FRAMEBUFFER,0)
+    opengles.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
   def setBackColour(self, r, g, b, a):
-    self.backColour=(r, g, b, a)
+    self.backColour = (r, g, b, a)
     opengles.glClearColor(c_float(r), c_float(g), c_float(b), c_float(a))
     if a < 1.0:
       opengles.glColorMask(1, 1, 1, 1)
-        #switches off alpha blending with desktop (is there a bug in the driver?)
+      #switches off alpha blending with desktop (is there a bug in the driver?)
     else:
-        opengles.glColorMask(1, 1, 1, 0)
+      opengles.glColorMask(1, 1, 1, 0)
 
   def screenshot(self, filestring):
-    if VERBOSE:
-      print "Taking screenshot to '",filestring,"'"
+    LOGGER.info('Taking screenshot of "%s"', filestring)
 
     size = self.win_height * self.win_width * 3
-    img = (ctypes.c_char*size)()
+    img = c_chars(size)
     opengles.glReadPixels(0,0,self.win_width,self.win_height,
                           GL_RGB, GL_UNSIGNED_BYTE, ctypes.byref(img))
-    im = Image.frombuffer("RGB",(self.win_width,self.win_height),
-                          img, "raw", "RGB", 0,1)
+    im = Image.frombuffer('RGB', (self.win_width, self.win_height),
+                          img, 'raw', 'RGB', 0,1)
     im = im.transpose(Image.FLIP_TOP_BOTTOM)
     im.save(filestring)
-
 
