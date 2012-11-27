@@ -5,19 +5,19 @@ from pi3d import Keyboard
 
 from pi3d import Display
 from pi3d.Texture import Texture
-from pi3d.Font import Font
+from pi3d.util.Font import Font
 
 from pi3d.sprite.Ball import Ball
 from pi3d.util import String
 
 # Ball parameters
-MAX_BALLS = 1 #5
+MAX_BALLS = 5
 MIN_BALL_SIZE = 5
 MAX_BALL_SIZE = 100
 
-BACKGROUND = 0.0, 0.0, 0.0, 0.0
+BACKGROUND = 0.0, 0.0, 0.0, 0.8
 
-FONT = Font("AR_CENA","#dd00aa")
+FONT = Font("GillSansMT","#dd00aa")
 
 TEXTURE_NAMES = ['textures/red_ball.png',
                  'textures/grn_ball.png',
@@ -39,14 +39,12 @@ class MeteredBall(Ball):
     super(MeteredBall, self).repaint(t)
     if True:
       s = 'vel = %d, %d' % (self.vx, self.vy)
-      # print(s)
       String.string(font=FONT,
                     string=s,
-                    x=20, #OFFSET + self.x + self.radius / 2.0,
-                    y=20, # OFFSET + self.y + self.radius / 2.0,
-                    z=-5, rot=0,
-                    sclx=0.02, scly=0.02)
-
+                    x=1,
+                    y=1,
+                    z=0, rot=0,
+                    sclx=0.5/self.radius, scly=0.5/self.radius)
 
 def random_ball():
   """Return a ball with a random color, position and velocity."""
