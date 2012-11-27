@@ -10,26 +10,20 @@ from pi3d.util import Log
 
 LOGGER = Log.logger(__name__)
 
-def _ctypes_array(ct, x):
-  return (ct * len(x))(*x)
-
 def c_bytes(x):
-  return _ctypes_array(c_byte, x)
+  return (c_byte * len(x))(*x)
 
 def c_chars(x):
-  return _ctypes_array(c_char, x)
+  return (c_char * len(x))(*x)
 
 def c_ints(x):
-  return _ctypes_array(c_int, x)
+  return (c_int * len(x))(*x)
 
 def c_floats(x):
-  return _ctypes_array(c_float, x)
+  return (c_float * len(x))(*x)
 
 def c_shorts(x):
-  return _ctypes_array(c_short, x)
-
-def call(ctype, f, *args):
-  return f(*(ctype(a) for a in args))
+  return (c_short * len(x))(*x)
 
 def call_float(f, *args):
   return f(*(c_float(a) for a in args))
