@@ -20,12 +20,12 @@ TEXTURE_NAMES = ['textures/red_ball.png',
                  'textures/blu_ball.png']
 
 
-DISPLAY = Display.create(is_3d=False)
-DISPLAY.setBackColour(*BACKGROUND)
+DISPLAY = Display.create(is_3d=False, background=BACKGROUND)
 
 TEXTURES = [Texture(t) for t in TEXTURE_NAMES]
 
 def random_ball():
+  """Return a ball with a random color, position and velocity."""
   return Ball(random.choice(TEXTURES),
               random.uniform(MIN_BALL_SIZE, MAX_BALL_SIZE),
               random.uniform(0.0, DISPLAY.max_width),
@@ -34,14 +34,8 @@ def random_ball():
               random.uniform(-10.0, 10.0))
 
 
-SPRITES = []
-
-# create balls and positions and colours.
-for b in range(MAX_BALLS):
-  SPRITES.append(random_ball())
-
+SPRITES = [random_ball() for b in range(MAX_BALLS)]
 DISPLAY.add_sprites(*SPRITES)
-
 
 @Keyboard.screenshot('collision.jpg')
 def my_loop():

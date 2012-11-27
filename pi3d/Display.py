@@ -122,7 +122,7 @@ class Display(object):
 
 
 def create(is_3d=True, x=0, y=0, w=0, h=0, near=None, far=None,
-           aspect=DEFAULT_ASPECT, depth=DEFAULT_DEPTH):
+           aspect=DEFAULT_ASPECT, depth=DEFAULT_DEPTH, background=None):
   display = Display()
   if w <= 0:
      w = display.max_width
@@ -157,5 +157,8 @@ def create(is_3d=True, x=0, y=0, w=0, h=0, near=None, far=None,
 
   opengles.glMatrixMode(GL_MODELVIEW)
   Utility.load_identity()
+
+  if background:
+    display.setBackColour(*background)
 
   return display
