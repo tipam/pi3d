@@ -1,8 +1,8 @@
 import curses
 
-from pi3d.util.Screenshot import screenshot
+from pi3d.util import Screenshot
 
-class Keyboard():
+class Keyboard(object):
   def __init__(self):
     self.key = curses.initscr()
     curses.cbreak()
@@ -11,7 +11,7 @@ class Keyboard():
     self.key.nodelay(1)
 
   def read(self):
-    return (self.key.getch())
+    return self.key.getch()
 
   def close(self):
     curses.nocbreak()
@@ -19,15 +19,29 @@ class Keyboard():
     curses.echo()
     curses.endwin()
 
-
-def make_closer(screenshot=''):
+def closer(loop):
+  """A decorator that checks the keyboard to see if you've quit."""
   mykeys = Keyboard()
-  def closer():
-    k = mykeys.read()
-    if k == 112 and screenshot:
-      screenshot(screenshot)
+  def f():
     if k == 27:
       mykeys.close()
       return True
+    return loop()
+  return f
 
-  return closer
+def screenshot(file):
+  """A decorator that checks. the keyboard to see if you've quit and also takes
+  screenshots."""
+  def f(loop):
+    mykeys = Keyboard()
+    def inner():
+      k = mykeys.read()
+      if k == 112:
+        screenshot(file)
+      if k == 27:
+        mykeys.close()
+        return True
+      return loop()
+    return inner
+
+  return f
