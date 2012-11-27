@@ -12,7 +12,7 @@ from pi3d.sprite.Ball import Ball
 DISPLAY = Display.create(is_3d=False)
 
 # Set last value (alpha) to zero for a transparent background!
-DISPLAY.setBackColour(0,0.2,0.6,0)
+DISPLAY.setBackColour(0, 0.2, 0.6, 0)
 
 # Ball parameters
 MAX_BALLS = 15

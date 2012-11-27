@@ -2,15 +2,16 @@ import math
 
 from pi3d import *
 from pi3d import Display
+from pi3d.Texture import Texture
 from pi3d.util import Draw
 from pi3d.util import Utility
 
 from pi3d.util.Loadable import Loadable
 
 class Ball(Loadable):
-  def __init__(self, texture, radius, x, y, vx=0.0, vy=0.0, decay=0.001):
+  def __init__(self, texture_file, radius, x, y, vx=0.0, vy=0.0, decay=0.001):
     super(Ball, self).__init__()
-    self.texture = texture
+    self.texture = texture_file
     self.radius = radius
     self.x = x
     self.y = y
