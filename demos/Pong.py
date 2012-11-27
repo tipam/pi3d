@@ -28,7 +28,7 @@ from pi3d.shape.EnvironmentCube import EnvironmentCube
 from pi3d.shape.Plane import Plane
 from pi3d.shape.Sphere import Sphere
 
-from pi3d.util import Draw
+from pi3d.util import String
 from pi3d.util.Matrix import Matrix
 from pi3d.util.Screenshot import screenshot
 
@@ -189,8 +189,8 @@ while True:
   ball.draw(ballimg)
 
   # write up the score
-  Draw.string(arialFont, str(score[0]), -10, 20, -5, 0.0, 0.05, 0.05)
-  Draw.string(arialFont, str(score[1]), 10, 20, -5, 0.0, 0.05, 0.05)
+  String.string(arialFont, str(score[0]), -10, 20, -5, 0.0, 0.05, 0.05)
+  String.string(arialFont, str(score[1]), 10, 20, -5, 0.0, 0.05, 0.05)
 
   DISPLAY.swapBuffers()
 

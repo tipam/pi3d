@@ -30,7 +30,7 @@ from pi3d.shape.Torus import Torus
 from pi3d.shape.Tube import Tube
 from pi3d.shape.Plane import Plane
 
-from pi3d.util import Draw
+from pi3d.util import String
 from pi3d.util.Font import Font
 from pi3d.util.Screenshot import screenshot
 
@@ -115,8 +115,8 @@ while 1:
   myPlane.draw(coffimg)
   myPlane.rotateIncY(9)
 
-  Draw.string(arialFont, "Raspberry Pi ROCKS!",
-              -0.8, -0.7, -2.2, 10.0, 0.003, 0.003)
+  String.string(arialFont, "Raspberry Pi ROCKS!",
+                -0.8, -0.7, -2.2, 10.0, 0.003, 0.003)
   #pi3d.drawString(destineFont,"Some nice OpenGL bitmap fonts to play with",-1.3,-0.3,-2.2, 10.0, 0.002,0.002)
 
   k = mykeys.read()

@@ -2,6 +2,20 @@ import math
 
 from pi3d import *
 
+RECT_NORMALS = c_bytes((0, 0, -1,
+                        0, 0, -1,
+                        0, 0, -1,
+                        0, 0, -1))
+
+RECT_TRIANGLES = c_bytes((3, 0, 1,
+                          3, 1, 2))
+
+def rect_normals():
+  opengles.glNormalPointer(GL_BYTE, 0, RECT_NORMALS)
+
+def rect_triangles():
+  opengles.glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, RECT_TRIANGLES)
+
 # TODO: not exact sure what this does but we do it a lot.
 def texture_min_mag():
   for f in [GL_TEXTURE_MIN_FILTER, GL_TEXTURE_MAG_FILTER]:
@@ -43,6 +57,7 @@ def dotproduct(x1 ,y1, z1, x2, y2, z2):
 
 def crossproduct(x1, y1, z1, x2, y2, z2):
   return y1 * z2 - z1 * y2, z1 * x2 - x1 * z2, x1 * y2 - y1 * x2
+
 
 
 # TODO: None of these functions is actually called in the codebase.
