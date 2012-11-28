@@ -31,7 +31,7 @@ from pi3d.util.Screenshot import screenshot
 
 # Setup display and initialise pi3d
 DISPLAY = Display.create(x=100, y=100, w=1400, h=800)
-DISPLAY.setBackColour(0.2,0.4,0.6,1)    	# r,g,b,alpha
+DISPLAY.setBackColour(1.0,0.4,0.6,1)    	# r,g,b,alpha
 
 print "=============================================================="
 print "Instructions:"
@@ -43,7 +43,7 @@ print "Move mouse to pan view.  Click mouse to exit or press ESCAPE"
 print "=============================================================="
 
 ectex = loadECfiles("textures/ecubes","sbox")
-myecube = EnvironmentCube(900.0,"FACES")
+myecube = EnvironmentCube(400.0,"FACES")
 
 # load model_loadmodel
 mymodel = Model("models/Buckfast Abbey/BuckfastAbbey.egg", "Abbey",
