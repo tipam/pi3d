@@ -139,7 +139,7 @@ Pi3D started with code based on Peter de Rivaz 'pyopengles' (https://github.com/
 
 The Panda3D loaderEgg.py and LoaderObj.py modules are written by Paddy Gaunt (Copyright (c) 2012)
 
-Many Thanks, especially to Paddy Gaunt, Peter de Rivaz, Jon Macey and others who have contributed to Pi3D - keep up the good work!
+Many Thanks, especially to Paddy Gaunt, Peter de Rivaz, Tom Swirly, Jon Macey and others who have contributed to Pi3D - keep up the good work!
 
 A new version of Pi3D implementing Shaders will be available in the near future. Keep watch!
 
