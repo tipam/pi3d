@@ -29,7 +29,7 @@ elif box==1:
 	ectex = texs.loadTexture("textures/ecubes/SkyBox.jpg")
 	myecube = pi3d.createEnvironmentCube(900.0,"HALFCROSS")
 elif box==2:
-	ectex=pi3d.loadECfiles("textures/ecubes/Interstellar","interstellar_512","png",texs)
+	ectex=pi3d.loadECfiles("textures/ecubes/Interstellar","interstellar_256","png",texs)
 	myecube = pi3d.createEnvironmentCube(900.0,"FACES")
 else:
 	ectex=pi3d.loadECfiles("textures/ecubes","skybox_hall","jpg",texs)
