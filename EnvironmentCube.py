@@ -1,7 +1,7 @@
 # Environment Cube examples using pi3d module
 # ===========================================
 # Copyright (c) 2012 - Tim Skillman
-# Version 0.02 - 20Jul12
+# Version 0.03 - 28Nov12 (Using updated LoadECfiles method)
 # 
 # This example does not reflect the finished pi3d module in any way whatsoever!
 # It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
@@ -20,7 +20,7 @@ display = pi3d.display()
 display.create3D(100,100,1700,800, 0.5, 800.0, 60.0)   	# x,y,width,height,near,far,aspect
 
 #select the environment cube with 'box'...
-box=3
+box=2
 texs=pi3d.textures()
 if box==0:
 	ectex = texs.loadTexture("textures/ecubes/skybox_interstellar.jpg")
@@ -29,10 +29,10 @@ elif box==1:
 	ectex = texs.loadTexture("textures/ecubes/SkyBox.jpg")
 	myecube = pi3d.createEnvironmentCube(900.0,"HALFCROSS")
 elif box==2:
-	ectex=pi3d.loadECfiles("textures/ecubes","sbox_interstellar",texs)
+	ectex=pi3d.loadECfiles("textures/ecubes/Interstellar","interstellar_512","png",texs)
 	myecube = pi3d.createEnvironmentCube(900.0,"FACES")
 else:
-	ectex=pi3d.loadECfiles("textures/ecubes","skybox_hall",texs)
+	ectex=pi3d.loadECfiles("textures/ecubes","skybox_hall","jpg",texs)
 	myecube = pi3d.createEnvironmentCube(900.0,"FACES")
 
 

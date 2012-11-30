@@ -1,7 +1,7 @@
 # Bouncing balls example using pi3d module
 # ========================================
 # Copyright (c) 2012 - Tim Skillman
-# Version 0.02 - 03Jul12
+# Version 0.03 - 29 Nov 2012 - Added DrawString2D to draw text into a 2D context
 # 
 # This example does not reflect the finished pi3d module in any way whatsoever!
 # It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
@@ -63,6 +63,8 @@ ball.append(texs.loadTexture("textures/blu_ball.png"))
 bar = texs.loadTexture("textures/bar.png")
 bbtitle = texs.loadTexture("textures/pi3dbbd.png",True)
 
+arialFont = pi3d.font("AR_CENA","#ddff88")   #load AR_CENA font and set the font colour
+
 # Fetch key presses
 mykeys = pi3d.key()
 scshots = 1
@@ -88,6 +90,9 @@ while True:
 	if by[b]>scny or by[b]<0:
 		dy[b]=-dy[b]
     
+    pi3d.drawString2D(arialFont,"Raspberry Pi ROCKS!",100,300,80)
+	#pi3d.drawString3D(arialFont,"Raspberry Pi ROCKS!",100,300,-1.0,0.0,1,1)
+	
     #draw a bar at the top of the screen
     pi3d.rectangle(bar,0,scny,scnx,32)
     pi3d.rectangle(bbtitle,5,scny,256+5,32)
@@ -102,5 +107,6 @@ while True:
 		texs.deleteAll()
 		display.destroy()
 		break
-		
+	
+
     display.swapBuffers()

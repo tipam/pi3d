@@ -1,6 +1,6 @@
 # pi3D common module
 # ==================
-# Version 0.02
+# Version 0.03
 #
 # Copyright (c) 2012, Tim Skillman.
 # (Some code initially based on Peter de Rivaz pyopengles example.)
@@ -147,7 +147,7 @@ def texture_on(tex, tex_coords, vtype):
 	opengles.glEnable(GL_TEXTURE_2D)
 	if tex.alpha:
 	    if tex.blend:
-		opengles.glDisable(GL_DEPTH_TEST)
+		#opengles.glDisable(GL_DEPTH_TEST)
 		opengles.glEnable(GL_BLEND)
 		opengles.glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA)
 	    else:
@@ -164,18 +164,33 @@ def texture_off():
 class loadTexture(object):
     
     def __init__(self,fileString,flip=False,size=0,blend=False):
+	self.filestring = fileString
 	self.ix,self.iy,self.tex,self.alpha,self.blend = load_tex(fileString,flip,size,blend)
 
 class textures(object):
     
     def __init__(self):
 	self.texs=(eglint*1024)()   #maximum of 1024 textures (just to be safe!)
+	self.maps=[]
 	self.tc=0
 		
     def loadTexture(self,fileString,blend=False,flip=False,size=0):
-	map = loadTexture(fileString,flip,size,blend)
-	self.texs[self.tc]=map.tex.value
-	self.tc+=1
+	#check if texture already exists ...
+	t=0
+	found=False
+	while t<len(self.maps) and found==False:
+		if self.maps[t].filestring == fileString:
+		    found=True
+		    print "Re-using texture "+fileString
+		    map = self.maps[t]
+		else:
+		    #print "Searching for "+fileString+" == "+self.maps[t].filestring
+		    t+=1
+	if found==False:
+		map = loadTexture(fileString,flip,size,blend)
+		self.maps.append(map)
+		self.texs[self.tc] = map.tex.value  #used for deleting textures
+		self.tc+=1
 	return map
 	
     def deleteAll(self):
@@ -185,15 +200,15 @@ class textures(object):
 #position, rotate and scale an object
 def transform(x,y,z,rotx,roty,rotz,sx,sy,sz,cx,cy,cz):
 	opengles.glTranslatef(eglfloat(x-cx), eglfloat(y-cy), eglfloat(z-cz))		
-	if rotz <> 0: opengles.glRotatef(eglfloat(rotz),egf0, egf0, egf1)
 	if roty <> 0: opengles.glRotatef(eglfloat(roty),egf0, egf1, egf0)
+	if rotz <> 0: opengles.glRotatef(eglfloat(rotz),egf0, egf0, egf1)
 	if rotx <> 0: opengles.glRotatef(eglfloat(rotx),egf1, egf0, egf0)
 	opengles.glScalef(eglfloat(sx),eglfloat(sy),eglfloat(sz))
 	opengles.glTranslatef(eglfloat(cx), eglfloat(cy), eglfloat(cz))
 
 def rotate(rotx,roty,rotz):
-	if rotz <> 0: opengles.glRotatef(eglfloat(rotz),egf0, egf0, egf1)
 	if roty <> 0: opengles.glRotatef(eglfloat(roty),egf0, egf1, egf0)
+	if rotz <> 0: opengles.glRotatef(eglfloat(rotz),egf0, egf0, egf1)
 	if rotx <> 0: opengles.glRotatef(eglfloat(rotx),egf1, egf0, egf0)
 
 def identity():
@@ -224,12 +239,24 @@ def angleVecs(x1,y1,x2,y2,x3,y3):
 	if dist>0.0: return pi2-angle
 	else: return angle
 
+def distance(x1,y1,z1,x2,y2,z2):
+	a=x2-x1
+	b=y2-y1
+	c=z2-z1
+	return math.sqrt(a*a+b*b+c*c)
+
 def dot(x1,y1,x2,y2):
 	a=x2-x1
 	b=y2-y1
 	s = math.sqrt(a*a+b*b)
 	if s>0.0: return a/s, b/s
 	else: return 0.0,0.0
+	
+def dotproduct(x1,y1,z1,x2,y2,z2):
+	return x1*x2 + y1*y2 + z1*z2
+	
+def crossproduct(x1,y1,z1,x2,y2,z2):
+	return y1*z2 - z1*y2, z1*x2 - x1*z2, x1*y2 - y1*x2
 	
 def intersectTriangle(v1,v2,v3,pos):
 	#Function calculates the y intersection of a point on a triangle
@@ -286,6 +313,7 @@ def intersectTriangle(v1,v2,v3,pos):
 	
 	#return resultant intersecting height
 	return dya+(dyb-dya)*((pos[0]-dxa)/(dxb-dxa))
+	
 	    
 def addVertex(v,x,y,z,n,nx,ny,nz,t,tx,ty):
 # add vertex,normal and tex_coords ...
@@ -312,7 +340,11 @@ rect_vertsTL = eglbytes(( 1,0,0, 0,0,0, 0,-1,0, 1,-1,0 ))
 rect_vertsCT = eglbytes(( 1,1,0, -1,1,0, -1,-1,0, 1,-1,0 ))
 rect_triangles = eglbytes(( 3,0,1, 3,1,2 ))
 
-def drawString(font,string,x,y,z,rot,sclx,scly):
+def drawString2D(font,string,x,y,size=24):
+    size=size/72.0  #rough dpi
+    drawString3D(font,string,x,y,-1.0,0.0,size,size)
+    
+def drawString3D(font,string,x,y,z=-1.0,rot=0.0,sclx=1.0,scly=1.0):
 
 	opengles.glNormalPointer( GL_BYTE, 0, rect_normals)	
 	opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, eglfloat(GL_LINEAR));
@@ -321,13 +353,14 @@ def drawString(font,string,x,y,z,rot,sclx,scly):
 	opengles.glBindTexture(GL_TEXTURE_2D,font.tex)
 	opengles.glEnable(GL_TEXTURE_2D)
 	
-	opengles.glDisable(GL_DEPTH_TEST)
-	opengles.glDisable(GL_CULL_FACE)
+	#opengles.glDisable(GL_DEPTH_TEST)
+	#opengles.glDisable(GL_CULL_FACE)
 	opengles.glEnable(GL_BLEND)
 	opengles.glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA)
 
 	mtrx =(ctypes.c_float*16)()
 	opengles.glGetFloatv(GL_MODELVIEW_MATRIX,ctypes.byref(mtrx))
+	opengles.glLoadIdentity()
 	opengles.glTranslatef(eglfloat(x), eglfloat(y), eglfloat(z))
 	opengles.glRotatef(eglfloat(rot), egf0, egf0, egf1)
 	opengles.glScalef(eglfloat(sclx), eglfloat(scly), egf1)
@@ -344,8 +377,8 @@ def drawString(font,string,x,y,z,rot,sclx,scly):
 	opengles.glLoadMatrixf(mtrx)
 	opengles.glDisable(GL_TEXTURE_2D)
 	opengles.glDisable(GL_BLEND)
-	opengles.glEnable(GL_DEPTH_TEST)
-	opengles.glEnable(GL_CULL_FACE)
+	#opengles.glEnable(GL_DEPTH_TEST)
+	#opengles.glEnable(GL_CULL_FACE)
 	
 def rectangle(tex,x,y,w,h,r=0.0,z=-1.0):
 	opengles.glNormalPointer( GL_BYTE, 0, rect_normals);
@@ -527,7 +560,7 @@ def shape_draw(self,tex,shl=GL_UNSIGNED_SHORT):
 	    opengles.glLoadMatrixf(mtrx)
 	    if tex > 0: texture_off()
 
-def create_display(self,x=0,y=0,w=0,h=0,depth=24):
+def create_display(self,x=0,y=0,w=0,h=0,depth=16):
     
 	b = bcm.bcm_host_init()
 	self.display = openegl.eglGetDisplay(EGL_DEFAULT_DISPLAY)
@@ -540,22 +573,41 @@ def create_display(self,x=0,y=0,w=0,h=0,depth=24):
 				      EGL_GREEN_SIZE, 8,
 				      EGL_BLUE_SIZE, 8,
 				      EGL_ALPHA_SIZE, 8,
-				      EGL_DEPTH_SIZE, 24,
+				      EGL_DEPTH_SIZE, depth,
 				      EGL_BUFFER_SIZE, 32,
 				      EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
 				      EGL_NONE) )
 	numconfig = eglint()
-	config = ctypes.c_void_p()
+	self.config = ctypes.c_void_p()
 	r = openegl.eglChooseConfig(self.display,
 				    ctypes.byref(attribute_list),
-				    ctypes.byref(config), 1, 
+				    ctypes.byref(self.config), 1, 
 				    ctypes.byref(numconfig))
    
 	#if verbose: print 'numconfig=',numconfig
 	context_attribs = eglints( (EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE) )
-	self.context = openegl.eglCreateContext(self.display, config, EGL_NO_CONTEXT, 0) #ctypes.byref(context_attribs) ) 
+	self.context = openegl.eglCreateContext(self.display, self.config, EGL_NO_CONTEXT, 0) #ctypes.byref(context_attribs) ) 
 	assert self.context != EGL_NO_CONTEXT
 	
+	#Create the native window and surface
+	create_surface(self,x,y,w,h)
+	
+	#Setup default hints
+	opengles.glEnable(GL_CULL_FACE)	
+	opengles.glEnable(GL_NORMALIZE)
+	opengles.glEnable(GL_DEPTH_TEST)
+	
+	#switches off alpha blending problem with desktop (is there a bug in the driver?)
+	#Thanks to Roland Humphries who sorted this one!!
+	opengles.glColorMask(1,1,1,0)  
+	
+	opengles.glEnableClientState(GL_VERTEX_ARRAY)
+	opengles.glEnableClientState(GL_NORMAL_ARRAY)
+	
+	self.active = True
+	
+def create_surface(self,x=0,y=0,w=0,h=0):
+
 	#Set the viewport position and size
 
 	dst_rect = eglints( (x,y,w,h) ) #width.value,height.value) )
@@ -575,29 +627,14 @@ def create_display(self,x=0,y=0,w=0,h=0,depth=24):
 	nw_p = ctypes.pointer(nativewindow)
 	self.nw_p = nw_p
 	
-	self.surface = openegl.eglCreateWindowSurface( self.display, config, nw_p, 0)
+	self.surface = openegl.eglCreateWindowSurface( self.display, self.config, self.nw_p, 0)
 	assert self.surface != EGL_NO_SURFACE
 	
 	r = openegl.eglMakeCurrent(self.display, self.surface, self.surface, self.context)
 	assert r
 	
 	#Create viewport
-	opengles.glViewport (0, 0, w, h)
-	
-	#Setup default hints
-	opengles.glEnable(GL_CULL_FACE)	
-	#opengles.glShadeModel(GL_FLAT)
-	opengles.glEnable(GL_NORMALIZE)
-	opengles.glEnable(GL_DEPTH_TEST)
-	
-	#switches off alpha blending problem with desktop (is there a bug in the driver?)
-	#Thanks to Roland Humphries who sorted this one!!
-	opengles.glColorMask(1,1,1,0)  
-	
-	opengles.glEnableClientState(GL_VERTEX_ARRAY)
-	opengles.glEnableClientState(GL_NORMAL_ARRAY)
-	
-	self.active = True
+	opengles.glViewport (0, 0, w, h)	
 
 class mouse(threading.Thread):
 

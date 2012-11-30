@@ -32,7 +32,7 @@ grassimg = texs.loadTexture("textures/grass.png")
 hb2img = texs.loadTexture("textures/hornbeam2.png")
 
 #load environment cube
-ectex = pi3d.loadECfiles("textures/ecubes","sbox_interstellar",texs)
+ectex = pi3d.loadECfiles("textures/ecubes/Interstellar","interstellar_256","png",texs)
 myecube = pi3d.createEnvironmentCube(900.0,"FACES")
 
 # Create elevation map

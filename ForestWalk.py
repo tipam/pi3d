@@ -31,10 +31,7 @@ tree1img = texs.loadTexture("textures/tree1.png")
 grassimg = texs.loadTexture("textures/grass.png")
 hb2img = texs.loadTexture("textures/hornbeam2.png")
 
-#ectex = pi3d.loadTexture("textures/SkyBox.png")
-#myecube = pi3d.createEnvironmentCube(900.0,"HALFCROSS")
-
-ectex=pi3d.loadECfiles("textures/ecubes","sbox",texs)
+ectex=pi3d.loadECfiles("textures/ecubes","sbox","jpg",texs)
 myecube = pi3d.createEnvironmentCube(900.0,"FACES")
 
 # Create elevation map

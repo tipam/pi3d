@@ -33,7 +33,7 @@ print "Move mouse to pan view.  Click mouse to exit or press ESCAPE"
 print "=============================================================="
 
 texs = pi3d.textures()
-ectex = pi3d.loadECfiles("textures/ecubes","sbox",texs)
+ectex = pi3d.loadECfiles("textures/ecubes","sbox","jpg",texs,True)
 myecube = pi3d.createEnvironmentCube(900.0,"FACES")
 
 # load model_loadmodel
@@ -67,24 +67,21 @@ while 1:
 
     mtrx.identity()
     mtrx.rotate(tilt,rot,0)
-    mtrx.translate(xm,ym,zm)
     mtrx.push()
     mtrx.rotate(0,180,0)
-    myecube.draw(ectex,xm,ym,zm)
+    myecube.draw(ectex)
     mtrx.pop()
     
     mylight.on()
-    mymodel.draw()
+    mymodel.draw(None,None,xm,ym,zm) # normal draw
     mylight.off()
     
     mx=mymouse.x
     my=mymouse.y
-    
-    if mx>display.left and mx<display.right and my>display.top and my<display.bottom:
-	rot += (mx-omx)*0.5
-	tilt -= (my-omy)*0.5
-	omx=mx
-	omy=my
+    rot += (mx-omx)*0.5
+    tilt -= (my-omy)*0.5
+    omx=mx
+    omy=my
 
     #Press ESCAPE to terminate
     k = mykeys.read()
@@ -108,6 +105,7 @@ while 1:
 	    display.screenshot("BuckfastAbbey"+str(scshots)+".jpg")
 	    scshots += 1
 	elif k==27:    #Escape key
+		print "Closing down ..."
 		mykeys.close()
 		texs.deleteAll()
 		display.destroy()

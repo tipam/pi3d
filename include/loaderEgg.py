@@ -1,5 +1,5 @@
 from pi3d import rotateVec
-import re, os
+import re, os, operator
 from pi3dCommon import *
 
 #########################################################################################
@@ -94,7 +94,9 @@ def loadFileEGG(self,fileName,texs):
         offsetVList = {}
         structPList = []
         offset = 0
-        for x in gp:
+        numv = 0
+        numi = 0
+        for x in gp:#meaningless var name x for chunks of file converted to array format
             if len(x) == 0: continue
             if ("<Group>" in x[0]): groupDrill(x[3], np+x[1])
             else:
@@ -135,8 +137,14 @@ def loadFileEGG(self,fileName,texs):
                     if ("<MRef>" in p[0]): MRef = p[2].strip()
                     if ("<TRef>" in p[0]): TRef = p[2].strip()
                     if ("<VertexRef>" in p[0]):
-                        vref = [int(n) for n in p[2].strip().split()]
+                        vref = []
+                        for n in p[2].strip().split():
+                            vref.append(int(n))
+                            numv += 1
+                            numi += 3
+                        numi -= 6 # number of corners of triangle = (n-2)*3 where n is the number of corners of face
                         vpKey = p[3][0][2].strip() # ought to do a for r in p[3]; if "Ref in...
+                        #vref = [int(n) for n in p[2].strip().split()]
                 # add to list
                 #while (len(structPList) < (p+1)): structPList.append("")
                 #
@@ -144,14 +152,22 @@ def loadFileEGG(self,fileName,texs):
 
         # now go through the polygons in order of vertexPool+id, trying to ensure that the polygon arrays in each group are built in the order of vertexPool names
         # only cope with one material and one texture per group
-        nP = len(structPList)
-        verticesArray = []
-        normalsArray = []
-        trianglesArray = []
-        tex_coordsArray = []
+        numv -= 1
+        numi -= 1
+        self.vGroup[np] = create_shape("", self.x, self.y, self.z, self.rotx,self.roty,self.rotz, self.sx,self.sy,self.sz, self.cx,self.cy,self.cz)
+        ctype_array1 = eglfloat * (numv * 3 + 3)
+        self.vGroup[np].vertices = ctype_array1()
+        self.vGroup[np].normals = ctype_array1()
+        ctype_array2 = eglfloat * (numv * 2 + 2)
+        self.vGroup[np].tex_coords = ctype_array2()
+        ctype_array3 = eglshort * (numi + 1)
+        self.vGroup[np].indices = ctype_array3()
+        nv = 0 # vertex counter in this material
+        ni = 0 # triangle vertex count in this material
+
         gMRef = ""
         gTRef = ""
-        nV = 0
+        nP = len(structPList)
         for p in xrange(nP):
             if (len(structPList[p].MRef) > 0): gMRef = structPList[p].MRef
             else: gMRef = ""
@@ -160,59 +176,53 @@ def loadFileEGG(self,fileName,texs):
                
             vpKey = structPList[p].vpKey
             vref = structPList[p].vref
+            startV = nv
             for j in vref:
                 if (len(structVList[vpKey][j].normal) > 0): self.vNormal = True
                 else: self.vNormal = False
                 for k in range(3):
-                    verticesArray.append(structVList[vpKey][j].coords[k])
+                    self.vGroup[np].vertices[nv*3+k] = c_float(structVList[vpKey][j].coords[k])
                     if self.vNormal: nml = structVList[vpKey][j].normal[k]
                     else: nml = structPList[p].normal[k]
-                    normalsArray.append(nml)
-                nV += 1
+                    self.vGroup[np].normals[nv*3+k] = c_float(nml)
                 if (len(structVList[vpKey][j].UVcoords) == 2):
                     for k in range(2):
-                        tex_coordsArray.append(structVList[vpKey][j].UVcoords[k])
-            n = len(vref) - 1
-            startV = nV -n -1
+                        self.vGroup[np].tex_coords[nv*2+k] = c_float(structVList[vpKey][j].UVcoords[k])
+                nv += 1
+                
+            n = nv - startV - 1
             for j in range(1,n):
-                trianglesArray.append(startV)
-                trianglesArray.append(startV +j)
-                trianglesArray.append(startV +j +1)
+                self.vGroup[np].indices[ni*3] = c_short(startV)
+                self.vGroup[np].indices[ni*3+1] = c_short(startV + j)
+                self.vGroup[np].indices[ni*3+2] = c_short(startV + j +1)
+                ni += 1
         
-        # create group with various egl arrays
-        self.vGroup[np] = {}
-
-        self.vGroup[np]["vertices"] = eglfloats(verticesArray)
-
-        self.vGroup[np]["normals"] = eglfloats(normalsArray)
-
-        self.vGroup[np]["triangles"] = eglshorts(trianglesArray)
-        self.vGroup[np]["trianglesLen"] = len(self.vGroup[np]["triangles"]) # so speed up calling of glDrawElements
-
-        self.vGroup[np]["tex_coords"] = eglfloats(tex_coordsArray)
+        self.vGroup[np].indicesLen = len(self.vGroup[np].indices)
+        self.vGroup[np].ttype = GL_TRIANGLES
         
+
         # load the texture file TODO check if same as previously loaded files (for other loadModel()s)
         if (gTRef in self.textureList):
-            self.vGroup[np]["texID"] = self.textureList[gTRef]["texID"]
-            self.vGroup[np]["texFile"] = self.textureList[gTRef]["filename"]
+            self.vGroup[np].texID = self.textureList[gTRef]["texID"]
+            self.vGroup[np].texFile = self.textureList[gTRef]["filename"]
         else:
-            self.vGroup[np]["texID"] = None
-            self.vGroup[np]["texFile"] = None
+            self.vGroup[np].texID = None
+            self.vGroup[np].texFile = None
         
         # load materials TODO something more sophisticated
+        #TODO maybe don't create this array if texture being used?
         if (gMRef in self.materialList):
-            materialArray = []
+            ctype_array4 = eglbyte * ((numi + 1)*4)
+            self.vGroup[np].material = ctype_array4()
             redVal = int(float(self.materialList[gMRef]["diffr"]) * 255.0)
             grnVal = int(float(self.materialList[gMRef]["diffg"]) * 255.0)
             bluVal = int(float(self.materialList[gMRef]["diffb"]) * 255.0)
-            for i in xrange(len(self.vGroup[np]["triangles"])):
-                materialArray.append(redVal)
-                materialArray.append(grnVal)
-                materialArray.append(bluVal)
-                materialArray.append(255)
-            self.vGroup[np]["material"] = eglbytes(materialArray)
-            materialArray = []
-        else: self.vGroup[np]["material"] = None
+            for i in xrange(numi + 1):
+                self.vGroup[np].material[i*4] = eglbyte(redVal)
+                self.vGroup[np].material[i*4 + 1] = eglbyte(grnVal)
+                self.vGroup[np].material[i*4 + 2] = eglbyte(bluVal)
+                self.vGroup[np].material[i*4 + 3] = eglbyte(255)
+        else: self.vGroup[np].material = None
       ####### end of groupDrill function #####################
 
     bReg = re.finditer("[{}<]",l)
@@ -225,7 +235,7 @@ def loadFileEGG(self,fileName,texs):
             for i in xrange(len(x[3])): self.textureList[x[1]][x[3][i][1]] = x[3][i][2]
             self.textureList[x[1]]["filename"] = x[2].strip("\"")
             #print filePath, self.textureList[x[1]]["filename"]
-            self.textureList[x[1]]["texID"] = self.texs.loadTexture(os.path.join(filePath, self.textureList[x[1]]["filename"]),False,True) # load from file
+            self.textureList[x[1]]["texID"] = self.texs.loadTexture(os.path.join(filePath, self.textureList[x[1]]["filename"]), False, True) # load from file
         if "<CoordinateSystem>" in x[0]:
             self.coordinateSystem = x[2]
         if "<Material>" in x[0]:
@@ -233,52 +243,51 @@ def loadFileEGG(self,fileName,texs):
             for i in xrange(len(x[3])): self.materialList[x[1]][x[3][i][1]] = x[3][i][2]
         if "<Group>" in x[0]:
             groupDrill(x[3], x[1])
+            
 
-    
-# groupDrill(l, "") # recursively break down groups - TODO this doesn't actually work properly because of split() on <Group>
-    
-def draw(self, texID=None, n=None):
+def draw(self, texID=None, n=None, x=0,y=0,z=0, rx=0,ry=0,rz=0, sx=0,sy=0,sz=0, cx=0,cy=0,cz=0):
     texToUse = None
     if texID != None:
          texToUse = texID
     elif n != None:
         n = n % (len(self.textureList))
         i = 0
-        for t in self.textureList:
+        sorted_tex = sorted(self.textureList.iteritems(), key=operator.itemgetter(0))
+        for t in sorted_tex:
             if i == n:
-                texToUse = self.textureList[t]["texID"]
+                texToUse = t[1]["texID"]
                 break
             i += 1
 
     mtrx = matrix()
     mtrx.push()
-    transform(self.x,self.y,self.z, self.rotx,self.roty,self.rotz, self.sx,self.sy,self.sz, self.cx,self.cy,self.cz)
+    transform(self.x+x,self.y+y,self.z+z, self.rotx+rx,self.roty+ry,self.rotz+rz, self.sx+sx,self.sy+sy,self.sz+sz, self.cx+cx,self.cy+cy,self.cz+cz)
     for g in self.vGroup:
         opengles.glShadeModel(GL_SMOOTH)
-        opengles.glVertexPointer( 3, GL_FLOAT, 0, self.vGroup[g]["vertices"]);
-        opengles.glNormalPointer( GL_FLOAT, 0, self.vGroup[g]["normals"]);
+        opengles.glVertexPointer( 3, GL_FLOAT, 0, self.vGroup[g].vertices);
+        opengles.glNormalPointer( GL_FLOAT, 0, self.vGroup[g].normals);
         
-        if texToUse > 0: texture_on(texToUse, self.vGroup[g]["tex_coords"], GL_FLOAT)
-        elif self.vGroup[g]["texID"] > 0: texture_on(self.vGroup[g]["texID"], self.vGroup[g]["tex_coords"], GL_FLOAT)
+        if texToUse > 0: texture_on(texToUse, self.vGroup[g].tex_coords, GL_FLOAT)
+        elif self.vGroup[g].texID > 0: texture_on(self.vGroup[g].texID, self.vGroup[g].tex_coords, GL_FLOAT)
         
         #TODO enable material colours as well as textures from images
-        if self.vGroup[g]["material"] != None:
-            #opengles.glMaterialfv(GL_FRONT, GL_DIFFUSE, self.vGroup[g]["material"]);
+        if self.vGroup[g].material != None:
+            #opengles.glMaterialfv(GL_FRONT, GL_DIFFUSE, self.vGroup[g].material);
             opengles.glEnableClientState(GL_COLOR_ARRAY)
-            opengles.glColorPointer( 4, GL_UNSIGNED_BYTE, 0, self.vGroup[g]["material"]);
+            opengles.glColorPointer( 4, GL_UNSIGNED_BYTE, 0, self.vGroup[g].material);
         
-        opengles.glDrawElements( GL_TRIANGLES, self.vGroup[g]["trianglesLen"], GL_UNSIGNED_SHORT, self.vGroup[g]["triangles"])
+        opengles.glDrawElements( GL_TRIANGLES, self.vGroup[g].indicesLen, GL_UNSIGNED_SHORT, self.vGroup[g].indices)
         
-        if self.vGroup[g]["texID"] > 0: texture_off()
+        if self.vGroup[g].texID > 0: texture_off()
         opengles.glShadeModel(GL_FLAT)
     mtrx.pop()
     
     for c in self.childModel:
-        relx, rely, relz = c.x, c.y, c.z
-        relrotx, relroty, relrotz = c.rotx, c.roty, c.rotz
-        rval = rotateVec(self.rotx, self.roty, self.rotz, (c.x, c.y, c.z))
-        c.x, c.y, c.z = self.x + rval[0], self.y + rval[1], self.z + rval[2]
-        c.rotx, c.roty, c.rotz = self.rotx + c.rotx, self.roty + c.roty, self.rotz + c.rotz
+        relx, rely, relz = c.x+x, c.y+y, c.z+z
+        relrotx, relroty, relrotz = c.rotx+rx, c.roty+ry, c.rotz+rz
+        rval = rotateVec(self.rotx+rx, self.roty+ry, self.rotz+rz, (c.x, c.y, c.z))
+        c.x, c.y, c.z = self.x + x + rval[0], self.y +y + rval[1], self.z + z + rval[2]
+        c.rotx, c.roty, c.rotz = self.rotx + rx + c.rotx, self.roty + ry + c.roty, self.rotz + rz + c.rotz
         c.draw() #should texture override be passed down to children?
         c.x, c.y, c.z = relx, rely, relz
         c.rotx, c.roty, c.rotz = relrotx, relroty, relrotz
@@ -291,10 +300,8 @@ def texSwap(self, texID, fileName):
             texToSwap = self.textureList[t]["texID"]
             break
     for g in self.vGroup:
-         if self.vGroup[g]["texID"] == texToSwap: self.vGroup[g]["texID"] = texID
+         if self.vGroup[g].texID == texToSwap: self.vGroup[g].texID = texID
     return texToSwap # this texture is returned so it can be used or held by the calling code and reinserted if need be
-
-
 #########################################################################################
 #
 #########################################################################################

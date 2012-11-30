@@ -1,10 +1,11 @@
 Pi3D ReadMe
 ===========
 
-Version 0.02 - 06Jul2012
+Version 0.06 - 29Nov2012
+See ChangeLog.txt for latest changes and bugfixes
 
 Pi3D written by Tim Skillman, Copyright (c) 2012
-EGG file loader (LoaderEgg.py) written by Paddy Gaunt, Copyright (c) 2012
+EGG & OBJ file loader written by Paddy Gaunt, Copyright (c) 2012
 
 Description
 ===========
@@ -15,26 +16,64 @@ pi3d is a Python module that aims to greatly simplify writing 3D in Python whils
 
 This is the second release of the pi3d module which has various demo's of built-in shapes, landscapes, model loading, walk-about camera and much more!  See the demos included with this code and experiment with them ..
 
-  ForestWalk.py     Walk about a forest on a landscape
-  Triceratops.py    Large model loading
-  BuckfastAbbey.py	A walk-about model
-  LoadModel.py		The famous Utah teapot!
-  Earth.py			Some shapes generated with Pi3D and a text demo
-  BouncingBalls.py	2D rendering with a title bar
-  Raspberry_Rain	Rendering onto the desktop
-  Clouds3D.py		Blended sprites in perspective view
+  ForestWalk.py         Walk about a forest on a landscape
+  Triceratops.py      	Large model loading
+  BuckfastAbbey.py		A walk-about model
+  LoadModel.py			The famous Utah teapot!
+  Earth.py				Some shapes generated with Pi3D and a text demo
+  BouncingBalls.py		2D rendering with a title bar
+  Raspberry_Rain		Rendering onto the desktop
+  Clouds3D.py			Blended sprites in perspective view
+  CollisionBalls.py    	More bouncing balls across the screen - this time bouncing off each other
+  EnvironmentCube.py   	New environment cubes to try out in texture/ecubes - some high quality ones!
+  RobotWalkabout.py     Another off-planet example of a basic avatar robot drifting about
+  Shapes.py             Demos available shapes and text
 
+**** New Demos ****
+
+  MegaStation.py       	Navigate around an abandoned Mars base-station with open/shut doors.
+						Implements a new Level-Of-Detail (LOD) feature and TKwindow interface
+  TigerTank.py    		Ever played WOT? This tank emulates how a WOT tank works.
+						Uses realistic modelling and LODing in a TKwindow
+						
+Paddy Gaunt Demos
+
+  Amazing.py			Can you find yourself around the amazing maze?
+  Pong.py				A snazzy 3D version of landscape pinball and pong against a Raspberry!
+						
+  
 Other files and folders:
 
   pi3d.py           The main pi3d module
   include			Contains pi3d support files: gl.py, glext.py, egl.py, gl2.py, gl2ext.py, pi3dcommon.py, loaderEgg.py
   textures			Various textures to play with
-  models			Some demo egg models
+  models			Demo egg models
   fonts				Bitmap fonts that can be using for drawing text
+  screenshots       Example screenshots of the demos included
+  ChangeLog.txt		Latest changes of Pi3D
+  README.txt		This file
 
-IMPORTANT: Please install the Python Imaging Library as this is used to load textures.
-           To install on the terminal, type:  sudo apt-get install python-imaging
+Setup on the Raspberry Pi
+=========================
 
+1. Although most demos work on 64MB of memory, you are strongly advised to have a 128MB of graphics memory split,
+   especially for full-screen 3D graphics.
+
+!!IMPORTANT!! ...
+
+2. Before trying any of the demos or Pi3D, you must download the Python Imaging Library as this is needed
+   for importing any graphics used by Pi3.  To install on the terminal, type: 
+   
+      sudo apt-get install python-imaging
+
+3. Geany is by far the easiest application to use for creating and running Python scripts. Download and
+   install it with:
+
+      sudo apt-get install geany xterm
+
+4. Load any of the demos into Geany and run (using the cogs icon)
+           
+             
 Documentation
 =============
 
@@ -47,6 +86,10 @@ Acknowledgements
 ================
 
 Pi3D started with code based on Peter de Rivaz 'pyopengles' (https://github.com/peterderivaz/pyopengles) with some tweaking from Jon Macey's code (jonmacey.blogspot.co.uk/2012/06/).  
-The Panda3D loaderEgg.py module is written by Paddy Gaunt (Copyright (c) 2012)
-Many Thanks! 
+The Panda3D loaderEgg.py and LoaderObj.py modules are written by Paddy Gaunt (Copyright (c) 2012)
 
+Many Thanks, especially to Paddy Gaunt, Peter de Rivaz, Jon Macey and others who have contributed to Pi3D - keep up the good work!
+
+A new version of Pi3D implementing Shaders will be available in the near future. Keep watch!
+
+PLEASE READ LICENSING AND COPYRIGHT NOTICES IF USING FOR COMMERCIAL PURPOSES ESPECIALLY

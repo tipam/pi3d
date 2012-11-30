@@ -1,10 +1,21 @@
 Pi3D Change Log
 ===============
-Sorry, this started a bit late - better late than never!
 Tim Skillman
 
 Date      	Amends
 
+vsn 0.06
+2012-11-29  Added Pi3D.DrawString2D which now renders text to a 2D orthographic view
+2012-11-29  Added Pi3D.CollisionMap for checking collisions against objects.  Includes a collideLine method to see if a line of fire will hit an object
+2012-11-28  Pi3D.LodDraw3 and LodDraw3xyz added to enable Level Of Detail rendering for near, far and further models (or none at all) 
+2012-11-27  Loading textures checks for duplicates and uses preloaded textures rather than loads them again
+2012-11-26  Drawing models (LoadModel) can use offset,rotation,scale and centre values added to their draw call (skips a matrix calculation)
+2012-11-18  Modified loadECfiles to support other image types and an option not to render the bottom image
+2012-11-17  Added Pi3D.tkwin class for creating and handling TKinter window and events.  Much improved keyboard and mouse handling
+2012-11-17  Modified Pi3D display class to resize the viewport and destroy correctly.  Includes a seperate method to create_surface
+2012-11-17  Adopted Paddy Gaunt's fixes and additions to Pi3D module including LoadModel (Obj format) and ClashTest
+
+vsn 0.05
 2012-07-20  Add textures class so that textures can be deleted correctly
 2012-07-20  Fixed a couple of bugs with latest release of Raspbian Wheezy
 2012-07-12  Amended mergeShape to include shape's existing parameters (x,y,z,rotations, scale)

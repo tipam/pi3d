@@ -1,5 +1,5 @@
-# Bouncing balls example using pi3d module
-# ========================================
+# Collision balls example using pi3d module
+# =========================================
 # Copyright (c) 2012 - Tim Skillman
 # Version 0.02 - 03Jul12
 # 
@@ -11,11 +11,6 @@
 #      $ sudo apt-get install python-imaging
 #
 # before running this example
-#
-# Bouncing demonstrates pi3d sprites over the desktop.
-# It uses the orthographic view scaled to the size of the window;
-# this means that sprites can be drawn at pixel resolution
-# which is more common for 2D.  Also demonstrates a mock title bar.
 
 import pi3d, sys, random, array
 

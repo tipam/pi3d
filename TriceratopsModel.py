@@ -23,13 +23,10 @@ display.setBackColour(0.2,0.4,0.6,1)    # r,g,b,alpha
 
 # load model_loadmodel
 texs = pi3d.textures()
-mymodel = pi3d.loadModel("models/Triceratops/Triceratops.egg",texs,"Triceratops", 0,-1,0, -90,0,0, .005,.005,.005)
+mymodel = pi3d.loadModel("models/Triceratops/Triceratops.egg",texs,"Triceratops", 0,-1,-40, -90,0,0, .005,.005,.005)
 	
 # Fetch key presses
 mykeys = pi3d.key()
-
-# mastrix and rotate variables
-rot=0
 
 #create a light
 mylight = pi3d.createLight(0,1,1,1,"",10,10,0)
@@ -38,12 +35,8 @@ mylight.on()
 while 1:
     display.clear()
 
-    pi3d.identity()
-    pi3d.position(0,0,-40)
-    pi3d.rotate(0,rot,0)
-    rot += 3
-
     mymodel.draw()
+    mymodel.rotateIncY(3)
     
     k = mykeys.read()
     if k >-1:
