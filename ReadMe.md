@@ -101,20 +101,21 @@ Uses realistic modelling and LODing in a TKwindow
 
 1) **Memory Split setup**
 
-Although most demos work on 64MB of memory, you are strongly advised to have a 128MB of graphics memory split, especially for full-screen 3D graphics.
+Although most demos work on 64MB of memory, you are strongly advised to have a 128MB of graphics memory split, especially for full-screen 3D graphics.  In the latest Raspbian build you need to edit the config.txt file (in the boot directory) and set the variable 'gpu_mem=128' for 128MB of graphics memory.
+ 
 
 2) **Install Python Imaging**
 
 Before trying any of the demos or Pi3D, you must download the Python Imaging Library as this is needed for importing any graphics used by Pi3. To install on the terminal, type: 
 
-      **sudo apt-get install python-imaging**
+      sudo apt-get install python-imaging
 
 
 3) **Install Geany to run Pi3D**
 
 Geany is by far the easiest and most compatible application to use for creating and running Python scripts. Download and install it with:
 
-     **sudo apt-get install geany xterm**
+      sudo apt-get install geany xterm
 
 4) **Load and run**
 
