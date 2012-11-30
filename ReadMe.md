@@ -35,7 +35,7 @@ This is the third release of the pi3d module which has various demo's of built-i
 
 5) **BouncingBalls.py** 2D rendering with a title bar and 2D text 
 
-![Bouncing Balls](http://www.skillmanmedia.com/pi3d/images/bouncingballs_sml.png)
+![Bouncing Balls](http://www.skillmanmedia.com/pi3d/images/bouncingballs_sml.jpg)
 
 6) **Raspberry_Rain.py** Raining Raspberries,  full-screen, over the desktop 
 
@@ -43,23 +43,23 @@ This is the third release of the pi3d module which has various demo's of built-i
 
 7) **Clouds3D.py** Blended sprites in perspective view 
 
-![Bounding Balls](http://www.skillmanmedia.com/pi3d/images/clouds3d_sml.png)
+![Clouds 3D](http://www.skillmanmedia.com/pi3d/images/clouds3d_sml.png)
 
 8) **CollisionBalls.py** More bouncing balls across the screen - this time bouncing off each other on the desktop
 
-![Bounding Balls](http://www.skillmanmedia.com/pi3d/images/bouncingballs_sml.png)
+![Collision Balls](http://www.skillmanmedia.com/pi3d/images/bouncingballs_sml.png)
 
 9) **EnvironmentCube.py** New environment cubes to try out in texture/ecubes - some high quality ones!
 
-![Bounding Balls](http://www.skillmanmedia.com/pi3d/images/envcube_sml.png)
+![Environment Cube](http://www.skillmanmedia.com/pi3d/images/envcube_sml.png)
 
 10) **RobotWalkabout.py** Another off-planet example of a basic avatar robot drifting about
 
-![Bounding Balls](http://www.skillmanmedia.com/pi3d/images/walkaboutRobot_sml.png)
+![Robot Walkabout](http://www.skillmanmedia.com/pi3d/images/walkaboutRobot_sml.png)
 
 11) **Shapes.py** Demos available shapes and text in a 3D context
 
-![Bounding Balls](http://www.skillmanmedia.com/pi3d/images/shapes_sml.png)
+![Shapes](http://www.skillmanmedia.com/pi3d/images/shapes_sml.png)
 
 12) **MarsStation.py** Navigate around an abandoned Mars base-station with open/shut doors. 
 Implements a new Level-Of-Detail (LOD) feature and TKwindow interface
@@ -70,3 +70,79 @@ Implements a new Level-Of-Detail (LOD) feature and TKwindow interface
 Uses realistic modelling and LODing in a TKwindow
 
 ![Tiger Tank](http://www.skillmanmedia.com/pi3d/images/TigerTank_sm.png)
+
+14) **Amazong.py** 
+
+![Amazing](http://www.skillmanmedia.com/pi3d/images/amazing_sml.png)  Can you find yourself around the amazing maze?  Written by Paddy Gaunt.
+
+15) **Pong.py** 
+
+![Tiger Tank](http://www.skillmanmedia.com/pi3d/images/pong_sml.png)  A snazzy 3D version of landscape pinball and pong against a Raspberry!   Written by Paddy Gaunt.
+
+
+
+# Files and folders in this repository
+
+
+1. **pi3d.py** The main pi3d module
+2. **include** Contains pi3d support files
+3. **textures** Various textures to play with
+4. **models** Demo egg models
+5. **fonts** Bitmap fonts that can be using for drawing text
+6. **screenshots** Example screenshots of the demos included
+7. **images** used for ReadMe.html
+8. **ChangeLog.txt** Latest changes of Pi3D
+9. **ReadMe.md** This file
+10. **ReadMe.htm** HTML readme
+
+
+# Setup on the Raspberry Pi
+
+
+1) **Memory Split setup**
+
+Although most demos work on 64MB of memory, you are strongly advised to have a 128MB of graphics memory split, especially for full-screen 3D graphics.
+
+2) **Install Python Imaging**
+
+Before trying any of the demos or Pi3D, you must download the Python Imaging Library as this is needed for importing any graphics used by Pi3. To install on the terminal, type: 
+
+      **sudo apt-get install python-imaging**
+
+
+3) **Install Geany to run Pi3D**
+
+Geany is by far the easiest and most compatible application to use for creating and running Python scripts. Download and install it with:
+
+     **sudo apt-get install geany xterm**
+
+4) **Load and run**
+
+
+Load any of the demos into Geany and run (using the cogs icon)
+
+
+
+# Documentation
+
+
+A short 'manual' on using pi3d can be found on this github. Please note that Pi3D functions may change significantly during it's development.
+
+Bug reports, comments, feature requests and fixes are most welcome!
+
+Please email on timskillman@gmail.com or contact me through the Raspberry Pi forums.
+
+# Acknowledgements
+
+Pi3D started with code based on Peter de Rivaz 'pyopengles' (https://github.com/peterderivaz/pyopengles) with some tweaking from Jon Macey's code (jonmacey.blogspot.co.uk/2012/06/). 
+
+The Panda3D loaderEgg.py and LoaderObj.py modules are written by Paddy Gaunt (Copyright (c) 2012)
+
+Many Thanks, especially to Paddy Gaunt, Peter de Rivaz, Jon Macey and others who have contributed to Pi3D - keep up the good work!
+
+A new version of Pi3D implementing Shaders will be available in the near future. Keep watch!
+
+
+**PLEASE READ LICENSING AND COPYRIGHT NOTICES IF USING FOR COMMERCIAL PURPOSES ESPECIALLY**
+
+
