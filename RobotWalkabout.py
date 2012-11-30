@@ -21,8 +21,8 @@ rads = 0.017453292512  # degrees to radians
 
 # Setup display and initialise pi3d
 display = pi3d.display()
-display.create3D(100,100,1600,800, 0.5, 800.0, 60.0)   	# x,y,width,height,near,far,aspect
-display.setBackColour(0.4,0.8,0.8,1)    	# r,g,b,alpha
+display.create3D(100,100,1600,800, 0.5, 800.0, 60.0)    # x,y,width,height,near,far,aspect
+display.setBackColour(0.4,0.8,0.8,1)        # r,g,b,alpha
 
 # Load textures
 texs = pi3d.textures()
@@ -96,19 +96,19 @@ while 1:
     if tilt<-1: sf=1.0/-tilt
     else: sf=1.0
     mtrx.translate(0,-10*sf-5.0,-40*sf)   #zoom camera out so we can see our robot
-    mtrx.rotate(tilt,0,0)		#Robot still affected by scene tilt
+    mtrx.rotate(tilt,0,0)       #Robot still affected by scene tilt
     
     #draw robot
     mylight.on()
     robot.drawAll(metalimg)
     mylight.off()
     
-    mtrx.rotate(0,rot,0)		#rotate rest of scene around robot
-    mtrx.translate(xm,ym,zm)	#translate rest of scene relative to robot position
+    mtrx.rotate(0,rot,0)        #rotate rest of scene around robot
+    mtrx.translate(xm,ym,zm)    #translate rest of scene relative to robot position
     
     myecube.draw(ectex,xm,ym,zm)#Draw environment cube
     myfog.on()
-    mymap.draw(mountimg1)		#Draw the landscape
+    mymap.draw(mountimg1)       #Draw the landscape
     station.drawAll(metalimg)
     myfog.off()
     
@@ -120,35 +120,34 @@ while 1:
     tilt -= (my-omy)*0.2
     omx=mx
     omy=my
-		
+        
     #Press ESCAPE to terminate
     k = mykeys.read()
     if k >-1:
-	if k==119:    #key W
-	    xm-=math.sin(rot*rads)
-	    zm+=math.cos(rot*rads)
-	    ym = -(mymap.calcHeight(xm,zm)+avhgt)
-	elif k==115:  #kry S
-	    xm+=math.sin(rot*rads)
-	    zm-=math.cos(rot*rads)
-	    ym = -(mymap.calcHeight(xm,zm)+avhgt)
-	elif k==39:   #key '
-		tilt -= 2.0
-		print tilt
-	elif k==47:   #key /
-		tilt += 2.0
-	elif k==97:   #key A
-	    rot -= 2
-	elif k==100:  #key D
-	    rot += 2
-	elif k==112:  #key P
-	    display.screenshot("walkaboutRobot.jpg")
-	elif k==27:    #Escape key
-		mykeys.close()
-		texs.deleteAll()
-		display.destroy()
-		break
-	else:
-	    print k
+            if k==119:    #key W
+                    xm-=math.sin(rot*rads)
+                    zm+=math.cos(rot*rads)
+                    ym = -(mymap.calcHeight(xm,zm)+avhgt)
+            elif k==115:  #kry S
+                    xm+=math.sin(rot*rads)
+                    zm-=math.cos(rot*rads)
+                    ym = -(mymap.calcHeight(xm,zm)+avhgt)
+            elif k==39:   #key '
+                    tilt -= 2.0
+                    print tilt
+            elif k==47:   #key /
+                    tilt += 2.0
+            elif k==97:   #key A
+                    rot -= 2
+            elif k==100:  #key D
+                    rot += 2
+            elif k==112:  #key P
+                    display.screenshot("walkaboutRobot.jpg")
+            elif k==27:    #Escape key
+                    mykeys.close()
+                    texs.deleteAll()
+                    display.destroy()
+                    break
+
    
     display.swapBuffers()

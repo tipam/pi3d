@@ -44,9 +44,9 @@ def loadECfiles(path,fname,ext,texs,nobottom=False):
     faces.append(texs.loadTexture(filep+"_right."+ext))
     faces.append(texs.loadTexture(filep+"_back."+ext))
     if nobottom:
-	faces.append(0)
+        faces.append(0)
     else:
-	faces.append(texs.loadTexture(filep+"_bottom."+ext))
+        faces.append(texs.loadTexture(filep+"_bottom."+ext))
     return faces
     
 def merge(self,shape, x,y,z, rx=0.0,ry=0.0,rz=0.0, sx=1.0,sy=1.0,sz=1.0, cx=0.0,cy=0.0,cz=0.0):
@@ -209,7 +209,7 @@ class display(object):
         self.bottom = y+h
         
         #Destroy current surface and native window            
-	openegl.eglSwapBuffers(self.display, self.surface)
+        openegl.eglSwapBuffers(self.display, self.surface)
         openegl.eglDestroySurface(self.display, self.surface)
         bcm.vc_dispmanx_display_close(self.dispman_display)
         bcm.vc_dispmanx_element_remove(self.dispman_update,self.dispman_element)
@@ -218,7 +218,7 @@ class display(object):
         create_surface(self,x,y,w,h)
                
     def destroy(self):
-	#Used only when exiting Pi3D
+        #Used only when exiting Pi3D
         if self.active:
             openegl.eglSwapBuffers(self.display, self.surface)
             openegl.eglMakeCurrent(self.display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT)
@@ -933,12 +933,12 @@ class collisionMap(object):
 
 
         def collideLine(self,fx,fy,fz,tx,ty,tz):
-			    
-		# check if collision takes place on the collision map
-		# by drawing a straight line along a 3D vector.  If any
-		# pixels, representing a height, obscure the path, then a
-		# collision occurs.  Method uses a modified Bresenham's
-		# line algorithm for speed
+                            
+                # check if collision takes place on the collision map
+                # by drawing a straight line along a 3D vector.  If any
+                # pixels, representing a height, obscure the path, then a
+                # collision occurs.  Method uses a modified Bresenham's
+                # line algorithm for speed
 
                 dx = tx-fx
                 dz = tz-fz
@@ -951,24 +951,24 @@ class collisionMap(object):
                 collide = False
                 
                 while x<=tx and collide == False:
-		    if d>0:
-			if self.pixels[(self.wh-x)*self.ws,(self.hh-z)*self.hs]*self.ht > y:
-			    collide=True
-			else:
-			    d+=(2*dz-2*dx)
-			    y+=dyz
-			z+=1
-		    else:
-			if self.pixels[(self.wh-x)*self.ws,(self.hh-z)*self.hs]*self.ht > y:
-			    collide=True
-			else:
-			    d+=2*dz
-			    y+=dyx
-			x+=1
-							
-		return collide,x,y,z
+                    if d>0:
+                        if self.pixels[(self.wh-x)*self.ws,(self.hh-z)*self.hs]*self.ht > y:
+                            collide=True
+                        else:
+                            d+=(2*dz-2*dx)
+                            y+=dyz
+                        z+=1
+                    else:
+                        if self.pixels[(self.wh-x)*self.ws,(self.hh-z)*self.hs]*self.ht > y:
+                            collide=True
+                        else:
+                            d+=2*dz
+                            y+=dyx
+                        x+=1
+                                                        
+                return collide,x,y,z
            
-	
+        
 class createElevationMapFromTexture(create_shape):
 
         def __init__(self, mapfile, width=100.0, depth=100.0, height=10.0, divx=0, divy=0, ntiles=1.0, name="",x=0.0,y=0.0,z=0.0, rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0, cx=0.0,cy=0.0,cz=0.0, smooth=False):
@@ -1018,32 +1018,32 @@ class createElevationMapFromTexture(create_shape):
                 idx=[]
                 
                 for y in range(0,iy):
-		    for x in range(0,ix):
-			    hgt = (self.pixels[x,y])*ht
-			    verts.append(-wh+x*ws)
-			    verts.append(hgt)
-			    verts.append(-hh+y*hs)
-			    
-			    if (smooth and y > 0 and y < (iy-1) and x > 0 and x < (ix-1)):
-				    nVec = crossproduct(-ws, self.pixels[x-1, y]*ht - hgt, 0, 0, hgt - self.pixels[x, y-1]*ht ,hs)
-				    norms.append(nVec[0])
-				    norms.append(nVec[1])
-				    norms.append(nVec[2])
-			    else:
-				    norms.append(0.0)
-				    norms.append(1.0)
-				    norms.append(0.0)
-			    tex_coords.append((ix-x) * tx)
-			    tex_coords.append((iy-y) * ty)
+                    for x in range(0,ix):
+                            hgt = (self.pixels[x,y])*ht
+                            verts.append(-wh+x*ws)
+                            verts.append(hgt)
+                            verts.append(-hh+y*hs)
+                            
+                            if (smooth and y > 0 and y < (iy-1) and x > 0 and x < (ix-1)):
+                                    nVec = crossproduct(-ws, self.pixels[x-1, y]*ht - hgt, 0, 0, hgt - self.pixels[x, y-1]*ht ,hs)
+                                    norms.append(nVec[0])
+                                    norms.append(nVec[1])
+                                    norms.append(nVec[2])
+                            else:
+                                    norms.append(0.0)
+                                    norms.append(1.0)
+                                    norms.append(0.0)
+                            tex_coords.append((ix-x) * tx)
+                            tex_coords.append((iy-y) * ty)
                 #smooth normals
                 if smooth:
-		    for y in range(0,iy):
-			    for x in range(0,ix):
-				    p = y*ix+x
-				    if (y > 0 and y < (iy-1) and x > 0 and x < (ix-1)):
-					    norms[p] = (norms[p-3] + norms[p+3] + norms[p-ix*3] + norms[p+ix*3] + norms[p])/5
-					    norms[p+1] = (norms[p-2] + norms[p+4] + norms[p-ix*3+1] + norms[p+ix*3+1])/5
-					    norms[p+2] = (norms[p-1] + norms[p+5] + norms[p-ix*3+2] + norms[p+ix*3+2])/5
+                    for y in range(0,iy):
+                            for x in range(0,ix):
+                                    p = y*ix+x
+                                    if (y > 0 and y < (iy-1) and x > 0 and x < (ix-1)):
+                                            norms[p] = (norms[p-3] + norms[p+3] + norms[p-ix*3] + norms[p+ix*3] + norms[p])/5
+                                            norms[p+1] = (norms[p-2] + norms[p+4] + norms[p-ix*3+1] + norms[p+ix*3+1])/5
+                                            norms[p+2] = (norms[p-1] + norms[p+5] + norms[p-ix*3+2] + norms[p+ix*3+2])/5
                 s=0
                 #create one long triangle_strip by alternating X directions     
                 for y in range(0,iy-2,2):
@@ -1089,7 +1089,7 @@ class createElevationMapFromTexture(create_shape):
                 if z < 0: z = 0
                 if z > self.iy: z = self.iy
                 
-				#Try first triangle of landscape tile and then the second triangle
+                                #Try first triangle of landscape tile and then the second triangle
                 ih=intersectTriangle((x,self.pixels[x,z]*self.ht,z), (x+1,self.pixels[x+1,z]*self.ht,z), (x,self.pixels[x,z+1]*self.ht,z+1), (px,0,pz))
                 if ih == -100000:
                     ih=intersectTriangle((x+1,self.pixels[x+1,z+1]*self.ht,z+1), (x+1,self.pixels[x+1,z]*self.ht,z), (x,self.pixels[x,z+1]*self.ht,z+1), (px,0,pz))
@@ -1316,7 +1316,7 @@ class font(object):
         draw.rectangle((0,1,ix,iy),fill=col)
         im.putalpha(alpha)
         self.alpha=True
-	self.blend=True
+        self.blend=True
         #im = im.transpose(Image.FLIP_TOP_BOTTOM)
         image = im.convert("RGBA").tostring("raw","RGBA")
         self.tex=eglint()
@@ -1329,25 +1329,42 @@ class font(object):
 # Miscellaneous classes
 
 
-def lodDraw3(px,py,pz,mx,my,mz,dist1,model1,dist2=1000,model2=None,dist3=1500,model3=None):
+def lodDraw3(px,py,pz,dist1,model1,dist2=1000,model2=None,dist3=1500,model3=None):
 
-	#Level Of Detail checking and rendering
-	
-	dist = distance(px,py,pz,mx,my,mz)
-	if dist > dist3: return
-	
-	if dist < dist1:
-		model1.draw(None,None,mx,my,mz)
-		return
-	
-	if model2<>None:
-	    if dist < dist2:
-		model2.draw(None,None,mx,my,mz)
-		return
-	
-	if model3<>None: model3.draw(None,None,mx,my,mz)
+        #Level Of Detail checking and rendering
+        
+        dist = distance(px,py,pz,model1.x,model1.y,model1.z)
+        if dist > dist3: return
+        
+        if dist < dist1:
+                model1.draw()
+                return
+        
+        if model2<>None:
+            if dist < dist2:
+                model2.draw()
+                return
+        
+        if model3<>None: model3.draw()
 
-	
+def lodDraw3xyz(px,py,pz,mx,my,mz,dist1,model1,dist2=1000,model2=None,dist3=1500,model3=None):
+
+        #Level Of Detail checking and rendering
+        
+        dist = distance(px,py,pz,mx,my,mz)
+        if dist > dist3: return
+        
+        if dist < dist1:
+                model1.draw(None,None,mx,my,mz)
+                return
+        
+        if model2<>None:
+            if dist < dist2:
+                model2.draw(None,None,mx,my,mz)
+                return
+        
+        if model3<>None: model3.draw(None,None,mx,my,mz)
+        
 class missile(object):
     def __init__(self):
         self.isActive = False
@@ -1440,54 +1457,54 @@ class tkwin(tk.Tk):
     def __init__(self, parent, title,width,height):
         tk.Tk.__init__(self, parent)
 
-	def mouseclick_callback(event):
-		if self.resized==False:
-			self.ev = "click"
-			self.x = event.x
-			self.y = event.y
+        def mouseclick_callback(event):
+                if self.resized==False:
+                        self.ev = "click"
+                        self.x = event.x
+                        self.y = event.y
 
-	def mousemove_callback(event):
-		if self.resized==False:
-			self.ev = "move"
-			self.x = event.x
-			self.y = event.y
+        def mousemove_callback(event):
+                if self.resized==False:
+                        self.ev = "move"
+                        self.x = event.x
+                        self.y = event.y
 
-	def mousewheel_callback(event):
-		if self.resized==False:
-			self.ev = "wheel"
-			self.num = event.num
-			self.delta = event.delta
+        def mousewheel_callback(event):
+                if self.resized==False:
+                        self.ev = "wheel"
+                        self.num = event.num
+                        self.delta = event.delta
 
-	def drag_callback(event):
-		if self.resized==False:
-			self.ev = "drag"
-			self.x = event.x
-			self.y = event.y
-			mouserot=event.x
+        def drag_callback(event):
+                if self.resized==False:
+                        self.ev = "drag"
+                        self.x = event.x
+                        self.y = event.y
+                        mouserot=event.x
 
-	def resize_callback(event):
-		self.ev = "resized"
-		self.winx = self.winfo_x()
-		self.winy = self.winfo_y()
-		self.width = event.width
-		self.height = event.height
-		self.resized=True
+        def resize_callback(event):
+                self.ev = "resized"
+                self.winx = self.winfo_x()
+                self.winy = self.winfo_y()
+                self.width = event.width
+                self.height = event.height
+                self.resized=True
 
-	def key_callback(event):
-		if self.resized==False:
-			self.ev = "key"
-			self.key = event.keysym
-			self.char = event.char
-				
-	tk.Tk.bind(self,"<Button-1>", mouseclick_callback)
-	tk.Tk.bind(self,"<B1-Motion>",drag_callback)
-	tk.Tk.bind(self,"<Motion>",mousemove_callback)
-	tk.Tk.bind(self,"<MouseWheel>", mousewheel_callback)
-	tk.Tk.bind(self,"<Configure>", resize_callback)
-	tk.Tk.bind_all(self,'<Key>', key_callback)
-	tk.Tk.geometry(self,str(width)+"x"+str(height))
-	
-	self.title(title)
-	self.ev=""
-	self.resized=False
-	
+        def key_callback(event):
+                if self.resized==False:
+                        self.ev = "key"
+                        self.key = event.keysym
+                        self.char = event.char
+                                
+        tk.Tk.bind(self,"<Button-1>", mouseclick_callback)
+        tk.Tk.bind(self,"<B1-Motion>",drag_callback)
+        tk.Tk.bind(self,"<Motion>",mousemove_callback)
+        tk.Tk.bind(self,"<MouseWheel>", mousewheel_callback)
+        tk.Tk.bind(self,"<Configure>", resize_callback)
+        tk.Tk.bind_all(self,'<Key>', key_callback)
+        tk.Tk.geometry(self,str(width)+"x"+str(height))
+        
+        self.title(title)
+        self.ev=""
+        self.resized=False
+        

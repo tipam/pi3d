@@ -18,13 +18,13 @@ import pi3d
 
 # Setup display and initialise pi3d
 display = pi3d.display()
-display.create3D(100,100,1200,900)   	# x,y,width,height
+display.create3D(100,100,1200,900)      # x,y,width,height
 display.setBackColour(0.2,0.4,0.6,1)    # r,g,b,alpha
 
 # load model_loadmodel
 texs = pi3d.textures()
 mymodel = pi3d.loadModel("models/Triceratops/Triceratops.egg",texs,"Triceratops", 0,-1,-40, -90,0,0, .005,.005,.005)
-	
+    
 # Fetch key presses
 mykeys = pi3d.key()
 
@@ -40,13 +40,13 @@ while 1:
     
     k = mykeys.read()
     if k >-1:
-	if k==112: display.screenshot("Triceratops.jpg")
-	elif k==27:
-	    mykeys.close()
-	    texs.deleteAll()
-	    display.destroy()
-	    break
-	else:
-	    print k
+        if k==112: display.screenshot("Triceratops.jpg")
+        elif k==27:
+            mykeys.close()
+            texs.deleteAll()
+            display.destroy()
+            break
+        else:
+            print k
  
     display.swapBuffers()

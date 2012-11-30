@@ -17,8 +17,8 @@ import pi3d
 
 # Setup display and initialise pi3d
 display = pi3d.display()
-display.create3D(100,100,1200,900)   	# x,y,width,height
-display.setBackColour(0,0,0,1)    	# r,g,b,alpha
+display.create3D(100,100,1200,900)      # x,y,width,height
+display.setBackColour(0,0,0,1)      # r,g,b,alpha
 
 # Load textures
 texs = pi3d.textures()
@@ -96,13 +96,13 @@ while 1:
     
     k = mykeys.read()
     if k >-1:
-	if k==112: display.screenshot("shapesPic.jpg")
-	elif k==27:
-	    mykeys.close()
-	    texs.deleteAll()
-	    display.destroy()
-	    break
-	else:
-	    print k
+        if k==112: display.screenshot("shapesPic.jpg")
+        elif k==27:
+            mykeys.close()
+            texs.deleteAll()
+            display.destroy()
+            break
+        else:
+            print k
 
     display.swapBuffers()
