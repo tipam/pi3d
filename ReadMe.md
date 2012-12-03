@@ -43,7 +43,7 @@ This is the third release of the pi3d module which has various demo's of built-i
 
 7) **Clouds3D.py** Blended sprites in perspective view 
 
-![Clouds 3D](http://www.skillmanmedia.com/pi3d/images/clouds3d_sml.png)
+![Clouds 3D](http://www.skillmanmedia.com/pi3d/images/clouds3D_sml.png)
 
 8) **CollisionBalls.py** More bouncing balls across the screen - this time bouncing off each other on the desktop
 
