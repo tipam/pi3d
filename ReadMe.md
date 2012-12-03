@@ -71,13 +71,13 @@ Uses realistic modelling and LODing in a TKwindow
 
 ![Tiger Tank](http://www.skillmanmedia.com/pi3d/images/TigerTank_sm.png)
 
-14) **Amazong.py** 
+14) **Amazong.py** Can you find yourself around the amazing maze?  Written by Paddy Gaunt.
 
-![Amazing](http://www.skillmanmedia.com/pi3d/images/amazing_sml.png)  Can you find yourself around the amazing maze?  Written by Paddy Gaunt.
+![Amazing](http://www.skillmanmedia.com/pi3d/images/amazing_sml.png)
 
-15) **Pong.py** 
+15) **Pong.py**  A snazzy 3D version of landscape pinball and pong against a Raspberry!   Written by Paddy Gaunt.
 
-![Tiger Tank](http://www.skillmanmedia.com/pi3d/images/pong_sml.png)  A snazzy 3D version of landscape pinball and pong against a Raspberry!   Written by Paddy Gaunt.
+![Pong](http://www.skillmanmedia.com/pi3d/images/pong_sml.png)
 
 
 
