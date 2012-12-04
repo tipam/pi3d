@@ -115,8 +115,8 @@ while 1:
   myPlane.draw(coffimg)
   myPlane.rotateIncY(9)
 
-  String.string(arialFont, "Raspberry Pi ROCKS!",
-                -0.8, -0.7, -2.2, 10.0, 0.003, 0.003)
+  String.drawString3D(arialFont, "Raspberry Pi ROCKS!",
+                      -0.8, -0.7, -2.2, 10.0, 0.003, 0.003)
   #pi3d.drawString(destineFont,"Some nice OpenGL bitmap fonts to play with",-1.3,-0.3,-2.2, 10.0, 0.002,0.002)
 
   k = mykeys.read()

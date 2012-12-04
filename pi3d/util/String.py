@@ -2,7 +2,16 @@ from pi3d import *
 
 from pi3d.util import Utility
 
-def string(font, string, x, y, z, rot, sclx, scly):
+DOTS_PER_INCH = 72.0
+DEFAULT_FONT_DOT_SIZE = 24
+DEFAULT_FONT_SCALE = DEFAULT_FONT_DOT_SIZE / DOTS_PER_INCH
+
+def drawString2D(font, string, x=0, y=0, size=DEFAULT_FONT_DOT_SIZE):
+  size = size / DOTS_PER_INCH
+  drawString3D(font, string, x=x, y=y, z=-1.0, rot=0.0, sclx=size, scly=size)
+
+def drawString3D(font, string, x=0, y=0, z=-1.0, rot=0.0,
+                 sclx=DEFAULT_FONT_SCALE, scly=DEFAULT_FONT_SCALE):
   Utility.rect_normals()
   Utility.texture_min_mag()
 
@@ -10,8 +19,9 @@ def string(font, string, x, y, z, rot, sclx, scly):
   opengles.glBindTexture(GL_TEXTURE_2D, font.tex)
   opengles.glEnable(GL_TEXTURE_2D)
 
-  opengles.glDisable(GL_DEPTH_TEST)
-  opengles.glDisable(GL_CULL_FACE)
+  # TODO: why were these disabled?
+  # opengles.glDisable(GL_DEPTH_TEST)
+  # opengles.glDisable(GL_CULL_FACE)
   opengles.glEnable(GL_BLEND)
   opengles.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
@@ -33,6 +43,7 @@ def string(font, string, x, y, z, rot, sclx, scly):
   opengles.glLoadMatrixf(mtrx)
   opengles.glDisable(GL_TEXTURE_2D)
   opengles.glDisable(GL_BLEND)
-  opengles.glEnable(GL_DEPTH_TEST)
-  opengles.glEnable(GL_CULL_FACE)
 
+  # TODO: and these?
+  # opengles.glEnable(GL_DEPTH_TEST)
+  # opengles.glEnable(GL_CULL_FACE)

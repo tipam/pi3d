@@ -39,12 +39,10 @@ class MeteredBall(Ball):
     super(MeteredBall, self).repaint(t)
     if True:
       s = 'vel = %d, %d' % (self.vx, self.vy)
-      String.string(font=FONT,
-                    string=s,
-                    x=1,
-                    y=1,
-                    z=0, rot=0,
-                    sclx=0.5/self.radius, scly=0.5/self.radius)
+      String.string3D(font=FONT, string=s,
+                      x=1, y=1, z=0, rot=0,
+                      sclx=0.5 / self.radius,
+                      scly=0.5 / self.radius)
 
 def random_ball():
   """Return a ball with a random color, position and velocity."""

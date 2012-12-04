@@ -82,9 +82,9 @@ class Shape(object):
   def transform(self):
     Utility.translatef(self.x - self.cx, self.y - self.cy, self.z - self.cz)
 
-    # TODO: why the reverse order?
-    Utility.rotatef(self.rotz, 0, 0, 1)
+    # TODO: why the scrambled order?
     Utility.rotatef(self.roty, 0, 1, 0)
+    Utility.rotatef(self.rotz, 0, 0, 1)
     Utility.rotatef(self.rotx, 1, 0, 0)
     Utility.scalef(self.sx, self.sy, self.sz)
     Utility.translatef(self.cx, self.cy, self.cz)
