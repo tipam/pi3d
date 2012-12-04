@@ -17,19 +17,21 @@ import math, random, time
 
 from pi3d import *
 
-from pi3d.Display import Display
+from pi3d import Display
 from pi3d.Texture import Texture
 
-from pi3d.shape import ElevationMap
+from pi3d.shape.ElevationMap import ElevationMap
 from pi3d.shape import EnvironmentCube
 from pi3d.shape.Model import Model
+
+from pi3d.util.TkWin import TkWin
 
 rads = 0.017453292512  # degrees to radians
 
 #Create a Tkinter window
 winw,winh,bord = 1200,600,0     #64MB GPU memory setting
 #winw,winh,bord = 1920,1200,0   #128MB GPU memory setting
-win = pi3d.tkwin(None,"Tiger Tank demo in Pi3D",winw,winh)
+win = TkWin(None,"Tiger Tank demo in Pi3D",winw,winh)
 
 # Setup display and initialise pi3d viewport over the window
 win.update()  #requires a window update first so that window sizes can be retreived
@@ -37,8 +39,8 @@ display = Display.create(x=win.winx, y=win.winy, w=winw, h=winh - bord,
                          far=2200.0, background=(0.4, 0.8, 0.8, 1))
 
 #texture storage for loading textures
-ectex = Shape.loadECfiles("textures/ecubes/Miramar", "miramar_256", suffix="png")
-myecube = EnvironmentCube(1800.0, "FACES")
+ectex = EnvironmentCube.loadECfiles("textures/ecubes/Miramar", "miramar_256", suffix="png")
+myecube = EnvironmentCube.EnvironmentCube(1800.0, "FACES")
 
 # Create elevation map
 mapwidth = 2000.0

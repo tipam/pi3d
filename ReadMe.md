@@ -29,19 +29,19 @@ This is the third release of the pi3d module which has various demo's of built-i
 
 ![Buckfast Abbey](http://www.skillmanmedia.com/pi3d/images/BuckfastAbbey_sml.png)
 
-4) **Earth.py** Demonstrates semi-transparent clouds and hierarchical rotations 
+4) **Earth.py** Demonstrates semi-transparent clouds and hierarchical rotations
 
 ![Earth](http://www.skillmanmedia.com/pi3d/images/earthPic_sml.png)
 
-5) **BouncingBalls.py** 2D rendering with a title bar and 2D text 
+5) **BouncingBalls.py** 2D rendering with a title bar and 2D text
 
 ![Bouncing Balls](http://www.skillmanmedia.com/pi3d/images/bouncingballs_sml.jpg)
 
-6) **Raspberry_Rain.py** Raining Raspberries,  full-screen, over the desktop 
+6) **Raspberry_Rain.py** Raining Raspberries,  full-screen, over the desktop
 
 ![Raspberry_Rain](http://www.skillmanmedia.com/pi3d/images/raspberryRain_sml.png)
 
-7) **Clouds3D.py** Blended sprites in perspective view 
+7) **Clouds3D.py** Blended sprites in perspective view
 
 ![Clouds 3D](http://www.skillmanmedia.com/pi3d/images/clouds3D_sml.png)
 
@@ -61,12 +61,12 @@ This is the third release of the pi3d module which has various demo's of built-i
 
 ![Shapes](http://www.skillmanmedia.com/pi3d/images/shapes_sml.png)
 
-12) **MarsStation.py** Navigate around an abandoned Mars base-station with open/shut doors. 
+12) **MarsStation.py** Navigate around an abandoned Mars base-station with open/shut doors.
 Implements a new Level-Of-Detail (LOD) feature and TKwindow interface
 
 ![Mars Station](http://www.skillmanmedia.com/pi3d/images/MegaStation_sml.png)
 
-13) **TigerTank.py** Ever played World Of Tanks (WOT)? This tank emulates how a WOT tank works. 
+13) **TigerTank.py** Ever played World Of Tanks (WOT)? This tank emulates how a WOT tank works.
 Uses realistic modelling and LODing in a TKwindow
 
 ![Tiger Tank](http://www.skillmanmedia.com/pi3d/images/TigerTank_sm.png)
@@ -102,14 +102,13 @@ Uses realistic modelling and LODing in a TKwindow
 1) **Memory Split setup**
 
 Although most demos work on 64MB of memory, you are strongly advised to have a 128MB of graphics memory split, especially for full-screen 3D graphics.  In the latest Raspbian build you need to edit the config.txt file (in the boot directory) and set the variable 'gpu_mem=128' for 128MB of graphics memory.
- 
+
 
 2) **Install Python Imaging**
 
-Before trying any of the demos or Pi3D, you must download the Python Imaging Library as this is needed for importing any graphics used by Pi3. To install on the terminal, type: 
+Before trying any of the demos or Pi3D, you must download the Python Imaging Library as this is needed for importing any graphics used by Pi3. To install on the terminal, type:
 
       sudo apt-get install python-imaging
-
 
 3) **Install Geany to run Pi3D**
 
@@ -117,8 +116,13 @@ Geany is by far the easiest and most compatible application to use for creating 
 
       sudo apt-get install geany xterm
 
-4) **Load and run**
+4) **Optionally, install tk.**
 
+Some of the demos require the tk graphics toolkit.  To download and install it:
+
+    sudo apt-get install tk
+
+5) **Load and run**
 
 Load any of the demos into Geany and run (using the cogs icon)
 
@@ -135,7 +139,7 @@ Please email on timskillman@gmail.com or contact me through the Raspberry Pi for
 
 # Acknowledgements
 
-Pi3D started with code based on Peter de Rivaz 'pyopengles' (https://github.com/peterderivaz/pyopengles) with some tweaking from Jon Macey's code (jonmacey.blogspot.co.uk/2012/06/). 
+Pi3D started with code based on Peter de Rivaz 'pyopengles' (https://github.com/peterderivaz/pyopengles) with some tweaking from Jon Macey's code (jonmacey.blogspot.co.uk/2012/06/).
 
 The Panda3D loaderEgg.py and LoaderObj.py modules are written by Paddy Gaunt (Copyright (c) 2012)
 
