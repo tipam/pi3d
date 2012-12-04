@@ -49,21 +49,21 @@ mountimg1 = Texture("textures/mountains3_512.jpg")
 mymap = ElevationMap("textures/mountainsHgt2.png",mapwidth,mapdepth,mapheight,64,64)
 
 #Load tank
-tank_body = Model("models/Tiger/bodylow.egg",texs,"TigerBody", 0,0,0, -90,-90,0, .1,.1,.1)
-tank_gun = Model("models/Tiger/gunlow.egg",texs,"TigerGun", 0,0,0, -90,-90,0, .1,.1,.1, 0,0,0)
-tank_turret = Model("models/Tiger/turretlow.egg",texs,"TigerTurret", 0,0,0, -90,-90,0, .1,.1,.1, 0,0,0)
+tank_body = Model("models/Tiger/bodylow.egg", "TigerBody", 0,0,0, -90,-90,0, .1,.1,.1)
+tank_gun = Model("models/Tiger/gunlow.egg", "TigerGun", 0,0,0, -90,-90,0, .1,.1,.1, 0,0,0)
+tank_turret = Model("models/Tiger/turretlow.egg", "TigerTurret", 0,0,0, -90,-90,0, .1,.1,.1, 0,0,0)
 
 #Load church
 x,z = 20,-320
 y = mymap.calcHeight(-x,-z)
-church = Model("models/AllSaints/AllSaints.egg",texs,"church1", x,y,z, -90,0,0, .1,.1,.1)
-churchlow = Model("models/AllSaints/AllSaints-lowpoly.egg",texs,"church2", x,y,z, -90,0,0, .1,.1,.1)
+church = Model("models/AllSaints/AllSaints.egg", "church1", x,y,z, -90,0,0, .1,.1,.1)
+churchlow = Model("models/AllSaints/AllSaints-lowpoly.egg", "church2", x,y,z, -90,0,0, .1,.1,.1)
 
 #Load cottages
 x,z = 250,-40
 y = mymap.calcHeight(-x,-z)
-cottages = Model("models/Cottages/cottages_low.egg",texs,"cottagesLo", x,y,z, -90,-5,0, .1,.1,.1)
-#cottagesHi = Model("models/Cottages/cottages.egg",texs,"cottagesHi", x,y,z, -90,-5,0, .1,.1,.1)
+cottages = Model("models/Cottages/cottages_low.egg", "cottagesLo", x,y,z, -90,-5,0, .1,.1,.1)
+#cottagesHi = Model("models/Cottages/cottages.egg", "cottagesHi", x,y,z, -90,-5,0, .1,.1,.1)
 
 #player tank vars
 tankrot=0.0
@@ -172,7 +172,6 @@ try:
             elif win.key=="p":
                 display.screenshot("TigerTank.jpg")
             elif win.key=="Escape":
-                texs.deleteAll()
                 display.destroy()
                 win.destroy()
                 print "Bye bye!"
@@ -185,7 +184,6 @@ try:
 
 
 except Exception:
-    texs.deleteAll()
     display.destroy()
     win.destroy()
     print "Bye bye!"

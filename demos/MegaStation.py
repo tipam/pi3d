@@ -15,8 +15,11 @@
 
 import pi3d, math, random, time
 
-from pi3d import Display
+from pi3d.Display import Display
 from pi3d.Texture import Texture
+
+from pi3d.shape import EnvironmentCube
+from pi3d.shape.Model import Model
 
 rads = 0.017453292512  # degrees to radians
 
@@ -27,32 +30,31 @@ win = pi3d.tkwin(None,"Mega Space Station in Pi3D",winw,winh)
 
 # Setup display and initialise pi3d viewport over the window
 win.update()  #requires a window update first so that window sizes can be retreived
-display = pi3d.display()
-display.create3D(win.winx,win.winy,winw,winh-bord, 0.5, 2200.0, 60.0)   	# x,y,width,height,near,far,aspect,zdepth
-display.setBackColour(0.4,0.8,0.8,1)    	# r,g,b,alpha
+display = Display.create(win.winx, win.winy, winw, winh-bord, far=2200.0,
+                         background=(0.4, 0.8, 0.8, 1))
 
 #texture storage for loading textures
-texs = pi3d.textures()
-ectex=pi3d.loadECfiles("textures/ecubes/RedPlanet","redplanet_256","png",texs,True)
-myecube = pi3d.createEnvironmentCube(1800.0,"FACES")
+ectex = EnvironmentCube.loadECfiles('textures/ecubes/RedPlanet', 'redplanet_256',
+                                    suffix='png', nobottom=True)
+myecube = EnvironmentCube.EnvironmentCube(1800.0, 'FACES')
 
 
 # Create elevation map
 mapwidth=2000.0
 mapdepth=2000.0
 mapheight=100.0
-redplanet = texs.loadTexture("textures/mars_colour.png")
-mymap = pi3d.createElevationMapFromTexture("textures/mars_height.png",mapwidth,mapdepth,mapheight,64,64)
+redplanet = Texture("textures/mars_colour.png")
+mymap = ElevationMap("textures/mars_height.png",mapwidth,mapdepth,mapheight,64,64)
 
 #Load Corridors sections
 
 x,z = 0,0
 y = mymap.calcHeight(-x,-z)
-cor_win = pi3d.loadModel("models/MegaStation/corridor_win_lowpoly.egg",texs,"", x,y,z, -90,0,0, .1,.1,.1)
-corridor = pi3d.loadModel("models/MegaStation/corridor_lowpoly.egg",texs,"", x,y,z, -90,0,0, .1,.1,.1)
-cor_cross = pi3d.loadModel("models/MegaStation/cross_room.egg",texs,"", x,y,z, -90,0,0, .1,.1,.1)
-cor_cross_doors = pi3d.loadModel("models/MegaStation/cross_room_doors.egg",texs,"", x,y,z, -90,0,0, .1,.1,.1)
-cor_bend = pi3d.loadModel("models/MegaStation/bend_lowpoly.egg",texs,"", x,y,z, -90,0,0, .1,.1,.1)
+cor_win = Model("models/MegaStation/corridor_win_lowpoly.egg", "", x,y,z, -90,0,0, .1,.1,.1)
+corridor = Model("models/MegaStation/corridor_lowpoly.egg", "", x,y,z, -90,0,0, .1,.1,.1)
+cor_cross = Model("models/MegaStation/cross_room.egg", "", x,y,z, -90,0,0, .1,.1,.1)
+cor_cross_doors = Model("models/MegaStation/cross_room_doors.egg", "", x,y,z, -90,0,0, .1,.1,.1)
+cor_bend = Model("models/MegaStation/bend_lowpoly.egg", "", x,y,z, -90,0,0, .1,.1,.1)
 
 #position vars
 mouserot=0.0
@@ -157,7 +159,6 @@ try:
 		elif win.key=="p":
 		    display.screenshot("MegaStation.jpg")
 		elif win.key=="Escape":
-		    texs.deleteAll()
 		    display.destroy()
 		    win.destroy()
 		    print "Bye bye!"
@@ -171,7 +172,6 @@ try:
 
 
 except Exception:
-    texs.deleteAll()
     display.destroy()
     win.destroy()
     print "Bye bye!"
