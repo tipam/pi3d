@@ -172,7 +172,17 @@ while 1:
   display.swapBuffers()
 
   #Handle window events
-  win.update()
+  try:
+    win.update()
+  except:
+    print "bye bye 3"
+    display.destroy()
+    try:
+      win.destroy()
+    except:
+      pass
+    exit()
+
   if win.ev=="key":
       if win.key=="w":
           xm+=math.sin(tankrot*rads)*2
@@ -192,12 +202,12 @@ while 1:
           try:
             display.destroy()
             win.destroy()
-            print "Bye bye!"
+            print "Bye bye! 1"
           except Exception:
-            print "Bye bye!"
+            print "Bye bye! 2"
 
   if win.ev=="resized":
-      display.resize(win.winx,win.winy,win.width,win.height-bord)
+      display.resize(win.winx, win.winy, win.width, win.height - bord)
       win.resized=False  #this flag must be set otherwise no further events will be detected
 
   win.ev=""  #clear the event so it doesn't repeat

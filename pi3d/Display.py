@@ -78,6 +78,20 @@ class Display(object):
     self.destroy()
     LOGGER.info('stopped')
 
+  def resize(self, x=0, y=0, w=0, h=0):
+    if w <= 0:
+      w = display.max_width
+    if h <= 0:
+      h = display.max_height
+    self.win_width = w
+    self.win_height = h
+
+    self.left = x
+    self.top = y
+    self.right = x+w
+    self.bottom = y+h
+    self.opengl.resize(x, y, w, h)
+
   def add_sprite(self, sprite, index=None):
     if index is None:
       self.sprites.append(sprite)

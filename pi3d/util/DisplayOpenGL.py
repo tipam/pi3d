@@ -28,20 +28,37 @@ class DisplayOpenGL(object):
                              EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
                              EGL_NONE))
     numconfig = c_int()
-    config = ctypes.c_void_p()
+    self.config = ctypes.c_void_p()
     r = openegl.eglChooseConfig(self.display,
                                 ctypes.byref(attribute_list),
-                                ctypes.byref(config), 1,
+                                ctypes.byref(self.config), 1,
                                 ctypes.byref(numconfig))
 
     context_attribs = c_ints((EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE))
-    self.context = openegl.eglCreateContext(self.display, config,
+    self.context = openegl.eglCreateContext(self.display, self.config,
                                             EGL_NO_CONTEXT, 0)
     #ctypes.byref(context_attribs) )
     assert self.context != EGL_NO_CONTEXT
 
-    #Set the viewport position and size
+    self.create_surface(x, y, w, h)
 
+    #Setup default hints
+    opengles.glEnable(GL_CULL_FACE)
+    #opengles.glShadeModel(GL_FLAT)
+    opengles.glEnable(GL_NORMALIZE)
+    opengles.glEnable(GL_DEPTH_TEST)
+
+    # Switches off alpha blending problem with desktop - is there a bug in the
+    # driver?
+    # Thanks to Roland Humphries who sorted this one!!
+    opengles.glColorMask(1, 1, 1, 0)
+
+    opengles.glEnableClientState(GL_VERTEX_ARRAY)
+    opengles.glEnableClientState(GL_NORMAL_ARRAY)
+    self.active = True
+
+  def create_surface(self, x=0, y=0, w=0, h=0):
+    #Set the viewport position and size
     dst_rect = c_ints((x, y, w, h))
     src_rect = c_ints((x, y, w << 16, h << 16))
 
@@ -61,7 +78,7 @@ class DisplayOpenGL(object):
     nw_p = ctypes.pointer(nativewindow)
     self.nw_p = nw_p
 
-    self.surface = openegl.eglCreateWindowSurface(self.display, config, nw_p, 0)
+    self.surface = openegl.eglCreateWindowSurface(self.display, self.config, self.nw_p, 0)
     assert self.surface != EGL_NO_SURFACE
 
     r = openegl.eglMakeCurrent(self.display, self.surface, self.surface,
@@ -71,20 +88,17 @@ class DisplayOpenGL(object):
     #Create viewport
     opengles.glViewport(0, 0, w, h)
 
-    #Setup default hints
-    opengles.glEnable(GL_CULL_FACE)
-    #opengles.glShadeModel(GL_FLAT)
-    opengles.glEnable(GL_NORMALIZE)
-    opengles.glEnable(GL_DEPTH_TEST)
+  def resize(self, x=0, y=0, w=0, h=0):
+    # Destroy current surface and native window
+    openegl.eglSwapBuffers(self.display, self.surface)
+    openegl.eglDestroySurface(self.display, self.surface)
+    bcm.vc_dispmanx_display_close(self.dispman_display)
+    bcm.vc_dispmanx_element_remove(self.dispman_update,
+                                   self.dispman_element)
 
-    # Switches off alpha blending problem with desktop - is there a bug in the
-    # driver?
-    # Thanks to Roland Humphries who sorted this one!!
-    opengles.glColorMask(1, 1, 1, 0)
+    #Now recreate the native window and surface
+    self.create_surface(x, y, w, h)
 
-    opengles.glEnableClientState(GL_VERTEX_ARRAY)
-    opengles.glEnableClientState(GL_NORMAL_ARRAY)
-    self.active = True
 
   def destroy(self):
     if self.active:
