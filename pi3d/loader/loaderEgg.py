@@ -2,6 +2,7 @@ import re, os, operator
 
 from pi3d import *
 from pi3d.util.RotateVec import rotate_vec
+from pi3d.shape.Shape import Shape
 from pi3d.Texture import Texture
 
 #########################################################################################
@@ -153,13 +154,13 @@ def loadFileEGG(self,fileName):
         # only cope with one material and one texture per group
         numv -= 1
         numi -= 1
-        self.vGroup[np] = create_shape("", self.x, self.y, self.z, self.rotx,self.roty,self.rotz, self.sx,self.sy,self.sz, self.cx,self.cy,self.cz)
-        ctype_array1 = eglfloat * (numv * 3 + 3)
+        self.vGroup[np] = Shape("", self.x, self.y, self.z, self.rotx,self.roty,self.rotz, self.sx,self.sy,self.sz, self.cx,self.cy,self.cz)
+        ctype_array1 = c_float * (numv * 3 + 3)
         self.vGroup[np].vertices = ctype_array1()
         self.vGroup[np].normals = ctype_array1()
-        ctype_array2 = eglfloat * (numv * 2 + 2)
+        ctype_array2 = c_float * (numv * 2 + 2)
         self.vGroup[np].tex_coords = ctype_array2()
-        ctype_array3 = eglshort * (numi + 1)
+        ctype_array3 = c_short * (numi + 1)
         self.vGroup[np].indices = ctype_array3()
         nv = 0 # vertex counter in this material
         ni = 0 # triangle vertex count in this material
@@ -211,16 +212,16 @@ def loadFileEGG(self,fileName):
         # load materials TODO something more sophisticated
         #TODO maybe don't create this array if texture being used?
         if (gMRef in self.materialList):
-            ctype_array4 = eglbyte * ((numi + 1)*4)
+            ctype_array4 = c_byte * ((numi + 1)*4)
             self.vGroup[np].material = ctype_array4()
             redVal = int(float(self.materialList[gMRef]["diffr"]) * 255.0)
             grnVal = int(float(self.materialList[gMRef]["diffg"]) * 255.0)
             bluVal = int(float(self.materialList[gMRef]["diffb"]) * 255.0)
             for i in xrange(numi + 1):
-                self.vGroup[np].material[i*4] = eglbyte(redVal)
-                self.vGroup[np].material[i*4 + 1] = eglbyte(grnVal)
-                self.vGroup[np].material[i*4 + 2] = eglbyte(bluVal)
-                self.vGroup[np].material[i*4 + 3] = eglbyte(255)
+                self.vGroup[np].material[i*4] = c_byte(redVal)
+                self.vGroup[np].material[i*4 + 1] = c_byte(grnVal)
+                self.vGroup[np].material[i*4 + 2] = c_byte(bluVal)
+                self.vGroup[np].material[i*4 + 3] = c_byte(255)
         else: self.vGroup[np].material = None
       ####### end of groupDrill function #####################
 
@@ -250,12 +251,12 @@ def loadFileEGG(self,fileName):
 # code in pi3d/shape/Shape.py.
 
 def transform(x,y,z,rotx,roty,rotz,sx,sy,sz,cx,cy,cz):
-	opengles.glTranslatef(eglfloat(x-cx), eglfloat(y-cy), eglfloat(z-cz))
-	if roty <> 0: opengles.glRotatef(eglfloat(roty),egf0, egf1, egf0)
-	if rotz <> 0: opengles.glRotatef(eglfloat(rotz),egf0, egf0, egf1)
-	if rotx <> 0: opengles.glRotatef(eglfloat(rotx),egf1, egf0, egf0)
-	opengles.glScalef(eglfloat(sx),eglfloat(sy),eglfloat(sz))
-	opengles.glTranslatef(eglfloat(cx), eglfloat(cy), eglfloat(cz))
+	opengles.glTranslatef(c_float(x-cx), c_float(y-cy), c_float(z-cz))
+	if roty <> 0: opengles.glRotatef(c_float(roty),egf0, egf1, egf0)
+	if rotz <> 0: opengles.glRotatef(c_float(rotz),egf0, egf0, egf1)
+	if rotx <> 0: opengles.glRotatef(c_float(rotx),egf1, egf0, egf0)
+	opengles.glScalef(c_float(sx),c_float(sy),c_float(sz))
+	opengles.glTranslatef(c_float(cx), c_float(cy), c_float(cz))
 
 def draw(self, texID=None, n=None, x=0, y=0, z=0, rx=0, ry=0, rz=0, sx=0, sy=0, sz=0, cx=0, cy=0, cz=0):
     texToUse = None
