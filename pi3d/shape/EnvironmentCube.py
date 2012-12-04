@@ -104,7 +104,7 @@ class EnvironmentCube(object):
         Utility.texture_min_mag()
         opengles.glBindTexture(GL_TEXTURE_2D,tex[4].tex)
         opengles.glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT , self.indback)
-        if tex[5] >0:
+        if len(tex) > 5 and tex[5] > 0:
           Utility.texture_min_mag()
           opengles.glBindTexture(GL_TEXTURE_2D,tex[5].tex)
           opengles.glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT , self.indbot)

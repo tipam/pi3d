@@ -106,19 +106,10 @@ omy=mymouse.y
 myfog = Fog(0.0014,(0.7,0.8,0.9,0.5))
 mylight = Light(0,1,1,1,"",100,100,100) #, .9,.7,.6)
 
-def draw(item, x, y, z, pitch, rotation, roll):
-  item.x = x
-  item.y = y
-  item.z = z
-  item.rx = pitch
-  item.ry = rotation
-  item.rz = roll
-  item.draw()
-
 def drawTiger(x, y, z, rot, roll, pitch, turret, gunangle):
-  draw(tank_body, x, y, z, pitch, rot, roll)
-  draw(tank_turret, x, y, z, pitch, turret, roll)
-  draw(tank_gun, x, y, z, pitch, turret, roll)
+  tank_body.moveAndDraw(x, y, z, pitch, rot, roll)
+  tank_turret.moveAndDraw(x, y, z, pitch, turret, roll)
+  tank_gun.moveAndDraw(x, y, z, pitch, turret, roll)
 
 while 1:
   display.clear()

@@ -1,42 +1,41 @@
 # Tiger Tank in TK window
 # Version 0.02 - 23Nov12
-#
-# First tank demo - more to come!
-#
-# This example does not reflect the finished pi3d module in any way whatsoever!
-# It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
-#
-# PLEASE INSTALL PIL imaging with:
-#
-#      $ sudo apt-get install python-imaging
-#
-# before running this example
-#
 
-import pi3d, math, random, time
+import math, random, time
 
-from pi3d.Display import Display
+from pi3d import *
+
+from pi3d import Display
+from pi3d.Mouse import Mouse
 from pi3d.Texture import Texture
 
+from pi3d.context.Fog import Fog
+from pi3d.context.Light import Light
+
+from pi3d.shape.ElevationMap import ElevationMap
 from pi3d.shape import EnvironmentCube
 from pi3d.shape.Model import Model
+
+from pi3d.util import Draw
+from pi3d.util import Log
+from pi3d.util.Matrix import Matrix
+from pi3d.util.TkWin import TkWin
 
 rads = 0.017453292512  # degrees to radians
 
 #Create a Tkinter window
 winw,winh,bord = 1200,600,0   	#64MB GPU memory setting
 #winw,winh,bord = 1920,1080,0	#128MB GPU memory setting
-win = pi3d.tkwin(None,"Mega Space Station in Pi3D",winw,winh)
+win = TkWin(None, "Mega Space Station in Pi3D",winw,winh)
 
 # Setup display and initialise pi3d viewport over the window
 win.update()  #requires a window update first so that window sizes can be retreived
-display = Display.create(win.winx, win.winy, winw, winh-bord, far=2200.0,
-                         background=(0.4, 0.8, 0.8, 1))
 
-#texture storage for loading textures
-ectex = EnvironmentCube.loadECfiles('textures/ecubes/RedPlanet', 'redplanet_256',
-                                    suffix='png', nobottom=True)
-myecube = EnvironmentCube.EnvironmentCube(1800.0, 'FACES')
+display = Display.create(x=win.winx, y=win.winy, w=winw, h=winh - bord,
+                         far=2200.0, background=(0.4, 0.8, 0.8, 1))
+
+ectex = EnvironmentCube.loadECfiles("textures/ecubes/RedPlanet", "redplanet_256", "png", True)
+myecube = EnvironmentCube.EnvironmentCube(1800.0,"FACES")
 
 
 # Create elevation map
@@ -67,113 +66,113 @@ spc = 39.32
 opendist = 120
 
 # Fetch key presses
-mymouse = pi3d.mouse()
+mymouse = Mouse()
 mymouse.start()
-mtrx = pi3d.matrix()
+mtrx = Matrix()
 
 omx=mymouse.x
 omy=mymouse.y
 
-myfog = pi3d.fog(0.001,(0.65,0.1,0.3,0.5))
-mylight = pi3d.createLight(0,1,1,1,"",100,100,100) #, .9,.7,.6)
+myfog = Fog(0.001,(0.65,0.1,0.3,0.5))
+mylight = Light(0,1,1,1,"",100,100,100) #, .9,.7,.6)
 
 
 # Update display before we begin (user might have moved window)
 win.update()
-display.resize(win.winx,win.winy,win.width,win.height-bord)
+display.resize(win.winx, win.winy, win.width, win.height - bord)
 
-try:
-    while 1:
+while 1:
+    display.clear()
 
-	display.clear()
+    mtrx.identity()
+    #tilt can be used as a means to prevent the view from going under the landscape!
+    if tilt<-1: sf=1.0/-tilt
+    else: sf=1.0
+    #mtrx.translate(0,-3,0)   #zoom camera out so we can see our robot
+    mtrx.rotate(tilt,0,0)		#Tank still affected by scene tilt
 
-	mtrx.identity()
-	#tilt can be used as a means to prevent the view from going under the landscape!
-	if tilt<-1: sf=1.0/-tilt
-	else: sf=1.0
-	#mtrx.translate(0,-3,0)   #zoom camera out so we can see our robot
-	mtrx.rotate(tilt,0,0)		#Tank still affected by scene tilt
+    #draw scene
+    mtrx.rotate(0,mouserot,0)
+    mylight.on()
 
-	#draw scene
-	mtrx.rotate(0,mouserot,0)
-	mylight.on()
+    mtrx.translate(xm,ym-4,zm)	#translate rest of scene relative to tank position
+    myfog.on()
+    mymap.draw(redplanet)		#Draw the landscape
 
-	mtrx.translate(xm,ym-4,zm)	#translate rest of scene relative to tank position
-	myfog.on()
-	mymap.draw(redplanet)		#Draw the landscape
-
-	pi3d.lodDraw3xyz(-xm,-ym,-zm,0,0,0,opendist,cor_cross,1000,cor_cross_doors)
-	cor_win.draw(None,None,0,0,-spc*1.5)
-	corridor.draw(None,None,0,0,-spc*2.5)
-	cor_win.draw(None,None,0,0,-spc*3.5)
-	pi3d.lodDraw3xyz(-xm,-ym,-zm,0,0,-spc*5,opendist,cor_cross,1000,cor_cross_doors)
-	cor_win.draw(None,None,0,0,-spc*6.5)
-	pi3d.lodDraw3xyz(-xm,-ym,-zm,0,0,-spc*8,opendist,cor_cross,1000,cor_cross_doors)
-	cor_win.draw(None,None,-spc*1.5,0,-spc*5, 0,90,0)
-	cor_bend.draw(None,None,-spc*2.5,0,-spc*5, 0,90,0)
-	pi3d.lodDraw3xyz(-xm,-ym,-zm,-spc*2.6,0,-spc*6.6,opendist,cor_cross,1000,cor_cross_doors)
-	cor_win.draw(None,None,spc*1.5,0,-spc*5, 0,90,0)
-	corridor.draw(None,None,spc*2.5,0,-spc*5, 0,90,0)
-	pi3d.lodDraw3xyz(-xm,-ym,-zm,spc*4,0,-spc*5,opendist,cor_cross,1000,cor_cross_doors)
+    Draw.lodDraw3xyz(-xm,-ym,-zm,0,0,0,opendist,cor_cross,1000,cor_cross_doors)
+    cor_win.moveAndDraw(0,0,-spc*1.5)
+    corridor.moveAndDraw(0,0,-spc*2.5)
+    cor_win.moveAndDraw(0,0,-spc*3.5)
+    Draw.lodDraw3xyz(-xm,-ym,-zm,0,0,-spc*5,opendist,cor_cross,1000,cor_cross_doors)
+    cor_win.moveAndDraw(0,0,-spc*6.5)
+    Draw.lodDraw3xyz(-xm,-ym,-zm,0,0,-spc*8,opendist,cor_cross,1000,cor_cross_doors)
+    cor_win.moveAndDraw(-spc*1.5,0,-spc*5, 0,90,0)
+    cor_bend.moveAndDraw(-spc*2.5,0,-spc*5, 0,90,0)
+    Draw.lodDraw3xyz(-xm,-ym,-zm,-spc*2.6,0,-spc*6.6,opendist,cor_cross,1000,cor_cross_doors)
+    cor_win.moveAndDraw(spc*1.5,0,-spc*5, 0,90,0)
+    corridor.moveAndDraw(spc*2.5,0,-spc*5, 0,90,0)
+    Draw.lodDraw3xyz(-xm,-ym,-zm,spc*4,0,-spc*5,opendist,cor_cross,1000,cor_cross_doors)
 
 
-	mylight.off()
-	myfog.off()
+    mylight.off()
+    myfog.off()
 
-	myecube.draw(ectex,xm,ym,zm)#Draw environment cube
+    myecube.draw(ectex,xm,ym,zm)#Draw environment cube
 
-	#update mouse/keyboard input
-	mx=mymouse.x
-	my=mymouse.y
+    #update mouse/keyboard input
+    mx=mymouse.x
+    my=mymouse.y
 
-	mouserot += (mx-omx)*0.2
-	tilt -= (my-omy)*0.2
-	omx=mx
-	omy=my
+    mouserot += (mx-omx)*0.2
+    tilt -= (my-omy)*0.2
+    omx=mx
+    omy=my
 
-	#Press ESCAPE to terminate
+    #Press ESCAPE to terminate
 
-	display.swapBuffers()
+    display.swapBuffers()
 
-	#Handle window events
-	win.update() #resize event takes priority before we grab other events
+    #Handle window events
+    win.update() #resize event takes priority before we grab other events
 
-	if win.ev=="resized":
-		print "resized"
-		display.resize(win.winx,win.winy,win.width,win.height-bord)
-		win.resized=False
+    if win.ev=="resized":
+            print "resized"
+            display.resize(win.winx,win.winy,win.width,win.height-bord)
+            win.resized=False
 
-	if win.ev=="key":
-		if win.key=="w":
-		    xm-=math.sin(mouserot*rads)*2
-		    zm+=math.cos(mouserot*rads)*2
-		#ym = -(mymap.calcHeight(xm,zm)+avhgt)
-		elif win.key=="s":
-		    xm+=math.sin(mouserot*rads)*2
-		    zm-=math.cos(mouserot*rads)*2
-		#ym = -(mymap.calcHeight(xm,zm)+avhgt)
-		elif win.key=="a":
-		    mouserot -= 2
-		elif win.key=="d":
-		    mouserot += 2
-		elif win.key=="p":
-		    display.screenshot("MegaStation.jpg")
-		elif win.key=="Escape":
-		    display.destroy()
-		    win.destroy()
-		    print "Bye bye!"
-		    break
+    if win.ev=="key":
+            if win.key=="w":
+                xm-=math.sin(mouserot*rads)*2
+                zm+=math.cos(mouserot*rads)*2
+            #ym = -(mymap.calcHeight(xm,zm)+avhgt)
+            elif win.key=="s":
+                xm+=math.sin(mouserot*rads)*2
+                zm-=math.cos(mouserot*rads)*2
+            #ym = -(mymap.calcHeight(xm,zm)+avhgt)
+            elif win.key=="a":
+                mouserot -= 2
+            elif win.key=="d":
+                mouserot += 2
+            elif win.key=="p":
+                display.screenshot("MegaStation.jpg")
+            elif win.key=="Escape":
+                texs.deleteAll()
+                display.destroy()
+                win.destroy()
+                print "Bye bye!"
+                break
 
-	if win.ev=="drag" or win.ev=="click" or win.ev=="wheel":
-		xm-=math.sin(mouserot*rads)*2
-		zm+=math.cos(mouserot*rads)*2
+    if win.ev=="drag" or win.ev=="click" or win.ev=="wheel":
+            xm-=math.sin(mouserot*rads)*2
+            zm+=math.cos(mouserot*rads)*2
 
-	win.ev=""  #clear the event so it doesn't repeat
+    win.ev=""  #clear the event so it doesn't repeat
 
 
-except Exception:
-    display.destroy()
-    win.destroy()
-    print "Bye bye!"
-    #pass # avoid errors when closed
+#except Exception:
+#    texs.deleteAll()
+#    display.destroy()
+#    win.destroy()
+#    print "Bye bye!"
+#    #pass # avoid errors when closed
 

@@ -85,6 +85,21 @@ class Model(Shape):
       c.x, c.y, c.z = relx, rely, relz
       c.rotx, c.roty, c.rotz = relrotx, relroty, relrotz
 
+  def moveAndDraw(self, x=None, y=None, z=None, rx=None, ry=None, rz=None):
+    if x is not None:
+      self.x = x
+    if y is not None:
+      self.y = y
+    if z is not None:
+      self.z = z
+    if rx is not None:
+      self.rx = rx
+    if ry is not None:
+      self.ry = ry
+    if rz is not None:
+      self.rz = rz
+    self.draw()
+
   def clone(self):
     # newLM = loadModel("__clone__." + self.exf)
     # newLM.vGroup = self.vGroup

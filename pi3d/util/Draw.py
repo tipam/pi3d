@@ -72,17 +72,24 @@ def lodDraw3xyz(px, py, pz,
                 dist1, model1,
                 dist2=1000, model2=None,
                 dist3=1500, model3=None):
+  def draw(model):
+    model.x = mx
+    model.y = my
+    model.y = mx
+    model.draw()
+
   dist = distance(px, py, pz, mx, my, mz)
-  if dist > dist3: return
+  if dist > dist3:
+    return
 
   if dist < dist1:
-    model1.draw(None,None,mx,my,mz)
+    draw(model1)
     return
 
   if model2:
     if dist < dist2:
-      model2.draw(None,None,mx,my,mz)
+      draw(model2)
       return
 
   if model3:
-    model3.draw(None,None,mx,my,mz)
+    draw(model3)
