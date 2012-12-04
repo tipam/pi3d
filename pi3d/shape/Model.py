@@ -1,3 +1,5 @@
+import copy
+
 from pi3d import *
 
 from pi3d import Texture
@@ -84,9 +86,9 @@ class Model(Shape):
       c.rotx, c.roty, c.rotz = relrotx, relroty, relrotz
 
   def clone(self):
-    newLM = loadModel("__clone__." + self.exf)
-    newLM.vGroup = self.vGroup
-    return newLM
+    # newLM = loadModel("__clone__." + self.exf)
+    # newLM.vGroup = self.vGroup
+    return copy.deepcopy(self)  # TODO: does this correctly replace the old ccode?
 
   def reparentTo(self, parent):
     if not(self in parent.childModel):

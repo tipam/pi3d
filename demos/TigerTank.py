@@ -1,6 +1,6 @@
 # Tiger Tank in TK window
 # Version 0.02 - 23Nov12
-# 
+#
 # First tank demo - more to come!
 #
 # This example does not reflect the finished pi3d module in any way whatsoever!
@@ -13,7 +13,16 @@
 # before running this example
 #
 
-import pi3d,math,random, time
+import math, random, time
+
+from pi3d import *
+
+from pi3d.Display import Display
+from pi3d.Texture import Texture
+
+from pi3d.shape import ElevationMap
+from pi3d.shape import EnvironmentCube
+from pi3d.shape.Model import Model
 
 rads = 0.017453292512  # degrees to radians
 
@@ -24,40 +33,37 @@ win = pi3d.tkwin(None,"Tiger Tank demo in Pi3D",winw,winh)
 
 # Setup display and initialise pi3d viewport over the window
 win.update()  #requires a window update first so that window sizes can be retreived
-display = pi3d.display()
-display.create3D(win.winx,win.winy,winw,winh-bord, 0.5, 2200.0, 60.0)           # x,y,width,height,near,far,aspect,zdepth
-display.setBackColour(0.4,0.8,0.8,1)            # r,g,b,alpha
+display = Display.create(x=win.winx, y=win.winy, w=winw, h=winh - bord,
+                         far=2200.0, background=(0.4, 0.8, 0.8, 1))
 
 #texture storage for loading textures
-texs = pi3d.textures() 
-ectex = pi3d.loadECfiles("textures/ecubes/Miramar","miramar_256","png",texs,True)
-myecube = pi3d.createEnvironmentCube(1800.0,"FACES")
-
+ectex = Shape.loadECfiles("textures/ecubes/Miramar", "miramar_256", suffix="png")
+myecube = EnvironmentCube(1800.0, "FACES")
 
 # Create elevation map
-mapwidth=2000.0
-mapdepth=2000.0
-mapheight=100.0
-mountimg1 = texs.loadTexture("textures/mountains3_512.jpg")
-#roadway = texs.loadTexture("textures/road5.png")
-mymap = pi3d.createElevationMapFromTexture("textures/mountainsHgt2.png",mapwidth,mapdepth,mapheight,64,64) 
+mapwidth = 2000.0
+mapdepth = 2000.0
+mapheight = 100.0
+mountimg1 = Texture("textures/mountains3_512.jpg")
+#roadway = Texture("textures/road5.png")
+mymap = ElevationMap("textures/mountainsHgt2.png",mapwidth,mapdepth,mapheight,64,64)
 
 #Load tank
-tank_body = pi3d.loadModel("models/Tiger/bodylow.egg",texs,"TigerBody", 0,0,0, -90,-90,0, .1,.1,.1)
-tank_gun = pi3d.loadModel("models/Tiger/gunlow.egg",texs,"TigerGun", 0,0,0, -90,-90,0, .1,.1,.1, 0,0,0)
-tank_turret = pi3d.loadModel("models/Tiger/turretlow.egg",texs,"TigerTurret", 0,0,0, -90,-90,0, .1,.1,.1, 0,0,0)
+tank_body = Model("models/Tiger/bodylow.egg",texs,"TigerBody", 0,0,0, -90,-90,0, .1,.1,.1)
+tank_gun = Model("models/Tiger/gunlow.egg",texs,"TigerGun", 0,0,0, -90,-90,0, .1,.1,.1, 0,0,0)
+tank_turret = Model("models/Tiger/turretlow.egg",texs,"TigerTurret", 0,0,0, -90,-90,0, .1,.1,.1, 0,0,0)
 
 #Load church
 x,z = 20,-320
 y = mymap.calcHeight(-x,-z)
-church = pi3d.loadModel("models/AllSaints/AllSaints.egg",texs,"church1", x,y,z, -90,0,0, .1,.1,.1)
-churchlow = pi3d.loadModel("models/AllSaints/AllSaints-lowpoly.egg",texs,"church2", x,y,z, -90,0,0, .1,.1,.1)
+church = Model("models/AllSaints/AllSaints.egg",texs,"church1", x,y,z, -90,0,0, .1,.1,.1)
+churchlow = Model("models/AllSaints/AllSaints-lowpoly.egg",texs,"church2", x,y,z, -90,0,0, .1,.1,.1)
 
 #Load cottages
 x,z = 250,-40
 y = mymap.calcHeight(-x,-z)
-cottages = pi3d.loadModel("models/Cottages/cottages_low.egg",texs,"cottagesLo", x,y,z, -90,-5,0, .1,.1,.1)
-#cottagesHi = pi3d.loadModel("models/Cottages/cottages.egg",texs,"cottagesHi", x,y,z, -90,-5,0, .1,.1,.1)
+cottages = Model("models/Cottages/cottages_low.egg",texs,"cottagesLo", x,y,z, -90,-5,0, .1,.1,.1)
+#cottagesHi = Model("models/Cottages/cottages.egg",texs,"cottagesHi", x,y,z, -90,-5,0, .1,.1,.1)
 
 #player tank vars
 tankrot=0.0
@@ -89,7 +95,7 @@ omy=mymouse.y
 myfog = pi3d.fog(0.0014,(0.7,0.8,0.9,0.5))
 mylight = pi3d.createLight(0,1,1,1,"",100,100,100) #, .9,.7,.6)
 
-def drawTiger(x,y,z,rot,roll,pitch,turrot,gunangle):    
+def drawTiger(x,y,z,rot,roll,pitch,turrot,gunangle):
         tank_body.draw(None,None,x,y,z,pitch,rot,roll)
         tank_turret.draw(None,None,x,y,z,pitch,turrot,roll)
         tank_gun.draw(None,None,x,y,z,pitch,turrot,roll)
@@ -97,26 +103,26 @@ def drawTiger(x,y,z,rot,roll,pitch,turrot,gunangle):
 
 try:
     while 1:
-                
+
         display.clear()
-        
+
         mtrx.identity()
         #tilt can be used as a means to prevent the view from going under the landscape!
         if tilt<-1: sf=1.0/-tilt
         else: sf=1.0
         mtrx.translate(0,-10*sf-5.0,-40*sf)   #zoom camera out so we can see our robot
         mtrx.rotate(tilt,0,0)           #Tank still affected by scene tilt
-        
+
         #draw player tank
         mtrx.rotate(0,mouserot,0)
         mylight.on()
         drawTiger(0,0,0,tankrot,tankroll,tankpitch,-turrot,0.0)
-        
+
         mtrx.translate(xm,ym,zm)        #translate rest of scene relative to tank position
-        
+
         myfog.on()
         mymap.draw(mountimg1)           #Draw the landscape
-        
+
         #Draw enemy tank
         etx-=math.sin(etr*rads)
         etz-=math.cos(etr*rads)
@@ -129,7 +135,7 @@ try:
 
         mylight.off()
         myfog.off()
-        
+
         myecube.draw(ectex,xm,ym,zm)#Draw environment cube
 
         #update mouse/keyboard input
@@ -137,33 +143,33 @@ try:
         mouserot += (mx-omx)*0.2
         tilt -= (my-omy)*0.2
         omx,omy=mx,my
-            
+
         # turns player tankt turret towards center of screen which will have a crosshairs
         if turrot+2.0 < mouserot:
                 turrot+=2.0
         if turrot-2.0 > mouserot:
                 turrot-=2.0
-                
+
         #Press ESCAPE to terminate
-        
+
         display.swapBuffers()
-        
+
         #Handle window events
         win.update()
-        if win.ev=="key":  
+        if win.ev=="key":
             if win.key=="w":
                 xm+=math.sin(tankrot*rads)*2
                 zm+=math.cos(tankrot*rads)*2
                 ym = -(mymap.calcHeight(xm,zm)+avhgt)
-            elif win.key=="s": 
+            elif win.key=="s":
                 xm-=math.sin(tankrot*rads)*2
                 zm-=math.cos(tankrot*rads)*2
                 ym = -(mymap.calcHeight(xm,zm)+avhgt)
-            elif win.key=="a":   
+            elif win.key=="a":
                 tankrot += 2
-            elif win.key=="d":  
+            elif win.key=="d":
                 tankrot -= 2
-            elif win.key=="p":  
+            elif win.key=="p":
                 display.screenshot("TigerTank.jpg")
             elif win.key=="Escape":
                 texs.deleteAll()
@@ -184,4 +190,4 @@ except Exception:
     win.destroy()
     print "Bye bye!"
     #pass # avoid errors when closed
-    
+

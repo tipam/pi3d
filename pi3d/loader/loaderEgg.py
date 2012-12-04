@@ -1,6 +1,8 @@
-from pi3d import rotateVec
 import re, os, operator
-from pi3dCommon import *
+
+from pi3d import *
+from pi3d.util.RotateVec import rotate_vec
+from pi3d.Texture import Texture
 
 #########################################################################################
 #
@@ -23,26 +25,24 @@ class polygon():
         self.normal = [] #should always be three
         for nVal in normal_in:
             self.normal.append(nVal)
-            
+
         self.rgba = [] #should always be four
         for rgbVal in rgba_in:
             self.rgba.append(rgbVal)
-            
+
         self.MRef = MRef_in
-            
+
         self.TRef = TRef_in
-            
+
         self.vref = [] # variable number of indices
         for v in vertexRef_in:
             self.vref.append(v)
-            
+
         self.vpKey = vpkey_in
 
 ########################################################################
 
-
-def loadFileEGG(self,fileName,texs):
-        
+def loadFileEGG(self,fileName):
     self.coordinateSystem = "Y-up"
     self.materialList = {}
     self.textureList = {}
@@ -54,16 +54,15 @@ def loadFileEGG(self,fileName,texs):
     self.childModel = [] # don't really need parent and child pointers but will speed up traversing tree
     self.vNormal = False
     self.vGroup = {} # holds the information for each vertex group
-    self.texs = texs
-    
+
     if ("__clone__" in fileName): return #used for cloning this loadModel, i.e. don't need to parse egg file
     # read in the file and parse into some arrays
-    
+
     filePath = os.path.split(os.path.abspath(fileName))[0]
     print filePath
     f = open(fileName, 'r')
     l = f.read() # whole thing as a string in memory this will only work for reasonably small files!!!
-    
+
     ############### function to parse file as one off process to avoid re-traversing string #########
     # convertes the '<a> b { c <d> e {f} <g> h {i} }' structure
     # into nested arrays ['a', 'b', 'c',[['d','e','',['','','f',[]]],['g','h','',['','','i',[]]]]]
@@ -76,7 +75,7 @@ def loadFileEGG(self,fileName,texs):
                 if len(x[3]) == 0: x[2] = l[i:j].strip() # text after "{" and before "<Tabxyz>"
                 i = j+1 # save marker for start of descriptor
                 x[3].append(["","","",[]])
-                
+
             elif c=="{":
                 xn = x[3][len(x[3])-1]
                 tx = l[i-1:j].strip().split()
@@ -87,7 +86,7 @@ def loadFileEGG(self,fileName,texs):
                 if len(x[3]) == 0: x[2] = l[i:j].strip()
                 return j+1
     ################### end of pRec #################
-    
+
     ####### go through all the nested <Groups> ####################
     def groupDrill(gp, np):
         structVList = {}
@@ -173,7 +172,7 @@ def loadFileEGG(self,fileName,texs):
             else: gMRef = ""
             if (len(structPList[p].TRef) > 0): gTRef = structPList[p].TRef
             else: gTRef = ""
-               
+
             vpKey = structPList[p].vpKey
             vref = structPList[p].vref
             startV = nv
@@ -189,17 +188,17 @@ def loadFileEGG(self,fileName,texs):
                     for k in range(2):
                         self.vGroup[np].tex_coords[nv*2+k] = c_float(structVList[vpKey][j].UVcoords[k])
                 nv += 1
-                
+
             n = nv - startV - 1
             for j in range(1,n):
                 self.vGroup[np].indices[ni*3] = c_short(startV)
                 self.vGroup[np].indices[ni*3+1] = c_short(startV + j)
                 self.vGroup[np].indices[ni*3+2] = c_short(startV + j +1)
                 ni += 1
-        
+
         self.vGroup[np].indicesLen = len(self.vGroup[np].indices)
         self.vGroup[np].ttype = GL_TRIANGLES
-        
+
 
         # load the texture file TODO check if same as previously loaded files (for other loadModel()s)
         if (gTRef in self.textureList):
@@ -208,7 +207,7 @@ def loadFileEGG(self,fileName,texs):
         else:
             self.vGroup[np].texID = None
             self.vGroup[np].texFile = None
-        
+
         # load materials TODO something more sophisticated
         #TODO maybe don't create this array if texture being used?
         if (gMRef in self.materialList):
@@ -235,7 +234,8 @@ def loadFileEGG(self,fileName,texs):
             for i in xrange(len(x[3])): self.textureList[x[1]][x[3][i][1]] = x[3][i][2]
             self.textureList[x[1]]["filename"] = x[2].strip("\"")
             #print filePath, self.textureList[x[1]]["filename"]
-            self.textureList[x[1]]["texID"] = self.texs.loadTexture(os.path.join(filePath, self.textureList[x[1]]["filename"]), False, True) # load from file
+            fname = os.path.join(filePath, self.textureList[x[1]]["filename"])
+            self.textureList[x[1]]["texID"] = Texture(fname, blend=False, flip=True) # load from file
         if "<CoordinateSystem>" in x[0]:
             self.coordinateSystem = x[2]
         if "<Material>" in x[0]:
@@ -243,9 +243,21 @@ def loadFileEGG(self,fileName,texs):
             for i in xrange(len(x[3])): self.materialList[x[1]][x[3][i][1]] = x[3][i][2]
         if "<Group>" in x[0]:
             groupDrill(x[3], x[1])
-            
 
-def draw(self, texID=None, n=None, x=0,y=0,z=0, rx=0,ry=0,rz=0, sx=0,sy=0,sz=0, cx=0,cy=0,cz=0):
+#position, rotate and scale an object
+
+# TODO: this has been brought in from the main branch and likely duplicates the
+# code in pi3d/shape/Shape.py.
+
+def transform(x,y,z,rotx,roty,rotz,sx,sy,sz,cx,cy,cz):
+	opengles.glTranslatef(eglfloat(x-cx), eglfloat(y-cy), eglfloat(z-cz))
+	if roty <> 0: opengles.glRotatef(eglfloat(roty),egf0, egf1, egf0)
+	if rotz <> 0: opengles.glRotatef(eglfloat(rotz),egf0, egf0, egf1)
+	if rotx <> 0: opengles.glRotatef(eglfloat(rotx),egf1, egf0, egf0)
+	opengles.glScalef(eglfloat(sx),eglfloat(sy),eglfloat(sz))
+	opengles.glTranslatef(eglfloat(cx), eglfloat(cy), eglfloat(cz))
+
+def draw(self, texID=None, n=None, x=0, y=0, z=0, rx=0, ry=0, rz=0, sx=0, sy=0, sz=0, cx=0, cy=0, cz=0):
     texToUse = None
     if texID != None:
          texToUse = texID
@@ -261,37 +273,40 @@ def draw(self, texID=None, n=None, x=0,y=0,z=0, rx=0,ry=0,rz=0, sx=0,sy=0,sz=0, 
 
     mtrx = matrix()
     mtrx.push()
-    transform(self.x+x,self.y+y,self.z+z, self.rotx+rx,self.roty+ry,self.rotz+rz, self.sx+sx,self.sy+sy,self.sz+sz, self.cx+cx,self.cy+cy,self.cz+cz)
+    transform(self.x + x, self.y + y, self.z + z,
+              self.rotx + rx, self.roty + ry, self.rotz + rz,
+              self.sx + sx, self.sy + sy, self.sz + sz,
+              self.cx + cx, self.cy + cy, self.cz + cz)
     for g in self.vGroup:
         opengles.glShadeModel(GL_SMOOTH)
         opengles.glVertexPointer( 3, GL_FLOAT, 0, self.vGroup[g].vertices);
         opengles.glNormalPointer( GL_FLOAT, 0, self.vGroup[g].normals);
-        
+
         if texToUse > 0: texture_on(texToUse, self.vGroup[g].tex_coords, GL_FLOAT)
         elif self.vGroup[g].texID > 0: texture_on(self.vGroup[g].texID, self.vGroup[g].tex_coords, GL_FLOAT)
-        
+
         #TODO enable material colours as well as textures from images
         if self.vGroup[g].material != None:
             #opengles.glMaterialfv(GL_FRONT, GL_DIFFUSE, self.vGroup[g].material);
             opengles.glEnableClientState(GL_COLOR_ARRAY)
             opengles.glColorPointer( 4, GL_UNSIGNED_BYTE, 0, self.vGroup[g].material);
-        
+
         opengles.glDrawElements( GL_TRIANGLES, self.vGroup[g].indicesLen, GL_UNSIGNED_SHORT, self.vGroup[g].indices)
-        
+
         if self.vGroup[g].texID > 0: texture_off()
         opengles.glShadeModel(GL_FLAT)
     mtrx.pop()
-    
+
     for c in self.childModel:
         relx, rely, relz = c.x+x, c.y+y, c.z+z
         relrotx, relroty, relrotz = c.rotx+rx, c.roty+ry, c.rotz+rz
-        rval = rotateVec(self.rotx+rx, self.roty+ry, self.rotz+rz, (c.x, c.y, c.z))
+        rval = rotate_vec(self.rotx+rx, self.roty+ry, self.rotz+rz, (c.x, c.y, c.z))
         c.x, c.y, c.z = self.x + x + rval[0], self.y +y + rval[1], self.z + z + rval[2]
         c.rotx, c.roty, c.rotz = self.rotx + rx + c.rotx, self.roty + ry + c.roty, self.rotz + rz + c.rotz
         c.draw() #should texture override be passed down to children?
         c.x, c.y, c.z = relx, rely, relz
         c.rotx, c.roty, c.rotz = relrotx, relroty, relrotz
-        
+
 def texSwap(self, texID, fileName):
     texToUse = None
     texToSwap = None

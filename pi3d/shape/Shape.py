@@ -66,16 +66,14 @@ class Shape(object):
   def rotateIncZ(self,v):
     self.rotz += v
 
-  # TODO: should be a method on Shape.
   def add_vertex(self, x, y, z, nx, ny, nz, tx, ty):
-  # add vertex,normal and tex_coords ...
+    # add vertex,normal and tex_coords ...
     self.verts.extend([x, y, z])
     self.norms.extend([nx, ny, nz])
     self.texcoords.extend([tx, ty])
 
-  # TODO: should be a method on Shape.
   def add_tri(self, x, y, z):
-  # add triangle refs.
+    # add triangle refs.
     self.inds.extend([x, y, z])
 
   # position, rotate and scale an object

@@ -6,9 +6,9 @@ from pi3d.util import Utility
 
 CUBE_PARTS = ('top', 'left', 'front', 'right', 'back', 'bottom')
 
-def loadECfiles(path, fname):
+def loadECfiles(path, fname, suffix='jpg'):
   # Helper for loading environment cube faces.
-  files = (os.path.join(path, '%s_%s.jpg' % (fname, p)) for p in CUBE_PARTS)
+  files = (os.path.join(path, '%s_%s.%s' % (fname, p, %s)) for p in CUBE_PARTS)
   return [Texture(f) for f in files]
 
 class EnvironmentCube(object):
@@ -72,7 +72,7 @@ class EnvironmentCube(object):
             0.002,0.002, .998,0.002, .998,.998, 0.002,.998))
 
 
-  def draw(self,tex, x, y, z):
+  def draw(self, tex, x, y, z):
     mtrx = (ctypes.c_float*16)()
     opengles.glGetFloatv(GL_MODELVIEW_MATRIX,ctypes.byref(mtrx))
     Utility.translatef(-x, -y, -z)

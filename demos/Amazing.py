@@ -52,9 +52,8 @@ print "############################################################"
 print
 
 # Setup display and initialise pi3d
-DISPLAY = Display.create(x=10, y=10, w=-20, h=-100)
-#Display.create(x=10, x=10, x=800, x=600) # small window so terminal can be viewed for errors!
-DISPLAY.setBackColour(0.4,0.8,0.8,1) # r,g,b,alpha
+DISPLAY = Display.create(x=10, y=10, w=-20, h=-100,
+                         background=(0.4, 0.8, 0.8, 1))
 
 # Setting 2nd param to True renders 'True' Blending
 # (this can be changed later to 'False' with 'rockimg2.blend = False')
