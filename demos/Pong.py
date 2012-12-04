@@ -189,8 +189,8 @@ while True:
   ball.draw(ballimg)
 
   # write up the score
-  String.string(arialFont, str(score[0]), -10, 20, -5, 0.0, 0.05, 0.05)
-  String.string(arialFont, str(score[1]), 10, 20, -5, 0.0, 0.05, 0.05)
+  String.drawString3D(arialFont, str(score[0]), -10, 20, -5, 0.0, 0.05, 0.05)
+  String.drawString3D(arialFont, str(score[1]), 10, 20, -5, 0.0, 0.05, 0.05)
 
   DISPLAY.swapBuffers()
 
