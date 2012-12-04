@@ -1,17 +1,3 @@
-# Bouncing balls example using pi3d module
-# ========================================
-# Copyright (c) 2012 - Tim Skillman
-# Version 0.03 - 29 Nov 2012 - Added DrawString2D to draw text into a 2D context
-#
-# This example does not reflect the finished pi3d module in any way whatsoever!
-# It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
-#
-# PLEASE INSTALL PIL imaging with:
-#
-#      $ sudo apt-get install python-imaging
-#
-# before running this example
-#
 # Bouncing demonstrates pi3d sprites over the desktop.
 # It uses the orthographic view scaled to the size of the window;
 # this means that sprites can be drawn at pixel resolution
@@ -24,7 +10,9 @@ from pi3d.Keyboard import Keyboard
 from pi3d.Texture import Texture
 
 from pi3d.util import Draw
+from pi3d.util.Font import Font
 from pi3d.util.Screenshot import screenshot
+from pi3d.util.String import drawString2D
 
 # Setup display and initialise pi3d
 scnx = 800
@@ -67,7 +55,7 @@ ball.append(Texture("textures/blu_ball.png"))
 bar = Texture("textures/bar.png")
 bbtitle = Texture("textures/pi3dbbd.png",True)
 
-arialFont = pi3d.font("AR_CENA","#ddff88")   #load AR_CENA font and set the font colour
+arialFont = Font("AR_CENA","#ddff88")   #load AR_CENA font and set the font colour
 
 # Fetch key presses
 mykeys = Keyboard()
@@ -77,11 +65,11 @@ while True:
   DISPLAY.clear()
 
   for b in range(maxballs):
-  	Draw.sprite(ball[bi[b]],bx[b],by[b],-2.0,bs[b],bs[b])
+    Draw.sprite(ball[bi[b]],bx[b],by[b],-2.0,bs[b],bs[b])
 
-	  # Increment ball positions
-	  bx[b]=bx[b]+dx[b]
-	  by[b]=by[b]+dy[b]
+    # Increment ball positions
+    bx[b]=bx[b]+dx[b]
+    by[b]=by[b]+dy[b]
 
     # X coords outside of drawing area?  Then invert X direction
     if bx[b]>scnx or bx[b]<0:
@@ -91,7 +79,7 @@ while True:
     if by[b]>scny or by[b]<0:
       dy[b]=-dy[b]
 
-  pi3d.drawString2D(arialFont,"Raspberry Pi ROCKS!",100,300,80)
+  drawString2D(arialFont,"Raspberry Pi ROCKS!",100,300,80)
 
   #draw a bar at the top of the screen
   Draw.rectangle(bar,0,scny,scnx,32)
@@ -100,12 +88,12 @@ while True:
   k = mykeys.read()
   if k >-1:
     if k==112:
-	    screenshot("screen3D"+str(scshots)+".jpg")
-	    scshots += 1
-	  if k==27:
-		  mykeys.close()
-		  DISPLAY.destroy()
-		  break
+      screenshot("screen3D"+str(scshots)+".jpg")
+      scshots += 1
+    if k==27:
+      mykeys.close()
+      DISPLAY.destroy()
+      break
 
   DISPLAY.swapBuffers()
 
