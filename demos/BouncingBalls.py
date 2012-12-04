@@ -1,13 +1,8 @@
 # Bouncing balls example using pi3d module
 # ========================================
 # Copyright (c) 2012 - Tim Skillman
-<<<<<<< HEAD:BouncingBalls.py
 # Version 0.03 - 29 Nov 2012 - Added DrawString2D to draw text into a 2D context
-# 
-=======
-# Version 0.02 - 03Jul12
 #
->>>>>>> rec/master:demos/BouncingBalls.py
 # This example does not reflect the finished pi3d module in any way whatsoever!
 # It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
 #
@@ -34,10 +29,8 @@ from pi3d.util.Screenshot import screenshot
 # Setup display and initialise pi3d
 scnx = 800
 scny = 600
-DISPLAY = Display.create(is_3d=False, x=100, y=100, w=scnx, h=scny)
-
-# Set last value (alpha) to zero for a transparent background!
-DISPLAY.setBackColour(0,0.2,0.6,1)
+DISPLAY = Display.create(is_3d=False, x=100, y=100, w=scnx, h=scny,
+                         background=(0,0.2,0.6,1))
 
 # Ball parameters
 maxballs = 40
@@ -59,12 +52,12 @@ bi=[]
 
 # Setup ball positions, sizes, directions and colours
 for b in range (0, maxballs):
-    bx.append(random.random() * scnx)
-    by.append(random.random() * scny)
-    dx.append((random.random() - 0.5) * maxspeed)
-    dy.append((random.random() - 0.5) * maxspeed)
-    bs.append(random.random() * maxballsize + minballsize)
-    bi.append(int(random.random() * 3))
+  bx.append(random.random() * scnx)
+  by.append(random.random() * scny)
+  dx.append((random.random() - 0.5) * maxspeed)
+  dy.append((random.random() - 0.5) * maxspeed)
+  bs.append(random.random() * maxballsize + minballsize)
+  bi.append(int(random.random() * 3))
 
 ball = []
 ball.append(Texture("textures/red_ball.png"))
@@ -81,51 +74,38 @@ mykeys = Keyboard()
 scshots = 1
 
 while True:
+  DISPLAY.clear()
 
-    DISPLAY.clear()
+  for b in range(maxballs):
+  	Draw.sprite(ball[bi[b]],bx[b],by[b],-2.0,bs[b],bs[b])
 
-    for b in range (0, maxballs):
+	  # Increment ball positions
+	  bx[b]=bx[b]+dx[b]
+	  by[b]=by[b]+dy[b]
 
-	# Draw ball (tex,x,y,z,width,height,rotation)
-	Draw.sprite(ball[bi[b]],bx[b],by[b],-2.0,bs[b],bs[b])
+    # X coords outside of drawing area?  Then invert X direction
+    if bx[b]>scnx or bx[b]<0:
+      dx[b]=-dx[b]
 
-	# Increment ball positions
-	bx[b]=bx[b]+dx[b]
-	by[b]=by[b]+dy[b]
+    # Y coords outside of drawing area?  Then invert Y direction
+    if by[b]>scny or by[b]<0:
+      dy[b]=-dy[b]
 
-	# X coords outside of drawing area?  Then invert X direction
-	if bx[b]>scnx or bx[b]<0:
-		dx[b]=-dx[b]
+  pi3d.drawString2D(arialFont,"Raspberry Pi ROCKS!",100,300,80)
 
-	# Y coords outside of drawing area?  Then invert Y direction
-	if by[b]>scny or by[b]<0:
-		dy[b]=-dy[b]
-<<<<<<< HEAD:BouncingBalls.py
-    
-    pi3d.drawString2D(arialFont,"Raspberry Pi ROCKS!",100,300,80)
-	#pi3d.drawString3D(arialFont,"Raspberry Pi ROCKS!",100,300,-1.0,0.0,1,1)
-	
-=======
+  #draw a bar at the top of the screen
+  Draw.rectangle(bar,0,scny,scnx,32)
+  Draw.rectangle(bbtitle,5,scny,256+5,32)
 
->>>>>>> rec/master:demos/BouncingBalls.py
-    #draw a bar at the top of the screen
-    Draw.rectangle(bar,0,scny,scnx,32)
-    Draw.rectangle(bbtitle,5,scny,256+5,32)
-
-    k = mykeys.read()
-    if k >-1:
-	if k==112:
+  k = mykeys.read()
+  if k >-1:
+    if k==112:
 	    screenshot("screen3D"+str(scshots)+".jpg")
 	    scshots += 1
-	if k==27:
-		mykeys.close()
-		DISPLAY.destroy()
-		break
-<<<<<<< HEAD:BouncingBalls.py
-	
+	  if k==27:
+		  mykeys.close()
+		  DISPLAY.destroy()
+		  break
 
-    display.swapBuffers()
-=======
+  DISPLAY.swapBuffers()
 
-    DISPLAY.swapBuffers()
->>>>>>> rec/master:demos/BouncingBalls.py
