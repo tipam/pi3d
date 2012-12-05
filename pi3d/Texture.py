@@ -71,9 +71,21 @@ class Texture(Loadable):
     self.tex = ctypes.c_int()
 
   def _load_opengl(self):
+    """
     opengles.glGenTextures(1, ctypes.byref(self.tex))
     opengles.glBindTexture(GL_TEXTURE_2D, self.tex)
     RGBv = GL_RGBA if self.alpha else GL_RGB
     opengles.glTexImage2D(GL_TEXTURE_2D, 0, RGBv, self.ix, self.iy, 0, RGBv,
                           GL_UNSIGNED_BYTE,
                           ctypes.string_at(self.image, len(self.image)))
+    """
+    opengles.glGenTextures(1, ctypes.byref(self.tex), 0)
+    opengles.glBindTexture(GL_TEXTURE_2D, self.tex)
+    RGBv = GL_RGBA if self.alpha else GL_RGB
+    opengles.glTexImage2D(GL_TEXTURE_2D, 0, RGBv, self.ix, self.iy, 0, RGBv,
+                          GL_UNSIGNED_BYTE,
+                          ctypes.string_at(self.image, len(self.image)))
+    opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, c_float(GL_LINEAR_MIPMAP_LINEAR))
+    opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, c_float(GL_LINEAR))
+    opengles.glGenerateMipmap(GL_TEXTURE_2D)
+    opengles.glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA)
