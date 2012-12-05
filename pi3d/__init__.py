@@ -4,6 +4,7 @@ from ctypes import c_byte
 from ctypes import c_float
 from ctypes import c_int
 from ctypes import c_short
+from ctypes import c_char
 
 from pi3d.constants import *
 from pi3d.util import Log

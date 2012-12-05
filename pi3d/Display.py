@@ -139,9 +139,13 @@ def create(is_3d=True, x=0, y=0, w=0, h=0, near=None, far=None,
            aspect=DEFAULT_ASPECT, depth=DEFAULT_DEPTH, background=None):
   display = Display()
   if w <= 0:
-     w = display.max_width
+     w = display.max_width - 2 * x
+     if w <= 0:
+       w = display.max_width
   if h <= 0:
-     h = display.max_height
+     h = display.max_height - 2 * y
+     if h <= 0:
+       h = display.max_height
   if near is None:
     near = DEFAULT_NEAR_3D if is_3d else DEFAULT_NEAR_2D
   if far is None:

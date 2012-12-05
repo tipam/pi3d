@@ -3,7 +3,7 @@ import ctypes
 from pi3d import *
 from pi3d.util import Log
 
-# This class based on Peter de Rivaz's mandlebrot example
+# This class based on Peter de Rivaz's mandlebrot example + Tim Skillman's work on pi3d2
 LOGGER = Log.logger(__name__)
 
 MAX_LOG_SIZE = 1024
@@ -15,69 +15,84 @@ def _opengl_log(shader, function, caption):
   LOGGER.info('%s: %s', caption, log.value)
 
 class Shader(object):
-  def showlog(self, shader):
-    """Prints the compile log for a shader"""
-    _opengl_log(shader, opengles.glGetShaderInfoLog, 'Shader log')
+  def __init__(self, shfile):
+    """  
+    shfile -- path/name without vs or fs ending i.e. "shaders/bumpShade"
+    textures[] -- array of Texture() objects 0.texture map 1.normal map 2.reflection map
+    scene -- Scene() object
+    bumpTiles -- number to subdivide UV map by for normal texture map, 0.0 disables
+    shiny -- proportion of shininess 0.0 to 1.0, 0.0 disables
+    """
 
-  def showprogramlog(self,shader):
-    """Prints the compile log for a shader"""
-    _opengl_log(shader, opengles.glGetProgramInfoLog, 'Program log')
+    #self.scene = scene
+    self.shfile = shfile
+    self.vshader_source = ctypes.c_char_p(self.loadShader(shfile+".vs"))
+    self.fshader_source = ctypes.c_char_p(self.loadShader(shfile+".fs"))
 
-  def __init__(self, vshader_source, fshader_source,
-               tex1=None, tex2=None, param1=None, param2=None, param3=None):
-    # Pi3D can only accept shaders with limited parameters as specific
-    # parameters would require a lot more coding unless there's a way of passing
-    # these back.  Shaders should have their parameters defined in the shader
-    # source.  The only parameters Pi3D can pass (for now) is textures.
+    self.vshader = opengles.glCreateShader(GL_VERTEX_SHADER);
+    opengles.glShaderSource(self.vshader, 1, ctypes.byref(self.vshader_source), 0)
+    opengles.glCompileShader(self.vshader)
+    self.showshaderlog(self.vshader)
 
-    self.vshader_source = ctypes.c_char_p(
-      "attribute vec4 vertex;"
-      "varying vec2 tcoord;"
-      "void main(void) {"
-      "  vec4 pos = vertex;"
-      "  pos.xy*=0.9;"
-      "  gl_Position = pos;"
-      "  tcoord = vertex.xy*0.5+0.5;"
-      "}")
-
-    self.tex1 = tex1
-    self.tex2 = tex2
-
-    vshads = ctypes.c_char_p(vshader_source)
-    fshads = ctypes.c_char_p(fshader_source)
-
-    vshader = opengles.glCreateShader(GL_VERTEX_SHADER)
-    opengles.glShaderSource(vshader, 1, ctypes.byref(self.vshader_source), 0)
-    opengles.glCompileShader(vshader)
-    if VERBOSE:
-      self.showlog(vshader)
-
-    fshader = opengles.glCreateShader(GL_FRAGMENT_SHADER)
-    opengles.glShaderSource(fshader, 1, ctypes.byref(fshads), 0)
-    opengles.glCompileShader(fshader)
-    if VERBOSE:
-      self.showlog(fshader)
+    self.fshader = opengles.glCreateShader(GL_FRAGMENT_SHADER);
+    opengles.glShaderSource(self.fshader, 1, ctypes.byref(self.fshader_source), 0)
+    opengles.glCompileShader(self.fshader)
+    self.showshaderlog(self.fshader)
 
     self.program = opengles.glCreateProgram()
-    opengles.glAttachShader(self.program, vshader)
-    opengles.glAttachShader(self.program, fshader)
+    opengles.glAttachShader(self.program, self.vshader)
+    opengles.glAttachShader(self.program, self.fshader)
     opengles.glLinkProgram(self.program)
-    if VERBOSE:
-      self.showprogramlog(self.program)
+    self.showprogramlog(self.program)
+
+    self.attr_vertex = opengles.glGetAttribLocation(self.program, "vertex")
+    self.attr_normal = opengles.glGetAttribLocation(self.program, "normal")
+    self.unif_lightpos = opengles.glGetUniformLocation(self.program, "lightpos")
+    self.unif_modelviewmatrix = opengles.glGetUniformLocation(self.program, "modelviewmatrix")
+    self.unif_cameraviewmatrix = opengles.glGetUniformLocation(self.program, "cameraviewmatrix")
+    self.unif_ntiles = opengles.glGetUniformLocation(self.program, "ntiles")
+    self.unif_shiny = opengles.glGetUniformLocation(self.program, "shiny")
+    self.unif_fogshade = opengles.glGetUniformLocation(self.program, "fogshade")
+    self.unif_fogdist = opengles.glGetUniformLocation(self.program, "fogdist")
+    self.unif_eye = opengles.glGetUniformLocation(self.program, "eye")
+    self.unif_blend = opengles.glGetUniformLocation(self.program, "blend")
+    self.unif_material = opengles.glGetUniformLocation(self.program, "material")
+    # attemp to offload matrix work to shader
+    #self.unif_locn = opengles.glGetUniformLocation(self.program, "locn")
+    #self.unif_rotn = opengles.glGetUniformLocation(self.program, "rotn")
+    #self.unif_scle = opengles.glGetUniformLocation(self.program, "scle")
+    #self.unif_ofst = opengles.glGetUniformLocation(self.program, "ofst")
+    
+    self.attr_texcoord = opengles.glGetAttribLocation(self.program, "texcoord")
+    opengles.glEnableVertexAttribArray(self.attr_texcoord)
+    self.unif_tex = []
+    self.texture = []
+    for t in range(3):
+      self.unif_tex.append(opengles.glGetUniformLocation(self.program, "tex"+str(t))) #tex0 texture tex1 bump tex2 reflection
+      opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, c_float(GL_LINEAR_MIPMAP_NEAREST))
+      opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, c_float(GL_LINEAR_MIPMAP_NEAREST))
+        
+    self.use()
 
   def use(self):
-    if self.tex1 is not None:
-      unif_tex1 = opengles.glGetUniformLocation(self.program, "tex1")
-      # frag shader must have a uniform 'tex1'
-
-    if self.tex2 is not None:
-      unif_tex2 = opengles.glGetUniformLocation(self.program, "tex2")
-      # frag shader must have a uniform 'tex2'
+    """Makes this shader active"""
     opengles.glUseProgram(self.program)
+  
+  def showshaderlog(self,shader):
+    """Prints the compile log for a shader"""
+    N=1024
+    log=(c_char*N)()
+    loglen=c_int()
+    opengles.glGetShaderInfoLog(shader,N,ctypes.byref(loglen),ctypes.byref(log))
+    print log.value
 
-  #self.program = program
-  #self.unif_color = opengles.glGetUniformLocation(program, "color");
-  #self.attr_vertex = opengles.glGetAttribLocation(program, "vertex");
-  #self.unif_scale = opengles.glGetUniformLocation(program, "scale");
-  #self.unif_offset = opengles.glGetUniformLocation(program, "offset");
-  #self.unif_tex = opengles.glGetUniformLocation(program, "tex");
+  def showprogramlog(self,shader):
+    """Prints the compile log for a program"""
+    N=1024
+    log=(c_char*N)()
+    loglen=c_int()
+    opengles.glGetProgramInfoLog(shader,N,ctypes.byref(loglen),ctypes.byref(log))
+    print log.value
+
+  def loadShader(self, sfile):
+    return open(sfile,'r').read()

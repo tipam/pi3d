@@ -36,25 +36,30 @@ class DisplayOpenGL(object):
 
     context_attribs = c_ints((EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE))
     self.context = openegl.eglCreateContext(self.display, self.config,
-                                            EGL_NO_CONTEXT, 0)
-    #ctypes.byref(context_attribs) )
+                                            EGL_NO_CONTEXT, ctypes.byref(context_attribs) )
     assert self.context != EGL_NO_CONTEXT
 
     self.create_surface(x, y, w, h)
 
+    opengles.glDepthRangef(c_float(-1.0),c_float(1.0))
+    opengles.glClearColor (c_float(0.3), c_float(0.3), c_float(0.7), c_float(1.0));
+    opengles.glBindFramebuffer(GL_FRAMEBUFFER,0)
+    
     #Setup default hints
     opengles.glEnable(GL_CULL_FACE)
     #opengles.glShadeModel(GL_FLAT)
     opengles.glEnable(GL_NORMALIZE)
     opengles.glEnable(GL_DEPTH_TEST)
+    opengles.glCullFace(GL_FRONT)
+    opengles.glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST)
 
     # Switches off alpha blending problem with desktop - is there a bug in the
     # driver?
     # Thanks to Roland Humphries who sorted this one!!
     opengles.glColorMask(1, 1, 1, 0)
 
-    opengles.glEnableClientState(GL_VERTEX_ARRAY)
-    opengles.glEnableClientState(GL_NORMAL_ARRAY)
+    #opengles.glEnableClientState(GL_VERTEX_ARRAY)
+    #opengles.glEnableClientState(GL_NORMAL_ARRAY)
     self.active = True
 
   def create_surface(self, x=0, y=0, w=0, h=0):
