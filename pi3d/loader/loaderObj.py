@@ -3,6 +3,7 @@ from pi3d import *
 from pi3d.loader.parse_mtl import parse_mtl
 from pi3d.shape.Shape import Shape
 from pi3d.Texture import Texture
+from pi3d.Buffer import Buffer
 
 #########################################################################################
 #
@@ -49,7 +50,6 @@ def loadFileOBJ(model, fileName):
   model.vNormal = False
   model.vGroup = {} # holds the information for each vertex group
 
-  if ("__clone__" in fileName): return #used for cloning this loadModel, i.e. don't need to parse egg file
   # read in the file and parse into some arrays
 
   filePath = os.path.split(os.path.abspath(fileName))[0]
@@ -86,7 +86,7 @@ def loadFileOBJ(model, fileName):
         x = float(chunks[1])
         y = float(chunks[2])
         z = float(chunks[3])
-        vertices.append([x,y,z])
+        vertices.append((x,y,z))
 
       # Normals in (x,y,z) form; normals might not be unit
       # vn 0.707 0.000 0.707
@@ -94,14 +94,14 @@ def loadFileOBJ(model, fileName):
         x = float(chunks[1])
         y = float(chunks[2])
         z = float(chunks[3])
-        normals.append([x,y,z])
+        normals.append((x,y,z))
 
       # Texture coordinates in (u,v)
       # vt 0.500 -1.352
       if chunks[0] == "vt" and len(chunks) >= 3:
         u = float(chunks[1])
         v = float(chunks[2])
-        uvs.append([u,v])
+        uvs.append((u,v))
 
       # Face
       if chunks[0] == "f" and len(chunks) >= 4:
@@ -176,74 +176,68 @@ def loadFileOBJ(model, fileName):
       # Smooth shading
       if chunks[0] == "s" and len(chunks) == 2:
         smooth = chunks[1]
-
-  print "materials:  ", materials
-  print "numv: ", numv
+  if VERBOSE:
+    print "materials:  ", materials
+    print "numv: ", numv
 
   for g in faces:
     numv[g] -= 1
     numi[g] -= 1
-    model.vGroup[g] = Shape("", model.x, model.y, model.z, model.rotx,model.roty,model.rotz, model.sx,model.sy,model.sz, model.cx,model.cy,model.cz)
-    ctype_array1 = c_float*(numv[g] * 3 + 3)
-    model.vGroup[g].vertices = ctype_array1()
-    model.vGroup[g].normals = ctype_array1()
-    ctype_array2 = c_float*(numv[g] * 2 + 2)
-    model.vGroup[g].tex_coords = ctype_array2()
-    ctype_array3 = c_short*(numi[g] + 1)
-    model.vGroup[g].indices = ctype_array3()
+    
+    g_vertices = []
+    g_normals = []
+    g_tex_coords = []
+    g_indices = []
     i = 0 # vertex counter in this material
     j = 0 # triangle vertex count in this material
-    print "len uv=",len(vertices)
+    if VERBOSE:
+      print "len uv=",len(vertices)
     for f in faces[g]:
       iStart = i
       for v in range(len(f['vertex'])):
-        for k in range(0,3):
-          model.vGroup[g].vertices[i*3+k] = c_float(vertices[f['vertex'][v]-1][k])
-          model.vGroup[g].normals[i*3+k] = c_float(normals[f['normal'][v]-1][k])
+        g_vertices.append(vertices[f['vertex'][v]-1])
+        g_normals.append(normals[f['normal'][v]-1])
         if (len(f['uv']) > 0 and len(uvs[f['uv'][v]-1]) == 2):
-          for k in range(0,2):
-            model.vGroup[g].tex_coords[i*2+k] = c_float(uvs[f['uv'][v]-1][k])
+          g_tex_coords.append(uvs[f['uv'][v]-1])
         i += 1
       n = i - iStart - 1
       for t in range(1,n):
-        model.vGroup[g].indices[j*3] = c_short(iStart)
-        model.vGroup[g].indices[j*3+1] = c_short(iStart + t)
-        model.vGroup[g].indices[j*3+2] = c_short(iStart + t +1)
-        j += 1
-    model.vGroup[g].indicesLen = len(model.vGroup[g].indices)
-    model.vGroup[g].material = None
-    model.vGroup[g].ttype = GL_TRIANGLES
+        g_indices.append((iStart, iStart + t, iStart + t +1))
+
+    model.buf.append(Buffer(model, g_vertices, g_tex_coords, g_indices, g_normals))
+    n = len(model.buf) - 1
+    model.vGroup[g] = n
+
+    model.buf[n].indicesLen = len(model.buf[n].indices)
+    model.buf[n].material = (0.0, 0.0, 0.0, 0.0)
+    model.buf[n].ttype = GL_TRIANGLES
 
 
     #for i in range(len(model.vGroup[g].normals)):
     #  print model.vGroup[g].normals[i],
-    print
-    print "indices=",len(model.vGroup[g].indices)
-    print "vertices=",len(model.vGroup[g].vertices)
-    print "normals=",len(model.vGroup[g].normals)
-    print "tex_coords=",len(model.vGroup[g].tex_coords)
+    if VERBOSE:
+      print
+      print "indices=",len(model.buf[n].indices)
+      print "vertices=",len(model.buf[n].vertices)
+      print "normals=",len(model.buf[n].normals)
+      print "tex_coords=",len(model.buf[n].tex_coords)
 
   material_lib = parse_mtl(open(os.path.join(filePath, mtllib), 'r'))
   for m in materials:
-    print m
+    if VERBOSE:
+      print m
     if 'mapDiffuse' in material_lib[m]:
       tfileName = material_lib[m]['mapDiffuse']
-      model.vGroup[materials[m]].texFile = tfileName
-      model.vGroup[materials[m]].texID = Texture(os.path.join(filePath, tfileName), False, True) # load from file
+      model.buf[model.vGroup[materials[m]]].texFile = tfileName
+      model.buf[model.vGroup[materials[m]]].textures = [Texture(os.path.join(filePath, tfileName), False, True)] # load from file
     else:
-      model.vGroup[materials[m]].texFile = None
-      model.vGroup[materials[m]].texID = None
-    if 'colorDiffuse' in material_lib[m]:#TODO maybe don't create this array if texture being used though not exclusive.
-    #TODO used by pi3d if light set
-      ctype_array4 = c_byte*((numi[materials[m]] + 1)*4)
-      model.vGroup[materials[m]].material = ctype_array4()
-      redVal = int(material_lib[m]['colorDiffuse'][0] * 255.0)
-      grnVal = int(material_lib[m]['colorDiffuse'][1] * 255.0)
-      bluVal = int(material_lib[m]['colorDiffuse'][2] * 255.0)
-      for i in xrange(0, (numi[materials[m]] + 1)*4, 4):
-        model.vGroup[materials[m]].material[i] = c_byte(redVal)
-        model.vGroup[materials[m]].material[i + 1] = c_byte(grnVal)
-        model.vGroup[materials[m]].material[i + 2] = c_byte(bluVal)
-        model.vGroup[materials[m]].material[i + 3] = c_byte(255)
+      model.buf[model.vGroup[materials[m]]].texFile = None
+      model.buf[model.vGroup[materials[m]]].textures = []
+      if 'colorDiffuse' in material_lib[m]:#TODO don't create this array if texture being used though not exclusive.
+      #TODO check this works with appropriate mtl file
+        redVal = material_lib[m]['colorDiffuse'][0]
+        grnVal = material_lib[m]['colorDiffuse'][1]
+        bluVal = material_lib[m]['colorDiffuse'][2]
+        model.buf[model.vGroup[materials[m]]].material = (redVal, grnVal, bluVal, 1.0)
 
 

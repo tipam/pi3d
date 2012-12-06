@@ -22,15 +22,14 @@ def rotate_vec(rx, ry, rz, xyz):
 
   return x, y, z
 
-def rotate_vec_x(r, x, y, z):
+def rotate_vec_x(r, xyz):
   ca, sa = from_polar(r)
-  return x, y * ca - z * sa, y * sa + z * ca
+  return xyz[0], xyz[1] * ca - xyz[2] * sa, xyz[1] * sa + xyz[2] * ca
 
-def rotate_vec_y(r, x, y, z):
+def rotate_vec_y(r, xyz):
   ca, sa = from_polar(r)
-  return z * sa + x * ca, y, z * ca - x * sa
+  return xyz[2] * sa + xyz[0] * ca, xyz[1], xyz[2] * ca - xyz[0] * sa
 
-def rotate_vec_z(r,x,y,z):
+def rotate_vec_z(r, xyz):
   ca, sa = from_polar(r)
-  return x * ca - y * sa, x * sa + y * ca, z
-
+  return xyz[0] * ca - xyz[1] * sa, xyz[0] * sa + xyz[1] * ca, xyz[2]

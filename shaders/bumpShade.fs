@@ -47,7 +47,8 @@ void main(void) {
     texc = texc * intensity;
     texc[3] = alpha; // ------ the alpha value from before darkening is patched back in, otherwise dark things might become see through
     vec4 shinec = vec4(0.0, 0.0, 0.0, 0.0);
-    if (shiny > 0.0) shinec = texture2D(tex2, shinecoordout); // ------ get the reflection for this pixel
+    vec2 bumpshinecoord = shinecoordout + 0.1*vec2(bump);
+    if (shiny > 0.0) shinec = texture2D(tex2, bumpshinecoord); // ------ get the reflection for this pixel
     float shinefact = shiny;
     if (length(shinec) < length(texc)) shinefact *= 0.25; // ------ reduce the reflection where the ground texture is lighter than it
     gl_FragColor = (1.0 - ffact) * ((1.0 - shinefact) * texc + shinefact * shinec) + ffact * fogshade; // ------ combine using factors

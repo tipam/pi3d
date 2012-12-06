@@ -71,7 +71,7 @@ class Shape(Loadable):
       
   def set_normal_shine(self, normtex, ntiles = 1.0, shinetex = None, shiny = 0.0):
     for b in self.buf:
-      if b.textures == None:
+      if b.textures == None or len(b.textures) == 0:
         b.textures = [normtex]
       while len(b.textures) < 2:
         b.textures.append(None)
@@ -82,9 +82,10 @@ class Shape(Loadable):
           b.textures.append(None)
         b.textures[2] = shinetex
         b.shiny = shiny
+      print b.textures, b.ntiles, b.shiny
   
   def setfog(self, fogshade, fogdist):
-    # set fog for this Buffer only it uses the shader smoothblend function from 1/3 fogdist to fogdist
+    # set fog for this Shape only it uses the shader smoothblend function from 1/3 fogdist to fogdist
     self.fogshade = fogshade
     self.fogdist = fogdist
   
