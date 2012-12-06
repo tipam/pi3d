@@ -12,12 +12,14 @@
 #
 # before running this example
 #
+from __future__ import absolute_import
 
 from pi3d import Display
 from pi3d.Keyboard import Keyboard
 from pi3d.Texture import Texture
-
 from pi3d.context.Light import Light
+from pi3d.Camera import Camera
+from pi3d.Shader import Shader
 
 from pi3d.shape.Cone import Cone
 from pi3d.shape.Cylinder import Cylinder
@@ -36,89 +38,94 @@ from pi3d.util.Screenshot import screenshot
 
 # Setup display and initialise pi3d
 DISPLAY = Display.create()
-DISPLAY.setBackColour(0,0,0,1)    	# r,g,b,alpha
+DISPLAY.setBackColour(0.0, 0.0, 0.0, 1.0)      # r,g,b,alpha
+#setup camera, light, shader
+camera = Camera((0, 0, 0), (0, 0, -1), (1, 1000, 1.6, 1.2))
+light = Light((5, 5, 1))
+shader = Shader("shaders/bumpShade")
 
 # Load textures
 patimg = Texture("textures/PATRN.PNG")
 coffimg = Texture("textures/COFFEE.PNG")
+shapebump = Texture("textures/floor_nm.jpg")
+shapeshine = Texture("textures/stars.jpg")
 
 #Create inbuilt shapes
-mysphere = Sphere(1,24,24,0.0,"sphere",-4,2,-7)
-mytcone = TCone(0.8,0.6,1,24,"TCone", -2,2,-7)
-myhelix = Helix(0.4,0.1,12,24,1.5,3.0,"helix", 0,2,-7)
-mytube = Tube(0.4,0.1,1.5,24,"tube",2,2,-7, 30,0,0)
-myextrude = Extrude( ((-0.5, 0.5), (0.5,0.7), (0.9,0.2), (0.2,0.05), (1.0,0.0), (0.5,-0.7), (-0.5, -0.5)), 0.5,"Extrude",4,2,-7)
+mysphere = Sphere(camera, light, 1, 24, 24, 0.0,"sphere",-4, 2, 5)
+mytcone = TCone(camera, light, 0.8,0.6,1,24,"TCone", -2, 2, 5)
+myhelix = Helix(camera, light, 0.4, 0.1, 12, 24, 1.5, 3.0, "helix", 0, 2, 5)
+mytube = Tube(camera, light, 0.4, 0.1, 1.5, 24, "tube",2, 2, 7, 30, 0, 0)
+myextrude = Extrude(camera, light, ((-0.5, 0.5), (0.5,0.7), (0.9,0.2), (0.2,0.05), (1.0,0.0), (0.5,-0.7), (-0.5, -0.5)), 0.5,"Extrude", 4, 2, 5)
+myextrude.buf[0].setdrawdetails(shader, [coffimg, shapebump, shapeshine], 4.0, 0.2)
+myextrude.buf[1].setdrawdetails(shader, [patimg, shapebump, shapeshine], 4.0, 0.2)
+myextrude.buf[2].setdrawdetails(shader, [patimg, shapebump, shapeshine], 4.0, 0.2)
 
-mycone = Cone(1,2,24,"Cone",-4,-1,-7)
-mycylinder = Cylinder(.7,1.5,24,"Cyli",-2,-1,-7)
-myhemisphere = Sphere(1,24,24,0.5,"hsphere",0,-1,-7)
-mytorus = Torus(1,0.3,12,24,"Torus", 2,-1,-7)
+mycone = Cone(camera, light, 1,2,24,"Cone", -4, -1, 5)
+mycylinder = Cylinder(camera, light, 0.7,1.5,24,"Cyli", -2, -1, 5)
+myhemisphere = Sphere(camera, light, 1, 24, 24, 0.5, "hsphere", 0, -1, 5)
+mytorus = Torus(camera, light, 1,0.3,12,24,"Torus", 2, -1, 5)
 #NB Lathe needs to start at the top otherwise normals are calculated in reverse, also inside surfaces need to be defined otherwise normals are wrong
-mylathe = Lathe( ((0,1),(0.6,1.2),(0.8,1.4),(1.09,1.7), (1.1,1.7),(0.9, 1.4),(0.7,1.2),(0.08,1),(0.08,0.21),(0.1,0.2),(1,0.05),(1,0),(0,0)), 24,"Cup",4,-1,-7, 0,0,0, 0.8,0.8,0.8)
+mylathe = Lathe(camera, light, ((0,1),(0.6,1.2),(0.8,1.4),(1.09,1.7), (1.1,1.7),(0.9, 1.4),(0.7,1.2),(0.08,1),(0.08,0.21),(0.1,0.2),(1,0.05),(1,0),(0,0)), 24,"Cup",4,-1, 5, 0,0,0, 0.8, 0.8, 0.8)
 
-myPlane = Plane(4,4,"plane",0,0,0)
-myPlane.translate(0,0,-10)
+myPlane = Plane(camera, light, 4, 4,"plane")
+myPlane.translate(0, 0, 10)
 
-arialFont = Font("AR_CENA","#dd00aa")   #load AR_CENA font and set the font colour to 'raspberry'
-destineFont = Font("AR_Destine", "#0055ff")
+#arialFont = Font("AR_CENA","#dd00aa")   #load AR_CENA font and set the font colour to 'raspberry'
+#destineFont = Font("AR_Destine", "#0055ff")
 
 
 # Fetch key presses
 mykeys = Keyboard()
 
-#create a light
-mylight = Light(0, 2,2,2, "", 1,0,0, 0.1,0.1,0.1, 0)
-mylight.on()
-
 # Display scene
 while 1:
   DISPLAY.clear()
 
-  mysphere.draw(patimg)
+  mysphere.draw(shader, [patimg])
   mysphere.rotateIncY( 0.5 )
 
-  myhemisphere.draw(coffimg)
+  myhemisphere.draw(shader, [coffimg])
   myhemisphere.rotateIncY( .5 )
 
-  myhelix.draw(patimg)
+  myhelix.draw(shader, [patimg])
   myhelix.rotateIncY(3)
   myhelix.rotateIncZ(1)
 
-  mytube.draw(coffimg)
+  mytube.draw(shader, [coffimg, shapebump, shapeshine], 4.0, 0.1)
   mytube.rotateIncY(3)
   mytube.rotateIncZ(2)
 
-  myextrude.draw(coffimg,patimg,patimg)
+  myextrude.draw()
   myextrude.rotateIncY(-2)
   myextrude.rotateIncX(0.37)
 
-  mycone.draw(coffimg)
+  mycone.draw(shader, [coffimg])
   mycone.rotateIncY(-2)
   mycone.rotateIncZ(1)
 
-  mycylinder.draw(patimg)
+  mycylinder.draw(shader, [patimg, shapebump, shapeshine], 4.0, 0.1)
   mycylinder.rotateIncY(2)
   mycylinder.rotateIncZ(1)
 
-  mytcone.draw(coffimg)
+  mytcone.draw(shader, [coffimg])
   mytcone.rotateIncY(2)
   mytcone.rotateIncZ(-1)
 
-  mytorus.draw(patimg)
+  mytorus.draw(shader, [patimg, shapebump, shapeshine], 4.0, 0.6)
   mytorus.rotateIncY(3)
   mytorus.rotateIncZ(1)
 
-  mylathe.draw(patimg)
+  mylathe.draw(shader, [patimg])
   mylathe.rotateIncY(2)
   mylathe.rotateIncZ(1)
 
-  myPlane.draw(coffimg)
+  myPlane.draw(shader, [coffimg])
   myPlane.rotateIncY(9)
-
+  """
   String.drawString3D(arialFont, "Raspberry Pi ROCKS!",
                       -0.8, -0.7, -2.2, 10.0, 0.003, 0.003)
-  #pi3d.drawString(destineFont,"Some nice OpenGL bitmap fonts to play with",-1.3,-0.3,-2.2, 10.0, 0.002,0.002)
-
+  pi3d.drawString(destineFont,"Some nice OpenGL bitmap fonts to play with",-1.3,-0.3,-2.2, 10.0, 0.002,0.002)
+  """
   k = mykeys.read()
   if k >-1:
     if k==112: screenshot("shapesPic.jpg")
@@ -128,5 +135,5 @@ while 1:
       break
     else:
       print k
-
+  
   DISPLAY.swapBuffers()
