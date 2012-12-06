@@ -9,7 +9,9 @@ from pi3d.context.Light import Light
 from pi3d.Camera import Camera
 from pi3d.Shader import Shader
 
-from pi3d.shape.Extrude import Extrude
+from pi3d.shape.Tube import Tube
+from pi3d.util.String import String
+from pi3d.util.Font import Font
 
 # Setup display and initialise pi3d
 DISPLAY = Display.create(x=100, y=100)
@@ -27,8 +29,8 @@ shapebump = Texture("textures/floor_nm.jpg", True)
 shapeshine = Texture("textures/stars.jpg")
 
 #Create shape
-myshape = Extrude(camera, light, ((0.0,1.0), (1.0,0.0), (0.0,-1.0), (0.2,0.2)), 5.0)
-myshape.translate(0, 0, 5)
+myshape = Tube(camera, light)
+myshape.translate(0, 0, 2)
 
 cAngle = [0.0, 0.0, 0.0]
 dx = 0.05
@@ -36,22 +38,28 @@ dx = 0.05
 tick=0
 next_time = time.time()+1.0
 
+arialFont = Font("AR_CENA","#dd00aa")   #load AR_CENA font and set the font colour to 'raspberry'
+mystring = String(camera, light, arialFont, "Raspberry Pi ROCKS!")
+mystring.translate(0.0, 0.0, 50)
+mystring.set_shader(shader)
+
 myshape.buf[0].setdrawdetails(shader, [shapeimg, shapebump, shapeshine], 4.0, 0.2)
-myshape.buf[1].setdrawdetails(shader, [shapebump, shapebump, shapeshine], 4.0, 0.2)
-myshape.buf[2].setdrawdetails(shader, [shapeshine, shapebump, shapeshine], 4.0, 0.2)
+#myshape.buf[1].setdrawdetails(shader, [shapebump, shapebump, shapeshine], 4.0, 0.2)
+#myshape.buf[2].setdrawdetails(shader, [shapeshine, shapebump, shapeshine], 4.0, 0.2)
 #myshape.buf[0].material = (1.0, 0.2, 0.5, 1.0)
 
 # Display scene and rotate shape
 while 1:
   DISPLAY.clear()
 
-  camera.reset()
+  #camera.reset()
   #cAngle[1] += 0.5
   #camera.rotateY(cAngle[1])
 
   myshape.draw()
+  mystring.draw()
 
-  myshape.rotateIncZ(1.247)
+  myshape.rotateIncY(1.247)
   myshape.rotateIncX(0.613)
   myshape.translate(dx, 0.0, 0.0)
   if myshape.x > 5: dx = -0.05

@@ -71,14 +71,6 @@ class Texture(Loadable):
     self.tex = ctypes.c_int()
 
   def _load_opengl(self):
-    """
-    opengles.glGenTextures(1, ctypes.byref(self.tex))
-    opengles.glBindTexture(GL_TEXTURE_2D, self.tex)
-    RGBv = GL_RGBA if self.alpha else GL_RGB
-    opengles.glTexImage2D(GL_TEXTURE_2D, 0, RGBv, self.ix, self.iy, 0, RGBv,
-                          GL_UNSIGNED_BYTE,
-                          ctypes.string_at(self.image, len(self.image)))
-    """
     opengles.glGenTextures(1, ctypes.byref(self.tex), 0)
     opengles.glBindTexture(GL_TEXTURE_2D, self.tex)
     RGBv = GL_RGBA if self.alpha else GL_RGB
