@@ -19,6 +19,8 @@ from pi3d import Display
 from pi3d.Keyboard import Keyboard
 from pi3d.Mouse import Mouse
 from pi3d.Texture import Texture
+from pi3d.Camera import Camera
+from pi3d.Shader import Shader
 
 from pi3d.context.Fog import Fog
 from pi3d.context.Light import Light
@@ -52,8 +54,13 @@ print "############################################################"
 print
 
 # Setup display and initialise pi3d
-DISPLAY = Display.create(x=10, y=10, w=-20, h=-100,
-                         background=(0.4, 0.8, 0.8, 1))
+DISPLAY = Display.create(x=100, y=100)
+DISPLAY.setBackColour(0.4,0.8,0.8,1)      # r,g,b,alpha
+
+camera = Camera((0, 0, 0), (0, 0, -1), (1, 1000, DISPLAY.win_width/1000.0, DISPLAY.win_width/1000.0))
+light = Light((10, 10, -20))
+shader = Shader("shaders/bumpShade")
+#========================================
 
 # Setting 2nd param to True renders 'True' Blending
 # (this can be changed later to 'False' with 'rockimg2.blend = False')
@@ -65,33 +72,36 @@ monstimg = Texture("textures/pong2.jpg")
 
 # environment cube
 ectex = Texture("textures/ecubes/skybox_stormydays.jpg")
-myecube = EnvironmentCube(900.0,"CROSS")
+myecube = EnvironmentCube(camera, light, 900.0,"CROSS")
+myecube.buf[0].set_draw_details(shader, [ectex], 0.0, -1.0)
 
 # Create elevation map
 mapwidth=1000.0
 mapdepth=1000.0
 mapheight=100.0
-mymap = ElevationMap("textures/maze1.jpg",mapwidth,mapdepth,mapheight,128,128,1,"sub",0,0,0, smooth=True)
-mymap2 = ElevationMap("textures/maze1.jpg",mapwidth,mapdepth,mapheight+0.1,128,128 ,64,"detail",0.0, 0.01, 0.0, smooth=True)
+mymap = ElevationMap(camera, light, "textures/maze1.jpg",mapwidth,mapdepth,mapheight,128,128,1,"sub",0,0,0)
+mymap.buf[0].set_draw_details(shader, [rockimg1, rockimg2], 128.0, 0.0)
 
 # Crete fog for more realistic fade in distance. This can be turned on and off between drawing different object (i.e backgound not foggy)
-myfog = Fog(0.02, (0.1,0.1,0.1,1.0))
+mymap.set_fog((0.1,0.1,0.1,1.0), 200.0)
 
 #Create tree models
-treeplane = Plane(4.0,5.0)
+treeplane = Plane(camera, light, 4.0,5.0)
 
-treemodel1 = MergeShape("baretree")
-treemodel1.add(treeplane, 0,0,0)
-treemodel1.add(treeplane, 0,0,0, 0,90,0)
-
-shed = Model("models/shed1.obj","shed",0,3,0, 0,0,0, 2,2,2)
+treemodel1 = MergeShape(camera, light, "baretree")
+treemodel1.add(treeplane.buf[0], 0,0,0)
+treemodel1.add(treeplane.buf[0], 0,0,0, 0,90,0)
 
 #Scatter them on map using Merge shape's cluster function
-mytrees1 = MergeShape("trees1")
-mytrees1.cluster(treemodel1, mymap,0.0,0.0,900.0,900.0,10,"",8.0,3.0)
-# (shape,elevmap,xpos,zpos,w,d,count,options,minscl,maxscl)
-raspberry = MergeShape("rasp")
-raspberry.cluster(treemodel1, mymap,-250,+250,470.0,470.0,5,"",8.0,1.0)
+mytrees1 = MergeShape(camera, light, "trees1")
+mytrees1.cluster(treemodel1.buf[0], mymap,0.0,0.0,900.0,900.0,10,"",8.0,3.0)
+mytrees1.buf[0].set_draw_details(shader, [tree2img, rockimg2], 4.0, 0.0)
+mytrees1.set_fog((0.1,0.1,0.1,1.0), 200.0)
+
+raspberry = MergeShape(camera, light, "rasp")
+raspberry.cluster(treemodel1.buf[0], mymap,-250,+250,470.0,470.0,5,"",8.0,1.0)
+raspberry.buf[0].set_draw_details(shader, [raspimg, raspimg], 1.0, 0.0)
+raspberry.set_fog((0.1,0.1,0.1,1.0), 200.0)
 
 # createMergeShape can be used to join loadModel object for much greater rendering speed
 # however, because these objects can contain multiple vGroups, each with their own texture image
@@ -100,7 +110,10 @@ raspberry.cluster(treemodel1, mymap,-250,+250,470.0,470.0,5,"",8.0,1.0)
 # The cluster method can be used where there is only one vGroup but with more than one the different
 # parts of the object get split up by the randomisation! Here I manually do the same thing as cluster
 # by first generating an array of random locations and y-rotations
-shedgp = {}
+
+shed = Model(camera, light, "models/shed1.obj","shed",0,3,0, 0,0,0, 2,2,2)
+
+shedgp = []
 xArr = []
 yArr = []
 zArr = []
@@ -112,22 +125,22 @@ for i in range(5):
   zArr.append(zval)
   yArr.append(mymap.calcHeight(-xval, -zval))
   rArr.append(random.random()*45) # front faces approximately towards the sun (found by trial and error)
-for g in shed.vGroup:
-  thisAbbGp = MergeShape("shed")
+
+for b in shed.buf:
+  thisAbbGp = MergeShape(camera, light, "shed") # i.e. different merge groups for each part requiring different texture
   for i in range(len(xArr)):
-    thisAbbGp.add(shed.vGroup[g], xArr[i], yArr[i], zArr[i], 0, rArr[i], 0)
-  shedgp[g] = thisAbbGp
+    thisAbbGp.add(b, xArr[i], yArr[i], zArr[i], 0, rArr[i], 0)
+  shedgp.append(thisAbbGp)
+  shedgp[len(shedgp)-1].buf[0].set_draw_details(shader, b.textures, 0.0, 0.0)
+  shedgp[len(shedgp)-1].set_fog((0.1,0.1,0.1,1.0), 250.0)
 
 #monster
-monst = TCone()
+monst = TCone(camera, light)
+monst.buf[0].set_draw_details(shader, [monstimg], 0.0, 0.0)
 mDx,mDy,mDz = 0.1,0,0.2
 mSx,mSy,mSz = -5, mymap.calcHeight(-5,5)+1, 5
 gravity = 0.02
 
-# lighting. The default light is a point light but I have made the position method capable of creating
-# a directional light and this is what I do inside the loop. If you want a torch you don't need to move it about
-light = Light(0, 4, 4, 2, "", 0,1,-2, 0.1,0.1,0.2) #yellowish 'torch' or 'sun' (could be blueish ambient with different env cube)
-light.on()
 
 #screenshot number key P for screenshots
 scshots = 1
@@ -135,15 +148,12 @@ scshots = 1
 #energy counter
 hp = 25
 
-#avatar camera NB this isn't really moving as an object in the scene - it's staying still and used to move everything else
-#relative to it. So -xm, -ym, -zm all need to be used for calcualtions of real object relative to the camera!
-camera = Matrix()
 rot=0.0
 tilt=0.0
-avhgt = 2.0
+avhgt = 3.0
 xm=0.0
 zm=0.0
-ym= -(mymap.calcHeight(xm,zm)+avhgt)
+ym= mymap.calcHeight(xm,zm) + avhgt
 lastX0=0.0
 lastZ0=0.0
 
@@ -164,34 +174,32 @@ angle = 0
 while 1:
   DISPLAY.clear()
 
-  camera.identity()
-  camera.rotate(tilt,0,0)
-  camera.rotate(0,rot,0)
-  camera.translate(xm,ym,zm)
+  camera.reset()
+  camera.rotate(tilt, 0, 0)
+  camera.rotate(0, rot, 0)
+  camera.translate((xm, ym, zm))
 
-  myecube.draw(ectex,xm,ym,zm)
-  myfog.on()
-  mymap.draw(rockimg1)
-  mymap2.draw(rockimg2)
-  mytrees1.drawAll(tree2img)
-  raspberry.drawAll(raspimg)
-  monst.draw(monstimg)
+  myecube.draw()
+  mymap.draw()
+  mytrees1.draw()
+  raspberry.draw()
+  monst.draw()
 
   # monster movement
   mDy -= gravity
-  mDelx,mDelz = mSx+xm, mSz+zm #distance from monster
+  mDelx,mDelz = mSx-xm, mSz-zm #distance from monster
   mDist = math.sqrt(mDelx**2 + mDelz**2)
-  mDx -= 0.01*mDelx/mDist
-  mDz -= 0.01*mDelz/mDist
+  mDx = -0.01*mDelx/mDist
+  mDz = -0.01*mDelz/mDist
   monst.rotateIncY(100.0/mDist)
   if mDist > 100: #far away so teleport it nearer
-    mSx, mSz = -xm + 100*random.random() - 50, -zm + 100*random.random() - 50
+    mSx, mSz = xm + 100*random.random() - 50, zm + 100*random.random() - 50
     if mSx < -mapwidth/2: mSx = -mapwidth/2
     if mSx > mapwidth/2: mSx = mapwidth/2
     if mSz < -mapdepth/2: mSz = -mapdepth/2
     if mSz > mapdepth/2: mSz = mapdepth/2
   if mDist < 3: #it's got you, return to GO
-    xm, ym, zm = 0, -(mymap.calcHeight(0,0)+avhgt), 0
+    xm, ym, zm = 0, mymap.calcHeight(0,0) + avhgt, 0
 
   clash = mymap.clashTest(monst.x, monst.y, monst.z, 1.5)
   if clash[0]:
@@ -200,6 +208,7 @@ while 1:
     # move it away a bit to stop it getting trapped inside if it has tunelled
     jDist = clash[4] + 0.1
     mSx, mSy, mSz = mSx - jDist*nx, mSy - jDist*ny, mSz - jDist*nz
+    print "jDist=",jDist,"mDist=",mDist
 
     # use R = I - 2(N.I)N
     rfact = 2.05*(nx*mDx + ny*mDy + nz*mDz) #small extra boost by using value > 2 to top up energy in defiance of 1st LOT
@@ -214,23 +223,18 @@ while 1:
   monst.position(mSx, mSy, mSz)
 
   # draw the sheds
-  for g in shed.vGroup:
-    shedgp[g].drawAll(shed.vGroup[g].texID)
+  for g in shedgp:
+    g.draw()
 
   # movement and rotations of light
-  myfog.off()
 
-  mx=mymouse.x
-  my=mymouse.y
-
-  rot += (mx-omx)*0.2
-  tilt -= (my-omy)*0.2
+  mx = mymouse.x
+  my = mymouse.y
+  rot -= (mx-omx)*0.2
+  tilt += (my-omy)*0.2
   omx=mx
   omy=my
-  v1 = rotate_vec_y(rot,  0, 1, -2)
-  v2 = rotate_vec_x(tilt,v1[0], v1[1], v1[2])
-  light.position(v2[0], v2[1], v2[2], 0) #fourth parameter in function sets (1=point light , default) or (0=distant light)
-  # the light has to be turned as the scene rotates, it took ages to work out how to do this by reversing the rotation order!!!
+
   dx = -math.sin(rot*rads)
   dz = math.cos(rot*rads)
   dy = math.sin(tilt*rads)
@@ -240,8 +244,8 @@ while 1:
       zm += dz*3
       ym += dy*3
     else:
-      dy = -(mymap.calcHeight(xm + dx*1.5, zm + dz*1.5)+avhgt) - ym
-      if dy > -1.0: # limit steepness so can't climb up walls
+      dy = mymap.calcHeight(xm + dx*1.5, zm + dz*1.5) + avhgt - ym
+      if dy < 1.2: # limit steepness so can't climb up walls
         xm += dx
         zm += dz
         ym += dy
@@ -260,11 +264,11 @@ while 1:
         zm -= dz
         ym += dy
     elif k==112: #key P
-      screenshot("critters3D"+str(scshots)+".jpg")
+      screenshot("amazing"+str(scshots)+".jpg")
       scshots += 1
     elif k==32 and hp > 0: #key SPACE
       walk = False
-      dy = -(mymap.calcHeight(xm + dx, zm + dz)+avhgt) - ym
+      dy = mymap.calcHeight(xm + dx, zm + dz) + avhgt + ym
       xm += dx
       zm += dz
       ym += dy

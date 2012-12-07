@@ -220,7 +220,7 @@ class ElevationMap(Shape):
         #if minDist < radSq:
         #  minDist = radSq
 
-    gLevel = self.calcHeight(-px, -pz) #check it hasn't tunnelled through by going fast
+    gLevel = self.calcHeight(px, pz) #check it hasn't tunnelled through by going fast
     if gLevel > (py-rad):
       minDist = py - gLevel
       minLoc = (int((x0+x1)/2), int((z0+z1)/2))
