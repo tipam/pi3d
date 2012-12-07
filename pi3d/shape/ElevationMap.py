@@ -96,10 +96,10 @@ class ElevationMap(Shape):
     self.buf.append(Buffer(self, verts, tex_coords, idx, None, smooth))
 
   # determines how high an object is when dropped on the map (providing it's inside the map area)
-  def dropOn(self,x,z):
+  def dropOn(self, px, pz):
     #adjust for map not set at origin
-    px += self.x
-    pz += self.z
+    px -= self.x
+    pz -= self.z
 
     wh = self.width * 0.5
     hh = self.depth * 0.5
@@ -107,8 +107,8 @@ class ElevationMap(Shape):
     hs = self.depth / self.iy
     ht = self.height / 255.0
 
-    if x > -wh and x < wh and z > -hh and z < hh:
-      pixht = self.pixels[(wh - x) / ws,(hh - z) / hs] * ht
+    if px > -wh and px < wh and pz > -hh and pz < hh:
+      pixht = self.pixels[(wh + px) / ws,(hh + pz) / hs] * ht
 
     return pixht + self.y
 
@@ -121,8 +121,8 @@ class ElevationMap(Shape):
     px, pz -- location of the point to calculate height
     """
     #adjust for map not set at origin
-    px += self.x
-    pz += self.z
+    px -= self.x
+    pz -= self.z
 
     wh = self.width * 0.5
     hh = self.depth * 0.5
@@ -130,8 +130,8 @@ class ElevationMap(Shape):
     hs = self.depth / self.iy
     ht = self.height / 255.0
     #round off to nearest integer
-    px = (wh - px) / ws
-    pz = (hh - pz) / hs
+    px = (wh + px) / ws
+    pz = (hh + pz) / hs
     x = math.floor(px)
     z = math.floor(pz)
     if x < 0: x = 0

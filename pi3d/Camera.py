@@ -30,8 +30,8 @@ class Camera(object):
     
   def translate(self,pt):
     #self.mtrx = translate(self.mtrx,pt)
-    self.mtrx = dot([[1,0,0,0],[0,1,0,0],[0,0,1,0],[pt[0],pt[1],pt[2],1]], self.mtrx)
-    eye = (pt[0],pt[1],pt[2])
+    self.mtrx = dot([[1,0,0,0],[0,1,0,0],[0,0,1,0],[-pt[0], -pt[1], -pt[2], 1]], self.mtrx)
+    eye = (pt[0], pt[1], pt[2])
   
   def rotateZ(self,angle):
     c = cos(radians(angle))

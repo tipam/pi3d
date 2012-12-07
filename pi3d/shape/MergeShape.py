@@ -82,7 +82,7 @@ class MergeShape(Shape):
       z = zpos + random.random() * d - d * 0.5 #mapdepth*.9-mapdepth*.5
       rh = random.random() * maxscl + minscl
       rt = random.random() * 360.0
-      y = elevmap.calcHeight(-x, -z) + rh * 2
+      y = elevmap.calcHeight(x, z) + rh * 2
       #self.merge(shape, x, y, z, 0, rt, 0, rh, rh, rh)
       #self.merge(shape, x,y,z, shape.rotx, rt + shape.roty, shape.rotz, 
       #    rh * shape.sx, rh * shape.sy, rh * shape.sz)

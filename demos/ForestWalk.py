@@ -108,12 +108,12 @@ monolith.set_fog((0.3, 0.3, 0.4, 1.0), 650.0)
 scshots = 1
 
 #avatar camera
-rot=0.0
-tilt=0.0
+rot = 0.0
+tilt = 0.0
 avhgt = 3.5
-xm=0.0
-zm=0.0
-ym= -(mymap.calcHeight(xm,zm)+avhgt)
+xm = 0.0
+zm = 0.0
+ym = mymap.calcHeight(xm, zm) + avhgt
 
 # Fetch key presses
 mykeys = Keyboard()
@@ -152,13 +152,13 @@ while 1:
   k = mykeys.read()
   if k >-1:
     if k==119:  #key W
-      xm += math.sin(math.radians(rot))
-      zm -= math.cos(math.radians(rot))
-      ym = -(mymap.calcHeight(xm,zm)+avhgt)
-    elif k==115:  #kry S
       xm -= math.sin(math.radians(rot))
       zm += math.cos(math.radians(rot))
-      ym = -(mymap.calcHeight(xm,zm)+avhgt)
+      ym = mymap.calcHeight(xm, zm) + avhgt
+    elif k==115:  #kry S
+      xm += math.sin(math.radians(rot))
+      zm -= math.cos(math.radians(rot))
+      ym = mymap.calcHeight(xm, zm) + avhgt
     elif k==39:   #key '
       tilt -= 2.0
       print tilt
