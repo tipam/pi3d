@@ -15,7 +15,7 @@ class Font(object):
     self.ix, self.iy = im.size
     pixels = im.load()
     self.alpha = True
-    self.blend = True
+    self.blend = False
 
     self.chr = []
     #extract font information from top scanline of font image;

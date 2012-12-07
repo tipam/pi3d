@@ -14,7 +14,7 @@ from pi3d.util.String import String
 from pi3d.util.Font import Font
 
 # Setup display and initialise pi3d
-DISPLAY = Display.create(x=100, y=100)
+DISPLAY = Display.create(x=10, y=10, w=600, h=400)
 DISPLAY.setBackColour(0.4, 0.6, 0.8, 1.0)      # r,g,b,alpha
 
 #setup textures, light position and initial model position
@@ -29,8 +29,8 @@ shapebump = Texture("textures/floor_nm.jpg", True)
 shapeshine = Texture("textures/stars.jpg")
 
 #Create shape
-myshape = Tube(camera, light)
-myshape.translate(0, 0, 2)
+#myshape = Tube(camera, light)
+#myshape.translate(0, 0, 2)
 
 cAngle = [0.0, 0.0, 0.0]
 dx = 0.05
@@ -39,13 +39,13 @@ tick=0
 next_time = time.time()+1.0
 
 arialFont = Font("AR_CENA","#dd00aa")   #load AR_CENA font and set the font colour to 'raspberry'
-mystring = String(camera, light, arialFont, "Raspberry Pi ROCKS!")
-mystring.translate(0.0, 0.0, 50)
+mystring = String(camera, light, arialFont, "RaspberryPi-Rocks")
+#mystring.translate(0.0, 0.0, 1)
 mystring.set_shader(shader)
 
-myshape.buf[0].setdrawdetails(shader, [shapeimg, shapebump, shapeshine], 4.0, 0.2)
-#myshape.buf[1].setdrawdetails(shader, [shapebump, shapebump, shapeshine], 4.0, 0.2)
-#myshape.buf[2].setdrawdetails(shader, [shapeshine, shapebump, shapeshine], 4.0, 0.2)
+#myshape.buf[0].set_draw_details(shader, [shapeimg, shapebump, shapeshine], 4.0, 0.2)
+#myshape.buf[1].set_draw_details(shader, [shapebump, shapebump, shapeshine], 4.0, 0.2)
+#myshape.buf[2].set_draw_details(shader, [shapeshine, shapebump, shapeshine], 4.0, 0.2)
 #myshape.buf[0].material = (1.0, 0.2, 0.5, 1.0)
 
 # Display scene and rotate shape
@@ -56,14 +56,15 @@ while 1:
   #cAngle[1] += 0.5
   #camera.rotateY(cAngle[1])
 
-  myshape.draw()
+  #myshape.draw()
   mystring.draw()
+  mystring.rotateIncZ(0.05)
 
-  myshape.rotateIncY(1.247)
-  myshape.rotateIncX(0.613)
-  myshape.translate(dx, 0.0, 0.0)
-  if myshape.x > 5: dx = -0.05
-  elif myshape.x < -5: dx = 0.05
+  #myshape.rotateIncY(1.247)
+  #myshape.rotateIncX(0.613)
+  #myshape.translate(dx, 0.0, 0.0)
+  #if myshape.x > 5: dx = -0.05
+  #elif myshape.x < -5: dx = 0.05
   """
   if time.time() > next_time:
     print "FPS:",tick/1.0

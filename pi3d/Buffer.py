@@ -64,7 +64,7 @@ class Buffer(object):
     opengles.glBindBuffer(GL_ARRAY_BUFFER, self.vbuf);
     opengles.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.ebuf);
     
-  def setdrawdetails(self, shader, textures, ntiles, shiny):
+  def set_draw_details(self, shader, textures, ntiles, shiny):
     self.shader = shader
     self.shape.shader = shader # set shader for parent shape
     self.textures = textures # array of Textures

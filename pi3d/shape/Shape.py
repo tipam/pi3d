@@ -1,4 +1,6 @@
-import math, itertools
+from itertools import chain
+from numpy import array, dot
+from math import radians, pi, sin, cos
 
 from pi3d import *
 from pi3d.Buffer import Buffer
@@ -23,6 +25,15 @@ class Shape(Loadable):
     self.cx = cx   #center
     self.cy = cy
     self.cz = cz
+    self.tr1 = array([[1.0,0.0,0.0,0.0],[0.0,1.0,0.0,0.0],[0.0,0.0,1.0,0.0],[self.x - self.cx, self.y - self.cy, self.z - self.cz, 1]])
+    s, c = sin(radians(self.rotx)), cos(radians(self.rotx))
+    self.rox = array([[1.0, 0.0, 0.0, 0.0],[0.0, c, s, 0.0],[0.0, -s, c, 0.0],[0.0, 0.0, 0.0, 1.0]])
+    s, c = sin(radians(self.roty)), cos(radians(self.roty))
+    self.roy = array([[c, 0.0, -s, 0.0],[0.0, 1.0, 0.0, 0.0],[s, 0.0, c, 0.0],[0.0, 0.0, 0.0, 1.0]])
+    s, c = sin(radians(self.rotz)), cos(radians(self.rotz))
+    self.roz = array([[c, s, 0.0, 0.0],[-s, c, 0.0, 0.0],[0.0, 0.0, 1.0, 0.0],[0.0, 0.0, 0.0, 1.0]])
+    self.scl = array([[self.sx, 0.0, 0.0, 0.0],[0.0, self.sy, 0.0, 0.0],[0.0, 0.0, self.sz, 0.0],[0.0, 0.0, 0.0, 1.0]])
+    self.tr2 = array([[1.0,0.0,0.0,0.0],[0.0,1.0,0.0,0.0],[0.0,0.0,1.0,0.0],[self.cx, self.cy, self.cz, 1.0]])
     
     self.camera = camera
     self.light = light
@@ -38,15 +49,26 @@ class Shape(Loadable):
         #this should all be done with matrices!! ... just for testing ...
 
   def draw(self, shdr=None, txtrs=None, ntl=None, shny=None):
-    # if called without parameters there has to have been a previous call to setdrawdetails() for all the Buffers in buf[]
+    # if called without parameters there has to have been a previous call to set_draw_details() for all the Buffers in buf[]
     shader = self.shader if shdr == None else shdr
-    mtrx = Utility.transform(self.camera.mtrx, self.x, self.y, self.z, 
-        self.rotx, self.roty, self.rotz, self.sx, self.sy, self.sz, self.cx, self.cy, self.cz)
-    # model matrix
-    M = c_floats(list(itertools.chain(*mtrx)))
-    opengles.glUniformMatrix4fv(shader.unif_modelviewmatrix,16,c_int(0),ctypes.byref(M))
 
-    C = c_floats(list(itertools.chain(*self.camera.mtrx)))
+    # using numpy
+    mtrx = dot(self.tr1, self.camera.mtrx)
+    if not (self.rotz == 0.0):
+      mtrx = dot(self.roz, mtrx)
+    if not (self.rotx == 0.0):
+      mtrx = dot(self.rox, mtrx)
+    if not (self.roty == 0.0):
+      mtrx = dot(self.roy, mtrx)
+    if not (self.sx == 1.0 and self.sy == 1.0 and self.sz == 1.0):
+      mtrx = dot(self.scl, mtrx)
+    mtrx = dot(self.tr2, mtrx)
+
+    # model matrix
+    M = c_floats(list(chain(*mtrx)))
+    opengles.glUniformMatrix4fv(shader.unif_modelviewmatrix,16,c_int(0),ctypes.byref(M))
+    # camera matrix
+    C = c_floats(list(chain(*self.camera.mtrx)))
     opengles.glUniformMatrix4fv(shader.unif_cameraviewmatrix,16,c_int(0),ctypes.byref(C))
     opengles.glUniform3f(shader.unif_eye, c_float(self.camera.eye[0]), c_float(self.camera.eye[1]), c_float(self.camera.eye[2]))
 
@@ -84,43 +106,73 @@ class Shape(Loadable):
         b.shiny = shiny
       print b.textures, b.ntiles, b.shiny
   
-  def setfog(self, fogshade, fogdist):
+  def set_fog(self, fogshade, fogdist):
     # set fog for this Shape only it uses the shader smoothblend function from 1/3 fogdist to fogdist
     self.fogshade = fogshade
     self.fogdist = fogdist
   
   def scale(self, sx, sy, sz):
-    self.sx = sx
-    self.sy = sy
-    self.sz = sz
+    self.scl[0][0] = self.sx = sx
+    self.scl[1][1] = self.sy = sy
+    self.scl[2][2] = self.sz = sz
 
   def position(self, x, y, z):
     self.x = x
     self.y = y
     self.z = z
+    self.tr1[3][0] = self.x - self.cx
+    self.tr1[3][1] = self.y - self.cy
+    self.tr1[3][2] = self.z - self.cz
 
   def translate(self, dx, dy, dz):
     self.x = self.x + dx
     self.y = self.y + dy
     self.z = self.z + dz
+    self.tr1[3][0] = self.x - self.cx
+    self.tr1[3][1] = self.y - self.cy
+    self.tr1[3][2] = self.z - self.cz
 
   def rotateToX(self, v):
     self.rotx = v
+    s, c = sin(radians(self.rotx)), cos(radians(self.rotx))
+    self.rox[1][1] = self.rox[2][2] = c
+    self.rox[1][2] = s
+    self.rox[2][1] = -s
 
   def rotateToY(self, v):
     self.roty = v
+    s, c = sin(radians(self.roty)), cos(radians(self.roty))
+    self.roy[0][0] = self.roy[2][2] = c
+    self.roy[0][2] = -s
+    self.roy[2][0] = s
 
   def rotateToZ(self, v):
     self.rotz = v
+    s, c = sin(radians(self.rotz)), cos(radians(self.rotz))
+    self.roz[0][0] = self.roz[1][1] = c
+    self.roz[0][1] = s
+    self.roz[1][0] = -s
 
   def rotateIncX(self,v):
     self.rotx += v
+    s, c = sin(radians(self.rotx)), cos(radians(self.rotx))
+    self.rox[1][1] = self.rox[2][2] = c
+    self.rox[1][2] = s
+    self.rox[2][1] = -s
 
   def rotateIncY(self,v):
     self.roty += v
+    s, c = sin(radians(self.roty)), cos(radians(self.roty))
+    self.roy[0][0] = self.roy[2][2] = c
+    self.roy[0][2] = -s
+    self.roy[2][0] = s
 
   def rotateIncZ(self,v):
     self.rotz += v
+    s, c = sin(radians(self.rotz)), cos(radians(self.rotz))
+    self.roz[0][0] = self.roz[1][1] = c
+    self.roz[0][1] = s
+    self.roz[1][0] = -s
 
   # TODO: should be a method on Shape.
   def add_vertex(self, vert, norm, texc):
@@ -133,7 +185,7 @@ class Shape(Loadable):
   def add_tri(self, indx):
   # add triangle refs.
     self.inds.append(indx)
-
+  """
   # position, rotate and scale an object
   def transform(self):
     Utility.translatef(self.x - self.cx, self.y - self.cy, self.z - self.cz)
@@ -144,7 +196,7 @@ class Shape(Loadable):
     Utility.rotatef(self.rotx, 1, 0, 0)
     Utility.scalef(self.sx, self.sy, self.sz)
     Utility.translatef(self.cx, self.cy, self.cz)
-
+  """
   def lathe(self, path, rise=0.0, loops=1.0, tris=True):
     s = len(path)
     rl = int(self.sides * loops)
@@ -153,7 +205,7 @@ class Shape(Loadable):
     pn = 0
     pp = 0
     tcx = 1.0 / self.sides
-    pr = (math.pi / self.sides) * 2.0
+    pr = (pi / self.sides) * 2.0
     rdiv = rise / rl
     ss=0
     
@@ -183,8 +235,8 @@ class Shape(Loadable):
       dx, dy = Utility.vec_normal(Utility.vec_sub((px, py), (opx, opy)))
 
       for r in range (0, rl):
-        sinr = math.sin(pr * r)
-        cosr = math.cos(pr * r)
+        sinr = sin(pr * r)
+        cosr = cos(pr * r)
         verts.append((px * sinr,py,px * cosr))        
         norms.append((-sinr*dy,dx,-cosr*dy))
         tex_coords.append((1.0-tcx * r, tcy))
