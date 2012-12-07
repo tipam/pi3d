@@ -29,14 +29,14 @@ shapebump = Texture("textures/floor_nm.jpg", True)
 shapeshine = Texture("textures/stars.jpg")
 
 #Create shape
-myshape = Tube(camera, light)
+myshape = Tube(camera, light, sides=64)
 myshape.translate(0, 0, 2)
 
 cAngle = [0.0, 0.0, 0.0]
 dx = 0.05
 
 tick=0
-next_time = time.time()+1.0
+next_time = time.time()+10.0
 
 arialFont = Font("AR_CENA","#dd00aa")   #load AR_CENA font and set the font colour to 'raspberry'
 mystring = String(camera, light, arialFont, "RaspberryPi-Rocks")
@@ -65,12 +65,12 @@ while 1:
   myshape.translate(dx, 0.0, 0.0)
   if myshape.x > 5: dx = -0.05
   elif myshape.x < -5: dx = 0.05
-  """
+  
   if time.time() > next_time:
-    print "FPS:",tick/1.0
+    print "FPS:",tick/10.0
     tick=0
-    next_time = time.time()+1.0
+    next_time = time.time()+10.0
   tick+=1
-  """
+  
   DISPLAY.swapBuffers()
 quit()
