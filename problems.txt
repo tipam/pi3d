@@ -1,0 +1,364 @@
+pi@Chairman:~/pi3d$ python Demo.py Amazing
+############################################################
+Esc to quit, W to go forward, Mouse to steer, Space to jump.
+N.B. W now works as a TOGGLE one press to go one to stop.
+At the edge you will turn into a ghost and be able to fly
+and pass through rocks! There are limited numbers of jumps.
+Good turnings are often greener and tend to be near
+(but in the opposite direction to) big holes
+############################################################
+If you get touched by a monster you will return to the start!
+############################################################
+
+2012-12-07 19:45:25,438 INFO: pi3d.Display:
+Pi3D module - version 0.06
+Copyright (c) Tim Skillman, 2012
+Copyright (c) Tom Swirly, 2012
+Updates available from www.github.com/rec/pi3d
+Screen size 1920, 1200.
+
+... Map size can't be bigger than 200x200 divisions
+Traceback (most recent call last):
+  File "Demo.py", line 37, in <module>
+    __import__('demos.' + d)
+  File "/home/pi/pi3d/demos/Amazing.py", line 74, in <module>
+    mymap = ElevationMap("textures/maze1.jpg",mapwidth,mapdepth,mapheight,128,128,1,"sub",0,0,0, smooth=True)
+  File "/home/pi/pi3d/pi3d/shape/ElevationMap.py", line 42, in __init__
+    im = Image.open(mapfile)
+  File "/usr/lib/python2.7/dist-packages/PIL/Image.py", line 1956, in open
+    prefix = fp.read(16)
+AttributeError: 'float' object has no attribute 'read'
+
+pi@Chairman:~/pi3d$ python Demo.py BouncingBalls
+Traceback (most recent call last):
+  File "Demo.py", line 37, in <module>
+    __import__('demos.' + d)
+  File "/home/pi/pi3d/demos/BouncingBalls.py", line 15, in <module>
+    from pi3d.util.String import drawString2D
+ImportError: cannot import name drawString2D
+
+pi@Chairman:~/pi3d$ python Demo.py Buckfast
+
+..... white screen ....
+
+
+2012-12-07 19:53:16,687 INFO: pi3d.Display:
+Pi3D module - version 0.06
+Copyright (c) Tim Skillman, 2012
+Copyright (c) Tom Swirly, 2012
+Updates available from www.github.com/rec/pi3d
+Screen size 1920, 1200.
+
+Compiled
+Compiled
+
+==============================================================
+Instructions:
+
+Keys-             W - Forward,
+        A - Left   S - Back     D - right
+
+Move mouse to pan view.  Click mouse to exit or press ESCAPE
+==============================================================
+
+
+pi@Chairman:~/pi3d$ python Demo.py Clouds3d
+
+..... black(!) screen ....
+
+
+2012-12-07 19:54:11,529 INFO: pi3d.Display:
+Pi3D module - version 0.06
+Copyright (c) Tim Skillman, 2012
+Copyright (c) Tom Swirly, 2012
+Updates available from www.github.com/rec/pi3d
+Screen size 1920, 1200.
+
+pi@Chairman:~/pi3d$ python Demo.py Collision
+
+..... nothing ....
+
+2012-12-07 19:46:05,651 INFO: pi3d.Display:
+Pi3D module - version 0.06
+Copyright (c) Tim Skillman, 2012
+Copyright (c) Tom Swirly, 2012
+Updates available from www.github.com/rec/pi3d
+Screen size 1920, 1200.
+
+2012-12-07 19:46:05,928 INFO: pi3d.Display: starting
+
+pi@Chairman:~/pi3d$ python Demo.py Earth
+
+..... white screen ....
+
+
+2012-12-07 19:56:36,374 INFO: pi3d.Display:
+Pi3D module - version 0.06
+Copyright (c) Tim Skillman, 2012
+Copyright (c) Tom Swirly, 2012
+Updates available from www.github.com/rec/pi3d
+Screen size 1920, 1200.
+
+Compiled
+Compiled
+
+
+pi@Chairman:~/pi3d$ python Demo.py Env
+2012-12-07 19:57:03,533 INFO: pi3d.Display:
+Pi3D module - version 0.06
+Copyright (c) Tim Skillman, 2012
+Copyright (c) Tom Swirly, 2012
+Updates available from www.github.com/rec/pi3d
+Screen size 1920, 1200.
+
+Traceback (most recent call last):
+  File "Demo.py", line 37, in <module>
+    __import__('demos.' + d)
+  File "/home/pi/pi3d/demos/EnvironmentCube.py", line 67, in <module>
+    myecube.draw(ectex, 0.0, 0.0, 0.0)
+  File "/home/pi/pi3d/pi3d/shape/Shape.py", line 56, in draw
+    mtrx = dot(self.tr1, self.camera.mtrx)
+AttributeError: 'float' object has no attribute 'mtrx'
+  File "Demo.py", line 37, in <module>  C-c C-cpi@Chairman:~/pi3d$ python Demo.py ForestWalk
+
+2012-12-07 19:57:32,268 INFO: pi3d.Display:
+
+..... white screen ....
+
+Pi3D module - version 0.06
+Copyright (c) Tim Skillman, 2012
+Copyright (c) Tom Swirly, 2012
+Updates available from www.github.com/rec/pi3d
+Screen size 1920, 1200.
+
+Compiled
+Compiled
+
+Calculating normals ...
+
+pi@Chairman:~/pi3d$ python Demo.py ForestWalk2
+2012-12-07 19:58:05,354 INFO: pi3d.Display:
+Pi3D module - version 0.06
+Copyright (c) Tim Skillman, 2012
+Copyright (c) Tom Swirly, 2012
+Updates available from www.github.com/rec/pi3d
+Screen size 1920, 1200.
+
+... Map size can't be bigger than 200x200 divisions
+Traceback (most recent call last):
+  File "Demo.py", line 37, in <module>
+    __import__('demos.' + d)
+  File "/home/pi/pi3d/demos/ForestWalk2.py", line 51, in <module>
+    mymap = ElevationMap("textures/mountainsHgt.jpg", mapwidth, mapdepth, mapheight, 64, 64, 10.0, "fw", 0,0,0,0,0,0,1,1,1,0,0,0,True) #testislands.jpg
+  File "/home/pi/pi3d/pi3d/shape/ElevationMap.py", line 42, in __init__
+    im = Image.open(mapfile)
+  File "/usr/lib/python2.7/dist-packages/PIL/Image.py", line 1956, in open
+    prefix = fp.read(16)
+AttributeError: 'float' object has no attribute 'read'
+
+pi@Chairman:~/pi3d$ python Demo.py LoadModel
+2012-12-07 19:58:23,537 INFO: pi3d.Display:
+Pi3D module - version 0.06
+Copyright (c) Tim Skillman, 2012
+Copyright (c) Tom Swirly, 2012
+Updates available from www.github.com/rec/pi3d
+Screen size 1920, 1200.
+
+Traceback (most recent call last):
+  File "Demo.py", line 37, in <module>
+    __import__('demos.' + d)
+  File "/home/pi/pi3d/demos/LoadModel.py", line 30, in <module>
+    mymodel = Model('models/teapot.egg' ,'teapot', 0,-1,0)
+  File "/home/pi/pi3d/pi3d/shape/Model.py", line 18, in __init__
+    if("__clone__" in fileString): return #creating a copy but with pointer to buf
+TypeError: argument of type 'int' is not iterable
+
+pi@Chairman:~/pi3d$ python Demo.py LoadModelObj
+2012-12-07 19:58:30,434 INFO: pi3d.Display:
+Pi3D module - version 0.06
+Copyright (c) Tim Skillman, 2012
+Copyright (c) Tom Swirly, 2012
+Updates available from www.github.com/rec/pi3d
+Screen size 1920, 1200.
+
+Traceback (most recent call last):
+  File "Demo.py", line 37, in <module>
+    __import__('demos.' + d)
+  File "/home/pi/pi3d/demos/LoadModelObj.py", line 33, in <module>
+    mymodel = Model('models/teapot.obj' ,'teapot', 0, -1.0, 0)
+  File "/home/pi/pi3d/pi3d/shape/Model.py", line 18, in __init__
+    if("__clone__" in fileString): return #creating a copy but with pointer to buf
+TypeError: argument of type 'int' is not iterable
+
+pi@Chairman:~/pi3d$ python Demo.py MegaStation
+2012-12-07 19:55:05,280 INFO: pi3d.Display:
+Pi3D module - version 0.06
+Copyright (c) Tim Skillman, 2012
+Copyright (c) Tom Swirly, 2012
+Updates available from www.github.com/rec/pi3d
+Screen size 1920, 1200.
+
+Traceback (most recent call last):
+  File "Demo.py", line 37, in <module>
+    __import__('demos.' + d)
+  File "/home/pi/pi3d/demos/MegaStation.py", line 37, in <module>
+    ectex = EnvironmentCube.loadECfiles("textures/ecubes/RedPlanet", "redplanet_256", "png", True)
+TypeError: loadECfiles() takes exactly 2 arguments (4 given)
+
+pi@Chairman:~/pi3d$ python Demo.py MeteredCollisionBalls
+
+2012-12-07 19:58:42,310 INFO: pi3d.Display:
+Pi3D module - version 0.06
+Copyright (c) Tim Skillman, 2012
+Copyright (c) Tom Swirly, 2012
+Updates available from www.github.com/rec/pi3d
+Screen size 1920, 1200.
+
+2012-12-07 19:58:42,484 INFO: pi3d.Display: starting
+2012-12-07 19:58:42,512 ERROR: pi3d.Display: Traceback (most recent call last):
+  File "/home/pi/pi3d/pi3d/Display.py", line 113, in _for_each_sprite
+    function(s)
+  File "/home/pi/pi3d/pi3d/Display.py", line 64, in <lambda>
+    self._for_each_sprite(lambda s: s.repaint(t))
+  File "/home/pi/pi3d/demos/MeteredCollisionBalls.py", line 42, in repaint
+    String.drawString3D(font=FONT, string=s,
+AttributeError: 'module' object has no attribute 'drawString3D'
+
+Traceback (most recent call last):
+  File "Demo.py", line 37, in <module>
+    __import__('demos.' + d)
+  File "/home/pi/pi3d/demos/MeteredCollisionBalls.py", line 66, in <module>
+    DISPLAY.loop(my_loop)
+  File "/home/pi/pi3d/pi3d/Display.py", line 64, in loop
+    self._for_each_sprite(lambda s: s.repaint(t))
+  File "/home/pi/pi3d/pi3d/Display.py", line 113, in _for_each_sprite
+    function(s)
+  File "/home/pi/pi3d/pi3d/Display.py", line 64, in <lambda>
+    self._for_each_sprite(lambda s: s.repaint(t))
+  File "/home/pi/pi3d/demos/MeteredCollisionBalls.py", line 42, in repaint
+    String.drawString3D(font=FONT, string=s,
+AttributeError: 'module' object has no attribute 'drawString3D'
+
+
+pi@Chairman:~/pi3d$ python Demo.py Pi3d2
+
+.... works! ....
+
+2012-12-07 19:58:57,846 INFO: pi3d.Display:
+Pi3D module - version 0.06
+Copyright (c) Tim Skillman, 2012
+Copyright (c) Tom Swirly, 2012
+Updates available from www.github.com/rec/pi3d
+Screen size 1920, 1200.
+
+Compiled
+Compiled
+
+pi@Chairman:~/pi3d$ python Demo.py Pong
+############################################################
+Mouse to move left and right and up and down
+############################################################
+
+2012-12-07 19:59:17,618 INFO: pi3d.Display:
+Pi3D module - version 0.06
+Copyright (c) Tim Skillman, 2012
+Copyright (c) Tom Swirly, 2012
+Updates available from www.github.com/rec/pi3d
+Screen size 1920, 1200.
+
+Traceback (most recent call last):
+  File "Demo.py", line 37, in <module>
+    __import__('demos.' + d)
+  File "/home/pi/pi3d/demos/Pong.py", line 56, in <module>
+    ball = Sphere(radius,12,12,0.0,"sphere",-4,8,-7)
+  File "/home/pi/pi3d/pi3d/shape/Sphere.py", line 18, in __init__
+    st = (math.pi * (1.0 - hemi)) / slices
+ZeroDivisionError: float division by zero
+
+pi@Chairman:~/pi3d$ python Demo.py Rasp
+
+.... nothing ....
+
+2012-12-07 19:59:26,228 INFO: pi3d.Display:
+Pi3D module - version 0.06
+Copyright (c) Tim Skillman, 2012
+Copyright (c) Tom Swirly, 2012
+Updates available from www.github.com/rec/pi3d
+Screen size 1920, 1200.
+
+pi@Chairman:~/pi3d$ python Demo.py Robot
+2012-12-07 19:59:46,258 INFO: pi3d.Display:
+Pi3D module - version 0.06
+Copyright (c) Tim Skillman, 2012
+Copyright (c) Tom Swirly, 2012
+Updates available from www.github.com/rec/pi3d
+Screen size 1920, 1200.
+
+Traceback (most recent call last):
+  File "Demo.py", line 37, in <module>
+    __import__('demos.' + d)
+  File "/home/pi/pi3d/demos/RobotWalkabout.py", line 58, in <module>
+    mymap = ElevationMap("textures/mars_height.png",mapwidth,mapdepth,mapheight,128,128) #testislands.jpg
+  File "/home/pi/pi3d/pi3d/shape/ElevationMap.py", line 42, in __init__
+    im = Image.open(mapfile)
+  File "/usr/lib/python2.7/dist-packages/PIL/Image.py", line 1956, in open
+    prefix = fp.read(16)
+AttributeError: 'float' object has no attribute 'read'
+
+pi@Chairman:~/pi3d$ python Demo.py Shapes
+
+.... white screen ....
+
+2012-12-07 19:59:57,578 INFO: pi3d.Display:
+Pi3D module - version 0.06
+Copyright (c) Tim Skillman, 2012
+Copyright (c) Tom Swirly, 2012
+Updates available from www.github.com/rec/pi3d
+Screen size 1920, 1200.
+
+Compiled
+Compiled
+C-c C-cTraceback (most recent call last):
+  File "Demo.py", line 37, in <module>
+    __import__('demos.' + d)
+  File "/home/pi/pi3d/demos/Shapes.py", line 107, in <module>
+    mycylinder.draw(shader, [patimg, shapebump, shapeshine], 4.0, 0.1)
+  File "/home/pi/pi3d/pi3d/shape/Shape.py", line 87, in draw
+    b.draw(shdr, txtrs, ntl, shny) # relies on object inheriting from this creating Buffer called buf
+  File "/home/pi/pi3d/pi3d/Buffer.py", line 110, in draw
+    shader.use()
+  File "/home/pi/pi3d/pi3d/Shader.py", line 79, in use
+    opengles.glUseProgram(self.program)
+KeyboardInterrupt
+
+pi@Chairman:~/pi3d$ python Demo.py TigerTank
+2012-12-07 19:54:41,384 INFO: pi3d.Display:
+Pi3D module - version 0.06
+Copyright (c) Tim Skillman, 2012
+Copyright (c) Tom Swirly, 2012
+Updates available from www.github.com/rec/pi3d
+Screen size 1920, 1200.
+
+Traceback (most recent call last):
+  File "Demo.py", line 37, in <module>
+    __import__('demos.' + d)
+  File "/home/pi/pi3d/demos/TigerTank.py", line 51, in <module>
+    ectex = EnvironmentCube.loadECfiles("textures/ecubes/Miramar", "miramar_256", suffix="png")
+TypeError: loadECfiles() got an unexpected keyword argument 'suffix'
+
+pi@Chairman:~/pi3d$ python Demo.py Tricer
+2012-12-07 20:00:14,513 INFO: pi3d.Display:
+Pi3D module - version 0.06
+Copyright (c) Tim Skillman, 2012
+Copyright (c) Tom Swirly, 2012
+Updates available from www.github.com/rec/pi3d
+Screen size 1920, 1200.
+
+Traceback (most recent call last):
+  File "Demo.py", line 37, in <module>
+    __import__('demos.' + d)
+  File "/home/pi/pi3d/demos/TriceratopsModel.py", line 32, in <module>
+    'Triceratops', 0, -1, 0, -90, 0, 0, .005, .005, .005)
+  File "/home/pi/pi3d/pi3d/shape/Model.py", line 18, in __init__
+    if("__clone__" in fileString): return #creating a copy but with pointer to buf
+TypeError: argument of type 'int' is not iterable
