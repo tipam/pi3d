@@ -1,4 +1,4 @@
-from numpy import array, dot, copy, tan, cos, sin
+from numpy import array, dot, copy, tan, cos, sin, radians
 from pi3d import *
 from pi3d.shape.Shape import Shape
 from pi3d.util.Utility import mat_mult, vec_normal, vec_cross, vec_sub, vec_dot, rotate, rotateX, rotateZ, rotateX, rotateY
@@ -36,23 +36,23 @@ class Camera(object):
   def rotateZ(self,angle):
     c = cos(radians(angle))
     s = sin(radians(angle))
-    self.mtrx = dot([[c,s,0,0],[-s,c,0,0],[0,0,1,0],[0,0,0,1]],self.mtrx)
+    self.mtrx = dot([[c,s,0,0],[-s,c,0,0],[0,0,1,0],[0,0,0,1]], self.mtrx)
 
 
   def rotateY(self,angle):
     c = cos(radians(angle))
     s = sin(radians(angle))
-    self.mtrx = dot([[c,0,-s,0],[0,1,0,0],[s,0,c,0],[0,0,0,1]],mtrx)
+    self.mtrx = dot([[c,0,-s,0],[0,1,0,0],[s,0,c,0],[0,0,0,1]], self.mtrx)
 
   def rotateX(self,angle):
     c = cos(radians(angle))
     s = sin(radians(angle))
-    self.mtrx = dot([[1,0,0,0],[0,c,s,0],[0,-s,c,0],[0,0,0,1]],mtrx)
+    self.mtrx = dot([[1,0,0,0],[0,c,s,0],[0,-s,c,0],[0,0,0,1]], self.mtrx)
 
   def rotate(self,rx,ry,rz):
-    if not(rz == 0.0): self.rotateZ(self, rz)
-    if not(rx == 0.0): self.rotateX(self, rx)
-    if not(ry == 0.0): self.rotateY(self, ry)
+    if not(rz == 0.0): self.rotateZ(rz)
+    if not(rx == 0.0): self.rotateX(rx)
+    if not(ry == 0.0): self.rotateY(ry)
   """  
   # not applicable to Camera
   def scale(self,sx,sy,sz):
