@@ -179,7 +179,7 @@ class ElevationMap(Shape):
     dx = self.width/self.ix
     dz = self.depth/self.iy
 
-    # work out x and z ranges to check
+    # work out x and z ranges to check, x0 etc correspond with vertex indices in grid
     x0 = int(math.floor((halfw + px - rad)/dx + 0.5)) - 1
     if x0 < 0: x0 = 0
     x1 = int(math.floor((halfw + px + rad)/dx + 0.5)) + 1
@@ -189,6 +189,7 @@ class ElevationMap(Shape):
     z1 = int(math.floor((halfd + pz + rad)/dz + 0.5)) + 1
     if z1 > self.iy-1: z1 = self.iy-1
 
+    # go through grid around px, pz
     minDist, minLoc = 1000000, (0,0)
     for i in xrange(x0+1, x1):
       for j in xrange(z0+1, z1):
@@ -196,18 +197,20 @@ class ElevationMap(Shape):
         p = j*self.ix + i # pointer to the start of xyz for i,j in the vertices array
         p1 = j*self.ix + i - 1 # pointer to the start of xyz for i-1,j
         p2 = (j-1)*self.ix + i # pointer to the start of xyz for i, j-1
+        vertp = self.buf[0].vertices[p]
+        normp = self.buf[0].normals[p]
         # work out distance squared from this vertex to the point
-        distSq = (px - self.buf[0].vertices[p][0])**2 + (py - self.buf[0].vertices[p][1])**2 + (pz - self.buf[0].vertices[p][2])**2
+        distSq = (px - vertp[0])**2 + (py - vertp[1])**2 + (pz - vertp[2])**2
         if distSq < minDist: # this vertex is nearest so keep a record
           minDist = distSq
           minLoc = (i,j)
-
+        #TODO possibly use numpy for this kind of vector multiplication, though may take more effort to convert to array() than it saves
         # now find the distance between the point and the plane perpendicular to the normal at this vertex
-        pDist = Utility.dotproduct((px - self.buf[0].vertices[p][0]),(py - self.buf[0].vertices[p][1]),(pz - self.buf[0].vertices[p][2]),
-                                  -self.buf[0].normals[p][0],-self.buf[0].normals[p][1],-self.buf[0].normals[p][2])
+        pDist = Utility.dotproduct((px - vertp[0]),(py - vertp[1]),(pz - vertp[2]),
+                                  -normp[0], -normp[1], -normp[2])
         # and the position where the normal from point crosses the plane
-        xIsect = px - self.buf[0].normals[p][0]*pDist
-        zIsect = pz - self.buf[0].normals[p][2]*pDist
+        xIsect = px - normp[0]*pDist
+        zIsect = pz - normp[2]*pDist
 
         # if the intersection point is in this rectangle then the x,z values will lie between edges
         if xIsect > self.buf[0].vertices[p1][0] and xIsect < self.buf[0].vertices[p][0] and zIsect > self.buf[0].vertices[p2][2] and zIsect < self.buf[0].vertices[p][2]:
@@ -227,11 +230,12 @@ class ElevationMap(Shape):
 
     if minDist <= radSq: #i.e. near enough to clash so return normal
       p = minLoc[1]*self.ix + minLoc[0]
+      normp = self.buf[0].normals[p]
       if minDist < 0:
         jump = rad - minDist
       else:
         jump = 0
-      return(True, -self.buf[0].normals[p][0], -self.buf[0].normals[p][1], -self.buf[0].normals[p][2],  jump)
+      return(True, normp[0], normp[1], normp[2],  jump)
     else:
       return (False, 0, 0, 0, 0)
 

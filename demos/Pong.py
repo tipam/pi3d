@@ -22,13 +22,15 @@ from pi3d.Texture import Texture
 from pi3d.util.Font import Font
 
 from pi3d.context.Light import Light
+from pi3d.Camera import Camera
+from pi3d.Shader import Shader
 
 from pi3d.shape.ElevationMap import ElevationMap
 from pi3d.shape.EnvironmentCube import EnvironmentCube
 from pi3d.shape.Plane import Plane
 from pi3d.shape.Sphere import Sphere
 
-from pi3d.util import String
+from pi3d.util.String import String
 from pi3d.util.Matrix import Matrix
 from pi3d.util.Screenshot import screenshot
 
@@ -39,8 +41,14 @@ print "############################################################"
 print
 
 # Setup display and initialise pi3d
-DISPLAY = Display.create(x=10, y=10, w=1200, h=900)
+DISPLAY = Display.create(x=10, y=10)
 DISPLAY.setBackColour(0.4,0.8,0.8,1) # r,g,b,alpha
+camera = Camera((0, 0, 0), (0, 0, -1), (1, 1000, DISPLAY.win_width/1000.0, DISPLAY.win_height/1000.0))
+light = Light((10, 10, -20))
+# load shader
+shader = Shader("shaders/bumpShade")
+#========================================
+
 
 # Setting 2nd param to True renders 'True' Blending
 # (this can be changed later to 'False' with 'rockimg2.blend = False')
@@ -49,13 +57,16 @@ monstimg = Texture("textures/pong3.png")
 ballimg = Texture("textures/cloud6.png", True)
 # environment cube
 ectex = Texture("textures/ecubes/skybox_stormydays.jpg")
-myecube = EnvironmentCube(900.0,"CROSS")
+myecube = EnvironmentCube(camera, light, 900.0,"CROSS")
+myecube.buf[0].set_draw_details(shader,[ectex],0.0,-1.0)
 #ball
 maxdsz = 0.3
 radius = 1.0
-ball = Sphere(radius,12,12,0.0,"sphere",-4,8,-7)
+ball = Sphere(camera, light, radius,12,12,0.0,"sphere",-4,8,-7)
+ball.buf[0].set_draw_details(shader,[ballimg], 0.0, 0.0)
 #monster
-monster = Plane(5.0, 5.0, "monster", 0,0,0, 0,0,0)
+monster = Plane(camera, light, 5.0, 5.0, "monster", 0,0,0, 0,0,0)
+monster.buf[0].set_draw_details(shader, [monstimg], 0.0, 0.0)
 
 # Create elevation map
 mapwidth=50.0
@@ -63,26 +74,27 @@ mapdepth=50.0
 maphalf=22.0
 mapheight=40.0
 #set smooth to give proper normals the bouncing won't work properly without and it doesn't look as good
-mymap = ElevationMap("textures/pong.jpg",mapwidth,mapdepth,mapheight,32,32,4,"sub",0,0,0, smooth=True)
-
-# lighting. The default light is a point light but I have made the position method capable of creating
-# a directional light and this is what I do inside the loop. If you want a torch you don't need to move it about
-light = Light(0, 2, 2, 1, "", 1,2,3, 0.1,0.1,0.2) #yellowish 'torch' or 'sun' with low level blueish ambient
-light.position(1,2,3,0) # set to directional light by setting position with 0 fourth parameter
-light.on()
+mymap = ElevationMap(camera, light, "textures/pong.jpg",mapwidth,mapdepth,mapheight,32,32,4,"sub",0,0,0)
+mymap.buf[0].set_draw_details(shader, [groundimg], 0.0, 0.0)
 
 #avatar camera
-rot=0.0
-tilt=0.0
+rot = 0.0
+tilt = 0.0
 avhgt = 2.0
-xm=0.0
-zm=0.0
-ym=mapheight
-lastX0=0.0
-lastZ0=0.0
+xm = 0.0
+zm = 0.0
+ym = 0.0
+lastX0 = 0.0
+lastZ0 = 0.0
 
 arialFont = Font("AR_CENA","#dd00aa")   #load AR_CENA font and set the font colour to 'raspberry'
 score = [0,0]
+score0 = String(camera, light,  arialFont, str(score[0]), 0, 12, 0, 0.05, 0.05)
+score0.set_shader(shader)
+score1 = String(camera, light,  arialFont, str(score[1]), 0, 12, 0, 0, 0.05, 0.05)
+score1.set_shader(shader)
+
+
 
 #sphere loc and speed
 sx, sy, sz = 0, 5, 0
@@ -101,16 +113,16 @@ mymouse.start()
 omx=mymouse.x
 omy=mymouse.y
 
-camera = Matrix()
-
 while True:
   DISPLAY.clear()
 
-  camera.identity()
-  camera.translate(xm,-2+ym-mapheight,-maphalf-2.5)
+  camera.reset()
+  camera.rotate(tilt, 0, 0)
+  camera.rotate(0, rot, 0)
+  camera.translate((xm, 2 + ym, -maphalf - 2.5))
 
-  myecube.draw(ectex,xm,ym,zm)
-  mymap.draw(groundimg)
+  myecube.draw()
+  mymap.draw()
 
   #monster movement
   drx = sx - rx
@@ -120,7 +132,7 @@ while True:
   rx += drx
   ry += dry
 
-  monster.position(rx, ry, -maphalf)
+  monster.position(rx, ry, maphalf)
 
   dsy -= gravity
   sx += dsx
@@ -133,9 +145,9 @@ while True:
     # returns the components of normal vector if clash
     nx, ny, nz =  clash[1], clash[2], clash[3]
     # move it away a bit to stop it getting trapped inside if it has tunelled
-    jDist = clash[4] + 0.1
-    sx, sy, sz = sx - jDist*nx, sy - jDist*ny, sz - jDist*nz
-
+    jDist = clash[4] + 0.2
+    sx, sy, sz = sx + jDist*nx, sy + jDist*ny, sz + jDist*nz
+    print jDist
     # use R = I - 2(N.I)N
     rfact = 2.05*(nx*dsx + ny*dsy + nz*dsz) #small extra boost by using value > 2 to top up energy in defiance of 1st LOT
     dsx, dsy, dsz = dsx - rfact*nx, dsy - rfact*ny, dsz - rfact*nz
@@ -146,13 +158,13 @@ while True:
 
   # mouse movement checking here to get bat movment values
   mx=mymouse.x
-  dx = -(mx-omx)*0.02
+  dx = (mx-omx)*0.02
   omx=mx
   if ((xm >= (-1*maphalf) and dx < 0) or (xm <= maphalf and dx > 0)):  xm += dx
 
-  my=mymouse.y
-  dy = -(my-omy)*0.01
-  omy=my
+  my = mymouse.y
+  dy = (my-omy)*0.01
+  omy = my
   if ((ym >= (0) and dy < 0) or (ym <= mapheight and dy > 0)):  ym += dy
 
   # bounce off edges and give a random boost
@@ -160,23 +172,28 @@ while True:
     dsx = -1 * abs(dsx) * (1 + random.random())
     dsz += 0.1*random.random()-0.05
   if sx < -maphalf: dsx = abs(dsx)
-  if sz > maphalf: #player end
+  if sz < -maphalf: #player end
     #check if bat in position
-    if (sx + xm)**2 + (sy - mapheight+ym)**2 < 10: #NB xm and ym are positions to move 'everthing else' so negative and offset height
-      dsz = -1 * abs(dsz) * (1 + random.random())
+    if (sx - xm)**2 + (sy - ym)**2 < 10: #NB xm and ym are positions to move 'everthing else' so negative and offset height
+      dsz = abs(dsz) * (1 + random.random())
       dsx += dx
       dsy += dy
     else:
       sx, sy, sz = 0, mapheight/3, 0
       dsx, dsy, dsz = 0.3*random.random()-0.15, 0, 0.1
       score[1] += 1
-  if sz < -maphalf: #monster end
+      score1 = String(camera, light,  arialFont, str(score[1]), 0, 12, 5, 0.05, 0.05)
+      score1.set_shader(shader)
+  elif sz > maphalf: #monster end
     if (sx-rx)**2 + (sy-ry)**2 < 10:
-      dsz = abs(dsz)
+      dsz = -1 * abs(dsz)
     else:
       score[0] += 1
+      score0 = String(camera, light,  arialFont, str(score[0]), 0, 12, -5, 0.05, 0.05)
+      score0.set_shader(shader)
       radius = 0.1 + (radius - 0.1)*0.75 # ball gets smaller each time you score
-      ball = Sphere(radius,12,12,0.0,"sphere",0,0,0)
+      ball = Sphere(camera, light, radius,12,12,0.0,"sphere",0,0,0)
+      ball.buf[0].set_draw_details(shader,[ballimg], 0.0, 0.0)
       maxdsz += 0.01 # max speed in z direction increases too
       sx, sy, sz = 0, mapheight/3, 0
       dsx, dsy, dsz = 0.3*random.random()-0.15, 0, -0.1
@@ -185,12 +202,12 @@ while True:
 
   ball.rotateIncX(dsz/radius*50)
 
-  monster.draw(monstimg)
-  ball.draw(ballimg)
+  monster.draw()
+  ball.draw()
 
   # write up the score
-  String.drawString3D(arialFont, str(score[0]), -10, 20, -5, 0.0, 0.05, 0.05)
-  String.drawString3D(arialFont, str(score[1]), 10, 20, -5, 0.0, 0.05, 0.05)
+  score0.draw()
+  score1.draw()
 
   DISPLAY.swapBuffers()
 

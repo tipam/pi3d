@@ -31,17 +31,16 @@ class Buffer(object):
           continue
 
         if smooth:
-          #normals[i] = tuple(Utility.vec_normal([sum(v[k] for v in N) for k in range(3)]))
-          normals[i] = tuple(Utility.vec_normal([-sum(v[(k+2)%3] for v in N) for k in range(3)]))
+          normals[i] = tuple(Utility.vec_normal([sum(v[k] for v in N) for k in range(3)]))
         else: #this should be slightly faster for large shapes
           normals[i] = tuple(Utility.vec_normal([N[0][k] for k in range(3)]))
-      
+
     # keep a copy for speeding up the collision testing of ElevationMap
     self.vertices = pts
     self.normals = normals
     self.tex_coords = texcoords
     self.indices = faces
-    self.material = (0.0, 0.0, 0.0, 0.0) #needs to be overwritten by something i.e. model loader
+    self.material = (0.0, 0.0, 0.0, 0.0) #needs to be overwritten by something i.e. model loader. If it is then img texture won't be used
       
     #pack points,normals and texcoords into tuples and convert to ctype floats
     P=[ p+n+t for p,n,t in zip(pts,normals,texcoords)]

@@ -50,6 +50,7 @@ class Camera(object):
     self.mtrx = dot([[1,0,0,0],[0,c,s,0],[0,-s,c,0],[0,0,0,1]], self.mtrx)
 
   def rotate(self,rx,ry,rz):
+    # rot z->x->y
     if not(rz == 0.0): self.rotateZ(rz)
     if not(rx == 0.0): self.rotateX(rx)
     if not(ry == 0.0): self.rotateY(ry)
@@ -81,7 +82,7 @@ def LookAtMatrix(at, eye, up=[0,1,0], reflect=False):
   #TODO all using numpy functions
   return array([[xaxis[a],yaxis[a],zaxis[a],z[a]] for a in range(4)])
 
-def ProjectionMatrix(near=10,far=1000.0,fov_h=1.6,fov_v=1.2):
+def ProjectionMatrix(near=10, far=1000.0, fov_h=1.6, fov_v=1.2):
   """Setup projection matrix with given distance to near and far planes
   and fields of view in radians"""
   # Matrices are considered to be M[row][col]

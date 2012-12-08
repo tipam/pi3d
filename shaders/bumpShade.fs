@@ -29,7 +29,7 @@ void main(void) {
     gl_FragColor = texc;
   }
   else {
-    vec3 lightVector = normalize(vec3 (cameraviewmatrix * vec4(lightpos, 0.0))); // ------ rotate relative to view
+    vec3 lightVector = normalize(vec3(cameraviewmatrix * vec4(lightpos, 0.0))); // ------ rotate relative to view
     vec3 bump;
     bump = vec3(0.0, 0.0, 0.0);
     // ------ look up normal map value as a vector where each colour goes from -100% to +100% over its range so

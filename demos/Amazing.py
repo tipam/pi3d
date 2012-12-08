@@ -57,7 +57,7 @@ print
 DISPLAY = Display.create(x=100, y=100)
 DISPLAY.setBackColour(0.4,0.8,0.8,1)      # r,g,b,alpha
 
-camera = Camera((0, 0, 0), (0, 0, -1), (1, 1000, DISPLAY.win_width/1000.0, DISPLAY.win_width/1000.0))
+camera = Camera((0, 0, 0), (0, 0, -1), (1, 1000, DISPLAY.win_width/1000.0, DISPLAY.win_height/1000.0))
 light = Light((10, 10, -20))
 shader = Shader("shaders/bumpShade")
 #========================================
@@ -69,6 +69,7 @@ rockimg2 = Texture("textures/rock1.png", True)
 tree2img = Texture("textures/tree2.png")
 raspimg = Texture("textures/Raspi256x256.png")
 monstimg = Texture("textures/pong2.jpg")
+monsttex = Texture("textures/floor_nm.jpg")
 
 # environment cube
 ectex = Texture("textures/ecubes/skybox_stormydays.jpg")
@@ -123,8 +124,8 @@ for i in range(5):
   xArr.append(xval)
   zval = (random.random()-0.5)*50 - 19
   zArr.append(zval)
-  yArr.append(mymap.calcHeight(-xval, -zval))
-  rArr.append(random.random()*45) # front faces approximately towards the sun (found by trial and error)
+  yArr.append(mymap.calcHeight(xval, zval))
+  rArr.append(random.random()*45)
 
 for b in shed.buf:
   thisAbbGp = MergeShape(camera, light, "shed") # i.e. different merge groups for each part requiring different texture
@@ -136,9 +137,9 @@ for b in shed.buf:
 
 #monster
 monst = TCone(camera, light)
-monst.buf[0].set_draw_details(shader, [monstimg], 0.0, 0.0)
+monst.buf[0].set_draw_details(shader, [monstimg, monsttex], 4.0, 0.0)
 mDx,mDy,mDz = 0.1,0,0.2
-mSx,mSy,mSz = -5, mymap.calcHeight(-5,5)+1, 5
+mSx,mSy,mSz = -15, mymap.calcHeight(-15,5)+1, 5
 gravity = 0.02
 
 
@@ -189,8 +190,8 @@ while 1:
   mDy -= gravity
   mDelx,mDelz = mSx-xm, mSz-zm #distance from monster
   mDist = math.sqrt(mDelx**2 + mDelz**2)
-  mDx = -0.01*mDelx/mDist
-  mDz = -0.01*mDelz/mDist
+  mDx = -0.05*mDelx/mDist
+  mDz = -0.05*mDelz/mDist
   monst.rotateIncY(100.0/mDist)
   if mDist > 100: #far away so teleport it nearer
     mSx, mSz = xm + 100*random.random() - 50, zm + 100*random.random() - 50
@@ -207,12 +208,11 @@ while 1:
     nx, ny, nz =  clash[1], clash[2], clash[3]
     # move it away a bit to stop it getting trapped inside if it has tunelled
     jDist = clash[4] + 0.1
-    mSx, mSy, mSz = mSx - jDist*nx, mSy - jDist*ny, mSz - jDist*nz
-    print "jDist=",jDist,"mDist=",mDist
+    mSx, mSy, mSz = mSx + jDist*nx, mSy + jDist*ny, mSz + jDist*nz
 
     # use R = I - 2(N.I)N
     rfact = 2.05*(nx*mDx + ny*mDy + nz*mDz) #small extra boost by using value > 2 to top up energy in defiance of 1st LOT
-    mDx, mDy, mDz = mDx - rfact*nx, mDy - rfact*ny*0.7, mDz - rfact*nz
+    mDx, mDy, mDz = mDx - rfact*nx, mDy - rfact*ny*0.8, mDz - rfact*nz
     # stop the speed increasing too much
     if mDx > 0.4: dsz = 0.4
     if mDy > 0.1: dsx = 0.05

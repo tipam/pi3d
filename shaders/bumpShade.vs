@@ -18,7 +18,7 @@ varying vec2 shinecoordout;
 varying float dist;
 
 void main(void) {
-  normout = normalize(vec3(modelviewmatrix * vec4(normal,0.0)));
+  normout = normalize(vec3(modelviewmatrix * vec4(normal, 0.0)));
   
   if (ntiles == 0.0) { // ----- ntiles doubles as flag for normal mapping
     bumpcoordout = texcoord;

@@ -54,6 +54,7 @@ class Shape(Loadable):
 
     # using numpy
     mtrx = dot(self.tr1, self.camera.mtrx)
+    # rot z->x->y
     if not (self.rotz == 0.0):
       mtrx = dot(self.roz, mtrx)
     if not (self.rotx == 0.0):
@@ -68,6 +69,14 @@ class Shape(Loadable):
     M = c_floats(list(chain(*mtrx)))
     opengles.glUniformMatrix4fv(shader.unif_modelviewmatrix,16,c_int(0),ctypes.byref(M))
     # camera matrix
+    """
+    if not (self.rotz == 0.0):
+      mtrx[0][1] = mtrx[0][1]*2
+      mtrx[1][0] = mtrx[1][0]*2
+    if not (self.rotx == 0.0):
+      mtrx[1][2] = mtrx[1][2]*-2
+      mtrx[2][1] = mtrx[2][1]*-2
+    """
     C = c_floats(list(chain(*self.camera.mtrx)))
     opengles.glUniformMatrix4fv(shader.unif_cameraviewmatrix,16,c_int(0),ctypes.byref(C))
     opengles.glUniform3f(shader.unif_eye, c_float(self.camera.eye[0]), c_float(self.camera.eye[1]), c_float(self.camera.eye[2]))
