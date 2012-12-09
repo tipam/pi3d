@@ -37,7 +37,9 @@ from pi3d.util.Font import Font
 from pi3d.util.Screenshot import screenshot
 
 # Setup display and initialise pi3d
-DISPLAY = Display.create()
+
+#DISPLAY = Display.create(w=1840, h=1130)
+DISPLAY = Display.create(w=1850, h=1140)
 DISPLAY.setBackColour(0.0, 0.0, 0.0, 1.0)      # r,g,b,alpha
 #setup camera, light, shader
 camera = Camera((0, 0, 0), (0, 0, -1), (1, 1000, 1.6, 1.2))
@@ -122,7 +124,7 @@ while 1:
 
   myPlane.draw(shader, [coffimg])
   myPlane.rotateIncX(9)
-  
+
   mystring.draw()
   mystring.rotateIncZ(0.5)
 
@@ -135,5 +137,5 @@ while 1:
       break
     else:
       print k
-  
+
   DISPLAY.swapBuffers()

@@ -10,7 +10,7 @@ CUBE_PARTS = ['top', 'left', 'front', 'right', 'back', 'bottom']
 def loadECfiles(path, fname, suffix='jpg', nobottom=False):
   # Helper for loading environment cube faces.
   parts = CUBE_PARTS[0:-1] if nobottom else CUBE_PARTS
-  files = (os.path.join(path, '%s_%s.%s' % (fname, p, %s)) for p in parts)
+  files = (os.path.join(path, '%s_%s.%s' % (fname, p, suffix)) for p in parts)
   return [Texture(f) for f in files]
 
 class EnvironmentCube(Shape):

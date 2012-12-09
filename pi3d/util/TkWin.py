@@ -1,7 +1,13 @@
+import os
+
 from Tkinter import Tk
 
 class TkWin(Tk):
   def __init__(self, parent, title,width,height):
+    display = os.environ.get('DISPLAY', None)
+    if not display:
+      os.environ['DISPLAY'] = ':0'
+
     Tk.__init__(self, parent)
 
     def mouseclick_callback(event):
