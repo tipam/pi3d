@@ -17,6 +17,9 @@ from pi3d import Display
 from pi3d.Keyboard import Keyboard
 from pi3d.Mouse import Mouse
 from pi3d.Texture import Texture
+from pi3d.Camera import Camera
+from pi3d.Shader import Shader
+from pi3d.context.Light import Light
 
 from pi3d.shape.EnvironmentCube import EnvironmentCube
 from pi3d.shape.EnvironmentCube import loadECfiles
@@ -26,22 +29,29 @@ from pi3d.util.Screenshot import screenshot
 from pi3d.util import Utility
 
 # Setup display and initialise pi3d
-DISPLAY = Display.create(x=50, y=50, w=-100, h=-100)
+DISPLAY = Display.create(x=50, y=50)
+
+camera = Camera((0, 0, 0), (0, 0, -1), (1, 1000, DISPLAY.win_width/1000.0, DISPLAY.win_height/1000.0))
+light = Light((10, 10, -20))
+shader = Shader("shaders/bumpShade")
+#========================================
 
 #select the environment cube with 'box'...
 box = 3
 if box == 0:
-  ectex = Texture("textures/ecubes/skybox_interstellar.jpg")
-  myecube = EnvironmentCube(900.0,"CROSS")
+  ectex = [Texture("textures/ecubes/skybox_interstellar.jpg")]
+  myecube = EnvironmentCube(camera, light, 900.0,"CROSS")
 elif box == 1:
-  ectex = Texture("textures/ecubes/SkyBox.jpg")
-  myecube = EnvironmentCube(900.0,"HALFCROSS")
+  ectex = [Texture("textures/ecubes/SkyBox.jpg")]
+  myecube = EnvironmentCube(camera, light, 900.0,"HALFCROSS")
 elif box == 2:
   ectex = loadECfiles("textures/ecubes","sbox_interstellar")
-  myecube = EnvironmentCube(900.0,"FACES")
+  myecube = EnvironmentCube(camera, light, 900.0,"FACES")
 else:
   ectex = loadECfiles("textures/ecubes","skybox_hall")
-  myecube = EnvironmentCube(900.0,"FACES")
+  myecube = EnvironmentCube(camera, light, 900.0,"FACES")
+for i, b in enumerate(myecube.buf):
+  b.set_draw_details(shader, [ectex[i]], 0.0, -1.0)
 
 rot=0.0
 tilt=0.0
@@ -50,7 +60,6 @@ tilt=0.0
 mykeys = Keyboard()
 mymouse = Mouse()
 mymouse.start()
-mtrx = Matrix()
 
 omx = mymouse.x
 omy = mymouse.y
@@ -59,12 +68,11 @@ omy = mymouse.y
 while 1:
   DISPLAY.clear()
 
-  mtrx.identity()
-  mtrx.rotate(tilt, 0, 0)
-  mtrx.rotate(0, rot, 0)
-  #Utility.translatef(xm, ym, zm)
+  camera.reset()
+  camera.rotate(tilt, 0, 0)
+  camera.rotate(0, rot, 0)
 
-  myecube.draw(ectex, 0.0, 0.0, 0.0)
+  myecube.draw()
 
   mx=mymouse.x
   my=mymouse.y

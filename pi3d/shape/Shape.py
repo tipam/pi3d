@@ -69,14 +69,6 @@ class Shape(Loadable):
     M = c_floats(list(chain(*mtrx)))
     opengles.glUniformMatrix4fv(shader.unif_modelviewmatrix,16,c_int(0),ctypes.byref(M))
     # camera matrix
-    """
-    if not (self.rotz == 0.0):
-      mtrx[0][1] = mtrx[0][1]*2
-      mtrx[1][0] = mtrx[1][0]*2
-    if not (self.rotx == 0.0):
-      mtrx[1][2] = mtrx[1][2]*-2
-      mtrx[2][1] = mtrx[2][1]*-2
-    """
     C = c_floats(list(chain(*self.camera.mtrx)))
     opengles.glUniformMatrix4fv(shader.unif_cameraviewmatrix,16,c_int(0),ctypes.byref(C))
     opengles.glUniform3f(shader.unif_eye, c_float(self.camera.eye[0]), c_float(self.camera.eye[1]), c_float(self.camera.eye[2]))
@@ -113,7 +105,6 @@ class Shape(Loadable):
           b.textures.append(None)
         b.textures[2] = shinetex
         b.shiny = shiny
-      print b.textures, b.ntiles, b.shiny
   
   def set_fog(self, fogshade, fogdist):
     # set fog for this Shape only it uses the shader smoothblend function from 1/3 fogdist to fogdist
@@ -183,14 +174,13 @@ class Shape(Loadable):
     self.roz[0][1] = s
     self.roz[1][0] = -s
 
-  # TODO: should be a method on Shape.
   def add_vertex(self, vert, norm, texc):
   # add vertex,normal and tex_coords ...
     self.verts.append(vert)
     self.norms.append(norm)
     self.texcoords.append(texc)
 
-  # TODO: should be a method on Shape.
+
   def add_tri(self, indx):
   # add triangle refs.
     self.inds.append(indx)
