@@ -66,7 +66,9 @@ mapwidth = 1000.0
 mapdepth = 1000.0
 mapheight = 60.0
 mountimg1 = Texture("textures/mountains3_512.jpg")
-mymap = ElevationMap(camera, light, "textures/mountainsHgt.jpg", mapwidth, mapdepth, mapheight, 32, 32) #testislands.jpg
+mymap = ElevationMap("textures/mountainsHgt.jpg", camera=camera, light=light,
+                     width=mapwidth, depth=mapdepth, height=mapheight,
+                     divx=32, divy=32) #testislands.jpg
 mymap.buf[0].set_draw_details(shader, [mountimg1, bumpimg], 1024.0, 0.0)
 mymap.set_fog((0.3, 0.3, 0.4, 1.0), 650.0)
 

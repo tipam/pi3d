@@ -74,7 +74,9 @@ mapdepth=50.0
 maphalf=22.0
 mapheight=40.0
 #set smooth to give proper normals the bouncing won't work properly without and it doesn't look as good
-mymap = ElevationMap(camera, light, "textures/pong.jpg",mapwidth,mapdepth,mapheight,32,32,4,"sub",0,0,0)
+mymap = ElevationMap("textures/pong.jpg", camera=camera, camera=light,
+                     width=mapwidth, depth=mapdepth, height=mapheight,
+                     divx=32, divy=32, ntiles=4, name="sub")
 mymap.buf[0].set_draw_details(shader, [groundimg], 0.0, 0.0)
 
 #avatar camera

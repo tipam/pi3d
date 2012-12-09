@@ -48,7 +48,9 @@ mapwidth=1000.0
 mapdepth=1000.0
 mapheight=60.0
 landimg = Texture("textures/stonygrass.jpg")
-mymap = ElevationMap("textures/mountainsHgt.jpg", mapwidth, mapdepth, mapheight, 64, 64, 10.0, "fw", 0,0,0,0,0,0,1,1,1,0,0,0,True) #testislands.jpg
+mymap = ElevationMap(mapfile="textures/mountainsHgt.jpg", width=mapwidth,
+                     depth=mapdepth, height=mapheight,
+                     divx=64, divy=64, ntiles=10.0, name='fw') #testislands.jpg
 #mymap2 = ElevationMap("textures/mountainsHgt.jpg",mapwidth,mapdepth,mapheight,64,64, 128)
 
 myclip = ClipPlane()

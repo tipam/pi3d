@@ -10,7 +10,8 @@ from pi3d.util import Utility
 from pi3d.util.Loadable import Loadable
 
 class Shape(Loadable):
-  def __init__(self, camera, light, name, x, y, z, rx, ry, rz, sx, sy, sz, cx, cy, cz):
+  def __init__(self, camera, light, name, x, y, z, rx, ry, rz, sx, sy, sz,
+               cx, cy, cz):
     super(Shape, self).__init__()
     self.name = name
     self.x = x     #position
@@ -25,7 +26,10 @@ class Shape(Loadable):
     self.cx = cx   #center
     self.cy = cy
     self.cz = cz
-    self.tr1 = array([[1.0,0.0,0.0,0.0],[0.0,1.0,0.0,0.0],[0.0,0.0,1.0,0.0],[self.x - self.cx, self.y - self.cy, self.z - self.cz, 1]])
+    self.tr1 = array([[1.0, 0.0, 0.0, 0.0],
+                      [0.0, 1.0, 0.0, 0.0],
+                      [0.0, 0.0, 1.0, 0.0],
+                      [self.x - self.cx, self.y - self.cy, self.z - self.cz, 1]])
     s, c = sin(radians(self.rotx)), cos(radians(self.rotx))
     self.rox = array([[1.0, 0.0, 0.0, 0.0],[0.0, c, s, 0.0],[0.0, -s, c, 0.0],[0.0, 0.0, 0.0, 1.0]])
     s, c = sin(radians(self.roty)), cos(radians(self.roty))
@@ -34,7 +38,7 @@ class Shape(Loadable):
     self.roz = array([[c, s, 0.0, 0.0],[-s, c, 0.0, 0.0],[0.0, 0.0, 1.0, 0.0],[0.0, 0.0, 0.0, 1.0]])
     self.scl = array([[self.sx, 0.0, 0.0, 0.0],[0.0, self.sy, 0.0, 0.0],[0.0, 0.0, self.sz, 0.0],[0.0, 0.0, 0.0, 1.0]])
     self.tr2 = array([[1.0,0.0,0.0,0.0],[0.0,1.0,0.0,0.0],[0.0,0.0,1.0,0.0],[self.cx, self.cy, self.cz, 1.0]])
-    
+
     self.camera = camera
     self.light = light
     self.shader = None
@@ -43,7 +47,7 @@ class Shape(Loadable):
     self.shiny = None
     self.fogshade = (0.0, 0.0, 0.0, 0.0)
     self.fogdist = 0.0
-    
+
     self.buf = []  #buffer for each part of this shape that needs rendering with a different Shader/Texture
 
         #this should all be done with matrices!! ... just for testing ...
@@ -80,18 +84,18 @@ class Shape(Loadable):
     opengles.glUniform3f(shader.unif_scle, c_float(self.sx), c_float(self.sy), c_float(self.sz))
     opengles.glUniform3f(shader.unif_ofst, c_float(self.cx), c_float(self.cy), c_float(self.cz))
     """
-  
+
     for b in self.buf:
       """
       Shape.draw has to be passed either parameter == None or values to pass on
       """
       b.draw(shdr, txtrs, ntl, shny) # relies on object inheriting from this creating Buffer called buf
-    
+
   def set_shader(self, shader):
     self.shader = shader
     for b in self.buf:
-      b.shader = shader    
-      
+      b.shader = shader
+
   def set_normal_shine(self, normtex, ntiles = 1.0, shinetex = None, shiny = 0.0):
     for b in self.buf:
       if b.textures == None or len(b.textures) == 0:
@@ -105,12 +109,12 @@ class Shape(Loadable):
           b.textures.append(None)
         b.textures[2] = shinetex
         b.shiny = shiny
-  
+
   def set_fog(self, fogshade, fogdist):
     # set fog for this Shape only it uses the shader smoothblend function from 1/3 fogdist to fogdist
     self.fogshade = fogshade
     self.fogdist = fogdist
-  
+
   def scale(self, sx, sy, sz):
     self.scl[0][0] = self.sx = sx
     self.scl[1][1] = self.sy = sy
@@ -200,34 +204,34 @@ class Shape(Loadable):
     s = len(path)
     rl = int(self.sides * loops)
     ssize = rl * 6 * (s-1)
-      
+
     pn = 0
     pp = 0
     tcx = 1.0 / self.sides
     pr = (pi / self.sides) * 2.0
     rdiv = rise / rl
     ss=0
-    
+
     #find largest and smallest y of the path used for stretching the texture over
     miny = path[0][1]
     maxy = path[s-1][1]
     for p in range (0, s):
       if path[p][1] < miny: miny = path[p][1]
       if path[p][1] > maxy: maxy = path[p][1]
-    
+
     verts=[]
     norms=[]
     idx=[]
     tex_coords=[]
-    
+
     opx=path[0][0]
     opy=path[0][1]
-    
+
     for p in range (0, s):
-      
+
       px = path[p][0]*1.0
       py = path[p][1]*1.0
-        
+
       tcy = 1.0 - ((py - miny)/(maxy - miny))
 
       #normalized 2D vector between path points
@@ -236,7 +240,7 @@ class Shape(Loadable):
       for r in range (0, rl):
         sinr = sin(pr * r)
         cosr = cos(pr * r)
-        verts.append((px * sinr,py,px * cosr))        
+        verts.append((px * sinr,py,px * cosr))
         norms.append((-sinr*dy,dx,-cosr*dy))
         tex_coords.append((1.0-tcx * r, tcy))
         py += rdiv
@@ -244,17 +248,17 @@ class Shape(Loadable):
       verts.append((0,py,px))
       norms.append((0,dx,-dy))
       tex_coords.append((0,tcy))
-      
-      if p < s-1:      
+
+      if p < s-1:
         pn += (rl+1)
         for r in range (0, rl):
           idx.append((pp+r+1,pp+r,pn+r))
           idx.append((pn+r,pn+r+1,pp+r+1))
         pp += (rl+1)
-          
+
       opx=px
       opy=py
-      
+
       #print verts,norms,idx
     buf = Buffer(self, verts, tex_coords, idx, norms)
     return buf
