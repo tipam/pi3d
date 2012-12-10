@@ -74,7 +74,7 @@ mapdepth=50.0
 maphalf=22.0
 mapheight=40.0
 #set smooth to give proper normals the bouncing won't work properly without and it doesn't look as good
-mymap = ElevationMap("textures/pong.jpg", camera=camera, camera=light,
+mymap = ElevationMap("textures/pong.jpg", camera=camera, light=light,
                      width=mapwidth, depth=mapdepth, height=mapheight,
                      divx=32, divy=32, ntiles=4, name="sub")
 mymap.buf[0].set_draw_details(shader, [groundimg], 0.0, 0.0)
@@ -93,7 +93,7 @@ arialFont = Font("AR_CENA","#dd00aa")   #load AR_CENA font and set the font colo
 score = [0,0]
 score0 = String(camera, light,  arialFont, str(score[0]), 0, 12, 0, 0.05, 0.05)
 score0.set_shader(shader)
-score1 = String(camera, light,  arialFont, str(score[1]), 0, 12, 0, 0, 0.05, 0.05)
+score1 = String(camera, light,  arialFont, str(score[1]), 0, 12, 0, 0.05, 0.05)
 score1.set_shader(shader)
 
 
