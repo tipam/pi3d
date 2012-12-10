@@ -26,6 +26,8 @@ class Shape(Loadable):
     self.cx = cx   #center
     self.cy = cy
     self.cz = cz
+
+    """
     self.tr1 = array([[1.0, 0.0, 0.0, 0.0],
                       [0.0, 1.0, 0.0, 0.0],
                       [0.0, 0.0, 1.0, 0.0],
@@ -38,7 +40,8 @@ class Shape(Loadable):
     self.roz = array([[c, s, 0.0, 0.0],[-s, c, 0.0, 0.0],[0.0, 0.0, 1.0, 0.0],[0.0, 0.0, 0.0, 1.0]])
     self.scl = array([[self.sx, 0.0, 0.0, 0.0],[0.0, self.sy, 0.0, 0.0],[0.0, 0.0, self.sz, 0.0],[0.0, 0.0, 0.0, 1.0]])
     self.tr2 = array([[1.0,0.0,0.0,0.0],[0.0,1.0,0.0,0.0],[0.0,0.0,1.0,0.0],[self.cx, self.cy, self.cz, 1.0]])
-
+    """
+    
     self.camera = camera
     self.light = light
     self.shader = None
@@ -55,7 +58,8 @@ class Shape(Loadable):
   def draw(self, shdr=None, txtrs=None, ntl=None, shny=None):
     # if called without parameters there has to have been a previous call to set_draw_details() for all the Buffers in buf[]
     shader = self.shader if shdr == None else shdr
-
+    """
+    # calculate rotation and translation matrix for this model
     # using numpy
     mtrx = dot(self.tr1, self.camera.mtrx)
     # rot z->x->y
@@ -71,20 +75,26 @@ class Shape(Loadable):
 
     # model matrix
     M = c_floats(list(chain(*mtrx)))
-    opengles.glUniformMatrix4fv(shader.unif_modelviewmatrix,16,c_int(0),ctypes.byref(M))
+    opengles.glUniformMatrix4fv(shader.unif_modelviewmatrix, 1, c_int(0), ctypes.byref(M))
+    """
     # camera matrix
     C = c_floats(list(chain(*self.camera.mtrx)))
-    opengles.glUniformMatrix4fv(shader.unif_cameraviewmatrix,16,c_int(0),ctypes.byref(C))
+    opengles.glUniformMatrix4fv(shader.unif_cameraviewmatrix, 1, c_int(0), ctypes.byref(C))
     opengles.glUniform3f(shader.unif_eye, c_float(self.camera.eye[0]), c_float(self.camera.eye[1]), c_float(self.camera.eye[2]))
 
-    """
-    # attemp to offload matrix work to shader see
+    # matrix variables
     opengles.glUniform3f(shader.unif_locn, c_float(self.x), c_float(self.y), c_float(self.z))
     opengles.glUniform3f(shader.unif_rotn, c_float(self.rotx), c_float(self.roty), c_float(self.rotz))
-    opengles.glUniform3f(shader.unif_scle, c_float(self.sx), c_float(self.sy), c_float(self.sz))
+    opengles.glUniform3f(shader.unif_scle, c_float(self.sx),  c_float(self.sy), c_float(self.sz))
     opengles.glUniform3f(shader.unif_ofst, c_float(self.cx), c_float(self.cy), c_float(self.cz))
-    """
 
+    ###########
+    opengles.glUniform4f(shader.unif_fogshade, c_float(self.fogshade[0]), c_float(self.fogshade[1]), 
+        c_float(self.fogshade[2]), c_float(self.fogshade[3])) 
+    opengles.glUniform1f(shader.unif_fogdist, c_float(self.fogdist))
+    opengles.glUniform3f(shader.unif_lightpos, c_float(self.light.lightpos[0]), 
+        c_float(self.light.lightpos[1]), c_float(self.light.lightpos[2]))
+  
     for b in self.buf:
       """
       Shape.draw has to be passed either parameter == None or values to pass on
@@ -116,67 +126,88 @@ class Shape(Loadable):
     self.fogdist = fogdist
 
   def scale(self, sx, sy, sz):
-    self.scl[0][0] = self.sx = sx
-    self.scl[1][1] = self.sy = sy
-    self.scl[2][2] = self.sz = sz
+    self.sx = sx
+    self.sy = sy
+    self.sz = sz
+    """
+    self.scl[0, 0] = self.sx
+    self.scl[1, 1] = self.sy
+    self.scl[2, 2] = self.sz
+    """
 
   def position(self, x, y, z):
     self.x = x
     self.y = y
     self.z = z
-    self.tr1[3][0] = self.x - self.cx
-    self.tr1[3][1] = self.y - self.cy
-    self.tr1[3][2] = self.z - self.cz
+    """
+    self.tr1[3, 0] = self.x - self.cx
+    self.tr1[3, 1] = self.y - self.cy
+    self.tr1[3, 2] = self.z - self.cz
+    """
 
   def translate(self, dx, dy, dz):
     self.x = self.x + dx
     self.y = self.y + dy
     self.z = self.z + dz
-    self.tr1[3][0] = self.x - self.cx
-    self.tr1[3][1] = self.y - self.cy
-    self.tr1[3][2] = self.z - self.cz
+    """
+    self.tr1[3, 0] = self.x - self.cx
+    self.tr1[3, 1] = self.y - self.cy
+    self.tr1[3, 2] = self.z - self.cz
+    """
 
   def rotateToX(self, v):
     self.rotx = v
+    """
     s, c = sin(radians(self.rotx)), cos(radians(self.rotx))
-    self.rox[1][1] = self.rox[2][2] = c
-    self.rox[1][2] = s
-    self.rox[2][1] = -s
+    self.rox[1, 1] = self.rox[2, 2] = c
+    self.rox[1, 2] = s
+    self.rox[2, 1] = -s
+    """
 
   def rotateToY(self, v):
     self.roty = v
+    """
     s, c = sin(radians(self.roty)), cos(radians(self.roty))
-    self.roy[0][0] = self.roy[2][2] = c
-    self.roy[0][2] = -s
-    self.roy[2][0] = s
+    self.roy[0, 0] = self.roy[2, 2] = c
+    self.roy[0, 2] = -s
+    self.roy[2, 0] = s
+    """
 
   def rotateToZ(self, v):
     self.rotz = v
+    """
     s, c = sin(radians(self.rotz)), cos(radians(self.rotz))
-    self.roz[0][0] = self.roz[1][1] = c
-    self.roz[0][1] = s
-    self.roz[1][0] = -s
+    self.roz[0, 0] = self.roz[1, 1] = c
+    self.roz[0, 1] = s
+    self.roz[1, 0] = -s
+    """
 
   def rotateIncX(self,v):
     self.rotx += v
+    """
     s, c = sin(radians(self.rotx)), cos(radians(self.rotx))
-    self.rox[1][1] = self.rox[2][2] = c
-    self.rox[1][2] = s
-    self.rox[2][1] = -s
+    self.rox[1, 1] = self.rox[2, 2] = c
+    self.rox[1, 2] = s
+    self.rox[2, 1] = -s
+    """
 
   def rotateIncY(self,v):
     self.roty += v
+    """
     s, c = sin(radians(self.roty)), cos(radians(self.roty))
-    self.roy[0][0] = self.roy[2][2] = c
-    self.roy[0][2] = -s
-    self.roy[2][0] = s
+    self.roy[0, 0] = self.roy[2, 2] = c
+    self.roy[0, 2] = -s
+    self.roy[2, 0] = s
+    """
 
   def rotateIncZ(self,v):
     self.rotz += v
+    """
     s, c = sin(radians(self.rotz)), cos(radians(self.rotz))
-    self.roz[0][0] = self.roz[1][1] = c
-    self.roz[0][1] = s
-    self.roz[1][0] = -s
+    self.roz[0, 0] = self.roz[1, 1] = c
+    self.roz[0, 1] = s
+    self.roz[1, 0] = -s
+    """
 
   def add_vertex(self, vert, norm, texc):
   # add vertex,normal and tex_coords ...

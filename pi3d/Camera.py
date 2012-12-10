@@ -81,6 +81,7 @@ def LookAtMatrix(at, eye, up=[0,1,0], reflect=False):
   z = [0,0,0,1.0]
   #TODO all using numpy functions
   return array([[xaxis[a],yaxis[a],zaxis[a],z[a]] for a in range(4)])
+  #return array([xaxis,yaxis,zaxis,z])
 
 def ProjectionMatrix(near=10, far=1000.0, fov_h=1.6, fov_v=1.2):
   """Setup projection matrix with given distance to near and far planes
@@ -96,6 +97,8 @@ def ProjectionMatrix(near=10, far=1000.0, fov_h=1.6, fov_v=1.2):
   M[2][2] = Q
   M[3][2] = -Q*near
   M[2][3] = 1
+  #M[2][3] = -Q*near
+  #M[3][2] = 1
   #TODO all using numpy functions
   return array(M)
 

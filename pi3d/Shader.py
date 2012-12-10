@@ -58,10 +58,10 @@ class Shader(object):
     self.unif_blend = opengles.glGetUniformLocation(self.program, "blend")
     self.unif_material = opengles.glGetUniformLocation(self.program, "material")
     # attemp to offload matrix work to shader
-    #self.unif_locn = opengles.glGetUniformLocation(self.program, "locn")
-    #self.unif_rotn = opengles.glGetUniformLocation(self.program, "rotn")
-    #self.unif_scle = opengles.glGetUniformLocation(self.program, "scle")
-    #self.unif_ofst = opengles.glGetUniformLocation(self.program, "ofst")
+    self.unif_locn = opengles.glGetUniformLocation(self.program, "locn")
+    self.unif_rotn = opengles.glGetUniformLocation(self.program, "rotn")
+    self.unif_scle = opengles.glGetUniformLocation(self.program, "scle")
+    self.unif_ofst = opengles.glGetUniformLocation(self.program, "ofst")
     
     self.attr_texcoord = opengles.glGetAttribLocation(self.program, "texcoord")
     opengles.glEnableVertexAttribArray(self.attr_texcoord)

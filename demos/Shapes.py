@@ -42,7 +42,7 @@ from pi3d.util.Screenshot import screenshot
 DISPLAY = Display.create(w=1850, h=1140)
 DISPLAY.setBackColour(0.0, 0.0, 0.0, 1.0)      # r,g,b,alpha
 #setup camera, light, shader
-camera = Camera((0, 0, 0), (0, 0, -1), (1, 1000, 1.6, 1.2))
+camera = Camera((0, 0, 5), (0, 0, -2), (1, 1000, 1.6, 1.2))
 light = Light((5, 5, 1))
 shader = Shader("shaders/bumpShade")
 
@@ -66,7 +66,7 @@ mycone = Cone(camera, light, 1,2,24,"Cone", -4, -1, 5)
 mycylinder = Cylinder(camera, light, 0.7,1.5,24,"Cyli", -2, -1, 5)
 myhemisphere = Sphere(camera, light, 1, 24, 24, 0.5, "hsphere", 0, -1, 5)
 mytorus = Torus(camera, light, 1,0.3,12,24,"Torus", 2, -1, 5)
-#NB Lathe needs to start at the top otherwise normals are calculated in reverse, also inside surfaces need to be defined otherwise normals are wrong
+# NB Lathe needs to start at the top otherwise normals are calculated in reverse, also inside surfaces need to be defined otherwise normals are wrong
 mylathe = Lathe(camera, light, ((0,1),(0.6,1.2),(0.8,1.4),(1.09,1.7), (1.1,1.7),(0.9, 1.4),(0.7,1.2),(0.08,1),(0.08,0.21),(0.1,0.2),(1,0.05),(1,0),(0,0)), 24,"Cup",4,-1, 5, 0,0,0, 0.8, 0.8, 0.8)
 
 myPlane = Plane(camera, light, 4, 4,"plane")
@@ -79,14 +79,15 @@ mystring.set_shader(shader)
 
 # Fetch key presses
 mykeys = Keyboard()
-
+angl = 0.0
 # Display scene
 while 1:
   DISPLAY.clear()
+  camera.reset()
 
   mysphere.draw(shader, [patimg])
   mysphere.rotateIncY( 0.5 )
-
+  
   myhemisphere.draw(shader, [coffimg])
   myhemisphere.rotateIncY( .5 )
 
@@ -127,7 +128,7 @@ while 1:
 
   mystring.draw()
   mystring.rotateIncZ(0.5)
-
+  
   k = mykeys.read()
   if k >-1:
     if k==112: screenshot("shapesPic.jpg")
