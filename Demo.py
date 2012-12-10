@@ -36,6 +36,9 @@ if __name__ == '__main__':
     demo = demo.lower()
     for d in demos:
       if d.lower().startswith(demo):
+        print()
+        print('Running demo', d)
+        print()
         __import__('demos.' + d)
         exit(0)  # None of the demos exit so we'll never get here.
     else:
