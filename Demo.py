@@ -22,24 +22,40 @@ if __name__ == '__main__':
     exit(-1)
 
   demos = sorted([f[:-len(SUFFIX)] for f in demofiles])
+  demo_list = ', '.join(demos)
+
+  def prefix():
+    print('(Any prefix also works)')
+
   def usage():
-    print('Usage: %s [%s]' % (sys.argv[0], ' | '.join(demos)))
+    print('Usage: %s [%s]' % demo_list)
     print()
-    print('(Any prefix of a demo will also work)')
+    prefix()
 
-  if len(sys.argv) is 1:
-    usage()
-
-  elif len(sys.argv) is 2:
-    demo = sys.argv[1]
+  def run_demo(demo):
+    demo = demo.lower()
     for d in demos:
-      if d.startswith(demo):
+      if d.lower().startswith(demo):
         __import__('demos.' + d)
         exit(0)  # None of the demos exit so we'll never get here.
+    else:
+      return False
 
-    print("Didn't understand command %s" % demo)
-    usage()
-    exit(-1)
+  if len(sys.argv) is 1:
+    print('Demos are:', demo_list)
+    prefix()
+    while True:
+      demo = raw_input('Enter demo name: ')
+      if (not demo) or run_demo(demo):
+        break
+      else:
+        print("Didn't understand demo '%s'" % demo)
+
+  elif len(sys.argv) is 2:
+    if not run_demo(sys.argv[1]):
+      print("Didn't understand command %s" % demo)
+      usage()
+      exit(-1)
 
   else:
     print('Too many arguments to %s' % sys.argv[0])

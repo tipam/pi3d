@@ -55,7 +55,7 @@ mymap = ElevationMap(mapfile="textures/mountainsHgt.jpg", width=mapwidth,
 
 myclip = ClipPlane()
 
-light = Light(0, 2,2,3, "", 5,5,0)
+light = Light()  # Was Light(0, 2,2,3, "", 5,5,0)
 light.on()
 
 #Create tree models
