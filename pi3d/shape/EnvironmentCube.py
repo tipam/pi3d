@@ -5,12 +5,15 @@ from pi3d.Buffer import Buffer
 from pi3d.shape.Shape import Shape
 from pi3d.Texture import Texture
 
-#CUBE_PARTS = ['top', 'left', 'front', 'right', 'back', 'bottom']
 CUBE_PARTS = ['front', 'right', 'top', 'bottom', 'left', 'back']
 
 def loadECfiles(path, fname, suffix='jpg', nobottom=False):
   # Helper for loading environment cube faces.
-  parts = CUBE_PARTS[0:-1] if nobottom else CUBE_PARTS
+  if nobottom:
+    parts = [p for p in CUBE_PARTS if p != 'bottom']
+  else:
+    parts = CUBE_PARTS
+
   files = (os.path.join(path, '%s_%s.%s' % (fname, p, suffix)) for p in parts)
   return [Texture(f) for f in files]
 
