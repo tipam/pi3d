@@ -5,12 +5,12 @@ from pi3d.Buffer import Buffer
 from pi3d.shape.Shape import Shape
 from pi3d.Texture import Texture
 
-CUBE_PARTS = ('front', 'right', 'top', 'bottom', 'left', 'back')
+CUBE_PARTS = ['top', 'left', 'front', 'right', 'back', 'bottom']
 
-def loadECfiles(path, fname):
-  # Helper for loading environment cube faces. Returns an array of Shaders in the order of CUBE_PARTS using the 
-  # textures generated from the path and filename stem fed in
-  files = (os.path.join(path, '%s_%s.jpg' % (fname, p)) for p in CUBE_PARTS)
+def loadECfiles(path, fname, suffix='jpg', nobottom=False):
+  # Helper for loading environment cube faces.
+  parts = CUBE_PARTS[0:-1] if nobottom else CUBE_PARTS
+  files = (os.path.join(path, '%s_%s.%s' % (fname, p, suffix)) for p in parts)
   return [Texture(f) for f in files]
 
 class EnvironmentCube(Shape):
@@ -57,7 +57,7 @@ class EnvironmentCube(Shape):
         (0.498, 0.998), (0.498, 0.66), (0.251, 0.66), (0.251, 0.998), #bottom
         (0.0, 0.661), (0.25, 0.661), (0.25, 0.34), (0.0, 0.34), #left
         (0.25, 0.34), (0.5, 0.34), (0.5, 0.661), (0.25, 0.661)) #front
-      
+
       self.buf = []
       self.buf.append(Buffer(self, self.vertices, self.tex_coords, self.indices, self.normals))
 
@@ -68,18 +68,18 @@ class EnvironmentCube(Shape):
         (0,0), (1,0), (1,1), (0,1), #bottom
         (0.25,-0.25), (0.75,-0.25), (0.75,0.25), (0.25,0.25),
         (0.75,0.25), (0.75,0.75), (1.25,0.75), (1.25,0.25))
-      
+
       self.buf = []
       self.buf.append(Buffer(self, self.vertices, self.tex_coords, self.indices, self.normals))
-      
+
     else:
-      self.tex_coords = ((0.002,0.002), (0.998,0.002), (0.998,0.998),(0.002,0.998), 
-            (0.002,0.002), (0.998,0.002), (0.998,0.998), (0.002,0.998), 
-            (0.002,0.998), (0.002,0.002), (0.998,0.002), (0.998,0.998), 
-            (0.998,0.002), (0.998,0.998), (0.002,0.998), (0.002,0.002), 
-            (0.998,0.998), (0.002,0.998), (0.002,0.002), (0.998,0.002), 
+      self.tex_coords = ((0.002,0.002), (0.998,0.002), (0.998,0.998),(0.002,0.998),
+            (0.002,0.002), (0.998,0.002), (0.998,0.998), (0.002,0.998),
+            (0.002,0.998), (0.002,0.002), (0.998,0.002), (0.998,0.998),
+            (0.998,0.002), (0.998,0.998), (0.002,0.998), (0.002,0.002),
+            (0.998,0.998), (0.002,0.998), (0.002,0.002), (0.998,0.002),
             (0.998,0.002), (0.002,0.002), (0.002,0.998), (0.998,0.998))
-      
+
       self.buf = []
       self.buf.append(Buffer(self, self.vertices[0:4], self.tex_coords[0:4], ((3,0,1), (2,3,1)), self.normals[0:4])) #front
       self.buf.append(Buffer(self, self.vertices[4:8], self.tex_coords[4:8], ((3,0,1), (2,3,1)), self.normals[4:8])) #right

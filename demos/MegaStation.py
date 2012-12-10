@@ -43,7 +43,8 @@ mapwidth=2000.0
 mapdepth=2000.0
 mapheight=100.0
 redplanet = Texture("textures/mars_colour.png")
-mymap = ElevationMap("textures/mars_height.png",mapwidth,mapdepth,mapheight,64,64)
+mymap = ElevationMap(mapfile='textures/mars_height.png', width=mapwidth,
+                     depth=mapdepth, height=mapheight, divx=64, divy=64)
 
 #Load Corridors sections
 

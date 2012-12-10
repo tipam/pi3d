@@ -2,16 +2,6 @@
 # Version 0.02 - 23Nov12
 #
 # First tank demo - more to come!
-#
-# This example does not reflect the finished pi3d module in any way whatsoever!
-# It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
-#
-# PLEASE INSTALL PIL imaging with:
-#
-#      $ sudo apt-get install python-imaging
-#
-# before running this example
-#
 
 import math, random, time, traceback
 
@@ -57,7 +47,9 @@ mapdepth = 2000.0
 mapheight = 100.0
 mountimg1 = Texture("textures/mountains3_512.jpg")
 #roadway = Texture("textures/road5.png")
-mymap = ElevationMap("textures/mountainsHgt2.png",mapwidth,mapdepth,mapheight,64,64)
+mymap = ElevationMap(mapfile="textures/mountainsHgt2.png",
+                     width=mapwidth, depth=mapdepth,
+                     height=mapheight, divx=64, divy=64)
 
 #Load tank
 tank_body = Model("models/Tiger/bodylow.egg", "TigerBody", 0,0,0, -90,-90,0, .1,.1,.1)

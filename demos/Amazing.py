@@ -77,10 +77,12 @@ myecube = EnvironmentCube(camera, light, 900.0,"CROSS")
 myecube.buf[0].set_draw_details(shader, [ectex], 0.0, -1.0)
 
 # Create elevation map
-mapwidth=1000.0
-mapdepth=1000.0
-mapheight=100.0
-mymap = ElevationMap(camera, light, "textures/maze1.jpg",mapwidth,mapdepth,mapheight,128,128,1,"sub",0,0,0)
+mapwidth = 1000.0
+mapdepth = 1000.0
+mapheight = 100.0
+mymap = ElevationMap("textures/maze1.jpg", camera=camera, light=light,
+                     width=mapwidth, depth=mapdepth, height=mapheight,
+                     divx=128, divy=128, name="sub")
 mymap.buf[0].set_draw_details(shader, [rockimg1, rockimg2], 128.0, 0.0)
 
 # Crete fog for more realistic fade in distance. This can be turned on and off between drawing different object (i.e backgound not foggy)

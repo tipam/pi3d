@@ -25,12 +25,13 @@ class ElevationMap(Shape):
   cx,cy,cz -- offset distances, float (default 0,0,0)
   smooth -- calculate normals with averaging rather than point straight up, bool (default True)
   """
-  def __init__(self, camera, light, mapfile, width=100.0, depth=100.0, height=10.0,
+  def __init__(self, mapfile, camera=None, light=None,
+               width=100.0, depth=100.0, height=10.0,
                divx=0, divy=0, ntiles=1.0, name="",
                x=0.0, y=0.0, z=0.0, rx=0.0, ry=0.0, rz=0.0,
                sx=1.0, sy=1.0, sz=1.0, cx=0.0, cy=0.0, cz=0.0, smooth=True):
-    super(ElevationMap,self).__init__(camera, light, name, x, y, z, rx, ry, rz,
-                                      sx, sy, sz, cx, cy, cz)
+    super(ElevationMap, self).__init__(camera, light, name, x, y, z, rx, ry, rz,
+                                       sx, sy, sz, cx, cy, cz)
     if VERBOSE:
       print "Loading height map ...",mapfile
 
@@ -82,9 +83,9 @@ class ElevationMap(Shape):
         hgt = (self.pixels[x,y])*ht
         verts.append((-wh+x*ws, hgt, -hh+y*hs))
         tex_coords.append(((ix-x) * tx,(iy-y) * ty))
-  
+
     s=0
-    #create one long triangle_strip by alternating X directions   
+    #create one long triangle_strip by alternating X directions
     for y in range(0,iy-1):
       for x in range(0,ix-1):
         i = (y * ix)+x

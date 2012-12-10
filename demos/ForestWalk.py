@@ -41,7 +41,7 @@ DISPLAY = Display.create(x=100, y=100)
 DISPLAY.setBackColour(0.4,0.8,0.8,1)      # r,g,b,alpha
 
 camera = Camera((0, 0, 0), (0, 0, -1), (1, 1000, DISPLAY.win_width/1000.0, DISPLAY.win_height/1000.0))
-light = Light((0, 0, 1))
+light = Light((1, 1, 4))
 #========================================
 
 # load shader
@@ -66,9 +66,10 @@ mapwidth = 1000.0
 mapdepth = 1000.0
 mapheight = 60.0
 mountimg1 = Texture("textures/mountains3_512.jpg")
-mymap = ElevationMap(camera, light, "textures/mountainsHgt.jpg", mapwidth, mapdepth, mapheight, 16, 16) #testislands.jpg
-mymap.buf[0].set_draw_details(shader, [mountimg1, bumpimg], 256.0, 0.0)
-#mymap.buf[0].set_draw_details(shader, [mountimg1], 0.0, 0.0)
+mymap = ElevationMap("textures/mountainsHgt.jpg", camera=camera, light=light,
+                     width=mapwidth, depth=mapdepth, height=mapheight,
+                     divx=32, divy=32) #testislands.jpg
+mymap.buf[0].set_draw_details(shader, [mountimg1, bumpimg], 128.0, 0.0)
 mymap.set_fog((0.3, 0.3, 0.4, 1.0), 650.0)
 
 #Create tree models
@@ -96,14 +97,14 @@ mytrees2.buf[0].set_draw_details(shader, [tree1img], 0.0, 0.0)
 
 mytrees3 = MergeShape(camera, light, "trees3")
 mytrees3.cluster(treemodel2, mymap,0.0,0.0,300.0,300.0,30,"",4.0,2.0)
-mytrees3.buf[0].set_draw_details(shader, [hb2img], 12.0, 0.2)
+mytrees3.buf[0].set_draw_details(shader, [hb2img], 0.0, 0.0)
 #         (shape,elevmap,xpos,zpos,w,d,count,options,minscl,maxscl)
 
 #Create monolith
 monolith = Sphere(camera, light, 8.0, 12, 48, sy = 10.0)
 monolith.translate(100.0, -mymap.calcHeight(100.0, 350) + 10.0, 350.0)
 #monolith.buf[0].set_draw_details(shader, [rockimg, bumpimg, reflimg], 32.0, 0.3)
-monolith.buf[0].set_draw_details(shader, [rockimg], 0.0, 0.0)
+monolith.buf[0].set_draw_details(shader, [rockimg], 2.0, 0.4)
 monolith.set_fog((0.3, 0.3, 0.4, 1.0), 650.0)
 
 #screenshot number

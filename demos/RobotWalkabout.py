@@ -55,7 +55,9 @@ mapwidth=1000.0
 mapdepth=1000.0
 mapheight=60.0
 mountimg1 = Texture("textures/mars_colour.png")
-mymap = ElevationMap("textures/mars_height.png",mapwidth,mapdepth,mapheight,128,128) #testislands.jpg
+mymap = ElevationMap(mapfile="textures/mars_height.png",
+                     width=mapwidth, depth=mapdepth, height=mapheight,
+                     divx=128, divx=128) #testislands.jpg
 
 #create robot
 metalimg = Texture("textures/metalhull.jpg")

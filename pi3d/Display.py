@@ -146,6 +146,7 @@ def create(is_3d=True, x=0, y=0, w=0, h=0, near=None, far=None,
      h = display.max_height - 2 * y
      if h <= 0:
        h = display.max_height
+  LOGGER.info('w=%d, h=%d', w, h)
   if near is None:
     near = DEFAULT_NEAR_3D if is_3d else DEFAULT_NEAR_2D
   if far is None:
