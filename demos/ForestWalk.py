@@ -40,8 +40,8 @@ from pi3d.util.Screenshot import screenshot
 DISPLAY = Display.create(x=100, y=100)
 DISPLAY.setBackColour(0.4,0.8,0.8,1)      # r,g,b,alpha
 
-camera = Camera((0, 0, 0), (0, 0, -1), (1, 1000, DISPLAY.win_width/1000.0, DISPLAY.win_width/1000.0))
-light = Light((10, 10, -20))
+camera = Camera((0, 0, 0), (0, 0, -1), (1, 1000, DISPLAY.win_width/1000.0, DISPLAY.win_height/1000.0))
+light = Light((0, 0, 1))
 #========================================
 
 # load shader
@@ -51,7 +51,7 @@ tree2img = Texture("textures/tree2.png")
 tree1img = Texture("textures/tree1.png")
 grassimg = Texture("textures/grass.png")
 hb2img = Texture("textures/hornbeam2.png")
-bumpimg = Texture("textures/floor_nm.jpg")
+bumpimg = Texture("textures/grasstile_n.jpg")
 reflimg = Texture("textures/stars.jpg")
 rockimg = Texture("textures/rock1.jpg")
 
@@ -66,8 +66,9 @@ mapwidth = 1000.0
 mapdepth = 1000.0
 mapheight = 60.0
 mountimg1 = Texture("textures/mountains3_512.jpg")
-mymap = ElevationMap(camera, light, "textures/mountainsHgt.jpg", mapwidth, mapdepth, mapheight, 32, 32) #testislands.jpg
-mymap.buf[0].set_draw_details(shader, [mountimg1, bumpimg], 1024.0, 0.0)
+mymap = ElevationMap(camera, light, "textures/mountainsHgt.jpg", mapwidth, mapdepth, mapheight, 16, 16) #testislands.jpg
+mymap.buf[0].set_draw_details(shader, [mountimg1, bumpimg], 256.0, 0.0)
+#mymap.buf[0].set_draw_details(shader, [mountimg1], 0.0, 0.0)
 mymap.set_fog((0.3, 0.3, 0.4, 1.0), 650.0)
 
 #Create tree models
@@ -101,7 +102,8 @@ mytrees3.buf[0].set_draw_details(shader, [hb2img], 12.0, 0.2)
 #Create monolith
 monolith = Sphere(camera, light, 8.0, 12, 48, sy = 10.0)
 monolith.translate(100.0, -mymap.calcHeight(100.0, 350) + 10.0, 350.0)
-monolith.buf[0].set_draw_details(shader, [rockimg, bumpimg, reflimg], 32.0, 0.3)
+#monolith.buf[0].set_draw_details(shader, [rockimg, bumpimg, reflimg], 32.0, 0.3)
+monolith.buf[0].set_draw_details(shader, [rockimg], 0.0, 0.0)
 monolith.set_fog((0.3, 0.3, 0.4, 1.0), 650.0)
 
 #screenshot number

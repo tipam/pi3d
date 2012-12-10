@@ -1,4 +1,4 @@
-precision mediump float;
+precision highp float;
 
 attribute vec3 vertex;
 attribute vec3 normal;
@@ -8,6 +8,10 @@ uniform mat4 modelviewmatrix;
 uniform mat4 cameraviewmatrix;
 uniform float ntiles;
 uniform float shiny;
+uniform vec3 locn;
+uniform vec3 rotn;
+uniform vec3 scle;
+uniform vec3 ofst;
 uniform vec3 eye;
 
 varying vec3 normout;
@@ -17,8 +21,57 @@ varying mat4 normrot;
 varying vec2 shinecoordout;
 varying float dist;
 
+mat4 transpose(mat4 mi) {
+  mat4 mo = mat4(0.0);
+  for (int i=0; i<4; i++) for (int j=0; j<4; j++) mo[i][j] = mi[j][i];
+  return mo;
+  }
+
 void main(void) {
-  normout = normalize(vec3(modelviewmatrix * vec4(normal, 0.0)));
+  
+  float s, c;
+  mat4 newmodel = transpose(cameraviewmatrix);
+
+  newmodel = mat4(
+    1.0, 0.0, 0.0, (locn.x-ofst.x), 
+    0.0,1.0,0.0,(locn.y-ofst.y), 
+    0.0,0.0,1.0,(locn.z-ofst.z), 
+    0.0,0.0,0.0,1.0) * newmodel;
+
+  if (rotn.z != 0.0) {
+    s = sin(radians(rotn.z));
+    c = cos(radians(rotn.z));
+    newmodel = mat4(c,-s,0.0,0.0, s,c,0.0,0.0, 0.0,0.0,1.0,0.0, 0.0,0.0,0.0,1.0) * newmodel; 
+  } 
+  
+  
+  if (rotn.x != 0.0) {
+    s = sin(radians(rotn.x));
+    c = cos(radians(rotn.x));
+    newmodel = mat4(1.0,0.0,0.0,0.0, 0.0,c,-s,0.0, 0.0,s,c,0.0, 0.0,0.0,0.0,1.0) * newmodel; 
+  } 
+  
+
+  if (rotn.y != 0.0) {
+    s = sin(radians(rotn.y));
+    c = cos(radians(rotn.y));
+    newmodel = mat4(c,0.0,s,0.0, 0.0,1.0,0.0,0.0, -s,0.0,c,0.0, 0.0,0.0,0.0,1.0) * newmodel; 
+  } 
+  
+  
+  if (scle.x > 0.0 && scle.y > 0.0 && scle.z > 0.0)
+    newmodel = mat4(scle.x,0.0,0.0,0.0, 0.0,scle.y,0.0,0.0, 0.0,0.0,scle.z,0.0, 0.0,0.0,0.0,1.0) * newmodel;
+    
+  newmodel = mat4(
+    1.0,0.0,0.0,ofst.x, 
+    0.0,1.0,0.0,ofst.y, 
+    0.0,0.0,1.0,ofst.z, 
+    0.0,0.0,0.0,1.0) * newmodel;
+
+  mat4 newmodel_t = transpose(newmodel);
+  ///////////////////////////////////////////////////////////////////////////////
+
+  normout = normalize(vec3(newmodel_t * vec4(normal, 0.0)));
   
   if (ntiles == 0.0) { // ----- ntiles doubles as flag for normal mapping
     bumpcoordout = texcoord;
@@ -43,7 +96,7 @@ void main(void) {
     shinecoordout = vec2(0.0, 0.0);
   }
   else {
-    vec3 inray = vertex - vec3(modelviewmatrix * vec4(eye, 1.0)); // ----- vector from the camera to this vertex
+    vec3 inray = vertex - vec3(newmodel * vec4(eye, 1.0)); // ----- vector from the camera to this vertex
     if (length(inray) > 0.0) inray = normalize(inray); // ----- crash if normalize zero length vectors
     vec3 refl = reflect(inray, normout); // ----- reflection direction from this vertex
     vec3 horiz = cross(inray, vec3(0.0, 1.0, 0.0)); // ----- a 'horizontal' unit vector normal to the inray
@@ -54,7 +107,7 @@ void main(void) {
     // ----- now work out the horizonal and vertical angles relative to inray and map them to range 0 to 1
     shinecoordout = vec2(clamp(0.5 - atan(hval, zval)/6.283185307, 0.0, 1.0), clamp(0.5 - atan(vval, zval)/6.283185307, 0.0, 1.0));
   }
-  vec4 relPosn = modelviewmatrix * vec4(vertex,1.0);
+  vec4 relPosn = newmodel_t * vec4(vertex,1.0);
   dist = length(relPosn);
   texcoordout = texcoord;
   gl_Position = relPosn;

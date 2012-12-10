@@ -47,7 +47,7 @@ void main(void) {
     texc = texc * intensity;
     texc[3] = alpha; // ------ the alpha value from before darkening is patched back in, otherwise dark things might become see through
     vec4 shinec = vec4(0.0, 0.0, 0.0, 0.0);
-    vec2 bumpshinecoord = shinecoordout + 0.1*vec2(bump);
+    vec2 bumpshinecoord = shinecoordout + 0.1*bfact*vec2(bump);
     if (shiny > 0.0) shinec = texture2D(tex2, bumpshinecoord); // ------ get the reflection for this pixel
     float shinefact = shiny;
     if (length(shinec) < length(texc)) shinefact *= 0.25; // ------ reduce the reflection where the ground texture is lighter than it

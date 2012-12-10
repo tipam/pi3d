@@ -78,19 +78,17 @@ class Buffer(object):
     shiny = self.shiny if shny == None else shny
     
     self.select()
-    opengles.glUniform4f(shader.unif_fogshade, c_float(self.shape.fogshade[0]), c_float(self.shape.fogshade[1]), 
-        c_float(self.shape.fogshade[2]), c_float(self.shape.fogshade[3])) 
-    opengles.glUniform1f(shader.unif_fogdist, c_float(self.shape.fogdist))
+
     opengles.glUniform1f(shader.unif_ntiles, c_float(ntiles))
     opengles.glUniform1f(shader.unif_shiny, c_float(shiny))
-    opengles.glUniform3f(shader.unif_lightpos, c_float(self.shape.light.lightpos[0]), 
-        c_float(self.shape.light.lightpos[1]), c_float(self.shape.light.lightpos[2]))
+    
     opengles.glVertexAttribPointer(shader.attr_vertex, 3, GL_FLOAT, 0, 32, 0)
     opengles.glVertexAttribPointer(shader.attr_normal, 3, GL_FLOAT, 0, 32, 12)
     opengles.glVertexAttribPointer(shader.attr_texcoord, 2, GL_FLOAT, 0, 32, 24)
     opengles.glEnableVertexAttribArray(shader.attr_normal)
     opengles.glEnableVertexAttribArray(shader.attr_vertex)
     opengles.glEnableVertexAttribArray(shader.attr_texcoord)
+    
     opengles.glDisable(GL_BLEND)
     opengles.glUniform1f(shader.unif_blend, c_float(0.6))
     if len(textures)>0:
@@ -103,9 +101,10 @@ class Buffer(object):
         if textures[t].blend: 
           opengles.glEnable(GL_BLEND) #i.e. if any of the textures set to blend then all will for this shader
           opengles.glUniform1f(shader.unif_blend, c_float(0.05))
+          
     opengles.glUniform4f(shader.unif_material, c_float(self.material[0]), c_float(self.material[1]), 
         c_float(self.material[2]), c_float(self.material[3]))
           
     shader.use()
-    opengles.glDrawElements ( GL_TRIANGLES, self.ntris*3, GL_UNSIGNED_SHORT, 0 )
+    opengles.glDrawElements(GL_TRIANGLES, self.ntris*3, GL_UNSIGNED_SHORT, 0)
 
