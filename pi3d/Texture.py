@@ -81,3 +81,18 @@ class Texture(Loadable):
     opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, c_float(GL_LINEAR))
     opengles.glGenerateMipmap(GL_TEXTURE_2D)
     opengles.glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA)
+
+
+class Cache(object):
+  def __init__(self):
+    self.clear()
+
+  def clear(self):
+    self.cache = {}
+
+  def create(self, file_string, **kwds):
+    texture = self.cache.get(file_string, None)
+    if not texture:
+      texture = Texture(file_string, **kwds)
+      self.cache[file_string] = texture
+    return texture
