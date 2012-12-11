@@ -62,13 +62,13 @@ mymap = ElevationMap(camera=camera, light= light, mapfile="textures/mountainsHgt
 mymap.buf[0].set_draw_details(shader,[mountimg1, bumpimg],128.0, 0.0)
 mymap.set_fog((0.7,0.8,0.9,0.5), 500.0)
 #Load tank
-tank_body = Model(camera, light, "models/Tiger/bodylow.egg", "TigerBody", 0,0,0, 0,0,0, .1,.1,.1)
+tank_body = Model(camera, light, "models/Tiger/bodylow.egg", "TigerBody", 0,0,0, 0,0,0, 0.1,0.1,.1)
 tank_body.set_shader(shader)
 tank_body.set_fog((0.7,0.8,0.9,0.5), 500.0)
-tank_gun = Model(camera, light, "models/Tiger/gunlow.egg", "TigerGun", 0,0,0, 0,0,0, .1,.1,.1, 0,0,0)
+tank_gun = Model(camera, light, "models/Tiger/gunlow.egg", "TigerGun", 0,0,0, 0,0,0, 0.1,0.1,0.1, 0,0,0)
 tank_gun.set_shader(shader)
 tank_gun.set_fog((0.7,0.8,0.9,0.5), 500.0)
-tank_turret = Model(camera, light, "models/Tiger/turretlow.egg", "TigerTurret", 0,0,0, 0,0,0, .1,.1,.1, 0,0,0)
+tank_turret = Model(camera, light, "models/Tiger/turretlow.egg", "TigerTurret", 0,0,0, 0,0,0, 0.1,0.1,0.1, 0,0,0)
 tank_turret.set_shader(shader)
 tank_turret.set_fog((0.7,0.8,0.9,0.5), 500.0)
 
@@ -76,39 +76,39 @@ tank_turret.set_fog((0.7,0.8,0.9,0.5), 500.0)
 #Load church
 x,z = 20,-320
 y = mymap.calcHeight(x,z)
-church = Model(camera, light, "models/AllSaints/AllSaints.egg", "church1", x,y,z, 0,0,0, .1,.1,.1)
+church = Model(camera, light, "models/AllSaints/AllSaints.egg", "church1", x,y,z, 0,0,0, 0.1,0.1,0.1)
 church.set_shader(shader)
 church.set_fog((0.7,0.8,0.9,0.5), 500.0)
-churchlow = Model(camera, light, "models/AllSaints/AllSaints-lowpoly.egg", "church2", x,y,z, 0,0,0, .1,.1,.1)
+churchlow = Model(camera, light, "models/AllSaints/AllSaints-lowpoly.egg", "church2", x,y,z, 0,0,0, 0.1,0.1,0.1)
 churchlow.set_shader(shader)
 churchlow.set_fog((0.7,0.8,0.9,0.5), 500.0)
 
 #Load cottages
 x,z = 250,-40
 y = mymap.calcHeight(x,z)
-cottages = Model(camera, light, "models/Cottages/cottages_low.egg", "cottagesLo", x,y,z, 0,-5,0, .1,.1,.1)
+cottages = Model(camera, light, "models/Cottages/cottages_low.egg", "cottagesLo", x,y,z, 0,-5,0, 0.1,0.1,0.1)
 cottages.set_shader(shader)
 cottages.set_fog((0.7,0.8,0.9,0.5), 500.0)
 #cottagesHi = Model(camera, light, "models/Cottages/cottages.egg", "cottagesHi", x,y,z, -90,-5,0, .1,.1,.1)
 
 #player tank vars
-tankrot=180.0
-turrot=0.0
-tankroll=0.0     #side-to-side roll of tank on ground
-tankpitch=0.0   #too and fro pitch of tank on ground
+tankrot = 180.0
+turrot = 0.0
+tankroll = 0.0     #side-to-side roll of tank on ground
+tankpitch = 0.0   #too and fro pitch of tank on ground
 
 #position vars
-mouserot=0.0
-tilt=0.0
+mouserot = 0.0
+tilt = 0.0
 avhgt = 3.0
-xm=0.0
-zm=0.0
-ym= -(mymap.calcHeight(xm,zm)+avhgt)
+xm = 0.0
+zm = 0.0
+ym = mymap.calcHeight(xm,zm) + avhgt
 
 #enemy tank vars
-etx=50
-etz=90
-etr=0.0
+etx = 50
+etz = 90
+etr = 0.0
 
 # Fetch key presses
 mymouse = Mouse()
@@ -141,17 +141,17 @@ while 1:
 
   camera.reset()
   #tilt can be used as a means to prevent the view from going under the landscape!
-  if abs(tilt) > 1: sf = 60 - 55.0/abs(tilt)
+  if tilt < -1: sf = 60 - 55.0/abs(tilt)
   else: sf = 5.0
-  xoff, yoff, zoff = -sf*math.sin(mouserot*rads), abs(1.5*sf*math.sin(tilt*rads)) + 3.0, -sf*math.cos(mouserot*rads)
-  print xoff, yoff, zoff, tankrot
+  xoff, yoff, zoff = sf*math.sin(mouserot*rads), abs(1.25*sf*math.sin(tilt*rads)) + 3.0, -sf*math.cos(mouserot*rads)
+  #xoff, yoff, zoff = 0,0,0
   #camera.translate((xm, ym-10*sf-5.0, zm-40*sf))   #zoom camera out so we can see our robot
-  camera.translate((xm + xoff, ym + yoff, zm + zoff))   #zoom camera out so we can see our robot
   camera.rotate(tilt, 0, 0)           #Tank still affected by scene tilt
+  camera.rotate(0, mouserot, 0)
+  camera.translate((xm + xoff, ym + yoff +5, zm + zoff))   #zoom camera out so we can see our robot
 
   #draw player tank
-  camera.rotate(0, mouserot, 0)
-  drawTiger(xm, ym - 2, zm, tankrot, tankroll, tankpitch, -turrot, 0.0)
+  drawTiger(xm, ym, zm, tankrot, tankroll, tankpitch, 180 - turrot, 0.0)
 
   mymap.draw()           #Draw the landscape
 
@@ -200,16 +200,19 @@ while 1:
   if win.ev=="key":
       if win.key=="w":
           xm -= math.sin(tankrot*rads)*2
-          zm += math.cos(tankrot*rads)*2
-          ym = (mymap.calcHeight(xm, zm) + avhgt)
-      elif win.key=="s":
-          xm += math.sin(tankrot*rads)*2
           zm -= math.cos(tankrot*rads)*2
           ym = (mymap.calcHeight(xm, zm) + avhgt)
+          print tankrot, mouserot, turrot
+      elif win.key=="s":
+          xm += math.sin(tankrot*rads)*2
+          zm += math.cos(tankrot*rads)*2
+          ym = (mymap.calcHeight(xm, zm) + avhgt)
       elif win.key == "a":
-          tankrot += 2
-      elif win.key == "d":
           tankrot -= 2
+          mouserot -= 2
+      elif win.key == "d":
+          tankrot += 2
+          mouserot += 2
       elif win.key == "p":
           display.screenshot("TigerTank.jpg")
       elif win.key == "Escape":

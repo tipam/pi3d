@@ -1,4 +1,5 @@
 from numpy import array, dot, copy, tan, cos, sin, radians
+from numpy.linalg import norm
 from pi3d import *
 from pi3d.shape.Shape import Shape
 from pi3d.util.Utility import mat_mult, vec_normal, vec_cross, vec_sub, vec_dot, rotate, rotateX, rotateZ, rotateX, rotateY
@@ -17,13 +18,13 @@ class Camera(object):
     #self.M_reflect = mat_mult(self.L_reflect,self.P)
  
   def reset(self):
-    self.mtrx = [row[:] for row in self.modelView]    
+    self.mtrx = copy(self.modelView)
         
   def copy(self,copyMatrix):
-    self.mtrx = [row[:] for row in copyMatrix]  #usually copies the modelView matrix to begin with
+    self.mtrx = copy(copyMatrix)  #usually copies the modelView matrix to begin with
 
   def copynew(self):
-    return [row[:] for row in self.mtrx]
+    return copy(self.mtrx)
 
   def identity(self):
     self.mtrx = array([[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]])
