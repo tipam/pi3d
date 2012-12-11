@@ -44,9 +44,7 @@ class Display(object):
     self.opengl = DisplayOpenGL()
     self.max_width, self.max_height = self.opengl.width, self.opengl.height
 
-    LOGGER.info(STARTUP_MESSAGE % {'version': VERSION,
-                                   'width': self.max_width,
-                                   'height': self.max_height})
+    LOGGER.info(STARTUP_MESSAGE)
 
   def loop(self, loop_function=lambda: None):
     LOGGER.info('starting')
