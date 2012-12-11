@@ -108,7 +108,7 @@ Although most demos work on 64MB of memory, you are strongly advised to have a 1
 
 2) **Install Python Imaging**
 
-Before trying any of the demos or Pi3D, you must download the Python Imaging Library as this is needed for importing any graphics used by Pi3. To install on the terminal, type: 
+Before trying the demos, Pi3D requires the Python Imaging Library (PIL) for importing images. To install on the terminal, type: 
 
       sudo apt-get install python-imaging python-imaging-tk
 
