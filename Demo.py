@@ -6,9 +6,11 @@ import os
 import os.path
 import sys
 
+from pi3d.constants import STARTUP_MESSAGE
+
 SUFFIX = '.py'
 
-USE_TK = True
+USE_TK = not True
 
 def tk_demo(demos, message):
   import Tkinter
@@ -70,51 +72,57 @@ def get_demo_list():
     print('There are no files in the demo directory')
     return
 
-  demos = sorted([f[:-len(SUFFIX)] for f in demofiles])
-  return ', '.join(demos)
+  return sorted([f[:-len(SUFFIX)] for f in demofiles])
 
 def prefix():
   print('(Any prefix also works)')
 
-def usage():
-  print('Usage: %s [%s]' % demo_list)
+def usage(demo_list):
+  print('Usage: %s [%s]' % (sys.argv[0], ', '.join(demo_list)))
   print()
   prefix()
 
-def run_demo(demo):
-  demo = demo.lower()
-  for d in demos:
-    if d.lower().startswith(demo):
-      if not USE_TK:
-        print()
-        print('Running demo', d)
-        print()
-      __import__('demos.' + d)
-      return True
-  else:
-    return False
+def run_one_demo(demo):
+  if not USE_TK:
+    print()
+    print('Running demo', demo)
+    print()
+  __import__('demos.' + demo)
 
-def select_demo(demo_list)
-  if len(sys.argv) is 1:
-    if not USE_TK:
-      print('Demos are:', demo_list)
+
+def run_demo(demo, demo_list):
+  demo = demo.lower()
+  for d in demo_list:
+    if d.lower().startswith(demo):
+      run_one_demo(d)
+  else:
+    print("Didn't understand demo '%s'" % demo)
+    usage(demo_list)
+
+def select_demo(demo_list):
+  if not USE_TK:
+    print('Demos are:', ', '.join(demo_list))
     prefix()
-    while True:
-      d = tk_demo(demo_list) if USE_TK else raw_input('Enter demo name: ')
-      if not d:
-        break
-      elif not run_demo(d):
-        print("Didn't understand demo '%s'" % d)
+
+  while True:
+    if USE_TK:
+      d = tk_demo(demo_list, STARTUP_MESSAGE)
+    else:
+      d = raw_input('Enter demo name: ')
+    if not d:
+      break
+    elif not run_demo(d, demo_list):
+      print("Didn't understand demo '%s'" % d)
+
+
+if __name__ == '__main__':
+  demo_list = get_demo_list()
+  if len(sys.argv) is 1:
+    select_demo(demo_list)
 
   elif len(sys.argv) is 2:
-    d = sys.argv[1]
-    if not run_demo(d):
-      print("Didn't understand command %s" % d)
-      usage()
-      exit(-1)
+    run_demo(sys.argv[1], demo_list)
 
   else:
     print('Too many arguments to %s' % sys.argv[0])
 
-if __name__ == '__main__':
-  select_demo(get_demo_list())
