@@ -116,6 +116,8 @@ def select_demo(demo_list):
 
 
 if __name__ == '__main__':
+  os.chdir(os.path.dirname(sys.argv[0]))
+
   demo_list = get_demo_list()
   if len(sys.argv) is 1:
     select_demo(demo_list)
