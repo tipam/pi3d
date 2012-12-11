@@ -177,8 +177,14 @@ def loadFileEGG(model, fileName):
       for j in vref:
         if (len(structVList[vpKey][j].normal) > 0): model.vNormal = True
         else: model.vNormal = False
-        g_vertices.append(structVList[vpKey][j].coords)
-        if model.vNormal: nml = structVList[vpKey][j].normal
+        if model.coordinateSystem == "Z-Up":
+          thisV = [structVList[vpKey][j].coords[1], structVList[vpKey][j].coords[2], structVList[vpKey][j].coords[0]]
+          thisN = [structVList[vpKey][j].normal[1], structVList[vpKey][j].normal[2], structVList[vpKey][j].normal[0]]
+        else:
+          thisV = structVList[vpKey][j].coords
+          thisN = structVList[vpKey][j].normal
+        g_vertices.append(thisV)
+        if model.vNormal: nml = thisN
         else: nml = structPList[p].normal
         g_normals.append(nml)
         uvc = structVList[vpKey][j].UVcoords

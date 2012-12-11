@@ -10,6 +10,8 @@ from pi3d import *
 from pi3d import Display
 from pi3d.Mouse import Mouse
 from pi3d.Texture import Texture
+from pi3d.Camera import Camera
+from pi3d.Shader import Shader
 
 from pi3d.context.Fog import Fog
 from pi3d.context.Light import Light
@@ -18,7 +20,7 @@ from pi3d.shape.ElevationMap import ElevationMap
 from pi3d.shape import EnvironmentCube
 from pi3d.shape.Model import Model
 
-from pi3d.util import Draw
+#from pi3d.util import Draw
 from pi3d.util import Log
 from pi3d.util.Matrix import Matrix
 from pi3d.util.TkWin import TkWin
@@ -34,42 +36,63 @@ win = TkWin(None,"Tiger Tank demo in Pi3D",winw,winh)
 
 # Setup display and initialise pi3d viewport over the window
 win.update()  #requires a window update first so that window sizes can be retreived
-display = Display.create(x=win.winx, y=win.winy, w=winw, h=winh - bord,
+DISPLAY = Display.create(x=win.winx, y=win.winy, w=winw, h=winh - bord,
                          far=2200.0, background=(0.4, 0.8, 0.8, 1))
+camera = Camera((0, 0, 0), (0, 0, -1), (1, 1000, DISPLAY.win_width/1000.0, DISPLAY.win_height/1000.0))
+light = Light((10, 10, -20))
+shader = Shader("shaders/bumpShade")
+#========================================
 
 #texture storage for loading textures
 ectex = EnvironmentCube.loadECfiles("textures/ecubes/Miramar", "miramar_256", suffix="png")
-myecube = EnvironmentCube.EnvironmentCube(1800.0, "FACES")
+myecube = EnvironmentCube.EnvironmentCube(camera, light, 1800.0, "FACES")
+for i,b in enumerate(myecube.buf):
+  b.set_draw_details(shader,[ectex[i]], 0.0, -1.0)
 
 # Create elevation map
 mapwidth = 2000.0
 mapdepth = 2000.0
 mapheight = 100.0
 mountimg1 = Texture("textures/mountains3_512.jpg")
+bumpimg = Texture("textures/grasstile_n.jpg")
 #roadway = Texture("textures/road5.png")
-mymap = ElevationMap(mapfile="textures/mountainsHgt2.png",
+mymap = ElevationMap(camera=camera, light= light, mapfile="textures/mountainsHgt2.png",
                      width=mapwidth, depth=mapdepth,
                      height=mapheight, divx=64, divy=64)
-
+mymap.buf[0].set_draw_details(shader,[mountimg1, bumpimg],128.0, 0.0)
+mymap.set_fog((0.7,0.8,0.9,0.5), 500.0)
 #Load tank
-tank_body = Model("models/Tiger/bodylow.egg", "TigerBody", 0,0,0, -90,-90,0, .1,.1,.1)
-tank_gun = Model("models/Tiger/gunlow.egg", "TigerGun", 0,0,0, -90,-90,0, .1,.1,.1, 0,0,0)
-tank_turret = Model("models/Tiger/turretlow.egg", "TigerTurret", 0,0,0, -90,-90,0, .1,.1,.1, 0,0,0)
+tank_body = Model(camera, light, "models/Tiger/bodylow.egg", "TigerBody", 0,0,0, 0,0,0, .1,.1,.1)
+tank_body.set_shader(shader)
+tank_body.set_fog((0.7,0.8,0.9,0.5), 500.0)
+tank_gun = Model(camera, light, "models/Tiger/gunlow.egg", "TigerGun", 0,0,0, 0,0,0, .1,.1,.1, 0,0,0)
+tank_gun.set_shader(shader)
+tank_gun.set_fog((0.7,0.8,0.9,0.5), 500.0)
+tank_turret = Model(camera, light, "models/Tiger/turretlow.egg", "TigerTurret", 0,0,0, 0,0,0, .1,.1,.1, 0,0,0)
+tank_turret.set_shader(shader)
+tank_turret.set_fog((0.7,0.8,0.9,0.5), 500.0)
+
 
 #Load church
 x,z = 20,-320
-y = mymap.calcHeight(-x,-z)
-church = Model("models/AllSaints/AllSaints.egg", "church1", x,y,z, -90,0,0, .1,.1,.1)
-churchlow = Model("models/AllSaints/AllSaints-lowpoly.egg", "church2", x,y,z, -90,0,0, .1,.1,.1)
+y = mymap.calcHeight(x,z)
+church = Model(camera, light, "models/AllSaints/AllSaints.egg", "church1", x,y,z, 0,0,0, .1,.1,.1)
+church.set_shader(shader)
+church.set_fog((0.7,0.8,0.9,0.5), 500.0)
+churchlow = Model(camera, light, "models/AllSaints/AllSaints-lowpoly.egg", "church2", x,y,z, 0,0,0, .1,.1,.1)
+churchlow.set_shader(shader)
+churchlow.set_fog((0.7,0.8,0.9,0.5), 500.0)
 
 #Load cottages
 x,z = 250,-40
-y = mymap.calcHeight(-x,-z)
-cottages = Model("models/Cottages/cottages_low.egg", "cottagesLo", x,y,z, -90,-5,0, .1,.1,.1)
-#cottagesHi = Model("models/Cottages/cottages.egg", "cottagesHi", x,y,z, -90,-5,0, .1,.1,.1)
+y = mymap.calcHeight(x,z)
+cottages = Model(camera, light, "models/Cottages/cottages_low.egg", "cottagesLo", x,y,z, 0,-5,0, .1,.1,.1)
+cottages.set_shader(shader)
+cottages.set_fog((0.7,0.8,0.9,0.5), 500.0)
+#cottagesHi = Model(camera, light, "models/Cottages/cottages.egg", "cottagesHi", x,y,z, -90,-5,0, .1,.1,.1)
 
 #player tank vars
-tankrot=0.0
+tankrot=180.0
 turrot=0.0
 tankroll=0.0     #side-to-side roll of tank on ground
 tankpitch=0.0   #too and fro pitch of tank on ground
@@ -77,7 +100,7 @@ tankpitch=0.0   #too and fro pitch of tank on ground
 #position vars
 mouserot=0.0
 tilt=0.0
-avhgt = 2.0
+avhgt = 3.0
 xm=0.0
 zm=0.0
 ym= -(mymap.calcHeight(xm,zm)+avhgt)
@@ -90,59 +113,66 @@ etr=0.0
 # Fetch key presses
 mymouse = Mouse()
 mymouse.start()
-mtrx = Matrix()
 
 omx=mymouse.x
 omy=mymouse.y
 
 myfog = Fog(0.0014,(0.7,0.8,0.9,0.5))
-mylight = Light(0,1,1,1,"",100,100,100) #, .9,.7,.6)
 
 def drawTiger(x, y, z, rot, roll, pitch, turret, gunangle):
-  tank_body.moveAndDraw(x, y, z, pitch, rot, roll)
-  tank_turret.moveAndDraw(x, y, z, pitch, turret, roll)
-  tank_gun.moveAndDraw(x, y, z, pitch, turret, roll)
+  tank_body.position(x, y, z)
+  tank_body.rotateToX(pitch)
+  tank_body.rotateToY(rot)
+  tank_body.rotateToZ(roll)
+  tank_body.draw()
+  tank_turret.position(x, y, z)
+  tank_turret.rotateToX(pitch)
+  tank_turret.rotateToY(turret)
+  tank_turret.rotateToZ(roll)
+  tank_turret.draw()
+  tank_gun.position(x, y, z)
+  tank_gun.rotateToX(gunangle)
+  tank_gun.rotateToY(turret)
+  tank_gun.rotateToZ(roll)
+  tank_gun.draw()
 
 while 1:
-  display.clear()
+  DISPLAY.clear()
 
-  mtrx.identity()
+  camera.reset()
   #tilt can be used as a means to prevent the view from going under the landscape!
-  if tilt<-1: sf=1.0/-tilt
-  else: sf=1.0
-  mtrx.translate(0,-10*sf-5.0,-40*sf)   #zoom camera out so we can see our robot
-  mtrx.rotate(tilt,0,0)           #Tank still affected by scene tilt
+  if abs(tilt) > 1: sf = 60 - 55.0/abs(tilt)
+  else: sf = 5.0
+  xoff, yoff, zoff = -sf*math.sin(mouserot*rads), abs(1.5*sf*math.sin(tilt*rads)) + 3.0, -sf*math.cos(mouserot*rads)
+  print xoff, yoff, zoff, tankrot
+  #camera.translate((xm, ym-10*sf-5.0, zm-40*sf))   #zoom camera out so we can see our robot
+  camera.translate((xm + xoff, ym + yoff, zm + zoff))   #zoom camera out so we can see our robot
+  camera.rotate(tilt, 0, 0)           #Tank still affected by scene tilt
 
   #draw player tank
-  mtrx.rotate(0,mouserot,0)
-  mylight.on()
-  drawTiger(0,0,0,tankrot,tankroll,tankpitch,-turrot,0.0)
+  camera.rotate(0, mouserot, 0)
+  drawTiger(xm, ym - 2, zm, tankrot, tankroll, tankpitch, -turrot, 0.0)
 
-  mtrx.translate(xm,ym,zm)        #translate rest of scene relative to tank position
-
-  myfog.on()
-  mymap.draw(mountimg1)           #Draw the landscape
+  mymap.draw()           #Draw the landscape
 
   #Draw enemy tank
-  etx-=math.sin(etr*rads)
-  etz-=math.cos(etr*rads)
-  etr+=1.0
-  drawTiger(etx,(mymap.calcHeight(-etx,-etz)+avhgt),etz,etr,0,0,etr,0)
+  etx -= math.sin(etr*rads)
+  etz -= math.cos(etr*rads)
+  etr += 1.0
+  drawTiger(etx, (mymap.calcHeight(etx, etz) + avhgt), etz, etr, 0, 0, etr, 0)
 
   #Draw buildings
-  Draw.lodDraw3(-xm, -ym, -zm, 300, church, 1000, churchlow)
+  #Draw.lodDraw3(-xm, -ym, -zm, 300, church, 1000, churchlow)
+  church.draw()
   cottages.draw()
 
-  mylight.off()
-  myfog.off()
-
-  myecube.draw(ectex,xm,ym,zm)#Draw environment cube
+  myecube.draw()#Draw environment cube
 
   #update mouse/keyboard input
-  mx,my=mymouse.x,mymouse.y
-  mouserot += (mx-omx)*0.2
-  tilt -= (my-omy)*0.2
-  omx,omy=mx,my
+  mx, my = mymouse.x, mymouse.y
+  mouserot -= (mx-omx)*0.2
+  tilt += (my-omy)*0.2
+  omx, omy = mx, my
 
   # turns player tankt turret towards center of screen which will have a crosshairs
   if turrot+2.0 < mouserot:
@@ -152,45 +182,46 @@ while 1:
 
   #Press ESCAPE to terminate
 
-  display.swapBuffers()
+  DISPLAY.swapBuffers()
 
   #Handle window events
   try:
     win.update()
   except:
     print "bye bye 3"
-    display.destroy()
+    DISPLAY.destroy()
     try:
       win.destroy()
     except:
       pass
+    mymouse.stop()
     exit()
 
   if win.ev=="key":
       if win.key=="w":
-          xm+=math.sin(tankrot*rads)*2
-          zm+=math.cos(tankrot*rads)*2
-          ym = -(mymap.calcHeight(xm,zm)+avhgt)
+          xm -= math.sin(tankrot*rads)*2
+          zm += math.cos(tankrot*rads)*2
+          ym = (mymap.calcHeight(xm, zm) + avhgt)
       elif win.key=="s":
-          xm-=math.sin(tankrot*rads)*2
-          zm-=math.cos(tankrot*rads)*2
-          ym = -(mymap.calcHeight(xm,zm)+avhgt)
-      elif win.key=="a":
+          xm += math.sin(tankrot*rads)*2
+          zm -= math.cos(tankrot*rads)*2
+          ym = (mymap.calcHeight(xm, zm) + avhgt)
+      elif win.key == "a":
           tankrot += 2
-      elif win.key=="d":
+      elif win.key == "d":
           tankrot -= 2
-      elif win.key=="p":
+      elif win.key == "p":
           display.screenshot("TigerTank.jpg")
-      elif win.key=="Escape":
+      elif win.key == "Escape":
           try:
-            display.destroy()
+            DISPLAY.destroy()
             win.destroy()
             print "Bye bye! 1"
           except Exception:
             print "Bye bye! 2"
 
   if win.ev=="resized":
-      display.resize(win.winx, win.winy, win.width, win.height - bord)
+      DISPLAY.resize(win.winx, win.winy, win.width, win.height - bord)
       win.resized=False  #this flag must be set otherwise no further events will be detected
 
   win.ev=""  #clear the event so it doesn't repeat
