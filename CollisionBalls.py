@@ -5,20 +5,14 @@
 # 
 # This example does not reflect the finished pi3d module in any way whatsoever!
 # It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
-#
-# PLEASE INSTALL PIL imaging with:
-#
-#      $ sudo apt-get install python-imaging
-#
-# before running this example
 
 import pi3d, sys, random, array
 
 # Setup display and initialise pi3d
 scnx=1920
 scny=1200
-display = pi3d.display()
-display.create2D(0,0,scnx,scny,0)
+display = pi3d.display(0,0,scnx,scny,0)
+display.setOrthographic()
 
 # Set last value (alpha) to zero for a transparent background!
 display.setBackColour(0,0.2,0.6,0)    	

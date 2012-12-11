@@ -3,22 +3,11 @@
 # This example - Copyright (c) 2012 - Tim Skillman
 # EGG loader code by Paddy Gaunt, Copyright (c) 2012
 # Version 0.02 - 20Jul12
-# 
-# This example does not reflect the finished pi3d module in any way whatsoever!
-# It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
-#
-# PLEASE INSTALL PIL imaging with:
-#
-#      $ sudo apt-get install python-imaging
-#
-# before running this example
-#
 
 import pi3d
 
 # Setup display and initialise pi3d
-display = pi3d.display()
-display.create3D(100,100,1200,900)      # x,y,width,height
+display = pi3d.display(100,100,1200,900)
 display.setBackColour(0.2,0.4,0.6,1)    # r,g,b,alpha
 
 # load model_loadmodel

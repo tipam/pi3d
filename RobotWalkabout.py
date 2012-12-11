@@ -7,22 +7,14 @@
 #
 # This example does not reflect the finished pi3d module in any way whatsoever!
 # It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
-#
-# PLEASE INSTALL PIL imaging with:
-#
-#      $ sudo apt-get install python-imaging
-#
-# before running this example
-#
+
 
 import pi3d,math,random
 
 rads = 0.017453292512  # degrees to radians
 
 # Setup display and initialise pi3d
-display = pi3d.display()
-display.create3D(100,100,1600,800, 0.5, 800.0, 60.0)    # x,y,width,height,near,far,aspect
-display.setBackColour(0.4,0.8,0.8,1)        # r,g,b,alpha
+display = pi3d.display(100,100,1600,800)
 
 # Load textures
 texs = pi3d.textures()

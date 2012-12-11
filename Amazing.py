@@ -31,8 +31,7 @@ print "############################################################"
 print
 
 # Setup display and initialise pi3d
-display = pi3d.display()
-display.create3D(10,10,1200,900, 0.5, 800.0, 60.0) # x,y,width,height,near,far,aspect
+display = pi3d.display(10,10,1200,900)
 display.setBackColour(0.4,0.8,0.8,1) # r,g,b,alpha
 
 # Load textures

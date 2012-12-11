@@ -5,19 +5,11 @@
 # 
 # This example does not reflect the finished pi3d module in any way whatsoever!
 # It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
-#
-# PLEASE INSTALL PIL imaging with:
-#
-#      $ sudo apt-get install python-imaging
-#
-# before running this example
-#
 
 import pi3d
 
 # Setup display and initialise pi3d
-display = pi3d.display()
-display.create3D(100,100,1200,900)      # x,y,width,height
+display = pi3d.display(100,100,1200,900)
 display.setBackColour(0,0,0,1)      # r,g,b,alpha
 
 # Load textures
@@ -91,8 +83,7 @@ while 1:
     mylathe.rotateIncY(2)
     mylathe.rotateIncZ(1)
     
-    pi3d.drawString(arialFont,"Raspberry Pi ROCKS!",-0.8,-0.7,-2.2, 10.0, 0.003,0.003)
-    #pi3d.drawString(destineFont,"Some nice OpenGL bitmap fonts to play with",-1.3,-0.3,-2.2, 10.0, 0.002,0.002)
+    pi3d.drawString3D(arialFont,"Raspberry Pi ROCKS!",-0.8,-0.7,-2.2, 10.0, 0.003,0.003)
     
     k = mykeys.read()
     if k >-1:

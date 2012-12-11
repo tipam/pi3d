@@ -2,9 +2,18 @@ Pi3D Change Log
 ===============
 Tim Skillman
 
-Date      	Amends
+Date      	 Amends
 
-vsn 0.06
+vsn 0.07
+2012-12-08  Added splash screen to TK window (also user defineable)
+2012-12-07  LoaderEgg draw needed to disableClientState(GL_COLOR_ARRAY) as this affected the scene afterwards
+2012-12-07  Added pi3d.FPS class that returns a Frames Per Second (FPS) count
+2012-12-06  Found a problem with matrix stacking - a push would increase the stack but a pop would not reduce it (i.e. constantly increasing)
+            Introduced a fixed stack method with a default of 20 deep pushes (or user defined, e.g. mtrx=pi3d.matrix(50) for fifty pushes)
+            This should also speed things up a little as stack is pre-allocated upon intialisation.
+2012-12-06  Separated perspective and orthographic code into setPerspective and setOrthographic functions so that a scene can interchange between them
+
+sn 0.06
 2012-11-29  Added Pi3D.DrawString2D which now renders text to a 2D orthographic view
 2012-11-29  Added Pi3D.CollisionMap for checking collisions against objects.  Includes a collideLine method to see if a line of fire will hit an object
 2012-11-28  Pi3D.LodDraw3 and LodDraw3xyz added to enable Level Of Detail rendering for near, far and further models (or none at all) 

@@ -6,12 +6,6 @@
 # This example does not reflect the finished pi3d module in any way whatsoever!
 # It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
 #
-# PLEASE INSTALL PIL imaging with:
-#
-#      $ sudo apt-get install python-imaging
-#
-# before running this example
-#
 # Bouncing demonstrates pi3d sprites over the desktop.
 # It uses the orthographic view scaled to the size of the window;
 # this means that sprites can be drawn at pixel resolution
@@ -22,8 +16,8 @@ import pi3d, sys, random, array
 # Setup display and initialise pi3d
 scnx=800
 scny=600
-display = pi3d.display()
-display.create2D(100,100,scnx,scny,0)
+display = pi3d.display(100,100,scnx,scny,0)
+display.setOrthographic()  #we want a 2D display (as it defaults to 3D)
 
 # Set last value (alpha) to zero for a transparent background!
 display.setBackColour(0,0.2,0.6,1)    	
@@ -91,7 +85,6 @@ while True:
 		dy[b]=-dy[b]
     
     pi3d.drawString2D(arialFont,"Raspberry Pi ROCKS!",100,300,80)
-	#pi3d.drawString3D(arialFont,"Raspberry Pi ROCKS!",100,300,-1.0,0.0,1,1)
 	
     #draw a bar at the top of the screen
     pi3d.rectangle(bar,0,scny,scnx,32)

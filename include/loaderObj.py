@@ -276,8 +276,8 @@ def loadFileOBJ(self,fileName,texs, xx=0,yy=0,zz=0, rotx=0,roty=0,rotz=0, sx=0,s
             if chunks[0] == "s" and len(chunks) == 2:
                 smooth = chunks[1]
         
-    print "materials:  ", materials
-    print "numv: ", numv
+    #print "materials:  ", materials
+    #print "numv: ", numv
     
     for g in faces:
         numv[g] -= 1
@@ -292,7 +292,7 @@ def loadFileOBJ(self,fileName,texs, xx=0,yy=0,zz=0, rotx=0,roty=0,rotz=0, sx=0,s
         self.vGroup[g].indices = ctype_array3()
         i = 0 # vertex counter in this material
         j = 0 # triangle vertex count in this material
-        print "len uv=",len(vertices)
+        #print "len uv=",len(vertices)
         for f in faces[g]:
             iStart = i
             for v in range(len(f['vertex'])):
@@ -317,15 +317,15 @@ def loadFileOBJ(self,fileName,texs, xx=0,yy=0,zz=0, rotx=0,roty=0,rotz=0, sx=0,s
         
         #for i in range(len(self.vGroup[g].normals)):
         #    print self.vGroup[g].normals[i],
-        print
-        print "indices=",len(self.vGroup[g].indices)
-        print "vertices=",len(self.vGroup[g].vertices)
-        print "normals=",len(self.vGroup[g].normals)
-        print "tex_coords=",len(self.vGroup[g].tex_coords)
+        #print
+        #print "indices=",len(self.vGroup[g].indices)
+        #print "vertices=",len(self.vGroup[g].vertices)
+        #print "normals=",len(self.vGroup[g].normals)
+        #print "tex_coords=",len(self.vGroup[g].tex_coords)
         
     material_lib = parse_mtl(os.path.join(filePath, mtllib))
     for m in materials:
-        print m
+        #print m
         if 'mapDiffuse' in material_lib[m]:
             tfileName = material_lib[m]['mapDiffuse']
             self.vGroup[materials[m]].texFile = tfileName

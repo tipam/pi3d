@@ -1,17 +1,10 @@
 # Clouds 3D example using pi3d module
 # ===================================
 # Copyright (c) 2012 - Tim Skillman
-# Version 0.04 20Jul12 - z order improved by Paddywwoof, improved texture management
+# Version 0.04 20Jul12 - z order improved by Paddy Gaunt
 # 
 # This example does not reflect the finished pi3d module in any way whatsoever!
 # It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
-#
-# PLEASE INSTALL PIL imaging with:
-#
-#      $ sudo apt-get install python-imaging
-#
-# before running this example
-#
 
 import pi3d, random, time
 
@@ -27,8 +20,7 @@ zd = cloud_depth / cloudno
 # Setup display and initialise pi3d
 scnx = 1200
 scny = 800
-display = pi3d.display()
-display.create3D(100,100,scnx,scny)
+display = pi3d.display(100,100,scnx,scny)
 display.setBackColour(0,0.7,1,1)
 
 texs = pi3d.textures()

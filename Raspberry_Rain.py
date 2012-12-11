@@ -1,26 +1,16 @@
 # Raspberry Rain example using pi3d module
 # ========================================
 # Copyright (c) 2012 - Tim Skillman
-# Version 0.03 - 20Jul12
+# Version 0.04 - 20Jul12
 # 
 # This example does not reflect the finished pi3d module in any way whatsoever!
 # It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
-#
-# PLEASE INSTALL PIL imaging with:
-#
-#         $ sudo apt-get install python-imaging
-#
-# before running this example
-#
-# Rasperry rain demonstrates pi3d sprites over the desktop.
-# The sprites make use of the z value in a perspective view
 
 import time, random
 import pi3d
 
 # Setup display and initialise pi3d
-display = pi3d.display()
-display.create3D(0,0,1920,1200)
+display = pi3d.display(0,0,1920,1200,16)
 
 # Set last value (alpha) to zero for a transparent background!
 display.setBackColour(0,0.7,1,0)        
@@ -28,8 +18,9 @@ display.setBackColour(0,0.7,1,0)
 # Load textures
 texs = pi3d.textures()
 raspimg = texs.loadTexture("textures/Raspi256x256.png")
-        
-pino=20
+    
+# No of raspberries!    
+pino=15
 
 # Setup array of random x,y,z coords and initial rotation
 xyz=[]

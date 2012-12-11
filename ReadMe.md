@@ -2,7 +2,7 @@
 
 ![Pi3D logo](http://www.skillmanmedia.com/pi3d/images/rpi3dlogo256.png)
 
-**Pi3D written by Tim Skillman, Copyright (c) 2012**
+**Pi3D (vsn 0.07) written by Tim Skillman, Copyright (c) 2012**
 
 **EGG & OBJ file loader written by Paddy Gaunt, Copyright (c) 2012**
 
@@ -79,6 +79,8 @@ Uses realistic modelling and LODing in a TKwindow
 
 ![Pong](http://www.skillmanmedia.com/pi3d/images/pong_sml.png)
 
+16) **HelloWorldWindow.py** A simple demo showing how to add a window to your Pi3D project
+
 
 
 # Files and folders in this repository
@@ -93,7 +95,7 @@ Uses realistic modelling and LODing in a TKwindow
 7. **images** used for ReadMe.html
 8. **ChangeLog.txt** Latest changes of Pi3D
 9. **ReadMe.md** This file
-10. **ReadMe.htm** HTML readme
+10. **ReadMe.html** HTML readme
 
 
 # Setup on the Raspberry Pi
@@ -108,7 +110,7 @@ Although most demos work on 64MB of memory, you are strongly advised to have a 1
 
 Before trying any of the demos or Pi3D, you must download the Python Imaging Library as this is needed for importing any graphics used by Pi3. To install on the terminal, type: 
 
-      sudo apt-get install python-imaging
+      sudo apt-get install python-imaging python-imaging-tk
 
 
 3) **Install Geany to run Pi3D**
@@ -122,6 +124,12 @@ Geany is by far the easiest and most compatible application to use for creating 
 
 Load any of the demos into Geany and run (using the cogs icon)
 
+
+
+# Pi3D Website
+
+
+Models, code, news and resources are continually updated on http://www.pi3d.net (or .co.uk,.org)
 
 
 # Documentation

@@ -1,6 +1,6 @@
 # pi3D module
 # ===========
-# Version 0.06 - See ChangeLog.txt for more info
+# Version 0.07 - See ChangeLog.txt for more info
 #
 # Copyright (c) 2012, Tim Skillman.
 # (Some code initially based on Peter de Rivaz pyopengles example.)
@@ -24,7 +24,7 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 # DEALINGS IN THE SOFTWARE.
 
-pi3d_version = 0.06
+pi3d_version = 0.07
 
 import sys, random
 sys.path.append("include") #get sub-class files from include folder
@@ -33,6 +33,8 @@ import loaderEgg
 import loaderObj
 import PIL.ImageOps, ImageDraw
 import Tkinter as tk
+import PIL.ImageTk as ImageTk
+import time
 
 def loadECfiles(path,fname,ext,texs,nobottom=False):
     #helper for loading environment cube faces
@@ -48,7 +50,8 @@ def loadECfiles(path,fname,ext,texs,nobottom=False):
     else:
         faces.append(texs.loadTexture(filep+"_bottom."+ext))
     return faces
-    
+
+
 def merge(self,shape, x,y,z, rx=0.0,ry=0.0,rz=0.0, sx=1.0,sy=1.0,sz=1.0, cx=0.0,cy=0.0,cz=0.0):
 
         # ONLY WORKS WITH GL_TRIANGLES
@@ -124,7 +127,7 @@ def merge(self,shape, x,y,z, rx=0.0,ry=0.0,rz=0.0, sx=1.0,sy=1.0,sz=1.0, cx=0.0,
     
 class display(object):
 
-    def __init__(self):
+    def __init__(self,x=0,y=0,w=0,h=0,depth=24,near=1.0,far=800.0,aspect=60.0):
         """Opens up the OpenGL library and prepares a window for display"""
         b = bcm.bcm_host_init()
         
@@ -142,55 +145,46 @@ class display(object):
         print "Copyright (c) Tim Skillman, 2012"
         print "Updates available from www.github.com/tipam/pi3d"
         print "Screen size",self.max_width, self.max_height
-                
-    def create3D(self,x=0,y=0,w=0,h=0, near=1.0, far=800.0, aspect=60.0, depth=16):
+ 
+        self.storeViewport(x,y,w,h)
+        create_display(self,x,y,w,h,depth)
         
+        #defaults to perspective display
+        self.near=near
+        self.far=far
+        self.aspect=aspect
+        self.setPerspective(near,far,aspect)
+
+        
+    def storeViewport(self,x=0,y=0,w=0,h=0):
         if w <= 0 or h <= 0:
             w = self.max_width
             h = self.max_height
         
         self.win_width = w
         self.win_height = h
-        self.near=near
-        self.far=far
         
         self.left = x
         self.top = y
         self.right = x+w
         self.bottom = y+h
-            
-        create_display(self,x,y,w,h,depth)
-        
+        self.backColour = (0.4,0.8,0.8,1.0)
+                
+    def setPerspective(self,near=1.0,far=800.0,aspect=60.0):
         #Setup perspective view
         opengles.glMatrixMode(GL_PROJECTION)
         opengles.glLoadIdentity()
         hht = near * math.tan(aspect / 2.0 / 180.0 * 3.1415926)
-        hwd = hht * w / h
+        hwd = hht * self.win_width / self.win_height
         opengles.glFrustumf(eglfloat(-hwd), eglfloat(hwd), eglfloat(-hht), eglfloat(hht), eglfloat(near), eglfloat(far))
         opengles.glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST )
         opengles.glMatrixMode(GL_MODELVIEW)
         opengles.glLoadIdentity()
-
-
-    def create2D(self,x=0,y=0,w=0,h=0,depth=24,near=-1.0,far=100.0):
-
-        if w <= 0 or h <= 0:
-            w = self.max_width
-            h = self.max_height
-            
-        self.win_width = w
-        self.win_height = h
-
-        self.left = x
-        self.top = y
-        self.right = x+w
-        self.bottom = y+h
-
-        create_display(self,x,y,w,h,depth)
-        
+                
+    def setOrthographic(self,near=-1.0,far=500.00):
         opengles.glMatrixMode(GL_PROJECTION)
         opengles.glLoadIdentity()
-        opengles.glOrthof(eglfloat(0), eglfloat(w), eglfloat(0), eglfloat(h), eglfloat(-1), eglfloat(500))
+        opengles.glOrthof(eglfloat(0), eglfloat(self.win_width), eglfloat(0), eglfloat(self.win_height), eglfloat(near), eglfloat(far))
         opengles.glMatrixMode(GL_MODELVIEW)
         opengles.glLoadIdentity()
         
@@ -216,6 +210,9 @@ class display(object):
 
         #Now recreate the native window and surface
         create_surface(self,x,y,w,h)
+        
+        print str(self.backColour[0])+","+str(self.backColour[1])
+        self.setBackColour(self.backColour[0],self.backColour[1],self.backColour[2],self.backColour[3])
                
     def destroy(self):
         #Used only when exiting Pi3D
@@ -1454,57 +1451,105 @@ class ball(object):
             otherball.vy += delta2y
 
 class tkwin(tk.Tk):
-    def __init__(self, parent, title,width,height):
-        tk.Tk.__init__(self, parent)
+    def __init__(self, title, x, y, width, height, splash="textures/pi3d_logo_text_400.png"):
+        tk.Tk.__init__(self)
 
-        def mouseclick_callback(event):
-                if self.resized==False:
-                        self.ev = "click"
-                        self.x = event.x
-                        self.y = event.y
-
-        def mousemove_callback(event):
-                if self.resized==False:
-                        self.ev = "move"
-                        self.x = event.x
-                        self.y = event.y
-
-        def mousewheel_callback(event):
-                if self.resized==False:
-                        self.ev = "wheel"
-                        self.num = event.num
-                        self.delta = event.delta
-
-        def drag_callback(event):
-                if self.resized==False:
-                        self.ev = "drag"
-                        self.x = event.x
-                        self.y = event.y
-                        mouserot=event.x
-
-        def resize_callback(event):
-                self.ev = "resized"
-                self.winx = self.winfo_x()
-                self.winy = self.winfo_y()
-                self.width = event.width
-                self.height = event.height
-                self.resized=True
-
-        def key_callback(event):
-                if self.resized==False:
-                        self.ev = "key"
-                        self.key = event.keysym
-                        self.char = event.char
-                                
-        tk.Tk.bind(self,"<Button-1>", mouseclick_callback)
-        tk.Tk.bind(self,"<B1-Motion>",drag_callback)
-        tk.Tk.bind(self,"<Motion>",mousemove_callback)
-        tk.Tk.bind(self,"<MouseWheel>", mousewheel_callback)
-        tk.Tk.bind(self,"<Configure>", resize_callback)
-        tk.Tk.bind_all(self,'<Key>', key_callback)
-        tk.Tk.geometry(self,str(width)+"x"+str(height))
+	self.winx = x
+	self.winy = y
+        self.width = width
+        self.height = height
+        
+        self.geometry("+%s+%s" % (x,y))
+        self.geometry("%sx%s" % (width,height))
+        self.configure(background = "white")
         
         self.title(title)
         self.ev=""
         self.resized=False
         
+        tk.Tk.bind(self,"<Button-1>", self.mouseclick_callback)
+        tk.Tk.bind(self,"<B1-Motion>",self.drag_callback)
+        tk.Tk.bind(self,"<Motion>",self.mousemove_callback)
+        tk.Tk.bind(self,"<MouseWheel>", self.mousewheel_callback)
+        tk.Tk.bind(self,"<Configure>", self.resize_callback)
+        tk.Tk.bind_all(self,'<Key>', self.key_callback)
+        
+	self.splash = False
+	
+        if splash<>None:
+	    try:
+		im = Image.open(splash)
+		self.image = ImageTk.PhotoImage(im)
+		self.ix,self.iy = im.size
+		self.canvas = tk.Canvas(self, height=self.width, width=self.height, bg="white")
+		self.item = self.canvas.create_image((self.width-self.ix)*.5,(self.height-self.iy)*.5, anchor=tk.NW, image=self.image)
+		self.canvas.pack(side="right",fill="both", expand=True)
+		self.splash = True
+	    except:
+		pass
+            
+
+                        
+    def mouseclick_callback(self, event):
+            if self.resized==False:
+                    self.ev = "click"
+                    self.x = event.x
+                    self.y = event.y
+
+    def mousemove_callback(self,event):
+            if self.resized==False:
+                    self.ev = "move"
+                    self.x = event.x
+                    self.y = event.y
+
+    def mousewheel_callback(self,event):
+            if self.resized==False:
+                    self.ev = "wheel"
+                    self.num = event.num
+                    self.delta = event.delta
+
+    def drag_callback(self,event):
+            if self.resized==False:
+                    self.ev = "drag"
+                    self.x = event.x
+                    self.y = event.y
+                    mouserot=event.x
+
+    def resize_callback(self,event):
+            self.ev = "resized"
+            self.winx = self.winfo_x()
+            self.winy = self.winfo_y()
+            self.width = event.width
+            self.height = event.height
+            self.resized=True
+
+    def key_callback(self,event):
+            if self.resized==False:
+                    self.ev = "key"
+                    self.key = event.keysym
+                    self.char = event.char
+    
+    def shutdown(self):
+	try:
+	    self.destroy()
+	except:
+	    pass
+
+        
+class FPS(object):
+    def __init__(self):
+        self.lastTick=0
+        self.tick=0
+        self.last_time=time.time()+1.0
+        
+    def count(self):
+        if time.time() > self.last_time:
+            self.lastTick=self.tick
+            self.tick=0
+            self.last_time = time.time()+1.0
+        else:
+            self.tick+=1
+        return self.lastTick
+    
+
+            

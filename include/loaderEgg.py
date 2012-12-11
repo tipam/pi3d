@@ -263,7 +263,7 @@ def draw(self, texID=None, n=None, x=0,y=0,z=0, rx=0,ry=0,rz=0, sx=0,sy=0,sz=0, 
     mtrx.push()
     transform(self.x+x,self.y+y,self.z+z, self.rotx+rx,self.roty+ry,self.rotz+rz, self.sx+sx,self.sy+sy,self.sz+sz, self.cx+cx,self.cy+cy,self.cz+cz)
     for g in self.vGroup:
-        opengles.glShadeModel(GL_SMOOTH)
+        #opengles.glShadeModel(GL_SMOOTH)
         opengles.glVertexPointer( 3, GL_FLOAT, 0, self.vGroup[g].vertices);
         opengles.glNormalPointer( GL_FLOAT, 0, self.vGroup[g].normals);
         
@@ -279,7 +279,8 @@ def draw(self, texID=None, n=None, x=0,y=0,z=0, rx=0,ry=0,rz=0, sx=0,sy=0,sz=0, 
         opengles.glDrawElements( GL_TRIANGLES, self.vGroup[g].indicesLen, GL_UNSIGNED_SHORT, self.vGroup[g].indices)
         
         if self.vGroup[g].texID > 0: texture_off()
-        opengles.glShadeModel(GL_FLAT)
+        if self.vGroup[g].material !=None: opengles.glDisableClientState(GL_COLOR_ARRAY)
+        #opengles.glShadeModel(GL_FLAT)
     mtrx.pop()
     
     for c in self.childModel:

@@ -5,25 +5,16 @@
 # 
 # This example does not reflect the finished pi3d module in any way whatsoever!
 # It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
-#
-# PLEASE INSTALL PIL imaging with:
-#
-#      $ sudo apt-get install python-imaging
-#
-# before running this example
-#
 
 import pi3d
 
 # Setup display and initialise pi3d
-display = pi3d.display()
-display.create3D(100,100,1600,900)   	# x,y,width,height
+display = pi3d.display(100,100,1720,1000)
 display.setBackColour(0,0,0,1)    	# r,g,b,alpha
 
 # Load textures
 texs=pi3d.textures()
 # Setting 2nd param to True renders 'True' Blending
-# (this can be changed later to 'False' with 'cloudimg.blend = False')
 cloudimg = texs.loadTexture("textures/earth_clouds.png",True)   
 earthimg = texs.loadTexture("textures/world_map.jpg")
 moonimg = texs.loadTexture("textures/moon.jpg")
@@ -35,8 +26,7 @@ mysphere2 = pi3d.createSphere(2.05,24,24,0.0,"clouds",0,0,0)
 mymoon = pi3d.createSphere(0.4,16,16,0.0,"moon",0,0,0)
 mymoon2 = pi3d.createSphere(0.1,16,16,0.0,"moon2",0,0,0)
 
-arialFont = pi3d.font("AR_CENA","#dd00aa")   #load AR_CENA font and set the font colour to 'raspberry'
-destineFont = pi3d.font("AR_DELANEY", "#0055ff")
+arialFont = pi3d.font("AR_CENA","#aaffaa")   #load AR_CENA font and set the font colour to 'raspberry'
 
 # Fetch key presses
 mykeys = pi3d.key()
@@ -50,9 +40,13 @@ rot2=0.0
 #create a light
 mylight = pi3d.createLight(0,1,1,1,"",10,10,50, .8,.8,.8)
 
+fps=pi3d.FPS()
+
 # Display scene
 while 1:
     display.clear()
+	
+    display.setPerspective(0.5, 2200.0, 60.0)
 	
     mylight.off()
     pi3d.sprite(starsimg, 0,0,-20, 25,25,rot)
@@ -61,15 +55,18 @@ while 1:
     mylight.on()
     mtrx.identity()
     mtrx.translate(0,0,-6)
+    
     mysphere.draw(earthimg)
     mysphere.rotateIncY( 0.1 )
     mysphere2.draw(cloudimg)
     mysphere2.rotateIncY( .2 )
+    
     mtrx.rotate(0,0,10)
     mtrx.rotate(0,rot1,0)
     mtrx.translate(4,0,0)
     mymoon.draw(moonimg)
     mymoon.rotateIncY( 0.2 )
+    
     mtrx.rotate(30,0,0)
     mtrx.rotate(0,rot2,0)
     mtrx.translate(0.7,0,0)
@@ -78,7 +75,10 @@ while 1:
     
     rot1 += 1.0
     rot2 += 5.0
-    
+   
+    display.setOrthographic()
+    pi3d.drawString2D(arialFont,"FPS:"+str(fps.count()),10,50,20)
+
     #pi3d.identity()
     #pi3d.drawString(arialFont,"The Raspberry Pi ROCKS!",-1.0,0.0,-2.2, 10.0, 0.003,0.003)
     #pi3d.drawString(destineFont,"Some nice OpenGL bitmap fonts to play with!",-1.3,-0.3,-2.2, 10.0, 0.002,0.002)

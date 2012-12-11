@@ -6,21 +6,13 @@
 # 
 # This example does not reflect the finished pi3d module in any way whatsoever!
 # It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
-#
-# PLEASE INSTALL PIL imaging with:
-#
-#      $ sudo apt-get install python-imaging
-#
-# before running this example
-#
 
 import pi3d, math
 
 rads = 0.017453292512  # degrees to radians
 
 # Setup display and initialise pi3d
-display = pi3d.display()
-display.create3D(100,100,1400,800)   	# x,y,width,height
+display = pi3d.display(100,100,1400,800) # x,y,width,height
 display.setBackColour(0.2,0.4,0.6,1)    	# r,g,b,alpha
 
 print "=============================================================="
@@ -73,7 +65,7 @@ while 1:
     mtrx.pop()
     
     mylight.on()
-    mymodel.draw(None,None,xm,ym,zm) # normal draw
+    mymodel.draw(None,None,xm,ym,zm) # draw at xm,ym,zm
     mylight.off()
     
     mx=mymouse.x
@@ -105,8 +97,8 @@ while 1:
 	    display.screenshot("BuckfastAbbey"+str(scshots)+".jpg")
 	    scshots += 1
 	elif k==27:    #Escape key
-		print "Closing down ..."
 		mykeys.close()
+		print "Closing down ..."
 		texs.deleteAll()
 		display.destroy()
 		break
