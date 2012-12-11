@@ -25,9 +25,9 @@ import pi3d,math,random
 rads = 0.017453292512  # degrees to radians
 
 # Create a Tkinter window
-winx,winy,winw,winh = 360,250,1200,600     #64MB GPU memory setting
+winx,winy,winw,winh = 360,200,1200,800     #64MB GPU memory setting
 #winx,winy,winw,winh = 0,0,1920,1200   	   #128MB GPU memory setting
-win = pi3d.tkwin("Tiger Tank demo in Pi3D",winx,winy,winw,winh)
+win = pi3d.tkwin("Tiger Tank demo in Pi3D",winx,winy,winw,winh,"textures/tiger_splash.jpg")
 win.update()  #display window now with splash
 
 # Setup display and initialise pi3d viewport over the window
