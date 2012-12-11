@@ -10,7 +10,7 @@ from pi3d.constants import STARTUP_MESSAGE
 
 SUFFIX = '.py'
 
-USE_TK = not True
+USE_TK = True
 
 def tk_demo(demos, message):
   import Tkinter
