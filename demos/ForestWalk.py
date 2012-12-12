@@ -131,8 +131,7 @@ while 1:
   DISPLAY.clear()
 
   camera.reset()
-  camera.rotate(tilt, 0, 0)
-  camera.rotate(0, rot, 0)
+  camera.rotate(tilt, rot, 0)
   camera.translate((xm, ym, zm))
 
   myecube.draw()

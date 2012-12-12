@@ -16,6 +16,7 @@ class Camera(object):
     self.mtrx = copy(self.modelView)
     #self.L_reflect = LookAtMatrix(at,eye,[0,1,0],reflect=True)
     #self.M_reflect = mat_mult(self.L_reflect,self.P)
+    self.rtn = (0.0, 0.0, 0.0)
  
   def reset(self):
     self.mtrx = copy(self.modelView)
@@ -55,6 +56,7 @@ class Camera(object):
     if not(rz == 0.0): self.rotateZ(rz)
     if not(rx == 0.0): self.rotateX(rx)
     if not(ry == 0.0): self.rotateY(ry)
+    self.rtn = (rx, ry, rz)
   """  
   # not applicable to Camera
   def scale(self,sx,sy,sz):

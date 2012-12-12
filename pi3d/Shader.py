@@ -55,6 +55,7 @@ class Shader(object):
     self.unif_fogshade = opengles.glGetUniformLocation(self.program, "fogshade")
     self.unif_fogdist = opengles.glGetUniformLocation(self.program, "fogdist")
     self.unif_eye = opengles.glGetUniformLocation(self.program, "eye")
+    self.unif_rtn = opengles.glGetUniformLocation(self.program, "rtn")
     self.unif_blend = opengles.glGetUniformLocation(self.program, "blend")
     self.unif_material = opengles.glGetUniformLocation(self.program, "material")
     # attemp to offload matrix work to shader

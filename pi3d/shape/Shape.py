@@ -81,7 +81,15 @@ class Shape(Loadable):
     C = c_floats(list(chain(*self.camera.mtrx)))
     opengles.glUniformMatrix4fv(shader.unif_cameraviewmatrix, 1, c_int(0), ctypes.byref(C))
     opengles.glUniform3f(shader.unif_eye, c_float(self.camera.eye[0]), c_float(self.camera.eye[1]), c_float(self.camera.eye[2]))
-
+    # light rotation
+    """
+    s = sin(radians(self.camera.rtn[1]));
+    c = cos(radians(self.camera.rtn[1]));
+    rotlight = dot([[s,0,c],[0,1,0],[c,0,-s]], self.light.lightpos)
+    s = sin(radians(self.camera.rtn[0]));
+    c = cos(radians(self.camera.rtn[0]));
+    rotlight = dot([[1,0,0],[0,s,c],[0,c,-s]], rotlight)
+    """
     # matrix variables
     opengles.glUniform3f(shader.unif_locn, c_float(self.x), c_float(self.y), c_float(self.z))
     opengles.glUniform3f(shader.unif_rotn, c_float(self.rotx), c_float(self.roty), c_float(self.rotz))
@@ -92,8 +100,8 @@ class Shape(Loadable):
     opengles.glUniform4f(shader.unif_fogshade, c_float(self.fogshade[0]), c_float(self.fogshade[1]), 
         c_float(self.fogshade[2]), c_float(self.fogshade[3])) 
     opengles.glUniform1f(shader.unif_fogdist, c_float(self.fogdist))
-    opengles.glUniform3f(shader.unif_lightpos, c_float(self.light.lightpos[0]), 
-        c_float(self.light.lightpos[1]), c_float(self.light.lightpos[2]))
+    opengles.glUniform3f(shader.unif_lightpos, c_float(self.light.lightpos[0]), c_float(self.light.lightpos[1]), c_float(self.light.lightpos[2]))
+    opengles.glUniform3f(shader.unif_rtn, c_float(self.camera.rtn[0]), c_float(self.camera.rtn[1]), c_float(self.camera.rtn[2]))
   
     for b in self.buf:
       """

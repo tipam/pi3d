@@ -131,7 +131,7 @@ def drawTiger(x, y, z, rot, roll, pitch, turret, gunangle):
   tank_turret.rotateToZ(roll)
   tank_turret.draw()
   tank_gun.position(x, y, z)
-  tank_gun.rotateToX(gunangle)
+  tank_gun.rotateToX(pitch + gunangle)
   tank_gun.rotateToY(turret)
   tank_gun.rotateToZ(roll)
   tank_gun.draw()
@@ -146,8 +146,7 @@ while 1:
   xoff, yoff, zoff = sf*math.sin(mouserot*rads), abs(1.25*sf*math.sin(tilt*rads)) + 3.0, -sf*math.cos(mouserot*rads)
   #xoff, yoff, zoff = 0,0,0
   #camera.translate((xm, ym-10*sf-5.0, zm-40*sf))   #zoom camera out so we can see our robot
-  camera.rotate(tilt, 0, 0)           #Tank still affected by scene tilt
-  camera.rotate(0, mouserot, 0)
+  camera.rotate(tilt, mouserot, 0)           #Tank still affected by scene tilt
   camera.translate((xm + xoff, ym + yoff +5, zm + zoff))   #zoom camera out so we can see our robot
 
   #draw player tank
@@ -156,10 +155,14 @@ while 1:
   mymap.draw()           #Draw the landscape
 
   #Draw enemy tank
-  etx -= math.sin(etr*rads)
-  etz -= math.cos(etr*rads)
+  etdx = -math.sin(etr*rads)
+  etdz = -math.cos(etr*rads)
+  etx += etdx
+  etz += etdz
+  ety = mymap.calcHeight(etx, etz) + avhgt
   etr += 1.0
-  drawTiger(etx, (mymap.calcHeight(etx, etz) + avhgt), etz, etr, 0, 0, etr, 0)
+  pitch, roll = mymap.pitch_roll(etx, etz, etdx, etdz)
+  drawTiger(etx, ety, etz, etr, roll*0.5, pitch*0.5, etr, 0)
 
   #Draw buildings
   #Draw.lodDraw3(-xm, -ym, -zm, 300, church, 1000, churchlow)
@@ -202,17 +205,16 @@ while 1:
           xm -= math.sin(tankrot*rads)*2
           zm -= math.cos(tankrot*rads)*2
           ym = (mymap.calcHeight(xm, zm) + avhgt)
-          print tankrot, mouserot, turrot
       elif win.key=="s":
           xm += math.sin(tankrot*rads)*2
           zm += math.cos(tankrot*rads)*2
           ym = (mymap.calcHeight(xm, zm) + avhgt)
       elif win.key == "a":
           tankrot -= 2
-          mouserot -= 2
+          mouserot += 2
       elif win.key == "d":
           tankrot += 2
-          mouserot += 2
+          mouserot -= 2
       elif win.key == "p":
           display.screenshot("TigerTank.jpg")
       elif win.key == "Escape":

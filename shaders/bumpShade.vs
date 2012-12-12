@@ -13,6 +13,8 @@ uniform vec3 rotn;
 uniform vec3 scle;
 uniform vec3 ofst;
 uniform vec3 eye;
+uniform vec3 rtn;
+uniform vec3 lightpos;
 
 varying vec3 normout;
 varying vec2 texcoordout;
@@ -20,6 +22,7 @@ varying vec2 bumpcoordout;
 varying mat4 normrot;
 varying vec2 shinecoordout;
 varying float dist;
+varying vec3 lightVector;
 
 mat4 transpose(mat4 mi) {
   mat4 mo = mat4(0.0);
@@ -30,6 +33,17 @@ mat4 transpose(mat4 mi) {
 void main(void) {
   
   float s, c;
+  lightVector = normalize(vec3(cameraviewmatrix * vec4(lightpos, 0.0)));
+  /*
+  lightVector = lightpos;
+
+  s = sin(radians(rtn.y));
+  c = cos(radians(rtn.y));
+  lightVector = mat3(c,0.0,-s, 0.0,1.0,0.0, s,0.0,c) * lightVector;
+  s = sin(radians(rtn.x));
+  c = cos(radians(rtn.x));
+  lightVector = mat3(1.0,0.0,0.0, 0.0,c,s, 0.0,-s,c) * lightVector;
+  */
   mat4 newmodel = transpose(cameraviewmatrix);
 
   newmodel = mat4(

@@ -2,6 +2,8 @@ import math
 import Image
 import PIL.ImageOps
 
+from numpy import cross, dot, sqrt, array, arctan2, degrees
+
 from pi3d import *
 from pi3d.Buffer import Buffer
 from pi3d.shape.Shape import Shape
@@ -239,6 +241,32 @@ class ElevationMap(Shape):
       return(True, normp[0], normp[1], normp[2],  jump)
     else:
       return (False, 0, 0, 0, 0)
+
+  def pitch_roll(self, px, pz, dirx, dirz):
+    px -= self.x
+    pz -= self.z
+    halfw = self.width/2.0
+    halfd = self.depth/2.0
+    dx = self.width/self.ix
+    dz = self.depth/self.iy
+    #dirctn = array([dirx, 0.0, dirz])
+    #dirctn = dirctn / sqrt(dirctn.dot(dirctn))
+    # work out x and z ranges to check, x0 etc correspond with vertex indices in grid
+    x0 = int(math.floor((halfw + px)/dx + 0.5))
+    if x0 < 0: x0 = 0
+    if x0 > self.ix-1: x0 = self.ix-1
+    z0 = int(math.floor((halfd + pz)/dz + 0.5))
+    if z0 < 0: z0 = 0
+    if z0 > self.iy-1: z0 = self.iy-1
+    normp = array(self.buf[0].normals[z0*self.ix + x0])
+
+    #sidev = cross(normp, dirctn)
+    #sidev = sidev / sqrt(sidev.dot(sidev))
+    #forwd = cross(sidev, normp)
+    #forwd = forwd / sqrt(forwd.dot(forwd))
+    #return (degrees(arctan2(forwd[0], forwd[2])), degrees(arctan2(-forwd[1], sqrt(sidev[1]**2 + normp[1]**2))))
+    return (degrees(arctan2(normp[2], normp[1])), degrees(arctan2(normp[0], normp[1])))
+    
 
 
 #Function calculates the y intersection of a point on a triangle

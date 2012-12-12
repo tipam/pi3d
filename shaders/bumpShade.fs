@@ -6,11 +6,11 @@ varying vec2 bumpcoordout;
 varying mat4 normrot;
 varying vec2 shinecoordout;
 varying float dist;
+varying vec3 lightVector;
 
 uniform sampler2D tex0;
 uniform sampler2D tex1;
 uniform sampler2D tex2;
-uniform vec3 lightpos;
 uniform mat4 cameraviewmatrix;
 uniform float ntiles;
 uniform float shiny;
@@ -18,6 +18,7 @@ uniform float fogdist;
 uniform vec4 fogshade;
 uniform float blend;
 uniform vec4 material;
+
 
 void main(void) {
   vec4 texc = material;
@@ -29,14 +30,14 @@ void main(void) {
     gl_FragColor = texc;
   }
   else {
-    vec3 lightVector = normalize(vec3(cameraviewmatrix * vec4(lightpos, 0.0))); // ------ rotate relative to view
+    //vec3 lightVector = normalize(vec3(cameraviewmatrix * vec4(lightpos, 0.0))); // ------ rotate relative to view
     vec3 bump;
     bump = vec3(0.0, 0.0, 0.0);
     // ------ look up normal map value as a vector where each colour goes from -100% to +100% over its range so
     // ------ 0xFF7F7F is pointing right and 0X007F7F is pointing left. This vector is then rotated relative to the rotation
     // ------ of the normal at that vertex.
     if (ntiles > 0.0) bump = vec3(normrot * vec4(normalize(texture2D(tex1, bumpcoordout)).rgb * 2.0 - vec3(1.0, 1.0, 1.0), 0.0));
-    float bfact = 1.0 - smoothstep(20.0, 75.0, dist); // ------ attenuate smoothly between 20 and 75 units
+    float bfact = 1.0 - smoothstep(50.0, 150.0, dist); // ------ attenuate smoothly between 20 and 75 units
 
     float ffact = 0.0;
     if (fogdist != 0.0) ffact = smoothstep(fogdist/3.0, fogdist, dist); // ------ smoothly increase fog between 1/3 and full fogdist
