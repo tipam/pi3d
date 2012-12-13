@@ -1,6 +1,7 @@
 import re, os
 from pi3d import *
 import ctypes
+from random import randint
 
 from pi3d.Texture import Texture
 from pi3d.shape.Shape import Shape
@@ -100,7 +101,12 @@ def loadFileEGG(model, fileName):
     numi = 0
     for x in gp:
       if len(x) == 0: continue
-      if ("<Group>" in x[0]): groupDrill(x[3], np+x[1])
+      if ("<Group>" in x[0]): 
+        if len(x[1]) > 0: 
+          nextnp = np+x[1]
+        else: 
+          nextnp = np+str(randint(10000,99999))
+        groupDrill(x[3], nextnp)
       else:
         #build vertex, polygon, normal, triangles, UVs etc etc
         if "<VertexPool>" in x[0]:
