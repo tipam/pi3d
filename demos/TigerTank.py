@@ -161,7 +161,9 @@ while 1:
   #draw player tank
   tmnow = time.time()
   if tmnow > (ltm + 0.5):
-    tankpitch, tankroll = mymap.pitch_roll(xm, zm)
+    tankpitch_to, tankroll_to = mymap.pitch_roll(xm, zm)
+  tankpitch += (tankpitch_to - tankpitch)/3.0
+  tankroll += (tankroll_to - tankroll)/3.0
   drawTiger(xm, ym, zm, tankrot, tankroll, tankpitch, 180 - turrot, 0.0)
 
   mymap.draw()           #Draw the landscape
@@ -183,6 +185,7 @@ while 1:
   church.draw()
   cottages.draw()
 
+  myecube.position(xm, ym, zm)
   myecube.draw()#Draw environment cube
 
   #update mouse/keyboard input

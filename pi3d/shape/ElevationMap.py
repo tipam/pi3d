@@ -242,7 +242,15 @@ class ElevationMap(Shape):
     else:
       return (False, 0, 0, 0, 0)
 
+  # works out the pitch (rx) and roll (rz) to apply to an object on the surface of the map at this point
   def pitch_roll(self, px, pz):
+    """
+    returns a tuple (pitch, roll) in degrees
+    
+    parameters
+    px -- x location
+    pz -- z location
+    """
     px -= self.x
     pz -= self.z
     halfw = self.width/2.0
