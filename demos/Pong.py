@@ -141,6 +141,7 @@ while True:
   sy += dsy
   sz += dsz
   # now uses the clashTest method from elevationMap
+  
   clash = mymap.clashTest(sx, sy, sz, radius)
   # bouncing physics
   if clash[0]:
@@ -157,6 +158,7 @@ while True:
     if dsz > 0.4: dsz = 0.4
     if dsx > 0.3: dsx = 0.2
     if dsz > maxdsz: dsz = maxdsz
+  
 
   # mouse movement checking here to get bat movment values
   mx=mymouse.x
