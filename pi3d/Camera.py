@@ -16,10 +16,11 @@ class Camera(object):
     self.mtrx = copy(self.modelView)
     #self.L_reflect = LookAtMatrix(at,eye,[0,1,0],reflect=True)
     #self.M_reflect = mat_mult(self.L_reflect,self.P)
-    self.rtn = (0.0, 0.0, 0.0)
+    self.rtn = [0.0, 0.0, 0.0]
  
   def reset(self):
     self.mtrx = copy(self.modelView)
+    self.rtn = [0.0, 0.0, 0.0]
         
   def copy(self,copyMatrix):
     self.mtrx = copy(copyMatrix)  #usually copies the modelView matrix to begin with
@@ -39,24 +40,26 @@ class Camera(object):
     c = cos(radians(angle))
     s = sin(radians(angle))
     self.mtrx = dot([[c,s,0,0],[-s,c,0,0],[0,0,1,0],[0,0,0,1]], self.mtrx)
+    self.rtn[2] = angle
 
 
   def rotateY(self,angle):
     c = cos(radians(angle))
     s = sin(radians(angle))
     self.mtrx = dot([[c,0,-s,0],[0,1,0,0],[s,0,c,0],[0,0,0,1]], self.mtrx)
+    self.rtn[1] = angle
 
   def rotateX(self,angle):
     c = cos(radians(angle))
     s = sin(radians(angle))
     self.mtrx = dot([[1,0,0,0],[0,c,s,0],[0,-s,c,0],[0,0,0,1]], self.mtrx)
+    self.rtn[0] = angle
 
   def rotate(self,rx,ry,rz):
     # rot z->x->y
     if not(rz == 0.0): self.rotateZ(rz)
     if not(rx == 0.0): self.rotateX(rx)
     if not(ry == 0.0): self.rotateY(ry)
-    self.rtn = (rx, ry, rz)
   """  
   # not applicable to Camera
   def scale(self,sx,sy,sz):

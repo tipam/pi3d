@@ -20,9 +20,8 @@ from pi3d.shape.ElevationMap import ElevationMap
 from pi3d.shape import EnvironmentCube
 from pi3d.shape.Model import Model
 
-#from pi3d.util import Draw
+from pi3d.util.Screenshot import screenshot
 from pi3d.util import Log
-from pi3d.util.Matrix import Matrix
 from pi3d.util.TkWin import TkWin
 
 LOGGER = Log.logger(__name__)
@@ -55,22 +54,26 @@ mapdepth = 2000.0
 mapheight = 100.0
 mountimg1 = Texture("textures/mountains3_512.jpg")
 bumpimg = Texture("textures/grasstile_n.jpg")
+tigerbmp = Texture("models/Tiger/tiger_bump.jpg")
+topbmp = Texture("models/Tiger/top_bump.jpg")
 #roadway = Texture("textures/road5.png")
 mymap = ElevationMap(camera=camera, light= light, mapfile="textures/mountainsHgt2.png",
                      width=mapwidth, depth=mapdepth,
                      height=mapheight, divx=64, divy=64)
 mymap.buf[0].set_draw_details(shader,[mountimg1, bumpimg],128.0, 0.0)
-mymap.set_fog((0.7,0.8,0.9,0.5), 500.0)
+mymap.set_fog((0.7,0.8,0.9,0.5), 1000.0)
 #Load tank
 tank_body = Model(camera, light, "models/Tiger/bodylow.egg", "TigerBody", 0,0,0, 0,0,0, 0.1,0.1,.1)
 tank_body.set_shader(shader)
-tank_body.set_fog((0.7,0.8,0.9,0.5), 500.0)
+tank_body.set_fog((0.7,0.8,0.9,0.5), 1000.0)
+tank_body.set_normal_shine(tigerbmp)
 tank_gun = Model(camera, light, "models/Tiger/gunlow.egg", "TigerGun", 0,0,0, 0,0,0, 0.1,0.1,0.1, 0,0,0)
 tank_gun.set_shader(shader)
-tank_gun.set_fog((0.7,0.8,0.9,0.5), 500.0)
+tank_gun.set_fog((0.7,0.8,0.9,0.5), 1000.0)
 tank_turret = Model(camera, light, "models/Tiger/turretlow.egg", "TigerTurret", 0,0,0, 0,0,0, 0.1,0.1,0.1, 0,0,0)
 tank_turret.set_shader(shader)
-tank_turret.set_fog((0.7,0.8,0.9,0.5), 500.0)
+tank_turret.set_fog((0.7,0.8,0.9,0.5), 1000.0)
+tank_turret.set_normal_shine(topbmp)
 
 
 #Load church
@@ -78,17 +81,17 @@ x,z = 20,-320
 y = mymap.calcHeight(x,z)
 church = Model(camera, light, "models/AllSaints/AllSaints.egg", "church1", x,y,z, 0,0,0, 0.1,0.1,0.1)
 church.set_shader(shader)
-church.set_fog((0.7,0.8,0.9,0.5), 500.0)
+church.set_fog((0.7,0.8,0.9,0.5), 1000.0)
 churchlow = Model(camera, light, "models/AllSaints/AllSaints-lowpoly.egg", "church2", x,y,z, 0,0,0, 0.1,0.1,0.1)
 churchlow.set_shader(shader)
-churchlow.set_fog((0.7,0.8,0.9,0.5), 500.0)
+churchlow.set_fog((0.7,0.8,0.9,0.5), 1000.0)
 
 #Load cottages
 x,z = 250,-40
 y = mymap.calcHeight(x,z)
 cottages = Model(camera, light, "models/Cottages/cottages_low.egg", "cottagesLo", x,y,z, 0,-5,0, 0.1,0.1,0.1)
 cottages.set_shader(shader)
-cottages.set_fog((0.7,0.8,0.9,0.5), 500.0)
+cottages.set_fog((0.7,0.8,0.9,0.5), 1000.0)
 #cottagesHi = Model(camera, light, "models/Cottages/cottages.egg", "cottagesHi", x,y,z, -90,-5,0, .1,.1,.1)
 
 #player tank vars
@@ -100,14 +103,18 @@ tankpitch = 0.0   #too and fro pitch of tank on ground
 #position vars
 mouserot = 0.0
 tilt = 0.0
-avhgt = 3.0
+avhgt = 1.0
 xm = 0.0
-zm = 0.0
+zm = -200.0
+dxm = 0.0
+dzm = -1.0
 ym = mymap.calcHeight(xm,zm) + avhgt
 
 #enemy tank vars
-etx = 50
-etz = 90
+#etx = 130
+#etz = -320
+etx = 130
+etz = -100
 etr = 0.0
 
 # Fetch key presses
@@ -118,6 +125,8 @@ omx=mymouse.x
 omy=mymouse.y
 
 myfog = Fog(0.0014,(0.7,0.8,0.9,0.5))
+
+ltm = 0.0 #last pitch roll check
 
 def drawTiger(x, y, z, rot, roll, pitch, turret, gunangle):
   tank_body.position(x, y, z)
@@ -150,6 +159,9 @@ while 1:
   camera.translate((xm + xoff, ym + yoff +5, zm + zoff))   #zoom camera out so we can see our robot
 
   #draw player tank
+  tmnow = time.time()
+  if tmnow > (ltm + 0.5):
+    tankpitch, tankroll = mymap.pitch_roll(xm, zm)
   drawTiger(xm, ym, zm, tankrot, tankroll, tankpitch, 180 - turrot, 0.0)
 
   mymap.draw()           #Draw the landscape
@@ -160,9 +172,11 @@ while 1:
   etx += etdx
   etz += etdz
   ety = mymap.calcHeight(etx, etz) + avhgt
-  etr += 1.0
-  pitch, roll = mymap.pitch_roll(etx, etz, etdx, etdz)
-  drawTiger(etx, ety, etz, etr, roll*0.5, pitch*0.5, etr, 0)
+  etr += 0.5
+  if tmnow > (ltm + 0.5):
+    pitch, roll = mymap.pitch_roll(etx, etz)
+    ltm = tmnow # updating this here but not for users tank relies on everything being done in the right order
+  drawTiger(etx, ety, etz, etr, roll, pitch, etr, 0)
 
   #Draw buildings
   #Draw.lodDraw3(-xm, -ym, -zm, 300, church, 1000, churchlow)
@@ -202,8 +216,10 @@ while 1:
 
   if win.ev=="key":
       if win.key=="w":
-          xm -= math.sin(tankrot*rads)*2
-          zm -= math.cos(tankrot*rads)*2
+          dxm = -math.sin(tankrot*rads)*2
+          dzm = -math.cos(tankrot*rads)*2
+          xm += dxm
+          zm += dzm
           ym = (mymap.calcHeight(xm, zm) + avhgt)
       elif win.key=="s":
           xm += math.sin(tankrot*rads)*2
@@ -211,12 +227,10 @@ while 1:
           ym = (mymap.calcHeight(xm, zm) + avhgt)
       elif win.key == "a":
           tankrot -= 2
-          mouserot += 2
       elif win.key == "d":
           tankrot += 2
-          mouserot -= 2
       elif win.key == "p":
-          display.screenshot("TigerTank.jpg")
+          screenshot("TigerTank.jpg")
       elif win.key == "Escape":
           try:
             DISPLAY.destroy()

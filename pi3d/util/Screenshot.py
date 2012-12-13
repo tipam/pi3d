@@ -13,10 +13,10 @@ def screenshot(filestring):
 
   w, h = DISPLAY.win_width, DISPLAY.win_height
   size = h * w * 3
-  img = c_chars(size)
+  img = (c_char * size)()
   opengles.glReadPixels(0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE, ctypes.byref(img))
 
-  im = Image.frombuffer('RGB', (w, h), img, 'raw', 'RGB', 0,1)
+  im = Image.frombuffer('RGB', (w, h), img, 'raw', 'RGB', 0, 1)
   im = im.transpose(Image.FLIP_TOP_BOTTOM)
   im.save(filestring)
 

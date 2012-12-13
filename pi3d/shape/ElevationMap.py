@@ -2,7 +2,7 @@ import math
 import Image
 import PIL.ImageOps
 
-from numpy import cross, dot, sqrt, array, arctan2, degrees
+from numpy import cross, dot, sqrt, array, arctan2, arcsin, degrees, subtract, multiply
 
 from pi3d import *
 from pi3d.Buffer import Buffer
@@ -242,15 +242,14 @@ class ElevationMap(Shape):
     else:
       return (False, 0, 0, 0, 0)
 
-  def pitch_roll(self, px, pz, dirx, dirz):
+  def pitch_roll(self, px, pz):
     px -= self.x
     pz -= self.z
     halfw = self.width/2.0
     halfd = self.depth/2.0
     dx = self.width/self.ix
     dz = self.depth/self.iy
-    #dirctn = array([dirx, 0.0, dirz])
-    #dirctn = dirctn / sqrt(dirctn.dot(dirctn))
+    dirctn = array([0.0, 0.0, 1.0])
     # work out x and z ranges to check, x0 etc correspond with vertex indices in grid
     x0 = int(math.floor((halfw + px)/dx + 0.5))
     if x0 < 0: x0 = 0
@@ -259,14 +258,12 @@ class ElevationMap(Shape):
     if z0 < 0: z0 = 0
     if z0 > self.iy-1: z0 = self.iy-1
     normp = array(self.buf[0].normals[z0*self.ix + x0])
-
-    #sidev = cross(normp, dirctn)
-    #sidev = sidev / sqrt(sidev.dot(sidev))
-    #forwd = cross(sidev, normp)
-    #forwd = forwd / sqrt(forwd.dot(forwd))
-    #return (degrees(arctan2(forwd[0], forwd[2])), degrees(arctan2(-forwd[1], sqrt(sidev[1]**2 + normp[1]**2))))
-    return (degrees(arctan2(normp[2], normp[1])), degrees(arctan2(normp[0], normp[1])))
-    
+    # TODO there is probably a simpler way of getting this directly from the normal now that dirctn is set to 0,0,1
+    sidev = cross(normp, dirctn)
+    sidev = sidev / sqrt(sidev.dot(sidev))
+    forwd = cross(sidev, normp)
+    forwd = forwd / sqrt(forwd.dot(forwd))
+    return (degrees(arcsin(-forwd[1])), degrees(arctan2(sidev[1], normp[1])))
 
 
 #Function calculates the y intersection of a point on a triangle
@@ -278,10 +275,10 @@ def intersect_triangle(v1, v2, v3, pos):
   v1,v2,v3 -- xyz tuples defining the corners of the triangle
   pos -- xyz tuple defining the x,z of the line
   """
-
   #calc normal from two edge vectors v2-v1 and v3-v1
-  nVec = Utility.crossproduct(v2[0]-v1[0], v2[1]-v1[1], v2[2]-v1[2], v3[0]-v1[0],  v3[1]-v1[1], v3[2]-v1[2])
+  #nVec = Utility.crossproduct(v2[0]-v1[0], v2[1]-v1[1], v2[2]-v1[2], v3[0]-v1[0],  v3[1]-v1[1], v3[2]-v1[2])
+  nVec = cross(subtract(v2,v1), subtract(v3, v1))
   #equation of plane: Ax + By + Cz = kVal where A,B,C are components of normal. x,y,z for point v1 to find kVal
-  kVal = nVec[0]*v1[0] + nVec[1]*v1[1] + nVec[2]*v1[2]
+  kVal = dot(nVec,v1)
   #return y val i.e. y = (kVal - Ax - Cz)/B
   return (kVal - nVec[0]*pos[0] - nVec[2]*pos[2])/nVec[1]

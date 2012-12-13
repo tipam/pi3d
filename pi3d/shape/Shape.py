@@ -102,7 +102,6 @@ class Shape(Loadable):
     opengles.glUniform1f(shader.unif_fogdist, c_float(self.fogdist))
     opengles.glUniform3f(shader.unif_lightpos, c_float(self.light.lightpos[0]), c_float(self.light.lightpos[1]), c_float(self.light.lightpos[2]))
     opengles.glUniform3f(shader.unif_rtn, c_float(self.camera.rtn[0]), c_float(self.camera.rtn[1]), c_float(self.camera.rtn[2]))
-  
     for b in self.buf:
       """
       Shape.draw has to be passed either parameter == None or values to pass on

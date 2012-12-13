@@ -33,17 +33,19 @@ mat4 transpose(mat4 mi) {
 void main(void) {
   
   float s, c;
-  lightVector = normalize(vec3(cameraviewmatrix * vec4(lightpos, 0.0)));
-  /*
-  lightVector = lightpos;
-
+  //lightVector = normalize(vec3(cameraviewmatrix * vec4(lightpos, 0.0)));
+  //lightVector = normalize(mat3(1.0,0.0,0.0, 0.0,1.0,0.0, 0.0,0.0,1.0) * lightpos);
+  
+  lightVector = normalize(lightpos);
+  lightVector = mat3(1.0,0.0,0.0, 0.0,1.0,0.0, 0.0,0.0,1.0) * lightVector;
+  
   s = sin(radians(rtn.y));
-  c = cos(radians(rtn.y));
+  c = sqrt(1.0 - s*s);
   lightVector = mat3(c,0.0,-s, 0.0,1.0,0.0, s,0.0,c) * lightVector;
-  s = sin(radians(rtn.x));
-  c = cos(radians(rtn.x));
-  lightVector = mat3(1.0,0.0,0.0, 0.0,c,s, 0.0,-s,c) * lightVector;
-  */
+  //s = sin(radians(rtn.x));
+  //c = radians(rtn.x);
+  //lightVector = mat3(1.0,0.0,0.0, 0.0,c,-s, 0.0,s,c) * lightVector;
+  
   mat4 newmodel = transpose(cameraviewmatrix);
 
   newmodel = mat4(
