@@ -257,8 +257,6 @@ class ElevationMap(Shape):
     halfd = self.depth/2.0
     dx = self.width/self.ix
     dz = self.depth/self.iy
-    dirctn = array([0.0, 0.0, 1.0])
-    # work out x and z ranges to check, x0 etc correspond with vertex indices in grid
     x0 = int(math.floor((halfw + px)/dx + 0.5))
     if x0 < 0: x0 = 0
     if x0 > self.ix-1: x0 = self.ix-1
@@ -266,10 +264,12 @@ class ElevationMap(Shape):
     if z0 < 0: z0 = 0
     if z0 > self.iy-1: z0 = self.iy-1
     normp = array(self.buf[0].normals[z0*self.ix + x0])
-    # TODO there is probably a simpler way of getting this directly from the normal now that dirctn is set to 0,0,1
-    sidev = cross(normp, dirctn)
+    # slight simplification to working out cross products as dirctn always 0,0,1
+    #sidev = cross(normp, dirctn)
+    sidev = array([normp[1], -normp[0], 0.0])
     sidev = sidev / sqrt(sidev.dot(sidev))
-    forwd = cross(sidev, normp)
+    #forwd = cross(sidev, normp)
+    forwd = array([-normp[2]*normp[0], -normp[2]*normp[1], normp[0]*normp[0] + normp[1]*normp[1]])
     forwd = forwd / sqrt(forwd.dot(forwd))
     return (degrees(arcsin(-forwd[1])), degrees(arctan2(sidev[1], normp[1])))
 
