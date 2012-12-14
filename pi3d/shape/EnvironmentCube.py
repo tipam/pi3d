@@ -9,6 +9,8 @@ CUBE_PARTS = ['front', 'right', 'top', 'bottom', 'left', 'back']
 
 def loadECfiles(path, fname, suffix='jpg', nobottom=False):
   # Helper for loading environment cube faces.
+  #TODO this will scramble all the rest of the cube. It needs to substitute a blank (black) texture instead!
+  nobottom = False #TODO, for the moment
   if nobottom:
     parts = [p for p in CUBE_PARTS if p != 'bottom']
   else:

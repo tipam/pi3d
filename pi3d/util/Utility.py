@@ -1,4 +1,6 @@
-from math import sqrt, sin, cos, tan
+#TODO replace all this with numpy functions
+from numpy import sqrt, sin, cos, tan, subtract, dot
+#from math import sqrt, sin, cos, tan
 
 from pi3d import *
 
@@ -36,7 +38,10 @@ def magnitude(*args):
   return sqrt(sqsum(*args))
 
 def distance(v1, v2):
-  return magnitude((c1 - c2) for c1, c2 in zip(v1, v2))
+#  delta = [(c1 - c2) for c1, c2 in zip(v1, v2)]
+#  return magnitude(delta)
+  delta = subtract(v2, v1)
+  return sqrt(delta.dot(delta))
 
 def from_polar(direction=0.0, magnitude=1.0):
   return from_polar_rad(direction*RADS, magnitude)
@@ -152,6 +157,30 @@ def angleVecs(x1,y1,x2,y2,x3,y3):
     
     if dist>0.0: return PI2-angle
     else: return angle
+
+#Level Of Detail checking and rendering
+def lodDraw(here, there, mlist):
+  """
+  no return value
+  parameters:
+  here -- (x,y,z) tuple or array of view point
+  there --- (x,y,z) tuple or array of model position
+  mlist -- array of arrays with distance and model pairs. i.e. [[20, model1],[100, model2],[250, None]]
+      Model is used up to that distance until the last entry then for all distances beyond, None can be used to draw nothing
+  """
+  dist = distance(here, there)
+  for model in mlist:
+    if dist < model[0]:
+      if not (model[1] == None):
+        model[1].position(there[0], there[1], there[2])
+        model[1].draw()
+      return
+      
+  # dist is more than any model dist so draw last
+  model = mlist[len(mlist) - 1]
+  if not (model[1] == None): 
+    model[1].position(there[0], there[1], there[2])
+    model[1].draw()
 
 
 """
