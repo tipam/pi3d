@@ -47,7 +47,7 @@ This is the third release of the pi3d module which has various demo's of built-i
 
 8) **CollisionBalls.py** More bouncing balls across the screen - this time bouncing off each other on the desktop
 
-![Collision Balls](http://www.skillmanmedia.com/pi3d/images/bouncingballs_sml.png)
+![Collision Balls](http://www.skillmanmedia.com/pi3d/images/collisionballs.jpg)
 
 9) **EnvironmentCube.py** New environment cubes to try out in texture/ecubes - some high quality ones!
 
