@@ -81,6 +81,11 @@ Uses realistic modelling and LODing in a TKwindow
 
 16) **HelloWorldWindow.py** A simple demo showing how to add a window to your Pi3D project
 
+![HelloWorldWindow](http://www.skillmanmedia.com/pi3d/images/earthPic_sml.png)
+
+17) **ConferenceHall.py** Walkabout a realistic baked-texture conference hall
+
+![Conference Hall](http://www.skillmanmedia.com/pi3d/images/confHall_sml.png)
 
 
 # Files and folders in this repository
@@ -108,7 +113,7 @@ Although most demos work on 64MB of memory, you are strongly advised to have a 1
 
 2) **Install Python Imaging**
 
-Before trying the demos, Pi3D requires the Python Imaging Library (PIL) for importing images. To install on the terminal, type: 
+Before trying any of the demos or Pi3D, you must download the Python Imaging Library as this is needed for importing any graphics used by Pi3. To install on the terminal, type: 
 
       sudo apt-get install python-imaging python-imaging-tk
 
