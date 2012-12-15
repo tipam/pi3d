@@ -85,7 +85,7 @@ Uses realistic modelling and LODing in a TKwindow
 
 17) **ConferenceHall.py** Walkabout a realistic baked-texture conference hall
 
-![Conference Hall](http://www.skillmanmedia.com/pi3d/images/confHall_sml.png)
+![Conference Hall](http://www.skillmanmedia.com/pi3d/images/confHall_sml.jpg)
 
 
 # Files and folders in this repository
