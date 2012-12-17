@@ -17,10 +17,14 @@ class Camera(object):
     #self.L_reflect = LookAtMatrix(at,eye,[0,1,0],reflect=True)
     #self.M_reflect = mat_mult(self.L_reflect,self.P)
     self.rtn = [0.0, 0.0, 0.0]
+    self.C = None # holds the cfloats array for quicker passing to shader in Shape.draw()
+    self.movedFlag = True
  
   def reset(self):
     self.mtrx = copy(self.modelView)
     self.rtn = [0.0, 0.0, 0.0]
+    self.C = None
+    self.movedFlag = True
         
   def copy(self,copyMatrix):
     self.mtrx = copy(copyMatrix)  #usually copies the modelView matrix to begin with
@@ -35,42 +39,39 @@ class Camera(object):
     #self.mtrx = translate(self.mtrx,pt)
     self.mtrx = dot([[1,0,0,0],[0,1,0,0],[0,0,1,0],[-pt[0], -pt[1], -pt[2], 1]], self.mtrx)
     eye = (pt[0], pt[1], pt[2])
+    self.C = None
+    self.movedFlag = True    
   
   def rotateZ(self,angle):
     c = cos(radians(angle))
     s = sin(radians(angle))
     self.mtrx = dot([[c,s,0,0],[-s,c,0,0],[0,0,1,0],[0,0,0,1]], self.mtrx)
     self.rtn[2] = angle
-
+    self.C = None
+    self.movedFlag = True
 
   def rotateY(self,angle):
     c = cos(radians(angle))
     s = sin(radians(angle))
     self.mtrx = dot([[c,0,-s,0],[0,1,0,0],[s,0,c,0],[0,0,0,1]], self.mtrx)
     self.rtn[1] = angle
+    self.C = None
+    self.movedFlag = True
 
   def rotateX(self,angle):
     c = cos(radians(angle))
     s = sin(radians(angle))
     self.mtrx = dot([[1,0,0,0],[0,c,s,0],[0,-s,c,0],[0,0,0,1]], self.mtrx)
     self.rtn[0] = angle
+    self.C = None
+    self.movedFlag = True
 
   def rotate(self,rx,ry,rz):
     # rot z->x->y
     if not(rz == 0.0): self.rotateZ(rz)
     if not(rx == 0.0): self.rotateX(rx)
     if not(ry == 0.0): self.rotateY(ry)
-  """  
-  # not applicable to Camera
-  def scale(self,sx,sy,sz):
-    self.mtrx=scale(self.mtrx,sx,sy,sz)
-    
-  def transform(self,x,y,z,rx,ry,rz,sx,sy,sz,cx,cy,cz):
-    self.mtrx = translate(self.mtrx,(x-cx,y-cy,z-cz))
-    rotate(self,rx,ry,rz)
-    if sx<>1.0 or sy<>1.0 or sz<>1.0: self.mtrx = scale(self.mtrx,sx,sy,sz)
-    self.mtrx = translate(self.mtrx,(cx,cy,cz))
-  """
+
 def LookAtMatrix(at, eye, up=[0,1,0], reflect=False):
   """Define a matrix of an eye looking at"""
   # If reflect, then reflect in plane -20.0 (water depth)

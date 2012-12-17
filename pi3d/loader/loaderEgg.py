@@ -181,8 +181,10 @@ def loadFileEGG(model, fileName):
       vref = structPList[p].vref
       startV = nv
       for j in vref:
+
         if (len(structVList[vpKey][j].normal) > 0): model.vNormal = True
         else: model.vNormal = False
+
         if model.coordinateSystem == "Z-Up":
           thisV = [structVList[vpKey][j].coords[1], structVList[vpKey][j].coords[2], structVList[vpKey][j].coords[0]]
           thisN = [structVList[vpKey][j].normal[1], structVList[vpKey][j].normal[2], structVList[vpKey][j].normal[0]]
@@ -232,6 +234,8 @@ def loadFileEGG(model, fileName):
   bReg = re.finditer("[{}<]",l)
   xx = ["","","",[]]
   pRec(xx, bReg, l, 0)
+  l = None #in case it's running out of memory?
+  f.close()
 
   for x in xx[3]:
     if "<Texture>" in x[0]:

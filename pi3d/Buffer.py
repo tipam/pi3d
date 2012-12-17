@@ -8,8 +8,12 @@ class Buffer(object):
   """Hold a pair of Buffer Objects to draw a part of a model"""
   def __init__(self, shape, pts, texcoords, faces, normals=None, smooth=True):
     """Generate a vertex buffer to hold data and indices"""
-    self.ntiles = 0.0
-    self.shiny = 0.0
+    # uniform variables all in one array!
+    self.unib = (c_float * 6)(0.0,0.0,0.0, 0.0,0.0,0.0)
+    """ in shader array of vec3 uniform variables:
+    0  ntile, shiny, blend 0-2
+    1  material 3-5 if any of material is non zero then the UV texture will not be used and the material shade used instead
+    """
     self.shape = shape
 
     if normals == None:
@@ -63,24 +67,24 @@ class Buffer(object):
     opengles.glBindBuffer(GL_ARRAY_BUFFER, self.vbuf);
     opengles.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.ebuf);
     
-  def set_draw_details(self, shader, textures, ntiles, shiny):
+  def set_draw_details(self, shader, textures, ntiles = 0.0, shiny = 0.0):
     self.shader = shader
     self.shape.shader = shader # set shader for parent shape
     self.textures = textures # array of Textures
-    self.ntiles = ntiles
-    self.shiny = shiny
+    self.unib[0] = ntiles
+    self.unib[1] = shiny
+  
+  def set_material(self, mtrl):
+    self.unib[3], self.unib[4], self.unib[5] = mtrl[0], mtrl[1], mtrl[2]
     
-  def draw(self, shdr=None, txtrs=None, ntl=None, shny=None):
+  def draw(self, shdr=None, txtrs=None, ntl=None, shny=None, fullset=True):
     """ -- """
     shader = self.shader if shdr == None else shdr
     textures = self.textures if txtrs == None else txtrs
-    ntiles = self.ntiles if ntl == None else ntl
-    shiny = self.shiny if shny == None else shny
-    
+    if ntl != None: self.unib[0] = ntl
+    if shny != None: self.unib[1] = shny
     self.select()
-
-    opengles.glUniform1f(shader.unif_ntiles, c_float(ntiles))
-    opengles.glUniform1f(shader.unif_shiny, c_float(shiny))
+    shader.use()
     
     opengles.glVertexAttribPointer(shader.attr_vertex, 3, GL_FLOAT, 0, 32, 0)
     opengles.glVertexAttribPointer(shader.attr_normal, 3, GL_FLOAT, 0, 32, 12)
@@ -90,7 +94,7 @@ class Buffer(object):
     opengles.glEnableVertexAttribArray(shader.attr_texcoord)
     
     opengles.glDisable(GL_BLEND)
-    opengles.glUniform1f(shader.unif_blend, c_float(0.6))
+    self.unib[2] = 0.6
     if len(textures)>0:
       for t in range(0,len(textures)):
         opengles.glActiveTexture(GL_TEXTURE0 + t)
@@ -100,11 +104,12 @@ class Buffer(object):
         opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, c_float(GL_LINEAR_MIPMAP_NEAREST))
         if textures[t].blend: 
           opengles.glEnable(GL_BLEND) #i.e. if any of the textures set to blend then all will for this shader
-          opengles.glUniform1f(shader.unif_blend, c_float(0.05))
+          self.unib[2] = 0.05
           
-    opengles.glUniform4f(shader.unif_material, c_float(self.material[0]), c_float(self.material[1]), 
-        c_float(self.material[2]), c_float(self.material[3]))
-          
-    shader.use()
-    opengles.glDrawElements(GL_TRIANGLES, self.ntris*3, GL_UNSIGNED_SHORT, 0)
+    opengles.glUniform3fv(shader.unif_unib, 2, ctypes.byref(self.unib)) # have to do this after checking textures for blend set in unib[0][2]
+    
+    #opengles.glDrawElements(GL_TRIANGLES, self.ntris*3, GL_UNSIGNED_SHORT, 0)
+    self.glDraw()
 
+  def glDraw(self):
+    opengles.glDrawElements(GL_TRIANGLES, self.ntris*3, GL_UNSIGNED_SHORT, 0)

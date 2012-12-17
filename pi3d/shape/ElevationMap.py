@@ -101,8 +101,8 @@ class ElevationMap(Shape):
   # determines how high an object is when dropped on the map (providing it's inside the map area)
   def dropOn(self, px, pz):
     #adjust for map not set at origin
-    px -= self.x
-    pz -= self.z
+    px -= self.unif[0]
+    pz -= self.unif[2]
 
     wh = self.width * 0.5
     hh = self.depth * 0.5
@@ -113,7 +113,7 @@ class ElevationMap(Shape):
     if px > -wh and px < wh and pz > -hh and pz < hh:
       pixht = self.pixels[(wh + px) / ws,(hh + pz) / hs] * ht
 
-    return pixht + self.y
+    return pixht + self.unif[1]
 
   # accurately determines how high an object is when dropped on the map (providing it's inside the map area)
   def calcHeight(self, px, pz):
@@ -124,8 +124,8 @@ class ElevationMap(Shape):
     px, pz -- location of the point to calculate height
     """
     #adjust for map not set at origin
-    px -= self.x
-    pz -= self.z
+    px -= self.unif[0]
+    pz -= self.unif[2]
 
     wh = self.width * 0.5
     hh = self.depth * 0.5
@@ -151,7 +151,7 @@ class ElevationMap(Shape):
       x0, y0, z0 = x + 1, self.buf[0].vertices[p3][1], z + 1
     else:
       x0, y0, z0 = x, self.buf[0].vertices[p0][1], z
-    return self.y + intersect_triangle((x0, y0, z0),
+    return self.unif[1] + intersect_triangle((x0, y0, z0),
                             (x + 1, self.buf[0].vertices[p1][1], z),
                             (x, self.buf[0].vertices[p2][1], z + 1),
                             (px, 0, pz))
@@ -173,9 +173,9 @@ class ElevationMap(Shape):
     # added Patrick Gaunt 2012-11-05
     radSq = rad**2
     # adjust for map not set at origin
-    px -= self.x
-    py -= self.y
-    pz -= self.z
+    px -= self.unif[0]
+    py -= self.unif[1]
+    pz -= self.unif[2]
     ht = self.height/255
     halfw = self.width/2.0
     halfd = self.depth/2.0
@@ -251,8 +251,8 @@ class ElevationMap(Shape):
     px -- x location
     pz -- z location
     """
-    px -= self.x
-    pz -= self.z
+    px -= self.unif[0]
+    pz -= self.unif[2]
     halfw = self.width/2.0
     halfd = self.depth/2.0
     dx = self.width/self.ix

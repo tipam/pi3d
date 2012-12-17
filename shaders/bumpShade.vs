@@ -4,17 +4,19 @@ attribute vec3 vertex;
 attribute vec3 normal;
 attribute vec2 texcoord;
 
-uniform mat4 modelviewmatrix;
+//uniform mat4 modelviewmatrix;
 uniform mat4 cameraviewmatrix;
-uniform float ntiles;
-uniform float shiny;
-uniform vec3 locn;
-uniform vec3 rotn;
-uniform vec3 scle;
-uniform vec3 ofst;
-uniform vec3 eye;
-uniform vec3 rtn;
-uniform vec3 lightpos;
+//uniform float ntiles; //unib[0][0]
+//uniform float shiny; //unib[0][1]
+uniform vec3 unib[2];
+//uniform vec3 locn; //unif[0]
+//uniform vec3 rotn; //unif[1]
+//uniform vec3 scle; //unif[2]
+//uniform vec3 ofst; //unif[3]
+//uniform vec3 eye; //unif[6]
+//uniform vec3 rtn; //unif[7]
+//uniform vec3 lightpos; //unif[8]
+uniform vec3 unif[11];
 
 varying vec3 normout;
 varying vec2 texcoordout;
@@ -33,55 +35,55 @@ mat4 transpose(mat4 mi) {
 void main(void) {
   
   float s, c;
-  //lightVector = normalize(vec3(cameraviewmatrix * vec4(lightpos, 0.0)));
-  //lightVector = normalize(mat3(1.0,0.0,0.0, 0.0,1.0,0.0, 0.0,0.0,1.0) * lightpos);
+  //lightVector = normalize(vec3(cameraviewmatrix * vec4(unif[8], 0.0)));
+  //lightVector = normalize(mat3(1.0,0.0,0.0, 0.0,1.0,0.0, 0.0,0.0,1.0) * unif[8]);
   
-  lightVector = normalize(lightpos);
+  lightVector = normalize(unif[8]);
   lightVector = mat3(1.0,0.0,0.0, 0.0,1.0,0.0, 0.0,0.0,1.0) * lightVector;
   
-  s = sin(radians(rtn.y));
+  s = sin(radians(unif[7].y));
   c = sqrt(1.0 - s*s);
   lightVector = mat3(c,0.0,-s, 0.0,1.0,0.0, s,0.0,c) * lightVector;
-  //s = sin(radians(rtn.x));
-  //c = radians(rtn.x);
+  //s = sin(radians(unif[7].x));
+  //c = radians(unif[7].x);
   //lightVector = mat3(1.0,0.0,0.0, 0.0,c,-s, 0.0,s,c) * lightVector;
   
   mat4 newmodel = transpose(cameraviewmatrix);
 
   newmodel = mat4(
-    1.0, 0.0, 0.0, (locn.x-ofst.x), 
-    0.0,1.0,0.0,(locn.y-ofst.y), 
-    0.0,0.0,1.0,(locn.z-ofst.z), 
+    1.0, 0.0, 0.0, (unif[0].x-unif[3].x), 
+    0.0,1.0,0.0,(unif[0].y-unif[3].y), 
+    0.0,0.0,1.0,(unif[0].z-unif[3].z), 
     0.0,0.0,0.0,1.0) * newmodel;
 
-  if (rotn.z != 0.0) {
-    s = sin(radians(rotn.z));
-    c = cos(radians(rotn.z));
+  if (unif[1].z != 0.0) {
+    s = sin(radians(unif[1].z));
+    c = cos(radians(unif[1].z));
     newmodel = mat4(c,-s,0.0,0.0, s,c,0.0,0.0, 0.0,0.0,1.0,0.0, 0.0,0.0,0.0,1.0) * newmodel; 
   } 
   
   
-  if (rotn.x != 0.0) {
-    s = sin(radians(rotn.x));
-    c = cos(radians(rotn.x));
+  if (unif[1].x != 0.0) {
+    s = sin(radians(unif[1].x));
+    c = cos(radians(unif[1].x));
     newmodel = mat4(1.0,0.0,0.0,0.0, 0.0,c,-s,0.0, 0.0,s,c,0.0, 0.0,0.0,0.0,1.0) * newmodel; 
   } 
   
 
-  if (rotn.y != 0.0) {
-    s = sin(radians(rotn.y));
-    c = cos(radians(rotn.y));
+  if (unif[1].y != 0.0) {
+    s = sin(radians(unif[1].y));
+    c = cos(radians(unif[1].y));
     newmodel = mat4(c,0.0,s,0.0, 0.0,1.0,0.0,0.0, -s,0.0,c,0.0, 0.0,0.0,0.0,1.0) * newmodel; 
   } 
   
   
-  if (scle.x > 0.0 && scle.y > 0.0 && scle.z > 0.0)
-    newmodel = mat4(scle.x,0.0,0.0,0.0, 0.0,scle.y,0.0,0.0, 0.0,0.0,scle.z,0.0, 0.0,0.0,0.0,1.0) * newmodel;
+  if (unif[2].x > 0.0 && unif[2].y > 0.0 && unif[2].z > 0.0)
+    newmodel = mat4(unif[2].x,0.0,0.0,0.0, 0.0,unif[2].y,0.0,0.0, 0.0,0.0,unif[2].z,0.0, 0.0,0.0,0.0,1.0) * newmodel;
     
   newmodel = mat4(
-    1.0,0.0,0.0,ofst.x, 
-    0.0,1.0,0.0,ofst.y, 
-    0.0,0.0,1.0,ofst.z, 
+    1.0,0.0,0.0,unif[3].x, 
+    0.0,1.0,0.0,unif[3].y, 
+    0.0,0.0,1.0,unif[3].z, 
     0.0,0.0,0.0,1.0) * newmodel;
 
   mat4 newmodel_t = transpose(newmodel);
@@ -89,7 +91,7 @@ void main(void) {
 
   normout = normalize(vec3(newmodel_t * vec4(normal, 0.0)));
   
-  if (ntiles == 0.0) { // ----- ntiles doubles as flag for normal mapping
+  if (unib[0][0] == 0.0) { // ----- unib[0][0] doubles as flag for normal mapping
     bumpcoordout = texcoord;
     normrot = mat4(1.0);
   }
@@ -105,14 +107,14 @@ void main(void) {
       t * a.x * a.y - a.z * s, t * a.y * a.y + c, t * a.z * a.y + a.x * s, 0.0,
       t * a.x * a.z + a.y * s, t * a.y * a.z - a.x * s, t * a.z * a.z + c, 0.0,
       0.0, 0.0, 0.0, 1.0); // ----- vector mult for rotation about axis
-    bumpcoordout = texcoord * ntiles;
+    bumpcoordout = texcoord * unib[0][0];
   }
   
-  if (shiny == 0.0) { // doubles as flag 0.0 for no reflection, negative means no lighting se .fs
+  if (unib[0][1] == 0.0) { // doubles as flag 0.0 for no reflection, negative means no lighting se .fs
     shinecoordout = vec2(0.0, 0.0);
   }
   else {
-    vec3 inray = vertex - vec3(newmodel * vec4(eye, 1.0)); // ----- vector from the camera to this vertex
+    vec3 inray = vertex - vec3(newmodel * vec4(unif[6], 1.0)); // ----- vector from the camera to this vertex
     if (length(inray) > 0.0) inray = normalize(inray); // ----- crash if normalize zero length vectors
     vec3 refl = reflect(inray, normout); // ----- reflection direction from this vertex
     vec3 horiz = cross(inray, vec3(0.0, 1.0, 0.0)); // ----- a 'horizontal' unit vector normal to the inray

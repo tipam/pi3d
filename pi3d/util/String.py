@@ -15,8 +15,7 @@ class String(Shape):
       rx=0.0, ry=0.0, rz=0.0):
     if not is_3d:
       sy = sx = size / DOTS_PER_INCH
-    super(String, self).__init__(camera, light, "", x, y, z, rx, ry, rz,
-                                sx, sy, 1.0, 0.0, 0.0, 0.0)
+    super(String, self).__init__(camera, light, "", x,y,z,  rx,ry,rz,  sx,sy,1.0,  0.0,0.0,0.0)
 
     if VERBOSE:
       print "Creating string ..."
@@ -48,4 +47,4 @@ class String(Shape):
     self.buf = []
     self.buf.append(Buffer(self, self.verts, self.texcoords, self.inds, self.norms))
     self.buf[0].textures = [font]
-    self.buf[0].shiny = -1.0
+    self.buf[0].unib[1] = -1.0

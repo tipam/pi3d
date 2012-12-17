@@ -158,7 +158,7 @@ def angleVecs(x1,y1,x2,y2,x3,y3):
     if dist>0.0: return PI2-angle
     else: return angle
 
-#Level Of Detail checking and rendering
+#Level Of Detail checking and rendering. NB this will only work if the shader and texture information has been set for all the buf object in the model
 def lodDraw(here, there, mlist):
   """
   no return value
