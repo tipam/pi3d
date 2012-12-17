@@ -108,7 +108,7 @@ class Shape(Loadable):
     self.unif[0] += v
 
   def translateY(self, v):
-    self.unif[1] += dy
+    self.unif[1] += v
 
   def translateZ(self, v):
     self.unif[2] += v

@@ -20,25 +20,36 @@ import random, time
 from pi3d import Display
 from pi3d.Keyboard import Keyboard
 from pi3d.Texture import Texture
+from pi3d.context.Light import Light
+from pi3d.Camera import Camera
+from pi3d.Shader import Shader
 
-from pi3d.util import Draw
+from pi3d.shape.Sprite import Sprite
 from pi3d.util.Screenshot import screenshot
 
 # Setup display and initialise pi3d
 DISPLAY = Display.create()
 
 # Set last value (alpha) to zero for a transparent background!
-DISPLAY.setBackColour(0,0.7,1,0)
+DISPLAY.setBackColour(0.0, 0.7, 1.0, 0.0)
+camera = Camera((0, 0, 0), (0, 0, -0.1), (1, 1000, DISPLAY.win_width/1000.0, DISPLAY.win_height/1000.0))
+light = Light((10, 10, -20))
+shader = Shader("shaders/bumpShade")
+#############################
 
 # Load textures
 raspimg = Texture("textures/Raspi256x256.png")
 
-pino=10
+pino=15
 
 # Setup array of random x,y,z coords and initial rotation
-xyz=[]
+raspberries=[]
 for b in range (0, pino):
-  xyz.append((random.random()*8-4,random.random() * 8,random.random() * 4 + 3, random.random() * 360))
+  rasp = Sprite(camera, light)
+  rasp.position(random.random()*8-4, random.random() * 8, random.random() * 7)
+  rasp.rotateToZ(random.random() * 360)
+  rasp.buf[0].set_draw_details(shader, [raspimg], 0.0, -1.0)
+  raspberries.append(rasp)
 
 # Fetch key presses
 mykeys = Keyboard()
@@ -47,14 +58,13 @@ mykeys = Keyboard()
 while 1:
   DISPLAY.clear()
 
-  for b in range (0, pino):
-    Draw.sprite(raspimg,xyz[b][0],5-xyz[b][1],-xyz[b][2],1,1,xyz[b][3])	#draw a rectangle(x,y,z,scaleX,scaleY,rotation)
-    r = xyz[b][3]+1
-    y = (xyz[b][1]+0.1) % 10
-    if y<0.06:
-      xyz[b] = ((random.random()*8-4, y, xyz[b][2], r))
-    else:
-      xyz[b] = ((xyz[b][0], y, xyz[b][2], r))
+  for b in raspberries:
+    b.draw()
+    b.translateY(-0.1)
+    b.rotateIncZ(1)
+    if b.unif[1] < -4:
+      b.positionX(random.random()*8-4)
+      b.translateY(8.0)
 
   k = mykeys.read()
   if k >-1:

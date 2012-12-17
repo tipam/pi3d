@@ -70,6 +70,7 @@ tree2img = Texture("textures/tree2.png")
 raspimg = Texture("textures/Raspi256x256.png")
 monstimg = Texture("textures/pong2.jpg")
 monsttex = Texture("textures/floor_nm.jpg")
+shineimg = Texture("textures/stars.jpg")
 
 # environment cube
 ectex = Texture("textures/ecubes/skybox_stormydays.jpg")
@@ -83,9 +84,9 @@ mapheight = 100.0
 mymap = ElevationMap("textures/maze1.jpg", camera=camera, light=light,
                      width=mapwidth, depth=mapdepth, height=mapheight,
                      divx=128, divy=128, name="sub")
-mymap.buf[0].set_draw_details(shader, [rockimg1, rockimg2], 128.0, 0.0)
+mymap.buf[0].set_draw_details(shader, [rockimg1, rockimg2, shineimg], 128.0, 0.1)
 
-# Crete fog for more realistic fade in distance. This can be turned on and off between drawing different object (i.e backgound not foggy)
+# Create fog for more realistic fade in distance. This can be turned on and off between drawing different object (i.e backgound not foggy)
 mymap.set_fog((0.1,0.1,0.1,1.0), 200.0)
 
 #Create tree models
