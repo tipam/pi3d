@@ -103,7 +103,7 @@ tankpitch = 0.0   #too and fro pitch of tank on ground
 #position vars
 mouserot = 0.0
 tilt = 0.0
-avhgt = 1.0
+avhgt = 0.85
 xm = 0.0
 zm = -200.0
 dxm = 0.0

@@ -44,21 +44,8 @@ myecube = EnvironmentCube.EnvironmentCube(camera, light, 1800.0,"FACES")
 for i,b in enumerate(myecube.buf):
   b.set_draw_details(shader,[ectex[i]], 0.0, -1.0)
 
-# Create elevation map
-#mapwidth=2000.0
-#mapdepth=2000.0
-#mapheight=100.0
-#redplanet = Texture("textures/mars_colour.png")
-#bumpimg = Texture("textures/mudnormal.jpg")
-#mymap = ElevationMap(camera=camera, light= light, mapfile='textures/mars_height.png', width=mapwidth,
-#                     depth=mapdepth, height=mapheight, divx=64, divy=64)
-#mymap.buf[0].set_draw_details(shader,[redplanet, bumpimg],128.0, 0.0)
-#mymap.set_fog((0.3,0.15,0.1,1.0), 1000.0)
-
-#sttnbmp = Texture("textures/floor_nm.jpg")
-#sttnshn = Texture("textures/stars.jpg")
 x,z = 0,0
-#y = mymap.calcHeight(x, z)
+
 y = 0.0
 cor_win = Model(camera, light, "models/ConferenceHall/conferencehall.egg", "Hall", x,y,z, 0,0,0, 0.1,0.1,0.1)
 cor_win.set_shader(shader)

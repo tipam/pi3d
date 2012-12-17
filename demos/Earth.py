@@ -73,11 +73,11 @@ while 1:
   mysphere2.rotateIncY(-0.15)
 
   mymoon.draw(shader, [moonimg, moonimg, starsimg], 1.0, 0.0)
-  mymoon.position(mysphere.x+m1Rad*sin(rot1),mysphere.y+0,mysphere.z-m1Rad*cos(rot1))
+  mymoon.position(mysphere.unif[0] + m1Rad*sin(rot1), mysphere.unif[1] + 0, mysphere.unif[2] - m1Rad*cos(rot1))
   mymoon.rotateIncY(-0.2)
 
   mymoon2.draw(shader, [watimg, watimg, starsimg], 4.0, 0.8)
-  mymoon2.position(mymoon.x - m2Rad*sin(rot2), mymoon.y, mymoon.z + m2Rad*cos(rot2))
+  mymoon2.position(mymoon.unif[0] - m2Rad*sin(rot2), mymoon.unif[1], mymoon.unif[2] + m2Rad*cos(rot2))
   mymoon2.rotateIncY(-5.0)
 
   rot1 += 0.005

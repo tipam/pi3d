@@ -18,26 +18,34 @@ import random, time
 from pi3d import Display
 from pi3d.Keyboard import Keyboard
 from pi3d.Texture import Texture
+from pi3d.shape.Sprite import Sprite
+from pi3d.context.Light import Light
+from pi3d.Camera import Camera
+from pi3d.Shader import Shader
 
 from pi3d.util import Draw
 
-z=0
-x=0
-speed=1
-widex=60
-widey = 8
-cloudno = 50
-cloud_depth = 60.0
-zd = cloud_depth / cloudno
+z = 0
+x = 0
+speed = 1
+widex = 50
+widey = 20
+cloudno = 5
+cloud_depth = 150.0
+zd = 1.0*cloud_depth / cloudno
 
 MARGIN = 100
 
 # Setup display and initialise pi3d
-DISPLAY = Display.create(x=MARGIN, y=MARGIN, w=-MARGIN, h=-MARGIN)
+DISPLAY = Display.create(x=MARGIN, y=MARGIN)
 scnx = DISPLAY.win_width
 scny = DISPLAY.win_height
 
 DISPLAY.setBackColour(0,0.7,1,1)
+camera = Camera((0, 0, 0), (0, 0, -0.1), (1, 1000, DISPLAY.win_width/1000.0, DISPLAY.win_height/1000.0))
+light = Light((10, 10, -20))
+shader = Shader("shaders/bumpShade")
+#############################
 
 clouds = []
 clouds.append(Texture("textures/cloud2.png",True))
@@ -50,8 +58,13 @@ clouds.append(Texture("textures/cloud6.png",True))
 z = 0.0
 cxyz = []
 for b in range (0, cloudno):
-  cxyz.append([random.random() * widex - widex*.5, -random.random() * widey, cloud_depth-z, int(random.random() * 4) + 1])
+  size = random.random()
+  cloudi = Sprite(camera, light, size * widex, size * widey, "", 50.0*(random.random()-0.5), 0.0, cloud_depth - z)
+  cloudi.buf[0].set_draw_details(shader, [clouds[int(random.random() * 4.99999)]], 0.0, -1.0)
+  cxyz.append(cloudi)
   z = z + zd
+
+camera.translate((0.0, 0.0, 50.0))
 
 # Fetch key presses
 mykeys = Keyboard()
@@ -60,21 +73,19 @@ while True:
 
   DISPLAY.clear()
 
-  maxDepth = 0
-  axDepthIndex = 0
-  # this is easier to understand, the z position of each cloud is (only) held in cxyz[][2]
+  # this is easier to understand, the z position of each cloud is (only) held in cxyz[i].locn[2]
   # it stops the clouds appearing in front of nearer clouds!
   # first go through the clouds to find index of furthest away
-  for i in range(len(cxyz)):
-    cxyz[i][2] = (cxyz[i][2] - speed) % cloud_depth
-    if (cxyz[i][2] > maxDepth):
-      maxDepth = cxyz[i][2]
-      maxDepthIndex = i
-
+  maxDepthIndex = 0
   # paint the clouds from background to foreground
   for i in range(maxDepthIndex, maxDepthIndex + cloudno):
-    c = cxyz[i%cloudno]
-    Draw.sprite(clouds[c[3]], c[0], c[1], -c[2], 8, 5)
+    cloud = cxyz[i % cloudno]
+    cloud.draw()
+    cloud.unif[2] -= speed
+    if cloud.unif[2] < -2.0:
+      cloud.unif[2] = cloud_depth
+      maxDepthIndex = i % cloudno
+
 
   #Press ESCAPE to terminate
   if mykeys.read() == 27:
@@ -83,4 +94,4 @@ while True:
     break
 
   DISPLAY.swapBuffers()
-  time.sleep(0.01)
+

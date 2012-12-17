@@ -65,7 +65,7 @@ shader = Shader("shaders/bumpShade")
 # Setting 2nd param to True renders 'True' Blending
 # (this can be changed later to 'False' with 'rockimg2.blend = False')
 rockimg1 = Texture("textures/techy1.jpg")
-rockimg2 = Texture("textures/rock1.png", True)
+rockimg2 = Texture("textures/rock1.png")
 tree2img = Texture("textures/tree2.png")
 raspimg = Texture("textures/Raspi256x256.png")
 monstimg = Texture("textures/pong2.jpg")
@@ -182,6 +182,7 @@ while 1:
   camera.rotate(0, rot, 0)
   camera.translate((xm, ym, zm))
 
+  myecube.position(xm, ym, zm)
   myecube.draw()
   mymap.draw()
   mytrees1.draw()
@@ -192,8 +193,8 @@ while 1:
   mDy -= gravity
   mDelx,mDelz = mSx-xm, mSz-zm #distance from monster
   mDist = math.sqrt(mDelx**2 + mDelz**2)
-  mDx = -0.05*mDelx/mDist
-  mDz = -0.05*mDelz/mDist
+  mDx = -0.1*mDelx/mDist
+  mDz = -0.1*mDelz/mDist
   monst.rotateIncY(100.0/mDist)
   if mDist > 100: #far away so teleport it nearer
     mSx, mSz = xm + 100*random.random() - 50, zm + 100*random.random() - 50
@@ -204,7 +205,7 @@ while 1:
   if mDist < 3: #it's got you, return to GO
     xm, ym, zm = 0, mymap.calcHeight(0,0) + avhgt, 0
 
-  clash = mymap.clashTest(monst.x, monst.y, monst.z, 1.5)
+  clash = mymap.clashTest(mSx, mSy, mSz, 1.5)
   if clash[0]:
     # returns the components of normal vector if clash
     nx, ny, nz =  clash[1], clash[2], clash[3]

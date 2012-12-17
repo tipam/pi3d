@@ -111,7 +111,7 @@ while 1:
   camera.rotate(tilt, mouserot, 0)           #Tank still affected by scene tilt
   camera.translate((xm + xoff, ym + yoff +5, zm + zoff))   #zoom camera out so we can see our robot
 
-  mymap.draw()		#Draw the landscape
+  mymap.draw()  #Draw the landscape
   
   lodDraw([xm, ym, zm], [0, mody, 0], [[opendist,cor_cross],[1000,cor_cross_doors]])
   cor_win.position(0, mody, -spc*1.5)
