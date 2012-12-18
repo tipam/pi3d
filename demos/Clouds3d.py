@@ -23,8 +23,6 @@ from pi3d.context.Light import Light
 from pi3d.Camera import Camera
 from pi3d.Shader import Shader
 
-from pi3d.util import Draw
-
 z = 0
 x = 0
 speed = 1

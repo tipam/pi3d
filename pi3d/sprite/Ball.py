@@ -5,40 +5,40 @@ from pi3d.Texture import Texture
 from pi3d.util import Draw
 from pi3d.util import Utility
 
-from pi3d.util.Loadable import Loadable
+from pi3d.shape.Sprite import Sprite
 
-class Ball(Loadable):
-  def __init__(self, texture, radius, x, y, vx=0.0, vy=0.0, decay=0.001):
-    super(Ball, self).__init__()
+class Ball(Sprite):
+  def __init__(self, camera, light, shader, texture, radius, x, y, vx=0.0, vy=0.0, decay=0.001):
+    super(Ball, self).__init__(camera, light, 2*radius, 2*radius, "", x, y, 450)
     if not isinstance(texture, Texture):
       texture = Texture(texture)
-    self.texture = texture
+    self.buf[0].set_draw_details(shader, [texture], 0.0, -1.0)
     self.radius = radius
-    self.x = x
-    self.y = y
+    self.unif[0] = x
+    self.unif[1] = y
     self.vx = vx
     self.vy = vy
     self.mass = radius * radius
     self.decay = decay
 
   def _load_opengl(self):
-    self.texture.load_opengl()
+    self.buf[0].textures[0].load_opengl()
 
   def move(self):
-    self.x += self.vx
-    self.y += self.vy
+    self.unif[0] += self.vx
+    self.unif[1] += self.vy
 
   def hit(self, otherball):
     # Used for pre-checking ball positions.
-    dx = (self.x + self.vx) - (otherball.x + otherball.vx)
-    dy = (self.y + self.vy) - (otherball.y + otherball.vy)
+    dx = (self.unif[0] + self.vx) - (otherball.unif[0] + otherball.vx)
+    dy = (self.unif[1] + self.vy) - (otherball.unif[1] + otherball.vy)
     rd = self.radius + otherball.radius
     return Utility.sqsum(dx, dy) <= (rd * rd)
 
   def bounce_collision(self, otherball):
     # relative positions
-    dx = self.x - otherball.x
-    dy = self.y - otherball.y
+    dx = self.unif[0] - otherball.unif[0]
+    dy = self.unif[1] - otherball.unif[1]
     rd = self.radius + otherball.radius
     # check sign of a.b to see if converging
     dotP = Utility.dotproduct(dx, dy, 0,
@@ -68,24 +68,26 @@ class Ball(Loadable):
       else:
         delta1x = delta1y = delta2x = delta2y = 0
 
-
       self.vx += delta1x
       self.vy += delta1y
       otherball.vx += delta2x
       otherball.vy += delta2y
 
   def bounce_wall(self, width, height):
-    if self.x > (width - self.radius):
+    left, right, top, bottom = -width/2.0, width/2.0, height/2.0, -height/2.0
+    if self.unif[0] > (right - self.radius):
       self.vx = -abs(self.vx)
-    elif self.x < self.radius:
+    elif self.unif[0] < (left + self.radius):
       self.vx = abs(self.vx)
 
-    if self.y > (height - self.radius):
+    if self.unif[1] > (top - self.radius):
       self.vy = -abs(self.vy)
-    elif self.y < self.radius:
+    elif self.unif[1] < (bottom + self.radius):
       self.vy = abs(self.vy)
 
   def repaint(self, t):
     self.move()
     self.bounce_wall(Display.DISPLAY.max_width, Display.DISPLAY.max_height)
-    Draw.sprite(self.texture, self.x, self.y, -1, self.radius, self.radius)
+    #self.draw(self.shader, [self.texture], 0.0 -1.0)
+    self.draw()
+    #Draw.sprite(self.texture, self.x, self.y, -1, self.radius, self.radius)
