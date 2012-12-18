@@ -116,7 +116,10 @@ def select_demo(demo_list):
 
 
 if __name__ == '__main__':
-  os.chdir(os.path.dirname(sys.argv[0]))
+  try:
+    os.chdir(os.path.dirname(sys.argv[0]))
+  except:
+    pass  # Will fail when we're in the same directory.
 
   demo_list = get_demo_list()
   if len(sys.argv) is 1:
