@@ -79,9 +79,9 @@ while True:
   for i in range(maxDepthIndex, maxDepthIndex + cloudno):
     cloud = cxyz[i % cloudno]
     cloud.draw()
-    cloud.unif[2] -= speed
+    cloud.translateZ(-speed)
     if cloud.unif[2] < -2.0:
-      cloud.unif[2] = cloud_depth
+      cloud.positionZ(cloud_depth)
       maxDepthIndex = i % cloudno
 
 
