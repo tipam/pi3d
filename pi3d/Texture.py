@@ -77,10 +77,12 @@ class Texture(Loadable):
     opengles.glTexImage2D(GL_TEXTURE_2D, 0, RGBv, self.ix, self.iy, 0, RGBv,
                           GL_UNSIGNED_BYTE,
                           ctypes.string_at(self.image, len(self.image)))
-    opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, c_float(GL_LINEAR_MIPMAP_LINEAR))
-    opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, c_float(GL_LINEAR))
+    opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+                             c_float(GL_LINEAR_MIPMAP_LINEAR))
+    opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+                             c_float(GL_LINEAR))
     opengles.glGenerateMipmap(GL_TEXTURE_2D)
-    opengles.glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA)
+    opengles.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
 
 class Cache(object):
@@ -90,9 +92,9 @@ class Cache(object):
   def clear(self):
     self.cache = {}
 
-  def create(self, file_string, **kwds):
-    texture = self.cache.get(file_string, None)
+  def create(self, file_string, blend=False, flip=False, size=0):
+    texture = self.cache.get((file_string, blend, flip, size), None)
     if not texture:
-      texture = Texture(file_string, **kwds)
+      texture = Texture(file_string, blend=blend, flip=blend, size=size)
       self.cache[file_string] = texture
     return texture
