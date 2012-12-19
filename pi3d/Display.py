@@ -28,7 +28,7 @@ def is_display_thread():
     DISPLAY_THREAD is threading.current_thread())
 
 class Display(object):
-  def __init__(self):
+  def __init__(self, tkwin):
     """Opens up the OpenGL library and prepares a window for display."""
     if not ALLOW_MULTIPLE_DISPLAYS:
       global DISPLAY
@@ -36,6 +36,9 @@ class Display(object):
         LOGGER.warning('A second instance of Display was created')
       else:
         DISPLAY = self
+
+    self.tkwin = tkwin
+
     self.sprites = []
     self.frames_per_second = 0
     self.is_on = True
@@ -133,9 +136,29 @@ class Display(object):
     #switches off alpha blending with desktop (is there a bug in the driver?)
 
 
-def create(is_3d=True, x=0, y=0, w=0, h=0, near=None, far=None,
-           aspect=DEFAULT_ASPECT, depth=DEFAULT_DEPTH, background=None):
-  display = Display()
+def create(is_3d=True, x=None, y=None, w=0, h=0, near=None, far=None,
+           aspect=DEFAULT_ASPECT, depth=DEFAULT_DEPTH, background=None,
+           tk=False, window_title='', window_parent=None):
+  if tk:
+    from pi3d.util import TkWin
+    if not (w and h):
+      # TODO: how do we do full-screen in tk?
+      LOGGER.error("Can't compute default window size when using tk")
+      raise Exception
+
+    tkwin = TkWin(window_parent, window_title, w, h)
+    tkwin.update()
+    if x is None:
+      x = tkwin.winx
+    if y is None:
+      y = tkwin.winy
+
+  else:
+    tkwin = None
+    x = x or 0
+    y = y or 0
+
+  display = Display(tkwin)
   if w <= 0:
      w = display.max_width - 2 * x
      if w <= 0:
