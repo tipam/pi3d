@@ -25,8 +25,8 @@ class Ball(Sprite):
     self.buf[0].textures[0].load_opengl()
 
   def move(self):
-    self.unif[0] += self.vx
-    self.unif[1] += self.vy
+    self.translateX(self.vx)
+    self.translateY(self.vy)
 
   def hit(self, otherball):
     # Used for pre-checking ball positions.

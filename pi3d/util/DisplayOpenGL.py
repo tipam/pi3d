@@ -118,8 +118,8 @@ class DisplayOpenGL(object):
       self.active = False
 
   def swapBuffers(self):
-    opengles.glFlush()
-    opengles.glFinish()
+    #opengles.glFlush()
+    #opengles.glFinish()
     #clear_matrices
     openegl.eglSwapBuffers(self.display, self.surface)
 

@@ -48,7 +48,7 @@ class Shader(object):
     self.attr_vertex = opengles.glGetAttribLocation(self.program, "vertex")
     self.attr_normal = opengles.glGetAttribLocation(self.program, "normal")
     #self.unif_lightpos = opengles.glGetUniformLocation(self.program, "lightpos")
-    #self.unif_modelviewmatrix = opengles.glGetUniformLocation(self.program, "modelviewmatrix")
+    self.unif_modelviewmatrix = opengles.glGetUniformLocation(self.program, "modelviewmatrix")
     self.unif_cameraviewmatrix = opengles.glGetUniformLocation(self.program, "cameraviewmatrix")
     #self.unif_ntiles = opengles.glGetUniformLocation(self.program, "ntiles")
     #self.unif_shiny = opengles.glGetUniformLocation(self.program, "shiny")

@@ -1,5 +1,5 @@
 from itertools import chain
-from numpy import array, dot
+from numpy import array, dot, ravel
 from math import radians, pi, sin, cos
 
 from pi3d import *
@@ -29,6 +29,17 @@ class Shape(Loadable):
     9  light strength per shade 27-29
     10 light ambient values 30-32
     """
+    
+    self.tr1 = array([[1.0, 0.0, 0.0, 0.0],[0.0, 1.0, 0.0, 0.0] ,[0.0, 0.0, 1.0, 0.0],[x-cx,y-cy,z-cz,1]])
+    s, c = sin(radians(self.unif[3])), cos(radians(self.unif[3]))
+    self.rox = array([[1.0, 0.0, 0.0, 0.0],[0.0, c, s, 0.0],[0.0, -s, c, 0.0],[0.0, 0.0, 0.0, 1.0]])
+    s, c = sin(radians(self.unif[4])), cos(radians(self.unif[4]))
+    self.roy = array([[c, 0.0, -s, 0.0],[0.0, 1.0, 0.0, 0.0],[s, 0.0, c, 0.0],[0.0, 0.0, 0.0, 1.0]])     
+    s, c = sin(radians(self.unif[5])), cos(radians(self.unif[5]))
+    self.roz = array([[c, s, 0.0, 0.0],[-s, c, 0.0, 0.0],[0.0, 0.0, 1.0, 0.0],[0.0, 0.0, 0.0, 1.0]])
+    self.scl = array([[self.unif[6], 0.0, 0.0, 0.0],[0.0, self.unif[7], 0.0, 0.0],[0.0, 0.0, self.unif[8], 0.0],[0.0, 0.0, 0.0, 1.0]])
+    self.tr2 = array([[1.0,0.0,0.0,0.0], [0.0,1.0,0.0,0.0], [0.0,0.0,1.0,0.0], [self.unif[9], self.unif[10], self.unif[11], 1.0]])
+    self.M = None # TODO use an array of two 4x4 matrices, one for modelview and one for cameraview
 
     self.camera = camera
     self.light = light
@@ -42,15 +53,27 @@ class Shape(Loadable):
   def draw(self, shdr=None, txtrs=None, ntl=None, shny=None):
     # if called without parameters there has to have been a previous call to set_draw_details() for all the Buffers in buf[]
     shader = self.shader if shdr == None else shdr
+    
+    if self.camera.movedFlag or self.M == None:
+      # calculate rotation and translation matrix for this model
+      # using numpy
+      self.M = c_floats(dot(self.tr2, 
+        dot(self.scl, 
+        dot(self.roy, 
+        dot(self.rox, 
+        dot(self.roz, 
+        dot(self.tr1, self.camera.mtrx)))))).ravel())
+    #opengles.glUniformMatrix4fv(shader.unif_modelviewmatrix, 1, c_int(0), ctypes.c_void_p(self.M.data)) # otherwise use existing version
+    opengles.glUniformMatrix4fv(shader.unif_modelviewmatrix, 1, c_int(0), ctypes.byref(self.M)) # otherwise use existing version
 
     # camera matrix
     if self.camera.movedFlag:
-      if self.camera.C == None:
-        self.camera.C = c_floats(list(chain(*self.camera.mtrx)))
+      if self.camera.C == None: # i.e. only need to do this once per frame
+        self.camera.C = c_floats(self.camera.mtrx.ravel())
+        #self.camera.C = (c_float * 16)(*self.camera.mtrx)
       opengles.glUniformMatrix4fv(shader.unif_cameraviewmatrix, 1, c_int(0), ctypes.byref(self.camera.C))
-      self.unif[18], self.unif[19], self.unif[20] = c_float(self.camera.eye[0]), c_float(self.camera.eye[1]), c_float(self.camera.eye[2])
-      self.unif[21], self.unif[22], self.unif[23] = c_float(self.camera.rtn[0]), c_float(self.camera.rtn[1]), c_float(self.camera.rtn[2])
-
+      self.unif[18], self.unif[19], self.unif[20] = self.camera.eye[0], self.camera.eye[1], self.camera.eye[2]
+      self.unif[21], self.unif[22], self.unif[23] = self.camera.rtn[0], self.camera.rtn[1], self.camera.rtn[2]
     # variables for movement of this object
     opengles.glUniform3fv(shader.unif_unif, 11, ctypes.byref(self.unif))
 
@@ -85,51 +108,105 @@ class Shape(Loadable):
     self.unif[15] = fogdist
 
   def scale(self, sx, sy, sz):
+    self.scl[0, 0] = sx
+    self.scl[1, 1] = sy
+    self.scl[2, 2] = sz
     self.unif[6], self.unif[7], self.unif[8] = sx, sy, sz
+    self.M = None  
     
   def position(self, x, y, z):
+    self.tr1[3, 0] = x - self.unif[9]
+    self.tr1[3, 1] = y - self.unif[10]
+    self.tr1[3, 2] = z - self.unif[11]
     self.unif[0], self.unif[1], self.unif[2] = x, y, z
+    self.M = None  
 
   def positionX(self, v):
+    self.tr1[3, 0] = v - self.unif[9]
     self.unif[0] = v
+    self.M = None  
 
   def positionY(self, v):
+    self.tr1[3, 1] = v - self.unif[10]
     self.unif[1] = v
+    self.M = None  
 
   def positionZ(self, v):
+    self.tr1[3, 2] = v - self.unif[11]
     self.unif[2] = v
+    self.M = None  
 
   def translate(self, dx, dy, dz):
+    self.tr1[3, 0] += dx
+    self.tr1[3, 1] += dy
+    self.tr1[3, 2] += dz
+    self.M = None
     self.unif[0] += dx
     self.unif[1] += dy
     self.unif[2] += dz
 
   def translateX(self, v):
+    self.tr1[3, 0] += v
     self.unif[0] += v
+    self.M = None
 
   def translateY(self, v):
+    self.tr1[3, 1] += v
     self.unif[1] += v
+    self.M = None
 
   def translateZ(self, v):
+    self.tr1[3, 2] += v
     self.unif[2] += v
+    self.M = None
 
   def rotateToX(self, v):
+    s, c = sin(radians(v)), cos(radians(v))
+    self.rox[1, 1] = self.rox[2, 2] = c
+    self.rox[1, 2] = s
+    self.rox[2, 1] = -s
     self.unif[3] = v
-
+    self.M = None
+   
   def rotateToY(self, v):
+    s, c = sin(radians(v)), cos(radians(v))
+    self.roy[0, 0] = self.roy[2, 2] = c
+    self.roy[0, 2] = -s
+    self.roy[2, 0] = s
     self.unif[4] = v
+    self.M = None
 
   def rotateToZ(self, v):
+    s, c = sin(radians(v)), cos(radians(v))
+    self.roz[0, 0] = self.roz[1, 1] = c
+    self.roz[0, 1] = s
+    self.roz[1, 0] = -s
     self.unif[5] = v
+    self.M = None
 
   def rotateIncX(self,v):
     self.unif[3] += v
+    s, c = sin(radians(self.unif[3])), cos(radians(self.unif[3]))
+    self.rox[1, 1] = self.rox[2, 2] = c
+    self.rox[1, 2] = s
+    self.rox[2, 1] = -s
+    self.M = None
 
   def rotateIncY(self,v):
     self.unif[4] += v
+    s, c = sin(radians(self.unif[4])), cos(radians(self.unif[4]))
+    self.roy[0, 0] = self.roy[2, 2] = c
+    self.roy[0, 2] = -s
+    self.roy[2, 0] = s
+    self.M = None
 
   def rotateIncZ(self,v):
     self.unif[5] += v
+    s, c = sin(radians(self.unif[5])), cos(radians(self.unif[5]))
+    self.roz[0, 0] = self.roz[1, 1] = c
+    self.roz[0, 1] = s
+    self.roz[1, 0] = -s
+    self.M = None
 
   def add_vertex(self, vert, norm, texc):
   # add vertex,normal and tex_coords ...
