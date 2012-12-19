@@ -146,7 +146,7 @@ def create(is_3d=True, x=None, y=None, w=0, h=0, near=None, far=None,
       LOGGER.error("Can't compute default window size when using tk")
       raise Exception
 
-    tkwin = TkWin(window_parent, window_title, w, h)
+    tkwin = TkWin.TkWin(window_parent, window_title, w, h)
     tkwin.update()
     if x is None:
       x = tkwin.winx

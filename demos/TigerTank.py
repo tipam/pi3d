@@ -31,22 +31,26 @@ rads = 0.017453292512  # degrees to radians
 #Create a Tkinter window
 winw,winh,bord = 1200,600,0     #64MB GPU memory setting
 #winw,winh,bord = 1920,1200,0   #128MB GPU memory setting
-win = TkWin(None,"Tiger Tank demo in Pi3D",winw,winh)
 
-# Setup display and initialise pi3d viewport over the window
-win.update()  #requires a window update first so that window sizes can be retreived
-DISPLAY = Display.create(x=win.winx, y=win.winy, w=winw, h=winh - bord,
+DISPLAY = Display.create(tk=True, window_title='Tiger Tank demo in Pi3D',
+                         w=winw, h=winh - bord,
                          far=2200.0, background=(0.4, 0.8, 0.8, 1))
-camera = Camera((0, 0, 0), (0, 0, -1), (1, 1000, DISPLAY.win_width/1000.0, DISPLAY.win_height/1000.0))
+
+win = DISPLAY.tkwin
+
+camera = Camera((0, 0, 0), (0, 0, -1),
+                (1, 1000, DISPLAY.win_width/1000.0, DISPLAY.win_height/1000.0))
+
 light = Light((10, 10, -20))
 shader = Shader("shaders/bumpShade")
+
 #========================================
 
-#texture storage for loading textures
-ectex = EnvironmentCube.loadECfiles("textures/ecubes/Miramar", "miramar_256", suffix="png")
+ectex = EnvironmentCube.loadECfiles("textures/ecubes/Miramar", "miramar_256",
+                                    suffix="png")
 myecube = EnvironmentCube.EnvironmentCube(camera, light, 1800.0, "FACES")
-for i,b in enumerate(myecube.buf):
-  b.set_draw_details(shader,[ectex[i]], 0.0, -1.0)
+for i, b in enumerate(myecube.buf):
+  b.set_draw_details(shader, [ectex[i]], 0.0, -1.0)
 
 # Create elevation map
 mapwidth = 2000.0
@@ -57,7 +61,8 @@ bumpimg = Texture("textures/grasstile_n.jpg")
 tigerbmp = Texture("models/Tiger/tiger_bump.jpg")
 topbmp = Texture("models/Tiger/top_bump.jpg")
 #roadway = Texture("textures/road5.png")
-mymap = ElevationMap(camera=camera, light= light, mapfile="textures/mountainsHgt2.png",
+mymap = ElevationMap(camera=camera, light= light,
+                     mapfile="textures/mountainsHgt2.png",
                      width=mapwidth, depth=mapdepth,
                      height=mapheight, divx=64, divy=64)
 mymap.buf[0].set_draw_details(shader,[mountimg1, bumpimg],128.0, 0.0)
