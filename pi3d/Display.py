@@ -54,6 +54,9 @@ class Display(object):
     self.next_time = time.time()
 
     while self.is_on:
+      if self.mouse:
+        self.mouse.check_event(self.mouse_timeout)
+
       self.clear()
 
       self._for_each_sprite(lambda s: s.load_opengl())
@@ -138,7 +141,8 @@ class Display(object):
 
 def create(is_3d=True, x=None, y=None, w=0, h=0, near=None, far=None,
            aspect=DEFAULT_ASPECT, depth=DEFAULT_DEPTH, background=None,
-           tk=False, window_title='', window_parent=None):
+           tk=False, window_title='', window_parent=None, mouse=False,
+           mouse_timeout=1):
   if tk:
     from pi3d.util import TkWin
     if not (w and h):
@@ -184,6 +188,12 @@ def create(is_3d=True, x=None, y=None, w=0, h=0, near=None, far=None,
   display.bottom = y + h
 
   display.opengl.create_display(x, y, w, h)
+
+  display.mouse = None
+  display.mouse_timeout = mouse_timeout
+  if mouse:
+    from pi3d.Mouse import Mouse
+    display.mouse = Mouse()
 
   opengles.glMatrixMode(GL_PROJECTION)
   Utility.load_identity()

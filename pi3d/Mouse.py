@@ -4,14 +4,14 @@ import threading
 from pi3d.util import Log
 
 LOGGER = Log.logger(__name__)
+MOUSE = None
 
-class Mouse(threading.Thread):
+class NativeMouse(threading.Thread):
   XSIGN = 1 << 4
   YSIGN = 1 << 5
 
-  def __init__(self, timeout=0):
-    super(Mouse, self).__init__()
-    self.timeout = timeout
+  def __init__(self):
+    super(NativeMouse, self).__init__()
     self.fd = open('/dev/input/mouse0', 'r')
     self.x = 800
     self.y = 400
@@ -21,19 +21,16 @@ class Mouse(threading.Thread):
     self.buffer = ''
 
   def start(self):
-    if self.timeout:
-      LOGGER.error("Can't use a timeout unless mouse is on main thread")
-      assert self.timeout
-
-    self.running = True
-    super(Mouse, self).start()
+    if not self.running:
+      self.running = True
+      super(NativeMouse, self).start()
 
   def run(self):
     buffer = ''
     while self.running:
-      self.loop()
+      self.check_event()
 
-  def loop(self):
+  def check_event(self, timeout=0):
     if len(self.buffer) >= 3:
       buttons = self.buffer[0]
       self.buffer = self.buffer[1:]
@@ -51,13 +48,14 @@ class Mouse(threading.Thread):
         self.x += dx
         self.y += dy
         return True
+
     else:
-      if self.timeout:
+      if timeout:
         signal.signal(signal.SIGALRM, self.signal_handler)
-        signal.alarm(self.timeout)
+        signal.alarm(timeout)
 
       self.buffer += self.fd.read()
-      if self.timeout:
+      if timeout:
         signal.alarm(0)
 
       return False
@@ -67,3 +65,11 @@ class Mouse(threading.Thread):
 
   def signal_handler(self):
     self.stop()
+
+
+def Mouse():
+  global MOUSE
+  if not MOUSE:
+    MOUSE = NativeMouse()
+  return MOUSE
+
