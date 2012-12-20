@@ -95,6 +95,6 @@ class Cache(object):
   def create(self, file_string, blend=False, flip=False, size=0):
     texture = self.cache.get((file_string, blend, flip, size), None)
     if not texture:
-      texture = Texture(file_string, blend=blend, flip=blend, size=size)
+      texture = Texture(file_string, blend=blend, flip=flip, size=size)
       self.cache[file_string] = texture
     return texture
