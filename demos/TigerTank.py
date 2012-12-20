@@ -215,14 +215,13 @@ def loop():
   if turret - 2.0 > mouserot:
     turret -= 2.0
 
-  DISPLAY.swapBuffers()
-
   # Handle window events
   try:
     win.update()
   except:
     print 'bye bye 3'
-    return True
+    DISPLAY.stop()
+    return
 
   if win.ev=='key':
     if win.key == 'w':
@@ -243,7 +242,8 @@ def loop():
     elif win.key == 'p':
       screenshot('TigerTank.jpg')
     elif win.key == 'Escape':
-      return True
+      DISPLAY.stop()
+      return
 
   elif win.ev == 'resized':
     DISPLAY.resize(win.winx, win.winy, win.width, win.height - bord)
@@ -251,9 +251,10 @@ def loop():
     # This flag must be reset otherwise no further events will be detected
 
   win.ev = ''  #clear the event so it doesn't repeat
+  DISPLAY.swapBuffers()
 
-while not loop():
-  pass
+while DISPLAY.is_running:
+  loop()
 
 DISPLAY.destroy()
 
