@@ -41,7 +41,7 @@ class Display(object):
 
     self.sprites = []
     self.frames_per_second = 0
-    self.is_on = True
+    self.is_running = True
     self.sprites_to_unload = set()
 
     self.opengl = DisplayOpenGL()
@@ -49,38 +49,42 @@ class Display(object):
 
     LOGGER.info(STARTUP_MESSAGE)
 
+  def loop_begin(self):
+    if self.mouse:
+      self.mouse.check_event(self.mouse_timeout)
+
+    self.clear()
+    self._for_each_sprite(lambda s: s.load_opengl())
+
+  def loop_end(self):
+    t = time.time()
+    self._for_each_sprite(lambda s: s.repaint(t))
+
+    self.swapBuffers()
+
+    for sprite in self.sprites_to_unload:
+      sprite.unload_opengl()
+    self.sprites_to_unload = set()
+
+    if self.frames_per_second:
+      self.time += 1.0 / self.frames_per_second
+      delta = self.time - time.time()
+      if delta > 0:
+        time.sleep(delta)
+
   def loop(self, loop_function=lambda: None):
-    LOGGER.info('starting')
-    self.next_time = time.time()
+    LOGGER.debug('starting')
+    self.time = time.time()
 
-    while self.is_on:
-      if self.mouse:
-        self.mouse.check_event(self.mouse_timeout)
-
-      self.clear()
-
-      self._for_each_sprite(lambda s: s.load_opengl())
-
+    while self.is_running:
+      self.loop_begin()
       if loop_function():
-        break
-
-      t = time.time()
-      self._for_each_sprite(lambda s: s.repaint(t))
-
-      self.swapBuffers()
-
-      for sprite in self.sprites_to_unload:
-        sprite.unload_opengl()
-      self.sprites_to_unload = set()
-
-      if self.frames_per_second:
-        self.next_time += 1.0 / self.frames_per_second
-        delta = self.next_time - time.time()
-        if delta > 0:
-          time.sleep(delta)
+        self.stop()
+      else:
+        self.loop_end()
 
     self.destroy()
-    LOGGER.info('stopped')
+    LOGGER.debug('stopped')
 
   def resize(self, x=0, y=0, w=0, h=0):
     if w <= 0:
@@ -92,8 +96,8 @@ class Display(object):
 
     self.left = x
     self.top = y
-    self.right = x+w
-    self.bottom = y+h
+    self.right = x + w
+    self.bottom = y + h
     self.opengl.resize(x, y, w, h)
 
   def add_sprite(self, sprite, index=None):
@@ -121,7 +125,7 @@ class Display(object):
           raise
 
   def stop(self):
-    self.is_on = False
+    self.is_running = False
 
   def destroy(self):
     try:
@@ -182,7 +186,8 @@ def create(is_3d=True, x=None, y=None, w=0, h=0, near=None, far=None,
      h = display.max_height - 2 * y
      if h <= 0:
        h = display.max_height
-  LOGGER.info('w=%d, h=%d', w, h)
+  LOGGER.debug('w=%d, h=%d', w, h)
+
   if near is None:
     near = DEFAULT_NEAR_3D if is_3d else DEFAULT_NEAR_2D
   if far is None:

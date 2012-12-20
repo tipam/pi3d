@@ -154,16 +154,14 @@ def drawTiger(x, y, z, rot, roll, pitch, turret, gunangle):
 is_running = True
 
 def loop():
-  global tilt, mouserot, xm, ym, zm, ltm, tankpitch, tankroll, tankrot, turret
-  global etx, ety, etz, etr, omx, omy, tankpitch_to, tankpitch_fr
-  global tankroll_to, roll, pitch, ltm
-  global is_running
+  global tilt, roll, pitch, xm, ym, zm, ltm, tankpitch, tankroll, tankrot, turret
+  global etx, ety, etz, etr, omx, omy, tankpitch_to, tankpitch_fr, mouserot
+  global tankroll_to, ltm
   DISPLAY.clear()
 
   camera.reset()
   #tilt can be used as a means to prevent the view from going under the landscape!
-  if tilt < -1: sf = 60 - 55.0/abs(tilt)
-  else: sf = 5.0
+  sf = 60 - 55.0 / abs(tilt) if tilt < -1 else 5.0
   xoff = sf * math.sin(math.radians(mouserot))
   yoff = abs(1.25 * sf * math.sin(math.radians(tilt))) + 3.0
   zoff = -sf * math.cos(math.radians(mouserot))
@@ -182,7 +180,7 @@ def loop():
   tankroll += (tankroll_to - tankroll)/3.0
   drawTiger(xm, ym, zm, tankrot, tankroll, tankpitch, 180 - turret, 0.0)
 
-  mymap.draw()           #Draw the landscape
+  mymap.draw()           # Draw the landscape
 
   #Draw enemy tank
   etdx = -math.sin(math.radians(etr))
@@ -207,8 +205,8 @@ def loop():
 
   #update mouse/keyboard input
   mx, my = DISPLAY.mouse.x, DISPLAY.mouse.y
-  mouserot -= (mx - omx)*0.2
-  tilt += (my - omy)*0.2
+  mouserot -= (mx - omx) * 0.2
+  tilt += (my - omy) * 0.2
   omx, omy = mx, my
 
   # turns player tankt turret towards center of screen which will have a crosshairs
@@ -224,7 +222,7 @@ def loop():
     win.update()
   except:
     print 'bye bye 3'
-    is_running = False
+    return True
 
   if win.ev=='key':
     if win.key == 'w':
@@ -245,7 +243,7 @@ def loop():
     elif win.key == 'p':
       screenshot('TigerTank.jpg')
     elif win.key == 'Escape':
-      is_running = False
+      return True
 
   elif win.ev == 'resized':
     DISPLAY.resize(win.winx, win.winy, win.width, win.height - bord)
@@ -254,8 +252,8 @@ def loop():
 
   win.ev = ''  #clear the event so it doesn't repeat
 
-while is_running:
-  loop()
+while not loop():
+  pass
 
 DISPLAY.destroy()
 
