@@ -29,7 +29,7 @@ LOGGER = Log.logger(__name__)
 rads = 0.017453292512  # degrees to radians
 
 #Create a Tkinter window
-winw,winh,bord = 1200,600,0     #64MB GPU memory setting
+winw, winh, bord = 1200, 600, 0     #64MB GPU memory setting
 #winw,winh,bord = 1920,1200,0   #128MB GPU memory setting
 
 DISPLAY = Display.create(tk=True, window_title='Tiger Tank demo in Pi3D',
@@ -65,8 +65,10 @@ mymap = ElevationMap(camera=camera, light= light,
                      mapfile="textures/mountainsHgt2.png",
                      width=mapwidth, depth=mapdepth,
                      height=mapheight, divx=64, divy=64)
+
 mymap.buf[0].set_draw_details(shader,[mountimg1, bumpimg],128.0, 0.0)
 mymap.set_fog((0.7,0.8,0.9,0.5), 1000.0)
+
 #Load tank
 tank_body = Model(camera, light, "models/Tiger/bodylow.egg", "TigerBody", 0,0,0, 0,0,0, 0.1,0.1,.1)
 tank_body.set_shader(shader)
@@ -101,7 +103,7 @@ cottages.set_fog((0.7,0.8,0.9,0.5), 1000.0)
 
 #player tank vars
 tankrot = 180.0
-turrot = 0.0
+turret = 0.0
 tankroll = 0.0     #side-to-side roll of tank on ground
 tankpitch = 0.0   #too and fro pitch of tank on ground
 
@@ -113,7 +115,7 @@ xm = 0.0
 zm = -200.0
 dxm = 0.0
 dzm = -1.0
-ym = mymap.calcHeight(xm,zm) + avhgt
+ym = mymap.calcHeight(xm, zm) + avhgt
 
 #enemy tank vars
 #etx = 130
@@ -126,10 +128,10 @@ etr = 0.0
 mymouse = Mouse()
 mymouse.start()
 
-omx=mymouse.x
-omy=mymouse.y
+omx = mymouse.x
+omy = mymouse.y
 
-myfog = Fog(0.0014,(0.7,0.8,0.9,0.5))
+myfog = Fog(0.0014, (0.7, 0.8, 0.9, 0.5))
 
 ltm = 0.0 #last pitch roll check
 
@@ -150,7 +152,10 @@ def drawTiger(x, y, z, rot, roll, pitch, turret, gunangle):
   tank_gun.rotateToZ(roll)
   tank_gun.draw()
 
-while 1:
+def loop():
+  global tilt, mouserot, xm, ym, zm, ltm, tankpitch, tankroll, tankrot, turret
+  global etx, ety, etz, etr, omx, omy, tankpitch_to, tankpitch_fr
+  global tankroll_to, roll, pitch, ltm
   DISPLAY.clear()
 
   camera.reset()
@@ -169,7 +174,7 @@ while 1:
     tankpitch_to, tankroll_to = mymap.pitch_roll(xm, zm)
   tankpitch += (tankpitch_to - tankpitch)/3.0
   tankroll += (tankroll_to - tankroll)/3.0
-  drawTiger(xm, ym, zm, tankrot, tankroll, tankpitch, 180 - turrot, 0.0)
+  drawTiger(xm, ym, zm, tankrot, tankroll, tankpitch, 180 - turret, 0.0)
 
   mymap.draw()           #Draw the landscape
 
@@ -200,10 +205,10 @@ while 1:
   omx, omy = mx, my
 
   # turns player tankt turret towards center of screen which will have a crosshairs
-  if turrot+2.0 < mouserot:
-          turrot+=2.0
-  if turrot-2.0 > mouserot:
-          turrot-=2.0
+  if turret+2.0 < mouserot:
+          turret+=2.0
+  if turret-2.0 > mouserot:
+          turret-=2.0
 
   #Press ESCAPE to terminate
 
@@ -223,35 +228,39 @@ while 1:
     exit()
 
   if win.ev=="key":
-      if win.key=="w":
-          dxm = -math.sin(tankrot*rads)*2
-          dzm = -math.cos(tankrot*rads)*2
-          xm += dxm
-          zm += dzm
-          ym = (mymap.calcHeight(xm, zm) + avhgt)
-      elif win.key=="s":
-          xm += math.sin(tankrot*rads)*2
-          zm += math.cos(tankrot*rads)*2
-          ym = (mymap.calcHeight(xm, zm) + avhgt)
+      if win.key == "w":
+        dxm = -math.sin(tankrot*rads)*2
+        dzm = -math.cos(tankrot*rads)*2
+        xm += dxm
+        zm += dzm
+        ym = (mymap.calcHeight(xm, zm) + avhgt)
+
+      elif win.key == "s":
+        xm += math.sin(tankrot*rads)*2
+        zm += math.cos(tankrot*rads)*2
+        ym = (mymap.calcHeight(xm, zm) + avhgt)
       elif win.key == "a":
-          tankrot -= 2
+        tankrot -= 2
       elif win.key == "d":
-          tankrot += 2
+        tankrot += 2
       elif win.key == "p":
-          screenshot("TigerTank.jpg")
+        screenshot("TigerTank.jpg")
       elif win.key == "Escape":
-          try:
-            DISPLAY.destroy()
-            win.destroy()
-            print "Bye bye! 1"
-          except Exception:
-            print "Bye bye! 2"
+        try:
+          DISPLAY.destroy()
+          win.destroy()
+          print "Bye bye! 1"
+        except Exception:
+          print "Bye bye! 2"
 
   if win.ev=="resized":
-      DISPLAY.resize(win.winx, win.winy, win.width, win.height - bord)
-      win.resized=False  #this flag must be set otherwise no further events will be detected
+    DISPLAY.resize(win.winx, win.winy, win.width, win.height - bord)
+    win.resized = False
+    # This flag must be reset otherwise no further events will be detected
 
-  win.ev=""  #clear the event so it doesn't repeat
+  win.ev = ""  #clear the event so it doesn't repeat
 
+while True:
+  loop()
 
 

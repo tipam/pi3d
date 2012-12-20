@@ -1,42 +1,47 @@
+import signal
 import threading
 
-XSIGN = 1 << 4
-YSIGN = 1 << 5
-
 class Mouse(threading.Thread):
-  def __init__(self):
-    threading.Thread.__init__(self)
-    self.fd = open('/dev/input/mouse0','r')
+  XSIGN = 1 << 4
+  YSIGN = 1 << 5
+
+  def __init__(self, timeout=1):
+    super(Mouse, self).__init__()
+    self.fd = open('/dev/input/mouse0', 'r')
     self.x = 800
     self.y = 400
-    self.width = 1920
-    self.height = 1080
     self.finished = False
     self.button = False
+    self.running = False
+
+  def start(self):
+    self.running = True
+    super(Mouse, self).start()
 
   def run(self):
-    while True:
-      while True:
-        buttons, dx, dy = map(ord, self.fd.read(3))
+    buffer = ''
+    while self.running:
+      if len(buffer) >= 3:
+        buttons = buffer[0]
+        buffer = buffer[1:]
         if buttons & 8:
-          break # This bit should always be set
-        self.fd.read(1) # Try to sync up again
-      if buttons & 3:
-        self.button=True
-        #break  # Stop if mouse button pressed!
-      if buttons & XSIGN:
-          dx -= 256
-      if buttons & YSIGN:
-          dy -= 256
+          dx, dy = map(ord, buffer[0:2])
+          buffer = buffer[2:]
+          if buttons & 3:
+            self.button = True
+            # break  # Stop if mouse button pressed!
+          if buttons & Mouse.XSIGN:
+            dx -= 256
+          if buttons & Mouse.YSIGN:
+            dy -= 256
 
-      self.x += dx
-      self.y += dy
-      #if self.x<0: self.x=0
-      #if self.y<0: self.y=0
-      #self.x=min(self.x,self.width)
-      #self.y=min(self.y,self.height)
+          self.x += dx
+          self.y += dy
+      else:
+        # No way to avoid blocking - we can't use signals if we aren't in the
+        # main thread. :-(
+        buffer += self.fd.read()
 
-  # possibly not ideal to do without semaphore and checking for exceptions but probably safe here
   def stop(self):
-    self._Thread__stop()
+    self.running = False
 
