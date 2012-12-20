@@ -1,5 +1,6 @@
 import signal
 import threading
+import traceback
 
 from pi3d.util import Log
 
@@ -63,9 +64,9 @@ class NativeMouse(threading.Thread):
   def stop(self):
     self.running = False
 
-  def signal_handler(self):
+  def signal_handler(self, signum, frame):
+    LOGGER.error('Shutting down with signal %s', signum)
     self.stop()
-
 
 def Mouse():
   global MOUSE

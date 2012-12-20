@@ -47,6 +47,7 @@ class Display(object):
     self.max_width, self.max_height = self.opengl.width, self.opengl.height
     self.internal_loop = False
     self.external_loop = False
+    self.is_running = True
 
     LOGGER.info(STARTUP_MESSAGE)
 
