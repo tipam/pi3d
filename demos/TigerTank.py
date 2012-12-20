@@ -33,7 +33,7 @@ winw, winh, bord = 1200, 600, 0     #64MB GPU memory setting
 #winw,winh,bord = 1920,1200,0   #128MB GPU memory setting
 
 DISPLAY = Display.create(tk=True, window_title='Tiger Tank demo in Pi3D',
-                         w=winw, h=winh - bord,
+                         mouse=True, w=winw, h=winh - bord,
                          far=2200.0, background=(0.4, 0.8, 0.8, 1))
 
 win = DISPLAY.tkwin
@@ -124,12 +124,7 @@ etx = 130
 etz = -100
 etr = 0.0
 
-# Fetch key presses
-mymouse = Mouse()
-mymouse.start()
-
-omx = mymouse.x
-omy = mymouse.y
+omx, omy = DISPLAY.mouse.x, DISPLAY.mouse.y
 
 myfog = Fog(0.0014, (0.7, 0.8, 0.9, 0.5))
 
@@ -199,7 +194,7 @@ def loop():
   myecube.draw()#Draw environment cube
 
   #update mouse/keyboard input
-  mx, my = mymouse.x, mymouse.y
+  mx, my = DISPLAY.mouse.x, DISPLAY.mouse.y
   mouserot -= (mx-omx)*0.2
   tilt += (my-omy)*0.2
   omx, omy = mx, my
@@ -220,11 +215,6 @@ def loop():
   except:
     print "bye bye 3"
     DISPLAY.destroy()
-    try:
-      win.destroy()
-    except:
-      pass
-    mymouse.stop()
     exit()
 
   if win.ev=="key":

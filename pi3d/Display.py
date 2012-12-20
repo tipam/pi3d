@@ -124,7 +124,18 @@ class Display(object):
     self.is_on = False
 
   def destroy(self):
-    self.opengl.destroy()
+    try:
+      self.opengl.destroy()
+    except:
+      pass
+    try:
+      self.mouse.stop()
+    except:
+      pass
+    try:
+      self.tkwin.destroy()
+    except:
+      pass
 
   def swapBuffers(self):
     self.opengl.swapBuffers()
