@@ -24,11 +24,15 @@ from pi3d.util.Screenshot import screenshot
 from pi3d.util import Log
 from pi3d.util.TkWin import TkWin
 
+# TODO(rec): why doesn't this work when True?  It should be executing the same
+# code!
+USE_EXTERNAL_LOOP = not True
+
 LOGGER = Log.logger(__name__)
 
-#Create a Tkinter window
+# Create a Tkinter window
 winw, winh, bord = 1200, 600, 0     #64MB GPU memory setting
-#winw,winh,bord = 1920,1200,0   #128MB GPU memory setting
+# winw,winh,bord = 1920,1200,0   #128MB GPU memory setting
 
 DISPLAY = Display.create(tk=True, window_title='Tiger Tank demo in Pi3D',
                          mouse=True, w=winw, h=winh - bord,
@@ -59,7 +63,7 @@ bumpimg = Texture('textures/grasstile_n.jpg')
 tigerbmp = Texture('models/Tiger/tiger_bump.jpg')
 topbmp = Texture('models/Tiger/top_bump.jpg')
 #roadway = Texture('textures/road5.png')
-mymap = ElevationMap(camera=camera, light= light,
+mymap = ElevationMap(camera=camera, light=light,
                      mapfile='textures/mountainsHgt2.png',
                      width=mapwidth, depth=mapdepth,
                      height=mapheight, divx=64, divy=64)
@@ -103,7 +107,8 @@ x, z = 250,-40
 y = mymap.calcHeight(x,z)
 
 cottages = make_model('Cottages/cottages_low.egg', 'cottagesLo', x, y, z, ry=-5)
-#cottagesHi = Model(camera, light, 'models/Cottages/cottages.egg', 'cottagesHi', x,y,z, -90,-5,0, .1,.1,.1)
+#cottagesHi = Model(camera, light, 'models/Cottages/cottages.egg', 'cottagesHi',
+#                   x,y,z, -90,-5,0, .1,.1,.1)
 
 #player tank vars
 tankrot = 180.0
@@ -157,17 +162,17 @@ def loop():
   global tilt, roll, pitch, xm, ym, zm, ltm, tankpitch, tankroll, tankrot, turret
   global etx, ety, etz, etr, omx, omy, tankpitch_to, tankpitch_fr, mouserot
   global tankroll_to, ltm
-  DISPLAY.clear()
 
   camera.reset()
-  #tilt can be used as a means to prevent the view from going under the landscape!
+  # tilt can be used to prevent the view from going under the landscape!
   sf = 60 - 55.0 / abs(tilt) if tilt < -1 else 5.0
   xoff = sf * math.sin(math.radians(mouserot))
   yoff = abs(1.25 * sf * math.sin(math.radians(tilt))) + 3.0
   zoff = -sf * math.cos(math.radians(mouserot))
 
   #xoff, yoff, zoff = 0,0,0
-  #camera.translate((xm, ym-10*sf-5.0, zm-40*sf))   #zoom camera out so we can see our robot
+  #camera.translate((xm, ym-10*sf-5.0, zm-40*sf))
+  #zoom camera out so we can see our robot
   camera.rotate(tilt, mouserot, 0)           #Tank still affected by scene tilt
   camera.translate((xm + xoff, ym + yoff + 5, zm + zoff))
   #zoom camera out so we can see our robot
@@ -250,11 +255,20 @@ def loop():
     win.resized = False
     # This flag must be reset otherwise no further events will be detected
 
-  win.ev = ''  #clear the event so it doesn't repeat
-  DISPLAY.swapBuffers()
+  win.ev = ''  # Clear the event so it doesn't repeat.
 
-while DISPLAY.is_running:
-  loop()
+
+if USE_EXTERNAL_LOOP:
+  # This fails.
+  while DISPLAY.loop_running():
+    loop()
+
+else:
+  # This works.
+  while DISPLAY.is_running:
+    DISPLAY.clear()
+    loop()
+    DISPLAY.swapBuffers()
 
 DISPLAY.destroy()
 

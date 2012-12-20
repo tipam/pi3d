@@ -71,10 +71,13 @@ class Display(object):
     if self.is_running:
       assert not self.internal_loop, "Use only one of loop and loop_running"
       if self.external_loop:
-        self.external_loop = True  # First time.
-      else:
         self._loop_end()
+      else:
+        self.external_loop = True  # First time.
       self._loop_begin()
+
+    else:
+      self._loop_end()
 
     return self.is_running
 
