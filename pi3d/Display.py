@@ -41,50 +41,41 @@ class Display(object):
 
     self.sprites = []
     self.frames_per_second = 0
-    self.is_running = True
     self.sprites_to_unload = set()
 
     self.opengl = DisplayOpenGL()
     self.max_width, self.max_height = self.opengl.width, self.opengl.height
+    self.internal_loop = False
+    self.external_loop = False
 
     LOGGER.info(STARTUP_MESSAGE)
 
-  def loop_begin(self):
-    if self.mouse:
-      self.mouse.check_event(self.mouse_timeout)
-
-    self.clear()
-    self._for_each_sprite(lambda s: s.load_opengl())
-
-  def loop_end(self):
-    t = time.time()
-    self._for_each_sprite(lambda s: s.repaint(t))
-
-    self.swapBuffers()
-
-    for sprite in self.sprites_to_unload:
-      sprite.unload_opengl()
-    self.sprites_to_unload = set()
-
-    if self.frames_per_second:
-      self.time += 1.0 / self.frames_per_second
-      delta = self.time - time.time()
-      if delta > 0:
-        time.sleep(delta)
-
-  def loop(self, loop_function=lambda: None):
+  def loop(self, loop_function=None):
     LOGGER.debug('starting')
     self.time = time.time()
+    assert not self.external_loop, "Use only one of loop and loop_running"
 
+    self.internal_loop = True
     while self.is_running:
-      self.loop_begin()
-      if loop_function():
+      self._loop_begin()
+      if loop_function and loop_function():
         self.stop()
       else:
-        self.loop_end()
+        self._loop_end()
 
     self.destroy()
     LOGGER.debug('stopped')
+
+  def loop_running(self):
+    if self.is_running:
+      assert not self.internal_loop, "Use only one of loop and loop_running"
+      if self.external_loop:
+        self.external_loop = True  # First time.
+      else:
+        self._loop_end()
+      self._loop_begin()
+
+    return self.is_running
 
   def resize(self, x=0, y=0, w=0, h=0):
     if w <= 0:
@@ -114,6 +105,29 @@ class Display(object):
 
   def unload_opengl(self, item):
     self.sprites_to_unload.add(item)
+
+  def _loop_begin(self):
+    if self.mouse:
+      self.mouse.check_event(self.mouse_timeout)
+
+    self.clear()
+    self._for_each_sprite(lambda s: s.load_opengl())
+
+  def _loop_end(self):
+    t = time.time()
+    self._for_each_sprite(lambda s: s.repaint(t))
+
+    self.swapBuffers()
+
+    for sprite in self.sprites_to_unload:
+      sprite.unload_opengl()
+    self.sprites_to_unload = set()
+
+    if self.frames_per_second:
+      self.time += 1.0 / self.frames_per_second
+      delta = self.time - time.time()
+      if delta > 0:
+        time.sleep(delta)
 
   def _for_each_sprite(self, function):
     for s in self.sprites:
