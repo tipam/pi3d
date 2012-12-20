@@ -95,9 +95,9 @@ def run_demo(demo, demo_list):
   for d in demo_list:
     if d.lower().startswith(demo):
       run_one_demo(d)
-  else:
-    print("Didn't understand demo '%s'" % demo)
-    usage(demo_list)
+      return
+  print("Didn't understand demo '%s'" % demo)
+  usage(demo_list)
 
 def select_demo(demo_list):
   if not USE_TK:
