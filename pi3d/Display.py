@@ -52,6 +52,7 @@ class Display(object):
     LOGGER.info(STARTUP_MESSAGE)
 
   def loop(self, loop_function=None):
+    """Deprecated."""
     LOGGER.debug('starting')
     self.time = time.time()
     assert not self.external_loop, "Use only one of loop and loop_running"
