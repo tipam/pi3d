@@ -40,11 +40,12 @@ from pi3d.util.Screenshot import screenshot
 
 #DISPLAY = Display.create(w=1840, h=1130)
 DISPLAY = Display.create()
-DISPLAY.setBackColour(0.9, 0.0, 0.5, 0.5)      # r,g,b,alpha
+DISPLAY.setBackColour(0.2, 0.0, 0.1, 0.7)      # r,g,b,alpha
 #setup camera, light, shader
 camera = Camera((0, 0, 5), (0, 0, -2), (1, 1000, 1.6, 1.2))
 light = Light((5, 5, 1))
-shader = Shader("shaders/bumpShade")
+shader = Shader("shaders/uv_reflect")
+flatsh = Shader("shaders/uv_flat")
 
 # Load textures
 patimg = Texture("textures/PATRN.PNG")
@@ -74,7 +75,7 @@ myPlane.translate(0, 0, 10)
 
 arialFont = Font("AR_CENA","#dd00aa")   #load AR_CENA font and set the font colour to 'raspberry'
 mystring = String(camera, light, arialFont, "RaspberryPi-Rocks")
-mystring.set_shader(shader)
+mystring.set_shader(flatsh)
 
 
 # Fetch key presses
