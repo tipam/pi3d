@@ -37,12 +37,13 @@ display = Display.create(x=win.winx, y=win.winy, w=winw, h=winh - bord,
                          far=2200.0, background=(0.4, 0.8, 0.8, 1))
 camera = Camera((0, 0, 0), (0, 0, -1), (1, 1000, display.win_width/1000.0, display.win_height/1000.0))
 light = Light((10, 10, -20))
-shader = Shader("shaders/bumpShade")
+shader = Shader("shaders/uv_reflect")
+flatsh = Shader("shaders/uv_flat")
 #############################
 ectex = EnvironmentCube.loadECfiles("textures/ecubes/RedPlanet", "redplanet_256", "png", True)
 myecube = EnvironmentCube.EnvironmentCube(camera, light, 1800.0,"FACES")
 for i,b in enumerate(myecube.buf):
-  b.set_draw_details(shader,[ectex[i]], 0.0, -1.0)
+  b.set_draw_details(flatsh,[ectex[i]], 0.0, -1.0)
 
 
 # Create elevation map

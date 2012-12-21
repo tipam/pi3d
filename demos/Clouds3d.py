@@ -42,7 +42,7 @@ scny = DISPLAY.win_height
 DISPLAY.setBackColour(0,0.7,1,1)
 camera = Camera((0, 0, 0), (0, 0, -0.1), (1, 1000, DISPLAY.win_width/1000.0, DISPLAY.win_height/1000.0))
 light = Light((10, 10, -20))
-shader = Shader("shaders/bumpShade")
+shader = Shader("shaders/uv_flat")
 #############################
 
 clouds = []
@@ -71,10 +71,18 @@ while True:
 
   DISPLAY.clear()
 
-  # this is easier to understand, the z position of each cloud is (only) held in cxyz[i].locn[2]
+  #TODO this is still drawing the clouds in the wrong order, needs to be sorted out
+
+  # this is easier to understand, the z position of each cloud is (only) held in cxyz[i].unif[2]
   # it stops the clouds appearing in front of nearer clouds!
   # first go through the clouds to find index of furthest away
   maxDepthIndex = 0
+  maxDepth = -100
+  for i, cloud in enumerate(cxyz):
+    if cloud.unif[2] > maxDepth:
+      mapxDepth = cloud.unif[2]
+      maxDepthIndex = i
+
   # paint the clouds from background to foreground
   for i in range(maxDepthIndex, maxDepthIndex + cloudno):
     cloud = cxyz[i % cloudno]
@@ -82,7 +90,7 @@ while True:
     cloud.translateZ(-speed)
     if cloud.unif[2] < -2.0:
       cloud.positionZ(cloud_depth)
-      maxDepthIndex = i % cloudno
+
 
 
   #Press ESCAPE to terminate
