@@ -46,7 +46,8 @@ DISPLAY.setBackColour(0.4,0.8,0.8,1) # r,g,b,alpha
 camera = Camera((0, 0, 0), (0, 0, -1), (1, 1000, DISPLAY.win_width/1000.0, DISPLAY.win_height/1000.0))
 light = Light((10, 10, -20))
 # load shader
-shader = Shader("shaders/bumpShade")
+shader = Shader("shaders/uv_reflect")
+flatsh = Shader("shaders/uv_flat")
 #========================================
 
 
@@ -58,16 +59,19 @@ ballimg = Texture("textures/cloud6.png", True)
 # environment cube
 ectex = Texture("textures/ecubes/skybox_stormydays.jpg")
 myecube = EnvironmentCube(camera, light, 900.0,"CROSS")
-myecube.buf[0].set_draw_details(shader,[ectex],0.0,-1.0)
+myecube.buf[0].set_draw_details(flatsh, [ectex])
 #ball
 maxdsz = 0.3
 radius = 1.0
 ball = Sphere(camera, light, radius,12,12,0.0,"sphere",-4,8,-7)
 ball.buf[0].set_draw_details(shader,[ballimg], 0.0, 0.0)
+#ball.buf[0].set_draw_details(shader,[])
+#ball.buf[0].set_material((0.0,0.2,0.6))
 #monster
 monster = Plane(camera, light, 5.0, 5.0, "monster", 0,0,0, 0,0,0)
-monster.buf[0].set_draw_details(shader, [monstimg], 0.0, 0.0)
-
+monster.buf[0].set_draw_details(flatsh, [monstimg])
+#monster.buf[0].set_draw_details(flatsh, [])
+#monster.buf[0].set_material((0.0,0.2,0.6))
 # Create elevation map
 mapwidth=50.0
 mapdepth=50.0
@@ -77,7 +81,9 @@ mapheight=40.0
 mymap = ElevationMap("textures/pong.jpg", camera=camera, light=light,
                      width=mapwidth, depth=mapdepth, height=mapheight,
                      divx=32, divy=32, ntiles=4, name="sub")
-mymap.buf[0].set_draw_details(shader, [groundimg], 0.0, 0.0)
+mymap.buf[0].set_draw_details(shader, [groundimg, groundimg, ballimg], 1.0, 0.5)
+#mymap.buf[0].set_draw_details(shader, [])
+#mymap.buf[0].set_material((1.0,0.2,0.4))
 
 #avatar camera
 rot = 0.0
@@ -92,9 +98,9 @@ lastZ0 = 0.0
 arialFont = Font("AR_CENA","#dd00aa")   #load AR_CENA font and set the font colour to 'raspberry'
 score = [0,0]
 score0 = String(camera, light,  arialFont, str(score[0]), 0, 12, 0, 0.05, 0.05)
-score0.set_shader(shader)
+score0.set_shader(flatsh)
 score1 = String(camera, light,  arialFont, str(score[1]), 0, 12, 0, 0.05, 0.05)
-score1.set_shader(shader)
+score1.set_shader(flatsh)
 
 
 
@@ -187,14 +193,14 @@ while True:
       dsx, dsy, dsz = 0.3*random.random()-0.15, 0, 0.1
       score[1] += 1
       score1 = String(camera, light,  arialFont, str(score[1]), 0, 12, 5, 0.05, 0.05)
-      score1.set_shader(shader)
+      score1.set_shader(flatsh)
   elif sz > maphalf: #monster end
     if (sx-rx)**2 + (sy-ry)**2 < 10:
       dsz = -1 * abs(dsz)
     else:
       score[0] += 1
       score0 = String(camera, light,  arialFont, str(score[0]), 0, 12, -5, 0.05, 0.05)
-      score0.set_shader(shader)
+      score0.set_shader(flatsh)
       radius = 0.1 + (radius - 0.1)*0.75 # ball gets smaller each time you score
       ball = Sphere(camera, light, radius,12,12,0.0,"sphere",0,0,0)
       ball.buf[0].set_draw_details(shader,[ballimg], 0.0, 0.0)

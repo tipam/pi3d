@@ -44,7 +44,8 @@ camera = Camera((0, 0, 0), (0, 0, -1),
                 (1, 1000, DISPLAY.win_width/1000.0, DISPLAY.win_height/1000.0))
 
 light = Light((10, 10, -20))
-shader = Shader('shaders/bumpShade')
+shader = Shader('shaders/uv_reflect')
+flatsh = Shader('shaders/uv_flat')
 
 #========================================
 
@@ -52,7 +53,7 @@ ectex = EnvironmentCube.loadECfiles('textures/ecubes/Miramar', 'miramar_256',
                                     suffix='png')
 myecube = EnvironmentCube.EnvironmentCube(camera, light, 1800.0, 'FACES')
 for i, b in enumerate(myecube.buf):
-  b.set_draw_details(shader, [ectex[i]], 0.0, -1.0)
+  b.set_draw_details(flatsh, [ectex[i]], 0.0, -1.0)
 
 # Create elevation map
 mapwidth = 2000.0

@@ -32,8 +32,8 @@ DISPLAY.setBackColour(r=0.2, g=0.4, b=0.6, alpha=1)
 
 
 camera = Camera((0, 0, 0), (0, 0, -1), (1, 1000, DISPLAY.win_width/1000.0, DISPLAY.win_height/1000.0))
-light = Light((10, 10, -20))
-shader = Shader("shaders/bumpShade")
+light = Light((1, 1, 1))
+shader = Shader("shaders/mat_reflect")
 #========================================
 # load bump and reflection textures
 bumptex = Texture("textures/floor_nm.jpg")
@@ -43,8 +43,8 @@ shinetex = Texture("textures/stars.jpg")
 # load model_loadmodel
 mymodel = Model(camera, light, 'models/teapot.egg' ,'teapot', 0, -2, 8)
 mymodel.set_shader(shader)
-mymodel.set_normal_shine(bumptex, 4.0, shinetex, 0.5)
-
+# material is set in the file
+mymodel.set_normal_shine(bumptex, 4.0, shinetex, 0.2, is_uv = False)
 
 # Fetch key presses
 mykeys = Keyboard()

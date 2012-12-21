@@ -39,7 +39,8 @@ camera = Camera((0, 0, 0), (0, 0, -1), (1, 1000, DISPLAY.win_width/1000.0, DISPL
 light = Light((10, 10, -20))
 
 # load shader
-shader = Shader("shaders/bumpShade")
+shader = Shader("shaders/uv_light")
+flatsh = Shader("shaders/uv_flat")
 
 print "=============================================================="
 print "Instructions:"
@@ -53,7 +54,7 @@ print "=============================================================="
 ectex = loadECfiles("textures/ecubes","sbox")
 myecube = EnvironmentCube(camera, light, 900.0,"FACES", "bfa", 0.0, 50.0, 0.0)
 for i in range(6):
-  myecube.buf[i].set_draw_details(shader, [ectex[i]], 0.0, -1.0)
+  myecube.buf[i].set_draw_details(flatsh, [ectex[i]], 0.0, -1.0)
 
 # load model_loadmodel
 mymodel = Model(camera, light, "models/Buckfast Abbey/BuckfastAbbey.egg", "Abbey",

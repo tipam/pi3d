@@ -1,3 +1,4 @@
+
 # Forest walk example using pi3d module
 # =====================================
 # Copyright (c) 2012 - Tim Skillman
@@ -37,7 +38,7 @@ from pi3d.shape.Sphere import Sphere
 from pi3d.util.Screenshot import screenshot
 
 # Setup display and initialise pi3d
-DISPLAY = Display.create(x=100, y=100)
+DISPLAY = Display.create(x=200, y=200)
 DISPLAY.setBackColour(0.4,0.8,0.8,1)      # r,g,b,alpha
 
 camera = Camera((0, 0, 0), (0, 0, -1), (1, 1000, DISPLAY.win_width/1000.0, DISPLAY.win_height/1000.0))
@@ -45,7 +46,8 @@ light = Light((1, 1, 4))
 #========================================
 
 # load shader
-shader = Shader("shaders/bumpShade")
+shader = Shader("shaders/uv_reflect")
+flatsh = Shader("shaders/uv_flat")
 
 tree2img = Texture("textures/tree2.png")
 tree1img = Texture("textures/tree1.png")
@@ -55,22 +57,24 @@ bumpimg = Texture("textures/grasstile_n.jpg")
 reflimg = Texture("textures/stars.jpg")
 rockimg = Texture("textures/rock1.jpg")
 
+FOG = ((0.3, 0.3, 0.4, 1.0), 650.0)
+
 #myecube = EnvironmentCube(900.0,"HALFCROSS")
 ectex=loadECfiles("textures/ecubes","sbox")
-myecube = EnvironmentCube(camera, light, 900.0,"FACES")
+myecube = EnvironmentCube(camera, light,900.0,"FACES", name="cube")
 for i in range(6):
-  myecube.buf[i].set_draw_details(shader, [ectex[i]], 0.0, -1.0)
+  myecube.buf[i].set_draw_details(flatsh, [ectex[i]])
 
 # Create elevation map
 mapwidth = 1000.0
 mapdepth = 1000.0
 mapheight = 60.0
 mountimg1 = Texture("textures/mountains3_512.jpg")
-mymap = ElevationMap("textures/mountainsHgt.jpg", camera=camera, light=light,
+mymap = ElevationMap("textures/mountainsHgt.jpg", name="map", camera=camera, light=light,
                      width=mapwidth, depth=mapdepth, height=mapheight,
                      divx=32, divy=32) #testislands.jpg
 mymap.buf[0].set_draw_details(shader, [mountimg1, bumpimg], 128.0, 0.0)
-mymap.set_fog((0.3, 0.3, 0.4, 1.0), 650.0)
+mymap.set_fog(*FOG)
 
 #Create tree models
 treeplane = Plane(camera, light, 4.0,5.0)
@@ -86,26 +90,28 @@ treemodel2.add(treeplane.buf[0], 0,0,0, 0,120,0)
 
 #Scatter them on map using Merge shape's cluster function
 mytrees1 = MergeShape(camera, light, "trees1")
-mytrees1.cluster(treemodel1.buf[0], mymap,0.0,0.0,200.0,200.0,30,"",8.0,3.0)
+mytrees1.cluster(treemodel1.buf[0], mymap,0.0,0.0,200.0,200.0,20,"",8.0,3.0)
 mytrees1.buf[0].set_draw_details(shader, [tree2img], 0.0, 0.0)
+mytrees1.set_fog(*FOG)
 #         (shape,elevmap,xpos,zpos,w,d,count,options,minscl,maxscl)
 
 mytrees2 = MergeShape(camera, light, "trees2")
-mytrees2.cluster(treemodel2.buf[0], mymap,0.0,0.0,200.0,200.0,30,"",6.0,3.0)
+mytrees2.cluster(treemodel2.buf[0], mymap,0.0,0.0,200.0,200.0,20,"",6.0,3.0)
 mytrees2.buf[0].set_draw_details(shader, [tree1img], 0.0, 0.0)
+mytrees2.set_fog(*FOG)
 #         (shape,elevmap,xpos,zpos,w,d,count,options,minscl,maxscl)
 
 mytrees3 = MergeShape(camera, light, "trees3")
-mytrees3.cluster(treemodel2, mymap,0.0,0.0,300.0,300.0,30,"",4.0,2.0)
+mytrees3.cluster(treemodel2, mymap,0.0,0.0,300.0,300.0,20,"",4.0,2.0)
 mytrees3.buf[0].set_draw_details(shader, [hb2img], 0.0, 0.0)
+mytrees3.set_fog(*FOG)
 #         (shape,elevmap,xpos,zpos,w,d,count,options,minscl,maxscl)
 
 #Create monolith
-monolith = Sphere(camera, light, 8.0, 12, 48, sy = 10.0)
+monolith = Sphere(camera, light, 8.0, 12, 48, sy = 10.0, name="monolith")
 monolith.translate(100.0, -mymap.calcHeight(100.0, 350) + 10.0, 350.0)
-#monolith.buf[0].set_draw_details(shader, [rockimg, bumpimg, reflimg], 32.0, 0.3)
-monolith.buf[0].set_draw_details(shader, [rockimg], 2.0, 0.4)
-monolith.set_fog((0.3, 0.3, 0.4, 1.0), 650.0)
+monolith.buf[0].set_draw_details(shader, [rockimg, bumpimg, reflimg], 32.0, 0.3)
+monolith.set_fog(*FOG)
 
 #screenshot number
 scshots = 1
@@ -163,7 +169,6 @@ while 1:
       ym = mymap.calcHeight(xm, zm) + avhgt
     elif k==39:   #key '
       tilt -= 2.0
-      print tilt
     elif k==47:   #key /
       tilt += 2.0
     elif k==97:   #key A

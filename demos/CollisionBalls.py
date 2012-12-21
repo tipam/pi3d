@@ -26,7 +26,7 @@ TEXTURE_NAMES = ['textures/red_ball.png',
 DISPLAY = Display.create(is_3d=False, background=BACKGROUND)
 camera = Camera((0, 0, 0), (0, 0, -0.1), (1, 1000, DISPLAY.win_width/1000.0, DISPLAY.win_height/1000.0))
 light = Light((10, 10, -20))
-shader = Shader("shaders/bumpShade")
+shader = Shader("shaders/uv_flat")
 #############################
 
 TEXTURES = [Texture(t) for t in TEXTURE_NAMES]
@@ -35,8 +35,8 @@ def random_ball():
   """Return a ball with a random color, position and velocity."""
   return Ball(camera, light, shader, random.choice(TEXTURES),
               random.uniform(MIN_BALL_SIZE, MAX_BALL_SIZE),
-              random.uniform(0.0, DISPLAY.max_width),
-              random.uniform(0.0, DISPLAY.max_height),
+              random.uniform(-DISPLAY.win_width/2.0, DISPLAY.win_width/2.0),
+              random.uniform(-DISPLAY.win_height/2.0, DISPLAY.win_height/2.0),
               random.uniform(-10.0, 10.0),
               random.uniform(-10.0, 10.0))
 

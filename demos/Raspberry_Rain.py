@@ -34,7 +34,7 @@ DISPLAY = Display.create()
 DISPLAY.setBackColour(0.0, 0.7, 1.0, 0.0)
 camera = Camera((0, 0, 0), (0, 0, -0.1), (1, 1000, DISPLAY.win_width/1000.0, DISPLAY.win_height/1000.0))
 light = Light((10, 10, -20))
-shader = Shader("shaders/bumpShade")
+shader = Shader("shaders/uv_flat")
 #############################
 
 # Load textures
@@ -45,10 +45,10 @@ pino=15
 # Setup array of random x,y,z coords and initial rotation
 raspberries=[]
 for b in range (0, pino):
-  rasp = Sprite(camera, light)
-  rasp.position(random.random()*8-4, random.random() * 8, random.random() * 7)
+  rasp = Sprite(camera, light, 2.0, 2.0)
+  rasp.position(random.random()*16-8, random.random() * 16, random.random() * 4)
   rasp.rotateToZ(random.random() * 360)
-  rasp.buf[0].set_draw_details(shader, [raspimg], 0.0, -1.0)
+  rasp.buf[0].set_draw_details(shader, [raspimg])
   raspberries.append(rasp)
 
 # Fetch key presses
@@ -62,9 +62,9 @@ while 1:
     b.draw()
     b.translateY(-0.1)
     b.rotateIncZ(1)
-    if b.unif[1] < -4:
-      b.positionX(random.random()*8-4)
-      b.translateY(8.0)
+    if b.unif[1] < -8:
+      b.positionX(random.random()*16-8)
+      b.translateY(16.0)
 
   k = mykeys.read()
   if k >-1:

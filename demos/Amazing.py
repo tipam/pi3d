@@ -59,7 +59,8 @@ DISPLAY.setBackColour(0.4,0.8,0.8,1)      # r,g,b,alpha
 
 camera = Camera((0, 0, 0), (0, 0, -1), (1, 1000, DISPLAY.win_width/1000.0, DISPLAY.win_height/1000.0))
 light = Light((10, 10, -20))
-shader = Shader("shaders/bumpShade")
+shader = Shader("shaders/uv_reflect")
+flatsh = Shader("shaders/uv_flat")
 #========================================
 
 # Setting 2nd param to True renders 'True' Blending
@@ -75,7 +76,7 @@ shineimg = Texture("textures/stars.jpg")
 # environment cube
 ectex = Texture("textures/ecubes/skybox_stormydays.jpg")
 myecube = EnvironmentCube(camera, light, 900.0,"CROSS")
-myecube.buf[0].set_draw_details(shader, [ectex], 0.0, -1.0)
+myecube.buf[0].set_draw_details(flatsh, [ectex], 0.0, -1.0)
 
 # Create elevation map
 mapwidth = 1000.0
