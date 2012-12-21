@@ -239,5 +239,6 @@ def loadFileOBJ(model, fileName):
         grnVal = material_lib[m]['colorDiffuse'][1]
         bluVal = material_lib[m]['colorDiffuse'][2]
         model.buf[model.vGroup[materials[m]]].material = (redVal, grnVal, bluVal, 1.0)
+        model.buf[model.vGroup[materials[m]]].unib[3:6] = [redVal, grnVal, bluVal]
 
 

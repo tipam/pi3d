@@ -7,7 +7,7 @@ from pi3d.util.Utility import mat_mult, vec_normal, vec_cross, vec_sub, vec_dot,
 class Camera(object):
   def __init__(self, at, eye, lens):
     """Set up view matrix to look from eye to at including perspective"""
-    self.eye = eye
+    self.eye = [eye[0], eye[1], eye[2]]
     self.view = LookAtMatrix(at,eye,[0,1,0])
     self.projection = ProjectionMatrix(lens[0], lens[1], lens[2], lens[3])
     #self.modelView = mat_mult(self.view, self.projection) # Apply transform/rotation first, then shift into perspective space
@@ -36,9 +36,10 @@ class Camera(object):
     self.mtrx = array([[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]], dtype=c_float)
     
   def translate(self,pt):
+    # TODO this should really be called position
     #self.mtrx = translate(self.mtrx,pt)
     self.mtrx = dot([[1,0,0,0],[0,1,0,0],[0,0,1,0],[-pt[0], -pt[1], -pt[2], 1]], self.mtrx)
-    eye = (pt[0], pt[1], pt[2])
+    self.eye = [pt[0], pt[1], pt[2]]
     self.C = None
     self.movedFlag = True    
   

@@ -14,7 +14,7 @@ class Shape(Loadable):
     super(Shape, self).__init__()
     self.name = name
     # uniform variables all in one array!
-    self.unif = (c_float * 33)(x,y,z, rx,ry,rz, sx,sy,sz, cx,cy,cz, 0.5,0.5,0.5, 200.0,0.8,0.0, 0.0,0.0,0.0, 0.0,0.0,0.0,
+    self.unif = (c_float * 33)(x,y,z, rx,ry,rz, sx,sy,sz, cx,cy,cz, 0.5,0.5,0.5, 5000.0,0.8,0.0, 0.0,0.0,0.0, 0.0,0.0,0.0,
       light.lightpos[0], light.lightpos[1], light.lightpos[2], 1.0,1.0,1.0, 0.1,0.1,0.1)
     """ in shader array of vec3 uniform variables:
     0  location 0-2
@@ -39,7 +39,7 @@ class Shape(Loadable):
     self.roz = array([[c, s, 0.0, 0.0],[-s, c, 0.0, 0.0],[0.0, 0.0, 1.0, 0.0],[0.0, 0.0, 0.0, 1.0]])
     self.scl = array([[self.unif[6], 0.0, 0.0, 0.0],[0.0, self.unif[7], 0.0, 0.0],[0.0, 0.0, self.unif[8], 0.0],[0.0, 0.0, 0.0, 1.0]])
     self.tr2 = array([[1.0,0.0,0.0,0.0], [0.0,1.0,0.0,0.0], [0.0,0.0,1.0,0.0], [self.unif[9], self.unif[10], self.unif[11], 1.0]])
-    self.M = None # TODO use an array of two 4x4 matrices, one for modelview and one for cameraview
+    self.M = None # TODO use an array of two 4x4 matrices, one for modelview and one for cameraview - problem having to load C for each model
 
     self.camera = camera
     self.light = light
@@ -48,12 +48,12 @@ class Shape(Loadable):
 
     self.buf = []  #buffer for each part of this shape that needs rendering with a different Shader/Texture
 
-        #this should all be done with matrices!! ... just for testing ...
 
   def draw(self, shdr=None, txtrs=None, ntl=None, shny=None):
     # if called without parameters there has to have been a previous call to set_draw_details() for all the Buffers in buf[]
     shader = self.shader if shdr == None else shdr
-    
+    shader.use()
+
     if self.camera.movedFlag or self.M == None:
       # calculate rotation and translation matrix for this model
       # using numpy
@@ -63,14 +63,18 @@ class Shape(Loadable):
         dot(self.rox, 
         dot(self.roz, 
         dot(self.tr1, self.camera.mtrx)))))).ravel())
-    #opengles.glUniformMatrix4fv(shader.unif_modelviewmatrix, 1, c_int(0), ctypes.c_void_p(self.M.data)) # otherwise use existing version
+      #sx, cx, sy, cy = sin(radians(self.camera.rtn[0])), cos(radians(self.camera.rtn[0])), sin(radians(self.camera.rtn[1])), cos(radians(self.camera.rtn[1]))
+      #newlight = dot([[1.0, 0.0, 0.0, 0.0],[0.0, cx, sx, 0.0],[0.0, -sx, cx, 0.0],[0.0, 0.0, 0.0, 1.0]],
+      #  dot([[cy, 0.0, -sy, 0.0],[0.0, 1.0, 0.0, 0.0],[sy, 0.0, cy, 0.0],[0.0, 0.0, 0.0, 1.0]], 
+      #  [self.light.lightpos[0], self.light.lightpos[1], self.light.lightpos[2], 1.0]))
+      #self.unif[26], self.unif[25], self.unif[27], = c_float(newlight[0]), c_float(newlight[1]), c_float(newlight[2]), 
+
     opengles.glUniformMatrix4fv(shader.unif_modelviewmatrix, 1, c_int(0), ctypes.byref(self.M)) # otherwise use existing version
 
     # camera matrix
     if self.camera.movedFlag:
       if self.camera.C == None: # i.e. only need to do this once per frame
         self.camera.C = c_floats(self.camera.mtrx.ravel())
-        #self.camera.C = (c_float * 16)(*self.camera.mtrx)
       opengles.glUniformMatrix4fv(shader.unif_cameraviewmatrix, 1, c_int(0), ctypes.byref(self.camera.C))
       self.unif[18], self.unif[19], self.unif[20] = self.camera.eye[0], self.camera.eye[1], self.camera.eye[2]
       self.unif[21], self.unif[22], self.unif[23] = self.camera.rtn[0], self.camera.rtn[1], self.camera.rtn[2]
@@ -88,18 +92,22 @@ class Shape(Loadable):
     for b in self.buf:
       b.shader = shader
 
-  def set_normal_shine(self, normtex, ntiles = 1.0, shinetex = None, shiny = 0.0):
+  def set_normal_shine(self, normtex, ntiles = 1.0, shinetex = None, shiny = 0.0, is_uv=True):
+    if is_uv: ofst = 0
+    else: ofst = -1
     for b in self.buf:
-      if b.textures == None or len(b.textures) == 0:
+      if b.textures == None:
+        b.textures = []
+      if is_uv and len(b.textures) == 0:
         b.textures = [normtex]
-      while len(b.textures) < 2:
+      while len(b.textures) < (2+ofst):
         b.textures.append(None)
-      b.textures[1] = normtex
+      b.textures[1+ofst] = normtex
       b.unib[0] = ntiles
       if shinetex != None:
-        while len(b.textures) < 3:
+        while len(b.textures) < (3+ofst):
           b.textures.append(None)
-        b.textures[2] = shinetex
+        b.textures[2+ofst] = shinetex
         b.unib[1] = shiny
 
   def set_fog(self, fogshade, fogdist):
@@ -253,7 +261,7 @@ class Shape(Loadable):
 
       tcy = 1.0 - ((py - miny)/(maxy - miny))
 
-      #normalized 2D vector between path points
+      #normalized 2D vector between path points TODO numpy?
       dx, dy = Utility.vec_normal(Utility.vec_sub((px, py), (opx, opy)))
 
       for r in range (0, rl):

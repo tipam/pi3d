@@ -86,7 +86,6 @@ class Buffer(object):
     if ntl != None: self.unib[0] = ntl
     if shny != None: self.unib[1] = shny
     self.select()
-    shader.use()
 
     opengles.glVertexAttribPointer(shader.attr_vertex, 3, GL_FLOAT, 0, 32, 0)
     opengles.glVertexAttribPointer(shader.attr_normal, 3, GL_FLOAT, 0, 32, 12)

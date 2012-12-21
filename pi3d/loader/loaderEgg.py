@@ -228,6 +228,8 @@ def loadFileEGG(model, fileName):
           grnVal = float(model.materialList[gMRef]["diffg"])
           bluVal = float(model.materialList[gMRef]["diffb"])
           model.buf[model.vGroup[np]].material = (redVal, grnVal, bluVal, 1.0)
+          model.buf[model.vGroup[np]].unib[3:6] = [redVal, grnVal, bluVal]
+
         else: model.buf[model.vGroup[np]].material = (0.0, 0.0, 0.0, 0.0)
     ####### end of groupDrill function #####################
 

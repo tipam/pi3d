@@ -2,7 +2,6 @@ import math
 
 from pi3d import Display
 from pi3d.Texture import Texture
-from pi3d.util import Draw
 from pi3d.util import Utility
 
 from pi3d.shape.Sprite import Sprite
@@ -87,7 +86,6 @@ class Ball(Sprite):
 
   def repaint(self, t):
     self.move()
-    self.bounce_wall(Display.DISPLAY.max_width, Display.DISPLAY.max_height)
+    self.bounce_wall(Display.DISPLAY.win_width, Display.DISPLAY.win_height)
     #self.draw(self.shader, [self.texture], 0.0 -1.0)
     self.draw()
-    #Draw.sprite(self.texture, self.x, self.y, -1, self.radius, self.radius)
