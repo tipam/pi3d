@@ -22,8 +22,9 @@ from pi3d.Keyboard import Keyboard
 from pi3d.Mouse import Mouse
 from pi3d.Texture import Texture
 
-from pi3d.context.Fog import Fog
 from pi3d.context.Light import Light
+from pi3d.Camera import Camera
+from pi3d.Shader import Shader
 
 from pi3d.shape.Cuboid import Cuboid
 from pi3d.shape.Cylinder import Cylinder
@@ -39,50 +40,60 @@ from pi3d.util.Screenshot import screenshot
 # Setup display and initialise pi3d
 DISPLAY = Display.create(x=50, y=50, w=-100, h=-100)
 DISPLAY.setBackColour(0.4,0.8,0.8,1)    	# r,g,b,alpha
+camera = Camera((0, 0, 0), (0, 0, -1), (1, 1000, DISPLAY.win_width/1000.0, DISPLAY.win_height/1000.0))
+light = Light((10, 10, -20))
+shader = Shader("shaders/uv_reflect")
+flatsh = Shader("shaders/uv_flat")
+#############################
 
 # Load textures
-tree2img = Texture("textures/tree2.png")
-tree1img = Texture("textures/tree1.png")
-grassimg = Texture("textures/grass.png")
-hb2img = Texture("textures/hornbeam2.png")
+reflcn = Texture("textures/stars.jpg")
 
 #load environment cube
 ectex = loadECfiles("textures/ecubes","sbox_interstellar")
-myecube = EnvironmentCube(900.0,"FACES")
+myecube = EnvironmentCube(camera, light, 900.0,"FACES")
+for i,b in enumerate(myecube.buf):
+  b.set_draw_details(flatsh,[ectex[i]])
 
 # Create elevation map
 mapwidth=1000.0
 mapdepth=1000.0
 mapheight=60.0
 mountimg1 = Texture("textures/mars_colour.png")
-mymap = ElevationMap(mapfile="textures/mars_height.png",
+bumpimg = Texture("textures/mudnormal.jpg")
+mymap = ElevationMap(camera=camera, light=light, mapfile="textures/mars_height.png",
                      width=mapwidth, depth=mapdepth, height=mapheight,
-                     divx=128, divx=128) #testislands.jpg
+                     divx=128, divy=128) #testislands.jpg
+mymap.buf[0].set_draw_details(shader,[mountimg1, bumpimg],128.0, 0.0)
+mymap.set_fog((0.3,0.15,0.1,1.0), 300.0)
+
 
 #create robot
 metalimg = Texture("textures/metalhull.jpg")
-robot_head= Sphere(2.0,12,12,0.5,"",0,3,0)
-robot_body = Cylinder(2.0,4,12,"",0,1,0)
-robot_leg = Cuboid(0.7,4.0,1.0,"",0,0.8,0)
+robot_head= Sphere(camera, light, 2.0,12,12,0.5,"",0,3,0)
+robot_body = Cylinder(camera, light, 2.0,4,12,"",0,1,0)
+robot_leg = Cuboid(camera, light, 0.7,4.0,1.0,"",0,0.8,0)
 
-robot = MergeShape()
-robot.add(robot_head)
-robot.add(robot_body)
-robot.add(robot_leg, -2.1,0,0)
-robot.add(robot_leg, 2.1,0,0)
+robot = MergeShape(camera, light)
+robot.add(robot_head.buf[0])
+robot.add(robot_body.buf[0])
+robot.add(robot_leg.buf[0], -2.1,0,0)
+robot.add(robot_leg.buf[0], 2.1,0,0)
+robot.buf[0].set_draw_details(shader, [metalimg, metalimg, reflcn], 1.0, 0.5)
 
 #create space station
-ssphere = Sphere(10,16,16)
-scorrid = Cylinder(4,22,12)
+ssphere = Sphere(camera, light, 10,16,16)
+scorrid = Cylinder(camera, light, 4,22,12)
 
-station = MergeShape("",0,mymap.calcHeight(0,0),0, 0,0,0, 4,4,4)
-station.add(ssphere, -20,0,-20)
-station.add(ssphere, 20,0,-20)
-station.add(ssphere, 20,0,20)
-station.add(ssphere, -20,0,20)
-station.add(scorrid, -20,0,0, 90,0,0)
-station.add(scorrid, 0,0,20, 90,90,0)
-station.add(scorrid, 0,0,-20, 90,90,0)
+station = MergeShape(camera, light, "",0,mymap.calcHeight(0,0),0, 0,0,0, 4,4,4)
+station.add(ssphere.buf[0], -20,0,-20)
+station.add(ssphere.buf[0], 20,0,-20)
+station.add(ssphere.buf[0], 20,0,20)
+station.add(ssphere.buf[0], -20,0,20)
+station.add(scorrid.buf[0], -20,0,0, 90,0,0)
+station.add(scorrid.buf[0], 0,0,20, 90,90,0)
+station.add(scorrid.buf[0], 0,0,-20, 90,90,0)
+station.buf[0].set_draw_details(shader, [metalimg, metalimg], 2.0)
 
 #avatar camera
 rot=0.0
@@ -90,44 +101,35 @@ tilt=0.0
 avhgt = 2.0
 xm=0.0
 zm=0.0
-ym= -(mymap.calcHeight(xm,zm)+avhgt)
+ym= (mymap.calcHeight(xm,zm)+avhgt)
 
 # Fetch key presses
 mykeys = Keyboard()
 mymouse = Mouse()
 mymouse.start()
-mtrx = Matrix()
 
 omx=mymouse.x
 omy=mymouse.y
-
-myfog = Fog(0.002,(0.3,0.8,0.6,0.5))
-mylight = Light(0,1,1,1,"",10,10,10, .9,.7,.6)
 
 # Display scene and rotate cuboid
 while 1:
   DISPLAY.clear()
 
-  mtrx.identity()
+  camera.reset()
   #tilt can be used as a means to prevent the view from going under the landscape!
-  if tilt<-1: sf=1.0/-tilt
-  else: sf=1.0
-  mtrx.translate(0,-10*sf-5.0,-40*sf)   #zoom camera out so we can see our robot
-  mtrx.rotate(tilt, 0, 0)		#Robot still affected by scene tilt
+  if tilt < -1: sf = 6 - 5.5/abs(tilt)
+  else: sf = 0.5
+  xoff, yoff, zoff = sf*math.sin(math.radians(rot)), abs(1.25*sf*math.sin(math.radians(tilt))) + 3.0, -sf*math.cos(math.radians(rot))
+  camera.rotate(tilt, rot, 0)           #Tank still affected by scene tilt
+  camera.translate((xm + xoff, ym + yoff +5, zm + zoff))   #zoom camera out so we can see our robot
 
   #draw robot
-  mylight.on()
-  robot.drawAll(metalimg)
-  mylight.off()
+  robot.draw()
 
-  mtrx.rotate(0, rot, 0)		#rotate rest of scene around robot
-  mtrx.translate(xm,ym,zm)	#translate rest of scene relative to robot position
-
-  myecube.draw(ectex,xm,ym,zm)#Draw environment cube
-  myfog.on()
-  mymap.draw(mountimg1)		#Draw the landscape
-  station.drawAll(metalimg)
-  myfog.off()
+  myecube.draw()#Draw environment cube
+  myecube.position(xm, ym, zm)
+  mymap.draw()		#Draw the landscape
+  station.draw()
 
   mx=mymouse.x
   my=mymouse.y
@@ -144,11 +146,11 @@ while 1:
     if k==119:    #key W
       xm-=math.sin(math.radians(rot))
       zm+=math.cos(math.radians(rot))
-      ym = -(mymap.calcHeight(xm,zm)+avhgt)
+      ym = (mymap.calcHeight(xm,zm)+avhgt)
     elif k==115:  #kry S
       xm+=math.sin(math.radians(rot))
       zm-=math.cos(math.radians(rot))
-      ym = -(mymap.calcHeight(xm,zm)+avhgt)
+      ym = (mymap.calcHeight(xm,zm)+avhgt)
     elif k==39:   #key '
       tilt -= 2.0
       print tilt

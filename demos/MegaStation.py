@@ -9,7 +9,6 @@ from pi3d import Display
 from pi3d.Mouse import Mouse
 from pi3d.Texture import Texture
 
-from pi3d.context.Fog import Fog
 from pi3d.context.Light import Light
 from pi3d.Camera import Camera
 from pi3d.Shader import Shader
@@ -43,7 +42,7 @@ flatsh = Shader("shaders/uv_flat")
 ectex = EnvironmentCube.loadECfiles("textures/ecubes/RedPlanet", "redplanet_256", "png", True)
 myecube = EnvironmentCube.EnvironmentCube(camera, light, 1800.0,"FACES")
 for i,b in enumerate(myecube.buf):
-  b.set_draw_details(flatsh,[ectex[i]], 0.0, -1.0)
+  b.set_draw_details(flatsh,[ectex[i]])
 
 
 # Create elevation map
@@ -107,8 +106,6 @@ while 1:
   if tilt < -1: sf = 6 - 5.5/abs(tilt)
   else: sf = 0.5
   xoff, yoff, zoff = sf*math.sin(mouserot*rads), abs(1.25*sf*math.sin(tilt*rads)) + 3.0, -sf*math.cos(mouserot*rads)
-  #xoff, yoff, zoff = 0,0,0
-  #camera.translate((xm, ym-10*sf-5.0, zm-40*sf))   #zoom camera out so we can see our robot
   camera.rotate(tilt, mouserot, 0)           #Tank still affected by scene tilt
   camera.translate((xm + xoff, ym + yoff +5, zm + zoff))   #zoom camera out so we can see our robot
 

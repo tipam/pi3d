@@ -80,7 +80,6 @@ class Shape(Loadable):
       self.unif[21], self.unif[22], self.unif[23] = self.camera.rtn[0], self.camera.rtn[1], self.camera.rtn[2]
     # variables for movement of this object
     opengles.glUniform3fv(shader.unif_unif, 11, ctypes.byref(self.unif))
-
     for b in self.buf:
       """
       Shape.draw has to be passed either parameter == None or values to pass on
