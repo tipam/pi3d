@@ -4,8 +4,7 @@ attribute vec3 vertex;
 attribute vec3 normal;
 attribute vec2 texcoord;
 
-uniform mat4 modelviewmatrix;
-uniform mat4 cameraviewmatrix;
+uniform mat4 modelviewmatrix[2]; // 0 model movement in real coords, 1 in camera coords
 uniform vec3 unib[2];
 //uniform float ntiles => unib[0][0]
 uniform vec3 unif[11];
@@ -19,10 +18,10 @@ varying float dist;
 varying vec3 lightVector;
 
 void main(void) {
+  vec4 relPosn = modelviewmatrix[0] * vec4(vertex,1.0);
   
-  l//ightVector = normalize(vec3(cameraviewmatrix * vec4(unif[8], 0.0))); // ------ rotate relative to view
-  lightVector = normalize(unif[8]);
-  normout = normalize(vec3(modelviewmatrix * vec4(normal, 0.0)));   
+  lightVector = normalize(unif[8]); 
+  normout = normalize(vec3(modelviewmatrix[0] * vec4(normal, 0.0)));   
 
   vec3 bnorm = vec3(0.0, 0.0, 1.0); // ----- normal to original bump map sheet
   float c = dot(bnorm, normout); // ----- cosine
@@ -37,9 +36,10 @@ void main(void) {
     0.0, 0.0, 0.0, 1.0); // ----- vector mult for rotation about axis
   bumpcoordout = texcoord * unib[0][0];
 
+  vec3 inray = vec3(relPosn - vec4(unif[6], 0.0)); // ----- vector from the camera to this vertex
+  dist = length(inray);
+
   texcoordout = texcoord;
 
-  vec4 relPosn = modelviewmatrix * vec4(vertex,1.0);
-  dist = length(relPosn);
-  gl_Position = relPosn;
+  gl_Position = modelviewmatrix[1] * vec4(vertex,1.0);
 }
