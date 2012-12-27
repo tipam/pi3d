@@ -37,7 +37,7 @@ shader = Shader("shaders/uv_flat")
 #========================================
 
 #select the environment cube with 'box'...
-box = 3
+box = 2
 if box == 0:
   ectex = [Texture("textures/ecubes/skybox_interstellar.jpg")]
   myecube = EnvironmentCube(camera, light, 900.0,"CROSS")
@@ -45,13 +45,13 @@ elif box == 1:
   ectex = [Texture("textures/ecubes/SkyBox.jpg")]
   myecube = EnvironmentCube(camera, light, 900.0,"HALFCROSS")
 elif box == 2:
-  ectex = loadECfiles("textures/ecubes","sbox_interstellar")
-  myecube = EnvironmentCube(camera, light, 900.0,"FACES")
+  ectex = loadECfiles("textures/ecubes","sbox_interstellar", nobottom=True)
+  myecube = EnvironmentCube(camera, light, 900.0,"FACES", nobottom=True)
 else:
   ectex = loadECfiles("textures/ecubes","skybox_hall")
   myecube = EnvironmentCube(camera, light, 900.0,"FACES")
-for i, b in enumerate(myecube.buf):
-  b.set_draw_details(shader, [ectex[i]], 0.0, -1.0)
+
+myecube.set_draw_details(shader, ectex)
 
 rot=0.0
 tilt=0.0
@@ -78,8 +78,8 @@ while 1:
   my=mymouse.y
 
   #if mx>display.left and mx<display.right and my>display.top and my<display.bottom:
-  rot += (mx-omx)*0.2
-  tilt -= (my-omy)*0.2
+  rot -= (mx-omx)*0.4
+  tilt += (my-omy)*0.4
   omx=mx
   omy=my
 

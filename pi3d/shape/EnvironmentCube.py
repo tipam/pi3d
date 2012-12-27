@@ -10,7 +10,7 @@ CUBE_PARTS = ['front', 'right', 'top', 'bottom', 'left', 'back']
 def loadECfiles(path, fname, suffix='jpg', nobottom=False):
   # Helper for loading environment cube faces.
   #TODO this will scramble all the rest of the cube. It needs to substitute a blank (black) texture instead!
-  nobottom = False #TODO, for the moment
+  # if nobottom set then only load five parts into array
   if nobottom:
     parts = [p for p in CUBE_PARTS if p != 'bottom']
   else:
@@ -21,7 +21,7 @@ def loadECfiles(path, fname, suffix='jpg', nobottom=False):
 
 class EnvironmentCube(Shape):
   def __init__(self,  camera, light, size=500.0, maptype="HALFCROSS", name="", x=0.0, y=0.0, z=0.0,
-               rx=0.0, ry=0.0, rz=0.0, cx=0.0, cy=0.0, cz=0.0):
+               rx=0.0, ry=0.0, rz=0.0, cx=0.0, cy=0.0, cz=0.0, nobottom=False):
     super(EnvironmentCube,self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                 1.0, 1.0, 1.0, cx, cy, cz)
 
@@ -33,6 +33,7 @@ class EnvironmentCube(Shape):
     self.depth = size
     self.ssize = 36
     self.ttype = GL_TRIANGLES
+    self.nobottom = nobottom
 
     ww = size / 2.0
     hh = size / 2.0
@@ -57,23 +58,23 @@ class EnvironmentCube(Shape):
         (17, 18, 19),(16, 17, 19),(22, 21, 20), (23, 22, 20))
 
     if maptype == "CROSS":
-      self.tex_coords = ((1.0, 0.34), (0.75, 0.34), (0.75, 0.661), (1.0, 0.661), #back
+      self.tex_coords = ((1.0, 0.34), (0.75, 0.34), (0.75, 0.661), (1.0, 0.661), #front
         (0.75, 0.34), (0.5, 0.34), (0.5, 0.661), (0.75, 0.661), #right
         (0.251, 0.0), (0.251, 0.34), (0.498, 0.34), (0.498, 0.0), #top
         (0.498, 0.998), (0.498, 0.66), (0.251, 0.66), (0.251, 0.998), #bottom
         (0.0, 0.661), (0.25, 0.661), (0.25, 0.34), (0.0, 0.34), #left
-        (0.25, 0.34), (0.5, 0.34), (0.5, 0.661), (0.25, 0.661)) #front
+        (0.25, 0.34), (0.5, 0.34), (0.5, 0.661), (0.25, 0.661)) #back
 
       self.buf = []
       self.buf.append(Buffer(self, self.vertices, self.tex_coords, self.indices, self.normals))
 
     elif maptype == "HALFCROSS":
-      self.tex_coords = ((0.25,0.25), (0.25,0.75), (-0.25,0.75), (-0.25,0.25),
-        (0.25,0.75), (0.75,0.75), (0.75,1.25), (0.25,1.25),
+      self.tex_coords = ((0.25,0.25), (0.25,0.75), (-0.25,0.75), (-0.25,0.25), #front
+        (0.25,0.75), (0.75,0.75), (0.75,1.25), (0.25,1.25), #right
         (0.25,0.25), (0.75,0.25), (0.75,0.75), (0.25,0.75), #top
         (0,0), (1,0), (1,1), (0,1), #bottom
-        (0.25,-0.25), (0.75,-0.25), (0.75,0.25), (0.25,0.25),
-        (0.75,0.25), (0.75,0.75), (1.25,0.75), (1.25,0.25))
+        (0.25,-0.25), (0.75,-0.25), (0.75,0.25), (0.25,0.25), #left
+        (0.75,0.25), (0.75,0.75), (1.25,0.75), (1.25,0.25)) #back
 
       self.buf = []
       self.buf.append(Buffer(self, self.vertices, self.tex_coords, self.indices, self.normals))
@@ -93,3 +94,14 @@ class EnvironmentCube(Shape):
       self.buf.append(Buffer(self, self.vertices[12:16], self.tex_coords[12:16], ((3,0,1), (2,3,1)), self.normals[12:16])) #bottom
       self.buf.append(Buffer(self, self.vertices[16:20], self.tex_coords[16:20], ((3,0,1), (2,3,1)), self.normals[16:20])) #left
       self.buf.append(Buffer(self, self.vertices[20:24], self.tex_coords[20:24], ((3,1,0), (2,1,3)), self.normals[20:24])) #back
+      
+  def set_draw_details(self, shader, textures, ntiles=0.0, shiny=0.0):
+    if not (type(textures) is list):
+      texture_list = [textures]
+    else:
+      texture_list = textures
+    for i, b in enumerate(self.buf):
+      if self.nobottom and i > 2: j = i-1
+      else: j = i
+      b.set_draw_details(shader, [texture_list[j]], ntiles, shiny)
+

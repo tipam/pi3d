@@ -59,7 +59,7 @@ ballimg = Texture("textures/cloud6.png", True)
 # environment cube
 ectex = Texture("textures/ecubes/skybox_stormydays.jpg")
 myecube = EnvironmentCube(camera, light, 900.0,"CROSS")
-myecube.buf[0].set_draw_details(flatsh, [ectex])
+myecube.set_draw_details(flatsh, [ectex])
 #ball
 maxdsz = 0.3
 radius = 1.0
@@ -125,12 +125,12 @@ while True:
 
   # mouse movement checking here to get bat movment values
   mx=mymouse.x
-  dx = (mx-omx)*0.02
+  dx = (mx-omx)*0.04
   omx=mx
   if ((xm >= (-1*maphalf) and dx < 0) or (xm <= maphalf and dx > 0)):  xm += dx
 
   my = mymouse.y
-  dy = (my-omy)*0.01
+  dy = (my-omy)*0.02
   omy = my
   if ((ym >= (0) and dy < 0) or (ym <= mapheight and dy > 0)):  ym += dy
   if not (dy == 0.0 and dx == 0.0):

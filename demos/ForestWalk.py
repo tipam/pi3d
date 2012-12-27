@@ -62,8 +62,7 @@ FOG = ((0.3, 0.3, 0.4, 1.0), 650.0)
 #myecube = EnvironmentCube(900.0,"HALFCROSS")
 ectex=loadECfiles("textures/ecubes","sbox")
 myecube = EnvironmentCube(camera, light,900.0,"FACES", name="cube")
-for i in range(6):
-  myecube.buf[i].set_draw_details(flatsh, [ectex[i]])
+myecube.set_draw_details(flatsh, ectex)
 
 # Create elevation map
 mapwidth = 1000.0
@@ -151,8 +150,8 @@ while 1:
   my=mymouse.y
 
   #if mx>display.left and mx<display.right and my>display.top and my<display.bottom:
-  rot -= (mx-omx)*0.1
-  tilt += (my-omy)*0.1
+  rot -= (mx-omx)*0.2
+  tilt += (my-omy)*0.2
   omx=mx
   omy=my
 
