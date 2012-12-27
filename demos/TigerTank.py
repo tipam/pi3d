@@ -167,7 +167,7 @@ def loop():
   #update mouse/keyboard input
   mx, my = DISPLAY.mouse.x, DISPLAY.mouse.y
   if mx != omx or my != omy or xm != oxm or zm != ozm:
-    mouserot -= (mx - omx) * 0.2
+    mouserot -= (mx - omx) * 0.6
     tilt += (my - omy) * 0.2
     omx, omy = mx, my
 
