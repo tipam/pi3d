@@ -26,8 +26,7 @@ class _Mouse(threading.Thread):
     self.restrict = restrict
 
   def reset(self):
-    self.x = 0
-    self.y = 0
+    self.x = self.y = self.dx = self.dy = 0
     self.button = False
 
   def start(self):
@@ -45,16 +44,16 @@ class _Mouse(threading.Thread):
       buttons = ord(self.buffer[0])
       self.buffer = self.buffer[1:]
       if buttons & _Mouse.HEADER:
-        dx, dy = map(ord, self.buffer[0:2])
+        self.dx, self.dy = map(ord, self.buffer[0:2])
         self.buffer = self.buffer[2:]
         self.button = buttons & _Mouse.BUTTONS
         if buttons & _Mouse.XSIGN:
-          dx -= 256
+          self.dx -= 256
         if buttons & _Mouse.YSIGN:
-          dy -= 256
+          self.dy -= 256
 
-        self.x += dx
-        self.y += dy
+        self.x += self.dx
+        self.y += self.dy
         if self.restrict:
           self.x = min(max(self.x, 0), self.width - 1)
           self.y = min(max(self.y, 0), self.height - 1)
