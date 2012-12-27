@@ -184,7 +184,7 @@ class Display(object):
 
 def create(is_3d=True, x=None, y=None, w=0, h=0, near=None, far=None,
            aspect=DEFAULT_ASPECT, depth=DEFAULT_DEPTH, background=None,
-           tk=False, window_title='', window_parent=None, mouse=None):
+           tk=False, window_title='', window_parent=None, mouse=False):
   if tk:
     from pi3d.util import TkWin
     if not (w and h):

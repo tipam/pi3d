@@ -2,6 +2,8 @@ import curses, termios, fcntl, sys, os
 
 USE_CURSES = True
 
+# Non-blocking keyboard which requires curses and only works on the current
+# terminal window or session.
 class CursesKeyboard(object):
   def __init__(self):
     self.key = curses.initscr()
@@ -20,8 +22,14 @@ class CursesKeyboard(object):
     curses.endwin()
 
   def __del__(self):
-    self.close()
+    try:
+      self.close()
+    except:
+      pass
 
+
+# Blocking keyboard which doesn't require curses and gets any keyboard inputs
+# regardless of which window is in front.
 # From http://stackoverflow.com/a/6599441/43839
 class SysKeyboard(object):
   def __init__(self):
@@ -49,7 +57,7 @@ class SysKeyboard(object):
 
   def read(self):
     try:
-      return ord(sys.stdin.read(1))
+      return ord(sys.stdin.read())
     except KeyboardInterrupt:
       return 0
 
@@ -58,38 +66,12 @@ class SysKeyboard(object):
     fcntl.fcntl(self.fd, fcntl.F_SETFL, self.flags_save)
 
   def __del__(self):
-    self.close()
+    try:
+      self.close()
+    except:
+      pass
 
 
 def Keyboard(use_curses=USE_CURSES):
   return CursesKeyboard() if use_curses else SysKeyboard()
 
-# DEPRECATED.
-def closer(loop):
-  """A decorator that checks the keyboard to see if you've quit."""
-  mykeys = Keyboard()
-  def f():
-    if k == 27:
-      mykeys.close()
-      return True
-    return loop()
-  return f
-
-# DEPRECATED.
-def screenshot(file):
-  """A decorator that checks. the keyboard to see if you've quit and also takes
-  screenshots."""
-  def f(loop):
-    from pi3d.util import Screenshot
-    mykeys = Keyboard()
-    def inner():
-      k = mykeys.read()
-      if k == 112:
-        Screenshot.screenshot(file)
-      if k == 27:
-        mykeys.close()
-        return True
-      return loop()
-    return inner
-
-  return f

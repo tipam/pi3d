@@ -8,9 +8,7 @@ from pi3d.Camera import Camera
 from pi3d.Shader import Shader
 
 from pi3d.sprite.Ball import Ball
-
-SIMPLE_LOOP = not True
-USE_MOUSE = not True
+from pi3d.Keyboard import Keyboard
 
 # Ball parameters
 MAX_BALLS = 15
@@ -24,8 +22,9 @@ TEXTURE_NAMES = ['textures/red_ball.png',
                  'textures/blu_ball.png']
 
 
-DISPLAY = Display.create(is_3d=False, background=BACKGROUND,
-                         mouse=USE_MOUSE)
+DISPLAY = Display.create(is_3d=False, background=BACKGROUND)
+KEYBOARD = Keyboard(use_curses=True)
+
 camera = Camera((0, 0, 0), (0, 0, -0.1),
                 (1, 1000, DISPLAY.win_width/1000.0, DISPLAY.win_height/1000.0))
 light = Light((10, 10, -20))
@@ -49,16 +48,10 @@ def random_ball():
 SPRITES = [random_ball() for b in range(MAX_BALLS)]
 DISPLAY.add_sprites(*SPRITES)
 
-# @Keyboard.screenshot('collision.jpg')
-def my_loop():
+while DISPLAY.loop_running():
   for i, ball1 in enumerate(SPRITES):
     for ball2 in SPRITES[0:i]:
       ball1.bounce_collision(ball2)
 
-if SIMPLE_LOOP:
-  while DISPLAY.loop_running():
-    my_loop()
-
-else:
-  DISPLAY.loop(my_loop)
-
+  if KEYBOARD.read() == 27:
+    DISPLAY.stop()
