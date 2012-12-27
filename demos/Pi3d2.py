@@ -18,7 +18,7 @@ from pi3d.util.Font import Font
 
 # Setup display and initialise pi3d
 DISPLAY = Display.create(x=10, y=10, w=1000, h=800)
-DISPLAY.setBackColour(0.4, 0.6, 0.8, 1.0)      # r,g,b,alpha
+DISPLAY.set_background(0.4, 0.6, 0.8, 1.0)      # r,g,b,alpha
 
 #setup textures, light position and initial model position
 camera = Camera([0, 0, 0], [0, 0, -1], [1, 1000, DISPLAY.win_width/1000.0, DISPLAY.win_height/1000.0])
@@ -38,7 +38,7 @@ for i in range(num):
   myshape.append(Sphere(camera, light, sides=32))
   myshape[i].translate(0, -num +2*i, 10)
   myshape[i].buf[0].set_draw_details(shader, [shapeimg, shapebump, shapeshine], 8.0, 0.2)
-  myshape[i].buf[0].set_material((0.2, 0.6, 0.1)) 
+  myshape[i].buf[0].set_material((0.2, 0.6, 0.1))
 
 cAngle = [0.0, 0.0, 0.0]
 dx = 0.05
@@ -66,7 +66,7 @@ while True:
   #camera.reset()
   #cAngle[1] += 0.5
   #camera.rotateY(cAngle[1])
-  
+
   for s in myshape:
     s.draw()
     #s.rotateIncY(1.247)
@@ -78,9 +78,9 @@ while True:
 
   mystring.draw()
   mystring.rotateIncZ(0.05)
-  
+
   #camera.movedFlag = False
-  
+
   if time.time() > next_time:
     print "FPS:",tick/10.0
     tick=0
@@ -96,7 +96,7 @@ while True:
   elif err == GL_OUT_OF_MEMORY: print "invlaid out of memory", err
   else: print "unknown", err
   """
-  
+
   DISPLAY.swapBuffers()
   """ # this block needs to be commented out to be able to see the FPS readout (actually the creation of the Keyboard instance above is what does it)
   if mykeys.read() == 27:

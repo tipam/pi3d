@@ -40,7 +40,7 @@ from pi3d.util.Screenshot import screenshot
 
 #DISPLAY = Display.create(w=1840, h=1130)
 DISPLAY = Display.create()
-DISPLAY.setBackColour(0.2, 0.0, 0.1, 0.7)      # r,g,b,alpha
+DISPLAY.set_background(0.2, 0.0, 0.1, 0.7)      # r,g,b,alpha
 #setup camera, light, shader
 camera = Camera((0, 0, 5), (0, 0, -2), (1, 1000, 1.6, 1.2))
 light = Light((5, 5, 1))
@@ -88,7 +88,7 @@ while 1:
 
   mysphere.draw(shader, [patimg])
   mysphere.rotateIncY( 0.5 )
-  
+
   myhemisphere.draw(shader, [coffimg])
   myhemisphere.rotateIncY( .5 )
 
@@ -129,7 +129,7 @@ while 1:
 
   mystring.draw()
   mystring.rotateIncZ(0.5)
-  
+
   k = mykeys.read()
   if k >-1:
     if k==112: screenshot("shapesPic.jpg")
