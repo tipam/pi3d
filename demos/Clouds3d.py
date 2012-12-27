@@ -26,10 +26,10 @@ from pi3d.Shader import Shader
 z = 0
 x = 0
 speed = 1
-widex = 50
-widey = 20
-cloudno = 5
-cloud_depth = 150.0
+widex = 150
+widey = 120
+cloudno = 30
+cloud_depth = 350.0
 zd = 1.0*cloud_depth / cloudno
 
 MARGIN = 100
@@ -80,7 +80,7 @@ while True:
   maxDepth = -100
   for i, cloud in enumerate(cxyz):
     if cloud.unif[2] > maxDepth:
-      mapxDepth = cloud.unif[2]
+      maxDepth = cloud.unif[2]
       maxDepthIndex = i
 
   # paint the clouds from background to foreground
@@ -99,5 +99,6 @@ while True:
     DISPLAY.destroy()
     break
 
+  camera.movedFlag = False
   DISPLAY.swapBuffers()
 

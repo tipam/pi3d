@@ -54,8 +54,7 @@ for b in range (0, pino):
 # Fetch key presses
 mykeys = Keyboard()
 
-# Display scene and rotate cuboid
-while 1:
+while True:
   DISPLAY.clear()
 
   for b in raspberries:
@@ -74,5 +73,6 @@ while 1:
       break
     elif k==112:
       screenshot("raspberryRain.jpg")
-
+  
+  camera.movedFlag = False #to save a tiny bit of work each loop
   DISPLAY.swapBuffers()

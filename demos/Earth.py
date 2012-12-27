@@ -93,5 +93,7 @@ while 1:
       break
     else:
       print k
+      
+  camera.movedFlag = False
 
   DISPLAY.swapBuffers()

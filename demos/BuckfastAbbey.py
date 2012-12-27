@@ -36,7 +36,7 @@ from pi3d.util.Screenshot import screenshot
 DISPLAY = Display.create(x=100, y=100)
 DISPLAY.set_background(1.0,0.4,0.6,1)    	# r,g,b,alpha
 camera = Camera((0, 0, 0), (0, 0, -1), (1, 1000, DISPLAY.win_width/1000.0, DISPLAY.win_width/1000.0))
-light = Light((10, 10, -20))
+light = Light((5, 10, 20))
 
 # load shader
 shader = Shader("shaders/uv_light")
@@ -53,8 +53,7 @@ print "=============================================================="
 
 ectex = loadECfiles("textures/ecubes","sbox")
 myecube = EnvironmentCube(camera, light, 900.0,"FACES", "bfa", 0.0, 50.0, 0.0)
-for i in range(6):
-  myecube.buf[i].set_draw_details(flatsh, [ectex[i]], 0.0, -1.0)
+myecube.set_draw_details(flatsh, ectex)
 
 # load model_loadmodel
 mymodel = Model(camera, light, "models/Buckfast Abbey/BuckfastAbbey.egg", "Abbey",
@@ -95,8 +94,8 @@ while 1:
   my = mymouse.y
 
   if mx>DISPLAY.left and mx<DISPLAY.right and my>DISPLAY.top and my<DISPLAY.bottom:
-    rot -= (mx-omx)*0.5
-    tilt += (my-omy)*0.5
+    rot -= (mx-omx)*0.8
+    tilt += (my-omy)*0.8
     omx=mx
     omy=my
 
