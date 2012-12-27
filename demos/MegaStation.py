@@ -91,8 +91,7 @@ opendist = 80
 mymouse = Mouse()
 mymouse.start()
 
-omx=mymouse.x
-omy=mymouse.y
+omx, omy = mymouse.position()
 
 # Update display before we begin (user might have moved window)
 win.update()
@@ -110,7 +109,7 @@ while 1:
   camera.translate((xm + xoff, ym + yoff +5, zm + zoff))   #zoom camera out so we can see our robot
 
   mymap.draw()  #Draw the landscape
-  
+
   lodDraw([xm, ym, zm], [0, mody, 0], [[opendist,cor_cross],[1000,cor_cross_doors]])
   cor_win.position(0, mody, -spc*1.5)
   cor_win.draw()
@@ -136,13 +135,12 @@ while 1:
   corridor.position(spc*2.5, mody, -spc*5)
   corridor.draw()
   lodDraw([xm, ym, zm],[spc*4, mody, -spc*5],[[opendist,cor_cross],[1000,cor_cross_doors]])
-  
+
   myecube.position(xm, ym, zm)
   myecube.draw()#Draw environment cube
 
   #update mouse/keyboard input
-  mx = mymouse.x
-  my = mymouse.y
+  mx, my = mymouse.position()
 
   mouserot -= (mx-omx)*0.2
   tilt += (my-omy)*0.2

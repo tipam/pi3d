@@ -66,8 +66,7 @@ opendist = 80
 mymouse = Mouse()
 mymouse.start()
 
-omx=mymouse.x
-omy=mymouse.y
+omx, omy = mymouse.position()
 
 # Update display before we begin (user might have moved window)
 win.update()
@@ -85,16 +84,15 @@ while 1:
   camera.translate((xm + xoff, ym + yoff +5, zm + zoff))   #zoom camera out so we can see our robot
 
   #mymap.draw()		#Draw the landscape
-  
+
   cor_win.position(0, mody, -spc*1.5)
   cor_win.draw()
-  
+
   myecube.position(xm, ym, zm)
   myecube.draw()#Draw environment cube
 
   #update mouse/keyboard input
-  mx = mymouse.x
-  my = mymouse.y
+  mx, my = mymouse.position()
 
   mouserot -= (mx-omx)*0.2
   tilt += (my-omy)*0.2

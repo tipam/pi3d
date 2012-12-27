@@ -101,8 +101,7 @@ mymouse = Mouse()
 mymouse.start()
 mtrx = Matrix()
 
-omx=mymouse.x
-omy=mymouse.y
+omx, omy = mymouse.position()
 
 # Display scene and rotate cuboid
 while 1:
@@ -122,8 +121,7 @@ while 1:
   mytrees2.drawAll(tree1img)
   mytrees3.drawAll(hb2img)
 
-  mx=mymouse.x
-  my=mymouse.y
+  mx, my = mymouse.position()
 
   #if mx>display.left and mx<display.right and my>display.top and my<display.bottom:
   rot += (mx-omx)*0.2

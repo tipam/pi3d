@@ -108,8 +108,7 @@ mykeys = Keyboard()
 mymouse = Mouse()
 mymouse.start()
 
-omx=mymouse.x
-omy=mymouse.y
+omx, omy = mymouse.position()
 
 # Display scene and rotate cuboid
 while 1:
@@ -131,8 +130,7 @@ while 1:
   mymap.draw()		#Draw the landscape
   station.draw()
 
-  mx=mymouse.x
-  my=mymouse.y
+  mx, my = mymouse.position()
 
   #if mx>DISPLAY.left and mx<DISPLAY.right and my>DISPLAY.top and my<DISPLAY.bottom:
   rot += (mx-omx)*0.2

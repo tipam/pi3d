@@ -76,8 +76,7 @@ xm=0.0
 zm=0.0
 ym= avhgt
 
-omx=mymouse.x
-omy=mymouse.y
+omx, omy = mymouse.position()
 
 while 1:
   DISPLAY.clear()
@@ -90,8 +89,7 @@ while 1:
   myecube.draw()
   mymodel.draw()
 
-  mx = mymouse.x
-  my = mymouse.y
+  mx, my = mymouse.position()
 
   if mx>DISPLAY.left and mx<DISPLAY.right and my>DISPLAY.top and my<DISPLAY.bottom:
     rot -= (mx-omx)*0.8

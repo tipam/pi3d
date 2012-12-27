@@ -128,8 +128,7 @@ mykeys = Keyboard()
 mymouse = Mouse()
 mymouse.start()
 
-omx=mymouse.x
-omy=mymouse.y
+omx, omy = mymouse.position()
 
 # Display scene and rotate cuboid
 while 1:
@@ -146,8 +145,7 @@ while 1:
   mytrees2.draw()
   mytrees3.draw()
 
-  mx=mymouse.x
-  my=mymouse.y
+  mx, my = mymouse.position()
 
   #if mx>display.left and mx<display.right and my>display.top and my<display.bottom:
   rot -= (mx-omx)*0.2

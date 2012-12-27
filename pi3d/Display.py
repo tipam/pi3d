@@ -175,7 +175,7 @@ class Display(object):
 
   def mouse_position(self):
     if self.mouse:
-      return self.mouse.x, self.mouse.y
+      return self.mouse.position()
     elif self.tkwin:
       return self.tkwin.winfo_pointerxy()
     else:

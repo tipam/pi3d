@@ -167,8 +167,7 @@ mykeys = Keyboard()
 mymouse = Mouse()
 mymouse.start()
 
-omx=mymouse.x
-omy=mymouse.y
+omx, omy = mymouse.position()
 
 fly = False
 walk = True
@@ -180,8 +179,7 @@ while 1:
   DISPLAY.clear()
 
   # movement of camera
-  mx = mymouse.x
-  my = mymouse.y
+  mx, my = mymouse.position()
   rot -= (mx-omx)*0.4
   tilt += (my-omy)*0.4
 

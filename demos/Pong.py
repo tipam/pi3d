@@ -117,19 +117,18 @@ mykeys = Keyboard()
 mymouse = Mouse()
 mymouse.start()
 
-omx=mymouse.x
-omy=mymouse.y
+omx, omy = mymouse.position()
 
 while True:
   DISPLAY.clear()
 
   # mouse movement checking here to get bat movment values
-  mx=mymouse.x
+  mx, my = mymouse.position()
   dx = (mx-omx)*0.04
   omx=mx
   if ((xm >= (-1*maphalf) and dx < 0) or (xm <= maphalf and dx > 0)):  xm += dx
 
-  my = mymouse.y
+
   dy = (my-omy)*0.02
   omy = my
   if ((ym >= (0) and dy < 0) or (ym <= mapheight and dy > 0)):  ym += dy
@@ -180,7 +179,7 @@ while True:
   if sx < -maphalf: dsx = abs(dsx)
   if sz < -maphalf: #player end
     #check if bat in position
-    if (sx - xm)**2 + (sy - ym)**2 < 10: 
+    if (sx - xm)**2 + (sy - ym)**2 < 10:
       dsz = abs(dsz) * (1 + random.random())
       dsx += dx
       dsy += dy

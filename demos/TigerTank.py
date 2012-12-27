@@ -133,7 +133,7 @@ etx = 130
 etz = -100
 etr = 0.0
 
-omx, omy = DISPLAY.mouse.x, DISPLAY.mouse.y
+omx, omy = DISPLAY.mouse_position()
 
 myfog = Fog(0.0014, FOG)
 
@@ -164,7 +164,7 @@ def loop():
   global tankroll_to, ltm
 
   #update mouse/keyboard input
-  mx, my = DISPLAY.mouse.x, DISPLAY.mouse.y
+  mx, my = DISPLAY.mouse_position()
   if mx != omx or my != omy or xm != oxm or zm != ozm:
     mouserot -= (mx - omx) * 0.6
     tilt += (my - omy) * 0.2

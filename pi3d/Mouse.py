@@ -2,6 +2,7 @@ import signal
 import threading
 import traceback
 
+from pi3d.util.Locker import Locker
 from pi3d.util import Log
 
 LOGGER = Log.logger(__name__)
@@ -20,13 +21,16 @@ class _Mouse(threading.Thread):
     self.fd = open('/dev/input/' + mouse, 'r')
     self.running = False
     self.buffer = ''
-    self.reset()
+    self.lock = threading.RLock()
     self.width = width
     self.height = height
     self.restrict = restrict
 
+    self.reset()
+
   def reset(self):
-    self.x = self.y = self.dx = self.dy = 0
+    with Locker(self.lock):
+      self._x = self._y = self._dx = self._dy = 0
     self.button = False
 
   def start(self):
@@ -39,24 +43,35 @@ class _Mouse(threading.Thread):
       self._check_event()
     self.fd.close()
 
+  def position(self):
+    with Locker(self.lock):
+      return self._x, self._y
+
+  def velocity(self):
+    with Locker(self.lock):
+      return self._dx, self._dy
+
   def _check_event(self):
     if len(self.buffer) >= 3:
       buttons = ord(self.buffer[0])
       self.buffer = self.buffer[1:]
       if buttons & _Mouse.HEADER:
-        self.dx, self.dy = map(ord, self.buffer[0:2])
+        dx, dy = map(ord, self.buffer[0:2])
         self.buffer = self.buffer[2:]
         self.button = buttons & _Mouse.BUTTONS
         if buttons & _Mouse.XSIGN:
-          self.dx -= 256
+          dx -= 256
         if buttons & _Mouse.YSIGN:
-          self.dy -= 256
+          dy -= 256
 
-        self.x += self.dx
-        self.y += self.dy
+        x = self._x + dx
+        y = self._y + dy
         if self.restrict:
-          self.x = min(max(self.x, 0), self.width - 1)
-          self.y = min(max(self.y, 0), self.height - 1)
+          x = min(max(x, 0), self.width - 1)
+          y = min(max(y, 0), self.height - 1)
+
+        with Locker(self.lock):
+          self._x, self._y, self._dx, self._dy = x, y, dx, dy
 
     else:
       try:
