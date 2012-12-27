@@ -42,7 +42,7 @@ print
 
 # Setup display and initialise pi3d
 DISPLAY = Display.create(x=10, y=10)
-DISPLAY.setBackColour(0.4,0.8,0.8,1) # r,g,b,alpha
+DISPLAY.set_background(0.4,0.8,0.8,1) # r,g,b,alpha
 camera = Camera((0, 0, 0), (0, 0, -1), (1, 1000, DISPLAY.win_width/1000.0, DISPLAY.win_height/1000.0))
 light = Light((10, 10, -20))
 # load shader
@@ -155,7 +155,7 @@ while True:
   sy += dsy
   sz += dsz
   # now uses the clashTest method from elevationMap
-  
+
   clash = mymap.clashTest(sx, sy, sz, radius)
   # bouncing physics
   if clash[0]:
@@ -172,7 +172,7 @@ while True:
     if dsz > 0.4: dsz = 0.4
     if dsx > 0.3: dsx = 0.2
     if dsz > maxdsz: dsz = maxdsz
-  
+
   # bounce off edges and give a random boost
   if sx > maphalf:
     dsx = -1 * abs(dsx) * (1 + random.random())

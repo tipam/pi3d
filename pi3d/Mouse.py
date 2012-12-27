@@ -5,72 +5,71 @@ import traceback
 from pi3d.util import Log
 
 LOGGER = Log.logger(__name__)
-MOUSE = None
 
-class NativeMouse(threading.Thread):
+class _Mouse(threading.Thread):
+  BUTTON_1 = 1 << 1
+  BUTTON_2 = 1 << 2
+  BUTTONS = BUTTON_1 & BUTTON_2
+  HEADER = 1 << 3
   XSIGN = 1 << 4
   YSIGN = 1 << 5
+  INSTANCE = None
 
-  def __init__(self):
-    super(NativeMouse, self).__init__()
-    self.fd = open('/dev/input/mouse0', 'r')
-    self.x = 800
-    self.y = 400
-    self.finished = False
-    self.button = False
+  def __init__(self, mouse='mice', restrict=True, width=1920, height=1200):
+    super(_Mouse, self).__init__()
+    self.fd = open('/dev/input/' + mouse, 'r')
     self.running = False
     self.buffer = ''
+    self.reset()
+    self.width = width
+    self.height = height
+    self.restrict = restrict
+
+  def reset(self):
+    self.x = 0
+    self.y = 0
+    self.button = False
 
   def start(self):
     if not self.running:
       self.running = True
-      super(NativeMouse, self).start()
+      super(_Mouse, self).start()
 
   def run(self):
-    buffer = ''
     while self.running:
-      self.check_event()
+      self._check_event()
+    self.fd.close()
 
-  def check_event(self, timeout=0):
+  def _check_event(self):
     if len(self.buffer) >= 3:
-      buttons = self.buffer[0]
+      buttons = ord(self.buffer[0])
       self.buffer = self.buffer[1:]
-      if buttons & 8:
+      if buttons & _Mouse.HEADER:
         dx, dy = map(ord, self.buffer[0:2])
         self.buffer = self.buffer[2:]
-        if buttons & 3:
-          self.button = True
-          # break  # Stop if mouse button pressed!
-        if buttons & Mouse.XSIGN:
+        self.button = buttons & _Mouse.BUTTONS
+        if buttons & _Mouse.XSIGN:
           dx -= 256
-        if buttons & Mouse.YSIGN:
+        if buttons & _Mouse.YSIGN:
           dy -= 256
 
         self.x += dx
         self.y += dy
-        return True
+        if self.restrict:
+          self.x = min(max(self.x, 0), self.width - 1)
+          self.y = min(max(self.y, 0), self.height - 1)
 
     else:
-      if timeout:
-        signal.signal(signal.SIGALRM, self.signal_handler)
-        signal.alarm(timeout)
-
-      self.buffer += self.fd.read()
-      if timeout:
-        signal.alarm(0)
-
-      return False
+      try:
+        self.buffer += self.fd.read(3)
+      except:
+        self.stop()
+        return
 
   def stop(self):
     self.running = False
 
-  def signal_handler(self, signum, frame):
-    LOGGER.error('Shutting down with signal %s', signum)
-    self.stop()
-
-def Mouse():
-  global MOUSE
-  if not MOUSE:
-    MOUSE = NativeMouse()
-  return MOUSE
-
+def Mouse(*args, **kwds):
+  if not _Mouse.INSTANCE:
+    _Mouse.INSTANCE = _Mouse(*args, **kwds)
+  return _Mouse.INSTANCE

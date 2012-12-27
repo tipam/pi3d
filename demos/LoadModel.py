@@ -28,7 +28,7 @@ from pi3d.util.Screenshot import screenshot
 
 # Setup display and initialise pi3d
 DISPLAY = Display.create(x=100, y=100)
-DISPLAY.setBackColour(r=0.2, g=0.4, b=0.6, alpha=1)
+DISPLAY.set_background(r=0.2, g=0.4, b=0.6, alpha=1)
 
 
 camera = Camera((0, 0, 0), (0, 0, -1), (1, 1000, DISPLAY.win_width/1000.0, DISPLAY.win_height/1000.0))

@@ -79,6 +79,7 @@ class Display(object):
 
     else:
       self._loop_end()
+      self.destroy()
 
     return self.is_running
 
@@ -112,9 +113,6 @@ class Display(object):
     self.sprites_to_unload.add(item)
 
   def _loop_begin(self):
-    if self.mouse:
-      self.mouse.check_event(self.mouse_timeout)
-
     self.clear()
     self._for_each_sprite(lambda s: s.load_opengl())
 
@@ -146,6 +144,9 @@ class Display(object):
   def stop(self):
     self.is_running = False
 
+  def __del__(self):
+    self.destroy()
+
   def destroy(self):
     try:
       self.opengl.destroy()
@@ -167,16 +168,23 @@ class Display(object):
     # opengles.glBindFramebuffer(GL_FRAMEBUFFER,0)
     opengles.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
-  def setBackColour(self, r, g, b, alpha):
+  def set_background(self, r, g, b, alpha):
     call_float(opengles.glClearColor, r, g, b, alpha)
     opengles.glColorMask(1, 1, 1, 1 if alpha < 1.0 else 0)
     #switches off alpha blending with desktop (is there a bug in the driver?)
 
+  def mouse_position(self):
+    if self.mouse:
+      return self.mouse.x, self.mouse.y
+    elif self.tkwin:
+      return self.tkwin.winfo_pointerxy()
+    else:
+      return -1, -1
+
 
 def create(is_3d=True, x=None, y=None, w=0, h=0, near=None, far=None,
            aspect=DEFAULT_ASPECT, depth=DEFAULT_DEPTH, background=None,
-           tk=False, window_title='', window_parent=None, mouse=False,
-           mouse_timeout=1):
+           tk=False, window_title='', window_parent=None, mouse=False):
   if tk:
     from pi3d.util import TkWin
     if not (w and h):
@@ -225,10 +233,11 @@ def create(is_3d=True, x=None, y=None, w=0, h=0, near=None, far=None,
   display.opengl.create_display(x, y, w, h)
 
   display.mouse = None
-  display.mouse_timeout = mouse_timeout
+
   if mouse:
     from pi3d.Mouse import Mouse
-    display.mouse = Mouse()
+    display.mouse = Mouse(width=w, height=h)
+    display.mouse.start()
 
   opengles.glMatrixMode(GL_PROJECTION)
   Utility.load_identity()
@@ -244,6 +253,6 @@ def create(is_3d=True, x=None, y=None, w=0, h=0, near=None, far=None,
   Utility.load_identity()
 
   if background:
-    display.setBackColour(*background)
+    display.set_background(*background)
 
   return display

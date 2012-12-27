@@ -39,7 +39,7 @@ DISPLAY = Display.create(x=MARGIN, y=MARGIN)
 scnx = DISPLAY.win_width
 scny = DISPLAY.win_height
 
-DISPLAY.setBackColour(0,0.7,1,1)
+DISPLAY.set_background(0,0.7,1,1)
 camera = Camera((0, 0, 0), (0, 0, -0.1), (1, 1000, DISPLAY.win_width/1000.0, DISPLAY.win_height/1000.0))
 light = Light((10, 10, -20))
 shader = Shader("shaders/uv_flat")

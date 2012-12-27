@@ -39,7 +39,7 @@ from pi3d.util.Screenshot import screenshot
 
 # Setup display and initialise pi3d
 DISPLAY = Display.create(x=200, y=200)
-DISPLAY.setBackColour(0.4,0.8,0.8,1)      # r,g,b,alpha
+DISPLAY.set_background(0.4,0.8,0.8,1)      # r,g,b,alpha
 
 camera = Camera((0, 0, 0), (0, 0, -1), (1, 1000, DISPLAY.win_width/1000.0, DISPLAY.win_height/1000.0))
 light = Light((1, 1, 4))
