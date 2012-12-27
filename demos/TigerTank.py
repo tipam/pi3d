@@ -52,8 +52,7 @@ flatsh = Shader('shaders/uv_flat')
 ectex = EnvironmentCube.loadECfiles('textures/ecubes/Miramar', 'miramar_256',
                                     suffix='png')
 myecube = EnvironmentCube.EnvironmentCube(camera, light, 1800.0, 'FACES')
-for i, b in enumerate(myecube.buf):
-  b.set_draw_details(flatsh, [ectex[i]], 0.0, -1.0)
+myecube.set_draw_details(flatsh, ectex)
 
 # Create elevation map
 mapwidth = 2000.0

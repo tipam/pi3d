@@ -55,7 +55,7 @@ print
 
 # Setup display and initialise pi3d
 DISPLAY = Display.create(x=100, y=100)
-DISPLAY.setBackColour(0.4,0.8,0.8,1)      # r,g,b,alpha
+DISPLAY.set_background(0.4,0.8,0.8,1)      # r,g,b,alpha
 
 camera = Camera((0, 0, 0), (0, 0, -1), (1, 1000, DISPLAY.win_width/1000.0, DISPLAY.win_height/1000.0))
 light = Light((10, 10, -20))
@@ -76,7 +76,7 @@ shineimg = Texture("textures/stars.jpg")
 # environment cube
 ectex = Texture("textures/ecubes/skybox_stormydays.jpg")
 myecube = EnvironmentCube(camera, light, 900.0,"CROSS")
-myecube.buf[0].set_draw_details(flatsh, [ectex], 0.0, -1.0)
+myecube.set_draw_details(flatsh, ectex)
 
 # Create elevation map
 mapwidth = 1000.0
@@ -153,11 +153,11 @@ scshots = 1
 #energy counter
 hp = 25
 
-rot=0.0
-tilt=0.0
+rot = 0.0
+tilt = 0.0
 avhgt = 3.0
-xm=0.0
-zm=0.0
+xm, oxm = 0.0, -1.0
+zm, ozm = 0.0, -1.0
 ym= mymap.calcHeight(xm,zm) + avhgt
 lastX0=0.0
 lastZ0=0.0
@@ -171,7 +171,7 @@ omx=mymouse.x
 omy=mymouse.y
 
 fly = False
-walk = False
+walk = True
 # Display scene and rotate cuboid
 angle = 0
 
@@ -179,10 +179,36 @@ angle = 0
 while 1:
   DISPLAY.clear()
 
-  camera.reset()
-  camera.rotate(tilt, 0, 0)
-  camera.rotate(0, rot, 0)
-  camera.translate((xm, ym, zm))
+  # movement of camera
+  mx = mymouse.x
+  my = mymouse.y
+  rot -= (mx-omx)*0.4
+  tilt += (my-omy)*0.4
+
+  dx = -math.sin(rot*rads)
+  dz = math.cos(rot*rads)
+  dy = math.sin(tilt*rads)
+  if (walk):
+    if (fly):
+      xm += dx*3
+      zm += dz*3
+      ym += dy*3
+    else:
+      dy = mymap.calcHeight(xm + dx*1.5, zm + dz*1.5) + avhgt - ym
+      if dy < 1.2: # limit steepness so can't climb up walls
+        xm += dx
+        zm += dz
+        ym += dy
+    if (xm < -490 or xm > 490 or zm < -490 or zm > 490): fly = True #reached the edge of the maze!
+  if not (mx == omx and my == omy and oxm == xm and ozm == zm):
+    camera.reset()
+    camera.rotate(tilt, 0, 0)
+    camera.rotate(0, rot, 0)
+    camera.translate((xm, ym, zm))
+  omx = mx
+  omy = my
+  oxm = xm
+  ozm = zm
 
   myecube.position(xm, ym, zm)
   myecube.draw()
@@ -231,31 +257,6 @@ while 1:
   for g in shedgp:
     g.draw()
 
-  # movement and rotations of light
-
-  mx = mymouse.x
-  my = mymouse.y
-  rot -= (mx-omx)*0.2
-  tilt += (my-omy)*0.2
-  omx=mx
-  omy=my
-
-  dx = -math.sin(rot*rads)
-  dz = math.cos(rot*rads)
-  dy = math.sin(tilt*rads)
-  if (walk):
-    if (fly):
-      xm += dx*3
-      zm += dz*3
-      ym += dy*3
-    else:
-      dy = mymap.calcHeight(xm + dx*1.5, zm + dz*1.5) + avhgt - ym
-      if dy < 1.2: # limit steepness so can't climb up walls
-        xm += dx
-        zm += dz
-        ym += dy
-    if (xm < -490 or xm > 490 or zm < -490 or zm > 490): fly = True #reached the edge of the maze!
-
   #key press ESCAPE to terminate
   k = mykeys.read()
   if k >-1:
@@ -287,6 +288,6 @@ while 1:
       break
     #else:
     #print k
-
+  camera.movedFlag = False
   DISPLAY.swapBuffers()
 quit()

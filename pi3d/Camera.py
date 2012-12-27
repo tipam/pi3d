@@ -2,20 +2,22 @@ from numpy import array, dot, copy, tan, cos, sin, radians
 from numpy.linalg import norm
 from pi3d import *
 from pi3d.shape.Shape import Shape
-from pi3d.util.Utility import mat_mult, vec_normal, vec_cross, vec_sub, vec_dot, rotate, rotateX, rotateZ, rotateX, rotateY
+from pi3d.util.Utility import vec_normal, vec_cross, vec_sub, vec_dot
 
 class Camera(object):
   def __init__(self, at, eye, lens):
-    """Set up view matrix to look from eye to at including perspective"""
+    """Set up view matrix to look from eye to at including perspective
+    at -- (x,y,z) location to look at
+    eye -- (x,y,z) location to look from
+    lens -- (near plane distance, far plane value, field of view width, field of view height) fields of view in radians
+    """
     self.eye = [eye[0], eye[1], eye[2]]
     self.view = LookAtMatrix(at,eye,[0,1,0])
     self.projection = ProjectionMatrix(lens[0], lens[1], lens[2], lens[3])
-    #self.modelView = mat_mult(self.view, self.projection) # Apply transform/rotation first, then shift into perspective space
     #self.mtrx = [row[:] for row in self.modelView]
     self.modelView = dot(self.view, self.projection) # Apply transform/rotation first, then shift into perspective space
     self.mtrx = copy(self.modelView)
     #self.L_reflect = LookAtMatrix(at,eye,[0,1,0],reflect=True)
-    #self.M_reflect = mat_mult(self.L_reflect,self.P)
     self.rtn = [0.0, 0.0, 0.0]
     self.C = None # holds the cfloats array for quicker passing to shader in Shape.draw()
     self.movedFlag = True
@@ -91,13 +93,15 @@ def LookAtMatrix(at, eye, up=[0,1,0], reflect=False):
   return array([[xaxis[a],yaxis[a],zaxis[a],z[a]] for a in range(4)], dtype=c_float)
   #return array([xaxis,yaxis,zaxis,z])
 
-def ProjectionMatrix(near=10, far=1000.0, fov_h=1.6, fov_v=1.2):
+def ProjectionMatrix(near=10, far=1000.0, fov_w=1.6, fov_h=1.2):
   """Setup projection matrix with given distance to near and far planes
   and fields of view in radians"""
   # Matrices are considered to be M[row][col]
   # Use DirectX convention, so need to do rowvec*Matrix to transform
-  w = 1.0/tan(fov_h*0.5)
-  h = 1.0/tan(fov_v*0.5)
+  #w = 1.0/tan(fov_w*0.5)
+  #h = 1.0/tan(fov_h*0.5)
+  w = 2.0/fov_w
+  h = 2.0/fov_h
   Q = far/(far-near)
   M = [[0]*4 for i in range(4)]
   M[0][0] = w

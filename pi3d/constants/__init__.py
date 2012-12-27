@@ -10,7 +10,7 @@ STARTUP_MESSAGE = """
   Copyright (c) Patrick Gaunt, 2012
   Copyright (c) Tom Swirly, 2012
 
-  Updates available from www.github.com/tipdam/pi3d
+  Updates available from www.github.com/tipam/pi3d
 """ % {'version': VERSION}
 
 VERBOSE = False
