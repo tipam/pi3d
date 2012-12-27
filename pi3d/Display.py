@@ -144,6 +144,9 @@ class Display(object):
   def stop(self):
     self.is_running = False
 
+  def __del__(self):
+    self.destroy()
+
   def destroy(self):
     try:
       self.opengl.destroy()
