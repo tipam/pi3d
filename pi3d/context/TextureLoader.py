@@ -18,7 +18,7 @@ class TextureLoader(object):
       Utility.texture_min_mag()
       opengles.glEnableClientState(GL_TEXTURE_COORD_ARRAY)
       opengles.glTexCoordPointer(2, self.vtype, 0, self.coords)
-      opengles.glBindTexture(GL_TEXTURE_2D, self.texture.tex)
+      opengles.glBindTexture(GL_TEXTURE_2D, self.texture.tex())
       opengles.glEnable(GL_TEXTURE_2D)
       if self.texture.alpha:
         if self.texture.blend:

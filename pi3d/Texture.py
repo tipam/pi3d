@@ -5,6 +5,7 @@ from pi3d import *
 from pi3d.util.Loadable import Loadable
 
 MAX_SIZE = 1024
+DEFER_TEXTURE_LOADING = True
 
 def round_up_to_power_of_2(x):
   p = 1
@@ -13,17 +14,24 @@ def round_up_to_power_of_2(x):
   return p
 
 class Texture(Loadable):
-  def __init__(self, file_string, blend=False, flip=False, size=0):
+  def __init__(self, file_string, blend=False, flip=False, size=0,
+               defer=DEFER_TEXTURE_LOADING):
     super(Texture, self).__init__()
     self.file_string = file_string
     self.blend = blend
     self.flip = flip
     self.size = size
+    if defer:
+      self.load_disk()
+    else:
+      self.load_opengl()
+
+  def tex(self):
     self.load_opengl()
-    # self.load_disk()
+    return self._tex
 
   def _unload_opengl(self):
-    texture_array = c_ints([self.tex.value])
+    texture_array = c_ints([self._tex.value])
     opengles.glDeleteTextures(1, ctypes.addressof(texture_array))
 
   def _load_disk(self):
@@ -68,11 +76,11 @@ class Texture(Loadable):
 
     RGBs = 'RGBA' if self.alpha else 'RGB'
     self.image = im.convert(RGBs).tostring('raw',RGBs)
-    self.tex = ctypes.c_int()
+    self._tex = ctypes.c_int()
 
   def _load_opengl(self):
-    opengles.glGenTextures(1, ctypes.byref(self.tex), 0)
-    opengles.glBindTexture(GL_TEXTURE_2D, self.tex)
+    opengles.glGenTextures(1, ctypes.byref(self._tex), 0)
+    opengles.glBindTexture(GL_TEXTURE_2D, self._tex)
     RGBv = GL_RGBA if self.alpha else GL_RGB
     opengles.glTexImage2D(GL_TEXTURE_2D, 0, RGBv, self.ix, self.iy, 0, RGBv,
                           GL_UNSIGNED_BYTE,

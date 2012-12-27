@@ -96,16 +96,15 @@ class Buffer(object):
 
     opengles.glDisable(GL_BLEND)
     self.unib[2] = 0.6
-    if len(textures)>0:
-      for t in range(0,len(textures)):
-        opengles.glActiveTexture(GL_TEXTURE0 + t)
-        opengles.glBindTexture(GL_TEXTURE_2D, textures[t].tex)
-        opengles.glUniform1i(shader.unif_tex[t], t)
-        opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, c_float(GL_LINEAR_MIPMAP_NEAREST))
-        opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, c_float(GL_LINEAR_MIPMAP_NEAREST))
-        if textures[t].blend:
-          opengles.glEnable(GL_BLEND) #i.e. if any of the textures set to blend then all will for this shader
-          self.unib[2] = 0.05
+    for t, texture in enumerate(textures):
+      opengles.glActiveTexture(GL_TEXTURE0 + t)
+      opengles.glBindTexture(GL_TEXTURE_2D, texture.tex())
+      opengles.glUniform1i(shader.unif_tex[t], t)
+      opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, c_float(GL_LINEAR_MIPMAP_NEAREST))
+      opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, c_float(GL_LINEAR_MIPMAP_NEAREST))
+      if texture.blend:
+        opengles.glEnable(GL_BLEND) #i.e. if any of the textures set to blend then all will for this shader
+        self.unib[2] = 0.05
 
     opengles.glUniform3fv(shader.unif_unib, 2, ctypes.byref(self.unib)) # have to do this after checking textures for blend set in unib[0][2]
 
