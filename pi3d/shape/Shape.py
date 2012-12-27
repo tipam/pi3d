@@ -24,7 +24,7 @@ class Shape(Loadable):
     4  fog shade 12-14
     5  fog distance and alph (only first two values used at moment) 15, 16
     6  camera position  18-20
-    7  camera rotation 21-23
+    7  animation offets x, y, delta 21-23
     8  light position, direction vector (if capacity for more lights is added these would go on the end of this list) 24-26
     9  light strength per shade 27-29
     10 light ambient values 30-32
@@ -64,21 +64,16 @@ class Shape(Loadable):
         dot(self.rox, 
         dot(self.roz, self.tr1)))))
       self.M[0:16] = self.MRaw.ravel()
-      
-    if self.camera.movedFlag:
       self.M[16:32] = dot(self.MRaw, self.camera.mtrx).ravel()
+      self.MFlg = False
+      
+    elif self.camera.movedFlag: #only do this is not done because model moved
+      self.M[16:32] = dot(self.MRaw, self.camera.mtrx).ravel()
+      
+    if self.camera.movedFlag:  
       self.unif[18:21] = self.camera.eye[0:3]
-      #self.unif[21:24] = self.camera.rtn[0:3]
 
     opengles.glUniformMatrix4fv(shader.unif_modelviewmatrix, 2, c_int(0), ctypes.byref(self.M)) # otherwise use existing version
-    #opengles.glUniformMatrix4fv(shader.unif_cameraviewmatrix, 1, c_int(0), ctypes.byref(self.C))
-
-    # camera matrix
-    #if self.camera.movedFlag:
-      #if self.camera.C == None: # i.e. only need to do this once per frame
-      #  self.camera.C = c_floats(self.camera.mtrx.ravel())
-      #opengles.glUniformMatrix4fv(shader.unif_cameraviewmatrix, 1, c_int(0), ctypes.byref(self.camera.C))
-    # variables for movement of this object
     opengles.glUniform3fv(shader.unif_unif, 11, ctypes.byref(self.unif))
     for b in self.buf:
       """

@@ -121,8 +121,8 @@ tankpitch = 0.0   #too and fro pitch of tank on ground
 mouserot = 0.0
 tilt = 0.0
 avhgt = 0.85
-xm = 0.0
-zm = -200.0
+xm, oxm = 0.0, -1.0
+zm, ozm = -200.0, -1.0
 dxm = 0.0
 dzm = -1.0
 ym = mymap.calcHeight(xm, zm) + avhgt
@@ -161,22 +161,30 @@ is_running = True
 
 def loop():
   global tilt, roll, pitch, xm, ym, zm, ltm, tankpitch, tankroll, tankrot, turret
-  global etx, ety, etz, etr, omx, omy, tankpitch_to, tankpitch_fr, mouserot
+  global etx, ety, etz, etr, omx, omy, oxm, ozm, tankpitch_to, tankpitch_fr, mouserot
   global tankroll_to, ltm
 
-  camera.reset()
-  # tilt can be used to prevent the view from going under the landscape!
-  sf = 60 - 55.0 / abs(tilt) if tilt < -1 else 5.0
-  xoff = sf * math.sin(math.radians(mouserot))
-  yoff = abs(1.25 * sf * math.sin(math.radians(tilt))) + 3.0
-  zoff = -sf * math.cos(math.radians(mouserot))
+  #update mouse/keyboard input
+  mx, my = DISPLAY.mouse.x, DISPLAY.mouse.y
+  if mx != omx or my != omy or xm != oxm or zm != ozm:
+    mouserot -= (mx - omx) * 0.2
+    tilt += (my - omy) * 0.2
+    omx, omy = mx, my
 
-  #xoff, yoff, zoff = 0,0,0
-  #camera.translate((xm, ym-10*sf-5.0, zm-40*sf))
-  #zoom camera out so we can see our robot
-  camera.rotate(tilt, mouserot, 0)           #Tank still affected by scene tilt
-  camera.translate((xm + xoff, ym + yoff + 5, zm + zoff))
-  #zoom camera out so we can see our robot
+    camera.reset()
+    # tilt can be used to prevent the view from going under the landscape!
+    sf = 60 - 55.0 / abs(tilt) if tilt < -1 else 5.0
+    xoff = sf * math.sin(math.radians(mouserot))
+    yoff = abs(1.25 * sf * math.sin(math.radians(tilt))) + 3.0
+    zoff = -sf * math.cos(math.radians(mouserot))
+
+    #xoff, yoff, zoff = 0,0,0
+    #camera.translate((xm, ym-10*sf-5.0, zm-40*sf))
+    #zoom camera out so we can see our robot
+    camera.rotate(tilt, mouserot, 0)           #Tank still affected by scene tilt
+    camera.translate((xm + xoff, ym + yoff + 5, zm + zoff))
+    oxm, ozm = xm, zm
+    #zoom camera out so we can see our robot
 
   #draw player tank
   tmnow = time.time()
@@ -208,12 +216,6 @@ def loop():
 
   myecube.position(xm, ym, zm)
   myecube.draw()  #Draw environment cube
-
-  #update mouse/keyboard input
-  mx, my = DISPLAY.mouse.x, DISPLAY.mouse.y
-  mouserot -= (mx - omx) * 0.2
-  tilt += (my - omy) * 0.2
-  omx, omy = mx, my
 
   # turns player tankt turret towards center of screen which will have a crosshairs
   if turret + 2.0 < mouserot:
@@ -258,6 +260,7 @@ def loop():
 
   win.ev = ''  # Clear the event so it doesn't repeat.
 
+  camera.movedFlag = False
 
 if USE_EXTERNAL_LOOP:
   # This fails.

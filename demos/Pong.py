@@ -81,19 +81,18 @@ mapheight=40.0
 mymap = ElevationMap("textures/pong.jpg", camera=camera, light=light,
                      width=mapwidth, depth=mapdepth, height=mapheight,
                      divx=32, divy=32, ntiles=4, name="sub")
-mymap.buf[0].set_draw_details(shader, [groundimg, groundimg, ballimg], 1.0, 0.5)
+mymap.buf[0].set_draw_details(shader, [groundimg, groundimg, ballimg], 1.0, 0.0)
 #mymap.buf[0].set_draw_details(shader, [])
 #mymap.buf[0].set_material((1.0,0.2,0.4))
 
 #avatar camera
-rot = 0.0
-tilt = 0.0
 avhgt = 2.0
 xm = 0.0
 zm = 0.0
 ym = 0.0
 lastX0 = 0.0
 lastZ0 = 0.0
+camera.translate((xm, 2 + ym, -maphalf - 2.5))
 
 arialFont = Font("AR_CENA","#dd00aa")   #load AR_CENA font and set the font colour to 'raspberry'
 score = [0,0]
@@ -124,10 +123,19 @@ omy=mymouse.y
 while True:
   DISPLAY.clear()
 
-  camera.reset()
-  camera.rotate(tilt, 0, 0)
-  camera.rotate(0, rot, 0)
-  camera.translate((xm, 2 + ym, -maphalf - 2.5))
+  # mouse movement checking here to get bat movment values
+  mx=mymouse.x
+  dx = (mx-omx)*0.02
+  omx=mx
+  if ((xm >= (-1*maphalf) and dx < 0) or (xm <= maphalf and dx > 0)):  xm += dx
+
+  my = mymouse.y
+  dy = (my-omy)*0.01
+  omy = my
+  if ((ym >= (0) and dy < 0) or (ym <= mapheight and dy > 0)):  ym += dy
+  if not (dy == 0.0 and dx == 0.0):
+    camera.reset()
+    camera.translate((xm, 2 + ym, -maphalf - 2.5))
 
   myecube.draw()
   mymap.draw()
@@ -165,18 +173,6 @@ while True:
     if dsx > 0.3: dsx = 0.2
     if dsz > maxdsz: dsz = maxdsz
   
-
-  # mouse movement checking here to get bat movment values
-  mx=mymouse.x
-  dx = (mx-omx)*0.02
-  omx=mx
-  if ((xm >= (-1*maphalf) and dx < 0) or (xm <= maphalf and dx > 0)):  xm += dx
-
-  my = mymouse.y
-  dy = (my-omy)*0.01
-  omy = my
-  if ((ym >= (0) and dy < 0) or (ym <= mapheight and dy > 0)):  ym += dy
-
   # bounce off edges and give a random boost
   if sx > maphalf:
     dsx = -1 * abs(dsx) * (1 + random.random())
@@ -184,7 +180,7 @@ while True:
   if sx < -maphalf: dsx = abs(dsx)
   if sz < -maphalf: #player end
     #check if bat in position
-    if (sx - xm)**2 + (sy - ym)**2 < 10: #NB xm and ym are positions to move 'everthing else' so negative and offset height
+    if (sx - xm)**2 + (sy - ym)**2 < 10: 
       dsz = abs(dsz) * (1 + random.random())
       dsx += dx
       dsy += dy
