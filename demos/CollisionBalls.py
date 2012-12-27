@@ -23,7 +23,7 @@ TEXTURE_NAMES = ['textures/red_ball.png',
 
 
 DISPLAY = Display.create(is_3d=False, background=BACKGROUND)
-KEYBOARD = Keyboard(use_curses=True)
+KEYBOARD = Keyboard()
 
 camera = Camera((0, 0, 0), (0, 0, -0.1),
                 (1, 1000, DISPLAY.win_width/1000.0, DISPLAY.win_height/1000.0))
