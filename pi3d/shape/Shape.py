@@ -29,17 +29,17 @@ class Shape(Loadable):
     9  light strength per shade 27-29
     10 light ambient values 30-32
     """
-    
+
     self.tr1 = array([[1.0, 0.0, 0.0, 0.0],[0.0, 1.0, 0.0, 0.0] ,[0.0, 0.0, 1.0, 0.0],[x-cx,y-cy,z-cz,1]])
     s, c = sin(radians(self.unif[3])), cos(radians(self.unif[3]))
     self.rox = array([[1.0, 0.0, 0.0, 0.0],[0.0, c, s, 0.0],[0.0, -s, c, 0.0],[0.0, 0.0, 0.0, 1.0]])
     s, c = sin(radians(self.unif[4])), cos(radians(self.unif[4]))
-    self.roy = array([[c, 0.0, -s, 0.0],[0.0, 1.0, 0.0, 0.0],[s, 0.0, c, 0.0],[0.0, 0.0, 0.0, 1.0]])     
+    self.roy = array([[c, 0.0, -s, 0.0],[0.0, 1.0, 0.0, 0.0],[s, 0.0, c, 0.0],[0.0, 0.0, 0.0, 1.0]])
     s, c = sin(radians(self.unif[5])), cos(radians(self.unif[5]))
     self.roz = array([[c, s, 0.0, 0.0],[-s, c, 0.0, 0.0],[0.0, 0.0, 1.0, 0.0],[0.0, 0.0, 0.0, 1.0]])
     self.scl = array([[self.unif[6], 0.0, 0.0, 0.0],[0.0, self.unif[7], 0.0, 0.0],[0.0, 0.0, self.unif[8], 0.0],[0.0, 0.0, 0.0, 1.0]])
     self.tr2 = array([[1.0,0.0,0.0,0.0], [0.0,1.0,0.0,0.0], [0.0,0.0,1.0,0.0], [self.unif[9], self.unif[10], self.unif[11], 1.0]])
-    self.MFlg = True 
+    self.MFlg = True
     self.M = (c_float * 32)(0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0)
 
     self.camera = camera
@@ -47,39 +47,42 @@ class Shape(Loadable):
     self.shader = None
     self.textures = []
 
-    self.buf = []  #buffer for each part of this shape that needs rendering with a different Shader/Texture
-
+    self.buf = []
+    # self.buf contains a buffer for each part of this shape that needs
+    # rendering with a different Shader/Texture. self.draw() relies on objects
+    # inheriting from this filling buf with at least one element.
 
   def draw(self, shdr=None, txtrs=None, ntl=None, shny=None):
-    # if called without parameters there has to have been a previous call to set_draw_details() for all the Buffers in buf[]
+    # if called without parameters there has to have been a previous call to
+    # set_draw_details() for all the Buffers in buf[]
     shader = self.shader if shdr == None else shdr
     shader.use()
 
     if self.MFlg == True:
       # calculate rotation and translation matrix for this model
       # using numpy
-      self.MRaw = dot(self.tr2, 
-        dot(self.scl, 
-        dot(self.roy, 
-        dot(self.rox, 
+      self.MRaw = dot(self.tr2,
+        dot(self.scl,
+        dot(self.roy,
+        dot(self.rox,
         dot(self.roz, self.tr1)))))
       self.M[0:16] = self.MRaw.ravel()
       self.M[16:32] = dot(self.MRaw, self.camera.mtrx).ravel()
       self.MFlg = False
-      
+
     elif self.camera.movedFlag: #only do this is not done because model moved
       self.M[16:32] = dot(self.MRaw, self.camera.mtrx).ravel()
-      
-    if self.camera.movedFlag:  
+
+    if self.camera.movedFlag:
       self.unif[18:21] = self.camera.eye[0:3]
 
-    opengles.glUniformMatrix4fv(shader.unif_modelviewmatrix, 2, c_int(0), ctypes.byref(self.M)) # otherwise use existing version
+    opengles.glUniformMatrix4fv(shader.unif_modelviewmatrix, 2, c_int(0),
+                                ctypes.byref(self.M))
+    # otherwise use existing version
     opengles.glUniform3fv(shader.unif_unif, 11, ctypes.byref(self.unif))
     for b in self.buf:
-      """
-      Shape.draw has to be passed either parameter == None or values to pass on
-      """
-      b.draw(shdr, txtrs, ntl, shny) # relies on object inheriting from this creating Buffer called buf
+      # Shape.draw has to be passed either parameter == None or values to pass on
+      b.draw(shdr, txtrs, ntl, shny)
 
   def set_shader(self, shader):
     self.shader = shader
@@ -94,19 +97,20 @@ class Shape(Loadable):
         b.textures = []
       if is_uv and len(b.textures) == 0:
         b.textures = [normtex]
-      while len(b.textures) < (2+ofst):
+      while len(b.textures) < (2 + ofst):
         b.textures.append(None)
-      b.textures[1+ofst] = normtex
+      b.textures[1 + ofst] = normtex
       b.unib[0] = ntiles
       if shinetex != None:
-        while len(b.textures) < (3+ofst):
+        while len(b.textures) < (3 + ofst):
           b.textures.append(None)
-        b.textures[2+ofst] = shinetex
+        b.textures[2 + ofst] = shinetex
         b.unib[1] = shiny
 
   def set_fog(self, fogshade, fogdist):
-    # set fog for this Shape only it uses the shader smoothblend function from 1/3 fogdist to fogdist
-    self.unif[12], self.unif[13], self.unif[14] = fogshade[0], fogshade[1], fogshade[2]
+    # Set fog for this Shape, only it uses the shader smoothblend function from
+    # 1/3 fogdist to fogdist.
+    self.unif[12:15] = fogshade[0:3]
     self.unif[15] = fogdist
 
   def scale(self, sx, sy, sz):
@@ -114,29 +118,29 @@ class Shape(Loadable):
     self.scl[1, 1] = sy
     self.scl[2, 2] = sz
     self.unif[6], self.unif[7], self.unif[8] = sx, sy, sz
-    self.MFlg = True  
-    
+    self.MFlg = True
+
   def position(self, x, y, z):
     self.tr1[3, 0] = x - self.unif[9]
     self.tr1[3, 1] = y - self.unif[10]
     self.tr1[3, 2] = z - self.unif[11]
     self.unif[0], self.unif[1], self.unif[2] = x, y, z
-    self.MFlg = True  
+    self.MFlg = True
 
   def positionX(self, v):
     self.tr1[3, 0] = v - self.unif[9]
     self.unif[0] = v
-    self.MFlg = True  
+    self.MFlg = True
 
   def positionY(self, v):
     self.tr1[3, 1] = v - self.unif[10]
     self.unif[1] = v
-    self.MFlg = True  
+    self.MFlg = True
 
   def positionZ(self, v):
     self.tr1[3, 2] = v - self.unif[11]
     self.unif[2] = v
-    self.MFlg = True  
+    self.MFlg = True
 
   def translate(self, dx, dy, dz):
     self.tr1[3, 0] += dx
@@ -169,7 +173,7 @@ class Shape(Loadable):
     self.rox[2, 1] = -s
     self.unif[3] = v
     self.MFlg = True
-   
+
   def rotateToY(self, v):
     s, c = sin(radians(v)), cos(radians(v))
     self.roy[0, 0] = self.roy[2, 2] = c
