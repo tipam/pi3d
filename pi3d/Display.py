@@ -40,7 +40,7 @@ class Display(object):
     self.tkwin = tkwin
 
     self.sprites = []
-    self.frames_per_second = 0
+    self.sprites_to_load = set()
     self.sprites_to_unload = set()
 
     self.opengl = DisplayOpenGL()
@@ -52,7 +52,6 @@ class Display(object):
     LOGGER.info(STARTUP_MESSAGE)
 
   def loop(self, loop_function=None):
-    """Deprecated."""
     LOGGER.debug('starting')
     self.time = time.time()
     assert not self.external_loop, "Use only one of loop and loop_running"
@@ -74,6 +73,7 @@ class Display(object):
       if self.external_loop:
         self._loop_end()
       else:
+        self.time = time.time()
         self.external_loop = True  # First time.
       self._loop_begin()
 
@@ -97,14 +97,13 @@ class Display(object):
     self.bottom = y + h
     self.opengl.resize(x, y, w, h)
 
-  def add_sprite(self, sprite, index=None):
-    if index is None:
-      self.sprites.append(sprite)
-    else:
-      self.sprites.insert(index, sprite)
+  def insert_sprite(self, sprite, index):
+    self.sprites.insert(index, sprite)
+    self.sprites_to_load.add(sprite)
 
   def add_sprites(self, *sprites):
     self.sprites.extend(sprites)
+    self.sprites_to_load.update(sprites)
 
   def remove_sprite(self, sprite):
     self.sprites.remove(sprite)
@@ -114,7 +113,8 @@ class Display(object):
 
   def _loop_begin(self):
     self.clear()
-    self._for_each_sprite(lambda s: s.load_opengl())
+    self._for_each_sprite(lambda s: s.load_opengl(), self.sprites_to_load)
+    self.sprites_to_load.clear()
 
   def _loop_end(self):
     t = time.time()
@@ -126,14 +126,16 @@ class Display(object):
       sprite.unload_opengl()
     self.sprites_to_unload = set()
 
-    if self.frames_per_second:
+    if getattr(self, 'frames_per_second', 0):
       self.time += 1.0 / self.frames_per_second
       delta = self.time - time.time()
       if delta > 0:
         time.sleep(delta)
 
-  def _for_each_sprite(self, function):
-    for s in self.sprites:
+  def _for_each_sprite(self, function, sprites=None):
+    if sprites is None:
+      sprites = self.sprites
+    for s in sprites:
       try:
         function(s)
       except:
@@ -213,7 +215,7 @@ def create(is_3d=True, x=None, y=None, w=0, h=0, near=None, far=None,
      h = display.max_height - 2 * y
      if h <= 0:
        h = display.max_height
-  LOGGER.debug('w=%d, h=%d', w, h)
+  LOGGER.debug('Display size is w=%d, h=%d', w, h)
 
   if near is None:
     near = DEFAULT_NEAR_3D if is_3d else DEFAULT_NEAR_2D
@@ -231,7 +233,6 @@ def create(is_3d=True, x=None, y=None, w=0, h=0, near=None, far=None,
   display.bottom = y + h
 
   display.opengl.create_display(x, y, w, h)
-
   display.mouse = None
 
   if mouse:

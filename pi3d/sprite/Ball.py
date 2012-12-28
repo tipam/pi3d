@@ -4,14 +4,14 @@ from pi3d import Display
 from pi3d.Texture import Texture
 from pi3d.util import Utility
 
-from pi3d.shape.Sprite import Sprite
+from pi3d.shape.Sprite import ImageSprite
 
-class Ball(Sprite):
-  def __init__(self, camera, light, shader, texture, radius, x, y, vx=0.0, vy=0.0, decay=0.001):
-    super(Ball, self).__init__(camera, light, 2*radius, 2*radius, "", x, y, 450)
-    if not isinstance(texture, Texture):
-      texture = Texture(texture)
-    self.buf[0].set_draw_details(shader, [texture], 0.0, -1.0)
+class Ball(ImageSprite):
+  def __init__(self, camera, light, shader, texture, radius, x, y,
+               vx=0.0, vy=0.0, decay=0.001):
+    super(Ball, self).__init__(texture=texture, shader=shader, camera=camera,
+                               light=light, w=2 * radius, h=2 * radius, name="",
+                               x=x, y=y, z=450)
     self.radius = radius
     self.unif[0] = x
     self.unif[1] = y
@@ -19,9 +19,6 @@ class Ball(Sprite):
     self.vy = vy
     self.mass = radius * radius
     self.decay = decay
-
-  def _load_opengl(self):
-    self.buf[0].textures[0].load_opengl()
 
   def move(self):
     self.translateX(self.vx)

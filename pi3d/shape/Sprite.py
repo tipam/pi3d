@@ -1,10 +1,11 @@
 from pi3d import *
-from pi3d import Texture
+from pi3d.Texture import Texture
 from pi3d.Buffer import Buffer
 from pi3d.shape.Shape import Shape
+from pi3d.util.Loadable import Loadable
 
 class Sprite(Shape):
-  def __init__(self, camera, light, w=1.0, h=1.0, name="",
+  def __init__(self, camera=None, light=None, w=1.0, h=1.0, name="",
                x=0.0, y=0.0, z=10.0,
                rx=0.0, ry=0.0, rz=0.0,
                sx=1.0, sy=1.0, sz=1.0,
@@ -30,3 +31,15 @@ class Sprite(Shape):
 
     self.buf = []
     self.buf.append(Buffer(self, self.verts, self.texcoords, self.inds, self.norms))
+
+
+class ImageSprite(Sprite, Loadable):
+  def __init__(self, texture, shader, **kwds):
+    Sprite.__init__(self, **kwds)
+    Loadable.__init__(self)
+    if not isinstance(texture, Texture):
+      texture = Texture(texture)
+    self.buf[0].set_draw_details(shader, [texture], 0.0, -1.0)
+
+  def _load_opengl(self):
+    self.buf[0].textures[0].load_opengl()
