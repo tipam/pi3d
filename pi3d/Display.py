@@ -4,7 +4,7 @@ import threading
 import traceback
 
 from pi3d import *
-from pi3d.util import Log
+from pi3d.util.Locker import Locker
 from pi3d.util import Utility
 from pi3d.util.DisplayOpenGL import DisplayOpenGL
 
@@ -48,6 +48,7 @@ class Display(object):
     self.internal_loop = False
     self.external_loop = False
     self.is_running = True
+    self.lock = threading.RLock()
 
     LOGGER.info(STARTUP_MESSAGE)
 
@@ -97,34 +98,34 @@ class Display(object):
     self.bottom = y + h
     self.opengl.resize(x, y, w, h)
 
-  def insert_sprite(self, sprite, index):
-    self.sprites.insert(index, sprite)
-    self.sprites_to_load.add(sprite)
-
   def add_sprites(self, *sprites):
-    self.sprites.extend(sprites)
-    self.sprites_to_load.update(sprites)
+    with Locker(self.lock):
+      self.sprites_to_load.update(sprites)
 
-  def remove_sprite(self, sprite):
-    self.sprites.remove(sprite)
-
-  def unload_opengl(self, item):
-    self.sprites_to_unload.add(item)
+  def remove_sprites(self, *sprites):
+    with Locker(self.lock):
+      self.sprites_to_unload.update(sprites)
 
   def _loop_begin(self):
     self.clear()
-    self._for_each_sprite(lambda s: s.load_opengl(), self.sprites_to_load)
-    self.sprites_to_load.clear()
+    with Locker(self.lock):
+      self.sprites_to_load, to_load = set(), self.sprites_to_load
+      self.sprites.extend(to_load)
+    self._for_each_sprite(lambda s: s.load_opengl(), to_load)
 
   def _loop_end(self):
+    with Locker(self.lock):
+      self.sprites_to_unload, to_unload = set(), self.sprites_to_unload
+      if to_unload:
+        self.sprites = (s for s in self.sprites if s in to_unload)
+
     t = time.time()
     self._for_each_sprite(lambda s: s.repaint(t))
 
     self.swapBuffers()
 
-    for sprite in self.sprites_to_unload:
+    for sprite in to_unload:
       sprite.unload_opengl()
-    self.sprites_to_unload = set()
 
     if getattr(self, 'frames_per_second', 0):
       self.time += 1.0 / self.frames_per_second
