@@ -56,10 +56,10 @@ class Buffer(object):
 
     # Pack points,normals and texcoords into tuples and convert to ctype floats.
     P = [p + n + t for p, n, t in zip(pts, normals, texcoords)]
-    X = c_floats([x for x in itertools.chain(*P)])
+    X = c_floats(list(itertools.chain(*P)))
 
     P = [f[0:3] for f in faces]
-    E = c_shorts([x for x in itertools.chain(*P)])
+    E = c_shorts(list(itertools.chain(*P)))
 
     self.vbuf = c_int()
     opengles.glGenBuffers(1, ctypes.byref(self.vbuf))
