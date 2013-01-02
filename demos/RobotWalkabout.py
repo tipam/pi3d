@@ -52,8 +52,7 @@ reflcn = Texture("textures/stars.jpg")
 #load environment cube
 ectex = loadECfiles("textures/ecubes","sbox_interstellar")
 myecube = EnvironmentCube(camera, light, 900.0,"FACES")
-for i,b in enumerate(myecube.buf):
-  b.set_draw_details(flatsh,[ectex[i]])
+myecube.set_draw_details(flatsh,ectex)
 
 # Create elevation map
 mapwidth=1000.0

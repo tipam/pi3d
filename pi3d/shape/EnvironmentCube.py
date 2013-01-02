@@ -99,6 +99,9 @@ class EnvironmentCube(Shape):
   def set_draw_details(self, shader, textures, ntiles=0.0, shiny=0.0):
     if not (type(textures) is list):
       textures = [textures]
+    elif len(textures) == 5:
+      # this should be the only circumstance. Saves setting it in the constructor
+      self.nobottom = True
 
     for i, b in enumerate(self.buf):
       j = i - 1 if (self.nobottom and i >= BOTTOM_INDEX) else i
