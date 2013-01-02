@@ -11,7 +11,6 @@ from pi3d.context.Light import Light
 
 from pi3d.sprite.Ball import Ball
 
-# Ball parameters - you can change these
 MAX_BALLS = 15
 MIN_BALL_SIZE = 5
 MAX_BALL_SIZE = 100
