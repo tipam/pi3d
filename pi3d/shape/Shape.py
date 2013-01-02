@@ -52,10 +52,10 @@ class Shape(Loadable):
     # rendering with a different Shader/Texture. self.draw() relies on objects
     # inheriting from this filling buf with at least one element.
 
-  def draw(self, shdr=None, txtrs=None, ntl=None, shny=None):
+  def draw(self, shader=None, txtrs=None, ntl=None, shny=None):
     # if called without parameters there has to have been a previous call to
     # set_draw_details() for all the Buffers in buf[]
-    shader = self.shader if shdr == None else shdr
+    shader = shader or self.shader
     shader.use()
 
     if self.MFlg == True:
@@ -82,7 +82,7 @@ class Shape(Loadable):
     opengles.glUniform3fv(shader.unif_unif, 11, ctypes.byref(self.unif))
     for b in self.buf:
       # Shape.draw has to be passed either parameter == None or values to pass on
-      b.draw(shdr, txtrs, ntl, shny)
+      b.draw(shader, txtrs, ntl, shny)
 
   def set_shader(self, shader):
     self.shader = shader

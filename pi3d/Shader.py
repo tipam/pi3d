@@ -16,7 +16,7 @@ def _opengl_log(shader, function, caption):
 
 class Shader(object):
   def __init__(self, shfile):
-    """  
+    """
     shfile -- path/name without vs or fs ending i.e. "shaders/bumpShade"
     textures[] -- array of Texture() objects 0.texture map 1.normal map 2.reflection map
     scene -- Scene() object
@@ -26,8 +26,8 @@ class Shader(object):
 
     #self.scene = scene
     self.shfile = shfile
-    self.vshader_source = ctypes.c_char_p(self.loadShader(shfile+".vs"))
-    self.fshader_source = ctypes.c_char_p(self.loadShader(shfile+".fs"))
+    self.vshader_source = ctypes.c_char_p(self.loadShader(shfile + ".vs"))
+    self.fshader_source = ctypes.c_char_p(self.loadShader(shfile + ".fs"))
 
     self.vshader = opengles.glCreateShader(GL_VERTEX_SHADER);
     opengles.glShaderSource(self.vshader, 1, ctypes.byref(self.vshader_source), 0)
@@ -65,7 +65,7 @@ class Shader(object):
     #self.unif_ofst = opengles.glGetUniformLocation(self.program, "ofst")
     self.unif_unif = opengles.glGetUniformLocation(self.program, "unif")
     self.unif_unib = opengles.glGetUniformLocation(self.program, "unib")
-    
+
     self.attr_texcoord = opengles.glGetAttribLocation(self.program, "texcoord")
     opengles.glEnableVertexAttribArray(self.attr_texcoord)
     self.unif_tex = []
@@ -74,13 +74,13 @@ class Shader(object):
       self.unif_tex.append(opengles.glGetUniformLocation(self.program, "tex"+str(t))) #tex0 texture tex1 bump tex2 reflection
       opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, c_float(GL_LINEAR_MIPMAP_NEAREST))
       opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, c_float(GL_LINEAR_MIPMAP_NEAREST))
-        
+
     self.use()
 
   def use(self):
     """Makes this shader active"""
     opengles.glUseProgram(self.program)
-  
+
   def showshaderlog(self,shader):
     """Prints the compile log for a shader"""
     N=1024
