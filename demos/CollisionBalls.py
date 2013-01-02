@@ -18,8 +18,8 @@ MAX_BALL_VELOCITY = 10.0
 
 KEYBOARD = Keyboard()
 
-BACKGROUND = 1.0, 1.0, 1.0, 0.0
-DISPLAY = Display.create(is_3d=False, background=BACKGROUND)
+BACKGROUND_COLOR = 1.0, 1.0, 1.0, 0.0
+DISPLAY = Display.create(is_3d=False, background=BACKGROUND_COLOR)
 WIDTH, HEIGHT = DISPLAY.win_width, DISPLAY.win_height
 
 CAMERA_LENS = (1, 1000, WIDTH / 1000.0, HEIGHT / 1000.0)

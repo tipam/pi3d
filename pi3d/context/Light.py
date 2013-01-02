@@ -7,7 +7,7 @@ class Light(object):
   def position(self, lightpos):
     self.lightpos = lightpos
 
-  def colour(self, lightcol):
+  def color(self, lightcol):
     self.lightcol = lightcol
 
   def ambient(self, lightamb):
