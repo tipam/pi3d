@@ -6,6 +6,7 @@ from pi3d.shape.Shape import Shape
 from pi3d.Texture import Texture
 
 CUBE_PARTS = ['front', 'right', 'top', 'bottom', 'left', 'back']
+BOTTOM_INDEX = 3
 
 def loadECfiles(path, fname, suffix='jpg', nobottom=False):
   # Helper for loading environment cube faces.
@@ -94,14 +95,12 @@ class EnvironmentCube(Shape):
       self.buf.append(Buffer(self, self.vertices[12:16], self.tex_coords[12:16], ((3,0,1), (2,3,1)), self.normals[12:16])) #bottom
       self.buf.append(Buffer(self, self.vertices[16:20], self.tex_coords[16:20], ((3,0,1), (2,3,1)), self.normals[16:20])) #left
       self.buf.append(Buffer(self, self.vertices[20:24], self.tex_coords[20:24], ((3,1,0), (2,1,3)), self.normals[20:24])) #back
-      
+
   def set_draw_details(self, shader, textures, ntiles=0.0, shiny=0.0):
     if not (type(textures) is list):
-      texture_list = [textures]
-    else:
-      texture_list = textures
+      textures = [textures]
+
     for i, b in enumerate(self.buf):
-      if self.nobottom and i > 2: j = i-1
-      else: j = i
-      b.set_draw_details(shader, [texture_list[j]], ntiles, shiny)
+      j = i - 1 if (self.nobottom and i >= BOTTOM_INDEX) else i
+      b.set_draw_details(shader, [textures[j]], ntiles, shiny)
 

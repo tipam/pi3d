@@ -10,12 +10,12 @@ class Buffer(object):
   """Hold a pair of Buffer Objects to draw a part of a model"""
   def __init__(self, shape, pts, texcoords, faces, normals=None, smooth=True):
     """Generate a vertex buffer to hold data and indices"""
-    # uniform variables all in one array!
-    self.unib = (c_float * 6)(0.0,0.0,0.0, 0.0,0.0,0.0)
+    # Uniform variables all in one array!
+    self.unib = (c_float * 6)(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
     """ in shader array of vec3 uniform variables:
-    0  ntile, shiny, blend 0-2
+    0  ntile, shiny, blend 0-2.
     1  material 3-5 if any of material is non zero then the UV texture will not
-       be used and the material shade used instead
+       be used and the material shade used instead.
     """
     self.shape = shape
 
@@ -23,13 +23,13 @@ class Buffer(object):
       LOGGER.debug("Calculating normals ...")
 
       normals = [[] for p in pts]
-      #Calculate normals
+      # Calculate normals.
       for f in faces:
         a, b, c = f[0:3]
 
-        n = tuple(Utility.vec_normal(Utility.vec_cross(
-              Utility.vec_sub(pts[a], pts[b]),
-              Utility.vec_sub(pts[a], pts[c]))))
+        ab = Utility.vec_sub(pts[a], pts[b])
+        bc = Utility.vec_sub(pts[a], pts[c])
+        n = tuple(Utility.vec_normal(Utility.vec_cross(ab, bc)))
         for x in f[0:3]:
           normals[x].append(n)
 
@@ -37,10 +37,8 @@ class Buffer(object):
         if n:
           if smooth:
             norms = [sum(v[k] for v in n) for k in range(3)]
-
           else:  # This should be slightly faster for large shapes
             norms = [n[0][k] for k in range(3)]
-
           normals[i] = tuple(Utility.vec_normal(norms))
         else:
           normals[i] = 0, 0, 0.01
@@ -55,11 +53,11 @@ class Buffer(object):
     # texture won't be used.
 
     # Pack points,normals and texcoords into tuples and convert to ctype floats.
-    P = [p + n + t for p, n, t in zip(pts, normals, texcoords)]
-    X = c_floats(list(itertools.chain(*P)))
+    points = [p + n + t for p, n, t in zip(pts, normals, texcoords)]
+    array_buffer = c_floats(list(itertools.chain(*points)))
 
-    P = [f[0:3] for f in faces]
-    E = c_shorts(list(itertools.chain(*P)))
+    points = [f[0:3] for f in faces]
+    element_array_buffer = c_shorts(list(itertools.chain(*points)))
 
     self.vbuf = c_int()
     opengles.glGenBuffers(1, ctypes.byref(self.vbuf))
@@ -67,10 +65,12 @@ class Buffer(object):
     opengles.glGenBuffers(1, ctypes.byref(self.ebuf))
     self.select()
     opengles.glBufferData(GL_ARRAY_BUFFER,
-                          ctypes.sizeof(X), ctypes.byref(X),
+                          ctypes.sizeof(array_buffer),
+                          ctypes.byref(array_buffer),
                           GL_STATIC_DRAW);
     opengles.glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                          ctypes.sizeof(E), ctypes.byref(E),
+                          ctypes.sizeof(element_array_buffer),
+                          ctypes.byref(element_array_buffer),
                           GL_STATIC_DRAW);
     self.ntris = len(faces)
 
