@@ -36,10 +36,11 @@ class Texture(Loadable):
 
   def _load_disk(self):
     s = self.file_string + ' '
-    im = Image.open(self.file_string)
-    self.ix, self.iy = im.size
-    s += '(%s)' % im.mode
-    self.alpha = (im.mode == 'RGBA' or im.mode == 'LA')
+    self.im = Image.open(self.file_string) # TODO only load this if needed because loading a Font
+
+    self.ix, self.iy = self.im.size
+    s += '(%s)' % self.im.mode
+    self.alpha = (self.im.mode == 'RGBA' or self.im.mode == 'LA')
 
     # work out if sizes are not to the power of 2 or >512
     # TODO: why must texture sizes be a power of 2?
@@ -63,7 +64,7 @@ class Texture(Loadable):
       if self.size > 0:
         nx, ny = self.size, self.size
       self.ix, self.iy = nx, ny
-      im = im.resize((self.ix, self.iy), Image.ANTIALIAS)
+      self.im = self.im.resize((self.ix, self.iy), Image.ANTIALIAS)
       s += 'Resizing to: %d, %d' % (self.ix, self.iy)
     else:
       s += 'Bitmap size: %d, %d' % (self.ix, self.iy)
@@ -72,10 +73,10 @@ class Texture(Loadable):
       print 'Loading ...',s
 
     if self.flip:
-      im = im.transpose(Image.FLIP_TOP_BOTTOM)
+      self.im = self.im.transpose(Image.FLIP_TOP_BOTTOM)
 
     RGBs = 'RGBA' if self.alpha else 'RGB'
-    self.image = im.convert(RGBs).tostring('raw',RGBs)
+    self.image = self.im.convert(RGBs).tostring('raw',RGBs)
     self._tex = ctypes.c_int()
 
   def _load_opengl(self):

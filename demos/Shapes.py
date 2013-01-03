@@ -74,7 +74,7 @@ myPlane = Plane(camera, light, 4, 4,"plane")
 myPlane.translate(0, 0, 10)
 
 arialFont = Font("AR_CENA","#dd00aa")   #load AR_CENA font and set the font colour to 'raspberry'
-mystring = String(camera, light, arialFont, "RaspberryPi-Rocks")
+mystring = String(font = arialFont, string = "RaspberryPi-Rocks")
 mystring.set_shader(flatsh)
 
 
