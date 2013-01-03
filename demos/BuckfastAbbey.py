@@ -35,7 +35,6 @@ from pi3d.util.Screenshot import screenshot
 # Setup display and initialise pi3d
 DISPLAY = Display.create(x=100, y=100)
 DISPLAY.set_background(1.0,0.4,0.6,1)    	# r,g,b,alpha
-camera = Camera((0, 0, 0), (0, 0, -1), (1, 1000, DISPLAY.width/1000.0, DISPLAY.width/1000.0))
 light = Light((5, 10, 20))
 
 # load shader
@@ -52,12 +51,15 @@ print "Move mouse to pan view.  Click mouse to exit or press ESCAPE"
 print "=============================================================="
 
 ectex = loadECfiles("textures/ecubes","sbox")
-myecube = EnvironmentCube(camera, light, 900.0,"FACES", "bfa", 0.0, 50.0, 0.0)
+myecube = EnvironmentCube(light=light, size=900.0, maptype="FACES",
+                          name="bfa", y=50.0)
 myecube.set_draw_details(flatsh, ectex)
 
 # load model_loadmodel
-mymodel = Model(camera, light, "models/Buckfast Abbey/BuckfastAbbey.egg", "Abbey",
-                0, 0, 0, -90, 0, 0, 0.03, 0.03, 0.03)
+mymodel = Model(light=light,
+                file_string="models/Buckfast Abbey/BuckfastAbbey.egg",
+                name="Abbey",
+                rx=-90, sx=0.03, sy=0.03, sz=0.03)
 mymodel.set_shader(shader)
 
 # Create keyboard and mouse event objects
@@ -74,17 +76,18 @@ tilt=0.0
 avhgt = 2.0
 xm=0.0
 zm=0.0
-ym= avhgt
+ym = avhgt
 
 omx, omy = mymouse.position()
+CAMERA = Camera.instance()
 
 while 1:
   DISPLAY.clear()
 
-  camera.reset()
-  camera.rotate(tilt, 0, 0)
-  camera.rotate(0, rot, 0)
-  camera.translate((xm, ym, zm))
+  CAMERA.reset()
+  CAMERA.rotate(tilt, 0, 0)
+  CAMERA.rotate(0, rot, 0)
+  CAMERA.translate((xm, ym, zm))
 
   myecube.draw()
   mymodel.draw()
