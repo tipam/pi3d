@@ -41,7 +41,6 @@ from pi3d.util.Screenshot import screenshot
 DISPLAY = Display.create(x=200, y=200)
 DISPLAY.set_background(0.4,0.8,0.8,1)      # r,g,b,alpha
 
-camera = Camera((0, 0, 0), (0, 0, -1), (1, 1000, DISPLAY.width/1000.0, DISPLAY.height/1000.0))
 light = Light((1, 1, 4))
 #========================================
 
@@ -61,7 +60,7 @@ FOG = ((0.3, 0.3, 0.4, 1.0), 650.0)
 
 #myecube = EnvironmentCube(900.0,"HALFCROSS")
 ectex=loadECfiles("textures/ecubes","sbox")
-myecube = EnvironmentCube(camera, light,900.0,"FACES", name="cube")
+myecube = EnvironmentCube(light=light, size=900.0, maptype="FACES", name="cube")
 myecube.set_draw_details(flatsh, ectex)
 
 # Create elevation map
@@ -69,45 +68,46 @@ mapwidth = 1000.0
 mapdepth = 1000.0
 mapheight = 60.0
 mountimg1 = Texture("textures/mountains3_512.jpg")
-mymap = ElevationMap("textures/mountainsHgt.jpg", name="map", camera=camera, light=light,
+mymap = ElevationMap("textures/mountainsHgt.jpg", name="map", light=light,
                      width=mapwidth, depth=mapdepth, height=mapheight,
                      divx=32, divy=32) #testislands.jpg
 mymap.buf[0].set_draw_details(shader, [mountimg1, bumpimg], 128.0, 0.0)
 mymap.set_fog(*FOG)
 
 #Create tree models
-treeplane = Plane(camera, light, 4.0,5.0)
+treeplane = Plane(light=light, w=4.0, h=5.0)
 
-treemodel1 = MergeShape(camera, light, "baretree")
+treemodel1 = MergeShape(light=light, name="baretree")
 treemodel1.add(treeplane.buf[0], 0,0,0)
 treemodel1.add(treeplane.buf[0], 0,0,0, 0,90,0)
 
-treemodel2 = MergeShape(camera, light, "bushytree")
+treemodel2 = MergeShape(light=light, name="bushytree")
 treemodel2.add(treeplane.buf[0], 0,0,0)
 treemodel2.add(treeplane.buf[0], 0,0,0, 0,60,0)
 treemodel2.add(treeplane.buf[0], 0,0,0, 0,120,0)
 
 #Scatter them on map using Merge shape's cluster function
-mytrees1 = MergeShape(camera, light, "trees1")
+mytrees1 = MergeShape(light=light, name="trees1")
 mytrees1.cluster(treemodel1.buf[0], mymap,0.0,0.0,200.0,200.0,20,"",8.0,3.0)
 mytrees1.buf[0].set_draw_details(shader, [tree2img], 0.0, 0.0)
 mytrees1.set_fog(*FOG)
 #         (shape,elevmap,xpos,zpos,w,d,count,options,minscl,maxscl)
 
-mytrees2 = MergeShape(camera, light, "trees2")
+mytrees2 = MergeShape(light=light, name="trees2")
 mytrees2.cluster(treemodel2.buf[0], mymap,0.0,0.0,200.0,200.0,20,"",6.0,3.0)
 mytrees2.buf[0].set_draw_details(shader, [tree1img], 0.0, 0.0)
 mytrees2.set_fog(*FOG)
 #         (shape,elevmap,xpos,zpos,w,d,count,options,minscl,maxscl)
 
-mytrees3 = MergeShape(camera, light, "trees3")
+mytrees3 = MergeShape(light=light, name="trees3")
 mytrees3.cluster(treemodel2, mymap,0.0,0.0,300.0,300.0,20,"",4.0,2.0)
 mytrees3.buf[0].set_draw_details(shader, [hb2img], 0.0, 0.0)
 mytrees3.set_fog(*FOG)
 #         (shape,elevmap,xpos,zpos,w,d,count,options,minscl,maxscl)
 
 #Create monolith
-monolith = Sphere(camera, light, 8.0, 12, 48, sy = 10.0, name="monolith")
+monolith = Sphere(light=light, radius=8.0, slices=12, sides=48,
+                  sy=10.0, name="monolith")
 monolith.translate(100.0, -mymap.calcHeight(100.0, 350) + 10.0, 350.0)
 monolith.buf[0].set_draw_details(shader, [rockimg, bumpimg, reflimg], 32.0, 0.3)
 monolith.set_fog(*FOG)
@@ -130,13 +130,13 @@ mymouse.start()
 
 omx, omy = mymouse.position()
 
-# Display scene and rotate cuboid
-while 1:
-  DISPLAY.clear()
+CAMERA = Camera.instance()
 
-  camera.reset()
-  camera.rotate(tilt, rot, 0)
-  camera.translate((xm, ym, zm))
+# Display scene and rotate cuboid
+while DISPLAY.loop_running():
+  CAMERA.reset()
+  CAMERA.rotate(tilt, rot, 0)
+  CAMERA.translate((xm, ym, zm))
 
   myecube.draw()
   mymap.draw()
@@ -180,10 +180,9 @@ while 1:
     elif k==27:  #Escape key
       mykeys.close()
       mymouse.stop()
-      DISPLAY.destroy()
+      DISPLAY.stop()
       break
     else:
       print k
 
-  DISPLAY.swapBuffers()
 quit()
