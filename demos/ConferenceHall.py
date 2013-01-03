@@ -33,21 +33,23 @@ win = TkWin(None, "Mega Space Station in Pi3D",winw,winh)
 # Setup display and initialise pi3d viewport over the window
 win.update()  #requires a window update first so that window sizes can be retreived
 
-display = Display.create(x=win.winx, y=win.winy, w=winw, h=winh - bord,
+DISPLAY = Display.create(x=win.winx, y=win.winy, w=winw, h=winh - bord,
                          far=2200.0, background=(0.4, 0.8, 0.8, 1))
-camera = Camera((0, 0, 0), (0, 0, -1), (1, 1000, display.width/1000.0, display.height/1000.0))
 light = Light((10, 10, -20))
 shader = Shader("shaders/uv_reflect")
 flatsh = Shader("shaders/uv_flat")
 #############################
 ectex = EnvironmentCube.loadECfiles("textures/ecubes/Miramar", "miramar_256", "png", nobottom = True)
-myecube = EnvironmentCube.EnvironmentCube(camera, light, 1800.0,"FACES", nobottom = True)
+myecube = EnvironmentCube.EnvironmentCube(light=light, size=1800.0,
+                                          maptype="FACES", nobottom = True)
 myecube.set_draw_details(flatsh,ectex)
 
 x,z = 0,0
 
 y = 0.0
-cor_win = Model(camera, light, "models/ConferenceHall/conferencehall.egg", "Hall", x,y,z, 0,0,0, 0.1,0.1,0.1)
+cor_win = Model(light=light,
+                file_string="models/ConferenceHall/conferencehall.egg",
+                name="Hall", x=x, y=y, z=z, sx=0.1, sy=0.1, sz=0.1)
 cor_win.set_shader(shader)
 
 #position vars
@@ -70,18 +72,18 @@ omx, omy = mymouse.position()
 
 # Update display before we begin (user might have moved window)
 win.update()
-display.resize(win.winx, win.winy, win.width, win.height - bord)
+DISPLAY.resize(win.winx, win.winy, win.width, win.height - bord)
 
-while 1:
-  display.clear()
+CAMERA = Camera.instance()
 
-  camera.reset()
+while DISPLAY.loop_running():
+  CAMERA.reset()
   #tilt can be used as a means to prevent the view from going under the landscape!
   if tilt < -1: sf = 6 - 5.5/abs(tilt)
   else: sf = 0.5
   xoff, yoff, zoff = sf*math.sin(mouserot*rads), abs(1.25*sf*math.sin(tilt*rads)) + 3.0, -sf*math.cos(mouserot*rads)
-  camera.rotate(tilt, mouserot, 0)           #Tank still affected by scene tilt
-  camera.translate((xm + xoff, ym + yoff +5, zm + zoff))   #zoom camera out so we can see our robot
+  CAMERA.rotate(tilt, mouserot, 0)           #Tank still affected by scene tilt
+  CAMERA.translate((xm + xoff, ym + yoff +5, zm + zoff))   #zoom camera out so we can see our robot
 
   #mymap.draw()		#Draw the landscape
 
@@ -101,18 +103,12 @@ while 1:
 
   #Press ESCAPE to terminate
 
-  display.swapBuffers()
-
   #Handle window events
   try:
     win.update()
   except:
     print "bye bye 3"
-    display.destroy()
-    try:
-      win.destroy()
-    except:
-      pass
+    DISPLAY.stop()
     mymouse.stop()
     exit()
 
@@ -138,8 +134,7 @@ while 1:
       screenshot("MegaStation.jpg")
     elif win.key=="Escape":
       try:
-        display.destroy()
-        win.destroy()
+        DISPLAY.stop()
         print "Bye bye! 1"
       except Exception:
         print "Bye bye! 2"
