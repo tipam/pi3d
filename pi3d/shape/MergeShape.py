@@ -9,7 +9,7 @@ from pi3d.shape.Shape import Shape
 from pi3d.util.RotateVec import rotate_vec_x, rotate_vec_y, rotate_vec_z
 
 class MergeShape(Shape):
-  def __init__(self, camera, light, name="",
+  def __init__(self, camera=None, light=None, name="",
                x=0.0, y=0.0, z=0.0,
                rx=0.0, ry=0.0, rz=0.0,
                sx=1.0, sy=1.0, sz=1.0,
@@ -70,7 +70,7 @@ class MergeShape(Shape):
 
     self.buf = []
     self.buf.append(Buffer(self, self.vertices, self.tex_coords, self.indices, self.normals))
-  
+
   def add(self, shape, x=0.0, y=0.0, z=0.0, rx=0.0, ry=0.0, rz=0.0,
           sx=1.0, sy=1.0, sz=1.0, cx=0.0, cy=0.0, cz=0.0):
     self.merge(shape, x, y, z, rx, ry, rz, sx, sy, sz, cx, cy, cz)
@@ -84,7 +84,7 @@ class MergeShape(Shape):
       rt = random.random() * 360.0
       y = elevmap.calcHeight(x, z) + rh * 2
       #self.merge(shape, x, y, z, 0, rt, 0, rh, rh, rh)
-      #self.merge(shape, x,y,z, shape.rotx, rt + shape.roty, shape.rotz, 
+      #self.merge(shape, x,y,z, shape.rotx, rt + shape.roty, shape.rotz,
       #    rh * shape.sx, rh * shape.sy, rh * shape.sz)
       self.merge(shape, x,y,z, 0.0, rt, 0.0, rh, rh, rh)
 

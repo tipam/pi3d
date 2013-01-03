@@ -1,17 +1,4 @@
 # Maze with water example using pi3d module
-# =====================================
-# Copyright (c) 2012 - Tim Skillman, Paddy Gaunt
-# Version 0.02 - 20Aug12
-#
-# This example does not reflect the finished pi3d module in any way whatsoever!
-# It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
-#
-# PLEASE INSTALL PIL imaging with:
-#
-# $ sudo apt-get install python-imaging
-#
-# before running this example
-#
 
 import math, random
 
@@ -54,10 +41,8 @@ print "############################################################"
 print
 
 # Setup display and initialise pi3d
-DISPLAY = Display.create(x=100, y=100)
-DISPLAY.set_background(0.4,0.8,0.8,1)      # r,g,b,alpha
+DISPLAY = Display.create(x=100, y=100, background=(0.4, 0.8, 0.8, 1))
 
-camera = Camera((0, 0, 0), (0, 0, -1), (1, 1000, DISPLAY.width/1000.0, DISPLAY.height/1000.0))
 light = Light((10, 10, -20))
 shader = Shader("shaders/uv_reflect")
 flatsh = Shader("shaders/uv_flat")
@@ -75,14 +60,14 @@ shineimg = Texture("textures/stars.jpg")
 
 # environment cube
 ectex = Texture("textures/ecubes/skybox_stormydays.jpg")
-myecube = EnvironmentCube(camera, light, 900.0,"CROSS")
+myecube = EnvironmentCube(light=light, size=900.0, maptype="CROSS")
 myecube.set_draw_details(flatsh, ectex)
 
 # Create elevation map
 mapwidth = 1000.0
 mapdepth = 1000.0
 mapheight = 100.0
-mymap = ElevationMap("textures/maze1.jpg", camera=camera, light=light,
+mymap = ElevationMap("textures/maze1.jpg", light=light,
                      width=mapwidth, depth=mapdepth, height=mapheight,
                      divx=128, divy=128, name="sub")
 mymap.buf[0].set_draw_details(shader, [rockimg1, rockimg2, shineimg], 128.0, 0.1)
@@ -91,19 +76,19 @@ mymap.buf[0].set_draw_details(shader, [rockimg1, rockimg2, shineimg], 128.0, 0.1
 mymap.set_fog((0.1,0.1,0.1,1.0), 200.0)
 
 #Create tree models
-treeplane = Plane(camera, light, 4.0,5.0)
+treeplane = Plane(light=light, w=4.0, h=5.0)
 
-treemodel1 = MergeShape(camera, light, "baretree")
+treemodel1 = MergeShape(light=light, name="baretree")
 treemodel1.add(treeplane.buf[0], 0,0,0)
 treemodel1.add(treeplane.buf[0], 0,0,0, 0,90,0)
 
 #Scatter them on map using Merge shape's cluster function
-mytrees1 = MergeShape(camera, light, "trees1")
+mytrees1 = MergeShape(light=light, name="trees1")
 mytrees1.cluster(treemodel1.buf[0], mymap,0.0,0.0,900.0,900.0,10,"",8.0,3.0)
 mytrees1.buf[0].set_draw_details(shader, [tree2img, rockimg2], 4.0, 0.0)
 mytrees1.set_fog((0.1,0.1,0.1,1.0), 200.0)
 
-raspberry = MergeShape(camera, light, "rasp")
+raspberry = MergeShape(light=light, name="rasp")
 raspberry.cluster(treemodel1.buf[0], mymap,-250,+250,470.0,470.0,5,"",8.0,1.0)
 raspberry.buf[0].set_draw_details(shader, [raspimg, raspimg], 1.0, 0.0)
 raspberry.set_fog((0.1,0.1,0.1,1.0), 200.0)
@@ -116,7 +101,8 @@ raspberry.set_fog((0.1,0.1,0.1,1.0), 200.0)
 # parts of the object get split up by the randomisation! Here I manually do the same thing as cluster
 # by first generating an array of random locations and y-rotations
 
-shed = Model(camera, light, "models/shed1.obj","shed",0,3,0, 0,0,0, 2,2,2)
+shed = Model(light=light, file_string="models/shed1.obj",
+             name="shed", y=3, sx=2, sy=2, sz=2)
 
 shedgp = []
 xArr = []
@@ -132,7 +118,8 @@ for i in range(5):
   rArr.append(random.random()*45)
 
 for b in shed.buf:
-  thisAbbGp = MergeShape(camera, light, "shed") # i.e. different merge groups for each part requiring different texture
+  thisAbbGp = MergeShape(light=light, name="shed")
+  # i.e. different merge groups for each part requiring different texture
   for i in range(len(xArr)):
     thisAbbGp.add(b, xArr[i], yArr[i], zArr[i], 0, rArr[i], 0)
   shedgp.append(thisAbbGp)
@@ -140,7 +127,7 @@ for b in shed.buf:
   shedgp[len(shedgp)-1].set_fog((0.1,0.1,0.1,1.0), 250.0)
 
 #monster
-monst = TCone(camera, light)
+monst = TCone(light=light)
 monst.buf[0].set_draw_details(shader, [monstimg, monsttex], 4.0, 0.0)
 mDx,mDy,mDz = 0.1,0,0.2
 mSx,mSy,mSz = -15, mymap.calcHeight(-15,5)+1, 5
@@ -175,6 +162,8 @@ walk = True
 angle = 0
 
 #################################################### LOOP ###############################################
+
+CAMERA = Camera.instance()
 while 1:
   DISPLAY.clear()
 
@@ -199,10 +188,10 @@ while 1:
         ym += dy
     if (xm < -490 or xm > 490 or zm < -490 or zm > 490): fly = True #reached the edge of the maze!
   if not (mx == omx and my == omy and oxm == xm and ozm == zm):
-    camera.reset()
-    camera.rotate(tilt, 0, 0)
-    camera.rotate(0, rot, 0)
-    camera.translate((xm, ym, zm))
+    CAMERA.reset()
+    CAMERA.rotate(tilt, 0, 0)
+    CAMERA.rotate(0, rot, 0)
+    CAMERA.translate((xm, ym, zm))
   omx = mx
   omy = my
   oxm = xm
@@ -286,6 +275,6 @@ while 1:
       break
     #else:
     #print k
-  camera.was_moved = False
+  CAMERA.was_moved = False
   DISPLAY.swapBuffers()
 quit()
