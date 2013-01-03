@@ -9,7 +9,6 @@ from pi3d.Texture import Texture
 from pi3d.Keyboard import Keyboard
 
 from pi3d.context.Light import Light
-from pi3d.Camera import Camera
 from pi3d.Shader import Shader
 
 from pi3d.shape.Sphere import Sphere
@@ -21,7 +20,6 @@ DISPLAY = Display.create(x=10, y=10, w=1000, h=800)
 DISPLAY.set_background(0.4, 0.6, 0.8, 1.0)      # r,g,b,alpha
 
 #setup textures, light position and initial model position
-camera = Camera([0, 0, 0], [0, 0, -1], [1, 1000, DISPLAY.width/1000.0, DISPLAY.height/1000.0])
 light = Light((5, 5, 1))
 #create shaders
 shader = Shader("shaders/bumpShade")
@@ -35,7 +33,7 @@ shapeshine = Texture("textures/pong3.png")
 myshape = []
 num = 1
 for i in range(num):
-  myshape.append(Sphere(camera, light, sides=32))
+  myshape.append(Sphere(light=light, sides=32))
   myshape[i].translate(0, -num +2*i, 10)
   myshape[i].buf[0].set_draw_details(shader, [shapeimg, shapebump, shapeshine], 8.0, 0.2)
   myshape[i].buf[0].set_material((0.2, 0.6, 0.1))
@@ -47,7 +45,7 @@ tick=0
 next_time = time.time()+10.0
 
 arialFont = Font("AR_CENA","#dd00aa")   #load AR_CENA font and set the font colour to 'raspberry'
-mystring = String(camera, light, arialFont, "RaspberryPi-Rocks")
+mystring = String(light=light, font=arialFont, string="RaspberryPi-Rocks")
 #mystring.translate(0.0, 0.0, 1)
 mystring.set_shader(shader)
 
@@ -60,8 +58,7 @@ mystring.set_shader(shader)
 #mykeys = Keyboard()
 
 # Display scene and rotate shape
-while True:
-  DISPLAY.clear()
+while DISPLAY.loop_running():
 
   #camera.reset()
   #cAngle[1] += 0.5
@@ -97,11 +94,11 @@ while True:
   else: print "unknown", err
   """
 
-  DISPLAY.swapBuffers()
   """ # this block needs to be commented out to be able to see the FPS readout (actually the creation of the Keyboard instance above is what does it)
   if mykeys.read() == 27:
     mykeys.close()
     DISPLAY.destroy()
     break
   """
+
 quit()
