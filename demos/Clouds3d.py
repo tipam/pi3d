@@ -99,6 +99,6 @@ while True:
     DISPLAY.destroy()
     break
 
-  camera.movedFlag = False
+  camera.was_moved = False
   DISPLAY.swapBuffers()
 

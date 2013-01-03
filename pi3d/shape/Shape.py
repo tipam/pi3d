@@ -102,11 +102,11 @@ class Shape(Loadable):
       self.M[16:32] = dot(self.MRaw, self.camera.mtrx).ravel()
       self.MFlg = False
 
-    elif self.camera.movedFlag:
+    elif self.camera.was_moved:
       # Only do this if it's not done because model moved.
       self.M[16:32] = dot(self.MRaw, self.camera.mtrx).ravel()
 
-    if self.camera.movedFlag:
+    if self.camera.was_moved:
       self.unif[18:21] = self.camera.eye[0:3]
 
     opengles.glUniformMatrix4fv(shader.unif_modelviewmatrix, 2, c_int(0),

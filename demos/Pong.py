@@ -214,7 +214,7 @@ while True:
   score0.draw()
   score1.draw()
 
-  camera.movedFlag = False
+  camera.was_moved = False
   DISPLAY.swapBuffers()
 
   #Press ESCAPE to terminate

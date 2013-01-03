@@ -73,6 +73,6 @@ while True:
       break
     elif k==112:
       screenshot("raspberryRain.jpg")
-  
-  camera.movedFlag = False #to save a tiny bit of work each loop
+
+  camera.was_moved = False #to save a tiny bit of work each loop
   DISPLAY.swapBuffers()

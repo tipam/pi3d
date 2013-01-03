@@ -259,7 +259,7 @@ def loop():
 
   win.ev = ''  # Clear the event so it doesn't repeat.
 
-  camera.movedFlag = False
+  camera.was_moved = False
 
 if USE_EXTERNAL_LOOP:
   # This fails.

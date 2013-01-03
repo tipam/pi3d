@@ -79,7 +79,7 @@ while True:
   mystring.draw()
   mystring.rotateIncZ(0.05)
 
-  #camera.movedFlag = False
+  #camera.was_moved = False
 
   if time.time() > next_time:
     print "FPS:",tick/10.0
