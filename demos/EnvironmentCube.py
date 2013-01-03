@@ -1,18 +1,3 @@
-# Environment Cube examples using pi3d module
-# ===========================================
-# Copyright (c) 2012 - Tim Skillman
-# Version 0.02 - 20Jul12
-#
-# This example does not reflect the finished pi3d module in any way whatsoever!
-# It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
-#
-# PLEASE INSTALL PIL imaging with:
-#
-#      $ sudo apt-get install python-imaging
-#
-# before running this example
-#
-
 from pi3d import Display
 from pi3d.Keyboard import Keyboard
 from pi3d.Mouse import Mouse
@@ -31,7 +16,6 @@ from pi3d.util import Utility
 # Setup display and initialise pi3d
 DISPLAY = Display.create(x=50, y=50)
 
-camera = Camera((0, 0, 0), (0, 0, -1), (1, 1000, DISPLAY.width/1000.0, DISPLAY.height/1000.0))
 light = Light((10, 10, -20))
 shader = Shader("shaders/uv_flat")
 #========================================
@@ -40,21 +24,22 @@ shader = Shader("shaders/uv_flat")
 box = 2
 if box == 0:
   ectex = [Texture("textures/ecubes/skybox_interstellar.jpg")]
-  myecube = EnvironmentCube(camera, light, 900.0,"CROSS")
+  myecube = EnvironmentCube(light=light, size=900.0, maptype="CROSS")
 elif box == 1:
   ectex = [Texture("textures/ecubes/SkyBox.jpg")]
-  myecube = EnvironmentCube(camera, light, 900.0,"HALFCROSS")
+  myecube = EnvironmentCube(light=light, size=900.0, maptype="HALFCROSS")
 elif box == 2:
   ectex = loadECfiles("textures/ecubes","sbox_interstellar", nobottom=True)
-  myecube = EnvironmentCube(camera, light, 900.0,"FACES", nobottom=True)
+  myecube = EnvironmentCube(light=light, size=900.0, maptype="FACES",
+                            nobottom=True)
 else:
   ectex = loadECfiles("textures/ecubes","skybox_hall")
-  myecube = EnvironmentCube(camera, light, 900.0,"FACES")
+  myecube = EnvironmentCube(light=light, size=900.0, maptype="FACES")
 
 myecube.set_draw_details(shader, ectex)
 
-rot=0.0
-tilt=0.0
+rot = 0.0
+tilt = 0.0
 
 # Fetch key presses
 mykeys = Keyboard()
@@ -63,23 +48,24 @@ mymouse.start()
 
 omx, omy = mymouse.position()
 
-# Display scene and rotate cuboid
-while 1:
-  DISPLAY.clear()
+CAMERA = Camera.instance()
 
-  camera.reset()
-  camera.rotate(tilt, 0, 0)
-  camera.rotate(0, rot, 0)
+# Display scene and rotate cuboid
+while DISPLAY.loop_running():
+
+  CAMERA.reset()
+  CAMERA.rotate(tilt, 0, 0)
+  CAMERA.rotate(0, rot, 0)
 
   myecube.draw()
 
   mx, my = mymouse.position()
 
   #if mx>display.left and mx<display.right and my>display.top and my<display.bottom:
-  rot -= (mx-omx)*0.4
-  tilt += (my-omy)*0.4
-  omx=mx
-  omy=my
+  rot -= (mx - omx)*0.4
+  tilt += (my - omy)*0.4
+  omx = mx
+  omy = my
 
   #Press ESCAPE to terminate
   k = mykeys.read()
@@ -89,13 +75,9 @@ while 1:
     elif k==27:    #Escape key
       mykeys.close()
       mymouse.stop()
-      DISPLAY.destroy()
+      DISPLAY.stop()
       break
     else:
       print k
-
-  DISPLAY.swapBuffers()
-
-quit()
 
 
