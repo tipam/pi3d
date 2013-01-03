@@ -23,7 +23,8 @@ class Shape(Loadable):
       0.5, 0.5, 0.5, 5000.0, 0.8, 0.0,
       0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
       light.lightpos[0], light.lightpos[1], light.lightpos[2],
-      1.0, 1.0, 1.0, 0.1, 0.1, 0.1)
+      light.lightcol[0], light.lightcol[1], light.lightcol[2],
+      light.lightamb[0], light.lightamb[1], light.lightamb[2])
     """ in shader array of vec3 uniform variables:
     0  location 0-2
     1  rotation 3-5
@@ -78,7 +79,6 @@ class Shape(Loadable):
                             0, 0, 0, 0, 0, 0, 0, 0)
 
     self._camera = camera
-    self.light = light
     self.shader = None
     self.textures = []
 
@@ -159,6 +159,15 @@ class Shape(Loadable):
     # 1/3 fogdist to fogdist.
     self.unif[12:15] = fogshade[0:3]
     self.unif[15] = fogdist
+    
+  def set_light(self, light, num = 0):
+    #TODO the unif array only has room for one light at the moment. Need MAXLIGHTS global variable
+    num = 0
+    #
+    stn = 24 + num * 9
+    self.unif[stn:(stn + 3)] = light.lightpos[0:3]
+    self.unif[(stn + 3):(stn + 6)] = light.lightcol[0:3]
+    self.unif[(stn + 6):(stn + 9)] = light.lightamb[0:3]
 
   def scale(self, sx, sy, sz):
     self.scl[0, 0] = sx

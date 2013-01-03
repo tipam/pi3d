@@ -37,6 +37,8 @@ for i in range(num):
   myshape.append(Sphere(sides=32))
   myshape[i].translate(0, -num +2*i, 10)
   myshape[i].set_draw_details(shader, [shapeimg, shapebump, shapeshine], 8.0, 0.2)
+  light2 = Light((-5, -5, i - 3))
+  myshape[i].set_light(light2)
 
 cAngle = [0.0, 0.0, 0.0]
 dx = 0.05
