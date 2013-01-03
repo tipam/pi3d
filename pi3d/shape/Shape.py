@@ -168,6 +168,15 @@ class Shape(Loadable):
     self.unif[stn:(stn + 3)] = light.lightpos[0:3]
     self.unif[(stn + 3):(stn + 6)] = light.lightcol[0:3]
     self.unif[(stn + 6):(stn + 9)] = light.lightamb[0:3]
+    
+  def x(self):
+    return self.unif[0]
+
+  def y(self):
+    return self.unif[1]
+
+  def z(self):
+    return self.unif[2]
 
   def scale(self, sx, sy, sz):
     self.scl[0, 0] = sx

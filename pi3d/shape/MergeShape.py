@@ -32,7 +32,8 @@ class MergeShape(Shape):
             sx=1.0, sy=1.0, sz=1.0,
             cx=0.0, cy=0.0, cz=0.0):
     # merge Buffer really. i.e. shape is Shape.buf[n]
-    #TODO cope with being sent a shape = a Shape with one Buffer object or a buffer from more complex object
+    if not(type(shape) is Buffer):
+      shape = shape.buf[0]
 
     #assert shape.ttype == GL_TRIANGLES # this is always true of Buffer objects
     assert len(shape.vertices) == len(shape.normals)
