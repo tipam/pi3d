@@ -109,6 +109,8 @@ class Display(object):
       self.sprites_to_unload.update(sprites)
 
   def _loop_begin(self):
+    # TODO(rec):  check if the window was resized and resize it, removing
+    # code from MegaStation to here.
     self.clear()
     with Locker(self.lock):
       self.sprites_to_load, to_load = set(), self.sprites_to_load

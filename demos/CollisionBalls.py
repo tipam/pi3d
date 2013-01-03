@@ -2,7 +2,6 @@ import random
 import sys
 
 from pi3d import Display
-from pi3d.Camera import Camera
 from pi3d.Keyboard import Keyboard
 from pi3d.Shader import Shader
 from pi3d.Texture import Texture
