@@ -9,8 +9,6 @@ from pi3d.Texture import Texture
 from pi3d.Camera import Camera
 from pi3d.Shader import Shader
 
-from pi3d.context.Fog import Fog
-
 from pi3d.shape.ElevationMap import ElevationMap
 from pi3d.shape.EnvironmentCube import EnvironmentCube
 from pi3d.shape.MergeShape import MergeShape

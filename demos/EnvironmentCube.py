@@ -19,7 +19,7 @@ shader = Shader('shaders/uv_flat')
 #========================================
 
 #select the environment cube with 'box'...
-box = 2
+box = 3
 if box == 0:
   ectex = [Texture('textures/ecubes/skybox_interstellar.jpg')]
   myecube = EnvironmentCube(size=900.0, maptype='CROSS')

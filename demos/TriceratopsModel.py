@@ -33,7 +33,7 @@ shader = Shader('shaders/uv_light')
 # load model_loadmodel
 mymodel = Model(file_string='models/Triceratops/Triceratops.egg',
                 name='Triceratops', x=0, y=-1, z=40,
-                cx=.005, cy=.005, cz=.005)
+                sx=0.005, sy=0.005, sz=0.005)
 mymodel.set_shader(shader)
 
 # Fetch key presses
@@ -43,8 +43,8 @@ while 1:
   DISPLAY.clear()
 
   mymodel.draw()
-  mymodel.rotateIncZ(1)
-  mymodel.rotateIncX(-0.317543)
+  mymodel.rotateIncZ(0.001)
+  mymodel.rotateIncX(-0.00317543)
   mymodel.rotateIncY(0.11)
 
   k = mykeys.read()

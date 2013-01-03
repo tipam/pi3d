@@ -111,7 +111,7 @@ while DISPLAY.loop_running():
 
   if win.ev=="resized":
     print "resized"
-    display.resize(win.winx,win.winy,win.width,win.height-bord)
+    DISPLAY.resize(win.winx,win.winy,win.width,win.height-bord)
     win.resized=False
 
   if win.ev=="key":

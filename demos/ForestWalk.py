@@ -42,6 +42,7 @@ reflimg = Texture("textures/stars.jpg")
 rockimg = Texture("textures/rock1.jpg")
 
 FOG = ((0.3, 0.3, 0.4, 1.0), 650.0)
+TFOG = ((0.1, 0.14, 0.12, 0.3), 250.0)
 
 #myecube = EnvironmentCube(900.0,"HALFCROSS")
 ectex=loadECfiles("textures/ecubes","sbox")
@@ -74,20 +75,20 @@ treemodel2.add(treeplane.buf[0], 0,0,0, 0,120,0)
 #Scatter them on map using Merge shape's cluster function
 mytrees1 = MergeShape(name="trees1")
 mytrees1.cluster(treemodel1.buf[0], mymap,0.0,0.0,200.0,200.0,20,"",8.0,3.0)
-mytrees1.buf[0].set_draw_details(shader, [tree2img], 0.0, 0.0)
-mytrees1.set_fog(*FOG)
+mytrees1.buf[0].set_draw_details(flatsh, [tree2img], 0.0, 0.0)
+mytrees1.set_fog(*TFOG)
 #         (shape,elevmap,xpos,zpos,w,d,count,options,minscl,maxscl)
 
 mytrees2 = MergeShape(name="trees2")
 mytrees2.cluster(treemodel2.buf[0], mymap,0.0,0.0,200.0,200.0,20,"",6.0,3.0)
-mytrees2.buf[0].set_draw_details(shader, [tree1img], 0.0, 0.0)
-mytrees2.set_fog(*FOG)
+mytrees2.buf[0].set_draw_details(flatsh, [tree1img], 0.0, 0.0)
+mytrees2.set_fog(*TFOG)
 #         (shape,elevmap,xpos,zpos,w,d,count,options,minscl,maxscl)
 
 mytrees3 = MergeShape(name="trees3")
 mytrees3.cluster(treemodel2, mymap,0.0,0.0,300.0,300.0,20,"",4.0,2.0)
-mytrees3.buf[0].set_draw_details(shader, [hb2img], 0.0, 0.0)
-mytrees3.set_fog(*FOG)
+mytrees3.buf[0].set_draw_details(flatsh, [hb2img], 0.0, 0.0)
+mytrees3.set_fog(*TFOG)
 #         (shape,elevmap,xpos,zpos,w,d,count,options,minscl,maxscl)
 
 #Create monolith
