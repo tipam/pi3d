@@ -14,6 +14,7 @@ from pi3d.Shader import Shader
 from pi3d.shape.Sphere import Sphere
 from pi3d.util.String import String
 from pi3d.util.Font import Font
+from pi3d.shape.MergeShape import MergeShape
 
 # Setup display and initialise pi3d
 DISPLAY = Display.create(x=10, y=10, w=1000, h=800)
@@ -31,14 +32,17 @@ shapebump = Texture("textures/floor_nm.jpg", True)
 shapeshine = Texture("textures/pong3.png")
 
 #Create shape
-myshape = []
-num = 7
-for i in range(num):
-  myshape.append(Sphere(sides=32))
-  myshape[i].translate(0, -num +2*i, 10)
-  myshape[i].set_draw_details(shader, [shapeimg, shapebump, shapeshine], 8.0, 0.2)
-  light2 = Light((-5, -5, i - 3))
-  myshape[i].set_light(light2)
+myshape = MergeShape()
+num = (5, 5)
+asphere = Sphere(sides=32)
+for i in range(num[0]):
+  for j in range(num[1]):
+    myshape.add(asphere, -num[0]*0.9 + 1.8*i, -num[1]*0.9 +1.8*j, 0.0)
+  
+myshape.position(0.0, 0.0, 10)
+myshape.set_draw_details(shader, [shapeimg, shapebump, shapeshine], 8.0, 0.2)
+light2 = Light((-5, -5, i - 3))
+myshape.set_light(light2)
 
 cAngle = [0.0, 0.0, 0.0]
 dx = 0.05
@@ -61,13 +65,12 @@ while DISPLAY.loop_running():
   #cAngle[1] += 0.5
   #camera.rotateY(cAngle[1])
 
-  for s in myshape:
-    s.draw()
-    #s.rotateIncY(1.247)
-    #s.rotateIncZ(0.613)
-    s.translateX(dx)
-    if s.unif[0] > 5: dx = -0.05
-    elif s.unif[0] < -5: dx = 0.05
+  myshape.draw()
+  myshape.rotateIncY(1.247)
+  myshape.rotateIncZ(0.613)
+  myshape.translateX(dx)
+  if myshape.x() > 5: dx = -0.05
+  elif myshape.x() < -5: dx = 0.05
 
 
   mystring.draw()
