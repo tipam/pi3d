@@ -8,9 +8,10 @@ import math, random, time, traceback
 from pi3d import *
 
 from pi3d import Display
+
+from pi3d.Camera import Camera
 from pi3d.Mouse import Mouse
 from pi3d.Texture import Texture
-from pi3d.Camera import Camera
 from pi3d.Shader import Shader
 
 from pi3d.context.Fog import Fog
@@ -24,10 +25,6 @@ from pi3d.util.Screenshot import screenshot
 from pi3d.util import Log
 from pi3d.util.TkWin import TkWin
 
-# TODO(rec): why doesn't this work when True?  It should be executing the same
-# code!
-USE_EXTERNAL_LOOP = not True
-
 LOGGER = Log.logger(__name__)
 
 # Create a Tkinter window
@@ -40,9 +37,6 @@ DISPLAY = Display.create(tk=True, window_title='Tiger Tank demo in Pi3D',
 
 win = DISPLAY.tkwin
 
-camera = Camera((0, 0, 0), (0, 0, -1),
-                (1, 1000, DISPLAY.width/1000.0, DISPLAY.height/1000.0))
-
 light = Light((10, 10, -20))
 shader = Shader('shaders/uv_reflect')
 flatsh = Shader('shaders/uv_flat')
@@ -51,7 +45,8 @@ flatsh = Shader('shaders/uv_flat')
 
 ectex = EnvironmentCube.loadECfiles('textures/ecubes/Miramar', 'miramar_256',
                                     suffix='png')
-myecube = EnvironmentCube.EnvironmentCube(camera, light, 1800.0, 'FACES')
+myecube = EnvironmentCube.EnvironmentCube(light=light, size=1800.0,
+                                          maptype='FACES')
 myecube.set_draw_details(flatsh, ectex)
 
 # Create elevation map
@@ -63,7 +58,7 @@ bumpimg = Texture('textures/grasstile_n.jpg')
 tigerbmp = Texture('models/Tiger/tiger_bump.jpg')
 topbmp = Texture('models/Tiger/top_bump.jpg')
 #roadway = Texture('textures/road5.png')
-mymap = ElevationMap(camera=camera, light=light,
+mymap = ElevationMap(light=light,
                      mapfile='textures/mountainsHgt2.png',
                      width=mapwidth, depth=mapdepth,
                      height=mapheight, divx=64, divy=64)
@@ -76,7 +71,7 @@ def set_fog(shape):
   shape.set_fog(FOG, 1000.0)
 
 def make_model(filename, name, x=0, y=0, z=0, rx=0, ry=0, rz=0):
-  model = Model(camera, light, 'models/' + filename,
+  model = Model(light=light, file_string='models/' + filename,
                 name=name, x=x, y=y, z=z, rx=rx, ry=ry, rz=rz,
                 sx=0.1, sy=0.1, sz=0.1)
   model.set_shader(shader)
@@ -107,7 +102,7 @@ x, z = 250,-40
 y = mymap.calcHeight(x,z)
 
 cottages = make_model('Cottages/cottages_low.egg', 'cottagesLo', x, y, z, ry=-5)
-#cottagesHi = Model(camera, light, 'models/Cottages/cottages.egg', 'cottagesHi',
+#cottagesHi = Model('models/Cottages/cottages.egg', 'cottagesHi',
 #                   x,y,z, -90,-5,0, .1,.1,.1)
 
 #player tank vars
@@ -157,6 +152,7 @@ def drawTiger(x, y, z, rot, roll, pitch, turret, gunangle):
   tank_gun.draw()
 
 is_running = True
+CAMERA = Camera.instance()
 
 def loop():
   global tilt, roll, pitch, xm, ym, zm, ltm, tankpitch, tankroll, tankrot, turret
@@ -170,7 +166,7 @@ def loop():
     tilt += (my - omy) * 0.2
     omx, omy = mx, my
 
-    camera.reset()
+    CAMERA.reset()
     # tilt can be used to prevent the view from going under the landscape!
     sf = 60 - 55.0 / abs(tilt) if tilt < -1 else 5.0
     xoff = sf * math.sin(math.radians(mouserot))
@@ -178,12 +174,12 @@ def loop():
     zoff = -sf * math.cos(math.radians(mouserot))
 
     #xoff, yoff, zoff = 0,0,0
-    #camera.translate((xm, ym-10*sf-5.0, zm-40*sf))
-    #zoom camera out so we can see our robot
-    camera.rotate(tilt, mouserot, 0)           #Tank still affected by scene tilt
-    camera.translate((xm + xoff, ym + yoff + 5, zm + zoff))
+    #CAMERA.translate((xm, ym-10*sf-5.0, zm-40*sf))
+    #zoom CAMERA out so we can see our robot
+    CAMERA.rotate(tilt, mouserot, 0)           #Tank still affected by scene tilt
+    CAMERA.translate((xm + xoff, ym + yoff + 5, zm + zoff))
     oxm, ozm = xm, zm
-    #zoom camera out so we can see our robot
+    #zoom CAMERA out so we can see our robot
 
   #draw player tank
   tmnow = time.time()
@@ -259,19 +255,9 @@ def loop():
 
   win.ev = ''  # Clear the event so it doesn't repeat.
 
-  camera.was_moved = False
+  CAMERA.was_moved = False
 
-if USE_EXTERNAL_LOOP:
-  # This fails.
-  while DISPLAY.loop_running():
-    loop()
 
-else:
-  # This works.
-  while DISPLAY.is_running:
-    DISPLAY.clear()
-    loop()
-    DISPLAY.swapBuffers()
-
-DISPLAY.destroy()
+while DISPLAY.loop_running():
+  loop()
 

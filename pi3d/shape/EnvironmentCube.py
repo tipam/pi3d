@@ -21,13 +21,10 @@ def loadECfiles(path, fname, suffix='jpg', nobottom=False):
   return [Texture(f) for f in files]
 
 class EnvironmentCube(Shape):
-  def __init__(self,  camera, light, size=500.0, maptype="HALFCROSS", name="", x=0.0, y=0.0, z=0.0,
+  def __init__(self, camera=None, light=None, size=500.0, maptype="HALFCROSS", name="", x=0.0, y=0.0, z=0.0,
                rx=0.0, ry=0.0, rz=0.0, cx=0.0, cy=0.0, cz=0.0, nobottom=False):
     super(EnvironmentCube,self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                 1.0, 1.0, 1.0, cx, cy, cz)
-
-    if VERBOSE:
-      print "Creating environment cube ..."
 
     self.width = size
     self.height = size

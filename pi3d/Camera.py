@@ -32,7 +32,6 @@ class Camera(DefaultInstance):
 
   @staticmethod
   def _default_instance():
-    print('_default_instance')
     from pi3d.Display import DISPLAY
     return Camera((0, 0, 0), (0, 0, -1),
                   (1, 1000, DISPLAY.width / 1000.0, DISPLAY.height / 1000.0))
