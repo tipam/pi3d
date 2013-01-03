@@ -19,7 +19,6 @@ from pi3d import Display
 from pi3d.Keyboard import Keyboard
 from pi3d.Texture import Texture
 from pi3d.shape.Sprite import Sprite
-from pi3d.context.Light import Light
 from pi3d.Camera import Camera
 from pi3d.Shader import Shader
 
@@ -40,7 +39,6 @@ scnx = DISPLAY.width
 scny = DISPLAY.height
 
 DISPLAY.set_background(0,0.7,1,1)
-light = Light((10, 10, -20))
 shader = Shader("shaders/uv_flat")
 #############################
 
@@ -56,7 +54,7 @@ z = 0.0
 cxyz = []
 for b in range (0, cloudno):
   size = random.random()
-  cloudi = Sprite(light=light, w=size * widex, h=size * widey,
+  cloudi = Sprite(w=size * widex, h=size * widey,
                   x=50.0 * (random.random() - 0.5), y=0.0, z=cloud_depth - z)
   cloudi.buf[0].set_draw_details(shader, [clouds[int(random.random() * 4.99999)]], 0.0, -1.0)
   cxyz.append(cloudi)

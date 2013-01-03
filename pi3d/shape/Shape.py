@@ -4,10 +4,9 @@ from math import radians, pi, sin, cos
 
 from pi3d import *
 from pi3d.Buffer import Buffer
-from pi3d.Buffer import Buffer
+from pi3d.context.Light import Light
 from pi3d.context.TextureLoader import TextureLoader
 from pi3d.util import Utility
-from pi3d.util.DefaultInstance import DefaultInstance
 
 from pi3d.util.Loadable import Loadable
 
@@ -16,6 +15,7 @@ class Shape(Loadable):
                rx, ry, rz, sx, sy, sz, cx, cy, cz):
     super(Shape, self).__init__()
     self.name = name
+    light = light or Light.instance()
     # uniform variables all in one array!
     self.unif = (c_float * 33)(
       x, y, z, rx, ry, rz,

@@ -10,7 +10,6 @@ from pi3d.Camera import Camera
 from pi3d.Shader import Shader
 
 from pi3d.context.Fog import Fog
-from pi3d.context.Light import Light
 
 from pi3d.shape.ElevationMap import ElevationMap
 from pi3d.shape.EnvironmentCube import EnvironmentCube
@@ -43,7 +42,6 @@ print
 # Setup display and initialise pi3d
 DISPLAY = Display.create(x=100, y=100, background=(0.4, 0.8, 0.8, 1))
 
-light = Light((10, 10, -20))
 shader = Shader("shaders/uv_reflect")
 flatsh = Shader("shaders/uv_flat")
 #========================================
@@ -60,14 +58,14 @@ shineimg = Texture("textures/stars.jpg")
 
 # environment cube
 ectex = Texture("textures/ecubes/skybox_stormydays.jpg")
-myecube = EnvironmentCube(light=light, size=900.0, maptype="CROSS")
+myecube = EnvironmentCube(size=900.0, maptype="CROSS")
 myecube.set_draw_details(flatsh, ectex)
 
 # Create elevation map
 mapwidth = 1000.0
 mapdepth = 1000.0
 mapheight = 100.0
-mymap = ElevationMap("textures/maze1.jpg", light=light,
+mymap = ElevationMap("textures/maze1.jpg",
                      width=mapwidth, depth=mapdepth, height=mapheight,
                      divx=128, divy=128, name="sub")
 mymap.buf[0].set_draw_details(shader, [rockimg1, rockimg2, shineimg], 128.0, 0.1)
@@ -76,19 +74,19 @@ mymap.buf[0].set_draw_details(shader, [rockimg1, rockimg2, shineimg], 128.0, 0.1
 mymap.set_fog((0.1,0.1,0.1,1.0), 200.0)
 
 #Create tree models
-treeplane = Plane(light=light, w=4.0, h=5.0)
+treeplane = Plane(w=4.0, h=5.0)
 
-treemodel1 = MergeShape(light=light, name="baretree")
+treemodel1 = MergeShape(name="baretree")
 treemodel1.add(treeplane.buf[0], 0,0,0)
 treemodel1.add(treeplane.buf[0], 0,0,0, 0,90,0)
 
 #Scatter them on map using Merge shape's cluster function
-mytrees1 = MergeShape(light=light, name="trees1")
+mytrees1 = MergeShape(name="trees1")
 mytrees1.cluster(treemodel1.buf[0], mymap,0.0,0.0,900.0,900.0,10,"",8.0,3.0)
 mytrees1.buf[0].set_draw_details(shader, [tree2img, rockimg2], 4.0, 0.0)
 mytrees1.set_fog((0.1,0.1,0.1,1.0), 200.0)
 
-raspberry = MergeShape(light=light, name="rasp")
+raspberry = MergeShape(name="rasp")
 raspberry.cluster(treemodel1.buf[0], mymap,-250,+250,470.0,470.0,5,"",8.0,1.0)
 raspberry.buf[0].set_draw_details(shader, [raspimg, raspimg], 1.0, 0.0)
 raspberry.set_fog((0.1,0.1,0.1,1.0), 200.0)
@@ -101,7 +99,7 @@ raspberry.set_fog((0.1,0.1,0.1,1.0), 200.0)
 # parts of the object get split up by the randomisation! Here I manually do the same thing as cluster
 # by first generating an array of random locations and y-rotations
 
-shed = Model(light=light, file_string="models/shed1.obj",
+shed = Model(file_string="models/shed1.obj",
              name="shed", y=3, sx=2, sy=2, sz=2)
 
 shedgp = []
@@ -118,7 +116,7 @@ for i in range(5):
   rArr.append(random.random()*45)
 
 for b in shed.buf:
-  thisAbbGp = MergeShape(light=light, name="shed")
+  thisAbbGp = MergeShape(name="shed")
   # i.e. different merge groups for each part requiring different texture
   for i in range(len(xArr)):
     thisAbbGp.add(b, xArr[i], yArr[i], zArr[i], 0, rArr[i], 0)
@@ -127,7 +125,7 @@ for b in shed.buf:
   shedgp[len(shedgp)-1].set_fog((0.1,0.1,0.1,1.0), 250.0)
 
 #monster
-monst = TCone(light=light)
+monst = TCone()
 monst.buf[0].set_draw_details(shader, [monstimg, monsttex], 4.0, 0.0)
 mDx,mDy,mDz = 0.1,0,0.2
 mSx,mSy,mSz = -15, mymap.calcHeight(-15,5)+1, 5

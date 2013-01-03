@@ -10,7 +10,6 @@ from pi3d.Mouse import Mouse
 from pi3d.Texture import Texture
 
 from pi3d.context.Fog import Fog
-from pi3d.context.Light import Light
 from pi3d.Camera import Camera
 from pi3d.Shader import Shader
 
@@ -35,20 +34,18 @@ win.update()  #requires a window update first so that window sizes can be retrei
 
 DISPLAY = Display.create(x=win.winx, y=win.winy, w=winw, h=winh - bord,
                          far=2200.0, background=(0.4, 0.8, 0.8, 1))
-light = Light((10, 10, -20))
 shader = Shader("shaders/uv_reflect")
 flatsh = Shader("shaders/uv_flat")
 #############################
 ectex = EnvironmentCube.loadECfiles("textures/ecubes/Miramar", "miramar_256", "png", nobottom = True)
-myecube = EnvironmentCube.EnvironmentCube(light=light, size=1800.0,
-                                          maptype="FACES", nobottom = True)
+myecube = EnvironmentCube.EnvironmentCube(size=1800.0, maptype="FACES",
+                                          nobottom=True)
 myecube.set_draw_details(flatsh,ectex)
 
 x,z = 0,0
 
 y = 0.0
-cor_win = Model(light=light,
-                file_string="models/ConferenceHall/conferencehall.egg",
+cor_win = Model(file_string="models/ConferenceHall/conferencehall.egg",
                 name="Hall", x=x, y=y, z=z, sx=0.1, sy=0.1, sz=0.1)
 cor_win.set_shader(shader)
 

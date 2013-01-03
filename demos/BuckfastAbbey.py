@@ -1,18 +1,3 @@
-# Loading EGG model
-# =================
-# This example - Copyright (c) 2012 - Tim Skillman
-# EGG loader code by Paddy Gaunt, Copyright (c) 2012
-# Version 0.01 - 03Jul12
-#
-# This example does not reflect the finished pi3d module in any way whatsoever!
-# It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
-#
-# PLEASE INSTALL PIL imaging with:
-#
-#      $ sudo apt-get install python-imaging
-#
-# before running this example
-#
 from __future__ import absolute_import
 
 import math,random
@@ -35,7 +20,7 @@ from pi3d.util.Screenshot import screenshot
 # Setup display and initialise pi3d
 DISPLAY = Display.create(x=100, y=100)
 DISPLAY.set_background(1.0,0.4,0.6,1)    	# r,g,b,alpha
-light = Light((5, 10, 20))
+Light((5, 10, 20))
 
 # load shader
 shader = Shader("shaders/uv_light")
@@ -51,13 +36,12 @@ print "Move mouse to pan view.  Click mouse to exit or press ESCAPE"
 print "=============================================================="
 
 ectex = loadECfiles("textures/ecubes","sbox")
-myecube = EnvironmentCube(light=light, size=900.0, maptype="FACES",
+myecube = EnvironmentCube(size=900.0, maptype="FACES",
                           name="bfa", y=50.0)
 myecube.set_draw_details(flatsh, ectex)
 
 # load model_loadmodel
-mymodel = Model(light=light,
-                file_string="models/Buckfast Abbey/BuckfastAbbey.egg",
+mymodel = Model(file_string="models/Buckfast Abbey/BuckfastAbbey.egg",
                 name="Abbey",
                 rx=-90, sx=0.03, sy=0.03, sz=0.03)
 mymodel.set_shader(shader)

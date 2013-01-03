@@ -20,7 +20,6 @@ import random, time
 from pi3d import Display
 from pi3d.Keyboard import Keyboard
 from pi3d.Texture import Texture
-from pi3d.context.Light import Light
 from pi3d.Camera import Camera
 from pi3d.Shader import Shader
 
@@ -32,7 +31,6 @@ DISPLAY = Display.create()
 
 # Set last value (alpha) to zero for a transparent background!
 DISPLAY.set_background(0.0, 0.7, 1.0, 0.0)
-light = Light((10, 10, -20))
 shader = Shader("shaders/uv_flat")
 #############################
 
@@ -44,7 +42,7 @@ pino=15
 # Setup array of random x,y,z coords and initial rotation
 raspberries=[]
 for b in range (0, pino):
-  rasp = Sprite(light=light, w=2.0, h=2.0)
+  rasp = Sprite(w=2.0, h=2.0)
   rasp.position(random.random()*16-8, random.random() * 16, random.random() * 4)
   rasp.rotateToZ(random.random() * 360)
   rasp.buf[0].set_draw_details(shader, [raspimg])

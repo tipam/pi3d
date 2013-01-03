@@ -28,7 +28,8 @@ from pi3d.util.Screenshot import screenshot
 # Setup display and initialise pi3d
 DISPLAY = Display.create(x=100, y=100, background=(0.2, 0.4, 0.6, 1))
 
-light = Light((1, 1, 1))
+Light((1, 1, 1))
+
 shader = Shader("shaders/mat_reflect")
 #========================================
 # load bump and reflection textures
@@ -36,8 +37,7 @@ bumptex = Texture("textures/floor_nm.jpg")
 shinetex = Texture("textures/stars.jpg")
 
 # load model_loadmodel
-mymodel = Model(light=light, file_string='models/teapot.egg',
-                name='teapot', x=0, y=-2, z=8)
+mymodel = Model(file_string='models/teapot.egg', name='teapot', x=0, y=-2, z=8)
 mymodel.set_shader(shader)
 # material is set in the file
 mymodel.set_normal_shine(bumptex, 4.0, shinetex, 0.2, is_uv = False)

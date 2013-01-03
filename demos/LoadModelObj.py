@@ -3,18 +3,15 @@ from pi3d.Keyboard import Keyboard
 from pi3d.Texture import Texture
 
 from pi3d.Shader import Shader
-from pi3d.context.Light import Light
 
 from pi3d.shape.Model import Model
 from pi3d.util.Matrix import Matrix
 from pi3d.util.Screenshot import screenshot
 
 # Setup display and initialise pi3d
-DISPLAY = Display.create(x=100, y=100)
-DISPLAY.set_background(r=0.2, g=0.4, b=0.6, alpha=1)
+DISPLAY = Display.create(x=100, y=100,
+                         background=(0.2, 0.4, 0.6, 1))
 
-
-light = Light((10, 10, -20))
 shader = Shader("shaders/uv_reflect")
 #========================================
 # load bump and reflection textures
@@ -22,8 +19,7 @@ bumptex = Texture("textures/floor_nm.jpg")
 shinetex = Texture("textures/stars.jpg")
 
 # load model_loadmodel
-mymodel = Model(light=light, file_string='models/teapot.obj',
-                name='teapot', z=4)
+mymodel = Model(file_string='models/teapot.obj', name='teapot', z=4)
 mymodel.set_shader(shader)
 mymodel.set_normal_shine(bumptex, 16.0, shinetex, 0.5)
 

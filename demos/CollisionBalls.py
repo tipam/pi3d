@@ -6,8 +6,6 @@ from pi3d.Keyboard import Keyboard
 from pi3d.Shader import Shader
 from pi3d.Texture import Texture
 
-from pi3d.context.Light import Light
-
 from pi3d.sprite.Ball import Ball
 
 MAX_BALLS = 15
@@ -21,8 +19,6 @@ BACKGROUND_COLOR = 1.0, 1.0, 1.0, 0.0
 DISPLAY = Display.create(is_3d=False, background=BACKGROUND_COLOR)
 WIDTH, HEIGHT = DISPLAY.width, DISPLAY.height
 
-LIGHT = Light((10, 10, -20))
-
 SHADER = Shader('shaders/uv_flat')
 
 TEXTURE_NAMES = ['textures/red_ball.png',
@@ -32,7 +28,7 @@ TEXTURES = [Texture(t) for t in TEXTURE_NAMES]
 
 def random_ball():
   """Return a ball with a random color, position and velocity."""
-  return Ball(light=LIGHT, shader=SHADER,
+  return Ball(shader=SHADER,
               texture=random.choice(TEXTURES),
               radius=random.uniform(MIN_BALL_SIZE, MAX_BALL_SIZE),
               x=random.uniform(-WIDTH / 2.0, WIDTH / 2.0),

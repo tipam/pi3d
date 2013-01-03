@@ -10,7 +10,6 @@ from pi3d.Keyboard import Keyboard
 from pi3d.Mouse import Mouse
 from pi3d.Texture import Texture
 
-from pi3d.context.Light import Light
 from pi3d.Camera import Camera
 from pi3d.Shader import Shader
 
@@ -28,7 +27,6 @@ from pi3d.util.Screenshot import screenshot
 # Setup display and initialise pi3d
 DISPLAY = Display.create(x=50, y=50, w=-100, h=-100,
                          background=(0.4, 0.8, 0.8, 1))
-light = Light((10, 10, -20))
 shader = Shader("shaders/uv_reflect")
 flatsh = Shader("shaders/uv_flat")
 #############################
@@ -38,7 +36,7 @@ reflcn = Texture("textures/stars.jpg")
 
 #load environment cube
 ectex = loadECfiles("textures/ecubes","sbox_interstellar")
-myecube = EnvironmentCube(light=light, size=900.0, maptype="FACES")
+myecube = EnvironmentCube(size=900.0, maptype="FACES")
 myecube.set_draw_details(flatsh,ectex)
 
 # Create elevation map
@@ -47,7 +45,7 @@ mapdepth=1000.0
 mapheight=60.0
 mountimg1 = Texture("textures/mars_colour.png")
 bumpimg = Texture("textures/mudnormal.jpg")
-mymap = ElevationMap(light=light, mapfile="textures/mars_height.png",
+mymap = ElevationMap(mapfile="textures/mars_height.png",
                      width=mapwidth, depth=mapdepth, height=mapheight,
                      divx=128, divy=128) #testislands.jpg
 mymap.buf[0].set_draw_details(shader,[mountimg1, bumpimg],128.0, 0.0)
@@ -56,11 +54,11 @@ mymap.set_fog((0.3,0.15,0.1,1.0), 300.0)
 
 #create robot
 metalimg = Texture("textures/metalhull.jpg")
-robot_head= Sphere(light=light, radius=2.0, hemi=0.5, y=3)
-robot_body = Cylinder(light=light, radius=2.0, height=4, sides=12, y=1)
-robot_leg = Cuboid(light=light, w=0.7, h=4.0, y=0.8)
+robot_head= Sphere(radius=2.0, hemi=0.5, y=3)
+robot_body = Cylinder(radius=2.0, height=4, sides=12, y=1)
+robot_leg = Cuboid(w=0.7, h=4.0, y=0.8)
 
-robot = MergeShape(light=light)
+robot = MergeShape()
 robot.add(robot_head.buf[0])
 robot.add(robot_body.buf[0])
 robot.add(robot_leg.buf[0], -2.1,0,0)
@@ -68,10 +66,10 @@ robot.add(robot_leg.buf[0], 2.1,0,0)
 robot.buf[0].set_draw_details(shader, [metalimg, metalimg, reflcn], 1.0, 0.5)
 
 #create space station
-ssphere = Sphere(light=light, radius=10, slices=16, sides=16)
-scorrid = Cylinder(light=light, radius=4, height=22)
+ssphere = Sphere(radius=10, slices=16, sides=16)
+scorrid = Cylinder(radius=4, height=22)
 
-station = MergeShape(light=light, y=mymap.calcHeight(0, 0), rx=4, ry=4, rz=4)
+station = MergeShape(y=mymap.calcHeight(0, 0), rx=4, ry=4, rz=4)
 station.add(ssphere.buf[0], -20,0,-20)
 station.add(ssphere.buf[0], 20,0,-20)
 station.add(ssphere.buf[0], 20,0,20)

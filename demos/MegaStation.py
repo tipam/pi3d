@@ -9,7 +9,6 @@ from pi3d import Display
 from pi3d.Mouse import Mouse
 from pi3d.Texture import Texture
 
-from pi3d.context.Light import Light
 from pi3d.Camera import Camera
 from pi3d.Shader import Shader
 
@@ -35,13 +34,11 @@ win.update()  #requires a window update first so that window sizes can be retire
 
 DISPLAY = Display.create(x=win.winx, y=win.winy, w=winw, h=winh - bord,
                          far=2200.0, background=(0.4, 0.8, 0.8, 1))
-light = Light((10, 10, -20))
 shader = Shader("shaders/uv_reflect")
 flatsh = Shader("shaders/uv_flat")
 #############################
 ectex = EnvironmentCube.loadECfiles("textures/ecubes/RedPlanet", "redplanet_256", "png", True)
-myecube = EnvironmentCube.EnvironmentCube(light=light, size=1800.0,
-                                          maptype="FACES")
+myecube = EnvironmentCube.EnvironmentCube(size=1800.0, maptype="FACES")
 myecube.set_draw_details(flatsh,ectex)
 
 
@@ -51,7 +48,7 @@ mapdepth=2000.0
 mapheight=100.0
 redplanet = Texture("textures/mars_colour.png")
 bumpimg = Texture("textures/mudnormal.jpg")
-mymap = ElevationMap(light=light, mapfile='textures/mars_height.png',
+mymap = ElevationMap(mapfile='textures/mars_height.png',
                      width=mapwidth, depth=mapdepth, height=mapheight,
                      divx=64, divy=64)
 mymap.buf[0].set_draw_details(shader,[redplanet, bumpimg],128.0, 0.0)
@@ -63,31 +60,26 @@ sttnbmp = Texture("textures/floor_nm.jpg")
 sttnshn = Texture("textures/stars.jpg")
 x,z = 0,0
 y = mymap.calcHeight(x, z)
-cor_win = Model(light=light,
-                file_string="models/MegaStation/corridor_win_lowpoly.egg",
+cor_win = Model(file_string="models/MegaStation/corridor_win_lowpoly.egg",
                 x=x, y=y, z=z, sx=0.1, sy=0.1, sz=0.1)
 cor_win.set_shader(shader)
 
-corridor = Model(light=light,
-                 file_string="models/MegaStation/corridor_lowpoly.egg",
+corridor = Model(file_string="models/MegaStation/corridor_lowpoly.egg",
                  x=x, y=y, z=z, sx=0.1, sy=0.1, sz=0.1)
 
 corridor.set_shader(shader)
 
-cor_cross = Model(light=light,
-                  file_string="models/MegaStation/cross_room.egg",
+cor_cross = Model(file_string="models/MegaStation/cross_room.egg",
                  x=x, y=y, z=z, sx=0.1, sy=0.1, sz=0.1)
 cor_cross.set_shader(shader)
 cor_cross.set_normal_shine(sttnbmp, 32.0, sttnshn, 0.4)
 
-cor_cross_doors = Model(light=light,
-                        file_string="models/MegaStation/cross_room_doors.egg",
-                 x=x, y=y, z=z, sx=0.1, sy=0.1, sz=0.1)
+cor_cross_doors = Model(file_string="models/MegaStation/cross_room_doors.egg",
+                        x=x, y=y, z=z, sx=0.1, sy=0.1, sz=0.1)
 cor_cross_doors.set_shader(shader)
 cor_cross_doors.set_normal_shine(sttnbmp, 32.0, sttnshn, 0.4)
 
-cor_bend = Model(light=light,
-                 file_string="models/MegaStation/bend_lowpoly.egg",
+cor_bend = Model(file_string="models/MegaStation/bend_lowpoly.egg",
                  x=x, y=y, z=z, sx=0.1, sy=0.1, sz=0.1)
 cor_bend.set_shader(shader)
 cor_bend.set_normal_shine(sttnbmp)

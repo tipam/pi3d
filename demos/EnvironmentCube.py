@@ -4,7 +4,6 @@ from pi3d.Mouse import Mouse
 from pi3d.Texture import Texture
 from pi3d.Camera import Camera
 from pi3d.Shader import Shader
-from pi3d.context.Light import Light
 
 from pi3d.shape.EnvironmentCube import EnvironmentCube
 from pi3d.shape.EnvironmentCube import loadECfiles
@@ -16,25 +15,23 @@ from pi3d.util import Utility
 # Setup display and initialise pi3d
 DISPLAY = Display.create(x=50, y=50)
 
-light = Light((10, 10, -20))
-shader = Shader("shaders/uv_flat")
+shader = Shader('shaders/uv_flat')
 #========================================
 
 #select the environment cube with 'box'...
 box = 2
 if box == 0:
-  ectex = [Texture("textures/ecubes/skybox_interstellar.jpg")]
-  myecube = EnvironmentCube(light=light, size=900.0, maptype="CROSS")
+  ectex = [Texture('textures/ecubes/skybox_interstellar.jpg')]
+  myecube = EnvironmentCube(size=900.0, maptype='CROSS')
 elif box == 1:
-  ectex = [Texture("textures/ecubes/SkyBox.jpg")]
-  myecube = EnvironmentCube(light=light, size=900.0, maptype="HALFCROSS")
+  ectex = [Texture('textures/ecubes/SkyBox.jpg')]
+  myecube = EnvironmentCube(size=900.0, maptype='HALFCROSS')
 elif box == 2:
-  ectex = loadECfiles("textures/ecubes","sbox_interstellar", nobottom=True)
-  myecube = EnvironmentCube(light=light, size=900.0, maptype="FACES",
-                            nobottom=True)
+  ectex = loadECfiles('textures/ecubes','sbox_interstellar', nobottom=True)
+  myecube = EnvironmentCube(size=900.0, maptype='FACES', nobottom=True)
 else:
-  ectex = loadECfiles("textures/ecubes","skybox_hall")
-  myecube = EnvironmentCube(light=light, size=900.0, maptype="FACES")
+  ectex = loadECfiles('textures/ecubes','skybox_hall')
+  myecube = EnvironmentCube(size=900.0, maptype='FACES')
 
 myecube.set_draw_details(shader, ectex)
 
@@ -71,7 +68,7 @@ while DISPLAY.loop_running():
   k = mykeys.read()
   if k >-1:
     if k==112:  #key P
-      screenshot("envcube.jpg")
+      screenshot('envcube.jpg')
     elif k==27:    #Escape key
       mykeys.close()
       mymouse.stop()

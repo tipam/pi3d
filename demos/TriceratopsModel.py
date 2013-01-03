@@ -19,22 +19,19 @@ from pi3d import Display
 from pi3d.Keyboard import Keyboard
 
 from pi3d.Shader import Shader
-from pi3d.context.Light import Light
 
 from pi3d.shape.Model import Model
 from pi3d.util.Screenshot import screenshot
 
 # Setup display and initialise pi3d
-DISPLAY = Display.create(x=50, y=50, w=-100, h=-100);
-DISPLAY.set_background(0.2,0.4,0.6,1)    # r,g,b,alpha
+DISPLAY = Display.create(x=50, y=50, w=-100, h=-100,
+                         background = (0.2, 0.4, 0.6, 1))
 
-light = Light((10, 10, -20))
-shader = Shader("shaders/uv_light")
+shader = Shader('shaders/uv_light')
 #========================================
 
 # load model_loadmodel
-mymodel = Model(light=light,
-                file_string='models/Triceratops/Triceratops.egg',
+mymodel = Model(file_string='models/Triceratops/Triceratops.egg',
                 name='Triceratops', x=0, y=-1, z=40,
                 cx=.005, cy=.005, cz=.005)
 mymodel.set_shader(shader)

@@ -1,5 +1,11 @@
-class Light(object):
-  def __init__(self,lightpos=(100,100,-100),lightcol=(1.0,1.0,1.0),lightamb=(0.2,0.2,0.2)):
+from pi3d.util.DefaultInstance import DefaultInstance
+
+class Light(DefaultInstance):
+  def __init__(self,
+               lightpos=(10, 10, -20),
+               lightcol=(1.0, 1.0, 1.0),
+               lightamb=(0.2, 0.2, 0.2)):
+    super(Light, self).__init__()
     self.lightpos = lightpos
     self.lightcol = lightcol
     self.lightamb = lightamb
@@ -12,3 +18,8 @@ class Light(object):
 
   def ambient(self, lightamb):
     self.lightamb = lightamb
+
+  @staticmethod
+  def _default_instance():
+    return Light()
+

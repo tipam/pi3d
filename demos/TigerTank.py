@@ -15,7 +15,6 @@ from pi3d.Texture import Texture
 from pi3d.Shader import Shader
 
 from pi3d.context.Fog import Fog
-from pi3d.context.Light import Light
 
 from pi3d.shape.ElevationMap import ElevationMap
 from pi3d.shape import EnvironmentCube
@@ -37,7 +36,6 @@ DISPLAY = Display.create(tk=True, window_title='Tiger Tank demo in Pi3D',
 
 win = DISPLAY.tkwin
 
-light = Light((10, 10, -20))
 shader = Shader('shaders/uv_reflect')
 flatsh = Shader('shaders/uv_flat')
 
@@ -45,8 +43,7 @@ flatsh = Shader('shaders/uv_flat')
 
 ectex = EnvironmentCube.loadECfiles('textures/ecubes/Miramar', 'miramar_256',
                                     suffix='png')
-myecube = EnvironmentCube.EnvironmentCube(light=light, size=1800.0,
-                                          maptype='FACES')
+myecube = EnvironmentCube.EnvironmentCube(size=1800.0, maptype='FACES')
 myecube.set_draw_details(flatsh, ectex)
 
 # Create elevation map
@@ -58,8 +55,7 @@ bumpimg = Texture('textures/grasstile_n.jpg')
 tigerbmp = Texture('models/Tiger/tiger_bump.jpg')
 topbmp = Texture('models/Tiger/top_bump.jpg')
 #roadway = Texture('textures/road5.png')
-mymap = ElevationMap(light=light,
-                     mapfile='textures/mountainsHgt2.png',
+mymap = ElevationMap(mapfile='textures/mountainsHgt2.png',
                      width=mapwidth, depth=mapdepth,
                      height=mapheight, divx=64, divy=64)
 
@@ -71,7 +67,7 @@ def set_fog(shape):
   shape.set_fog(FOG, 1000.0)
 
 def make_model(filename, name, x=0, y=0, z=0, rx=0, ry=0, rz=0):
-  model = Model(light=light, file_string='models/' + filename,
+  model = Model(file_string='models/' + filename,
                 name=name, x=x, y=y, z=z, rx=rx, ry=ry, rz=rz,
                 sx=0.1, sy=0.1, sz=0.1)
   model.set_shader(shader)

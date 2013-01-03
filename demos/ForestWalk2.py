@@ -41,7 +41,7 @@ tree1img = Texture("textures/tree1.png")
 hb2img = Texture("textures/hornbeam2.png")
 
 ectex = Texture("textures/ecubes/skybox_stormydays.jpg")
-myecube = EnvironmentCube(900.0,"CROSS")
+myecube = EnvironmentCube(size=900.0, maptype="CROSS")
 
 # Create elevation map
 mapwidth=1000.0
@@ -55,31 +55,30 @@ mymap = ElevationMap(mapfile="textures/mountainsHgt.jpg", width=mapwidth,
 
 myclip = ClipPlane()
 
-light = Light()  # Was Light(0, 2,2,3, "", 5,5,0)
-light.on()
+Light((100,100,-100))  # Was Light(0, 2,2,3, "", 5,5,0)
 
 #Create tree models
-treeplane = Plane(4.0,5.0)
+treeplane = Plane(w=4.0, h=5.0)
 
-treemodel1 = MergeShape("baretree")
+treemodel1 = MergeShape(name="baretree")
 treemodel1.add(treeplane, 0,0,0)
 treemodel1.add(treeplane, 0,0,0, 0,90,0)
 
-treemodel2 = MergeShape("bushytree")
+treemodel2 = MergeShape(name="bushytree")
 treemodel2.add(treeplane, 0,0,0)
 treemodel2.add(treeplane, 0,0,0, 0,60,0)
 treemodel2.add(treeplane, 0,0,0, 0,120,0)
 
 #Scatter them on map using Merge shape's cluster function
-mytrees1 = MergeShape("trees1")
+mytrees1 = MergeShape(name="trees1")
 mytrees1.cluster(treemodel1, mymap,0.0,0.0,200.0,200.0,30,"",8.0,3.0)
 # (shape,elevmap,xpos,zpos,w,d,count,options,minscl,maxscl)
 
-mytrees2 = MergeShape("trees2")
+mytrees2 = MergeShape(name="trees2")
 mytrees2.cluster(treemodel2, mymap,0.0,0.0,200.0,200.0,30,"",6.0,3.0)
 # (shape,elevmap,xpos,zpos,w,d,count,options,minscl,maxscl)
 
-mytrees3 = MergeShape("trees3")
+mytrees3 = MergeShape(name="trees3")
 mytrees3.cluster(treemodel2, mymap,0.0,0.0,300.0,300.0,30,"",4.0,2.0)
 # (shape,elevmap,xpos,zpos,w,d,count,options,minscl,maxscl)
 
