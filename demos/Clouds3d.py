@@ -40,7 +40,6 @@ scnx = DISPLAY.width
 scny = DISPLAY.height
 
 DISPLAY.set_background(0,0.7,1,1)
-camera = Camera((0, 0, 0), (0, 0, -0.1), (1, 1000, DISPLAY.width/1000.0, DISPLAY.height/1000.0))
 light = Light((10, 10, -20))
 shader = Shader("shaders/uv_flat")
 #############################
@@ -57,12 +56,14 @@ z = 0.0
 cxyz = []
 for b in range (0, cloudno):
   size = random.random()
-  cloudi = Sprite(camera, light, size * widex, size * widey, "", 50.0*(random.random()-0.5), 0.0, cloud_depth - z)
+  cloudi = Sprite(light=light, w=size * widex, h=size * widey,
+                  x=50.0 * (random.random() - 0.5), y=0.0, z=cloud_depth - z)
   cloudi.buf[0].set_draw_details(shader, [clouds[int(random.random() * 4.99999)]], 0.0, -1.0)
   cxyz.append(cloudi)
   z = z + zd
 
-camera.translate((0.0, 0.0, 50.0))
+CAMERA = Camera.instance()
+CAMERA.translate((0.0, 0.0, 50.0))
 
 # Fetch key presses
 mykeys = Keyboard()
@@ -99,6 +100,6 @@ while True:
     DISPLAY.destroy()
     break
 
-  camera.was_moved = False
+  CAMERA.was_moved = False
   DISPLAY.swapBuffers()
 
