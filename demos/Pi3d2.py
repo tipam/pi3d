@@ -22,7 +22,8 @@ DISPLAY.set_background(0.4, 0.6, 0.8, 1.0)      # r,g,b,alpha
 #setup textures, light position and initial model position
 Light((5, 5, 1))
 #create shaders
-shader = Shader("shaders/bumpShade")
+shader = Shader("shaders/uv_reflect")
+flatsh = Shader("shaders/uv_flat")
 
 #Create textures
 shapeimg = Texture("textures/straw1.jpg")
@@ -31,12 +32,11 @@ shapeshine = Texture("textures/pong3.png")
 
 #Create shape
 myshape = []
-num = 1
+num = 7
 for i in range(num):
   myshape.append(Sphere(sides=32))
   myshape[i].translate(0, -num +2*i, 10)
-  myshape[i].buf[0].set_draw_details(shader, [shapeimg, shapebump, shapeshine], 8.0, 0.2)
-  myshape[i].buf[0].set_material((0.2, 0.6, 0.1))
+  myshape[i].set_draw_details(shader, [shapeimg, shapebump, shapeshine], 8.0, 0.2)
 
 cAngle = [0.0, 0.0, 0.0]
 dx = 0.05
@@ -45,14 +45,9 @@ tick=0
 next_time = time.time()+10.0
 
 arialFont = Font("AR_CENA","#dd00aa")   #load AR_CENA font and set the font colour to 'raspberry'
-mystring = String(font=arialFont, string="RaspberryPi-Rocks")
-#mystring.translate(0.0, 0.0, 1)
-mystring.set_shader(shader)
-
-#myshape.buf[0].set_draw_details(shader, [shapeimg, shapebump, shapeshine], 0.0, 0.0)
-#myshape.buf[1].set_draw_details(shader, [shapebump, shapebump, shapeshine], 4.0, 0.2)
-#myshape.buf[2].set_draw_details(shader, [shapeshine, shapebump, shapeshine], 4.0, 0.2)
-#myshape.buf[0].material = (1.0, 0.2, 0.5, 1.0)
+mystring = String(font=arialFont, string="RaspberryPi_Rocks") #TODO needs to cope with spaces in strings
+mystring.translate(0.0, 0.0, 1)
+mystring.set_shader(flatsh)
 
 # Fetch key presses. This line has to be commented out to see the FPS printout
 #mykeys = Keyboard()
@@ -83,16 +78,6 @@ while DISPLAY.loop_running():
     tick=0
     next_time = time.time()+10.0
   tick+=1
-  """
-  err = opengles.glGetError()
-  if err == GL_NO_ERROR: print "no error", err
-  elif err == GL_INVALID_ENUM: print "invlaid enum", err
-  elif err == GL_INVALID_VALUE: print "invlaid vlaue", err
-  elif err == GL_INVALID_OPERATION: print "invlaid operation", err
-  elif err == GL_INVALID_FRAMEBUFFER_OPERATION: print "invlaid framebuffer operation", err
-  elif err == GL_OUT_OF_MEMORY: print "invlaid out of memory", err
-  else: print "unknown", err
-  """
 
   """ # this block needs to be commented out to be able to see the FPS readout (actually the creation of the Keyboard instance above is what does it)
   if mykeys.read() == 27:

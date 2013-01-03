@@ -123,8 +123,4 @@ class Buffer(object):
         self.unib[2] = 0.05
 
     opengles.glUniform3fv(shader.unif_unib, 2, ctypes.byref(self.unib))
-    # Have to do this after checking textures for blend set in unib[0][2]/
-    self.glDraw()
-
-  def glDraw(self):
     opengles.glDrawElements(GL_TRIANGLES, self.ntris * 3, GL_UNSIGNED_SHORT, 0)

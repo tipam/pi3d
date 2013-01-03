@@ -146,6 +146,14 @@ class Shape(Loadable):
         b.textures[2 + ofst] = shinetex
         b.unib[1] = shiny
 
+  def set_draw_details(self, shader, textures, ntiles = 0.0, shiny = 0.0):
+    for b in self.buf:
+      b.set_draw_details(shader, textures, ntiles, shiny)
+
+  def set_material(self, mtrl):
+    for b in self.buf:
+      b.set_material(mtrl)
+
   def set_fog(self, fogshade, fogdist):
     # Set fog for this Shape, only it uses the shader smoothblend function from
     # 1/3 fogdist to fogdist.
