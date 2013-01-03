@@ -29,7 +29,7 @@ from pi3d.util.Screenshot import screenshot
 DISPLAY = Display.create(x=50, y=50, w=-100, h=-100);
 DISPLAY.set_background(0.2,0.4,0.6,1)    # r,g,b,alpha
 
-camera = Camera((0, 0, 0), (0, 0, -1), (1, 1000, DISPLAY.win_width/1000.0, DISPLAY.win_height/1000.0))
+camera = Camera((0, 0, 0), (0, 0, -1), (1, 1000, DISPLAY.width/1000.0, DISPLAY.height/1000.0))
 light = Light((10, 10, -20))
 shader = Shader("shaders/uv_light")
 #========================================

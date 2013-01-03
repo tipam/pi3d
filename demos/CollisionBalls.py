@@ -20,10 +20,7 @@ KEYBOARD = Keyboard()
 
 BACKGROUND_COLOR = 1.0, 1.0, 1.0, 0.0
 DISPLAY = Display.create(is_3d=False, background=BACKGROUND_COLOR)
-WIDTH, HEIGHT = DISPLAY.win_width, DISPLAY.win_height
-
-CAMERA_LENS = (1, 1000, WIDTH / 1000.0, HEIGHT / 1000.0)
-CAMERA = Camera((0, 0, 0), (0, 0, -0.1), CAMERA_LENS)
+WIDTH, HEIGHT = DISPLAY.width, DISPLAY.height
 
 LIGHT = Light((10, 10, -20))
 
@@ -36,7 +33,7 @@ TEXTURES = [Texture(t) for t in TEXTURE_NAMES]
 
 def random_ball():
   """Return a ball with a random color, position and velocity."""
-  return Ball(CAMERA, LIGHT, SHADER,
+  return Ball(light=LIGHT, shader=SHADER,
               texture=random.choice(TEXTURES),
               radius=random.uniform(MIN_BALL_SIZE, MAX_BALL_SIZE),
               x=random.uniform(-WIDTH / 2.0, WIDTH / 2.0),

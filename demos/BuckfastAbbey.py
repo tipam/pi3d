@@ -35,7 +35,7 @@ from pi3d.util.Screenshot import screenshot
 # Setup display and initialise pi3d
 DISPLAY = Display.create(x=100, y=100)
 DISPLAY.set_background(1.0,0.4,0.6,1)    	# r,g,b,alpha
-camera = Camera((0, 0, 0), (0, 0, -1), (1, 1000, DISPLAY.win_width/1000.0, DISPLAY.win_width/1000.0))
+camera = Camera((0, 0, 0), (0, 0, -1), (1, 1000, DISPLAY.width/1000.0, DISPLAY.width/1000.0))
 light = Light((5, 10, 20))
 
 # load shader

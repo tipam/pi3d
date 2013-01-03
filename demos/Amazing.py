@@ -57,7 +57,7 @@ print
 DISPLAY = Display.create(x=100, y=100)
 DISPLAY.set_background(0.4,0.8,0.8,1)      # r,g,b,alpha
 
-camera = Camera((0, 0, 0), (0, 0, -1), (1, 1000, DISPLAY.win_width/1000.0, DISPLAY.win_height/1000.0))
+camera = Camera((0, 0, 0), (0, 0, -1), (1, 1000, DISPLAY.width/1000.0, DISPLAY.height/1000.0))
 light = Light((10, 10, -20))
 shader = Shader("shaders/uv_reflect")
 flatsh = Shader("shaders/uv_flat")

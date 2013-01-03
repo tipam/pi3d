@@ -41,7 +41,7 @@ from pi3d.util.Screenshot import screenshot
 DISPLAY = Display.create(x=200, y=200)
 DISPLAY.set_background(0.4,0.8,0.8,1)      # r,g,b,alpha
 
-camera = Camera((0, 0, 0), (0, 0, -1), (1, 1000, DISPLAY.win_width/1000.0, DISPLAY.win_height/1000.0))
+camera = Camera((0, 0, 0), (0, 0, -1), (1, 1000, DISPLAY.width/1000.0, DISPLAY.height/1000.0))
 light = Light((1, 1, 4))
 #========================================
 

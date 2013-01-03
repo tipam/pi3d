@@ -22,6 +22,8 @@ DEFAULT_NEAR_3D = 0.5
 DEFAULT_FAR_3D = 800.0
 DEFAULT_NEAR_2D = -1.0
 DEFAULT_FAR_2D = 500.0
+WIDTH = 0
+HEIGHT = 0
 
 def is_display_thread():
   return not CHECK_IF_DISPLAY_THREAD or (
@@ -30,12 +32,12 @@ def is_display_thread():
 class Display(object):
   def __init__(self, tkwin):
     """Opens up the OpenGL library and prepares a window for display."""
-    if not ALLOW_MULTIPLE_DISPLAYS:
-      global DISPLAY
-      if DISPLAY:
-        LOGGER.warning('A second instance of Display was created')
-      else:
-        DISPLAY = self
+    global DISPLAY
+    if DISPLAY:
+      assert ALLOW_MULTIPLE_DISPLAYS
+      LOGGER.warning('A second instance of Display was created')
+    else:
+      DISPLAY = self
 
     self.tkwin = tkwin
 
@@ -89,8 +91,8 @@ class Display(object):
       w = display.max_width
     if h <= 0:
       h = display.max_height
-    self.win_width = w
-    self.win_height = h
+    self.width = w
+    self.height = h
 
     self.left = x
     self.top = y
@@ -223,8 +225,8 @@ def create(is_3d=True, x=None, y=None, w=0, h=0, near=None, far=None,
   if far is None:
     far = DEFAULT_FAR_3D if is_3d else DEFAULT_FAR_2D
 
-  display.win_width = w
-  display.win_height = h
+  display.width = w
+  display.height = h
   display.near = near
   display.far = far
 

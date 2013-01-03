@@ -21,7 +21,7 @@ DISPLAY = Display.create(x=10, y=10, w=1000, h=800)
 DISPLAY.set_background(0.4, 0.6, 0.8, 1.0)      # r,g,b,alpha
 
 #setup textures, light position and initial model position
-camera = Camera([0, 0, 0], [0, 0, -1], [1, 1000, DISPLAY.win_width/1000.0, DISPLAY.win_height/1000.0])
+camera = Camera([0, 0, 0], [0, 0, -1], [1, 1000, DISPLAY.width/1000.0, DISPLAY.height/1000.0])
 light = Light((5, 5, 1))
 #create shaders
 shader = Shader("shaders/bumpShade")

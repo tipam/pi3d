@@ -35,7 +35,7 @@ win.update()  #requires a window update first so that window sizes can be retrei
 
 display = Display.create(x=win.winx, y=win.winy, w=winw, h=winh - bord,
                          far=2200.0, background=(0.4, 0.8, 0.8, 1))
-camera = Camera((0, 0, 0), (0, 0, -1), (1, 1000, display.win_width/1000.0, display.win_height/1000.0))
+camera = Camera((0, 0, 0), (0, 0, -1), (1, 1000, display.width/1000.0, display.height/1000.0))
 light = Light((10, 10, -20))
 shader = Shader("shaders/uv_reflect")
 flatsh = Shader("shaders/uv_flat")

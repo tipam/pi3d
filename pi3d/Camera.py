@@ -2,9 +2,10 @@ from numpy import array, dot, copy, tan, cos, sin, radians
 from numpy.linalg import norm
 from pi3d import *
 from pi3d.shape.Shape import Shape
+from pi3d.util.DefaultInstance import DefaultInstance
 from pi3d.util.Utility import vec_normal, vec_cross, vec_sub, vec_dot
 
-class Camera(object):
+class Camera(DefaultInstance):
   def __init__(self, at, eye, lens):
     """Set up view matrix to look from eye to at including perspective
     at   -- (x,y,z) location to look at
@@ -12,6 +13,8 @@ class Camera(object):
     lens -- (near plane distance, far plane value, field of view width,
             field of view height) fields of view in radians
     """
+    super(Camera, self).__init__()
+
     self.eye = [eye[0], eye[1], eye[2]]
     self.view = LookAtMatrix(at,eye,[0,1,0])
     self.projection = ProjectionMatrix(lens[0], lens[1], lens[2], lens[3])
@@ -21,10 +24,18 @@ class Camera(object):
     self.mtrx = copy(self.model_view)
     # self.L_reflect = LookAtMatrix(at,eye,[0,1,0],reflect=True)
     self.rtn = [0.0, 0.0, 0.0]
-    self.c_floats = None
+
     # self.c_floats will eventually hold the cfloats array for quicker passing
-    # to shader in Shape.draw()
+    # to shader in Shape.draw().
+    self.c_floats = None
     self.was_moved = True
+
+  @staticmethod
+  def _default_instance():
+    print('_default_instance')
+    from pi3d.Display import DISPLAY
+    return Camera((0, 0, 0), (0, 0, -1),
+                  (1, 1000, DISPLAY.width / 1000.0, DISPLAY.height / 1000.0))
 
   def reset(self):
     self.mtrx = copy(self.model_view)

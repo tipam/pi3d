@@ -11,7 +11,7 @@ def screenshot(filestring):
   from pi3d.Display import DISPLAY
   LOGGER.info('Taking screenshot of "%s"', filestring)
 
-  w, h = DISPLAY.win_width, DISPLAY.win_height
+  w, h = DISPLAY.width, DISPLAY.height
   size = h * w * 3
   img = (c_char * size)()
   opengles.glReadPixels(0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE, ctypes.byref(img))

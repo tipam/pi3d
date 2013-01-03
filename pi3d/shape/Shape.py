@@ -4,8 +4,10 @@ from math import radians, pi, sin, cos
 
 from pi3d import *
 from pi3d.Buffer import Buffer
+from pi3d.Buffer import Buffer
 from pi3d.context.TextureLoader import TextureLoader
 from pi3d.util import Utility
+from pi3d.util.DefaultInstance import DefaultInstance
 
 from pi3d.util.Loadable import Loadable
 
@@ -75,7 +77,7 @@ class Shape(Loadable):
                             0, 0, 0, 0, 0, 0, 0, 0,
                             0, 0, 0, 0, 0, 0, 0, 0)
 
-    self.camera = camera
+    self._camera = camera
     self.light = light
     self.shader = None
     self.textures = []
@@ -85,9 +87,12 @@ class Shape(Loadable):
     # rendering with a different Shader/Texture. self.draw() relies on objects
     # inheriting from this filling buf with at least one element.
 
-  def draw(self, shader=None, txtrs=None, ntl=None, shny=None):
+  def draw(self, shader=None, txtrs=None, ntl=None, shny=None, camera=None):
     # If called without parameters, there has to have been a previous call to
     # set_draw_details() for each Buffer in buf[].
+    from pi3d.Camera import Camera
+
+    camera = camera or self._camera or Camera.instance()
     shader = shader or self.shader
     shader.use()
 
@@ -99,15 +104,15 @@ class Shape(Loadable):
         dot(self.rox,
         dot(self.roz, self.tr1)))))
       self.M[0:16] = self.MRaw.ravel()
-      self.M[16:32] = dot(self.MRaw, self.camera.mtrx).ravel()
+      self.M[16:32] = dot(self.MRaw, camera.mtrx).ravel()
       self.MFlg = False
 
-    elif self.camera.was_moved:
+    elif camera.was_moved:
       # Only do this if it's not done because model moved.
-      self.M[16:32] = dot(self.MRaw, self.camera.mtrx).ravel()
+      self.M[16:32] = dot(self.MRaw, camera.mtrx).ravel()
 
-    if self.camera.was_moved:
-      self.unif[18:21] = self.camera.eye[0:3]
+    if camera.was_moved:
+      self.unif[18:21] = camera.eye[0:3]
 
     opengles.glUniformMatrix4fv(shader.unif_modelviewmatrix, 2, c_int(0),
                                 ctypes.byref(self.M))

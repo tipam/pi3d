@@ -7,8 +7,8 @@ from pi3d.util import Utility
 from pi3d.shape.Sprite import ImageSprite
 
 class Ball(ImageSprite):
-  def __init__(self, camera, light, shader, texture, radius, x, y,
-               vx=0.0, vy=0.0, decay=0.001):
+  def __init__(self, camera=None, light=None, shader=None, texture=None,
+               radius=0.0, x=0.0, y=0.0, vx=0.0, vy=0.0, decay=0.001):
     super(Ball, self).__init__(texture=texture, shader=shader, camera=camera,
                                light=light, w=2 * radius, h=2 * radius, name="",
                                x=x, y=y, z=450)
@@ -48,7 +48,8 @@ class Ball(ImageSprite):
 
       if dy:
         D = dx / dy
-        delta2y = 2 * (D * self.vx + self.vy - D * otherball.vx - otherball.vy) / (
+        delta2y = 2 * (D * self.vx + self.vy -
+                       D * otherball.vx - otherball.vy) / (
           (1 + D * D) * (R + 1))
         delta2x = D * delta2y
         delta1y = -1 * R * delta2y
@@ -56,7 +57,8 @@ class Ball(ImageSprite):
       elif dx:
         # Same code as above with x and y reversed.
         D = dy / dx
-        delta2x = 2 * (D * self.vy + self.vx - D * otherball.vy - otherball.vx) / (
+        delta2x = 2 * (D * self.vy + self.vx -
+                       D * otherball.vy - otherball.vx) / (
           (1 + D * D) * (R + 1))
         delta2y = D * delta2x
         delta1x = -1 * R * delta2x
@@ -83,6 +85,6 @@ class Ball(ImageSprite):
 
   def repaint(self, t):
     self.move()
-    self.bounce_wall(Display.DISPLAY.win_width, Display.DISPLAY.win_height)
+    self.bounce_wall(Display.DISPLAY.width, Display.DISPLAY.height)
     #self.draw(self.shader, [self.texture], 0.0 -1.0)
     self.draw()

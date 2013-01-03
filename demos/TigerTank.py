@@ -41,7 +41,7 @@ DISPLAY = Display.create(tk=True, window_title='Tiger Tank demo in Pi3D',
 win = DISPLAY.tkwin
 
 camera = Camera((0, 0, 0), (0, 0, -1),
-                (1, 1000, DISPLAY.win_width/1000.0, DISPLAY.win_height/1000.0))
+                (1, 1000, DISPLAY.width/1000.0, DISPLAY.height/1000.0))
 
 light = Light((10, 10, -20))
 shader = Shader('shaders/uv_reflect')
