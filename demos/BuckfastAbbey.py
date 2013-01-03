@@ -48,7 +48,7 @@ mymodel.set_shader(shader)
 
 # Create keyboard and mouse event objects
 mykeys = Keyboard()
-mymouse = Mouse()
+mymouse = Mouse(restrict = False)
 mymouse.start()
 
 #screenshot number

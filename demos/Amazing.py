@@ -147,7 +147,7 @@ lastZ0=0.0
 
 # Fetch key presses
 mykeys = Keyboard()
-mymouse = Mouse()
+mymouse = Mouse(restrict = False)
 mymouse.start()
 
 omx, omy = mymouse.position()
@@ -165,8 +165,8 @@ while 1:
 
   # movement of camera
   mx, my = mymouse.position()
-  rot -= (mx-omx)*0.4
-  tilt += (my-omy)*0.4
+  rot -= (mx-omx)*0.2
+  tilt += (my-omy)*0.1
 
   dx = -math.sin(rot*rads)
   dz = math.cos(rot*rads)

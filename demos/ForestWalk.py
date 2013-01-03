@@ -111,7 +111,7 @@ ym = mymap.calcHeight(xm, zm) + avhgt
 
 # Fetch key presses
 mykeys = Keyboard()
-mymouse = Mouse()
+mymouse = Mouse(restrict = False)
 mymouse.start()
 
 omx, omy = mymouse.position()

@@ -96,7 +96,7 @@ mody = ym
 opendist = 80
 
 # Fetch key presses
-mymouse = Mouse()
+mymouse = Mouse(restrict = False)
 mymouse.start()
 
 omx, omy = mymouse.position()

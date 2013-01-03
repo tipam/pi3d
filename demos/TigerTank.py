@@ -33,6 +33,7 @@ winw, winh, bord = 1200, 600, 0     #64MB GPU memory setting
 DISPLAY = Display.create(tk=True, window_title='Tiger Tank demo in Pi3D',
                          mouse=True, w=winw, h=winh - bord,
                          far=2200.0, background=(0.4, 0.8, 0.8, 1))
+DISPLAY.mouse.restrict = False #TODO improve mouse/camera interaction
 
 win = DISPLAY.tkwin
 
@@ -158,8 +159,8 @@ def loop():
   #update mouse/keyboard input
   mx, my = DISPLAY.mouse_position()
   if mx != omx or my != omy or xm != oxm or zm != ozm:
-    mouserot -= (mx - omx) * 0.6
-    tilt += (my - omy) * 0.2
+    mouserot -= (mx - omx) * 0.2
+    tilt += (my - omy) * 0.1
     omx, omy = mx, my
 
     CAMERA.reset()
