@@ -32,7 +32,6 @@ DISPLAY = Display.create()
 
 # Set last value (alpha) to zero for a transparent background!
 DISPLAY.set_background(0.0, 0.7, 1.0, 0.0)
-camera = Camera((0, 0, 0), (0, 0, -0.1), (1, 1000, DISPLAY.width/1000.0, DISPLAY.height/1000.0))
 light = Light((10, 10, -20))
 shader = Shader("shaders/uv_flat")
 #############################
@@ -45,7 +44,7 @@ pino=15
 # Setup array of random x,y,z coords and initial rotation
 raspberries=[]
 for b in range (0, pino):
-  rasp = Sprite(camera, light, 2.0, 2.0)
+  rasp = Sprite(light=light, w=2.0, h=2.0)
   rasp.position(random.random()*16-8, random.random() * 16, random.random() * 4)
   rasp.rotateToZ(random.random() * 360)
   rasp.buf[0].set_draw_details(shader, [raspimg])
@@ -54,9 +53,7 @@ for b in range (0, pino):
 # Fetch key presses
 mykeys = Keyboard()
 
-while True:
-  DISPLAY.clear()
-
+while DISPLAY.loop_running():
   for b in raspberries:
     b.draw()
     b.translateY(-0.1)
@@ -69,10 +66,9 @@ while True:
   if k >-1:
     if k==27:
       mykeys.close()
-      DISPLAY.destroy()
+      DISPLAY.stop()
       break
     elif k==112:
       screenshot("raspberryRain.jpg")
 
-  camera.was_moved = False #to save a tiny bit of work each loop
-  DISPLAY.swapBuffers()
+  Camera.instance().was_moved = False #to save a tiny bit of work each loop
