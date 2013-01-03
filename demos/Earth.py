@@ -31,7 +31,7 @@ from pi3d.util.Screenshot import screenshot
 # Setup display and initialise pi3d
 DISPLAY = Display.create(x=50, y=50)
 DISPLAY.set_background(0,0,0,1)    	# r,g,b,alpha
-camera = Camera((0, 0, 0), (0, 0, -1), (1, 1000, DISPLAY.width/1000.0, DISPLAY.height/1000.0))
+
 light = Light((10, 10, -20))
 shader = Shader("shaders/uv_reflect")
 flatsh = Shader("shaders/uv_flat")
@@ -45,11 +45,13 @@ moonimg = Texture("textures/moon.jpg")
 starsimg = Texture("textures/stars2.jpg")
 watimg = Texture("textures/water.jpg")
 
-mysphere = Sphere(camera, light, 2,24,24,0.0,"earth",0,0, 5.8)
-mysphere2 = Sphere(camera, light, 2.05,24,24,0.0,"clouds",0,0, 5.8)
-mymoon = Sphere(camera, light, 0.4,16,16,0.0,"moon",0,0,0)
-mymoon2 = Sphere(camera, light, 0.1,16,16,0.0,"moon2",0,0,0)
-myplane = Plane(camera, light, 50,50, "stars", 0,0, 10)
+mysphere = Sphere(light=light, radius=2, slices=24, sides=24,
+                  name="earth", z=5.8)
+mysphere2 = Sphere(light=light, radius=2.05, slices=24, sides=24,
+                   name="clouds", z=5.8)
+mymoon = Sphere(light=light, radius=0.4, slices=16, sides=16, name="moon")
+mymoon2 = Sphere(light=light, radius=0.1, slices=16, sides=16, name="moon2")
+myplane = Plane(light=light, w=50, h=50, name="stars", z=10)
 
 # Fetch key presses
 mykeys = Keyboard()
@@ -62,9 +64,7 @@ m2Rad = 0.55 # radius moon's moon orbit
 
 
 # Display scene
-while 1:
-  DISPLAY.clear()
-
+while DISPLAY.loop_running():
   myplane.draw(flatsh,[starsimg], 0.0, -1.0)
   myplane.rotateIncZ(0.01)
 
@@ -89,11 +89,9 @@ while 1:
     if k==112: screenshot("earthPic.jpg")
     elif k==27:
       mykeys.close()
-      DISPLAY.destroy()
+      DISPLAY.stop()
       break
     else:
       print k
 
-  camera.was_moved = False
-
-  DISPLAY.swapBuffers()
+  Camera.instance().was_moved = False
