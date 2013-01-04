@@ -309,10 +309,10 @@ def corridor(x,z, emap, width=10, length=10, height=10, details=None, walls="ns"
   
   if "n" in walls:
     nwall = SolidObject(name+str(wallnum), Size(length, height, 1), Position(x, emap.calcHeight(x, z)+height/2, n-0.5), 0)
-    nwallmodel = createMyCuboid(nwall.w()*2,nwall.h()*2,nwall.d()*2,
+    nwallmodel = createMyCuboid(nwall.w()*2, nwall.h()*2, nwall.d()*2,
           name=name+str(wallnum),
           x=nwall.x(),y=nwall.y(),z=nwall.z(),
-          rx=0.0,ry=0.0,rz=0.0, cx=0.0,cy=0.0,cz=0.0)
+          rx=0.0, ry=0.0, rz=0.0, cx=0.0, cy=0.0, cz=0.0)
     if mergeshape:
       mergeshape.add(nwallmodel)
     else:
@@ -322,11 +322,11 @@ def corridor(x,z, emap, width=10, length=10, height=10, details=None, walls="ns"
     wallnum += 1
   
   if "s" in walls:
-    swall = SolidObject(name+str(wallnum), Size(length, height, 1), Position(x, emap.calcHeight(-x,-z)+height/2, s+0.5), 0)
-    swallmodel = createMyCuboid(swall.w()*2,swall.h()*2,swall.d()*2,
+    swall = SolidObject(name+str(wallnum), Size(length, height, 1), Position(x, emap.calcHeight(x, z)+height/2, s+0.5), 0)
+    swallmodel = createMyCuboid(swall.w()*2, swall.h()*2, swall.d()*2,
           name=name+str(wallnum),
-          x=swall.x(),y=swall.y(),z=swall.z(),
-          rx=0.0,ry=0.0,rz=0.0, cx=0.0,cy=0.0,cz=0.0)
+          x=swall.x(), y=swall.y(), z=swall.z(),
+          rx=0.0, ry=0.0, rz=0.0, cx=0.0,cy=0.0, cz=0.0)
     if mergeshape:
       mergeshape.add(swallmodel)
     else:
@@ -336,10 +336,10 @@ def corridor(x,z, emap, width=10, length=10, height=10, details=None, walls="ns"
   
   if "e" in walls:
     ewall = SolidObject(name+str(wallnum), Size(1, height, width), Position(e-0.5, emap.calcHeight(x, z)+height/2, z), 0)
-    ewallmodel = createMyCuboid(ewall.w()*2,ewall.h()*2,ewall.d()*2,
+    ewallmodel = createMyCuboid(ewall.w()*2, ewall.h()*2, ewall.d()*2,
           name=name+str(wallnum),
-          x=ewall.x(),y=ewall.y(),z=ewall.z(),
-          rx=0.0,ry=0.0,rz=0.0, cx=0.0,cy=0.0,cz=0.0)
+          x=ewall.x(), y=ewall.y(), z=ewall.z(),
+          rx=0.0, ry=0.0, rz=0.0, cx=0.0, cy=0.0, cz=0.0)
     if mergeshape:
       mergeshape.add(ewallmodel)
     else:
@@ -348,11 +348,11 @@ def corridor(x,z, emap, width=10, length=10, height=10, details=None, walls="ns"
     wallnum += 1
   
   if "w" in walls:
-    wwall = SolidObject(name+str(wallnum), Size(1, height, width), Position(w+0.5, emap.calcHeight(-x,-z)+height/2, z), 0)
-    wwallmodel = createMyCuboid(wwall.w()*2,wwall.h()*2,wwall.d()*2,
+    wwall = SolidObject(name+str(wallnum), Size(1, height, width), Position(w+0.5, emap.calcHeight(x, z)+height/2, z), 0)
+    wwallmodel = createMyCuboid(wwall.w()*2, wwall.h()*2, wwall.d()*2,
           name=name+str(wallnum),
-          x=wwall.x(),y=wwall.y(),z=wwall.z(),
-          rx=0.0,ry=0.0,rz=0.0, cx=0.0,cy=0.0,cz=0.0)
+          x=wwall.x(), y=wwall.y(), z=wwall.z(),
+          rx=0.0, ry=0.0, rz=0.0, cx=0.0, cy=0.0, cz=0.0)
     if mergeshape:
       mergeshape.add(wwallmodel)
     else:
@@ -362,11 +362,11 @@ def corridor(x,z, emap, width=10, length=10, height=10, details=None, walls="ns"
     wallnum += 1
   
   if "o" not in walls:
-    ceiling = SolidObject(name+str(wallnum), Size(length, 1, width), Position(x, emap.calcHeight(-x,-z)+height+0.5, z), 0)
-    ceilingmodel = createMyCuboid(ceiling.w()*2,ceiling.h()*2,ceiling.d()*2,
+    ceiling = SolidObject(name+str(wallnum), Size(length, 1, width), Position(x, emap.calcHeight(x, z)+height+0.5, z), 0)
+    ceilingmodel = createMyCuboid(ceiling.w()*2, ceiling.h()*2, ceiling.d()*2,
           name=name+str(wallnum),
-          x=ceiling.x(),y=ceiling.y(),z=ceiling.z(),
-          rx=0.0,ry=0.0,rz=0.0, cx=0.0,cy=0.0,cz=0.0)
+          x=ceiling.x(), y=ceiling.y(), z=ceiling.z(),
+          rx=0.0, ry=0.0, rz=0.0, cx=0.0, cy=0.0, cz=0.0)
     if mergeshape:
       mergeshape.add(ceilingmodel)
     else:

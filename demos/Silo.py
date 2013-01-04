@@ -42,9 +42,9 @@ mymap = ElevationMap(mapfile="textures/mountainsHgt2.png",
 mymap.set_draw_details(shader,[floorimg, bumpimg],128.0, 0.0)
 mymap.set_fog((0.3,0.15,0.1,1.0), 300.0)
 
-#Create block model
-corridor(200, 200, mymap, details = [shader, [blockimg, blockimg], 1.0, 0.0], walls="ns")
-corridor(220, 220, mymap, details = [shader, [blockimg, blockimg], 1.0, 0.0], walls="ew")
+#Create some random block models elsewhere on the map!
+corridor(150, 10, mymap, details = [shader, [blockimg, blockimg], 1.0, 0.0], walls="ns")
+corridor(120, -40, mymap, details = [shader, [blockimg, blockimg], 1.0, 0.0], walls="ew")
 
 # openSectionScheme: black is wall, white is corridor or room, grey has no ceiling, there is one model
 # Model 0: wall
