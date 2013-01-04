@@ -24,7 +24,9 @@ class MergeShape(Shape):
     self.normals=[]
     self.tex_coords=[]
     self.indices=[]    #stores all indices for single render
-    #self.shape=[]
+
+    self.buf = []
+    self.buf.append(Buffer(self, self.vertices, self.tex_coords, self.indices, self.normals))
 
 
   def merge(self, shape, x, y, z,
