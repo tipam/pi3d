@@ -13,7 +13,7 @@ from pi3d.Shader import Shader
 
 from pi3d.shape.Sphere import Sphere
 from pi3d.util.String import String
-from pi3d.util.Font import Font
+from pi3d.util.Ttffont import Ttffont
 from pi3d.shape.MergeShape import MergeShape
 
 # Setup display and initialise pi3d
@@ -33,7 +33,7 @@ shapeshine = Texture("textures/pong3.png")
 
 #Create shape
 myshape = MergeShape()
-num = (5, 5)
+num = (2, 2)
 asphere = Sphere(sides=32)
 for i in range(num[0]):
   for j in range(num[1]):
@@ -50,8 +50,8 @@ dx = 0.05
 tick=0
 next_time = time.time()+10.0
 
-arialFont = Font("AR_CENA","#dd00aa")   #load AR_CENA font and set the font colour to 'raspberry'
-mystring = String(font=arialFont, string="RaspberryPi_Rocks") #TODO needs to cope with spaces in strings
+arialFont = Ttffont("fonts/FreeMonoBoldOblique.ttf", "#dd00aa")   #load ttf font and set the font colour to 'raspberry'
+mystring = String(font=arialFont, string="Now the Raspberry Pi really does rock")
 mystring.translate(0.0, 0.0, 1)
 mystring.set_shader(flatsh)
 

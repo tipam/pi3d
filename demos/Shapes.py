@@ -33,14 +33,14 @@ from pi3d.shape.Tube import Tube
 from pi3d.shape.Plane import Plane
 
 from pi3d.util.String import String
-from pi3d.util.Font import Font
+from pi3d.util.Ttffont import Ttffont
 from pi3d.util.Screenshot import screenshot
 
 # Setup display and initialise pi3d
 
 #DISPLAY = Display.create(w=1840, h=1130)
 DISPLAY = Display.create()
-DISPLAY.set_background(0.2, 0.0, 0.1, 0.7)      # r,g,b,alpha
+DISPLAY.set_background(0.2, 0.0, 0.1, 0.3)      # r,g,b,alpha
 #setup camera, light, shader
 camera = Camera((0, 0, 5), (0, 0, -2), (1, 1000, 1.6, 1.2))
 light = Light((5, 5, 1))
@@ -73,8 +73,8 @@ mylathe = Lathe(camera, light, ((0,1),(0.6,1.2),(0.8,1.4),(1.09,1.7), (1.1,1.7),
 myPlane = Plane(camera, light, 4, 4,"plane")
 myPlane.translate(0, 0, 10)
 
-arialFont = Font("AR_CENA","#dd00aa")   #load AR_CENA font and set the font colour to 'raspberry'
-mystring = String(font = arialFont, string = "RaspberryPi-Rocks")
+arialFont = Ttffont("fonts/FreeMonoBoldOblique.ttf", "#dd00aa")   #load ttf font and set the font colour to 'raspberry'
+mystring = String(font=arialFont, string="Now the Raspberry Pi really does rock")
 mystring.set_shader(flatsh)
 
 
