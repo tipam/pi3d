@@ -15,8 +15,11 @@ void main(void) {
   vec4 texc = vec4(unib[1], 1.0); // ------ basic colour from material vector
 
   float ffact = smoothstep(unif[5][0]/3.0, unif[5][0], dist); // ------ smoothly increase fog between 1/3 and full fogdist
-  float intensity = max(dot(lightVector, normout), 0.1); // ------ adjustment of colour according to combined normal
+
+  float intensity = clamp(dot(lightVector, vec3(0.0, 0.0, 1.0)), 0.1, 1.0); // ------ adjustment of colour according to combined normal
+  if (texc.a < unib[0][2]) discard; // ------ to allow rendering behind the transparent parts of this object
   texc.rgb = texc.rgb * intensity;
+
   gl_FragColor =  (1.0 - ffact) * texc + ffact * vec4(unif[4], unif[5][1]); // ------ combine using factors
 }
 

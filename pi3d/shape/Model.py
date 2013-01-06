@@ -33,10 +33,14 @@ class Model(Shape):
       print self.exf, "file not supported"
       return None
 
-  def clone(self, camera, light):
-    newModel = Model(camera, light, "__clone__." + self.exf)
+  def clone(self, camera = None, light = None):
+    newModel = Model(file_string = "__clone__",x=self.unif[0], y=self.unif[1], z=self.unif[2],
+               rx=self.unif[3], ry=self.unif[4], rz=self.unif[5], sx=self.unif[6], sy=self.unif[7], sz=self.unif[8],
+               cx=self.unif[9], cy=self.unif[10], cz=self.unif[11])
     newModel.buf = self.buf
     newModel.vGroup = self.vGroup
+    newModel.shader = self.shader
+    newModel.textures = self.textures
     return newModel
 
   def reparentTo(self, parent):

@@ -27,7 +27,7 @@ DISPLAY = Display.create(x=20, y=20)
 DISPLAY.set_background(0.4, 0.6, 0.8, 0.5)      # r,g,b,alpha
 
 #setup textures, light position and initial model position
-Light((5, 5, 1))
+Light((5, -5, 8))
 #create shaders
 shader = Shader("shaders/uv_reflect")
 matsh = Shader("shaders/mat_reflect")
@@ -54,10 +54,11 @@ for i in range(num[0]):
   
 myshape.position(0.0, 0.0, 5)
 myshape.set_draw_details(shader, [shapeimg, shapebump, shapeshine], 1.0, 0.1)
+myshape.set_material((1.0, 0.5, 0.2, 0.5))
   
 mywater = Plane(w=100.0, h=100.0)
 mywater.set_draw_details(matsh, [waterbump[0], shapeshine], 8.0, 0.6)
-mywater.set_material((0.0, 0.1, 0.05))
+mywater.set_material((0.0, 0.05, 0.1))
 mywater.set_fog((0.4, 0.6, 0.8, 0.0),150)
 mywater.rotateToX(90)
 mywater.position(0.0, -2.0, 50.0)

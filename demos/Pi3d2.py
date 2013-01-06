@@ -21,7 +21,7 @@ DISPLAY = Display.create(x=10, y=10, w=1000, h=800)
 DISPLAY.set_background(0.4, 0.6, 0.8, 1.0)      # r,g,b,alpha
 
 #setup textures, light position and initial model position
-Light((5, 5, 1))
+Light((0, 5, 0))
 #create shaders
 shader = Shader("shaders/uv_reflect")
 flatsh = Shader("shaders/uv_flat")
@@ -39,10 +39,10 @@ for i in range(num[0]):
   for j in range(num[1]):
     myshape.add(asphere, -num[0]*0.9 + 1.8*i, -num[1]*0.9 +1.8*j, 0.0)
   
-myshape.position(0.0, 0.0, 10)
-myshape.set_draw_details(shader, [shapeimg, shapebump, shapeshine], 8.0, 0.2)
-light2 = Light((-5, -5, i - 3))
-myshape.set_light(light2)
+myshape.position(0.0, 0.0, 5)
+myshape.set_draw_details(shader, [shapeimg, shapebump, shapeshine], 8.0, 0.0)
+#light2 = Light((-5, -5, i - 3))
+#myshape.set_light(light2)
 
 cAngle = [0.0, 0.0, 0.0]
 dx = 0.05
@@ -55,8 +55,8 @@ mystring = String(font=arialFont, string="Now the Raspberry Pi really does rock"
 mystring.translate(0.0, 0.0, 1)
 mystring.set_shader(flatsh)
 
-# Fetch key presses. This line has to be commented out to see the FPS printout
-#mykeys = Keyboard()
+# Fetch key presses.
+mykeys = Keyboard()
 
 # Display scene and rotate shape
 while DISPLAY.loop_running():
@@ -66,8 +66,8 @@ while DISPLAY.loop_running():
   #camera.rotateY(cAngle[1])
 
   myshape.draw()
-  myshape.rotateIncY(1.247)
-  myshape.rotateIncZ(0.613)
+  myshape.rotateIncY(0.247)
+  myshape.rotateIncZ(0.1613)
   myshape.translateX(dx)
   if myshape.x() > 5: dx = -0.05
   elif myshape.x() < -5: dx = 0.05
@@ -84,11 +84,9 @@ while DISPLAY.loop_running():
     next_time = time.time()+10.0
   tick+=1
 
-  """ # this block needs to be commented out to be able to see the FPS readout (actually the creation of the Keyboard instance above is what does it)
   if mykeys.read() == 27:
     mykeys.close()
     DISPLAY.destroy()
     break
-  """
 
 quit()

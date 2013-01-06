@@ -1,10 +1,8 @@
 precision mediump float;
 
-varying vec3 normout;
 varying vec2 texcoordout;
 varying vec2 bumpcoordout;
 varying vec2 shinecoordout;
-varying mat4 normrot;
 varying vec3 lightVector;
 varying float dist;
 
@@ -26,17 +24,17 @@ void main(void) {
   // ------ look up normal map value as a vector where each colour goes from -100% to +100% over its range so
   // ------ 0xFF7F7F is pointing right and 0X007F7F is pointing left. This vector is then rotated relative to the rotation
   // ------ of the normal at that vertex.
-  vec3 bump = vec3(normrot * vec4(normalize(texture2D(tex1, bumpcoordout)).rgb * 2.0 - vec3(1.0, 1.0, 1.0), 0.0));
+  vec3 bump = normalize(texture2D(tex1, bumpcoordout).rgb * 2.0 - 1.0);
   float bfact = 1.0 - smoothstep(50.0, 150.0, dist); // ------ attenuate smoothly between 20 and 75 units
 
   float ffact = smoothstep(unif[5][0]/3.0, unif[5][0], dist); // ------ smoothly increase fog between 1/3 and full fogdist
 
-  float intensity = max(dot(lightVector, normout + bump * bfact), 0.1); // ------ adjustment of colour according to combined normal
+  float intensity = clamp(dot(lightVector, normalize(vec3(0.0, 0.0, 1.0) + bump * bfact)), 0.1, 1.0); // ------ adjustment of colour according to combined normal
   if (texc.a < unib[0][2]) discard; // ------ to allow rendering behind the transparent parts of this object
   texc.rgb = texc.rgb * intensity;
 
   vec4 shinec = vec4(0.0, 0.0, 0.0, 0.0);
-  vec2 bumpshinecoord = shinecoordout + 0.1*bfact*vec2(bump);
+  vec2 bumpshinecoord = shinecoordout + 0.2 * bfact * vec2(bump);
   shinec = texture2D(tex2, bumpshinecoord); // ------ get the reflection for this pixel
   float shinefact = clamp(unib[0][1]*length(shinec)/length(texc), 0.0, unib[0][1]);// ------ reduce the reflection where the ground texture is lighter than it
 

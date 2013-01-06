@@ -116,7 +116,7 @@ class Shape(Loadable):
 
     opengles.glUniformMatrix4fv(shader.unif_modelviewmatrix, 2, c_int(0),
                                 ctypes.byref(self.M))
-    # Otherwise use existing version.
+
     opengles.glUniform3fv(shader.unif_unif, 11, ctypes.byref(self.unif))
     for b in self.buf:
       # Shape.draw has to be passed either parameter == None or values to pass
