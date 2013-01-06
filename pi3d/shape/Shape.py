@@ -159,6 +159,7 @@ class Shape(Loadable):
     # 1/3 fogdist to fogdist.
     self.unif[12:15] = fogshade[0:3]
     self.unif[15] = fogdist
+    self.unif[16] = fogshade[3]
     
   def set_light(self, light, num = 0):
     #TODO the unif array only has room for one light at the moment. Need MAXLIGHTS global variable

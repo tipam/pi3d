@@ -41,8 +41,8 @@ bumpimg = Texture("textures/grasstile_n.jpg")
 reflimg = Texture("textures/stars.jpg")
 rockimg = Texture("textures/rock1.jpg")
 
-FOG = ((0.3, 0.3, 0.4, 1.0), 650.0)
-TFOG = ((0.1, 0.14, 0.12, 0.3), 250.0)
+FOG = ((0.3, 0.3, 0.4, 0.5), 650.0)
+TFOG = ((0.1, 0.14, 0.12, 0.3), 150.0)
 
 #myecube = EnvironmentCube(900.0,"HALFCROSS")
 ectex=loadECfiles("textures/ecubes","sbox")

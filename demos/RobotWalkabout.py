@@ -48,7 +48,7 @@ mymap = ElevationMap(mapfile="textures/mars_height.png",
                      width=mapwidth, depth=mapdepth, height=mapheight,
                      divx=128, divy=128)
 mymap.set_draw_details(shader,[mountimg1, bumpimg],128.0, 0.0)
-mymap.set_fog((0.3,0.15,0.1,1.0), 300.0)
+mymap.set_fog((0.3,0.15,0.1,0.1), 300.0)
 
 
 #create robot
