@@ -16,6 +16,7 @@ from pi3d.util.String import String
 from pi3d.util.Ttffont import Ttffont
 from pi3d.shape.MergeShape import MergeShape
 from pi3d.shape.Plane import Plane
+from pi3d.util.Screenshot import screenshot
 
 print "====================================================="
 print "press escape to escape"
@@ -23,7 +24,7 @@ print "move this terminal window to top of screen to see FPS"
 print "====================================================="
 
 # Setup display and initialise pi3d
-DISPLAY = Display.create(x=20, y=20)
+DISPLAY = Display.create(x=200, y=150)
 DISPLAY.set_background(0.4, 0.6, 0.8, 0.5)      # r,g,b,alpha
 
 #setup textures, light position and initial model position
@@ -77,7 +78,7 @@ dx = 0.02
 
 # Fetch key presses.
 mykeys = Keyboard()
-
+fr = 0
 # Display scene and rotate shape
 while DISPLAY.loop_running():
 
@@ -102,6 +103,9 @@ while DISPLAY.loop_running():
     tick = 0
 
   tick += 1
+
+  #screenshot("/media/E856-DA25/New/fr%03d.jpg" % fr)
+  #fr += 1
 
   if mykeys.read() == 27:
     mykeys.close()

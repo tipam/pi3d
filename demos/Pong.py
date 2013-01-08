@@ -31,8 +31,8 @@ from pi3d.shape.Plane import Plane
 from pi3d.shape.Sphere import Sphere
 
 from pi3d.util.String import String
-from pi3d.util.Matrix import Matrix
 from pi3d.util.Screenshot import screenshot
+from pi3d.util.Defocus import Defocus
 
 #helpful messages
 print "############################################################"
@@ -41,13 +41,14 @@ print "############################################################"
 print
 
 # Setup display and initialise pi3d
-DISPLAY = Display.create(x=10, y=10)
+DISPLAY = Display.create(x=200, y=200)
 DISPLAY.set_background(0.4,0.8,0.8,1) # r,g,b,alpha
 camera = Camera((0, 0, 0), (0, 0, -1), (1, 1000, DISPLAY.width/1000.0, DISPLAY.height/1000.0))
-light = Light((10, 10, -20))
+light = Light((10, -10, 20))
 # load shader
 shader = Shader("shaders/uv_reflect")
 flatsh = Shader("shaders/uv_flat")
+defocus = Defocus()
 #========================================
 
 
@@ -55,7 +56,7 @@ flatsh = Shader("shaders/uv_flat")
 # (this can be changed later to 'False' with 'rockimg2.blend = False')
 groundimg = Texture("textures/stripwood.jpg")
 monstimg = Texture("textures/pong3.png")
-ballimg = Texture("textures/cloud6.png", True)
+ballimg = Texture("textures/pong2.jpg")
 # environment cube
 ectex = Texture("textures/ecubes/skybox_stormydays.jpg")
 myecube = EnvironmentCube(camera, light, 900.0,"CROSS")
@@ -112,7 +113,7 @@ max_speed = 0.2
 
 # Fetch key presses
 mykeys = Keyboard()
-mymouse = Mouse()
+mymouse = Mouse(restrict=False)
 mymouse.start()
 
 omx, omy = mymouse.position()
@@ -133,7 +134,7 @@ while True:
   if not (dy == 0.0 and dx == 0.0):
     camera.reset()
     camera.translate((xm, 2 + ym, -maphalf - 2.5))
-
+  
   myecube.draw()
   mymap.draw()
 
@@ -161,7 +162,6 @@ while True:
     # move it away a bit to stop it getting trapped inside if it has tunelled
     jDist = clash[4] + 0.2
     sx, sy, sz = sx + jDist*nx, sy + jDist*ny, sz + jDist*nz
-    print jDist
     # use R = I - 2(N.I)N
     rfact = 2.05*(nx*dsx + ny*dsy + nz*dsz) #small extra boost by using value > 2 to top up energy in defiance of 1st LOT
     dsx, dsy, dsz = dsx - rfact*nx, dsy - rfact*ny, dsz - rfact*nz
@@ -206,8 +206,17 @@ while True:
   ball.rotateIncX(dsz/radius*50)
 
   monster.draw()
+  defocus.start_blur()
   ball.draw()
-
+  defocus.end_blur()
+  defocus.blur(ball, 2, 10, 20)
+  
+  #defocus.end_blur()
+  #defocus.blur(myecube, 50, 100, 1)
+  #defocus.blur(mymap, 5, 20, 12)
+  #defocus.blur(monster, 5, 20, 12)
+  #defocus.blur(ball, 5, 20, 12)
+  
   # write up the score
   score0.draw()
   score1.draw()

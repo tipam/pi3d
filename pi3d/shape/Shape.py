@@ -17,7 +17,7 @@ class Shape(Loadable):
     self.name = name
     light = light or Light.instance()
     # uniform variables all in one array!
-    self.unif = (c_float * 33)(
+    self.unif = (c_float * 48)(
       x, y, z, rx, ry, rz,
       sx, sy, sz, cx, cy, cz,
       0.5, 0.5, 0.5, 5000.0, 0.8, 0.0,
@@ -34,10 +34,14 @@ class Shape(Loadable):
     5  fog distance and alph (only first two values used at moment) 15, 16
     6  camera position  18-20
     7  animation offets x, y, delta 21-23
-    8  light position, direction vector (if capacity for more lights were added
-       these would go on the end of this list) 24-26
-    9  light strength per shade 27-29
-    10 light ambient values 30-32
+    8  light0 position, direction vector 24-26
+    9  light0 strength per shade 27-29
+    10 light0 ambient values 30-32
+    11 light1 position, direction vector 33-35
+    12 light1 strength per shade 36-38
+    13 light1 ambient values 39-41
+    14 defocus dist, amount 42,43
+    15 defocus frame width, height 45,46
     """
 
     self.tr1 = array([[1.0, 0.0, 0.0, 0.0],
@@ -117,7 +121,7 @@ class Shape(Loadable):
     opengles.glUniformMatrix4fv(shader.unif_modelviewmatrix, 2, c_int(0),
                                 ctypes.byref(self.M))
 
-    opengles.glUniform3fv(shader.unif_unif, 11, ctypes.byref(self.unif))
+    opengles.glUniform3fv(shader.unif_unif, 16, ctypes.byref(self.unif))
     for b in self.buf:
       # Shape.draw has to be passed either parameter == None or values to pass
       # on.

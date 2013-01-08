@@ -47,7 +47,6 @@ class DisplayOpenGL(object):
     
     #Setup default hints
     opengles.glEnable(GL_CULL_FACE)
-    #opengles.glShadeModel(GL_FLAT)
     opengles.glEnable(GL_NORMALIZE)
     opengles.glEnable(GL_DEPTH_TEST)
     opengles.glCullFace(GL_FRONT)

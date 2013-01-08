@@ -47,22 +47,10 @@ class Shader(object):
 
     self.attr_vertex = opengles.glGetAttribLocation(self.program, "vertex")
     self.attr_normal = opengles.glGetAttribLocation(self.program, "normal")
-    #self.unif_lightpos = opengles.glGetUniformLocation(self.program, "lightpos")
+
     self.unif_modelviewmatrix = opengles.glGetUniformLocation(self.program, "modelviewmatrix")
     self.unif_cameraviewmatrix = opengles.glGetUniformLocation(self.program, "cameraviewmatrix")
-    #self.unif_ntiles = opengles.glGetUniformLocation(self.program, "ntiles")
-    #self.unif_shiny = opengles.glGetUniformLocation(self.program, "shiny")
-    #self.unif_fogshade = opengles.glGetUniformLocation(self.program, "fogshade")
-    #self.unif_fogdist = opengles.glGetUniformLocation(self.program, "fogdist")
-    #self.unif_eye = opengles.glGetUniformLocation(self.program, "eye")
-    #self.unif_rtn = opengles.glGetUniformLocation(self.program, "rtn")
-    #self.unif_blend = opengles.glGetUniformLocation(self.program, "blend")
-    #self.unif_material = opengles.glGetUniformLocation(self.program, "material")
-    # attemp to offload matrix work to shader
-    #self.unif_locn = opengles.glGetUniformLocation(self.program, "locn")
-    #self.unif_rotn = opengles.glGetUniformLocation(self.program, "rotn")
-    #self.unif_scle = opengles.glGetUniformLocation(self.program, "scle")
-    #self.unif_ofst = opengles.glGetUniformLocation(self.program, "ofst")
+
     self.unif_unif = opengles.glGetUniformLocation(self.program, "unif")
     self.unif_unib = opengles.glGetUniformLocation(self.program, "unib")
 
@@ -71,7 +59,11 @@ class Shader(object):
     self.unif_tex = []
     self.texture = []
     for t in range(3):
-      self.unif_tex.append(opengles.glGetUniformLocation(self.program, "tex"+str(t))) #tex0 texture tex1 bump tex2 reflection
+      self.unif_tex.append(opengles.glGetUniformLocation(self.program, "tex"+str(t)))
+      """
+      for uv shaders tex0=texture tex1=normal map tex2=reflection
+      for material shaders tex0=normal map tex1=reflection
+      """
       opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, c_float(GL_LINEAR_MIPMAP_NEAREST))
       opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, c_float(GL_LINEAR_MIPMAP_NEAREST))
 
