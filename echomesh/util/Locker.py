@@ -1,8 +1,7 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-# From echomesh.
 class Locker(object):
-  def __init__(self, lock=None):
+  def __init__(self, lock):
     self.lock = lock
 
   def __enter__(self):

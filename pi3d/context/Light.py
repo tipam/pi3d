@@ -1,4 +1,4 @@
-from pi3d.util.DefaultInstance import DefaultInstance
+from echomesh.util.DefaultInstance import DefaultInstance
 
 class Light(DefaultInstance):
   def __init__(self,

@@ -1,8 +1,7 @@
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import os
 import os.path
-
-# This is code duplicated from
-# https://github.com/rec/echomesh/blob/master/python/util/MakeDirs.py
 
 def _makedirs(path):
   try:
