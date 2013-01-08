@@ -3,8 +3,9 @@ import time
 import threading
 import traceback
 
+from echomesh.util.Locker import Locker
+
 from pi3d import *
-from pi3d.util.Locker import Locker
 from pi3d.util import Utility
 from pi3d.util.DisplayOpenGL import DisplayOpenGL
 
