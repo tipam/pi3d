@@ -44,18 +44,18 @@ for i in range(num[0]):
     myshape.add(asphere, num[0]*0.9 - 1.8*i, num[1]*0.9 -1.8*j, 0.0)
   
 myshape.position(0.0, 0.0, 5.0)
-myshape.set_draw_details(shader, [shapeimg, shapebump, shapeshine], 8.0, 0.0)
+myshape.set_draw_details(shader, [shapeimg, shapebump, shapeshine], 8.0, 0.1)
 
-mysprite = Sprite(w=10.0, h=10.0)
-
-cAngle = [0.0, 0.0, 0.0]
-dx = 0.02
+mysprite = Sprite(w=20.0, h=20.0)
+mysprite.position(0.0, 0.0, 15.0)
+mysprite.set_draw_details(flatsh, [shapebump])
 
 tick=0
 next_time = time.time()+2.0
 
-arialFont = Ttffont("fonts/FreeMonoBoldOblique.ttf", "#dd00aa")   #load ttf font and set the font colour to 'raspberry'
-mystring = String(font=arialFont, string="Now the Raspberry Pi really does rock")
+#load ttf font and set the font colour to 'raspberry'
+arialFont = Ttffont("fonts/FreeMonoBoldOblique.ttf", "#dd00aa")
+mystring = String(font=arialFont, string="blurring with distance!")
 mystring.translate(0.0, 0.0, 1)
 mystring.set_shader(flatsh)
 
@@ -66,18 +66,16 @@ mykeys = Keyboard()
 while DISPLAY.loop_running():
   
   defocus.start_blur() #1
+  mysprite.draw()
   myshape.draw()
   defocus.end_blur() #2
-  defocus.blur(myshape, 6, 7, 12) #3
-  #defocus.blur(mysprite, 6, 7, 20)
   
-  myshape.rotateIncY(0.247)
+  defocus.blur(myshape, 4, 9, 5) #3
+  defocus.blur(mysprite, 4, 9, 5)
+  
+  myshape.rotateIncY(1.247)
   myshape.rotateIncX(0.1613)
   
-  mysprite.translateZ(dx)
-  if mysprite.z() > 15: dx = -0.02
-  elif mysprite.z() < 1.0: dx = 0.02
-
   mystring.draw()
   mystring.rotateIncZ(0.05)
 
@@ -85,7 +83,6 @@ while DISPLAY.loop_running():
     print "FPS:",tick/2.0
     tick=0
     next_time = time.time()+2.0
-    #screenshot("midpic.jpg")
   tick+=1
 
   if mykeys.read() == 27:
