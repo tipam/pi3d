@@ -122,7 +122,7 @@ CAMERA = Camera.instance()
 while DISPLAY.loop_running():
   CAMERA.reset()
   CAMERA.rotate(tilt, rot, 0)
-  CAMERA.translate((xm, ym, zm))
+  CAMERA.position((xm, ym, zm))
 
   myecube.draw()
   mymap.draw()

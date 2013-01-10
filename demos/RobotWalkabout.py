@@ -106,7 +106,7 @@ while 1:
   yoff = abs(1.25*sf*math.sin(math.radians(tilt))) + 3.25
   zoff = -sf*math.cos(math.radians(rot))
   CAMERA.rotate(tilt, rot, 0)
-  CAMERA.translate((xm + xoff, ym + yoff, zm + zoff))   #zoom CAMERA out so we can see our robot
+  CAMERA.position((xm + xoff, ym + yoff, zm + zoff))   #zoom CAMERA out so we can see our robot
 
   #draw robot
   robot.position(xm, ym, zm)

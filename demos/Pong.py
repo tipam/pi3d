@@ -91,7 +91,7 @@ zm = 0.0
 ym = 0.0
 lastX0 = 0.0
 lastZ0 = 0.0
-camera.translate((xm, 2 + ym, -maphalf - 2.5))
+camera.position((xm, 2 + ym, -maphalf - 2.5))
 
 arialFont = Font("AR_CENA","#dd00aa")   #load AR_CENA font and set the font colour to 'raspberry'
 score = [0,0]
@@ -133,10 +133,10 @@ while True:
   if ((ym >= (0) and dy < 0) or (ym <= mapheight and dy > 0)):  ym += dy
   if not (dy == 0.0 and dx == 0.0):
     camera.reset()
-    camera.translate((xm, 2 + ym, -maphalf - 2.5))
+    camera.position((xm, 2 + ym, -maphalf - 2.5))
   
-  myecube.draw()
-  mymap.draw()
+  #myecube.draw()
+  #mymap.draw()
 
   #monster movement
   drx = sx - rx
@@ -205,17 +205,17 @@ while True:
 
   ball.rotateIncX(dsz/radius*50)
 
-  monster.draw()
   defocus.start_blur()
   ball.draw()
+  mymap.draw()
+  myecube.draw()
   defocus.end_blur()
-  defocus.blur(ball, 2, 10, 20)
+
+  defocus.blur(ball, 4, 15, 2)
+  defocus.blur(mymap, 4, 15, 2)
+  defocus.blur(myecube, 800, 2000, 1) 
   
-  #defocus.end_blur()
-  #defocus.blur(myecube, 50, 100, 1)
-  #defocus.blur(mymap, 5, 20, 12)
-  #defocus.blur(monster, 5, 20, 12)
-  #defocus.blur(ball, 5, 20, 12)
+  monster.draw()
   
   # write up the score
   score0.draw()

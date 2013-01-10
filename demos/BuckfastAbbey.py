@@ -71,7 +71,7 @@ while 1:
   CAMERA.reset()
   CAMERA.rotate(tilt, 0, 0)
   CAMERA.rotate(0, rot, 0)
-  CAMERA.translate((xm, ym, zm))
+  CAMERA.position((xm, ym, zm))
 
   myecube.draw()
   mymodel.draw()

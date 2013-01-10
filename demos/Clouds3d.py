@@ -61,7 +61,7 @@ for b in range (0, cloudno):
   z = z + zd
 
 CAMERA = Camera.instance()
-CAMERA.translate((0.0, 0.0, 50.0))
+CAMERA.position((0.0, 0.0, 50.0))
 
 # Fetch key presses
 mykeys = Keyboard()

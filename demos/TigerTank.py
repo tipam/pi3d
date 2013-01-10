@@ -171,10 +171,10 @@ def loop():
     zoff = -sf * math.cos(math.radians(mouserot))
 
     #xoff, yoff, zoff = 0,0,0
-    #CAMERA.translate((xm, ym-10*sf-5.0, zm-40*sf))
+    #CAMERA.position((xm, ym-10*sf-5.0, zm-40*sf))
     #zoom CAMERA out so we can see our robot
     CAMERA.rotate(tilt, mouserot, 0)           #Tank still affected by scene tilt
-    CAMERA.translate((xm + xoff, ym + yoff + 5, zm + zoff))
+    CAMERA.position((xm + xoff, ym + yoff + 5, zm + zoff))
     oxm, ozm = xm, zm
     #zoom CAMERA out so we can see our robot
 

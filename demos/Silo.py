@@ -103,7 +103,7 @@ while 1:
   
   CAMERA.reset()
   CAMERA.rotate(tilt, rot, 0)
-  CAMERA.translate((man.x(), man.y(), man.z() - aveyeleveladjust))
+  CAMERA.position((man.x(), man.y(), man.z() - aveyeleveladjust))
   
   myecube.position(man.x(), man.y(), man.z() - aveyeleveladjust)
   myecube.draw()

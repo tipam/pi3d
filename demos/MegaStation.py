@@ -118,7 +118,7 @@ while DISPLAY.loop_running():
   else: sf = 0.5
   xoff, yoff, zoff = sf*math.sin(mouserot*rads), abs(1.25*sf*math.sin(tilt*rads)) + 3.0, -sf*math.cos(mouserot*rads)
   CAMERA.rotate(tilt, mouserot, 0)
-  CAMERA.translate((xm + xoff, ym + yoff +5, zm + zoff))   #zoom camera out so we can see our robot
+  CAMERA.position((xm + xoff, ym + yoff +5, zm + zoff))   #zoom camera out so we can see our robot
 
   mymap.draw()  #Draw the landscape
 
