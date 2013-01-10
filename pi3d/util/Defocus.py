@@ -7,18 +7,18 @@ from pi3d.Texture import Texture
 
 class Defocus(Texture):
   def __init__(self):
-    super(Defocus, self).__init__("defocus")
     """ calls Texture.__init__ but doesn't need to set file name as
     texture generated from the framebuffer
     """
+    super(Defocus, self).__init__("defocus")
     from pi3d.Display import DISPLAY
     self.ix, self.iy = DISPLAY.width, DISPLAY.height
     self.im = Image.new("RGBA",(self.ix, self.iy)) 
     self.image = self.im.convert("RGBA").tostring('raw', "RGBA")
     self.alpha = True
+    self.blend = False
 
     self._tex = ctypes.c_int()
-    self.blend = False
     self.framebuffer = (ctypes.c_int * 1024)()
     opengles.glGenFramebuffers(1, self.framebuffer)
     self.depthbuffer = (ctypes.c_int * 1024)() # is this really enough?
