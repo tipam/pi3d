@@ -19,9 +19,9 @@ class Defocus(Texture):
     self.blend = False
 
     self._tex = ctypes.c_int()
-    self.framebuffer = (ctypes.c_int * 1024)()
+    self.framebuffer = (ctypes.c_int * 1)()
     opengles.glGenFramebuffers(1, self.framebuffer)
-    self.depthbuffer = (ctypes.c_int * 1024)() # is this really enough?
+    self.depthbuffer = (ctypes.c_int * 1)()
     opengles.glGenRenderbuffers(1, self.depthbuffer)
 
     # load blur shader

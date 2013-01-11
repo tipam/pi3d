@@ -9,7 +9,7 @@ LOGGER = Log.logger(__name__)
 class Buffer(object):
   """ Holds the vertex, normals, incices and tex_coords for each part of
   a Shape that needs to be rendered with a different material or texture
-  Shepe holds an array of Buffer objects
+  Shape holds an array of Buffer objects
   """
   def __init__(self, shape, pts, texcoords, faces, normals=None, smooth=True):
     """Generate a vertex buffer to hold data and indices. If no normals
