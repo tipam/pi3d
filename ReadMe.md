@@ -11,7 +11,7 @@
 
 --------------------------------------------
 
-**NB** The demos are all in a subdirectory demos, you can run these various ways (which are not quite as obvious as mya think):
+**NB** The demos are all in a subdirectory demos, you can run these various ways (which are not quite as obvious as you may think):
 
 1) From a terminal change dir to the top directory then 
 
