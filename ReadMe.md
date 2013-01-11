@@ -8,16 +8,28 @@
 
 # Description
 **Integration Branch**
+
+--------------------------------------------
+
 **NB** The demos are all in a subdirectory demos, you can run these various ways (which are not quite as obvious as mya think):
+
 1) From a terminal change dir to the top directory then 
-$ python Demo.py Blur
+
+    $ python Demo.py Blur
+
 2) also from terminal top directory
-$ python Demo.py
+
+    $ python Demo.py
+
 then choose from a menu
+
 3) in Geany open the demo file to edit, set the build command (wall symbol) to
-python  ../Demo.py "%e"
+
+    python  ../Demo.py "%e"
+
 run using the cog button
 
+--------------------------------------------
 
 
 There's plenty of 3D code flying around at the moment for the Raspberry Pi, but much of it is rather complicated to understand and most of it can sit under the bonnet!
