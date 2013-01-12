@@ -1,5 +1,7 @@
 from __future__ import absolute_import
-
+"""if in demos subdirectory, to run from geany set build command to
+python ../Demo.py "%e%
+"""
 import math,random,time
 
 from pi3d import *
@@ -65,12 +67,15 @@ mykeys = Keyboard()
 # Display scene and rotate shape
 while DISPLAY.loop_running():
   
-  defocus.start_blur() #1
+  defocus.start_blur()
+  # 1. drawing objects now renders to an offscreen texture
   mysprite.draw()
   myshape.draw()
-  defocus.end_blur() #2
+  defocus.end_blur()
+  # 2. drawing back to screen. the texture can now be used by defocus.blur()
   
-  defocus.blur(myshape, 4, 9, 5) #3
+  # 3. redraw these two objects applying a distance blur effect
+  defocus.blur(myshape, 4, 9, 5) #4 away in focus, >= 9 5xblurring linear between
   defocus.blur(mysprite, 4, 9, 5)
   
   myshape.rotateIncY(1.247)
