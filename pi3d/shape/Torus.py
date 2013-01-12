@@ -5,9 +5,16 @@ from pi3d.util import Utility
 from pi3d.shape.Shape import Shape
 
 class Torus(Shape):
-  def __init__(self, camera, light, radius=2.0, thickness=0.5, ringrots=6, sides=12, name="",
+  """ 3d model inherits from Shape"""
+  def __init__(self, camera=None, light=None, radius=2.0, thickness=0.5, ringrots=6, sides=12, name="",
                x=0.0, y=0.0, z=0.0, rx=0.0, ry=0.0, rz=0.0,
                sx=1.0, sy=1.0, sz=1.0, cx=0.0, cy=0.0, cz=0.0):
+    """uses standard constructor for Shape extra Keyword arguments:
+    radius -- major radius of torus
+    thickness -- minor radius, section through one side of torus
+    ringrots -- sides around minor radius circle
+    sides -- number of sides for Shape.lathe() to use
+    """
     super(Torus,self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                sx, sy, sz, cx, cy, cz)
 
