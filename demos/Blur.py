@@ -40,11 +40,8 @@ shapeshine = Texture("textures/pong3.png")
 #Create shape
 myshape = MergeShape()
 num = (2, 2)
-asphere = Sphere(sides=32)
-for i in range(num[0]):
-  for j in range(num[1]):
-    myshape.add(asphere, num[0]*0.9 - 1.8*i, num[1]*0.9 -1.8*j, 0.0)
-  
+asphere = Sphere(sides=16, slices=16)
+myshape.radialCopy(asphere, step=72)
 myshape.position(0.0, 0.0, 5.0)
 myshape.set_draw_details(shader, [shapeimg, shapebump, shapeshine], 8.0, 0.1)
 

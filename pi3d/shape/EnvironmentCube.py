@@ -9,9 +9,16 @@ CUBE_PARTS = ['front', 'right', 'top', 'bottom', 'left', 'back']
 BOTTOM_INDEX = 3
 
 def loadECfiles(path, fname, suffix='jpg', nobottom=False):
-  # Helper for loading environment cube faces.
+  """Helper for loading environment cube faces.
   #TODO this will scramble all the rest of the cube. It needs to substitute a blank (black) texture instead!
-  # if nobottom set then only load five parts into array
+  Arguments:
+  path -- to the image files relative to the top directory
+  fname -- the stem of the file name without the _top, _bottom, _right etc
+  Keyword arguments:
+  suffix -- string to add after the '_top','_bottom' has been added to the stem
+  nobottom -- if True then only load five parts into array the bottom will be
+            drawn with the previous image i.e. top
+  """
   if nobottom:
     parts = [p for p in CUBE_PARTS if p != 'bottom']
   else:
@@ -21,8 +28,14 @@ def loadECfiles(path, fname, suffix='jpg', nobottom=False):
   return [Texture(f) for f in files]
 
 class EnvironmentCube(Shape):
+  """ 3d model inherits from Shape"""
   def __init__(self, camera=None, light=None, size=500.0, maptype="HALFCROSS", name="", x=0.0, y=0.0, z=0.0,
                rx=0.0, ry=0.0, rz=0.0, cx=0.0, cy=0.0, cz=0.0, nobottom=False):
+    """uses standard constructor for Shape extra Keyword arguments:
+    size -- dimensions of the cube
+    maptype -- HALFCROSS (default) or CROSS any other defaults to CUBE type
+              and will require 6 (or 5 with nobottom) image files to render it
+    """
     super(EnvironmentCube,self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                 1.0, 1.0, 1.0, cx, cy, cz)
 
@@ -94,6 +107,7 @@ class EnvironmentCube(Shape):
       self.buf.append(Buffer(self, self.vertices[20:24], self.tex_coords[20:24], ((3,1,0), (2,1,3)), self.normals[20:24])) #back
 
   def set_draw_details(self, shader, textures, ntiles=0.0, shiny=0.0):
+    """overrides this method in Shape to cope with nobottom option"""
     if not (type(textures) is list):
       textures = [textures]
     elif len(textures) == 5:

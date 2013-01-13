@@ -132,6 +132,7 @@ class Shape(Loadable):
 
     if camera.was_moved:
       self.unif[18:21] = camera.eye[0:3]
+      print self.unif[18]
 
     opengles.glUniformMatrix4fv(shader.unif_modelviewmatrix, 2, c_int(0),
                                 ctypes.byref(self.M))
@@ -186,6 +187,7 @@ class Shape(Loadable):
     shader -- Shader object
     textures -- array of Texture objects
     """
+    self.shader = shader
     for b in self.buf:
       b.set_draw_details(shader, textures, ntiles, shiny)
 
