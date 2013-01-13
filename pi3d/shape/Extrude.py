@@ -9,7 +9,7 @@ class Extrude(Shape):
   NB this shape has an array of three Buffers representing each end face
   and the sides of the prism. Each can be textured seperately for drawing.
   """
-  def __init__(self, camera=None, light=None, path, height=1.0, name="", x=0.0, y=0.0, z=0.0,
+  def __init__(self, camera=None, light=None, path=[], height=1.0, name="", x=0.0, y=0.0, z=0.0,
                rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0,
                cx=0.0, cy=0.0, cz=0.0):
     """uses standard constructor for Shape extra Keyword arguments:

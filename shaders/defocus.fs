@@ -1,6 +1,5 @@
 precision mediump float;
 
-varying vec2 texcoordout;
 varying float dist;
 
 uniform sampler2D tex0;

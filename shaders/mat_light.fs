@@ -6,7 +6,7 @@ varying float dist;
 
 uniform vec3 unib[2];
 //uniform vec4 material ==> unib[1]
-uniform vec3 unif[11];
+uniform vec3 unif[16];
 //uniform vec3 fogshade ==> unif[4]
 //uniform float fogdist ==> unif[5][0]
 //uniform float fogalpha => unif[5][1]
