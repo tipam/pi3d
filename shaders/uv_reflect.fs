@@ -25,6 +25,8 @@ void main(void) {
   // ------ 0xFF7F7F is pointing right and 0X007F7F is pointing left. This vector is then rotated relative to the rotation
   // ------ of the normal at that vertex.
   vec3 bump = normalize(texture2D(tex1, bumpcoordout).rgb * 2.0 - 1.0);
+  bump.y *= -1.0;
+
   float bfact = 1.0 - smoothstep(50.0, 150.0, dist); // ------ attenuate smoothly between 20 and 75 units
 
   float ffact = smoothstep(unif[5][0]/3.0, unif[5][0], dist); // ------ smoothly increase fog between 1/3 and full fogdist
