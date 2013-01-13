@@ -6,8 +6,9 @@ from ctypes import c_int
 from ctypes import c_short
 from ctypes import c_char
 
+from echomesh.util import Log
+
 from pi3d.constants import *
-from pi3d.util import Log
 
 LOGGER = Log.logger(__name__)
 

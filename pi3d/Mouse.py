@@ -3,7 +3,7 @@ import threading
 import traceback
 
 from echomesh.util.Locker import Locker
-from pi3d.util import Log
+from echomesh.util import Log
 
 LOGGER = Log.logger(__name__)
 

@@ -3,6 +3,8 @@
 
 import math, random, time
 
+from echomesh.util import Log
+
 from pi3d import *
 
 from pi3d import Display
@@ -18,7 +20,6 @@ from pi3d.shape import EnvironmentCube
 from pi3d.shape.Model import Model
 
 from pi3d.util.Screenshot import screenshot
-from pi3d.util import Log
 from pi3d.util.TkWin import TkWin
 from pi3d.util.Utility import lodDraw
 

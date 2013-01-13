@@ -1,7 +1,8 @@
 import ctypes, itertools
 
+from echomesh.util import Log
+
 from pi3d import *
-from pi3d.util import Log
 from pi3d.util import Utility
 
 LOGGER = Log.logger(__name__)
@@ -14,13 +15,13 @@ class Buffer(object):
   def __init__(self, shape, pts, texcoords, faces, normals=None, smooth=True):
     """Generate a vertex buffer to hold data and indices. If no normals
     are provided then these are generated
-    
+
     Arguments:
     shape -- Shape object that this Buffer is a child of
     pts -- array of vertices tuples i.e. [(x0,y0,z0), (x1,y1,z1),...]
-    texcoords -- array of texture (uv) coordinates tuples 
+    texcoords -- array of texture (uv) coordinates tuples
             i.e. [(u0,v0), (u1,v1),...]
-    faces -- array of indices (of pts array) defining triangles 
+    faces -- array of indices (of pts array) defining triangles
             i.e. [(a0,b0,c0), (a1,b1,c1),...]
 
     Keyword arguments:
@@ -98,11 +99,11 @@ class Buffer(object):
 
   def set_draw_details(self, shader, textures, ntiles = 0.0, shiny = 0.0):
     """Can be used to set information needed for drawing as a one off
-    
+
     Arguments:
     shader -- Shader object
     textures -- array of Texture objects
-    
+
     Keyword arguments:
     ntiles -- multiple for tiling normal map which can be less than or greater
             than 1.0. 0.0 disables the normal mapping, float
@@ -119,7 +120,7 @@ class Buffer(object):
 
   def draw(self, shader=None, textures=None, ntl=None, shny=None, fullset=True):
     """Draw this Buffer, called by the parent Shape.draw()
-    
+
     Keyword arguments:
     shader -- Shader object
     textures -- array of Texture objects

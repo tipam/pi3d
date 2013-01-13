@@ -5,6 +5,8 @@
 
 import math, random, time, traceback
 
+from echomesh.util import Log
+
 from pi3d import *
 
 from pi3d import Display
@@ -21,7 +23,6 @@ from pi3d.shape import EnvironmentCube
 from pi3d.shape.Model import Model
 
 from pi3d.util.Screenshot import screenshot
-from pi3d.util import Log
 from pi3d.util.TkWin import TkWin
 
 LOGGER = Log.logger(__name__)
