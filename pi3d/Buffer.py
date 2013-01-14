@@ -31,7 +31,7 @@ class Buffer(object):
             meeting at this vertex, otherwise just use first (for speed)
     """
     # Uniform variables all in one array!
-    self.unib = (c_float * 6)(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+    self.unib = (c_float * 6)(0.0, 0.0, 0.0, 0.5, 0.5, 0.5)
     """ in shader array of vec3 uniform variables:
     0  ntile, shiny, blend 0-2.
     1  material 3-5 if any of material is non zero then the UV texture will not

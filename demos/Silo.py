@@ -4,8 +4,6 @@ import demo
 demo.demo(__name__)
 
 from pi3d import Display
-from pi3d.Keyboard import Keyboard
-from pi3d.Mouse import Mouse
 from pi3d.Texture import Texture
 
 from pi3d.Camera import Camera
@@ -17,6 +15,8 @@ from pi3d.shape.EnvironmentCube import loadECfiles
 from pi3d.shape.Building import Building, corridor, SolidObject, Size, Position
 
 from pi3d.util.Screenshot import screenshot
+
+from pi3d.events.events import InputEvents, nameOf, codeOf
 
 # Setup display and initialise pi3d
 DISPLAY = Display.create(x=150, y=150, background=(0.4, 0.8, 0.8, 1))
@@ -91,17 +91,14 @@ aveyeleveladjust = aveyelevel - avhgt/2
 
 man = SolidObject("man", Size(1, avhgt, 1), Position(0, (mymap.calcHeight(5, 5) + avhgt/2), 0), 1)
 
-# Fetch key presses
-mykeys = Keyboard()
-mymouse = Mouse(restrict=False)
-mymouse.start()
+inputs = InputEvents()
 
-omx, omy = mymouse.position()
+inputs.get_mouse_movement()
 
 frame = 400
 record = False
 CAMERA = Camera.instance()
-while 1:
+while not inputs.key_state("KEY_ESC"):
   DISPLAY.clear()
 
   CAMERA.reset()
@@ -116,72 +113,63 @@ while 1:
 
   building.drawAll()
 
-  mx, my = mymouse.position()
+  inputs.do_input_events()
+  mx, my, mv, mh, md = inputs.get_mouse_movement()
 
   #if mx>DISPLAY.left and mx<DISPLAY.right and my>DISPLAY.top and my<DISPLAY.bottom:
-  rot -= (mx-omx)*0.2
-  tilt += (my-omy)*0.2
-  omx=mx
-  omy=my
-  """
-  if mymouse.button1:
-    xm = man.x()+math.sin(math.radians(rot))
-    zm = man.z()-math.cos(math.radians(rot))
-    ym = (mymap.calcHeight(-xm,-zm)+avhgt)
+  rot -= (mx)*0.2
+  tilt -= (my)*0.2
+
+  if inputs.key_state("BTN_LEFT"):
+    xm = man.x()-math.sin(math.radians(rot))
+    zm = man.z()+math.cos(math.radians(rot))
+    ym = (mymap.calcHeight(xm,zm)+avhgt)
     NewPos = Position(xm, ym, zm)
     collisions = man.CollisionList(NewPos)
     #print map(lambda(x):x.name, collisions)
     if not collisions:
       man.move(NewPos)
-  """
-  #Press ESCAPE to terminate
-  k = mykeys.read()
-  if k >-1:
-    if k==119:  #key W
-      xm = man.x() - math.sin(math.radians(rot))
-      zm = man.z() + math.cos(math.radians(rot))
-      ym = (mymap.calcHeight(xm, zm) + avhgt)
-      NewPos = Position(xm, ym, zm)
-      collisions = man.CollisionList(NewPos)
-      #print map(lambda(x):x.name, collisions)
-      if not collisions:
-        man.move(NewPos)
-    elif k==115: #key S
-      xm = man.x() + math.sin(math.radians(rot))
-      zm = man.z() - math.cos(math.radians(rot))
-      ym = (mymap.calcHeight(xm, zm) + avhgt)
-      NewPos = Position(xm, ym, zm)
-      collisions = man.CollisionList(NewPos)
-      #print map(lambda(x):x.name, collisions)
-      if not collisions:
-        man.move(NewPos)
-    elif k==39:  #key '
-      tilt -= 2.0
-    elif k==47:  #key /
-      tilt += 2.0
-    elif k==97:  #key A
-      rot -= 2
-    elif k==100: #key D
-      rot += 2
-    elif k==112: #key P
-      record = not(record)
-      #screenshot("silo"+str(scshots)+".jpg")
-      #scshots += 1
-    elif k==10:  #key RETURN
-      mc = 0
-    elif k==27:  #Escape key
-      break
-    else:
-      print k
 
-  if record:
-    screenshot("/media/E856-DA25/New/fr%03d.jpg" % frame)
-    frame += 1
+  if inputs.key_state("KEY_W"):  #key W
+    xm = man.x() - math.sin(math.radians(rot))
+    zm = man.z() + math.cos(math.radians(rot))
+    ym = (mymap.calcHeight(xm, zm) + avhgt)
+    NewPos = Position(xm, ym, zm)
+    collisions = man.CollisionList(NewPos)
+    #print map(lambda(x):x.name, collisions)
+    if not collisions:
+      man.move(NewPos)
+  if inputs.key_state("KEY_S"): #key S
+    xm = man.x() + math.sin(math.radians(rot))
+    zm = man.z() - math.cos(math.radians(rot))
+    ym = (mymap.calcHeight(xm, zm) + avhgt)
+    NewPos = Position(xm, ym, zm)
+    collisions = man.CollisionList(NewPos)
+    #print map(lambda(x):x.name, collisions)
+    if not collisions:
+      man.move(NewPos)
+  if inputs.key_state("KEY_APOSTROPHE"):  #key '
+    tilt -= 2.0
+  if inputs.key_state("KEY_SLASH"):  #key /
+    tilt += 2.0
+  if inputs.key_state("KEY_A"):  #key A
+    rot += 2
+  if inputs.key_state("KEY_D"): #key D
+    rot -= 2
+  if inputs.key_state("KEY_P"): #key P
+    #record = not(record)
+    while inputs.key_state("KEY_P"):
+    	inputs.do_input_events()		# wait for key to go up
+    screenshot("silo"+str(scshots)+".jpg")
+    scshots += 1
+  if inputs.key_state("KEY_ENTER"):  #key RETURN
+    mc = 0
+
+  #if record:
+  #  screenshot("/media/E856-DA25/New/fr%03d.jpg" % frame)
+  #  frame += 1
 
   DISPLAY.swapBuffers()
 
 
-mykeys.close()
-mymouse.stop()
 DISPLAY.destroy()
-
