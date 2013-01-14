@@ -168,6 +168,8 @@ class Display(object):
       self.tkwin.destroy()
     except:
       pass
+    global DISPLAY
+    DISPLAY = None
 
   def swapBuffers(self):
     self.opengl.swapBuffers()
