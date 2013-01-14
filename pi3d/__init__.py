@@ -25,9 +25,6 @@ def c_floats(x):
 def c_shorts(x):
   return (c_short * len(x))(*x)
 
-def call_float(f, *args):
-  return f(*(c_float(a) for a in args))
-
 def _load_library(name):
   """Try to load a shared library, report an error on failure."""
   try:

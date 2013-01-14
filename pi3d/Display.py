@@ -1,3 +1,5 @@
+from ctypes import c_float
+
 import math
 import time
 import threading
@@ -179,7 +181,7 @@ class Display(object):
     opengles.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
   def set_background(self, r, g, b, alpha):
-    call_float(opengles.glClearColor, r, g, b, alpha)
+    opengles.glClearColor(c_float(r), c_float(g), c_float(b), c_float(alpha))
     opengles.glColorMask(1, 1, 1, 1 if alpha < 1.0 else 0)
     #switches off alpha blending with desktop (is there a bug in the driver?)
 
@@ -253,10 +255,12 @@ def create(is_3d=True, x=None, y=None, w=0, h=0, near=None, far=None,
   if is_3d:
     hht = near * math.tan(math.radians(aspect / 2.0))
     hwd = hht * w / h
-    call_float(opengles.glFrustumf, -hwd, hwd, -hht, hht, near, far)
+    opengles.glFrustumf(c_float(-hwd), c_float(hwd), c_float(-hht), c_float(hht),
+                        c_float(near), c_float(far))
     opengles.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
   else:
-    call_float(opengles.glOrthof, 0, w, 0, h, near, far)
+    opengles.glOrthof(c_float(0), c_float(w), c_float(0), c_float(h),
+                      c_float(near), c_float(far))
 
   opengles.glMatrixMode(GL_MODELVIEW)
   Utility.load_identity()
