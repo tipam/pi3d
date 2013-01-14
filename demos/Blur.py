@@ -1,4 +1,5 @@
-from __future__ import absolute_import
+#!/usr/bin/python
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import math, random, time
 
@@ -82,9 +83,9 @@ while DISPLAY.loop_running():
   mystring.rotateIncZ(0.05)
 
   if time.time() > next_time:
-    print "FPS:",tick/2.0
+    print("FPS:", tick / 2.0)
     tick=0
-    next_time = time.time()+2.0
+    next_time = time.time() + 2.0
   tick+=1
 
   if mykeys.read() == 27:

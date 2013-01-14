@@ -1,3 +1,6 @@
+#!/usr/bin/python
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 # Bouncing demonstrates pi3d sprites over the desktop.
 # It uses the orthographic view scaled to the size of the window;
 # this means that sprites can be drawn at pixel resolution

@@ -1,4 +1,5 @@
-from __future__ import absolute_import
+#!/usr/bin/python
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import math,random
 
@@ -28,14 +29,14 @@ Light((5, 10, 20))
 shader = Shader("shaders/uv_light")
 flatsh = Shader("shaders/uv_flat")
 
-print "=============================================================="
-print "Instructions:"
-print ""
-print "Keys-             W - Forward,"
-print "        A - Left   S - Back     D - right"
-print ""
-print "Move mouse to pan view.  Click mouse to exit or press ESCAPE"
-print "=============================================================="
+print("==============================================================")
+print("Instructions:")
+print("")
+print("Keys-             W - Forward,")
+print("        A - Left   S - Back     D - right")
+print("")
+print("Move mouse to pan view.  Click mouse to exit or press ESCAPE")
+print("==============================================================")
 
 ectex = loadECfiles("textures/ecubes","sbox")
 myecube = EnvironmentCube(size=900.0, maptype="FACES",
@@ -97,7 +98,7 @@ while 1:
       zm -= math.cos(math.radians(rot))
     elif k == 39:   #key '
       tilt -= 2.0
-      print tilt
+      print(tilt)
     elif k == 47:   #key /
       tilt += 2.0
     elif k == 97:   #key A
@@ -113,7 +114,7 @@ while 1:
       DISPLAY.destroy()
       break
     else:
-      print k
+      print(k)
 
   DISPLAY.swapBuffers()
 quit()

@@ -1,3 +1,6 @@
+#!/usr/bin/python
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 # Maze with water example using pi3d module
 
 import math, random
@@ -25,19 +28,19 @@ from pi3d.util.Screenshot import screenshot
 rads = 0.017453292512 # degrees to radians
 
 #helpful messages
-print "############################################################"
-print "Esc to quit, W to go forward, Mouse to steer, Space to jump."
+print("############################################################")
+print("Esc to quit, W to go forward, Mouse to steer, Space to jump.")
 
-print "N.B. W now works as a TOGGLE one press to go one to stop."
+print("N.B. W now works as a TOGGLE one press to go one to stop.")
 
-print "At the edge you will turn into a ghost and be able to fly "
-print "and pass through rocks! There are limited numbers of jumps."
-print "Good turnings are often greener and tend to be near"
-print "(but in the opposite direction to) big holes"
-print "############################################################"
-print "If you get touched by a monster you will return to the start!"
-print "############################################################"
-print
+print("At the edge you will turn into a ghost and be able to fly ")
+print("and pass through rocks! There are limited numbers of jumps.")
+print("Good turnings are often greener and tend to be near")
+print("(but in the opposite direction to) big holes")
+print("############################################################")
+print("If you get touched by a monster you will return to the start!")
+print("############################################################")
+print()
 
 # Setup display and initialise pi3d
 DISPLAY = Display.create(x=100, y=100, background=(0.4, 0.8, 0.8, 1))
