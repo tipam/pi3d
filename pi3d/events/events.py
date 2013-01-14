@@ -444,7 +444,7 @@ class EventStream(object):
 	def __enter__(self):
 		return self
 
-	def __exit__(self, type, value, traceback):
+	def release(self):
 		"""
 		Ungrabs the file and closes it.
 		"""
@@ -454,6 +454,12 @@ class EventStream(object):
 			os.close(self.filehandle)
 		except:
 			pass
+
+	def __exit__(self, type, value, traceback):
+		"""
+		Ungrabs the file and closes it.
+		"""
+		self.release()
 
 def _findevent(s):
 	"""
@@ -688,6 +694,15 @@ class InputEvents(object):
 		if grab:
 			self.do_input_events()
 		EventStream.grab_by_type(deviceType, deviceIndex, grab, self.streams)
+		
+	def release(self):
+		"""
+		Ungrabs all streams and closes all files.
+		
+		Only do this when you're finished with this object. You can't use it again.
+		"""
+		for s in self.streams:
+			s.release()
 		
 codeOf = dict()
 nameOf = dict()
