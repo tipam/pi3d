@@ -172,4 +172,5 @@ while not inputs.key_state("KEY_ESC"):
   DISPLAY.swapBuffers()
 
 
+inputs.release()
 DISPLAY.destroy()
