@@ -65,8 +65,10 @@ class Shader(object):
       for uv shaders tex0=texture tex1=normal map tex2=reflection
       for material shaders tex0=normal map tex1=reflection
       """
-      opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, c_float(GL_LINEAR_MIPMAP_NEAREST))
-      opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, c_float(GL_LINEAR_MIPMAP_NEAREST))
+      opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+                               ctypes.c_float(GL_LINEAR_MIPMAP_NEAREST))
+      opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+                               ctypes.c_float(GL_LINEAR_MIPMAP_NEAREST))
 
     self.use()
 
@@ -77,17 +79,19 @@ class Shader(object):
   def showshaderlog(self,shader):
     """Prints the compile log for a shader"""
     N=1024
-    log=(c_char*N)()
-    loglen=c_int()
-    opengles.glGetShaderInfoLog(shader,N,ctypes.byref(loglen),ctypes.byref(log))
+    log = (ctypes.c_char * N)()
+    loglen = ctypes.c_int()
+    opengles.glGetShaderInfoLog(shader, N, ctypes.byref(loglen),
+                                ctypes.byref(log))
     print log.value
 
   def showprogramlog(self,shader):
     """Prints the compile log for a program"""
-    N=1024
-    log=(c_char*N)()
-    loglen=c_int()
-    opengles.glGetProgramInfoLog(shader,N,ctypes.byref(loglen),ctypes.byref(log))
+    N = 1024
+    log = (ctypes.c_char * N)()
+    loglen = ctypes.c_int()
+    opengles.glGetProgramInfoLog(shader, N, ctypes.byref(loglen),
+                                 ctypes.byref(log))
     print log.value
 
   def loadShader(self, sfile):

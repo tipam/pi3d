@@ -26,7 +26,7 @@ def rect_triangles():
 # TODO: not exact sure what this does but we do it a lot.
 def texture_min_mag():
   for f in [GL_TEXTURE_MIN_FILTER, GL_TEXTURE_MAG_FILTER]:
-    opengles.glTexParameterf(GL_TEXTURE_2D, f, c_float(GL_LINEAR))
+    opengles.glTexParameterf(GL_TEXTURE_2D, f, ctypes.c_float(GL_LINEAR))
 
 #def dot(x, y):
 #  return sum(xi * yi for xi, yi in zip(x, y))
@@ -83,7 +83,7 @@ def vec_dot(A,B):
 
 def vec_cross(a,b):
   return [a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]]
-  
+
 def vec_normal(A):
   n = sqrt(sum(a**2 for a in A))+0.0001
   return [a/n for a in A]
@@ -110,7 +110,7 @@ def transform(origmtrx,x,y,z,rx,ry,rz,sx,sy,sz,cx,cy,cz):
 
 def scale(mtrx,sx,sy,sz):
   return mat_mult([[sx,0,0,0],[0,sy,0,0],[0,0,sz,0],[0,0,0,1]],mtrx)
-    
+
 def translate(mtrx,pt):
   #mtrx[3]=[sum(pt[j]*mtrx[j][i] for j in xrange(3))+mtrx[3][i] for i in xrange(4)]
   #return mtrx
@@ -121,7 +121,7 @@ def rotate(mtrx,rx,ry,rz):
   if rx<>0.0: mtrx=rotateX(mtrx,rx)
   if ry<>0.0: mtrx=rotateY(mtrx,ry)
   return mtrx
-    
+
 def rotateX(mtrx,angle):
   c = cos(angle*RADS)
   s = sin(angle*RADS)
@@ -136,13 +136,13 @@ def rotateZ(mtrx,angle):
   c = cos(angle*RADS)
   s = sin(angle*RADS)
   return mat_mult([[c,s,0,0],[-s,c,0,0],[0,0,1,0],[0,0,0,1]],mtrx)
-    
+
 def angleVecs(x1,y1,x2,y2,x3,y3):
     a = x2-x1
     b = y2-y1
     c = x2-x3
     d = y2-y3
-    
+
     sqab = sqrt(a*a+b*b)
     sqcd = sqrt(c*c+d*d)
     l = sqab*sqcd
@@ -152,7 +152,7 @@ def angleVecs(x1,y1,x2,y2,x3,y3):
     if aa == 0.0: return 0.0
     dist = (a*y3 - b*x3 + x1*b - y1*a) / sqab
     angle = acos(aa)
-    
+
     if dist>0.0: return PI2-angle
     else: return angle
 
@@ -173,10 +173,10 @@ def lodDraw(here, there, mlist):
         model[1].position(there[0], there[1], there[2])
         model[1].draw()
       return
-      
+
   # dist is more than any model dist so draw last
   model = mlist[len(mlist) - 1]
-  if not (model[1] == None): 
+  if not (model[1] == None):
     model[1].position(there[0], there[1], there[2])
     model[1].draw()
 

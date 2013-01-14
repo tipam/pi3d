@@ -1,3 +1,5 @@
+import ctypes
+
 from echomesh.util.DefaultInstance import DefaultInstance
 
 from numpy import array, dot, copy, tan, cos, sin, radians
@@ -13,9 +15,9 @@ class Camera(DefaultInstance):
   """
   def __init__(self, at, eye, lens):
     """Set up view matrix to look from eye to at including perspective
-    
+
     Arguments:
-    
+
     at   -- tuple (x,y,z) location to look at
     eye  -- tuple (x,y,z) location to look from
     lens -- tuple (near plane distance, far plane value, field of view width,
@@ -63,7 +65,7 @@ class Camera(DefaultInstance):
     self.mtrx = array([[1, 0, 0, 0],
                        [0, 1, 0, 0],
                        [0, 0, 1, 0],
-                       [0, 0, 0, 1]], dtype=c_float)
+                       [0, 0, 0, 1]], dtype=ctypes.c_float)
 
   def position(self, pt):
     """
@@ -141,11 +143,11 @@ class Camera(DefaultInstance):
     self.rotateY(ry)
 
 def LookAtMatrix(at, eye, up=[0,1,0], reflect=False):
-  """Define a matrix looking 
+  """Define a matrix looking
   Arguments:
   at -- tuple (x,y,z) of point camera pointed at, floats
   eye -- matrix [x,y,z] position of camera, floats
-  
+
   Keyword arguments:
   up -- array vector of up direction
   reflect -- boolean if matrix is reflected
@@ -163,7 +165,7 @@ def LookAtMatrix(at, eye, up=[0,1,0], reflect=False):
   zaxis.append(-vec_dot(zaxis, eye))
   z = [0, 0, 0, 1.0]
   return array([[xaxis[a], yaxis[a], zaxis[a], z[a]] for a in range(4)],
-               dtype=c_float)
+               dtype=ctypes.c_float)
 
 def ProjectionMatrix(near=10, far=1000.0, fov_w=1.6, fov_h=1.2):
   """Setup projection matrix
@@ -184,5 +186,5 @@ def ProjectionMatrix(near=10, far=1000.0, fov_w=1.6, fov_h=1.2):
   M[2][2] = q
   M[3][2] = -q * near
   M[2][3] = 1
-  return array(M, dtype=c_float)
+  return array(M, dtype=ctypes.c_float)
 

@@ -1,5 +1,7 @@
 import ctypes, itertools
 
+from ctypes import c_float, c_int
+
 from echomesh.util import Log
 
 from pi3d import *

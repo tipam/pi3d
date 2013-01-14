@@ -5,7 +5,7 @@ from pi3d import *
 from pi3d.util import Utility
 
 class TextureLoader(object):
-  ALPHA_VALUE = c_float(0.6)  # TODO: where does this come from?
+  ALPHA_VALUE = ctypes.c_float(0.6)  # TODO: where does this come from?
   TEXTURE_SET = False
 
   def __init__(self, texture, coords, vtype=GL_FLOAT):
@@ -26,7 +26,7 @@ class TextureLoader(object):
           opengles.glEnable(GL_BLEND)
           opengles.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
         else:
-          opengles.glAlphaFunc(GL_GREATER, c_float(0.6))
+          opengles.glAlphaFunc(GL_GREATER, ctypes.c_float(0.6))
           opengles.glEnable(GL_ALPHA_TEST)
       TextureLoader.TEXTURE_SET = True
 

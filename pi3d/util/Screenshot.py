@@ -20,7 +20,7 @@ def screenshot(filestring):
 
   w, h = DISPLAY.width, DISPLAY.height
   size = h * w * 3
-  img = (c_char * size)()
+  img = (ctypes.c_char * size)()
   opengles.glReadPixels(0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE, ctypes.byref(img))
 
   im = Image.frombuffer('RGB', (w, h), img, 'raw', 'RGB', 0, 1)

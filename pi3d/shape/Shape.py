@@ -30,7 +30,7 @@ class Shape(Loadable):
     self.name = name
     light = light or Light.instance()
     # uniform variables all in one array (for Shape and one for Buffer)
-    self.unif = (c_float * 48)(
+    self.unif = (ctypes.c_float * 48)(
       x, y, z, rx, ry, rz,
       sx, sy, sz, cx, cy, cz,
       0.5, 0.5, 0.5, 5000.0, 0.8, 0.0,
@@ -93,7 +93,7 @@ class Shape(Loadable):
                       [0.0, 0.0, 1.0, 0.0],
                       [self.unif[9], self.unif[10], self.unif[11], 1.0]])
     self.MFlg = True
-    self.M = (c_float * 32)(0, 0, 0, 0, 0, 0, 0, 0,
+    self.M = (ctypes.c_float * 32)(0, 0, 0, 0, 0, 0, 0, 0,
                             0, 0, 0, 0, 0, 0, 0, 0,
                             0, 0, 0, 0, 0, 0, 0, 0,
                             0, 0, 0, 0, 0, 0, 0, 0)
@@ -135,7 +135,8 @@ class Shape(Loadable):
     if camera.was_moved:
       self.unif[18:21] = camera.eye[0:3]
 
-    opengles.glUniformMatrix4fv(shader.unif_modelviewmatrix, 2, c_int(0),
+    opengles.glUniformMatrix4fv(shader.unif_modelviewmatrix, 2,
+                                ctypes.c_int(0),
                                 ctypes.byref(self.M))
 
     opengles.glUniform3fv(shader.unif_unif, 16, ctypes.byref(self.unif))

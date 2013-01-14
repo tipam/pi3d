@@ -13,7 +13,7 @@ class Matrix(object):
     self.mc = 0
 
   def push(self):
-    self.mat.append((c_float * 16)())
+    self.mat.append((ctypes.c_float * 16)())
     opengles.glGetFloatv(GL_MODELVIEW_MATRIX,ctypes.byref(self.mat[self.mc]))
     self.mc += 1
 

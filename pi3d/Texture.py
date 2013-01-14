@@ -25,7 +25,7 @@ class Texture(Loadable):
     Arguments:
     file_string -- path and name of image file relative to top dir
     blend -- controls if low alpha pixels are discarded (if False) or drawn
-            by the shader. If set to true then this texture needs to be 
+            by the shader. If set to true then this texture needs to be
             drawn AFTER other objects that are FURTHER AWAY
     flip -- flips the image
     size -- to resize image to
@@ -110,9 +110,9 @@ class Texture(Loadable):
                           GL_UNSIGNED_BYTE,
                           ctypes.string_at(self.image, len(self.image)))
     opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-                             c_float(GL_LINEAR_MIPMAP_LINEAR))
+                             ctypes.c_float(GL_LINEAR_MIPMAP_LINEAR))
     opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
-                             c_float(GL_LINEAR))
+                             ctypes.c_float(GL_LINEAR))
     opengles.glGenerateMipmap(GL_TEXTURE_2D)
     opengles.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
