@@ -6,6 +6,7 @@ from echomesh.util import Log
 
 from pi3d import *
 from pi3d.util import Utility
+from pi3d.util.Ctypes import c_floats, c_shorts
 
 LOGGER = Log.logger(__name__)
 

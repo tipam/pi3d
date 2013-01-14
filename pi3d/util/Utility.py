@@ -3,6 +3,7 @@ from numpy import sqrt, sin, cos, tan, subtract, dot
 #from math import sqrt, sin, cos, tan
 
 from pi3d import *
+from pi3d.util.Ctypes import c_bytes
 
 PI = 3.14159265356  # PI
 PI2 = PI * 2
