@@ -1,7 +1,7 @@
 import ctypes
 import Image
 
-from pi3d import *
+from pi3d.constants import *
 from pi3d.util import Utility
 
 class TextureLoader(object):

@@ -5,7 +5,7 @@ from echomesh.util.DefaultInstance import DefaultInstance
 from numpy import array, dot, copy, tan, cos, sin, radians
 from numpy.linalg import norm
 
-from pi3d import *
+from pi3d.constants import *
 from pi3d.shape.Shape import Shape
 from pi3d.util.Utility import vec_normal, vec_cross, vec_sub, vec_dot
 

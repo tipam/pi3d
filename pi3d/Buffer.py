@@ -4,7 +4,7 @@ from ctypes import c_float, c_int
 
 from echomesh.util import Log
 
-from pi3d import *
+from pi3d.constants import *
 from pi3d.util import Utility
 from pi3d.util.Ctypes import c_floats, c_shorts
 

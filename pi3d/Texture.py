@@ -1,7 +1,7 @@
 import ctypes
 import Image
 
-from pi3d import *
+from pi3d.constants import *
 from pi3d.util.Ctypes import c_ints
 from pi3d.util.Loadable import Loadable
 

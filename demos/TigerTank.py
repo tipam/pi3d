@@ -9,7 +9,7 @@ import demo
 
 from echomesh.util import Log
 
-from pi3d import *
+from pi3d.constants import *
 
 from pi3d import Display
 

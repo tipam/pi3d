@@ -4,7 +4,7 @@ from itertools import chain
 from numpy import array, dot, ravel
 from math import radians, pi, sin, cos
 
-from pi3d import *
+from pi3d.constants import *
 from pi3d.Buffer import Buffer
 from pi3d.context.Light import Light
 from pi3d.context.TextureLoader import TextureLoader

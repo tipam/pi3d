@@ -1,4 +1,4 @@
-from pi3d import *
+from pi3d.constants import *
 from pi3d.Buffer import Buffer
 from pi3d.util import Utility
 
@@ -14,7 +14,7 @@ class Extrude(Shape):
                cx=0.0, cy=0.0, cz=0.0):
     """uses standard constructor for Shape extra Keyword arguments:
     path -- coordinates defining crossection of prism [(x0,z0),(x1,z1)..]
-    height -- distance between end faces in the y direction  
+    height -- distance between end faces in the y direction
     """
     super(Extrude, self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                   sx, sy, sz, cx, cy, cz)

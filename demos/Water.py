@@ -4,7 +4,7 @@ import math, random, time, glob
 
 import demo
 
-from pi3d import *
+from pi3d.constants import *
 
 from pi3d import Display
 from pi3d.Texture import Texture

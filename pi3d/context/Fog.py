@@ -1,6 +1,6 @@
 import ctypes
 
-from pi3d import *
+from pi3d.constants import *
 from pi3d.util.Ctypes import c_floats
 
 class Fog():

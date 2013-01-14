@@ -1,9 +1,9 @@
-from pi3d import *
+from pi3d.constants import *
 from pi3d.shape.Shape import Shape
 
 class Lathe(Shape):
   """ 3d model inherits from Shape
-  made by rotating a path of x,y locations around the y axis 
+  made by rotating a path of x,y locations around the y axis
   NB the path should start at the top of the object to generate the correct normals
   also in order for edges to show correctly include a tiny bevel
   i.e. [..(0,2),(2,1),(1.5,0)..] has a sharp corner at 2,1 and should be entered as
@@ -25,12 +25,12 @@ class Lathe(Shape):
     self.path = path
     self.sides = sides
     self.ttype = GL_TRIANGLES
-    
+
     self.buf = []
     self.buf.append(self.lathe(path))
 
   # TODO intervene in call to Buffer.draw() so that face culling can be disabled
-  #this draw method disables face culling which allows the backs of faces to show, 
+  #this draw method disables face culling which allows the backs of faces to show,
   #however the normals will be wrong and it will look as if it is illuminated from the opposite direction to the light source
   #def draw(self, tex=None, shl=GL_UNSIGNED_SHORT):
   #  opengles.glDisable(GL_CULL_FACE)

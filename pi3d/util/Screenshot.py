@@ -5,7 +5,7 @@ import Image
 
 from echomesh.util import Log
 
-from pi3d import *
+from pi3d.constants import *
 
 LOGGER = Log.logger(__name__)
 
