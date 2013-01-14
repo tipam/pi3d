@@ -1,4 +1,5 @@
 #!/usr/bin/python
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import demo
 
@@ -43,6 +44,6 @@ while 1:
       DISPLAY.destroy()
       break
     else:
-      print k
+      print(k)
 
   DISPLAY.swapBuffers()

@@ -1,4 +1,5 @@
 #!/usr/bin/python
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 # Tiger Tank in TK window
 # Version 0.02 - 23Nov12
@@ -224,7 +225,7 @@ def loop():
   try:
     win.update()
   except:
-    print 'bye bye 3'
+    print('bye bye 3')
     DISPLAY.stop()
     return
 

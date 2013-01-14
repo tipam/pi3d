@@ -1,4 +1,5 @@
 #!/usr/bin/python
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 # Megastation in TK window
 # Version 0.02 - 23Nov12
@@ -166,7 +167,7 @@ while DISPLAY.loop_running():
   try:
     win.update()
   except:
-    print "bye bye 3"
+    print("bye bye 3")
     DISPLAY.destroy()
     try:
       win.destroy()
@@ -176,7 +177,7 @@ while DISPLAY.loop_running():
     exit()
 
   if win.ev=="resized":
-    print "resized"
+    print("resized")
     DISPLAY.resize(win.winx,win.winy,win.width,win.height-bord)
     win.resized=False
 
@@ -199,9 +200,9 @@ while DISPLAY.loop_running():
       try:
         display.destroy()
         win.destroy()
-        print "Bye bye! 1"
+        print("Bye bye! 1")
       except Exception:
-        print "Bye bye! 2"
+        print("Bye bye! 2")
 
   if win.ev=="drag" or win.ev=="click" or win.ev=="wheel":
     xm-=math.sin(mouserot*rads)*2

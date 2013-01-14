@@ -1,6 +1,5 @@
 #!/usr/bin/python
-
-from __future__ import absolute_import
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import math,random,time
 
@@ -83,7 +82,7 @@ while DISPLAY.loop_running():
   #camera.was_moved = False
 
   if time.time() > next_time:
-    print "FPS:",tick/10.0
+    print("FPS:",tick/10.0)
     tick=0
     next_time = time.time()+10.0
   tick+=1

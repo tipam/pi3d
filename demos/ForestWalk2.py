@@ -1,4 +1,5 @@
 #!/usr/bin/python
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import math, random
 
@@ -130,7 +131,7 @@ while 1:
       ym = -(mymap.calcHeight(xm,zm)+avhgt)
     elif k==39: #key '
       tilt -= 2.0
-      print tilt
+      print(tilt)
     elif k==47: #key /
       tilt += 2.0
     elif k==97: #key A
@@ -147,7 +148,7 @@ while 1:
       DISPLAY.destroy()
       break
     else:
-      print k
+      print(k)
 
   DISPLAY.swapBuffers()
 

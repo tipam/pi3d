@@ -1,4 +1,5 @@
 #!/usr/bin/python
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 from math import sin, cos
 
@@ -80,6 +81,6 @@ while DISPLAY.loop_running():
       DISPLAY.stop()
       break
     else:
-      print k
+      print(k)
 
   Camera.instance().was_moved = False
