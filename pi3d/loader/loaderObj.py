@@ -1,5 +1,5 @@
 import re, os
-from pi3d import *
+from pi3d.constants import *
 from pi3d.loader.parse_mtl import parse_mtl
 from pi3d.shape.Shape import Shape
 from pi3d.Texture import Texture
@@ -183,7 +183,7 @@ def loadFileOBJ(model, fileName):
   for g in faces:
     numv[g] -= 1
     numi[g] -= 1
-    
+
     g_vertices = []
     g_normals = []
     g_tex_coords = []

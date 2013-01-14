@@ -1,3 +1,6 @@
+#!/usr/bin/python
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 # Tiger Tank in TK window
 # Version 0.02 - 23Nov12
 #
@@ -6,11 +9,10 @@
 import math, random, time, traceback
 
 import demo
-demo.demo(__name__)
 
 from echomesh.util import Log
 
-from pi3d import *
+from pi3d.constants import *
 
 from pi3d import Display
 
@@ -223,7 +225,7 @@ def loop():
   try:
     win.update()
   except:
-    print 'bye bye 3'
+    print('bye bye 3')
     DISPLAY.stop()
     return
 

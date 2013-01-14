@@ -1,7 +1,9 @@
+#!/usr/bin/python
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import math
 
 import demo
-demo.demo(__name__)
 
 from pi3d import Display
 from pi3d.Texture import Texture
@@ -126,7 +128,7 @@ while not inputs.key_state("KEY_ESC"):
     ym = (mymap.calcHeight(xm,zm)+avhgt)
     NewPos = Position(xm, ym, zm)
     collisions = man.CollisionList(NewPos)
-    #print map(lambda(x):x.name, collisions)
+    #print(map(lambda(x):x.name, collisions))
     if not collisions:
       man.move(NewPos)
 
@@ -136,7 +138,7 @@ while not inputs.key_state("KEY_ESC"):
     ym = (mymap.calcHeight(xm, zm) + avhgt)
     NewPos = Position(xm, ym, zm)
     collisions = man.CollisionList(NewPos)
-    #print map(lambda(x):x.name, collisions)
+    #print(map(lambda(x):x.name, collisions))
     if not collisions:
       man.move(NewPos)
   if inputs.key_state("KEY_S"): #key S
@@ -145,7 +147,7 @@ while not inputs.key_state("KEY_ESC"):
     ym = (mymap.calcHeight(xm, zm) + avhgt)
     NewPos = Position(xm, ym, zm)
     collisions = man.CollisionList(NewPos)
-    #print map(lambda(x):x.name, collisions)
+    #print(map(lambda(x):x.name, collisions))
     if not collisions:
       man.move(NewPos)
   if inputs.key_state("KEY_APOSTROPHE"):  #key '

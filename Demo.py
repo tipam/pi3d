@@ -1,5 +1,4 @@
 #!/usr/bin/python
-
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import os
@@ -87,12 +86,8 @@ def run_one_demo(demo):
     print()
     print('Running demo', demo)
     print()
+  __import__('demos.' + demo)
 
-  demo_module = globals().get(demo, None)
-  if demo_module:
-    reload(demo_module)
-  else:
-    __import__('demos.' + demo)
 
 
 def run_demo(demo, demo_list):

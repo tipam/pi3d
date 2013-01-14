@@ -1,9 +1,11 @@
+#!/usr/bin/python
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 # Forest walk example using pi3d module
 
 from __future__ import absolute_import
 
 import demo
-demo.demo(__name__)
 
 import math,random
 
@@ -169,7 +171,7 @@ while DISPLAY.loop_running():
       DISPLAY.stop()
       break
     else:
-      print k
+      print(k)
 
   CAMERA.was_moved = False
 quit()

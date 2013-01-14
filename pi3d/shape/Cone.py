@@ -1,4 +1,4 @@
-from pi3d import *
+from pi3d.constants import *
 from pi3d.Buffer import Buffer
 from pi3d.shape.Shape import Shape
 
@@ -28,6 +28,6 @@ class Cone(Shape):
     self.height = height
     self.sides = sides
     self.ttype = GL_TRIANGLES
-    
+
     self.buf = []
     self.buf.append(self.lathe(path))

@@ -1,11 +1,11 @@
-from __future__ import absolute_import
+#!/usr/bin/python
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import math, random, time, glob
 
 import demo
-demo.demo(__name__)
 
-from pi3d import *
+from pi3d.constants import *
 
 from pi3d import Display
 from pi3d.Texture import Texture
@@ -21,10 +21,10 @@ from pi3d.shape.MergeShape import MergeShape
 from pi3d.shape.Plane import Plane
 from pi3d.util.Screenshot import screenshot
 
-print "====================================================="
-print "press escape to escape"
-print "move this terminal window to top of screen to see FPS"
-print "====================================================="
+print("=====================================================")
+print("press escape to escape")
+print("move this terminal window to top of screen to see FPS")
+print("=====================================================")
 
 # Setup display and initialise pi3d
 DISPLAY = Display.create(x=200, y=150)
@@ -102,7 +102,7 @@ while DISPLAY.loop_running():
     mywater.buf[0].textures[0] = waterbump[i_n]
     next_time = time.time() + spf
     av_fps = av_fps*0.9 + tick/spf*0.1 # exp smooth moving average
-    print av_fps,"FPS"
+    print(av_fps,"FPS")
     tick = 0
 
   tick += 1

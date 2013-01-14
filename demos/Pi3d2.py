@@ -1,11 +1,11 @@
-from __future__ import absolute_import
+#!/usr/bin/python
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import math,random,time
 
 import demo
-demo.demo(__name__)
 
-from pi3d import *
+from pi3d.constants import *
 
 from pi3d import Display
 from pi3d.Texture import Texture
@@ -82,7 +82,7 @@ while DISPLAY.loop_running():
   #camera.was_moved = False
 
   if time.time() > next_time:
-    print "FPS:",tick/10.0
+    print("FPS:",tick/10.0)
     tick=0
     next_time = time.time()+10.0
   tick+=1

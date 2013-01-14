@@ -1,4 +1,6 @@
-from pi3d import *
+from ctypes import c_float
+
+from pi3d.constants import *
 from pi3d.shape.Shape import Shape
 from pi3d.util import Utility
 

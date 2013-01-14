@@ -1,5 +1,7 @@
+#!/usr/bin/python
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import demo
-demo.demo(__name__)
 
 from pi3d import Display
 from pi3d.Keyboard import Keyboard
@@ -78,6 +80,6 @@ while DISPLAY.loop_running():
       DISPLAY.stop()
       break
     else:
-      print k
+      print(k)
 
 

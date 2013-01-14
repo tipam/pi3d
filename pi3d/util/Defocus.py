@@ -1,7 +1,7 @@
 import ctypes
 import Image
 
-from pi3d import *
+from pi3d.constants import *
 from pi3d.Shader import Shader
 from pi3d.Texture import Texture
 
@@ -13,7 +13,7 @@ class Defocus(Texture):
     super(Defocus, self).__init__("defocus")
     from pi3d.Display import DISPLAY
     self.ix, self.iy = DISPLAY.width, DISPLAY.height
-    self.im = Image.new("RGBA",(self.ix, self.iy)) 
+    self.im = Image.new("RGBA",(self.ix, self.iy))
     self.image = self.im.convert("RGBA").tostring('raw', "RGBA")
     self.alpha = True
     self.blend = False
@@ -26,11 +26,11 @@ class Defocus(Texture):
 
     # load blur shader
     self.shader = Shader("shaders/defocus")
-    
+
   def _load_disk(self):
     """ have to override this
     """
-    
+
   def start_blur(self):
     """ after calling this method all object.draw()s will rendered
     to this texture and not appear on the display. If you want blurred
@@ -39,27 +39,27 @@ class Defocus(Texture):
     will obviously take a while to draw and re-draw
     """
     opengles.glBindFramebuffer(GL_FRAMEBUFFER, self.framebuffer)
-    opengles.glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 
+    opengles.glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                 GL_TEXTURE_2D, self._tex.value, 0)
     #thanks to PeterO c.o. RPi forum for pointing out missing depth attchmnt
     opengles.glBindRenderbuffer(GL_RENDERBUFFER, self.depthbuffer)
-    opengles.glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, 
+    opengles.glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16,
                 self.ix, self.iy)
-    opengles.glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, 
+    opengles.glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
                 GL_RENDERBUFFER, self.depthbuffer)
     opengles.glClear(GL_DEPTH_BUFFER_BIT)
 
     opengles.glEnable(GL_TEXTURE_2D)
     opengles.glActiveTexture(0)
-    
+
     #assert opengles.glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE
-    
+
   def end_blur(self):
     """ stop capturing to texture and resume normal rendering to default
     """
     opengles.glBindTexture(GL_TEXTURE_2D, 0)
     opengles.glBindFramebuffer(GL_FRAMEBUFFER, 0)
-        
+
   def blur(self, shape, dist_fr, dist_to, amount):
     """ draw the shape using the saved texture
     Arguments:
