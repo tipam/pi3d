@@ -60,7 +60,7 @@ myshape.position(0.0, 0.0, 5)
 myshape.set_draw_details(shader, [shapeimg, shapebump, shapeshine], 1.0, 0.1)
 myshape.set_material((1.0, 0.5, 0.2, 0.5))
 
-mywater = Plane(w=100.0, h=100.0)
+mywater = Plane(w=120.0, h=120.0)
 mywater.set_draw_details(matsh, [waterbump[0], shapeshine], 8.0, 0.6)
 mywater.set_material((0.0, 0.05, 0.1))
 mywater.set_fog((0.4, 0.6, 0.8, 0.0),150)
@@ -75,7 +75,7 @@ mystring.set_shader(flatsh)
 tick = 0
 av_fps = 0
 i_n=0
-spf = 0.05
+spf = 0.08 # seconds per frame, i.e. water image change
 next_time = time.time() + spf
 dx = 0.02
 
