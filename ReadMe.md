@@ -11,21 +11,25 @@
 
 --------------------------------------------
 
-**NB** The demos are all in a subdirectory demos, you can run these various ways (which are not quite as obvious as you may think):
+**NB The demos are all in a subdirectory demos, you can run these various ways (which are not quite as obvious as you may think)**:
 
 1) From a terminal change dir to the top directory then 
 
-    $ python Demo.py Blur
+    $ python demos/Blur.py
 
-2) also from terminal top directory
+[2) **NB this no longer works** also from terminal top directory
 
     $ python Demo.py
 
-then choose from a menu
+then choose from a menu]
 
 3) in Geany open the demo file to edit, set the build command (wall symbol) to
 
-    python  ../Demo.py "%e"
+    python "demos/%f"
+
+and set the Working directory to
+
+    ../
 
 run using the cog button
 
