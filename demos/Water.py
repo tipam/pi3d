@@ -3,7 +3,6 @@ from __future__ import absolute_import
 import math, random, time, glob
 
 import demo
-demo.demo(__name__)
 
 from pi3d import *
 

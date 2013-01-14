@@ -1,5 +1,4 @@
 import demo
-demo.demo(__name__)
 
 from pi3d import Display
 from pi3d.Keyboard import Keyboard
