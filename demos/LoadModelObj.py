@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import demo
 
 from pi3d import Display

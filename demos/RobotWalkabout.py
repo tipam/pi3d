@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 # Robot walkabout example using pi3d module
 # =========================================
 #

@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 # Tiger Tank in TK window
 # Version 0.02 - 23Nov12
 

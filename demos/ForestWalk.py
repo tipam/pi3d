@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 # Forest walk example using pi3d module
 
 from __future__ import absolute_import

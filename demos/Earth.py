@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 from math import sin, cos
 
 import demo

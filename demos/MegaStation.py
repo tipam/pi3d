@@ -1,4 +1,6 @@
-# Tiger Tank in TK window
+#!/usr/bin/python
+
+# Megastation in TK window
 # Version 0.02 - 23Nov12
 
 import math, random, time
