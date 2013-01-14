@@ -1,7 +1,9 @@
+#!/usr/bin/python
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import math, random
 
 import demo
-demo.demo(__name__)
 
 from pi3d import Display
 from pi3d.Keyboard import Keyboard
@@ -23,10 +25,10 @@ from pi3d.util.Screenshot import screenshot
 from pi3d.util.Defocus import Defocus
 
 #helpful messages
-print "############################################################"
-print "Mouse to move left and right and up and down"
-print "############################################################"
-print
+print("############################################################")
+print("Mouse to move left and right and up and down")
+print("############################################################")
+print()
 
 # Setup display and initialise pi3d
 DISPLAY = Display.create(x=200, y=200)

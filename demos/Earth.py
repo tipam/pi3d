@@ -1,13 +1,14 @@
+#!/usr/bin/python
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 from math import sin, cos
 
 import demo
-demo.demo(__name__)
 
 from pi3d import Display
 from pi3d.Keyboard import Keyboard
 from pi3d.Texture import Texture
 
-from pi3d.context.Light import Light
 from pi3d.Camera import Camera
 from pi3d.Shader import Shader
 
@@ -21,7 +22,6 @@ from pi3d.util.Screenshot import screenshot
 DISPLAY = Display.create(x=50, y=50)
 DISPLAY.set_background(0,0,0,1)    	# r,g,b,alpha
 
-light = Light((10, 10, -20))
 shader = Shader("shaders/uv_reflect")
 flatsh = Shader("shaders/uv_flat")
 #========================================
@@ -34,13 +34,13 @@ moonimg = Texture("textures/moon.jpg")
 starsimg = Texture("textures/stars2.jpg")
 watimg = Texture("textures/water.jpg")
 
-mysphere = Sphere(light=light, radius=2, slices=24, sides=24,
+mysphere = Sphere(radius=2, slices=24, sides=24,
                   name="earth", z=5.8)
-mysphere2 = Sphere(light=light, radius=2.05, slices=24, sides=24,
+mysphere2 = Sphere(radius=2.05, slices=24, sides=24,
                    name="clouds", z=5.8)
-mymoon = Sphere(light=light, radius=0.4, slices=16, sides=16, name="moon")
-mymoon2 = Sphere(light=light, radius=0.1, slices=16, sides=16, name="moon2")
-myplane = Plane(light=light, w=50, h=50, name="stars", z=10)
+mymoon = Sphere(radius=0.4, slices=16, sides=16, name="moon")
+mymoon2 = Sphere(radius=0.1, slices=16, sides=16, name="moon2")
+myplane = Plane(w=50, h=50, name="stars", z=10)
 
 # Fetch key presses
 mykeys = Keyboard()
@@ -81,6 +81,6 @@ while DISPLAY.loop_running():
       DISPLAY.stop()
       break
     else:
-      print k
+      print(k)
 
   Camera.instance().was_moved = False

@@ -1,8 +1,10 @@
+#!/usr/bin/python
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import random
 import sys
 
 import demo
-demo.demo(__name__)
 
 from pi3d import Keyboard
 

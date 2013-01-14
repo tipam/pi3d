@@ -1,4 +1,10 @@
-from pi3d import *
+import ctypes
+
+from ctypes import c_int, c_float
+
+from pi3d.constants import *
+
+from pi3d.util.Ctypes import c_chars, c_ints
 
 class DisplayOpenGL(object):
   def __init__(self):
@@ -44,7 +50,7 @@ class DisplayOpenGL(object):
     opengles.glDepthRangef(c_float(-1.0),c_float(1.0))
     opengles.glClearColor (c_float(0.3), c_float(0.3), c_float(0.7), c_float(1.0));
     opengles.glBindFramebuffer(GL_FRAMEBUFFER,0)
-    
+
     #Setup default hints
     opengles.glEnable(GL_CULL_FACE)
     opengles.glEnable(GL_NORMALIZE)

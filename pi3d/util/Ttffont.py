@@ -3,7 +3,7 @@ import Image
 
 from PIL import ImageDraw, ImageFont
 
-from pi3d import *
+from pi3d.constants import *
 from pi3d.Texture import Texture
 
 class Ttffont(Texture):
@@ -45,12 +45,12 @@ class Ttffont(Texture):
       w = imagesize
       h = imagesize
 
-      self.ch.append((chwidth, chheight, 
+      self.ch.append((chwidth, chheight,
               [(x + tw, y - th), (x, y - th), (x, y), (x + tw, y)],
               [(chwidth, 0, 0),  (0, 0, 0),  (0, -chheight, 0),  (chwidth, -chheight, 0)]))
 
       curX = curX + chwidth*1.1 # to avoid overlapping corners of italics
-     
+
     RGBs = 'RGBA' if self.alpha else 'RGB'
     self.image = self.im.convert(RGBs).tostring('raw', RGBs)
     self._tex = ctypes.c_int()

@@ -1,14 +1,13 @@
+#!/usr/bin/python
+
 # Tiger Tank in TK window
 # Version 0.02 - 23Nov12
 
 import math, random, time
 
 import demo
-demo.demo(__name__)
 
-from echomesh.util import Log
-
-from pi3d import *
+from pi3d.constants import *
 
 from pi3d import Display
 from pi3d.Mouse import Mouse
@@ -108,13 +107,13 @@ while DISPLAY.loop_running():
   try:
     win.update()
   except:
-    print "bye bye 3"
+    print("bye bye 3")
     DISPLAY.stop()
     mymouse.stop()
     exit()
 
   if win.ev=="resized":
-    print "resized"
+    print("resized")
     DISPLAY.resize(win.winx,win.winy,win.width,win.height-bord)
     win.resized=False
 
@@ -136,9 +135,9 @@ while DISPLAY.loop_running():
     elif win.key=="Escape":
       try:
         DISPLAY.stop()
-        print "Bye bye! 1"
+        print("Bye bye! 1")
       except Exception:
-        print "Bye bye! 2"
+        print("Bye bye! 2")
 
   if win.ev=="drag" or win.ev=="click" or win.ev=="wheel":
     xm-=math.sin(mouserot*rads)*2

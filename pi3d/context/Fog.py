@@ -1,8 +1,7 @@
 import ctypes
 
-from pi3d import *
-
-# By paddywwoof 12-12-2012
+from pi3d.constants import *
+from pi3d.util.Ctypes import c_floats
 
 class Fog():
   def __init__(self, density=0.005, color=(0.3, 0.6, 0.8, 0.5)):

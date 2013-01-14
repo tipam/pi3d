@@ -1,6 +1,8 @@
-import random, math
+import ctypes
+import math
+import random
 
-from pi3d import *
+from pi3d.constants import *
 from pi3d import Texture
 from pi3d.Buffer import Buffer
 
@@ -107,8 +109,8 @@ class MergeShape(Shape):
     """
     #create a cluster of shapes on an elevation map
     for v in range(count):
-      x = xpos + random.random() * w - w * 0.5 
-      z = zpos + random.random() * d - d * 0.5 
+      x = xpos + random.random() * w - w * 0.5
+      z = zpos + random.random() * d - d * 0.5
       rh = random.random() * (maxscl - minscl) + minscl
       rt = random.random() * 360.0
       y = elevmap.calcHeight(x, z) + rh * 2

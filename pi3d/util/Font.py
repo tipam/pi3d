@@ -3,7 +3,7 @@ import Image
 
 from PIL import ImageDraw
 
-from pi3d import *
+from pi3d.constants import *
 from pi3d.Texture import Texture
 
 # Text and fonts
@@ -26,8 +26,8 @@ class Font(Texture):
       tw = w / self.ix
       th = h / self.iy
 
-      self.ch.append((w, h, 
-        [(x + tw, y - th), (x, y - th),  (x, y), (x + tw, y)], 
+      self.ch.append((w, h,
+        [(x + tw, y - th), (x, y - th),  (x, y), (x + tw, y)],
         [(w, 0, 0), (0, 0, 0), (0, -h, 0), (w, -h, 0)]))
 
     alph = self.im.split()[-1]  #keep alpha

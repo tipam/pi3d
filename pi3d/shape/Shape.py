@@ -1,8 +1,10 @@
+import ctypes
+
 from itertools import chain
 from numpy import array, dot, ravel
 from math import radians, pi, sin, cos
 
-from pi3d import *
+from pi3d.constants import *
 from pi3d.Buffer import Buffer
 from pi3d.context.Light import Light
 from pi3d.context.TextureLoader import TextureLoader
@@ -28,7 +30,7 @@ class Shape(Loadable):
     self.name = name
     light = light or Light.instance()
     # uniform variables all in one array (for Shape and one for Buffer)
-    self.unif = (c_float * 48)(
+    self.unif = (ctypes.c_float * 48)(
       x, y, z, rx, ry, rz,
       sx, sy, sz, cx, cy, cz,
       0.5, 0.5, 0.5, 5000.0, 0.8, 0.0,
@@ -91,7 +93,7 @@ class Shape(Loadable):
                       [0.0, 0.0, 1.0, 0.0],
                       [self.unif[9], self.unif[10], self.unif[11], 1.0]])
     self.MFlg = True
-    self.M = (c_float * 32)(0, 0, 0, 0, 0, 0, 0, 0,
+    self.M = (ctypes.c_float * 32)(0, 0, 0, 0, 0, 0, 0, 0,
                             0, 0, 0, 0, 0, 0, 0, 0,
                             0, 0, 0, 0, 0, 0, 0, 0,
                             0, 0, 0, 0, 0, 0, 0, 0)
@@ -133,7 +135,8 @@ class Shape(Loadable):
     if camera.was_moved:
       self.unif[18:21] = camera.eye[0:3]
 
-    opengles.glUniformMatrix4fv(shader.unif_modelviewmatrix, 2, c_int(0),
+    opengles.glUniformMatrix4fv(shader.unif_modelviewmatrix, 2,
+                                ctypes.c_int(0),
                                 ctypes.byref(self.M))
 
     opengles.glUniform3fv(shader.unif_unif, 16, ctypes.byref(self.unif))
@@ -152,10 +155,10 @@ class Shape(Loadable):
     """used to set some of the draw details for all Buffers in Shape
     this is useful where a Model object has been loaded from an obj file and
     the textures assigned automatically
-    
+
     Arguments:
     normtex -- normal map Texture to use
-    
+
     Keyword arguments:
     ntiles -- multiplier for the tiling of the normal map
     shinetex -- reflection Texture to use
@@ -208,7 +211,7 @@ class Shape(Loadable):
     self.unif[12:15] = fogshade[0:3]
     self.unif[15] = fogdist
     self.unif[16] = fogshade[3]
-    
+
   def set_light(self, light, num=0):
     """Set the values of the lights
     Arguments:
@@ -223,7 +226,7 @@ class Shape(Loadable):
     self.unif[stn:(stn + 3)] = light.lightpos[0:3]
     self.unif[(stn + 3):(stn + 6)] = light.lightcol[0:3]
     self.unif[(stn + 6):(stn + 9)] = light.lightamb[0:3]
-    
+
   def x(self):
     """get value of x"""
     return self.unif[0]
@@ -350,14 +353,14 @@ class Shape(Loadable):
 
   def lathe(self, path, rise=0.0, loops=1.0):
     """returns a Buffer object by rotating the points defined in path
-    
+
     Arguments:
-    path -- an array of points [(x0,y0),(x1,y1)..] to rotate around 
+    path -- an array of points [(x0,y0),(x1,y1)..] to rotate around
         the y axis
     NB TODO self.sides is not passed as an argument but is required to be
     set by anything calling this method
     [self.sides -- number of sides to divide each rotation into]
-    
+
     Keyword arguments:
     rise -- amout to increment the path y values for each rotation (ie helix)
     loops -- numbe of times to rotate the path by 360 (ie helix)

@@ -1,33 +1,20 @@
-# Tiger Tank in TK window
+#!/usr/bin/python
+from __future__ import absolute_import, division, print_function, unicode_literals
+
+# Megastation in TK window
 # Version 0.02 - 23Nov12
 
 import math, random, time
 
 import demo
-demo.demo(__name__)
-
-from echomesh.util import Log
-
 from pi3d import *
 
-from pi3d import Display
-from pi3d.Mouse import Mouse
-from pi3d.Texture import Texture
-
-from pi3d.Camera import Camera
-from pi3d.Shader import Shader
-
-from pi3d.shape.ElevationMap import ElevationMap
-from pi3d.shape import EnvironmentCube
-from pi3d.shape.Model import Model
-
-from pi3d.util.Screenshot import screenshot
 from pi3d.util.TkWin import TkWin
-from pi3d.util.Utility import lodDraw
 
 rads = 0.017453292512  # degrees to radians
 
 #Create a Tkinter window
+# TODO: the display will do this for you automatically now
 winw,winh,bord = 1200,600,0   	#64MB GPU memory setting
 #winw,winh,bord = 1920,1080,0	#128MB GPU memory setting
 win = TkWin(None, "Mega Space Station in Pi3D",winw,winh)
@@ -126,27 +113,27 @@ while DISPLAY.loop_running():
 
   mymap.draw()  #Draw the landscape
 
-  lodDraw([xm, ym, zm], [0, mody, 0], [[opendist,cor_cross],[1000,cor_cross_doors]])
+  Utility.lodDraw([xm, ym, zm], [0, mody, 0], [[opendist,cor_cross],[1000,cor_cross_doors]])
   cor_win.position(0, mody, spc*1.5)
   cor_win.draw()
   corridor.position(0, mody, spc*2.5)
   corridor.draw()
   cor_win.position(0, mody, spc*3.5)
   cor_win.draw()
-  lodDraw([xm, ym, zm], [0, mody, spc*5],[[opendist,cor_cross],[1000,cor_cross_doors]])
+  Utility.lodDraw([xm, ym, zm], [0, mody, spc*5],[[opendist,cor_cross],[1000,cor_cross_doors]])
   cor_win.position(0, mody, spc*6.5)
   cor_win.draw()
-  lodDraw([xm, ym, zm],[0, mody, spc*8], [[opendist,cor_cross],[1000,cor_cross_doors]])
+  Utility.lodDraw([xm, ym, zm],[0, mody, spc*8], [[opendist,cor_cross],[1000,cor_cross_doors]])
   cor_win90.position(-spc*1.5, mody, spc*5)
   cor_win90.draw()
   cor_bend.position(-spc*2.5, mody, spc*5)
   cor_bend.draw()
-  lodDraw([xm, ym, zm],[-spc*2.6, mody, spc*6.6],[[opendist,cor_cross],[1000,cor_cross_doors]])
+  Utility.lodDraw([xm, ym, zm],[-spc*2.6, mody, spc*6.6],[[opendist,cor_cross],[1000,cor_cross_doors]])
   cor_win90.position(spc*1.5, mody, spc*5)
   cor_win90.draw()
   corridor90.position(spc*2.5, mody, spc*5)
   corridor90.draw()
-  lodDraw([xm, ym, zm],[spc*4, mody, spc*5],[[opendist,cor_cross],[1000,cor_cross_doors]])
+  Utility.lodDraw([xm, ym, zm],[spc*4, mody, spc*5],[[opendist,cor_cross],[1000,cor_cross_doors]])
 
   myecube.position(xm, ym, zm)
   myecube.draw()#Draw environment cube
@@ -165,7 +152,7 @@ while DISPLAY.loop_running():
   try:
     win.update()
   except:
-    print "bye bye 3"
+    print("bye bye 3")
     DISPLAY.destroy()
     try:
       win.destroy()
@@ -175,7 +162,7 @@ while DISPLAY.loop_running():
     exit()
 
   if win.ev=="resized":
-    print "resized"
+    print("resized")
     DISPLAY.resize(win.winx,win.winy,win.width,win.height-bord)
     win.resized=False
 
@@ -198,9 +185,9 @@ while DISPLAY.loop_running():
       try:
         display.destroy()
         win.destroy()
-        print "Bye bye! 1"
+        print("Bye bye! 1")
       except Exception:
-        print "Bye bye! 2"
+        print("Bye bye! 2")
 
   if win.ev=="drag" or win.ev=="click" or win.ev=="wheel":
     xm-=math.sin(mouserot*rads)*2

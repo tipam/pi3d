@@ -35,12 +35,12 @@
 # Based on code in the Forest Walk example
 # Copyright (c) 2012 - Tim Skillman
 # Version 0.04 - 20Jul12
-# 
+#
 # This example does not reflect the finished pi3d module in any way whatsoever!
 # It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
 import os.path
 
-from pi3d import *
+from pi3d.constants import *
 import math, random, exceptions, sys
 import PIL.ImageOps, ImageDraw, Image
 
@@ -79,7 +79,7 @@ class Size(xyz):
   """
   def __init__(self, x,y=None,z=None):
     super(Size,self).__init__(x,y,z)
-    
+
   def __add__(self, a):
     if isinstance(a, Position):
       return Position(self.x + a.x, self.y + a.y, self.z + a.z)
@@ -87,7 +87,7 @@ class Size(xyz):
       return Size(self.x + a.x, self.y + a.y, self.z + a.z)
     else:
       raise TypeException
-      
+
   def __sub__(self,a):
     if isinstance(a, Position):
       return Position(self.x - a.x, self.y - a.y, self.z - a.z)
@@ -95,11 +95,11 @@ class Size(xyz):
       return Size(self.x - a.x, self.y - a.y, self.z - a.z)
     else:
       raise TypeError
-      
+
   def __div__(self,a):
     return Size(self.x/a, self.y/a, self.z/a)
-      
-     
+
+
 class Position(xyz):
   """
   Encapsulates a 3D position.
@@ -108,7 +108,7 @@ class Position(xyz):
   """
   def __init__(self, x,y=None,z=None):
     super(Position,self).__init__(x,y,z)
-    
+
   def __add__(self, a):
     if isinstance(a, Size):
       return Position(self.x + a.x, self.y + a.y, self.z + a.z)
@@ -116,7 +116,7 @@ class Position(xyz):
       return Size(self.x + a.x, self.y + a.y, self.z + a.z)
     else:
       raise TypeException
-      
+
   def __sub__(self,a):
     if isinstance(a, Size):
       return Position(self.x - a.x, self.y - a.y, self.z - a.z)
@@ -124,17 +124,17 @@ class Position(xyz):
       return Size(self.x - a.x, self.y - a.y, self.z - a.z)
     else:
       raise TypeError
-      
+
   def setvalue(self,p):
     if not isinstance(p, Position): raise TypeError
     self.x = p.x
     self.y = p.y
     self.z = p.z
-    
+
 def _overlap(x1,w1, x2, w2):
   """
   A utility function for testing for overlap on a single axis. Returns true
-  if a line w1 above and below point x1 overlaps a line w2 above and below point x2. 
+  if a line w1 above and below point x1 overlaps a line w2 above and below point x2.
   """
   if x1+w1 < x2-w2: return False
   if x1-w1 > x2+w2: return False
@@ -158,57 +158,57 @@ class ObjectCuboid(object):
     self.size = s
     self.position = p
     self.bulk = bulk
-    
+
   def x(self):
     """
     Returns the x coordinate of the centre of this object
     """
     return self.position.x
-    
+
   def y(self):
     """
     Returns the x coordinate of the centre of this object
     """
     return self.position.y
-    
+
   def z(self):
     """
     Returns the x coordinate of the centre of this object
     """
     return self.position.z
-  
+
   def w(self):
     """
     Returns size of this object along the x axis -- its width
     """
     return self.size.x
-    
+
   def h(self):
     """
     Returns size of this object along the y axis -- its height
     """
     return self.size.y
-    
+
   def d(self):
     """
     Returns size of this object along the z axis -- its depth
     """
     return self.size.z
-  
+
   def move(self, p):
     """
     Moves this object to the given position.
     """
     self.position.setvalue(p)
-  
+
   def Overlaps(self, o, pos=None):
     """
     Returns true if the current ObjectCuboid overlaps the given ObjectCuboid.
     If the pos argument is specified then it is used as the position of the
     given ObjectCuboid instead of its actual position.
-    
+
     Clear as mud?
-    
+
     Without a pos argument: "does object o overlap me?"
     With a pos argument: "would object o overlap me if it was at position 'pos'?"
     """
@@ -223,14 +223,14 @@ class SolidObject(ObjectCuboid):
   A solid object is one that the avatar can not walk through. It has a size, a position and a bulk.
   The size is its total size on the three axes, the position is the position of its centre.
   The bulk is the aura around it into which the avatar's aura is not allowed to enter. A zero bulk works fine.
-  
+
   Each solid object can have an optional model associated with it. Each SolidObject created is added to a
   list of SolidObjects. All the models of all the objects in the list can be drawn with a single method call (drawall).
   If a solid object does not have an associated model then drawall() does not attempt to draw it. That
   applies to the avatar and to any objects that are part of merged shapes for example.
   """
   objectlist = []
-  
+
   def __init__(self,name,s,p, bulk):
     """
     Constructor
@@ -239,7 +239,7 @@ class SolidObject(ObjectCuboid):
     type(self).objectlist.append(self)
     self.model = None
     self.details = None
-    
+
   def CollisionList(self,p):
     """
     Returns a list of the objects that would overlap with the current oject,
@@ -252,7 +252,7 @@ class SolidObject(ObjectCuboid):
     r = filter(lambda(x): x.Overlaps(self,p), type(self).objectlist)
     r.remove(self)
     return r
-    
+
   def setmodel(self, model, details):
     """
     Sets the associated model and the details with which to draw it. If the model is set
@@ -261,7 +261,7 @@ class SolidObject(ObjectCuboid):
     self.model = model
     self.details = details
     self.model.set_draw_details(details[0], details[1], details[2], details[3])
-    
+
   @classmethod
   def drawall(self):
     """
@@ -270,16 +270,16 @@ class SolidObject(ObjectCuboid):
     for x in self.objectlist:
       if x.model:
         x.model.draw()
-        
+
 class createMyCuboid(Cuboid):
     """
     A bodge because my cuboids appear to be out of position with respect to my collision
     system. Fortunately it does not seem to happen with planes. Probably my fault.
     """
     def __init__(self,w,h,d, name="", x=0.0,y=0.0,z=0.0, rx=0.0,ry=0.0,rz=0.0, cx=0.0,cy=0.0,cz=0.0):
-        super(createMyCuboid,self).__init__(w=w, h=h, d=d, name=name, x=x+0.125, y=y, z=z-1.125, 
+        super(createMyCuboid,self).__init__(w=w, h=h, d=d, name=name, x=x+0.125, y=y, z=z-1.125,
         rx=rx, ry=ry, rz=rz, cx=cx, cy=cy, cz=cz)
-        
+
 wallnum=0
 def corridor(x,z, emap, width=10, length=10, height=10, details=None, walls="ns", name="wall", mergeshape=None):
   """
@@ -288,17 +288,17 @@ def corridor(x,z, emap, width=10, length=10, height=10, details=None, walls="ns"
   west walls are parallel with the z axis, with east being more positive.
   The cell is centred at (x,y,z). The cell is "width" along the z axis, (so north and south walls are that far apart,)
   "length" along the x axis, and "height" high. All walls and ceiling is a cuboid, 1 unit thick. There is no floor.
-  
+
   Use this function when having the walls as planes is a problem, such as when their zero thinkness is visible.
   Otherwise corridor_planes() is more efficient.
-  
+
   Which walls to create are specified by the string argument "walls". This should contain the letters n,e,s,w to draw the
   corresponding wall, or "o" (for open) if no ceiling is required.
   For example a N-S corridor section would use "ew", and a simple corner in the SE with no roof would be "seo"
-  
+
   If mergeshape is None then the resulting objects are drawn with SolidObject.drawall(), if mergeshape is set then the
   objects are added to it and SolidObject.drawall() will not draw it.
-  
+
   The objects are named with the given name argument as a prefix and a globally incrementing number as the suffix.
   """
   global wallnum
@@ -306,7 +306,7 @@ def corridor(x,z, emap, width=10, length=10, height=10, details=None, walls="ns"
   s = z - width/2
   e = x + length/2
   w = x - length/2
-  
+
   if "n" in walls:
     nwall = SolidObject(name+str(wallnum), Size(length, height, 1), Position(x, emap.calcHeight(x, z)+height/2, n-0.5), 0)
     nwallmodel = createMyCuboid(nwall.w()*2, nwall.h()*2, nwall.d()*2,
@@ -318,9 +318,9 @@ def corridor(x,z, emap, width=10, length=10, height=10, details=None, walls="ns"
     else:
       nwall.setmodel(nwallmodel, details)
 
-    
+
     wallnum += 1
-  
+
   if "s" in walls:
     swall = SolidObject(name+str(wallnum), Size(length, height, 1), Position(x, emap.calcHeight(x, z)+height/2, s+0.5), 0)
     swallmodel = createMyCuboid(swall.w()*2, swall.h()*2, swall.d()*2,
@@ -333,7 +333,7 @@ def corridor(x,z, emap, width=10, length=10, height=10, details=None, walls="ns"
       swall.setmodel(swallmodel, details)
 
     wallnum += 1
-  
+
   if "e" in walls:
     ewall = SolidObject(name+str(wallnum), Size(1, height, width), Position(e-0.5, emap.calcHeight(x, z)+height/2, z), 0)
     ewallmodel = createMyCuboid(ewall.w()*2, ewall.h()*2, ewall.d()*2,
@@ -346,7 +346,7 @@ def corridor(x,z, emap, width=10, length=10, height=10, details=None, walls="ns"
       ewall.setmodel(ewallmodel, details)
 
     wallnum += 1
-  
+
   if "w" in walls:
     wwall = SolidObject(name+str(wallnum), Size(1, height, width), Position(w+0.5, emap.calcHeight(x, z)+height/2, z), 0)
     wwallmodel = createMyCuboid(wwall.w()*2, wwall.h()*2, wwall.d()*2,
@@ -360,7 +360,7 @@ def corridor(x,z, emap, width=10, length=10, height=10, details=None, walls="ns"
 
 
     wallnum += 1
-  
+
   if "o" not in walls:
     ceiling = SolidObject(name+str(wallnum), Size(length, 1, width), Position(x, emap.calcHeight(x, z)+height+0.5, z), 0)
     ceilingmodel = createMyCuboid(ceiling.w()*2, ceiling.h()*2, ceiling.d()*2,
@@ -371,12 +371,12 @@ def corridor(x,z, emap, width=10, length=10, height=10, details=None, walls="ns"
       mergeshape.add(ceilingmodel)
     else:
       ceiling.setmodel(ceilingmodel, details)
-  
+
     wallnum += 1
 
 
 class Building (object):
-  
+
   # baseScheme : black is wall, white is corridor or room, there is one model
   baseScheme = {"#models": 1,
           (0,None): [["R",0]],
@@ -384,7 +384,7 @@ class Building (object):
           (0,0,"edge"): [["W",0], ["CE", 0]],
           (1,0,"edge"): [["W",0], ["CE", 0]],
           (1,0):[["W",0], ["CE", 0]]}
-          
+
   # openSectionScheme: black is wall, white is corridor or room, grey has no ceiling, there is one model
   openSectionScheme = {"#models": 1,
               (0,None) : [["R",0]],           # black cell has a roof
@@ -396,7 +396,7 @@ class Building (object):
               (2,0):[["W", 0]],             # white cell next to a black cell has a wall
               (1,0):[["W", 0], ["CE", 0]],       # grey cell next to a black cell has a wall and ceiling edge
               (1,2):[["CE", 0]] }            # grey cell next to a white cell has a ceiling edge
-              
+
   def __init__(self, mapfile, xpos, zpos, emap, width=10.0, depth=10.0, height=10.0, name="building", draw_details=None, yoff=0.0, scheme=None):
     """
     Creates a building at the given location. Each pixel of the image is one cell of the building
@@ -404,7 +404,7 @@ class Building (object):
     then it is open and has no ceiling.
     The building is centred at xpos, zpos (which gets renamed herin to x,y to match the image coords)
     Each cell is width on the x axis and depth on the z axis, and the walls are height high on the y axis.
-    
+
     The function returns a merged shape with the entire building in it.
     """
     self.xpos = xpos
@@ -414,55 +414,55 @@ class Building (object):
     self.height = height
     self.name = name
     self.ceilingthickness = 1.0
-    
+
     if scheme == None:
       self.scheme = Building.baseScheme
     else:
       self.scheme = scheme
-      
+
     # We don't have to be rigorous here, this should only be a draw_details or an iterable of draw_details.
     if hasattr(draw_details, "__getitem__") or hasattr(draw_details, "__iter__"):
-      assert (len(draw_details) == self.scheme["#models"]) 
+      assert (len(draw_details) == self.scheme["#models"])
       self.details = draw_details
     else:
       self.details = [draw_details for x in range(self.scheme["#models"])]
     # having a method like this allows draw details to be set later
-      
+
     self.yoff = yoff
-    
+
     self.model = [MergeShape(name=name+"."+str(x)) for x in range(self.scheme["#models"])]
-      
+
     self.set_draw_details(self.details) # after models created
-    
+
     print "Loading building map ...",mapfile
-    
+
     im = Image.open(mapfile)
     im = PIL.ImageOps.invert(im)
     ix,iy = im.size
-    
+
     print "image size", ix, ",", iy
-    
+
     startx = xpos - ix/2 * width
     starty = zpos - ix/2 * depth
-    
+
     yoff += emap.calcHeight(-xpos,-zpos)
-    
+
     if not im.mode == "P":
         im = im.convert('P', palette=Image.ADAPTIVE)
     im = im.transpose(Image.FLIP_TOP_BOTTOM)
     im = im.transpose(Image.FLIP_LEFT_RIGHT)
     pixels = im.load()
-    
+
     for y in range(1,iy-1):
       print ".",
       for x in range(1,ix-1):
           colour = pixels[x,y]
-        
+
           if x == 1:
             self._executeScheme(x, y, startx, starty, (colour, pixels[x-1,y], "edge"), wallfunc=self.west_wall, ceilingedgefunc=self.west_edge, ceilingfunc=self.ceiling, rooffunc=self.roof)
           else:
             self._executeScheme(x, y, startx, starty, (colour, pixels[x-1,y]), wallfunc=self.west_wall, ceilingedgefunc=self.west_edge, ceilingfunc=self.ceiling, rooffunc=self.roof)
-            
+
           if x == ix-2:
             self._executeScheme(x, y, startx, starty, (colour, pixels[x+1,y], "edge"), wallfunc=self.east_wall, ceilingedgefunc=self.east_edge, ceilingfunc=self.ceiling, rooffunc=self.roof)
           else:
@@ -472,14 +472,14 @@ class Building (object):
             self._executeScheme(x, y, startx, starty, (colour, pixels[x,y-1], "edge"), wallfunc=self.south_wall, ceilingedgefunc=self.south_edge, ceilingfunc=self.ceiling, rooffunc=self.roof)
           else:
             self._executeScheme(x, y, startx, starty, (colour, pixels[x,y-1]), wallfunc=self.south_wall, ceilingedgefunc=self.south_edge, ceilingfunc=self.ceiling, rooffunc=self.roof)
-            
+
           if y == iy-2:
             self._executeScheme(x, y, startx, starty, (colour, pixels[x, y+1], "edge"), wallfunc=self.north_wall, ceilingedgefunc=self.north_edge, ceilingfunc=self.ceiling, rooffunc=self.roof)
           else:
             self._executeScheme(x, y, startx, starty, (colour, pixels[x,y+1]), wallfunc=self.north_wall, ceilingedgefunc=self.north_edge, ceilingfunc=self.ceiling, rooffunc=self.roof)
-          
+
           self._executeScheme(x, y, startx, starty, (colour, None), wallfunc=None, ceilingedgefunc=None, ceilingfunc=self.ceiling, rooffunc=self.roof)
-          
+
   def drawAll(self):
     """
     Draws all the models that comprise the building
@@ -487,7 +487,7 @@ class Building (object):
     for x in range(len(self.model)):
       #self.model[x].draw()
       self.model[x].draw(self.details[x][0], self.details[x][1], self.details[x][2], self.details[x][3])
-    
+
   def set_draw_details(self, details):
     """
     Set the shader, textures, ntiles and reflection strength
@@ -495,7 +495,7 @@ class Building (object):
     #TODO this doesn't seem to set the details!
     for x in range(len(self.model)):
       self.model[x].set_draw_details(details[x][0], details[x][1], details[x][2], details[x][3])
-    
+
   def _executeScheme (self, x, y, startx, starty, key, wallfunc=None, ceilingedgefunc=None, ceilingfunc=None, rooffunc=None):
     """
     Calls the functions defined for the given key in the scheme.
@@ -507,7 +507,7 @@ class Building (object):
       The second number is the colour of the adjacent cell (on the other side of the prospective wall.)
       This is used once per direction to create upto four walls (and ceiling edges).
     (n1, n2, "edge") As (n1,n2), but the cell is on the edge of the building.
-    (n, None) The number is the colour of the current cell. This is used once per cell to create the ceiling and roof. 
+    (n, None) The number is the colour of the current cell. This is used once per cell to create the ceiling and roof.
     """
 
     if key in self.scheme:
@@ -528,7 +528,7 @@ class Building (object):
           ceilingedgefunc(x*self.width + startx, self.yoff, y*self.depth + starty,
                self.width, self.depth, self.height,
                self.details[op[1]], mergeshape=self.model[op[1]])
-          
+
   def north_wall(self, x, y, z, width=10, length=10, height=10, details=None, name="wall", mergeshape=None):
     """
     Creates a cell consisting of optional north, south, east and west walls and an optional ceiling.
@@ -536,149 +536,7 @@ class Building (object):
     west walls are parallel with the z axis, with east being more positive.
     The cell is centred at (x,y,z). The cell is "width" along the z axis, (so north and south walls are that far apart,)
     "length" along the x axis, and "height" high. Each wall is a plane, but the ceiling is a cuboid, 1 unit high. There is no floor.
-    
-    The resulting object is added to the given mergeshape
-    
-    The objects are named with the given name argument as a prefix and a globally incrementing number as the suffix.
-    """
-    global wallnum
-    n = z + width/2
-    s = z - width/2
-    e = x + length/2
-    w = x - length/2
-    
-    nwall = SolidObject(name+str(wallnum), Size(length, height, 1), Position(x, y+height/2, n), 0)
-    model = Plane(w=nwall.w()*2, h=nwall.h()*2, name=name+str(wallnum))
-    mergeshape.add(model, nwall.x(), nwall.y(), nwall.z())
-  
-    
-    wallnum += 1
-    
-  def north_edge(self, x, y, z, width=10, length=10, height=10, details=None, name="wall", mergeshape=None):
-    """
-    Creates a cell consisting of optional north, south, east and west walls and an optional ceiling.
-    The north and south walls are parallel with the x axis, with north being more positive. The east and
-    west walls are parallel with the z axis, with east being more positive.
-    The cell is centred at (x,y,z). The cell is "width" along the z axis, (so north and south walls are that far apart,)
-    "length" along the x axis, and "height" high. Each wall is a plane, but the ceiling is a cuboid, 1 unit high. There is no floor.
-    
-    The resulting object is added to the given mergeshape
-    
-    The objects are named with the given name argument as a prefix and a globally incrementing number as the suffix.
-    """
-    global wallnum
-    n = z + width/2
-    s = z - width/2
-    e = x + length/2
-    w = x - length/2
-    
-    model = Plane(w=length, h=self.ceilingthickness, name=name+str(wallnum))
-    mergeshape.add(model, x, y+height+self.ceilingthickness/2, n)
-    
-    wallnum += 1
-    
-  def south_wall(self, x, y, z, width=10, length=10, height=10, details=None, name="wall", mergeshape=None):
-    """
-    Creates a cell consisting of optional north, south, east and west walls and an optional ceiling.
-    The north and south walls are parallel with the x axis, with north being more positive. The east and
-    west walls are parallel with the z axis, with east being more positive.
-    The cell is centred at (x,y,z). The cell is "width" along the z axis, (so north and south walls are that far apart,)
-    "length" along the x axis, and "height" high. Each wall is a plane, but the ceiling is a cuboid, 1 unit high. There is no floor.
-    
-    The resulting object is added to the given mergeshape
-    
-    The objects are named with the given name argument as a prefix and a globally incrementing number as the suffix.
-    """
-    global wallnum
-    n = z + width/2
-    s = z - width/2
-    e = x + length/2
-    w = x - length/2
-    
-    swall = SolidObject(name+str(wallnum), Size(length, height, 1), Position(x, y+height/2, s), 0)
-    model = Plane(w=swall.w()*2, h=swall.h()*2, name=name+str(wallnum))
-    mergeshape.add(model, swall.x(),swall.y(),swall.z(), rx=0.0,ry=0.0,rz=0.0)
-  
-    wallnum += 1
-    
-  def south_edge(self, x, y, z, width=10, length=10, height=10, details=None, name="wall", mergeshape=None):
-    """
-    Creates a cell consisting of optional north, south, east and west walls and an optional ceiling.
-    The north and south walls are parallel with the x axis, with north being more positive. The east and
-    west walls are parallel with the z axis, with east being more positive.
-    The cell is centred at (x,y,z). The cell is "width" along the z axis, (so north and south walls are that far apart,)
-    "length" along the x axis, and "height" high. Each wall is a plane, but the ceiling is a cuboid, 1 unit high. There is no floor.
-    
-    The resulting object is added to the given mergeshape
-    
-    The objects are named with the given name argument as a prefix and a globally incrementing number as the suffix.
-    """
-    global wallnum
-    n = z + width/2
-    s = z - width/2
-    e = x + length/2
-    w = x - length/2
-    
-    model = Plane(w=length, h=self.ceilingthickness, name=name+str(wallnum))
-    mergeshape.add(model, x,y+height+self.ceilingthickness/2,s, rx=0.0,ry=0.0,rz=0.0)
-  
-    wallnum += 1
-    
-  def east_wall(self, x, y, z, width=10, length=10, height=10, details=None, name="wall", mergeshape=None):
-    """
-    Creates a cell consisting of optional north, south, east and west walls and an optional ceiling.
-    The north and south walls are parallel with the x axis, with north being more positive. The east and
-    west walls are parallel with the z axis, with east being more positive.
-    The cell is centred at (x,y,z). The cell is "width" along the z axis, (so north and south walls are that far apart,)
-    "length" along the x axis, and "height" high. Each wall is a plane, but the ceiling is a cuboid, 1 unit high. There is no floor.
-    
-    The resulting object is added to the given mergeshape
-     
-    The objects are named with the given name argument as a prefix and a globally incrementing number as the suffix.
-    """
-    global wallnum
-    n = z + width/2
-    s = z - width/2
-    e = x + length/2
-    w = x - length/2
-    
-    ewall = SolidObject(name+str(wallnum), Size(1, height, width), Position(e, y+height/2, z), 0)
-    model = Plane(w=ewall.d()*2, h=ewall.h()*2, name=name+str(wallnum))
-    mergeshape.add(model, ewall.x(),ewall.y(),ewall.z(), rx=0.0,ry=90.0,rz=0.0)
-  
-    wallnum += 1
-    
-  def east_edge(self, x, y, z, width=10, length=10, height=10, details=None, name="wall", mergeshape=None):
-    """
-    Creates a cell consisting of optional north, south, east and west walls and an optional ceiling.
-    The north and south walls are parallel with the x axis, with north being more positive. The east and
-    west walls are parallel with the z axis, with east being more positive.
-    The cell is centred at (x,y,z). The cell is "width" along the z axis, (so north and south walls are that far apart,)
-    "length" along the x axis, and "height" high. Each wall is a plane, but the ceiling is a cuboid, 1 unit high. There is no floor.
-    
-    The resulting object is added to the given mergeshape
-     
-    The objects are named with the given name argument as a prefix and a globally incrementing number as the suffix.
-    """
-    global wallnum
-    n = z + width/2
-    s = z - width/2
-    e = x + length/2
-    w = x - length/2
-    
-    model = Plane(w=width, h=self.ceilingthickness, name=name+str(wallnum))
-    mergeshape.add(model, e,y+height+self.ceilingthickness/2,z, rx=0.0,ry=90.0,rz=0.0)
-  
-    wallnum += 1
-    
-  def west_wall(self, x, y, z, width=10, length=10, height=10, details=None, name="wall", mergeshape=None):
-    """
-    Creates a cell consisting of optional north, south, east and west walls and an optional ceiling.
-    The north and south walls are parallel with the x axis, with north being more positive. The east and
-    west walls are parallel with the z axis, with east being more positive.
-    The cell is centred at (x,y,z). The cell is "width" along the z axis, (so north and south walls are that far apart,)
-    "length" along the x axis, and "height" high. Each wall is a plane, but the ceiling is a cuboid, 1 unit high. There is no floor.
-    
+
     The resulting object is added to the given mergeshape
 
     The objects are named with the given name argument as a prefix and a globally incrementing number as the suffix.
@@ -688,11 +546,153 @@ class Building (object):
     s = z - width/2
     e = x + length/2
     w = x - length/2
-    
+
+    nwall = SolidObject(name+str(wallnum), Size(length, height, 1), Position(x, y+height/2, n), 0)
+    model = Plane(w=nwall.w()*2, h=nwall.h()*2, name=name+str(wallnum))
+    mergeshape.add(model, nwall.x(), nwall.y(), nwall.z())
+
+
+    wallnum += 1
+
+  def north_edge(self, x, y, z, width=10, length=10, height=10, details=None, name="wall", mergeshape=None):
+    """
+    Creates a cell consisting of optional north, south, east and west walls and an optional ceiling.
+    The north and south walls are parallel with the x axis, with north being more positive. The east and
+    west walls are parallel with the z axis, with east being more positive.
+    The cell is centred at (x,y,z). The cell is "width" along the z axis, (so north and south walls are that far apart,)
+    "length" along the x axis, and "height" high. Each wall is a plane, but the ceiling is a cuboid, 1 unit high. There is no floor.
+
+    The resulting object is added to the given mergeshape
+
+    The objects are named with the given name argument as a prefix and a globally incrementing number as the suffix.
+    """
+    global wallnum
+    n = z + width/2
+    s = z - width/2
+    e = x + length/2
+    w = x - length/2
+
+    model = Plane(w=length, h=self.ceilingthickness, name=name+str(wallnum))
+    mergeshape.add(model, x, y+height+self.ceilingthickness/2, n)
+
+    wallnum += 1
+
+  def south_wall(self, x, y, z, width=10, length=10, height=10, details=None, name="wall", mergeshape=None):
+    """
+    Creates a cell consisting of optional north, south, east and west walls and an optional ceiling.
+    The north and south walls are parallel with the x axis, with north being more positive. The east and
+    west walls are parallel with the z axis, with east being more positive.
+    The cell is centred at (x,y,z). The cell is "width" along the z axis, (so north and south walls are that far apart,)
+    "length" along the x axis, and "height" high. Each wall is a plane, but the ceiling is a cuboid, 1 unit high. There is no floor.
+
+    The resulting object is added to the given mergeshape
+
+    The objects are named with the given name argument as a prefix and a globally incrementing number as the suffix.
+    """
+    global wallnum
+    n = z + width/2
+    s = z - width/2
+    e = x + length/2
+    w = x - length/2
+
+    swall = SolidObject(name+str(wallnum), Size(length, height, 1), Position(x, y+height/2, s), 0)
+    model = Plane(w=swall.w()*2, h=swall.h()*2, name=name+str(wallnum))
+    mergeshape.add(model, swall.x(),swall.y(),swall.z(), rx=0.0,ry=0.0,rz=0.0)
+
+    wallnum += 1
+
+  def south_edge(self, x, y, z, width=10, length=10, height=10, details=None, name="wall", mergeshape=None):
+    """
+    Creates a cell consisting of optional north, south, east and west walls and an optional ceiling.
+    The north and south walls are parallel with the x axis, with north being more positive. The east and
+    west walls are parallel with the z axis, with east being more positive.
+    The cell is centred at (x,y,z). The cell is "width" along the z axis, (so north and south walls are that far apart,)
+    "length" along the x axis, and "height" high. Each wall is a plane, but the ceiling is a cuboid, 1 unit high. There is no floor.
+
+    The resulting object is added to the given mergeshape
+
+    The objects are named with the given name argument as a prefix and a globally incrementing number as the suffix.
+    """
+    global wallnum
+    n = z + width/2
+    s = z - width/2
+    e = x + length/2
+    w = x - length/2
+
+    model = Plane(w=length, h=self.ceilingthickness, name=name+str(wallnum))
+    mergeshape.add(model, x,y+height+self.ceilingthickness/2,s, rx=0.0,ry=0.0,rz=0.0)
+
+    wallnum += 1
+
+  def east_wall(self, x, y, z, width=10, length=10, height=10, details=None, name="wall", mergeshape=None):
+    """
+    Creates a cell consisting of optional north, south, east and west walls and an optional ceiling.
+    The north and south walls are parallel with the x axis, with north being more positive. The east and
+    west walls are parallel with the z axis, with east being more positive.
+    The cell is centred at (x,y,z). The cell is "width" along the z axis, (so north and south walls are that far apart,)
+    "length" along the x axis, and "height" high. Each wall is a plane, but the ceiling is a cuboid, 1 unit high. There is no floor.
+
+    The resulting object is added to the given mergeshape
+
+    The objects are named with the given name argument as a prefix and a globally incrementing number as the suffix.
+    """
+    global wallnum
+    n = z + width/2
+    s = z - width/2
+    e = x + length/2
+    w = x - length/2
+
+    ewall = SolidObject(name+str(wallnum), Size(1, height, width), Position(e, y+height/2, z), 0)
+    model = Plane(w=ewall.d()*2, h=ewall.h()*2, name=name+str(wallnum))
+    mergeshape.add(model, ewall.x(),ewall.y(),ewall.z(), rx=0.0,ry=90.0,rz=0.0)
+
+    wallnum += 1
+
+  def east_edge(self, x, y, z, width=10, length=10, height=10, details=None, name="wall", mergeshape=None):
+    """
+    Creates a cell consisting of optional north, south, east and west walls and an optional ceiling.
+    The north and south walls are parallel with the x axis, with north being more positive. The east and
+    west walls are parallel with the z axis, with east being more positive.
+    The cell is centred at (x,y,z). The cell is "width" along the z axis, (so north and south walls are that far apart,)
+    "length" along the x axis, and "height" high. Each wall is a plane, but the ceiling is a cuboid, 1 unit high. There is no floor.
+
+    The resulting object is added to the given mergeshape
+
+    The objects are named with the given name argument as a prefix and a globally incrementing number as the suffix.
+    """
+    global wallnum
+    n = z + width/2
+    s = z - width/2
+    e = x + length/2
+    w = x - length/2
+
+    model = Plane(w=width, h=self.ceilingthickness, name=name+str(wallnum))
+    mergeshape.add(model, e,y+height+self.ceilingthickness/2,z, rx=0.0,ry=90.0,rz=0.0)
+
+    wallnum += 1
+
+  def west_wall(self, x, y, z, width=10, length=10, height=10, details=None, name="wall", mergeshape=None):
+    """
+    Creates a cell consisting of optional north, south, east and west walls and an optional ceiling.
+    The north and south walls are parallel with the x axis, with north being more positive. The east and
+    west walls are parallel with the z axis, with east being more positive.
+    The cell is centred at (x,y,z). The cell is "width" along the z axis, (so north and south walls are that far apart,)
+    "length" along the x axis, and "height" high. Each wall is a plane, but the ceiling is a cuboid, 1 unit high. There is no floor.
+
+    The resulting object is added to the given mergeshape
+
+    The objects are named with the given name argument as a prefix and a globally incrementing number as the suffix.
+    """
+    global wallnum
+    n = z + width/2
+    s = z - width/2
+    e = x + length/2
+    w = x - length/2
+
     wwall = SolidObject(name+str(wallnum), Size(1, height, width), Position(w, y+height/2, z), 0)
     model = Plane(w=wwall.d()*2, h=wwall.h()*2, name=name+str(wallnum))
     mergeshape.add(model, wwall.x(),wwall.y(),wwall.z(),rx=0.0,ry=90.0,rz=0.0)
-    
+
     wallnum += 1
 
   def west_edge(self, x, y, z, width=10, length=10, height=10, details=None, name="wall", mergeshape=None):
@@ -702,9 +702,9 @@ class Building (object):
     west walls are parallel with the z axis, with east being more positive.
     The cell is centred at (x,y,z). The cell is "width" along the z axis, (so north and south walls are that far apart,)
     "length" along the x axis, and "height" high. Each wall is a plane, but the ceiling is a cuboid, 1 unit high. There is no floor.
-    
+
     The resulting object is added to the given mergeshape
-    
+
     The objects are named with the given name argument as a prefix and a globally incrementing number as the suffix.
     """
     global wallnum
@@ -712,12 +712,12 @@ class Building (object):
     s = z - width/2
     e = x + length/2
     w = x - length/2
-    
+
     model = Plane(w=width, h=self.ceilingthickness, name=name+str(wallnum))
     mergeshape.add(model, w,y+height+self.ceilingthickness/2,z,rx=0.0,ry=90.0,rz=0.0)
-  
+
     wallnum += 1
-    
+
   def ceiling(self, x, y, z, width=10, length=10, height=10, details=None, name="wall", mergeshape=None, makeroof=True, makeceiling=True):
     """
     Creates a cell consisting of optional north, south, east and west walls and an optional ceiling.
@@ -725,9 +725,9 @@ class Building (object):
     west walls are parallel with the z axis, with east being more positive.
     The cell is centred at (x,y,z). The cell is "width" along the z axis, (so north and south walls are that far apart,)
     "length" along the x axis, and "height" high. Each wall is a plane, but the ceiling is a cuboid, 1 unit high. There is no floor.
-    
+
     The resulting object is added to the given mergeshape
-     
+
     The objects are named with the given name argument as a prefix and a globally incrementing number as the suffix.
     """
     global wallnum
@@ -735,7 +735,7 @@ class Building (object):
     s = z - width/2
     e = x + length/2
     w = x - length/2
-    
+
     ceiling = SolidObject(name+str(wallnum), Size(length, 1, width), Position(x, y+height+self.ceilingthickness/2, z), 0)
     ceilingmodel = Plane(w=ceiling.w()*2, h=ceiling.d()*2, name=name+str(wallnum))
     mergeshape.add(ceilingmodel,x,y+height,z,rx=90.0,ry=0.0,rz=0.0)
@@ -749,9 +749,9 @@ class Building (object):
     west walls are parallel with the z axis, with east being more positive.
     The cell is centred at (x,y,z). The cell is "width" along the z axis, (so north and south walls are that far apart,)
     "length" along the x axis, and "height" high. Each wall is a plane, but the ceiling is a cuboid, 1 unit high. There is no floor.
-    
+
     The objects are named with the given name argument as a prefix and a globally incrementing number as the suffix.
- 
+
     The resulting objects are added to the given mergeshape
     """
     global wallnum

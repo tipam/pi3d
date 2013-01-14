@@ -1,5 +1,7 @@
+#!/usr/bin/python
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import demo
-demo.demo(__name__)
 
 from pi3d.util import Utility
 from pi3d import Display
@@ -42,6 +44,6 @@ while 1:
       DISPLAY.destroy()
       break
     else:
-      print k
+      print(k)
 
   DISPLAY.swapBuffers()

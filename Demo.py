@@ -1,5 +1,4 @@
 #!/usr/bin/python
-
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import os
@@ -9,8 +8,8 @@ import sys
 from pi3d.constants import STARTUP_MESSAGE
 
 SUFFIX = '.py'
-
 USE_TK = True
+ADD_ACCELERATORS = False  # Doesn't work.
 
 def tk_demo(demos, message):
   import Tkinter
@@ -44,7 +43,7 @@ def tk_demo(demos, message):
   for demo in demos:
     runner = demo_runner(demo)
     extra = {}
-    if demo[0] != last_key:
+    if ADD_ACCELERATORS and demo[0] != last_key:
       last_key = demo[0].upper()
       extra['accelerator'] = last_key
       root.bind_all('<%s>' % last_key, runner)
@@ -90,12 +89,13 @@ def run_one_demo(demo):
   __import__('demos.' + demo)
 
 
+
 def run_demo(demo, demo_list):
   demo = demo.lower()
   for d in demo_list:
     if d.lower().startswith(demo):
       run_one_demo(d)
-      return
+      return True
   print("Didn't understand demo '%s'" % demo)
   usage(demo_list)
 
