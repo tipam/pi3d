@@ -11,7 +11,6 @@ from pi3d.constants import STARTUP_MESSAGE
 SUFFIX = '.py'
 USE_TK = True
 ADD_ACCELERATORS = False  # Doesn't work.
-MODULES = {}
 
 def tk_demo(demos, message):
   import Tkinter
@@ -88,16 +87,8 @@ def run_one_demo(demo):
     print()
     print('Running demo', demo)
     print()
+  __import__('demos.' + demo)
 
-  demo_module = MODULES.get(demo, None)
-  if demo_module:
-    print('reloading')
-    reload(demo_module)
-  else:
-    module = __import__('demos.' + demo)
-    del module
-    MODULES[demo] = getattr(module, demo)
-    print('!!!', MODULES[demo])
 
 
 def run_demo(demo, demo_list):
