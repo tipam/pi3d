@@ -2,6 +2,9 @@
 
 import math, random
 
+import demo
+demo.demo(__name__)
+
 from pi3d import Display
 from pi3d.Keyboard import Keyboard
 from pi3d.Mouse import Mouse
@@ -273,4 +276,5 @@ while 1:
     #print k
   CAMERA.was_moved = False
   DISPLAY.swapBuffers()
+
 quit()

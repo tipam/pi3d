@@ -1,5 +1,8 @@
 import math
 
+import demo
+demo.demo(__name__)
+
 from pi3d import Display
 from pi3d.Keyboard import Keyboard
 from pi3d.Mouse import Mouse
@@ -61,7 +64,7 @@ openSectionSchemeMultimodel = {"#models": 4,
               (2,0):[["W", 0]],             # white cell next to a black cell has a wall
               (1,0):[["W", 1], ["CE", 3]],       # grey cell next to a black cell has a wall and ceiling edge
               (1,2):[["CE", 3]] }            # grey cell next to a white cell has a ceiling edge
-            
+
 details = [[shader, [blockimg, blockimg], 1.0, 0.0],
                 [shader, [greenimg, greenimg], 1.0, 0.0],
                 [shader, [roofimg, blockimg], 1.0, 0.0],
@@ -76,7 +79,7 @@ building = Building("textures/silo_map.png", 0, 0, mymap, width=15.0, depth=15.0
 
 
 #screenshot number
-scshots = 1 
+scshots = 1
 
 #avatar camera
 rot=0.0
@@ -100,21 +103,21 @@ record = False
 CAMERA = Camera.instance()
 while 1:
   DISPLAY.clear()
-  
+
   CAMERA.reset()
   CAMERA.rotate(tilt, rot, 0)
   CAMERA.position((man.x(), man.y(), man.z() - aveyeleveladjust))
-  
+
   myecube.position(man.x(), man.y(), man.z() - aveyeleveladjust)
   myecube.draw()
   mymap.draw()
 
   SolidObject.drawall()
-  
+
   building.drawAll()
 
   mx, my = mymouse.position()
-  
+
   #if mx>DISPLAY.left and mx<DISPLAY.right and my>DISPLAY.top and my<DISPLAY.bottom:
   rot -= (mx-omx)*0.2
   tilt += (my-omy)*0.2
@@ -174,11 +177,11 @@ while 1:
   if record:
     screenshot("/media/E856-DA25/New/fr%03d.jpg" % frame)
     frame += 1
-    
+
   DISPLAY.swapBuffers()
-  
+
 
 mykeys.close()
 mymouse.stop()
 DISPLAY.destroy()
- 
+

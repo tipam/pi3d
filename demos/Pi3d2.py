@@ -2,6 +2,9 @@ from __future__ import absolute_import
 
 import math,random,time
 
+import demo
+demo.demo(__name__)
+
 from pi3d import *
 
 from pi3d import Display
@@ -38,7 +41,7 @@ asphere = Sphere(sides=32)
 for i in range(num[0]):
   for j in range(num[1]):
     myshape.add(asphere, -num[0]*0.9 + 1.8*i, -num[1]*0.9 +1.8*j, 0.0)
-  
+
 myshape.position(0.0, 0.0, 5)
 myshape.set_draw_details(shader, [shapeimg, shapebump, shapeshine], 8.0, 0.0)
 #light2 = Light((-5, -5, i - 3))

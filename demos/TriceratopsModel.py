@@ -1,18 +1,5 @@
-# Loading EGG model
-# =================
-# This example - Copyright (c) 2012 - Tim Skillman
-# EGG loader code by Paddy Gaunt, Copyright (c) 2012
-# Version 0.02 - 20Jul12
-#
-# This example does not reflect the finished pi3d module in any way whatsoever!
-# It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
-#
-# PLEASE INSTALL PIL imaging with:
-#
-#      $ sudo apt-get install python-imaging
-#
-# before running this example
-#
+import demo
+demo.demo(__name__)
 
 from pi3d.util import Utility
 from pi3d import Display

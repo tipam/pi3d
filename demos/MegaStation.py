@@ -3,6 +3,9 @@
 
 import math, random, time
 
+import demo
+demo.demo(__name__)
+
 from echomesh.util import Log
 
 from pi3d import *

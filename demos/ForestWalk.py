@@ -2,6 +2,9 @@
 
 from __future__ import absolute_import
 
+import demo
+demo.demo(__name__)
+
 import math,random
 
 from pi3d import Display

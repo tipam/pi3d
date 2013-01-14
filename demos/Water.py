@@ -2,6 +2,9 @@ from __future__ import absolute_import
 
 import math, random, time, glob
 
+import demo
+demo.demo(__name__)
+
 from pi3d import *
 
 from pi3d import Display
@@ -52,11 +55,11 @@ asphere = Sphere(sides=32)
 for i in range(num[0]):
   for j in range(num[1]):
     myshape.add(asphere, -num[0]*0.9 + 1.8*i, -num[1]*0.9 +1.8*j, 0.0)
-  
+
 myshape.position(0.0, 0.0, 5)
 myshape.set_draw_details(shader, [shapeimg, shapebump, shapeshine], 1.0, 0.1)
 myshape.set_material((1.0, 0.5, 0.2, 0.5))
-  
+
 mywater = Plane(w=100.0, h=100.0)
 mywater.set_draw_details(matsh, [waterbump[0], shapeshine], 8.0, 0.6)
 mywater.set_material((0.0, 0.05, 0.1))

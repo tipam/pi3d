@@ -1,6 +1,9 @@
 import random
 import sys
 
+import demo
+demo.demo(__name__)
+
 from pi3d import Keyboard
 
 from pi3d import Display

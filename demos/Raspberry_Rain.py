@@ -1,21 +1,7 @@
-# Raspberry Rain example using pi3d module
-# ========================================
-# Copyright (c) 2012 - Tim Skillman
-# Version 0.03 - 20Jul12
-#
-# This example does not reflect the finished pi3d module in any way whatsoever!
-# It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
-#
-# PLEASE INSTALL PIL imaging with:
-#
-#	  $ sudo apt-get install python-imaging
-#
-# before running this example
-#
-# Rasperry rain demonstrates pi3d sprites over the desktop.
-# The sprites make use of the z value in a perspective view
-
 import random, time
+
+import demo
+demo.demo(__name__)
 
 from pi3d import Display
 from pi3d.Keyboard import Keyboard

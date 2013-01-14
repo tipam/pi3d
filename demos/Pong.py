@@ -1,19 +1,7 @@
-# Ponh using pi3d module
-# =====================================
-# Copyright (c) 2012 - Tim Skillman, Paddy Gaunt
-# Version 0.02 - 20Aug12
-#
-# This example does not reflect the finished pi3d module in any way whatsoever!
-# It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
-#
-# PLEASE INSTALL PIL imaging with:
-#
-# $ sudo apt-get install python-imaging
-#
-# before running this example
-#
-
 import math, random
+
+import demo
+demo.demo(__name__)
 
 from pi3d import Display
 from pi3d.Keyboard import Keyboard
@@ -134,7 +122,7 @@ while True:
   if not (dy == 0.0 and dx == 0.0):
     camera.reset()
     camera.position((xm, 2 + ym, -maphalf - 2.5))
-  
+
   #myecube.draw()
   #mymap.draw()
 
@@ -213,10 +201,10 @@ while True:
 
   defocus.blur(ball, 4, 15, 2)
   defocus.blur(mymap, 4, 15, 2)
-  defocus.blur(myecube, 800, 2000, 1) 
-  
+  defocus.blur(myecube, 800, 2000, 1)
+
   monster.draw()
-  
+
   # write up the score
   score0.draw()
   score1.draw()
