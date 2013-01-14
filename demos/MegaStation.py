@@ -7,29 +7,14 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import math, random, time
 
 import demo
+from pi3d import *
 
-from echomesh.util import Log
-
-from pi3d.constants import *
-
-from pi3d import Display
-from pi3d.Mouse import Mouse
-from pi3d.Texture import Texture
-
-from pi3d.Camera import Camera
-from pi3d.Shader import Shader
-
-from pi3d.shape.ElevationMap import ElevationMap
-from pi3d.shape import EnvironmentCube
-from pi3d.shape.Model import Model
-
-from pi3d.util.Screenshot import screenshot
 from pi3d.util.TkWin import TkWin
-from pi3d.util.Utility import lodDraw
 
 rads = 0.017453292512  # degrees to radians
 
 #Create a Tkinter window
+# TODO: the display will do this for you automatically now
 winw,winh,bord = 1200,600,0   	#64MB GPU memory setting
 #winw,winh,bord = 1920,1080,0	#128MB GPU memory setting
 win = TkWin(None, "Mega Space Station in Pi3D",winw,winh)
@@ -128,27 +113,27 @@ while DISPLAY.loop_running():
 
   mymap.draw()  #Draw the landscape
 
-  lodDraw([xm, ym, zm], [0, mody, 0], [[opendist,cor_cross],[1000,cor_cross_doors]])
+  Utility.lodDraw([xm, ym, zm], [0, mody, 0], [[opendist,cor_cross],[1000,cor_cross_doors]])
   cor_win.position(0, mody, spc*1.5)
   cor_win.draw()
   corridor.position(0, mody, spc*2.5)
   corridor.draw()
   cor_win.position(0, mody, spc*3.5)
   cor_win.draw()
-  lodDraw([xm, ym, zm], [0, mody, spc*5],[[opendist,cor_cross],[1000,cor_cross_doors]])
+  Utility.lodDraw([xm, ym, zm], [0, mody, spc*5],[[opendist,cor_cross],[1000,cor_cross_doors]])
   cor_win.position(0, mody, spc*6.5)
   cor_win.draw()
-  lodDraw([xm, ym, zm],[0, mody, spc*8], [[opendist,cor_cross],[1000,cor_cross_doors]])
+  Utility.lodDraw([xm, ym, zm],[0, mody, spc*8], [[opendist,cor_cross],[1000,cor_cross_doors]])
   cor_win90.position(-spc*1.5, mody, spc*5)
   cor_win90.draw()
   cor_bend.position(-spc*2.5, mody, spc*5)
   cor_bend.draw()
-  lodDraw([xm, ym, zm],[-spc*2.6, mody, spc*6.6],[[opendist,cor_cross],[1000,cor_cross_doors]])
+  Utility.lodDraw([xm, ym, zm],[-spc*2.6, mody, spc*6.6],[[opendist,cor_cross],[1000,cor_cross_doors]])
   cor_win90.position(spc*1.5, mody, spc*5)
   cor_win90.draw()
   corridor90.position(spc*2.5, mody, spc*5)
   corridor90.draw()
-  lodDraw([xm, ym, zm],[spc*4, mody, spc*5],[[opendist,cor_cross],[1000,cor_cross_doors]])
+  Utility.lodDraw([xm, ym, zm],[spc*4, mody, spc*5],[[opendist,cor_cross],[1000,cor_cross_doors]])
 
   myecube.position(xm, ym, zm)
   myecube.draw()#Draw environment cube

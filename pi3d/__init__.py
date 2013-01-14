@@ -42,4 +42,5 @@ from pi3d.util import Utility
 from pi3d.util.Defocus import Defocus
 from pi3d.util.Font import Font
 from pi3d.util.Matrix import Matrix
+from pi3d.util.Screenshot import screenshot
 from pi3d.util.Ttffont import Ttffont
