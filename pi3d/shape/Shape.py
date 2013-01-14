@@ -1,3 +1,5 @@
+import ctypes
+
 from itertools import chain
 from numpy import array, dot, ravel
 from math import radians, pi, sin, cos
@@ -152,10 +154,10 @@ class Shape(Loadable):
     """used to set some of the draw details for all Buffers in Shape
     this is useful where a Model object has been loaded from an obj file and
     the textures assigned automatically
-    
+
     Arguments:
     normtex -- normal map Texture to use
-    
+
     Keyword arguments:
     ntiles -- multiplier for the tiling of the normal map
     shinetex -- reflection Texture to use
@@ -208,7 +210,7 @@ class Shape(Loadable):
     self.unif[12:15] = fogshade[0:3]
     self.unif[15] = fogdist
     self.unif[16] = fogshade[3]
-    
+
   def set_light(self, light, num=0):
     """Set the values of the lights
     Arguments:
@@ -223,7 +225,7 @@ class Shape(Loadable):
     self.unif[stn:(stn + 3)] = light.lightpos[0:3]
     self.unif[(stn + 3):(stn + 6)] = light.lightcol[0:3]
     self.unif[(stn + 6):(stn + 9)] = light.lightamb[0:3]
-    
+
   def x(self):
     """get value of x"""
     return self.unif[0]
@@ -350,14 +352,14 @@ class Shape(Loadable):
 
   def lathe(self, path, rise=0.0, loops=1.0):
     """returns a Buffer object by rotating the points defined in path
-    
+
     Arguments:
-    path -- an array of points [(x0,y0),(x1,y1)..] to rotate around 
+    path -- an array of points [(x0,y0),(x1,y1)..] to rotate around
         the y axis
     NB TODO self.sides is not passed as an argument but is required to be
     set by anything calling this method
     [self.sides -- number of sides to divide each rotation into]
-    
+
     Keyword arguments:
     rise -- amout to increment the path y values for each rotation (ie helix)
     loops -- numbe of times to rotate the path by 360 (ie helix)

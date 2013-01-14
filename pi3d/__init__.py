@@ -1,5 +1,3 @@
-import ctypes
-
 from ctypes import c_byte
 from ctypes import c_float
 from ctypes import c_int
@@ -33,9 +31,11 @@ def call_float(f, *args):
 def _load_library(name):
   """Try to load a shared library, report an error on failure."""
   try:
+    import ctypes
     return ctypes.CDLL('lib%s.so' % name)
   except:
-    LOGGER.error("Couldn't load library %s" % name)
+    import echomesh.util.Log
+    Log.logger(__name__).error("Couldn't load library %s" % name)
 
 bcm = _load_library('bcm_host')
 opengles = _load_library('GLESv2')
