@@ -7,15 +7,16 @@
 **EGG & OBJ file loader written by Paddy Gaunt, Copyright (c) 2012**
 
 # Description
+
 **Integration Branch**
 
 --------------------------------------------
 
-**NB The demos are all in a subdirectory demos, you can run these various ways (which are not quite as obvious as you may think)**:
+**NB The demos are all in a subdirectory demos, you can run these...**:
 
-1) From a terminal change dir to the top directory then 
+1) From a terminal directory use the relative path to the demos directory i.e. 
 
-    $ python demos/Blur.py
+    $ python ../../pi3d/demos/Blur.py
 
 [2) **NB this no longer works** also from terminal top directory
 
@@ -23,13 +24,9 @@
 
 then choose from a menu]
 
-3) in Geany open the demo file to edit, set the build command (wall symbol) to
+3) in Geany open the demo file to edit, leave the build command (wall symbol) as default
 
-    python "demos/%f"
-
-and set the Working directory to
-
-    ../
+    python "%f"
 
 run using the cog button
 
