@@ -254,23 +254,3 @@ def loadFileEGG(model, fileName):
       for i in xrange(len(x[3])): model.materialList[x[1]][x[3][i][1]] = x[3][i][2]
     if "<Group>" in x[0]:
       groupDrill(x[3], x[1])
-
-
-# groupDrill(l, "") # recursively break down groups - TODO this doesn't actually work properly because of split() on <Group>
-
-def texSwap(self, texID, fileName):
-  texToUse = None
-  texToSwap = None
-  for t in self.textureList:
-    if fileName in self.textureList[t]["filename"]: # NB this is a bit slacker than using == but easier to use
-      texToSwap = self.textureList[t]["texID"]
-      break
-  for g in self.vGroup:
-     if self.vGroup[g]["texID"] == texToSwap: self.vGroup[g]["texID"] = texID
-  return texToSwap # this texture is returned so it can be used or held by the calling code and reinserted if need be
-
-
-#########################################################################################
-#
-#########################################################################################
-

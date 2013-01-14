@@ -11,27 +11,24 @@ from pi3d.util import Utility
 
 # a rectangular surface where elevation is defined by a greyscal image
 class ElevationMap(Shape):
-  """
-  parameters:
-  mapfile -- greyscale image path/file, string
-  width -- of the map in world units, float (default 100.0)
-  depth -- of the map in world units, float (default 100.0)
-  height -- of the map in world units, float (default 10.0)
-  divx -- number of divisions into which the map will be divided, int (default 0 will use 200)
-  divy -- number of z division s(!!)
-  ntiles -- number of repeats for tiling the texture image, int (default 1)
-  name -- string (default "")
-  x,y,z -- postion of centre of map, float (default 0,0,0)
-  rx,ry,rz -- rotations of map degrees, float (default 0,0,0)
-  sx,sy,sz -- scale factors, float (default 1,1,1)
-  cx,cy,cz -- offset distances, float (default 0,0,0)
-  smooth -- calculate normals with averaging rather than point straight up, bool (default True)
+  """ 3d model inherits from Shape
   """
   def __init__(self, mapfile, camera=None, light=None,
                width=100.0, depth=100.0, height=10.0,
                divx=0, divy=0, ntiles=1.0, name="",
                x=0.0, y=0.0, z=0.0, rx=0.0, ry=0.0, rz=0.0,
                sx=1.0, sy=1.0, sz=1.0, cx=0.0, cy=0.0, cz=0.0, smooth=True):
+    """uses standard constructor for Shape
+    Arguments:
+    mapfile -- greyscale image path/file, string
+    Keyword arguments:
+    width, depth, height -- of the map in world units
+    divx, divy -- number of divisions into which the map will be divided
+            to create vertices
+    ntiles -- number of repeats for tiling the texture image
+    smooth -- calculate normals with averaging rather than pointing
+            straight up, slightly faster if false
+    """
     super(ElevationMap, self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                        sx, sy, sz, cx, cy, cz)
     if VERBOSE:
@@ -98,8 +95,10 @@ class ElevationMap(Shape):
     self.buf = []
     self.buf.append(Buffer(self, verts, tex_coords, idx, None, smooth))
 
-  # determines how high an object is when dropped on the map (providing it's inside the map area)
   def dropOn(self, px, pz):
+    """determines approximately how high an object is when dropped on the map
+     (providing it's inside the map area)
+    """
     #adjust for map not set at origin
     px -= self.unif[0]
     pz -= self.unif[2]
@@ -115,13 +114,10 @@ class ElevationMap(Shape):
 
     return pixht + self.unif[1]
 
-  # accurately determines how high an object is when dropped on the map (providing it's inside the map area)
   def calcHeight(self, px, pz):
-    """
-    returns the hight of the map at the point specified
-
-    parameters
-    px, pz -- location of the point to calculate height
+    """accurately return the hight of the map at the point specified
+    Arguments:
+    px, pz -- location of the point in world coordinates to calculate height
     """
     #adjust for map not set at origin
     px -= self.unif[0]
@@ -147,7 +143,8 @@ class ElevationMap(Shape):
     p2 = p0 + self.ix
     p3 = p0 + self.ix + 1
 
-    if pz > (z + 1 - px + x): #i.e. this point is in the triangle on the opposite side of the diagonal so swap base corners
+    if pz > (z + 1 - px + x): #i.e. this point is in the triangle on the
+    #opposite side of the diagonal so swap base corners
       x0, y0, z0 = x + 1, self.buf[0].vertices[p3][1], z + 1
     else:
       x0, y0, z0 = x, self.buf[0].vertices[p0][1], z
@@ -157,20 +154,19 @@ class ElevationMap(Shape):
                             (px, 0, pz))
 
 
-  # TODO these functions will be scrambled by any scaling, rotation or offset, either print warning or stop these operations applying
-  # Works out if an object at a given location and radius will overlap with the map surface
+  # TODO these functions will be scrambled by any scaling, rotation or offset,
+  #either print warning or stop these operations applying
   def clashTest(self, px, py, pz, rad):
-    """
-    returns four values:
+    """Works out if an object at a given location and radius will overlap
+    with the map surface. Returns four values:
     boolean whether there is a clash
     x, y, z components of the normal vector
     the amount of overlap at the x,z location
 
-    parameters:
-    px, py, pz -- location of object to test
+    Arguments:
+    px, py, pz -- location of object to test in world coordinates
     rad -- radius of object to test
     """
-    # added Patrick Gaunt 2012-11-05
     radSq = rad**2
     # adjust for map not set at origin
     px -= self.unif[0]
@@ -196,7 +192,8 @@ class ElevationMap(Shape):
     minDist, minLoc = 1000000, (0,0)
     for i in xrange(x0+1, x1):
       for j in xrange(z0+1, z1):
-        # use the locations stored in the one dimensional vertices matrix generated in __init__. 3 values for each location
+        # use the locations stored in the one dimensional vertices matrix
+        #generated in __init__. 3 values for each location
         p = j*self.ix + i # pointer to the start of xyz for i,j in the vertices array
         p1 = j*self.ix + i - 1 # pointer to the start of xyz for i-1,j
         p2 = (j-1)*self.ix + i # pointer to the start of xyz for i, j-1
@@ -207,24 +204,26 @@ class ElevationMap(Shape):
         if distSq < minDist: # this vertex is nearest so keep a record
           minDist = distSq
           minLoc = (i,j)
-        #TODO possibly use numpy for this kind of vector multiplication, though may take more effort to convert to array() than it saves
-        # now find the distance between the point and the plane perpendicular to the normal at this vertex
+        #now find the distance between the point and the plane perpendicular
+        #to the normal at this vertex
         pDist = Utility.dotproduct((px - vertp[0]),(py - vertp[1]),(pz - vertp[2]),
                                   -normp[0], -normp[1], -normp[2])
-        # and the position where the normal from point crosses the plane
+        #and the position where the normal from point crosses the plane
         xIsect = px - normp[0]*pDist
         zIsect = pz - normp[2]*pDist
 
-        # if the intersection point is in this rectangle then the x,z values will lie between edges
-        if xIsect > self.buf[0].vertices[p1][0] and xIsect < self.buf[0].vertices[p][0] and zIsect > self.buf[0].vertices[p2][2] and zIsect < self.buf[0].vertices[p][2]:
+        #if the intersection point is in this rectangle then the x,z values
+        #will lie between edges
+        if xIsect > self.buf[0].vertices[p1][0] and \
+           xIsect < self.buf[0].vertices[p][0] and \
+           zIsect > self.buf[0].vertices[p2][2] and \
+           zIsect < self.buf[0].vertices[p][2]:
           pDistSq = pDist**2
-          # finally if the perpendicular distance is less than the nearest so far keep a record
+          # finally if the perpendicular distance is less than the nearest so far
+          #keep a record
           if pDistSq < minDist:
             minDist = pDistSq
             minLoc = (i,j)
-
-        #if minDist < radSq:
-        #  minDist = radSq
 
     gLevel = self.calcHeight(px, pz) #check it hasn't tunnelled through by going fast
     if gLevel > (py-rad):
@@ -242,12 +241,12 @@ class ElevationMap(Shape):
     else:
       return (False, 0, 0, 0, 0)
 
-  # works out the pitch (rx) and roll (rz) to apply to an object on the surface of the map at this point
   def pitch_roll(self, px, pz):
-    """
+    """works out the pitch (rx) and roll (rz) to apply to an object
+    on the surface of the map at this point
     returns a tuple (pitch, roll) in degrees
     
-    parameters
+    Arguments:
     px -- x location
     pz -- z location
     """
@@ -269,19 +268,20 @@ class ElevationMap(Shape):
     sidev = array([normp[1], -normp[0], 0.0])
     sidev = sidev / sqrt(sidev.dot(sidev))
     #forwd = cross(sidev, normp)
-    forwd = array([-normp[2]*normp[0], -normp[2]*normp[1], normp[0]*normp[0] + normp[1]*normp[1]])
+    forwd = array([-normp[2]*normp[0], -normp[2]*normp[1],
+                  normp[0]*normp[0] + normp[1]*normp[1]])
     forwd = forwd / sqrt(forwd.dot(forwd))
     return (degrees(arcsin(-forwd[1])), degrees(arctan2(sidev[1], normp[1])))
 
 
-#Function calculates the y intersection of a point on a triangle
 def intersect_triangle(v1, v2, v3, pos):
-  """
-  returns the y value of the intersection of the line defined by x,z of pos through the triange defined by v1,v2,v3
+  """calculates the y intersection of a point on a triangle and returns the y
+  value of the intersection of the line defined by x,z of pos through the
+  triange defined by v1,v2,v3
 
-  parameters
-  v1,v2,v3 -- xyz tuples defining the corners of the triangle
-  pos -- xyz tuple defining the x,z of the line
+  Arguments:
+  v1,v2,v3 -- tuples (x1,y1,z1), (x2,y2,z2).. defining the corners of the triangle
+  pos -- tuple (x,y,z) defining the x,z of the vertical line intersecting triangle
   """
   #calc normal from two edge vectors v2-v1 and v3-v1
   #nVec = Utility.crossproduct(v2[0]-v1[0], v2[1]-v1[1], v2[2]-v1[2], v3[0]-v1[0],  v3[1]-v1[1], v3[2]-v1[2])

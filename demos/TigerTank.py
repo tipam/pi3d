@@ -5,6 +5,11 @@
 
 import math, random, time, traceback
 
+import demo
+demo.demo(__name__)
+
+from echomesh.util import Log
+
 from pi3d import *
 
 from pi3d import Display
@@ -21,7 +26,6 @@ from pi3d.shape import EnvironmentCube
 from pi3d.shape.Model import Model
 
 from pi3d.util.Screenshot import screenshot
-from pi3d.util import Log
 from pi3d.util.TkWin import TkWin
 
 LOGGER = Log.logger(__name__)
@@ -171,10 +175,10 @@ def loop():
     zoff = -sf * math.cos(math.radians(mouserot))
 
     #xoff, yoff, zoff = 0,0,0
-    #CAMERA.translate((xm, ym-10*sf-5.0, zm-40*sf))
+    #CAMERA.position((xm, ym-10*sf-5.0, zm-40*sf))
     #zoom CAMERA out so we can see our robot
     CAMERA.rotate(tilt, mouserot, 0)           #Tank still affected by scene tilt
-    CAMERA.translate((xm + xoff, ym + yoff + 5, zm + zoff))
+    CAMERA.position((xm + xoff, ym + yoff + 5, zm + zoff))
     oxm, ozm = xm, zm
     #zoom CAMERA out so we can see our robot
 

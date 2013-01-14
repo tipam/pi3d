@@ -1,19 +1,7 @@
-# Forest walk example using pi3d module
-# =====================================
-# Copyright (c) 2012 - Tim Skillman
-# Version 0.01 - 03Jul12
-#
-# This example does not reflect the finished pi3d module in any way whatsoever!
-# It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
-#
-# PLEASE INSTALL PIL imaging with:
-#
-# $ sudo apt-get install python-imaging
-#
-# before running this example
-#
-
 import math, random
+
+import demo
+demo.demo(__name__)
 
 from pi3d import Display
 from pi3d.Keyboard import Keyboard

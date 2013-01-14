@@ -6,7 +6,7 @@ varying float dist;
 uniform sampler2D tex0;
 uniform vec3 unib[2];
 //uniform float blend ====> unib[0][2]
-uniform vec3 unif[11];
+uniform vec3 unif[16];
 //uniform vec3 fogshade ==> unif[4]
 //uniform float fogdist ==> unif[5][0]
 //uniform float fogalpha => unif[5][1]

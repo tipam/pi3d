@@ -2,6 +2,9 @@
 
 from __future__ import absolute_import
 
+import demo
+demo.demo(__name__)
+
 import math,random
 
 from pi3d import Display
@@ -26,7 +29,7 @@ from pi3d.util.Screenshot import screenshot
 DISPLAY = Display.create(x=200, y=200)
 DISPLAY.set_background(0.4,0.8,0.8,1)      # r,g,b,alpha
 
-Light((1, 1, 4))
+Light((1, -1, 3))
 #========================================
 
 # load shader
@@ -41,8 +44,8 @@ bumpimg = Texture("textures/grasstile_n.jpg")
 reflimg = Texture("textures/stars.jpg")
 rockimg = Texture("textures/rock1.jpg")
 
-FOG = ((0.3, 0.3, 0.4, 1.0), 650.0)
-TFOG = ((0.1, 0.14, 0.12, 0.3), 250.0)
+FOG = ((0.3, 0.3, 0.4, 0.5), 650.0)
+TFOG = ((0.1, 0.14, 0.12, 0.3), 150.0)
 
 #myecube = EnvironmentCube(900.0,"HALFCROSS")
 ectex=loadECfiles("textures/ecubes","sbox")
@@ -57,7 +60,7 @@ mountimg1 = Texture("textures/mountains3_512.jpg")
 mymap = ElevationMap("textures/mountainsHgt.jpg", name="map",
                      width=mapwidth, depth=mapdepth, height=mapheight,
                      divx=32, divy=32) #testislands.jpg
-mymap.buf[0].set_draw_details(shader, [mountimg1, bumpimg], 128.0, 0.0)
+mymap.buf[0].set_draw_details(shader, [mountimg1, bumpimg, reflimg], 128.0, 0.0)
 mymap.set_fog(*FOG)
 
 #Create tree models
@@ -77,19 +80,16 @@ mytrees1 = MergeShape(name="trees1")
 mytrees1.cluster(treemodel1.buf[0], mymap,0.0,0.0,200.0,200.0,20,"",8.0,3.0)
 mytrees1.buf[0].set_draw_details(flatsh, [tree2img], 0.0, 0.0)
 mytrees1.set_fog(*TFOG)
-#         (shape,elevmap,xpos,zpos,w,d,count,options,minscl,maxscl)
 
 mytrees2 = MergeShape(name="trees2")
 mytrees2.cluster(treemodel2.buf[0], mymap,0.0,0.0,200.0,200.0,20,"",6.0,3.0)
 mytrees2.buf[0].set_draw_details(flatsh, [tree1img], 0.0, 0.0)
 mytrees2.set_fog(*TFOG)
-#         (shape,elevmap,xpos,zpos,w,d,count,options,minscl,maxscl)
 
 mytrees3 = MergeShape(name="trees3")
 mytrees3.cluster(treemodel2, mymap,0.0,0.0,300.0,300.0,20,"",4.0,2.0)
 mytrees3.buf[0].set_draw_details(flatsh, [hb2img], 0.0, 0.0)
 mytrees3.set_fog(*TFOG)
-#         (shape,elevmap,xpos,zpos,w,d,count,options,minscl,maxscl)
 
 #Create monolith
 monolith = Sphere(radius=8.0, slices=12, sides=48,
@@ -122,7 +122,7 @@ CAMERA = Camera.instance()
 while DISPLAY.loop_running():
   CAMERA.reset()
   CAMERA.rotate(tilt, rot, 0)
-  CAMERA.translate((xm, ym, zm))
+  CAMERA.position((xm, ym, zm))
 
   myecube.draw()
   mymap.draw()
@@ -171,4 +171,5 @@ while DISPLAY.loop_running():
     else:
       print k
 
+  CAMERA.was_moved = False
 quit()

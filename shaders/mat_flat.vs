@@ -5,7 +5,7 @@ attribute vec3 normal;
 attribute vec2 texcoord;
 
 uniform mat4 modelviewmatrix[2]; // 0 model movement in real coords, 1 in camera coords
-uniform vec3 unif[11];
+uniform vec3 unif[16];
 //uniform vec3 eye > unif[6]
 
 varying float dist;

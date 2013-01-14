@@ -14,8 +14,24 @@ def round_up_to_power_of_2(x):
   return p
 
 class Texture(Loadable):
+  """loads an image file from disk and converts it into an array that
+  can be used by shaders. It inherits from Loadable in order that the
+  file access work can happen in another thread. and the conversion
+  to opengl format can happen just in time when tex() is first called
+  """
   def __init__(self, file_string, blend=False, flip=False, size=0,
                defer=DEFER_TEXTURE_LOADING):
+    """
+    Arguments:
+    file_string -- path and name of image file relative to top dir
+    blend -- controls if low alpha pixels are discarded (if False) or drawn
+            by the shader. If set to true then this texture needs to be 
+            drawn AFTER other objects that are FURTHER AWAY
+    flip -- flips the image
+    size -- to resize image to
+    defer -- can load from file in other thread and defer opengl work until
+            texture needed, default True
+    """
     super(Texture, self).__init__()
     self.file_string = file_string
     self.blend = blend
@@ -27,14 +43,20 @@ class Texture(Loadable):
       self.load_opengl()
 
   def tex(self):
+    """do the deferred opengl work and return texture"""
     self.load_opengl()
     return self._tex
 
   def _unload_opengl(self):
+    """clear it out"""
     texture_array = c_ints([self._tex.value])
     opengles.glDeleteTextures(1, ctypes.addressof(texture_array))
 
   def _load_disk(self):
+    """overrides method of Loadable
+    Font, Ttffont and Defocus inherit from Texture but don't do all this
+    so have to override this
+    """
     s = self.file_string + ' '
     self.im = Image.open(self.file_string) # TODO only load this if needed because loading a Font
 
@@ -80,6 +102,7 @@ class Texture(Loadable):
     self._tex = ctypes.c_int()
 
   def _load_opengl(self):
+    """overrides method of Loadable"""
     opengles.glGenTextures(1, ctypes.byref(self._tex), 0)
     opengles.glBindTexture(GL_TEXTURE_2D, self._tex)
     RGBv = GL_RGBA if self.alpha else GL_RGB

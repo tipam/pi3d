@@ -1,19 +1,7 @@
-# Ponh using pi3d module
-# =====================================
-# Copyright (c) 2012 - Tim Skillman, Paddy Gaunt
-# Version 0.02 - 20Aug12
-#
-# This example does not reflect the finished pi3d module in any way whatsoever!
-# It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
-#
-# PLEASE INSTALL PIL imaging with:
-#
-# $ sudo apt-get install python-imaging
-#
-# before running this example
-#
-
 import math, random
+
+import demo
+demo.demo(__name__)
 
 from pi3d import Display
 from pi3d.Keyboard import Keyboard
@@ -31,8 +19,8 @@ from pi3d.shape.Plane import Plane
 from pi3d.shape.Sphere import Sphere
 
 from pi3d.util.String import String
-from pi3d.util.Matrix import Matrix
 from pi3d.util.Screenshot import screenshot
+from pi3d.util.Defocus import Defocus
 
 #helpful messages
 print "############################################################"
@@ -41,13 +29,14 @@ print "############################################################"
 print
 
 # Setup display and initialise pi3d
-DISPLAY = Display.create(x=10, y=10)
+DISPLAY = Display.create(x=200, y=200)
 DISPLAY.set_background(0.4,0.8,0.8,1) # r,g,b,alpha
 camera = Camera((0, 0, 0), (0, 0, -1), (1, 1000, DISPLAY.width/1000.0, DISPLAY.height/1000.0))
-light = Light((10, 10, -20))
+light = Light((10, -10, 20))
 # load shader
 shader = Shader("shaders/uv_reflect")
 flatsh = Shader("shaders/uv_flat")
+defocus = Defocus()
 #========================================
 
 
@@ -55,7 +44,7 @@ flatsh = Shader("shaders/uv_flat")
 # (this can be changed later to 'False' with 'rockimg2.blend = False')
 groundimg = Texture("textures/stripwood.jpg")
 monstimg = Texture("textures/pong3.png")
-ballimg = Texture("textures/cloud6.png", True)
+ballimg = Texture("textures/pong2.jpg")
 # environment cube
 ectex = Texture("textures/ecubes/skybox_stormydays.jpg")
 myecube = EnvironmentCube(camera, light, 900.0,"CROSS")
@@ -90,7 +79,7 @@ zm = 0.0
 ym = 0.0
 lastX0 = 0.0
 lastZ0 = 0.0
-camera.translate((xm, 2 + ym, -maphalf - 2.5))
+camera.position((xm, 2 + ym, -maphalf - 2.5))
 
 arialFont = Font("AR_CENA","#dd00aa")   #load AR_CENA font and set the font colour to 'raspberry'
 score = [0,0]
@@ -112,7 +101,7 @@ max_speed = 0.2
 
 # Fetch key presses
 mykeys = Keyboard()
-mymouse = Mouse()
+mymouse = Mouse(restrict=False)
 mymouse.start()
 
 omx, omy = mymouse.position()
@@ -132,10 +121,10 @@ while True:
   if ((ym >= (0) and dy < 0) or (ym <= mapheight and dy > 0)):  ym += dy
   if not (dy == 0.0 and dx == 0.0):
     camera.reset()
-    camera.translate((xm, 2 + ym, -maphalf - 2.5))
+    camera.position((xm, 2 + ym, -maphalf - 2.5))
 
-  myecube.draw()
-  mymap.draw()
+  #myecube.draw()
+  #mymap.draw()
 
   #monster movement
   drx = sx - rx
@@ -161,7 +150,6 @@ while True:
     # move it away a bit to stop it getting trapped inside if it has tunelled
     jDist = clash[4] + 0.2
     sx, sy, sz = sx + jDist*nx, sy + jDist*ny, sz + jDist*nz
-    print jDist
     # use R = I - 2(N.I)N
     rfact = 2.05*(nx*dsx + ny*dsy + nz*dsz) #small extra boost by using value > 2 to top up energy in defiance of 1st LOT
     dsx, dsy, dsz = dsx - rfact*nx, dsy - rfact*ny, dsz - rfact*nz
@@ -205,8 +193,17 @@ while True:
 
   ball.rotateIncX(dsz/radius*50)
 
-  monster.draw()
+  defocus.start_blur()
   ball.draw()
+  mymap.draw()
+  myecube.draw()
+  defocus.end_blur()
+
+  defocus.blur(ball, 4, 15, 2)
+  defocus.blur(mymap, 4, 15, 2)
+  defocus.blur(myecube, 800, 2000, 1)
+
+  monster.draw()
 
   # write up the score
   score0.draw()

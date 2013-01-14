@@ -3,6 +3,11 @@
 
 import math, random, time
 
+import demo
+demo.demo(__name__)
+
+from echomesh.util import Log
+
 from pi3d import *
 
 from pi3d import Display
@@ -17,7 +22,6 @@ from pi3d.shape import EnvironmentCube
 from pi3d.shape.Model import Model
 
 from pi3d.util.Screenshot import screenshot
-from pi3d.util import Log
 from pi3d.util.TkWin import TkWin
 from pi3d.util.Utility import lodDraw
 
@@ -52,7 +56,7 @@ mymap = ElevationMap(mapfile='textures/mars_height.png',
                      width=mapwidth, depth=mapdepth, height=mapheight,
                      divx=64, divy=64)
 mymap.buf[0].set_draw_details(shader,[redplanet, bumpimg],128.0, 0.0)
-mymap.set_fog((0.3,0.15,0.1,1.0), 1000.0)
+mymap.set_fog((0.3, 0.15, 0.1, 0.0), 1000.0)
 
 #Load Corridors sections
 
@@ -63,11 +67,14 @@ y = mymap.calcHeight(x, z)
 cor_win = Model(file_string="models/MegaStation/corridor_win_lowpoly.egg",
                 x=x, y=y, z=z, sx=0.1, sy=0.1, sz=0.1)
 cor_win.set_shader(shader)
+cor_win90 = cor_win.clone() # TODO seem to be able to 'stamp' the same object in different locations but not different rotations!
+cor_win.rotateToY(90)
 
 corridor = Model(file_string="models/MegaStation/corridor_lowpoly.egg",
                  x=x, y=y, z=z, sx=0.1, sy=0.1, sz=0.1)
-
 corridor.set_shader(shader)
+corridor90 = corridor.clone()
+corridor.rotateToY(90)
 
 cor_cross = Model(file_string="models/MegaStation/cross_room.egg",
                  x=x, y=y, z=z, sx=0.1, sy=0.1, sz=0.1)
@@ -83,16 +90,17 @@ cor_bend = Model(file_string="models/MegaStation/bend_lowpoly.egg",
                  x=x, y=y, z=z, sx=0.1, sy=0.1, sz=0.1)
 cor_bend.set_shader(shader)
 cor_bend.set_normal_shine(sttnbmp)
+cor_bend.rotateToY(90)
 
 #position vars
 mouserot=0.0
 tilt=0.0
-avhgt = 2.3
+avhgt = 5.3
 xm=0.0
 zm=0.0
 ym= (mymap.calcHeight(xm,zm) + avhgt)
 spc = 39.32
-mody = ym
+mody = ym + 3.0
 opendist = 80
 
 # Fetch key presses
@@ -113,36 +121,32 @@ while DISPLAY.loop_running():
   if tilt < -1: sf = 6 - 5.5/abs(tilt)
   else: sf = 0.5
   xoff, yoff, zoff = sf*math.sin(mouserot*rads), abs(1.25*sf*math.sin(tilt*rads)) + 3.0, -sf*math.cos(mouserot*rads)
-  CAMERA.rotate(tilt, mouserot, 0)           #Tank still affected by scene tilt
-  CAMERA.translate((xm + xoff, ym + yoff +5, zm + zoff))   #zoom camera out so we can see our robot
+  CAMERA.rotate(tilt, mouserot, 0)
+  CAMERA.position((xm + xoff, ym + yoff +5, zm + zoff))   #zoom camera out so we can see our robot
 
   mymap.draw()  #Draw the landscape
 
   lodDraw([xm, ym, zm], [0, mody, 0], [[opendist,cor_cross],[1000,cor_cross_doors]])
-  cor_win.position(0, mody, -spc*1.5)
+  cor_win.position(0, mody, spc*1.5)
   cor_win.draw()
-  corridor.position(0, mody, -spc*2.5)
+  corridor.position(0, mody, spc*2.5)
   corridor.draw()
-  cor_win.position(0, mody, -spc*3.5)
+  cor_win.position(0, mody, spc*3.5)
   cor_win.draw()
-  lodDraw([xm, ym, zm], [0, mody, -spc*5],[[opendist,cor_cross],[1000,cor_cross_doors]])
-  cor_win.position(0, mody, -spc*6.5)
+  lodDraw([xm, ym, zm], [0, mody, spc*5],[[opendist,cor_cross],[1000,cor_cross_doors]])
+  cor_win.position(0, mody, spc*6.5)
   cor_win.draw()
-  lodDraw([xm, ym, zm],[0, mody, -spc*8], [[opendist,cor_cross],[1000,cor_cross_doors]])
-  cor_win.rotateToY(90)
-  cor_win.position(-spc*1.5, mody, -spc*5)
-  cor_win.draw()
-  cor_bend.rotateToY(90)
-  cor_bend.position(-spc*2.5, mody, -spc*5)
+  lodDraw([xm, ym, zm],[0, mody, spc*8], [[opendist,cor_cross],[1000,cor_cross_doors]])
+  cor_win90.position(-spc*1.5, mody, spc*5)
+  cor_win90.draw()
+  cor_bend.position(-spc*2.5, mody, spc*5)
   cor_bend.draw()
-  lodDraw([xm, ym, zm],[-spc*2.6, mody, -spc*6.6],[[opendist,cor_cross],[1000,cor_cross_doors]])
-  cor_win.rotateToY(90)
-  cor_win.position(spc*1.5, mody, -spc*5)
-  cor_win.draw()
-  corridor.rotateToY(90)
-  corridor.position(spc*2.5, mody, -spc*5)
-  corridor.draw()
-  lodDraw([xm, ym, zm],[spc*4, mody, -spc*5],[[opendist,cor_cross],[1000,cor_cross_doors]])
+  lodDraw([xm, ym, zm],[-spc*2.6, mody, spc*6.6],[[opendist,cor_cross],[1000,cor_cross_doors]])
+  cor_win90.position(spc*1.5, mody, spc*5)
+  cor_win90.draw()
+  corridor90.position(spc*2.5, mody, spc*5)
+  corridor90.draw()
+  lodDraw([xm, ym, zm],[spc*4, mody, spc*5],[[opendist,cor_cross],[1000,cor_cross_doors]])
 
   myecube.position(xm, ym, zm)
   myecube.draw()#Draw environment cube

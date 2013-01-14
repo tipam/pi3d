@@ -2,12 +2,18 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import Image
 
+from echomesh.util import Log
+
 from pi3d import *
-from pi3d.util import Log
 
 LOGGER = Log.logger(__name__)
 
 def screenshot(filestring):
+  """save what in the display to a file
+  is will save whatever has been rendered prior to this call since the last
+  Display.clear()
+  the file will be saved in the top directory if you don't add a path
+  """
   from pi3d.Display import DISPLAY
   LOGGER.info('Taking screenshot of "%s"', filestring)
 

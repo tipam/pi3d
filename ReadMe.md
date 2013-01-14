@@ -7,6 +7,34 @@
 **EGG & OBJ file loader written by Paddy Gaunt, Copyright (c) 2012**
 
 # Description
+**Integration Branch**
+
+--------------------------------------------
+
+**NB The demos are all in a subdirectory demos, you can run these various ways (which are not quite as obvious as you may think)**:
+
+1) From a terminal change dir to the top directory then 
+
+    $ python demos/Blur.py
+
+[2) **NB this no longer works** also from terminal top directory
+
+    $ python Demo.py
+
+then choose from a menu]
+
+3) in Geany open the demo file to edit, set the build command (wall symbol) to
+
+    python "demos/%f"
+
+and set the Working directory to
+
+    ../
+
+run using the cog button
+
+--------------------------------------------
+
 
 There's plenty of 3D code flying around at the moment for the Raspberry Pi, but much of it is rather complicated to understand and most of it can sit under the bonnet!
 

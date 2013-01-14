@@ -1,17 +1,37 @@
 import ctypes, itertools
 
+from echomesh.util import Log
+
 from pi3d import *
-from pi3d.util import Log
 from pi3d.util import Utility
 
 LOGGER = Log.logger(__name__)
 
 class Buffer(object):
-  """Hold a pair of Buffer Objects to draw a part of a model"""
+  """ Holds the vertex, normals, incices and tex_coords for each part of
+  a Shape that needs to be rendered with a different material or texture
+  Shape holds an array of Buffer objects
+  """
   def __init__(self, shape, pts, texcoords, faces, normals=None, smooth=True):
-    """Generate a vertex buffer to hold data and indices"""
+    """Generate a vertex buffer to hold data and indices. If no normals
+    are provided then these are generated
+
+    Arguments:
+    shape -- Shape object that this Buffer is a child of
+    pts -- array of vertices tuples i.e. [(x0,y0,z0), (x1,y1,z1),...]
+    texcoords -- array of texture (uv) coordinates tuples
+            i.e. [(u0,v0), (u1,v1),...]
+    faces -- array of indices (of pts array) defining triangles
+            i.e. [(a0,b0,c0), (a1,b1,c1),...]
+
+    Keyword arguments:
+    normals -- array of vector component tuples defining normals at each
+            vertex i.e. [(x0,y0,z0), (x1,y1,z1),...]
+    smooth -- if calculating normals then average normals for all faces
+            meeting at this vertex, otherwise just use first (for speed)
+    """
     # Uniform variables all in one array!
-    self.unib = (c_float * 6)(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+    self.unib = (c_float * 6)(0.0, 0.0, 0.0, 0.5, 0.5, 0.5)
     """ in shader array of vec3 uniform variables:
     0  ntile, shiny, blend 0-2.
     1  material 3-5 if any of material is non zero then the UV texture will not
@@ -48,9 +68,7 @@ class Buffer(object):
     self.normals = normals
     self.tex_coords = texcoords
     self.indices = faces
-    self.material = (0.0, 0.0, 0.0, 0.0)
-    # Needs to be overwritten by something i.e. model loader. If it is then img
-    # texture won't be used.
+    self.material = (0.5, 0.5, 0.5, 1.0)
 
     # Pack points,normals and texcoords into tuples and convert to ctype floats.
     points = [p + n + t for p, n, t in zip(pts, normals, texcoords)]
@@ -80,6 +98,17 @@ class Buffer(object):
     opengles.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.ebuf);
 
   def set_draw_details(self, shader, textures, ntiles = 0.0, shiny = 0.0):
+    """Can be used to set information needed for drawing as a one off
+
+    Arguments:
+    shader -- Shader object
+    textures -- array of Texture objects
+
+    Keyword arguments:
+    ntiles -- multiple for tiling normal map which can be less than or greater
+            than 1.0. 0.0 disables the normal mapping, float
+    shiny -- how strong to make the reflection 0.0 to 1.0, float
+    """
     self.shader = shader
     self.shape.shader = shader # set shader for parent shape
     self.textures = textures # array of Textures
@@ -90,7 +119,15 @@ class Buffer(object):
     self.unib[3:6] = mtrl[0:3]
 
   def draw(self, shader=None, textures=None, ntl=None, shny=None, fullset=True):
-    """ -- """
+    """Draw this Buffer, called by the parent Shape.draw()
+
+    Keyword arguments:
+    shader -- Shader object
+    textures -- array of Texture objects
+    ntiles -- multiple for tiling normal map which can be less than or greater
+            than 1.0. 0.0 disables the normal mapping, float
+    shiny -- how strong to make the reflection 0.0 to 1.0, float
+    """
     shader = shader or self.shader
     textures = textures or self.textures
     if ntl:

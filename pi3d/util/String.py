@@ -30,10 +30,11 @@ class String(Shape):
 
     xoff = 0.0
     maxh = 0.0
+    #TODO cope with \n characters to give multi line strings
     for i, c in enumerate(string):
       v = ord(c) - 32
-      w, h, texc, verts = font.chr[v]
-      if v > 0:
+      w, h, texc, verts = font.ch[v]
+      if v >= 0:
         for j in verts:
           temp_verts.append((j[0]+xoff, j[1], j[2]))
         xoff += w

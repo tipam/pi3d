@@ -1,19 +1,7 @@
-# Clouds 3D example using pi3d module
-# ===================================
-# Copyright (c) 2012 - Tim Skillman
-# Version 0.04 20Jul12 - z order improved by Paddywwoof, improved texture management
-#
-# This example does not reflect the finished pi3d module in any way whatsoever!
-# It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
-#
-# PLEASE INSTALL PIL imaging with:
-#
-#      $ sudo apt-get install python-imaging
-#
-# before running this example
-#
-
 import random, time
+
+import demo
+demo.demo(__name__)
 
 from pi3d import Display
 from pi3d.Keyboard import Keyboard
@@ -61,7 +49,7 @@ for b in range (0, cloudno):
   z = z + zd
 
 CAMERA = Camera.instance()
-CAMERA.translate((0.0, 0.0, 50.0))
+CAMERA.position((0.0, 0.0, 50.0))
 
 # Fetch key presses
 mykeys = Keyboard()

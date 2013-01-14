@@ -4,9 +4,18 @@ from pi3d import *
 from pi3d.shape.Shape import Shape
 
 class Helix(Shape):
-  def __init__(self, camera, light, radius=1.0, thickness=0.2, ringrots=6, sides=12, rise=1.0,
+  """ 3d model inherits from Shape"""
+  def __init__(self, camera=None, light=None, radius=1.0, thickness=0.2, ringrots=6, sides=12, rise=1.0,
                loops=2.0, name="", x=0.0, y=0.0, z=0.0, rx=0.0, ry=0.0, rz=0.0,
                sx=1.0, sy=1.0, sz=1.0, cx=0.0, cy=0.0, cz=0.0):
+    """uses standard constructor for Shape extra Keyword arguments:
+    radius -- radius of helix
+    thickness -- radius of 'bar' being 'bent' to form the helical shape
+    ringrots -- number of sides for the circlular secon of the 'bar'
+    sides -- number of sides for Shape.lathe() to use
+    rise -- distance between 'threads'
+    loops -- number of turns that the helix makes
+    """
     super(Helix,self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                 sx, sy, sz, cx, cy, cz)
 

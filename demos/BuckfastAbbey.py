@@ -2,6 +2,9 @@ from __future__ import absolute_import
 
 import math,random
 
+import demo
+demo.demo(__name__)
+
 from pi3d import Display
 from pi3d.Keyboard import Keyboard
 from pi3d.Mouse import Mouse
@@ -71,7 +74,7 @@ while 1:
   CAMERA.reset()
   CAMERA.rotate(tilt, 0, 0)
   CAMERA.rotate(0, rot, 0)
-  CAMERA.translate((xm, ym, zm))
+  CAMERA.position((xm, ym, zm))
 
   myecube.draw()
   mymodel.draw()
