@@ -1,5 +1,7 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+from echomesh.util import Log
+
 from pi3d.constants import *
 
 from pi3d import Display
@@ -35,7 +37,6 @@ from pi3d.shape.Torus import Torus
 from pi3d.sprite.Ball import Ball
 
 from pi3d.util import Draw
-from pi3d.util import Log
 from pi3d.util import String
 from pi3d.util import Utility
 

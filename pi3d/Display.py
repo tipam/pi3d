@@ -5,10 +5,10 @@ import time
 import threading
 import traceback
 
+from echomesh.util import Log
 from echomesh.util.Locker import Locker
 
 from pi3d.constants import *
-from pi3d.util import Log
 from pi3d.util import Utility
 from pi3d.util.DisplayOpenGL import DisplayOpenGL
 
