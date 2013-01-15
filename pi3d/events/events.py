@@ -279,8 +279,17 @@ class get_abs_info(object):
 		variables accordingly.
 		"""
 		s = array.array("f",[1,2,3,4,5,6])
- 		x = fcntl.ioctl(stream.filehandle, EVIOCGABS(axis), s)
- 		self.value, self.minimum, self.maximum, self.fuzz, self.flat, self.resolution = struct.unpack("llllll", s)
+ 		try:
+ 			x = fcntl.ioctl(stream.filehandle, EVIOCGABS(axis), s)
+ 		except IOError:
+ 			self.value = 1
+ 			self.minimum = 1
+ 			self.maximum = 1
+ 			self.fuzz = 1
+ 			self.flat = 1
+ 			self.resolution = 1
+ 		else:
+ 			self.value, self.minimum, self.maximum, self.fuzz, self.flat, self.resolution = struct.unpack("llllll", s)
  		
  	def __str__(self):
  		return "Value {0} Min {1}, Max {2}, Fuzz {3}, Flat {4}, Res {5}".format(self.value, self.minimum, self.maximum, self.fuzz, self.flat, self.resolution)
@@ -536,14 +545,23 @@ class InputEvents(object):
 		self.unhandledHandler = unhandledHandler
 		self.streams = [ ]
 		if wantKeyboard:
-			self.streams += map(lambda x: EventStream(x, "keyboard"), _find_devices("kbd"))
+			keyboards =  _find_devices("kbd")
+			self.streams += map(lambda x: EventStream(x, "keyboard"),keyboards)
+		else:
+			keyboards = [ ]
 		if wantMouse:
-			self.streams += map(lambda x: EventStream(x, "mouse"), _find_devices("mouse"))
+			mice = _find_devices("mouse")
+			mice = filter(lambda x: x not in keyboards, mice) 
+			self.streams += map(lambda x: EventStream(x, "mouse"), mice)
+		else:
+			mice = [ ]
 		if wantJoystick:
-			js_streams = map(lambda x: EventStream(x, "joystick"), _find_devices("js"))
-			for x in js_streams: 
-				x.acquire_abs_info()
+			joysticks = _find_devices("js")
+			joysticks = filter(lambda x: x not in keyboards and x not in mice, joysticks)
+			js_streams = map(lambda x: EventStream(x, "joystick"), joysticks)
 			self.streams += js_streams
+		for x in self.streams: 
+			x.acquire_abs_info()
 			
 		self.handler = EventHandler(keyboardHandler, mouseHandler, joystickHandler, synHandler)
 		

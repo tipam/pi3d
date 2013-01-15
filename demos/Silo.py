@@ -122,34 +122,45 @@ while not inputs.key_state("KEY_ESC"):
   rot -= (mx)*0.2
   tilt -= (my)*0.2
 
+  jrx, jry = inputs.get_joystickR()
+  if abs(jrx) > 0.1:
+      rot -= jrx*3
+
+  if abs(jry) > 0.1:
+      tilt -= jry*3
+
+  xm = man.x()
+  ym = man.y()
+  zm = man.z()
+  
+  jx, jy = inputs.get_joystick()
+  if abs(jy) > 0.2:
+      xm += math.sin(math.radians(rot))*jy
+      zm -= math.cos(math.radians(rot))*jy
+
+  if abs(jx) > 0.2:
+      xm -= math.sin(math.radians(rot-90))*jx
+      zm += math.cos(math.radians(rot-90))*jx
+
   if inputs.key_state("BTN_LEFT"):
-    xm = man.x()-math.sin(math.radians(rot))
-    zm = man.z()+math.cos(math.radians(rot))
-    ym = (mymap.calcHeight(xm,zm)+avhgt)
-    NewPos = Position(xm, ym, zm)
-    collisions = man.CollisionList(NewPos)
-    #print(map(lambda(x):x.name, collisions))
-    if not collisions:
-      man.move(NewPos)
+    xm -= math.sin(math.radians(rot))
+    zm += math.cos(math.radians(rot))
 
   if inputs.key_state("KEY_W"):  #key W
-    xm = man.x() - math.sin(math.radians(rot))
-    zm = man.z() + math.cos(math.radians(rot))
-    ym = (mymap.calcHeight(xm, zm) + avhgt)
-    NewPos = Position(xm, ym, zm)
-    collisions = man.CollisionList(NewPos)
-    #print(map(lambda(x):x.name, collisions))
-    if not collisions:
-      man.move(NewPos)
+    xm -= math.sin(math.radians(rot))
+    zm += math.cos(math.radians(rot))
+    
   if inputs.key_state("KEY_S"): #key S
-    xm = man.x() + math.sin(math.radians(rot))
-    zm = man.z() - math.cos(math.radians(rot))
-    ym = (mymap.calcHeight(xm, zm) + avhgt)
-    NewPos = Position(xm, ym, zm)
-    collisions = man.CollisionList(NewPos)
-    #print(map(lambda(x):x.name, collisions))
-    if not collisions:
-      man.move(NewPos)
+    xm += math.sin(math.radians(rot))
+    zm -= math.cos(math.radians(rot))
+
+  ym = (mymap.calcHeight(xm,zm)+avhgt)
+  NewPos = Position(xm, ym, zm)
+  collisions = man.CollisionList(NewPos)
+  #print(map(lambda(x):x.name, collisions))
+  if not collisions:
+    man.move(NewPos)
+    
   if inputs.key_state("KEY_APOSTROPHE"):  #key '
     tilt -= 2.0
   if inputs.key_state("KEY_SLASH"):  #key /
