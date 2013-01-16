@@ -1,6 +1,10 @@
 #!/usr/bin/python
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+""" Depth of field blurring also demos MergeShape radial copying
+To blur something against its background both object are drawn to an offscreen
+texture. They are then drawn to the screen with a depth blur effect
+"""
 import math, random, time
 
 import demo
@@ -40,7 +44,6 @@ shapeshine = Texture("textures/pong3.png")
 
 #Create shape
 myshape = MergeShape()
-num = (2, 2)
 asphere = Sphere(sides=16, slices=16)
 myshape.radialCopy(asphere, step=72)
 myshape.position(0.0, 0.0, 5.0)
@@ -66,15 +69,15 @@ mykeys = Keyboard()
 while DISPLAY.loop_running():
 
   defocus.start_blur()
-  # 1. drawing objects now renders to an offscreen texture
+  # 1. drawing objects now renders to an offscreen texture ####################
   mysprite.draw()
   myshape.draw()
   defocus.end_blur()
-  # 2. drawing back to screen. the texture can now be used by defocus.blur()
+  # 2. drawing now back to screen. The texture can now be used by defocus.blur()
 
-  # 3. redraw these two objects applying a distance blur effect
-  defocus.blur(myshape, 4, 9, 5) #4 away in focus, >= 9 5xblurring linear between
-  defocus.blur(mysprite, 4, 9, 5)
+  # 3. redraw these two objects applying a distance blur effect ###############
+  defocus.blur(myshape, 4, 9, 5) # 4 is focal distance, >= 9 distance will get
+  defocus.blur(mysprite, 4, 9, 5) # 5 x blurring, nearer than focus also blurs
 
   myshape.rotateIncY(1.247)
   myshape.rotateIncX(0.1613)

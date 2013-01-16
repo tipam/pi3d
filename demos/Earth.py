@@ -1,6 +1,10 @@
 #!/usr/bin/python
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+""" Simple textruring of Sphere objects against a plane. The atmosphere has
+blend set to True and so has to be drawn after object behind it to allow them
+to show through
+"""
 from math import sin, cos
 
 import demo
@@ -54,21 +58,21 @@ m2Rad = 0.55 # radius moon's moon orbit
 
 # Display scene
 while DISPLAY.loop_running():
-  myplane.draw(flatsh,[starsimg], 0.0, -1.0)
   myplane.rotateIncZ(0.01)
-
-  mysphere.draw(shader, [earthimg])
   mysphere.rotateIncY(-0.1)
-  mysphere2.draw(shader, [cloudimg])
   mysphere2.rotateIncY(-0.15)
 
-  mymoon.draw(shader, [moonimg, moonimg, starsimg], 1.0, 0.0)
   mymoon.position(mysphere.unif[0] + m1Rad*sin(rot1), mysphere.unif[1] + 0, mysphere.unif[2] - m1Rad*cos(rot1))
   mymoon.rotateIncY(-0.2)
 
-  mymoon2.draw(shader, [watimg, watimg, starsimg], 4.0, 0.8)
   mymoon2.position(mymoon.unif[0] - m2Rad*sin(rot2), mymoon.unif[1], mymoon.unif[2] + m2Rad*cos(rot2))
   mymoon2.rotateIncY(-5.0)
+
+  mysphere.draw(shader, [earthimg])
+  mymoon.draw(shader, [moonimg, moonimg, starsimg], 1.0, 0.0)
+  mymoon2.draw(shader, [watimg, watimg, starsimg], 4.0, 0.8)
+  myplane.draw(flatsh,[starsimg])
+  mysphere2.draw(shader, [cloudimg]) # this has to be last as blend = True
 
   rot1 += 0.005
   rot2 += 0.021

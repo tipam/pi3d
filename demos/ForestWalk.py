@@ -1,8 +1,11 @@
 #!/usr/bin/python
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-# Forest walk example using pi3d module
-
+""" First person view using ElevationMap.calcHeight function to move over
+undulating surface, MergeShape.cluster to create a forest that renders quickly,
+uv_reflect shader is used give texture and reflection to a monolith, fog is
+applied to objects so that their details become masked with distance.
+"""
 from __future__ import absolute_import
 
 import demo
@@ -31,7 +34,7 @@ from pi3d.util.Screenshot import screenshot
 DISPLAY = Display.create(x=200, y=200)
 DISPLAY.set_background(0.4,0.8,0.8,1)      # r,g,b,alpha
 
-Light((1, -1, 3))
+Light((1, -1, -3))
 #========================================
 
 # load shader
@@ -80,24 +83,24 @@ treemodel2.add(treeplane.buf[0], 0,0,0, 0,120,0)
 #Scatter them on map using Merge shape's cluster function
 mytrees1 = MergeShape(name="trees1")
 mytrees1.cluster(treemodel1.buf[0], mymap,0.0,0.0,200.0,200.0,20,"",8.0,3.0)
-mytrees1.buf[0].set_draw_details(flatsh, [tree2img], 0.0, 0.0)
+mytrees1.set_draw_details(flatsh, [tree2img], 0.0, 0.0)
 mytrees1.set_fog(*TFOG)
 
 mytrees2 = MergeShape(name="trees2")
 mytrees2.cluster(treemodel2.buf[0], mymap,0.0,0.0,200.0,200.0,20,"",6.0,3.0)
-mytrees2.buf[0].set_draw_details(flatsh, [tree1img], 0.0, 0.0)
+mytrees2.set_draw_details(flatsh, [tree1img], 0.0, 0.0)
 mytrees2.set_fog(*TFOG)
 
 mytrees3 = MergeShape(name="trees3")
 mytrees3.cluster(treemodel2, mymap,0.0,0.0,300.0,300.0,20,"",4.0,2.0)
-mytrees3.buf[0].set_draw_details(flatsh, [hb2img], 0.0, 0.0)
+mytrees3.set_draw_details(flatsh, [hb2img], 0.0, 0.0)
 mytrees3.set_fog(*TFOG)
 
 #Create monolith
 monolith = Sphere(radius=8.0, slices=12, sides=48,
                   sy=10.0, name="monolith")
 monolith.translate(100.0, -mymap.calcHeight(100.0, 350) + 10.0, 350.0)
-monolith.buf[0].set_draw_details(shader, [rockimg, bumpimg, reflimg], 32.0, 0.3)
+monolith.set_draw_details(shader, [rockimg, bumpimg, reflimg], 32.0, 0.3)
 monolith.set_fog(*FOG)
 
 #screenshot number
@@ -126,12 +129,14 @@ while DISPLAY.loop_running():
   CAMERA.rotate(tilt, rot, 0)
   CAMERA.position((xm, ym, zm))
 
-  myecube.draw()
-  mymap.draw()
+  # for opaque objects it is more efficient to draw from near to far as the
+  # shader will not calculate pixels already concealed by something nearer
   monolith.draw()
   mytrees1.draw()
   mytrees2.draw()
   mytrees3.draw()
+  mymap.draw()
+  myecube.draw()
 
   mx, my = mymouse.position()
 

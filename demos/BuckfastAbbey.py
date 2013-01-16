@@ -1,6 +1,9 @@
 #!/usr/bin/python
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+""" 3D model loading: complex architectural model with multiple vertex groups
+and images
+"""
 import math, random
 
 import demo
@@ -23,7 +26,7 @@ from pi3d.util.Screenshot import screenshot
 # Setup display and initialise pi3d
 DISPLAY = Display.create(x=100, y=100)
 DISPLAY.set_background(1.0,0.4,0.6,1)    	# r,g,b,alpha
-Light((5, 10, 20))
+Light((5, -10, -20))
 
 # load shader
 shader = Shader("shaders/uv_light")
@@ -76,16 +79,15 @@ while 1:
   CAMERA.rotate(0, rot, 0)
   CAMERA.position((xm, ym, zm))
 
-  myecube.draw()
   mymodel.draw()
+  myecube.draw()
 
   mx, my = mymouse.position()
 
-  if mx>DISPLAY.left and mx<DISPLAY.right and my>DISPLAY.top and my<DISPLAY.bottom:
-    rot -= (mx-omx)*0.8
-    tilt += (my-omy)*0.8
-    omx=mx
-    omy=my
+  rot -= (mx-omx)*0.8
+  tilt += (my-omy)*0.8
+  omx=mx
+  omy=my
 
   #Press ESCAPE to terminate
   k = mykeys.read()

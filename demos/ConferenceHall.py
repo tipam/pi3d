@@ -1,8 +1,7 @@
 #!/usr/bin/python
 
-# Tiger Tank in TK window
-# Version 0.02 - 23Nov12
-
+""" A large 3D model with shadows baked into textures
+"""
 import math, random, time
 
 import demo
@@ -30,7 +29,7 @@ rads = 0.017453292512  # degrees to radians
 #Create a Tkinter window
 winw,winh,bord = 1200,600,0   	#64MB GPU memory setting
 #winw,winh,bord = 1920,1080,0	#128MB GPU memory setting
-win = TkWin(None, "Mega Space Station in Pi3D",winw,winh)
+win = TkWin(None, "ConferenceHall in Pi3D",winw,winh)
 
 # Setup display and initialise pi3d viewport over the window
 win.update()  #requires a window update first so that window sizes can be retreived

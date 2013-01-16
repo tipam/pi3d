@@ -1,6 +1,10 @@
 #!/usr/bin/python
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+""" Different types of environment cube mapping. Change them by setting box to 
+values 0 to 3. in nobottom is set to True then that image can be absent, the 
+drawing will use the previous image which is top
+"""
 import demo
 
 from pi3d import Display

@@ -1,7 +1,11 @@
 #!/usr/bin/python
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-# Maze with water example using pi3d module
+""" Maze showing various features: textured terrain, movement restricted by
+terrain, bouncing off the ElevationMap using clashTest, loading wavefront
+obj files, MergeShape using a Model with multiple Textures, first person
+view camera movement
+"""
 
 import math, random
 
@@ -49,10 +53,9 @@ shader = Shader("shaders/uv_reflect")
 flatsh = Shader("shaders/uv_flat")
 #========================================
 
-# Setting 2nd param to True renders 'True' Blending
-# (this can be changed later to 'False' with 'rockimg2.blend = False')
+# load Textures
 rockimg1 = Texture("textures/techy1.jpg")
-rockimg2 = Texture("textures/rock1.png")
+rockimg2 = Texture("textures/rocktile2.jpg")
 tree2img = Texture("textures/tree2.png")
 raspimg = Texture("textures/Raspi256x256.png")
 monstimg = Texture("textures/pong2.jpg")
@@ -71,7 +74,7 @@ mapheight = 100.0
 mymap = ElevationMap("textures/maze1.jpg",
                      width=mapwidth, depth=mapdepth, height=mapheight,
                      divx=128, divy=128, name="sub")
-mymap.buf[0].set_draw_details(shader, [rockimg1, rockimg2, shineimg], 128.0, 0.1)
+mymap.set_draw_details(shader, [rockimg1, rockimg2, shineimg], 128.0, 0.05)
 
 # Create fog for more realistic fade in distance. This can be turned on and off between drawing different object (i.e backgound not foggy)
 mymap.set_fog((0.1,0.1,0.1,1.0), 200.0)
@@ -94,14 +97,15 @@ raspberry.cluster(treemodel1.buf[0], mymap,-250,+250,470.0,470.0,5,"",8.0,1.0)
 raspberry.buf[0].set_draw_details(shader, [raspimg, raspimg], 1.0, 0.0)
 raspberry.set_fog((0.1,0.1,0.1,1.0), 200.0)
 
-# createMergeShape can be used to join loadModel object for much greater rendering speed
-# however, because these objects can contain multiple vGroups, each with their own texture image
-# it is necessary to make a merge for each vGroup and, later, draw each merged object using each
-# of the textures
-# The cluster method can be used where there is only one vGroup but with more than one the different
-# parts of the object get split up by the randomisation! Here I manually do the same thing as cluster
-# by first generating an array of random locations and y-rotations
-
+""" MergeShape can be used to join a number of Model object for much greater 
+ rendering speed however, because Models can contain multiple Buffers,
+ each with their own texture image it is necessary to make a merge for each
+ Buffer and, later, draw each merged object using each of the textures.
+ The cluster method can be used where there is only one Buffer but with more
+ than one the different parts of the object get split up by the randomisation!
+ Here I manually do the same thing as cluster by first generating an array
+ of random locations and y-rotations
+"""
 shed = Model(file_string="models/shed1.obj",
              name="shed", y=3, sx=2, sy=2, sz=2)
 
@@ -124,21 +128,22 @@ for b in shed.buf:
   for i in range(len(xArr)):
     thisAbbGp.add(b, xArr[i], yArr[i], zArr[i], 0, rArr[i], 0)
   shedgp.append(thisAbbGp)
-  shedgp[len(shedgp)-1].buf[0].set_draw_details(shader, b.textures, 0.0, 0.0)
+  shedgp[len(shedgp)-1].set_draw_details(shader, b.textures, 0.0, 0.0)
   shedgp[len(shedgp)-1].set_fog((0.1,0.1,0.1,1.0), 250.0)
 
-#monster
+# monster
 monst = TCone()
-monst.buf[0].set_draw_details(shader, [monstimg, monsttex], 4.0, 0.0)
+# use the uv_reflect shader but if shiny=0.0 there will be no reflection
+# the third texture is unset so there are unpredictable results if > 0
+monst.set_draw_details(shader, [monstimg, monsttex], 4.0, 0.0)
 mDx,mDy,mDz = 0.1,0,0.2
 mSx,mSy,mSz = -15, mymap.calcHeight(-15,5)+1, 5
 gravity = 0.02
 
-
-#screenshot number key P for screenshots
+#screenshot number key p for screenshots
 scshots = 1
 
-#energy counter
+#energy counter (space bar jumping)
 hp = 25
 
 rot = 0.0
@@ -159,7 +164,7 @@ omx, omy = mymouse.position()
 
 fly = False
 walk = True
-# Display scene and rotate cuboid
+
 angle = 0
 
 #################################################### LOOP ###############################################
@@ -184,9 +189,9 @@ while 1:
     else:
       dy = mymap.calcHeight(xm + dx*1.5, zm + dz*1.5) + avhgt - ym
       if dy < 1.2: # limit steepness so can't climb up walls
-        xm += dx
-        zm += dz
-        ym += dy
+        xm += dx*0.5
+        zm += dz*0.5
+        ym += dy*0.5
     if (xm < -490 or xm > 490 or zm < -490 or zm > 490): fly = True #reached the edge of the maze!
   if not (mx == omx and my == omy and oxm == xm and ozm == zm):
     CAMERA.reset()
@@ -274,8 +279,7 @@ while 1:
       mykeys.close()
       mymouse.stop()
       break
-    #else:
-    #print k
+  # this will save a little time each loop if the camera is not moved
   CAMERA.was_moved = False
   DISPLAY.swapBuffers()
 

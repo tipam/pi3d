@@ -1,6 +1,10 @@
 #!/usr/bin/python
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+""" Example of using the loop control in the Display class with the behaviour
+included in the pi3d.sprites.Ball class
+"""
+
 import random
 import sys
 
@@ -14,7 +18,7 @@ MAX_BALL_VELOCITY = 10.0
 
 KEYBOARD = pi3d.Keyboard()
 
-BACKGROUND_COLOR = 1.0, 1.0, 1.0, 0.0
+BACKGROUND_COLOR = (1.0, 1.0, 1.0, 0.0)
 DISPLAY = pi3d.Display.create(is_3d=False, background=BACKGROUND_COLOR)
 WIDTH, HEIGHT = DISPLAY.width, DISPLAY.height
 

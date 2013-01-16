@@ -108,12 +108,13 @@ while not inputs.key_state("KEY_ESC"):
   CAMERA.position((man.x(), man.y(), man.z() - aveyeleveladjust))
 
   myecube.position(man.x(), man.y(), man.z() - aveyeleveladjust)
-  myecube.draw()
-  mymap.draw()
 
   SolidObject.drawall()
 
   building.drawAll()
+
+  mymap.draw()
+  myecube.draw()
 
   inputs.do_input_events()
   mx, my, mv, mh, md = inputs.get_mouse_movement()
