@@ -3,7 +3,10 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 """ Depth of field blurring also demos MergeShape radial copying
 To blur something against its background both object are drawn to an offscreen
-texture. They are then drawn to the screen with a depth blur effect
+texture. They are then drawn to the screen with a depth blur effect.
+The Ttffont class is also demonstrated. This generates an texture from
+a true-type font file on the RPi system or added from an external resource
+(standard fonts are available on raspbian in /usr/share/fonts/truetype)
 """
 import math, random, time
 
