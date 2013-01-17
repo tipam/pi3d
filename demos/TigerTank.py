@@ -1,11 +1,12 @@
 #!/usr/bin/python
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-# Tiger Tank in TK window
-# Version 0.02 - 23Nov12
-#
-# First tank demo - more to come!
-
+""" Landscape from ElevationMap with model tanks and buildings. Demonstrates using
+a function to draw the various parts of the tank and the ElevationMap.pitch_roll()
+method to make models conform (aproximately) to the surface of an ElevationMap
+This demo also uses a tkinter tkwindow but creates it as method of Display. Compare
+with the system used in demos/MegaStation.py
+"""
 import math, random, time, traceback
 
 import demo

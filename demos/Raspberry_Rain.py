@@ -1,6 +1,9 @@
 #!/usr/bin/python
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+""" Simple Sprite objects fall across the screen and are moved back to the
+top once they have the bottom edge
+"""
 import random, time
 
 import demo
@@ -25,13 +28,15 @@ shader = Shader("shaders/uv_flat")
 # Load textures
 raspimg = Texture("textures/Raspi256x256.png")
 
-pino=15
+pino = 15
 
 # Setup array of random x,y,z coords and initial rotation
 raspberries=[]
 for b in range (0, pino):
-  rasp = Sprite(w=2.0, h=2.0)
-  rasp.position(random.random()*16-8, random.random() * 16, random.random() * 4)
+  size = random.random() * 4.0 + 2.0
+  rasp = Sprite(w=size, h=size)
+  dist = random.random() * 6 + 2.0
+  rasp.position((random.random()*4 - 2) * dist, (random.random() * 4) * dist, dist)
   rasp.rotateToZ(random.random() * 360)
   rasp.buf[0].set_draw_details(shader, [raspimg])
   raspberries.append(rasp)
@@ -44,9 +49,9 @@ while DISPLAY.loop_running():
     b.draw()
     b.translateY(-0.1)
     b.rotateIncZ(1)
-    if b.unif[1] < -8:
-      b.positionX(random.random()*16-8)
-      b.translateY(16.0)
+    if b.y() < -4 * b.z():
+      b.positionX((random.random()*4 - 2) * b.z())
+      b.translateY(8.0 * b.z())
 
   k = mykeys.read()
   if k >-1:

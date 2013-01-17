@@ -1,11 +1,12 @@
 #!/usr/bin/python
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-# Robot walkabout example using pi3d module
-# =========================================
-#
-# Demonstrates offset camera to view an avatar moving about a map.  Also includes tiled mapping on landscape
-
+""" Uses a Tkinter window with elevation map, and a robot character in the
+foreground that swaps to a more objective view as the mouse moves back and forth
+The landscape can be navigated with the w and s keys to move forward and back.
+The robot demostrates the same texture as the buildings but with higher shiny
+value
+"""
 import math
 
 import demo
@@ -118,10 +119,10 @@ while 1:
   robot.rotateToY(-rot)
   robot.draw()
 
+  station.draw()
+  mymap.draw() #Draw the landscape
   myecube.draw() #Draw environment cube
   myecube.position(xm, ym, zm)
-  mymap.draw() #Draw the landscape
-  station.draw()
 
   mx, my = mymouse.position()
 

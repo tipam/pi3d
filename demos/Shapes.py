@@ -1,6 +1,11 @@
 #!/usr/bin/python
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+""" Various standard shapes demonstrates different ways of setting draw details
+either prior to or while drawing.
+The demo also shows setting a semitransparent background and using the String
+and Ttffont classes (see /usr/share/fonts/truetype/ for other fonts)
+"""
 import demo
 
 from pi3d import Display
@@ -50,7 +55,7 @@ mytube = Tube(camera, light, 0.4, 0.1, 1.5, 24, "tube",2, 2, 7, 30, 0, 0)
 myextrude = Extrude(camera, light, ((-0.5, 0.5), (0.5,0.7), (0.9,0.2), (0.2,0.05), (1.0,0.0), (0.5,-0.7), (-0.5, -0.5)), 0.5,"Extrude", 4, 2, 5)
 myextrude.buf[0].set_draw_details(shader, [coffimg, shapebump, shapeshine], 4.0, 0.2)
 myextrude.buf[1].set_draw_details(shader, [patimg, shapebump, shapeshine], 4.0, 0.2)
-myextrude.buf[2].set_draw_details(shader, [patimg, shapebump, shapeshine], 4.0, 0.2)
+myextrude.buf[2].set_draw_details(shader, [shapeshine, shapebump, shapeshine], 4.0, 0.2)
 
 mycone = Cone(camera, light, 1,2,24,"Cone", -4, -1, 5)
 mycylinder = Cylinder(camera, light, 0.7,1.5,24,"Cyli", -2, -1, 5)
@@ -89,6 +94,8 @@ while 1:
   mytube.rotateIncY(3)
   mytube.rotateIncZ(2)
 
+  # Extrude has different textures for each Buffer so has to use
+  # set_draw_details() rather than having arguments passed to draw()
   myextrude.draw()
   myextrude.rotateIncY(-2)
   myextrude.rotateIncX(0.37)
@@ -126,7 +133,5 @@ while 1:
       mykeys.close()
       DISPLAY.destroy()
       break
-    else:
-      print k
 
   DISPLAY.swapBuffers()

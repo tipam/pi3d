@@ -1,9 +1,15 @@
 #!/usr/bin/python
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-# Megastation in TK window
-# Version 0.02 - 23Nov12
-
+""" Uses a Tkinter window with elevation map, and more complicated models
+loaded from panda3d egg files. The models demostrate various things:
+1. loading the shader for them to be drawn with 2. loading the normal map
+file and reflection map file, although this is done for the whole model it can
+be used to set them differently for each Buffer, i.e. different parts of the
+Model. 3. level of detail drawing using Utility.lodDraw() This allows different
+versions of the model to be shown as the viewpoint gets nearer, in this case
+the distant one has the doors and windows closed, the near one open
+"""
 import math, random, time
 
 import demo
@@ -111,8 +117,6 @@ while DISPLAY.loop_running():
   CAMERA.rotate(tilt, mouserot, 0)
   CAMERA.position((xm + xoff, ym + yoff +5, zm + zoff))   #zoom camera out so we can see our robot
 
-  mymap.draw()  #Draw the landscape
-
   Utility.lodDraw([xm, ym, zm], [0, mody, 0], [[opendist,cor_cross],[1000,cor_cross_doors]])
   cor_win.position(0, mody, spc*1.5)
   cor_win.draw()
@@ -134,6 +138,8 @@ while DISPLAY.loop_running():
   corridor90.position(spc*2.5, mody, spc*5)
   corridor90.draw()
   Utility.lodDraw([xm, ym, zm],[spc*4, mody, spc*5],[[opendist,cor_cross],[1000,cor_cross_doors]])
+
+  mymap.draw()  #Draw the landscape
 
   myecube.position(xm, ym, zm)
   myecube.draw()#Draw environment cube

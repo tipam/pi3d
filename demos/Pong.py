@@ -1,6 +1,14 @@
 #!/usr/bin/python
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+""" Demonstrates first person movment using the mouse but constrained, physics
+of bouncing off an elevation map using normal vectors. Also writing using the
+Font class which has really been superceded by the Ttffont method but shown here
+for documentation. This demo also uses the Defoucs class to blur things in the
+distance. The monster is not blurred as it is at a constant distance and could have
+been blurred in the actual png image file.
+"""
+
 import math, random
 
 import demo
@@ -41,28 +49,29 @@ flatsh = Shader("shaders/uv_flat")
 defocus = Defocus()
 #========================================
 
-
 # Setting 2nd param to True renders 'True' Blending
 # (this can be changed later to 'False' with 'rockimg2.blend = False')
 groundimg = Texture("textures/stripwood.jpg")
 monstimg = Texture("textures/pong3.png")
 ballimg = Texture("textures/pong2.jpg")
+
 # environment cube
 ectex = Texture("textures/ecubes/skybox_stormydays.jpg")
 myecube = EnvironmentCube(camera, light, 900.0,"CROSS")
 myecube.set_draw_details(flatsh, [ectex])
+
 #ball
 maxdsz = 0.3
 radius = 1.0
 ball = Sphere(camera, light, radius,12,12,0.0,"sphere",-4,8,-7)
+# Shape.set_draw_details is a wrapper for calling the method on each item in buf
+# as is done explicitly here for no reason than to show that it can be done!
 ball.buf[0].set_draw_details(shader,[ballimg], 0.0, 0.0)
-#ball.buf[0].set_draw_details(shader,[])
-#ball.buf[0].set_material((0.0,0.2,0.6))
+
 #monster
 monster = Plane(camera, light, 5.0, 5.0, "monster", 0,0,0, 0,0,0)
 monster.buf[0].set_draw_details(flatsh, [monstimg])
-#monster.buf[0].set_draw_details(flatsh, [])
-#monster.buf[0].set_material((0.0,0.2,0.6))
+
 # Create elevation map
 mapwidth=50.0
 mapdepth=50.0
@@ -89,8 +98,6 @@ score0 = String(camera, light,  arialFont, str(score[0]), 0, 12, 0, 0.05, 0.05)
 score0.set_shader(flatsh)
 score1 = String(camera, light,  arialFont, str(score[1]), 0, 12, 0, 0.05, 0.05)
 score1.set_shader(flatsh)
-
-
 
 #sphere loc and speed
 sx, sy, sz = 0, 5, 0
@@ -124,9 +131,6 @@ while True:
   if not (dy == 0.0 and dx == 0.0):
     camera.reset()
     camera.position((xm, 2 + ym, -maphalf - 2.5))
-
-  #myecube.draw()
-  #mymap.draw()
 
   #monster movement
   drx = sx - rx
@@ -203,7 +207,7 @@ while True:
 
   defocus.blur(ball, 4, 15, 2)
   defocus.blur(mymap, 4, 15, 2)
-  defocus.blur(myecube, 800, 2000, 1)
+  defocus.blur(myecube, 4, 15, 2)
 
   monster.draw()
 

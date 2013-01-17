@@ -1,6 +1,10 @@
 #!/usr/bin/python
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+""" large panda3d egg file with detailed texture
+TODO it would be nice to show a comparison with a low poly version of this
+with normal mapping for the details of the model.
+"""
 import demo
 
 from pi3d.util import Utility

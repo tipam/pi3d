@@ -1,6 +1,11 @@
 #!/usr/bin/python
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+""" Model loaded from panda3d egg file. Diffuse colours picked up from file,
+would be overridden if texture file defined. Althou normal mapping is defined
+it cannot be used (and has no effect) because there are no u-v coordinates
+defined in this egg file
+"""
 import demo
 
 from pi3d import Display

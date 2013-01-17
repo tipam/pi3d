@@ -1,6 +1,13 @@
 #!/usr/bin/python
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+""" animated normal map to give rippling reflection as off the surface of water
+there is a fog applied to the water surface with an alpha of zero so that it fades
+in the distance
+TODO this doesn't work for non-reflection map object, the shader probably needs
+to be tweaked.
+the demo also shows normal mapping for texture and the Ttffont class
+"""
 import math, random, time, glob
 
 import demo

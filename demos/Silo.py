@@ -1,6 +1,10 @@
 #!/usr/bin/python
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+""" Show how to use the Building class. This has the facility to define solid
+objects that cannot pass through other solid objects. The walls of Building
+are constructed of solid object
+"""
 import math
 
 import demo
@@ -67,18 +71,14 @@ openSectionSchemeMultimodel = {"#models": 4,
               (1,0):[["W", 1], ["CE", 3]],       # grey cell next to a black cell has a wall and ceiling edge
               (1,2):[["CE", 3]] }            # grey cell next to a white cell has a ceiling edge
 
+# details is an array of the same size as models array (defined above as part of the dict {"#models":4,..} )
+# contains information corresponding with Buffer.set_draw_details()
 details = [[shader, [blockimg, blockimg], 1.0, 0.0],
                 [shader, [greenimg, greenimg], 1.0, 0.0],
                 [shader, [roofimg, blockimg], 1.0, 0.0],
                 [shader, [roofedgeimg], 0.0, 0.0]]
 
 building = Building("textures/silo_map.png", 0, 0, mymap, width=15.0, depth=15.0, height=70.0, name="", draw_details=details, yoff=-15, scheme=openSectionSchemeMultimodel)
-#sys.exit(0)
-#  #Scatter them on map using Merge shape's cluster function
-#  mytrees1 = pi3d.createMergeShape("trees1")
-#  mytrees1.cluster(treemodel1, mymap,0.0,0.0,200.0,200.0,30,"",8.0,3.0)
-#  #        (shape,elevmap,xpos,zpos,w,d,count,options,minscl,maxscl)
-
 
 #screenshot number
 scshots = 1
@@ -119,7 +119,6 @@ while not inputs.key_state("KEY_ESC"):
   inputs.do_input_events()
   mx, my, mv, mh, md = inputs.get_mouse_movement()
 
-  #if mx>DISPLAY.left and mx<DISPLAY.right and my>DISPLAY.top and my<DISPLAY.bottom:
   rot -= (mx)*0.2
   tilt -= (my)*0.2
 
@@ -158,7 +157,7 @@ while not inputs.key_state("KEY_ESC"):
   ym = (mymap.calcHeight(xm,zm)+avhgt)
   NewPos = Position(xm, ym, zm)
   collisions = man.CollisionList(NewPos)
-  #print(map(lambda(x):x.name, collisions))
+
   if not collisions:
     man.move(NewPos)
     
@@ -178,10 +177,6 @@ while not inputs.key_state("KEY_ESC"):
     scshots += 1
   if inputs.key_state("KEY_ENTER"):  #key RETURN
     mc = 0
-
-  #if record:
-  #  screenshot("/media/E856-DA25/New/fr%03d.jpg" % frame)
-  #  frame += 1
 
   DISPLAY.swapBuffers()
 

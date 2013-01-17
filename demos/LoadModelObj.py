@@ -1,6 +1,8 @@
 #!/usr/bin/python
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+""" Wavefront obj model loading. Material properties set in mtl file.
+"""
 import demo
 
 from pi3d import Display
