@@ -5,6 +5,8 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 undulating surface, MergeShape.cluster to create a forest that renders quickly,
 uv_reflect shader is used give texture and reflection to a monolith, fog is
 applied to objects so that their details become masked with distance.
+The lighting is also defined with a yellow directional tinge and an indigo tinge
+to the ambient light
 """
 from __future__ import absolute_import
 
@@ -33,8 +35,9 @@ from pi3d.util.Screenshot import screenshot
 # Setup display and initialise pi3d
 DISPLAY = Display.create(x=200, y=200)
 DISPLAY.set_background(0.4,0.8,0.8,1)      # r,g,b,alpha
+# yellowish directional light blueish ambient light
+Light(lightpos=(1, -1, -3), lightcol =(1.0, 1.0, 0.7), lightamb=(0.15, 0.1, 0.3))
 
-Light((1, -1, -3))
 #========================================
 
 # load shader
