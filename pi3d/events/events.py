@@ -482,7 +482,7 @@ def _findevent(s):
 	else:
 		return None
 
-def _find_devices(identifier):
+def _find_devices(identifier, butNot= [ ]):
 	"""
 	finds the event indecies of all devices that have the given identifier.
 	
@@ -491,6 +491,8 @@ def _find_devices(identifier):
 	
 	Returns a list of integer indexes N, where /dev/input/eventN is the event
 	stream for each device.
+	
+	If except is given it holds a list of tuples which the returned values should not match.
 	
 	All devices of each type are returned; if you have two mice, they will both
 	be used.
@@ -505,8 +507,16 @@ def _find_devices(identifier):
 					print line
 					eventindex = _findevent(line)
 					if eventindex:
-						ret.append((index, int(eventindex)))
-						index += 1
+						for old in butNot:
+							if old[1] == int(eventindex):
+								print "Removing", old[1]
+								break
+							else:
+								print "No need to remove", old[1]
+						else:
+							ret.append((index, int(eventindex)))
+							index += 1
+							
 	return ret
 
 class InputEvents(object):
@@ -549,15 +559,16 @@ class InputEvents(object):
 			self.streams += map(lambda x: EventStream(x, "keyboard"),keyboards)
 		else:
 			keyboards = [ ]
+		print "keyboards =", keyboards
 		if wantMouse:
-			mice = _find_devices("mouse")
-			mice = filter(lambda x: x not in keyboards, mice) 
+			mice = _find_devices("mouse", butNot=keyboards)
+			print "mice = ", mice
 			self.streams += map(lambda x: EventStream(x, "mouse"), mice)
 		else:
 			mice = [ ]
 		if wantJoystick:
-			joysticks = _find_devices("js")
-			joysticks = filter(lambda x: x not in keyboards and x not in mice, joysticks)
+			joysticks = _find_devices("js", butNot=keyboards+mice)
+			print "joysticks =", joysticks
 			js_streams = map(lambda x: EventStream(x, "joystick"), joysticks)
 			self.streams += js_streams
 		for x in self.streams: 
