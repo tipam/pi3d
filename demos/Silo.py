@@ -3,7 +3,10 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 """ Show how to use the Building class. This has the facility to define solid
 objects that cannot pass through other solid objects. The walls of Building
-are constructed of solid object
+are constructed of solid object. There are two examples of solid corridor
+created near to the silo.
+This demonstration also shows in a fairly rough way how lighting can be changed
+as the view point moves (from inside to outside in this instance).
 """
 import math
 
@@ -21,6 +24,8 @@ from pi3d.shape.EnvironmentCube import loadECfiles
 from pi3d.shape.Building import Building, corridor, SolidObject, Size, Position
 
 from pi3d.util.Screenshot import screenshot
+
+from pi3d.context.Light import Light
 
 from pi3d.events.events import InputEvents, nameOf, codeOf
 
@@ -79,6 +84,13 @@ details = [[shader, [blockimg, blockimg], 1.0, 0.0],
                 [shader, [roofedgeimg], 0.0, 0.0]]
 
 building = Building("textures/silo_map.png", 0, 0, mymap, width=15.0, depth=15.0, height=70.0, name="", draw_details=details, yoff=-15, scheme=openSectionSchemeMultimodel)
+
+outLight = Light(lightpos=(10, -10, 20), lightcol =(1.0, 1.0, 0.7), lightamb=(0.35, 0.35, 0.4))
+inLight = Light(lightpos=(10, -10, 20), lightcol =(0.1, 0.1, 0.15), lightamb=(0.05, 0.15, 0.1))
+for b in building.model:
+  b.set_light(inLight, 0)
+mymap.set_light(inLight, 0)
+inFlag = True
 
 #screenshot number
 scshots = 1
@@ -160,6 +172,12 @@ while not inputs.key_state("KEY_ESC"):
 
   if not collisions:
     man.move(NewPos)
+    
+  if inFlag and abs(man.z() - building.zpos) > 55:
+    inFlag = False
+    for b in building.model:
+      b.set_light(outLight, 0)
+    mymap.set_light(outLight, 0)
     
   if inputs.key_state("KEY_APOSTROPHE"):  #key '
     tilt -= 2.0
