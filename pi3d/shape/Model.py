@@ -2,7 +2,6 @@ from pi3d import *
 
 from pi3d import Texture
 
-from pi3d.context.TextureLoader import TextureLoader
 from pi3d.loader import loaderEgg
 from pi3d.loader import loaderObj
 from pi3d.shape.Shape import Shape

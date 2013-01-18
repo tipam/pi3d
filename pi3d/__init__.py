@@ -12,7 +12,6 @@ from pi3d.Mouse import Mouse
 from pi3d.Shader import Shader
 from pi3d.Texture import Texture
 
-from pi3d.context.Fog import Fog
 from pi3d.context.Light import Light
 
 from pi3d.shape import EnvironmentCube
@@ -36,12 +35,10 @@ from pi3d.shape.Torus import Torus
 
 from pi3d.sprite.Ball import Ball
 
-from pi3d.util import Draw
 from pi3d.util import String
 from pi3d.util import Utility
 
 from pi3d.util.Defocus import Defocus
 from pi3d.util.Font import Font
-from pi3d.util.Matrix import Matrix
 from pi3d.util.Screenshot import screenshot
 from pi3d.util.Ttffont import Ttffont

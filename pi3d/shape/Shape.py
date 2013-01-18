@@ -7,7 +7,6 @@ from math import radians, pi, sin, cos
 from pi3d.constants import *
 from pi3d.Buffer import Buffer
 from pi3d.context.Light import Light
-from pi3d.context.TextureLoader import TextureLoader
 from pi3d.util import Utility
 
 from pi3d.util.Loadable import Loadable
