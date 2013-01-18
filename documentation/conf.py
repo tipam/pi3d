@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # pi3d documentation build configuration file, created by
-# sphinx-quickstart on Fri Jan 18 12:30:27 2013.
+# sphinx-quickstart on Fri Jan 18 16:33:33 2013.
 #
 # This file is execfile()d with the current directory set to its containing dir.
 #
@@ -25,7 +25,7 @@ import sys, os
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.doctest', 'sphinx.ext.todo', 'sphinx.ext.coverage', 'sphinx.ext.pngmath', 'sphinx.ext.viewcode']
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.doctest', 'sphinx.ext.todo', 'sphinx.ext.viewcode']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -41,7 +41,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'pi3d'
-copyright = u'2013, Tim Skillman'
+copyright = u'2013, pi3d'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -184,7 +184,7 @@ latex_elements = {
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
   ('index', 'pi3d.tex', u'pi3d Documentation',
-   u'Tim Skillman', 'manual'),
+   u'pi3d', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -214,7 +214,7 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 man_pages = [
     ('index', 'pi3d', u'pi3d Documentation',
-     [u'Tim Skillman'], 1)
+     [u'pi3d'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -228,7 +228,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
   ('index', 'pi3d', u'pi3d Documentation',
-   u'Tim Skillman', 'pi3d', 'One line description of project.',
+   u'pi3d', 'pi3d', 'One line description of project.',
    'Miscellaneous'),
 ]
 
