@@ -7,6 +7,9 @@ in the distance
 TODO this doesn't work for non-reflection map object, the shader probably needs
 to be tweaked.
 the demo also shows normal mapping for texture and the Ttffont class
+
+3D perlin noise creation application in
+textures/water/noise_normal.py
 """
 import math, random, time, glob
 
