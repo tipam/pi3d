@@ -37,11 +37,17 @@ def fBm(x, y, z, per, octs):
   return val
 
 
+""" variables used by the noise file generator:
+num -- images in sequence
+size -- size to resize each image to
+freq -- frequency of noise
+octs -- octaves of noise
+"""
+num = 128
+size = 32
+freq = 1/8.0
+octs = 5
 ###################################################
-num = 128 # images in sequence
-size = 32 # size of each image
-freq = 1/8.0 # frequency of noise
-octs = 5 # octaves of noise
 
 for z in range (num):
   data = [] 
