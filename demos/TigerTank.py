@@ -3,7 +3,9 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 """ Landscape from ElevationMap with model tanks and buildings. Demonstrates using
 a function to draw the various parts of the tank and the ElevationMap.pitch_roll()
-method to make models conform (aproximately) to the surface of an ElevationMap
+method to make models conform (aproximately) to the surface of an ElevationMap.
+The tank gun is raised as the mouse view point to looking up. This shows how to 
+combine various rotations about different axes without the objects falling apart!
 This demo also uses a tkinter tkwindow but creates it as method of Display. Compare
 with the system used in demos/MegaStation.py
 """
