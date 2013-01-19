@@ -22,8 +22,6 @@ from pi3d.Mouse import Mouse
 from pi3d.Texture import Texture
 from pi3d.Shader import Shader
 
-from pi3d.context.Fog import Fog
-
 from pi3d.shape.ElevationMap import ElevationMap
 from pi3d.shape import EnvironmentCube
 from pi3d.shape.Model import Model
@@ -134,8 +132,6 @@ etr = 0.0
 
 omx, omy = DISPLAY.mouse_position()
 
-myfog = Fog(0.0014, FOG)
-
 ltm = 0.0 #last pitch roll check
 
 def drawTiger(x, y, z, rot, roll, pitch, turret, gunangle):
@@ -150,9 +146,10 @@ def drawTiger(x, y, z, rot, roll, pitch, turret, gunangle):
   tank_turret.rotateToZ(roll)
   tank_turret.draw()
   tank_gun.position(x, y, z)
-  tank_gun.rotateToX(pitch + gunangle)
+  # adjust gunangle for tilted plane as turret rotates
+  tank_gun.rotateToX(pitch + math.cos(math.radians(turret - 180)) * gunangle)
   tank_gun.rotateToY(turret)
-  tank_gun.rotateToZ(roll)
+  tank_gun.rotateToZ(roll - math.sin(math.radians(turret - 180)) * gunangle)
   tank_gun.draw()
 
 is_running = True
@@ -177,21 +174,19 @@ def loop():
     yoff = abs(1.25 * sf * math.sin(math.radians(tilt))) + 3.0
     zoff = -sf * math.cos(math.radians(mouserot))
 
-    #xoff, yoff, zoff = 0,0,0
-    #CAMERA.position((xm, ym-10*sf-5.0, zm-40*sf))
     #zoom CAMERA out so we can see our robot
     CAMERA.rotate(tilt, mouserot, 0)           #Tank still affected by scene tilt
     CAMERA.position((xm + xoff, ym + yoff + 5, zm + zoff))
     oxm, ozm = xm, zm
     #zoom CAMERA out so we can see our robot
 
-  #draw player tank
+  #draw player tank with smoothing on pitch and roll to lessen jerkiness
   tmnow = time.time()
   if tmnow > (ltm + 0.5):
     tankpitch_to, tankroll_to = mymap.pitch_roll(xm, zm)
   tankpitch += (tankpitch_to - tankpitch)/3.0
   tankroll += (tankroll_to - tankroll)/3.0
-  drawTiger(xm, ym, zm, tankrot, tankroll, tankpitch, 180 - turret, 0.0)
+  drawTiger(xm, ym, zm, tankrot, tankroll, tankpitch, 180 - turret, (tilt*-2.0 if tilt > 0.0 else 0.0))
 
   mymap.draw()           # Draw the landscape
 

@@ -46,7 +46,6 @@ flatsh = Shader("shaders/uv_flat")
 
 tree2img = Texture("textures/tree2.png")
 tree1img = Texture("textures/tree1.png")
-grassimg = Texture("textures/grass.png")
 hb2img = Texture("textures/hornbeam2.png")
 bumpimg = Texture("textures/grasstile_n.jpg")
 reflimg = Texture("textures/stars.jpg")

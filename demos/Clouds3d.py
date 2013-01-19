@@ -54,11 +54,11 @@ for b in range (0, cloudno):
   size = 0.5 + random.random()/2.0
   #TODO if the position is set in the constructor it doesn't work properly,
   # this may be a general problem with Shape and needs to be sorted
-  cloudi = Sprite(w=size * widex, h=size * widey)
-  cloudi.position(150.0 * (random.random() - 0.5), 0.0, cloud_depth - cz)
+  #cloudi = Sprite(w=size * widex, h=size * widey)
+  #cloudi.position(150.0 * (random.random() - 0.5), 0.0, cloud_depth - cz)
   # This doesn't work properly
-  #cloudi = Sprite(w=size * widex, h=size * widey, 
-  #        x=150.0 * (random.random() - 0.5), y=0.0, z=cloud_depth - cz)
+  cloudi = Sprite(w=size * widex, h=size * widey, 
+          x=150.0 * (random.random() - 0.5), y=0.0, z=cloud_depth - cz)
   cloudi.set_draw_details(shader, [clouds[int(random.random() * 4.99999)]], 0.0, 0.0)
   cxyz.append(cloudi)
   cz = cz + zd

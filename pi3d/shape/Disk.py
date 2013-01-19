@@ -29,11 +29,11 @@ class Disk(Shape):
 
     st = 2 * pi / sides
     for j in range(-1, 1):
-      self.add_vertex((x, y-0.1*j, z), (0, -j, 0), (0.5, 0.5))
+      self.add_vertex((0.0, -0.1*j, 0.0), (0.0, -j, 0.0), (0.5, 0.5))
       for r in range(sides+1):
         ca, sa = Utility.from_polar_rad(r * st)
-        self.add_vertex((x + radius * sa, y, z + radius * ca),
-                        (0, -j-0.1*j, 0), (sa * 0.5 + 0.5, ca * 0.5 + 0.5))
+        self.add_vertex((radius * sa, 0.0, radius * ca),
+                        (0.0, -j - 0.1*j, 0.0), (sa * 0.5 + 0.5, ca * 0.5 + 0.5))
       if j == -1:
         v0, v1, v2 = 0, 1, 2
       else:

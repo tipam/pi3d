@@ -55,14 +55,14 @@ class Shape(Loadable):
     14 defocus dist, amount 42,43
     15 defocus frame width, height 45,46
     """
-    """Shape hold matrices which are updated each time it is moved or rotated
+    """Shape holds matrices which are updated each time it is moved or rotated
     this saves time recalculating them each frame as the Shape is drawn
     """
     """translate to position - offset"""
     self.tr1 = array([[1.0, 0.0, 0.0, 0.0],
                       [0.0, 1.0, 0.0, 0.0],
                       [0.0, 0.0, 1.0, 0.0],
-                      [self.unif[0] - self.unif[9], self.unif[1] - self.unif[10], self.unif[2] - self.unif[11],1.0]])
+                      [self.unif[0] - self.unif[9], self.unif[1] - self.unif[10], self.unif[2] - self.unif[11], 1.0]])
     """rotate about x axis"""
     s, c = sin(radians(self.unif[3])), cos(radians(self.unif[3]))
     self.rox = array([[1.0, 0.0, 0.0, 0.0],
@@ -109,6 +109,8 @@ class Shape(Loadable):
   def draw(self, shader=None, txtrs=None, ntl=None, shny=None, camera=None):
     """If called without parameters, there has to have been a previous call to
     set_draw_details() for each Buffer in buf[].
+    NB there is no facility for setting umult and vmult with draw they must be
+    set using set_draw_details or Buffer.set_draw_details
     """
     from pi3d.Camera import Camera
 
@@ -341,14 +343,14 @@ class Shape(Loadable):
     self.MFlg = True
 
   def add_vertex(self, vert, norm, texc):
-  # add vertex,normal and tex_coords ...
+    """add vertex,normal and tex_coords ..."""
     self.verts.append(vert)
     self.norms.append(norm)
     self.texcoords.append(texc)
 
 
   def add_tri(self, indx):
-  # add triangle refs.
+    """add triangle refs."""
     self.inds.append(indx)
 
   def lathe(self, path, rise=0.0, loops=1.0):
@@ -400,7 +402,7 @@ class Shape(Loadable):
 
       tcy = 1.0 - ((py - miny) / (maxy - miny))
 
-      # Normalized 2D vector between path points TODO numpy?
+      # Normalized 2D vector between path points
       dx, dy = Utility.vec_normal(Utility.vec_sub((px, py), (opx, opy)))
 
       for r in range (0, rl):

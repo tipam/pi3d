@@ -6,7 +6,7 @@ of bouncing off an elevation map using normal vectors. Also writing using the
 Font class which has really been superceded by the Ttffont method but shown here
 for documentation. This demo also uses the Defoucs class to blur things in the
 distance. The monster is not blurred as it is at a constant distance and could have
-been blurred in the actual png image file.
+been blurred in the actual png image file using gimp or shuchlike.
 """
 
 import math, random

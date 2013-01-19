@@ -52,7 +52,7 @@ myshape.radialCopy(asphere, step=72)
 myshape.position(0.0, 0.0, 5.0)
 myshape.set_draw_details(shader, [shapeimg, shapebump, shapeshine], 8.0, 0.1)
 
-mysprite = Sprite(w=20.0, h=20.0)
+mysprite = Sprite(w=10.0, h=10.0)
 mysprite.position(0.0, 0.0, 15.0)
 mysprite.set_draw_details(flatsh, [shapebump])
 

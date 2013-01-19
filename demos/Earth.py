@@ -3,7 +3,8 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 """ Simple textruring of Sphere objects against a plane. The atmosphere has
 blend set to True and so has to be drawn after object behind it to allow them
-to show through
+to show through. Normal map used for moon is just a 'normal' pictures so normals
+are calculated strangely and create odd shadows.
 """
 from math import sin, cos
 
@@ -19,7 +20,6 @@ from pi3d.Shader import Shader
 from pi3d.shape.Sphere import Sphere
 from pi3d.shape.Plane import Plane
 
-from pi3d.util import Draw
 from pi3d.util.Screenshot import screenshot
 
 # Setup display and initialise pi3d

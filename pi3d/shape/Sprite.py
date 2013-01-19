@@ -28,7 +28,7 @@ class Sprite(Shape):
     ww = w / 2.0
     hh = h / 2.0
 
-    self.verts = ((-ww, hh, z), (ww, hh, z), (ww, -hh, z), (-ww,-hh, z))
+    self.verts = ((-ww, hh, 0.0), (ww, hh, 0.0), (ww, -hh, 0.0), (-ww,-hh, 0.0))
     self.norms = ((0, 0, -1), (0, 0, -1),  (0, 0, -1), (0, 0, -1))
     self.texcoords = ((0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0 ,1.0))
 

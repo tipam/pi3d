@@ -12,7 +12,6 @@ from pi3d import Display
 from pi3d.Mouse import Mouse
 from pi3d.Texture import Texture
 
-from pi3d.context.Fog import Fog
 from pi3d.Camera import Camera
 from pi3d.Shader import Shader
 
