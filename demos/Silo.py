@@ -57,8 +57,8 @@ mymap.set_draw_details(shader,[floorimg, bumpimg],128.0, 0.0)
 mymap.set_fog((0.3,0.25,0.1,0.2), 500.0)
 
 #Create some random block models elsewhere on the map!
-corridor(150, 10, mymap, details = [shader, [blockimg, blockimg], 1.0, 0.0], walls="ns")
-corridor(120, -40, mymap, details = [shader, [blockimg, blockimg], 1.0, 0.0], walls="ew")
+corridor(150, 10, mymap, details = [shader, [blockimg, blockimg], 1.0, 0.0, 4.0, 4.0], walls="ns")
+corridor(120, -40, mymap, details = [shader, [blockimg, blockimg], 1.0, 0.0, 4.0, 4.0], walls="ew")
 
 # openSectionScheme: black is wall, white is corridor or room, grey has no ceiling, there is one model
 # Model 0: wall
@@ -78,10 +78,10 @@ openSectionSchemeMultimodel = {"#models": 4,
 
 # details is an array of the same size as models array (defined above as part of the dict {"#models":4,..} )
 # contains information corresponding with Buffer.set_draw_details()
-details = [[shader, [blockimg, blockimg], 1.0, 0.0],
-                [shader, [greenimg, greenimg], 1.0, 0.0],
-                [shader, [roofimg, blockimg], 1.0, 0.0],
-                [shader, [roofedgeimg], 0.0, 0.0]]
+details = [[shader, [blockimg, blockimg], 1.0, 0.0, 4.0, 12.0],
+                [shader, [greenimg, greenimg], 1.0, 0.0, 4.0, 4.0],
+                [shader, [roofimg, blockimg], 1.0, 0.0, 4.0, 4.0],
+                [shader, [roofedgeimg], 0.0, 0.0, 4.0, 4.0]]
 
 building = Building("textures/silo_map.png", 0, 0, mymap, width=15.0, depth=15.0, height=70.0, name="", draw_details=details, yoff=-15, scheme=openSectionSchemeMultimodel)
 

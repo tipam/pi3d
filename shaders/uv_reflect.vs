@@ -5,8 +5,9 @@ attribute vec3 normal;
 attribute vec2 texcoord;
 
 uniform mat4 modelviewmatrix[2]; // [0] model movement in real coords, [1] in camera coords
-uniform vec3 unib[2];
+uniform vec3 unib[3];
 //uniform float ntiles => unib[0][0]
+//uniform vec2 umult, vmult => unib[2]
 uniform vec3 unif[16];
 //uniform vec3 eye > unif[6]
 //uniform vec3 lightpos > unif[8]
@@ -48,7 +49,7 @@ void main(void) {
   // ----- now work out the horizonal and vertical angles relative to inray and map them to range 0 to 1
   shinecoordout = vec2(clamp(0.5 - atan(hval, zval)/6.2831853, 0.05, 0.95), clamp(0.5 - atan(vval, zval)/6.2831853, 0.05, 0.95));
 
-  texcoordout = texcoord;
+  texcoordout = texcoord * vec2(unib[2][0], unib[2][1]);
 
   gl_Position = modelviewmatrix[1] * vec4(vertex,1.0);
 }

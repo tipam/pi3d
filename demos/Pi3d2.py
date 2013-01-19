@@ -43,7 +43,7 @@ for i in range(num[0]):
     myshape.add(asphere, -num[0]*0.9 + 1.8*i, -num[1]*0.9 +1.8*j, 0.0)
 
 myshape.position(0.0, 0.0, 5)
-myshape.set_draw_details(shader, [shapeimg, shapebump, shapeshine], 8.0, 0.0)
+myshape.set_draw_details(shader, [shapeimg, shapebump, shapeshine], 8.0, 0.0, 2.0, 2.0)
 #light2 = Light((-5, -5, i - 3))
 #myshape.set_light(light2)
 

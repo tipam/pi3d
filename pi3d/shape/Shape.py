@@ -182,7 +182,8 @@ class Shape(Loadable):
         b.textures[2 + ofst] = shinetex
         b.unib[1] = shiny
 
-  def set_draw_details(self, shader, textures, ntiles = 0.0, shiny = 0.0):
+  def set_draw_details(self, shader, textures, ntiles = 0.0, shiny = 0.0, 
+                      umult=1.0, vmult=1.0):
     """wrapper to call set_draw_details() in each Buffer object
     Arguments:
     shader -- Shader object
@@ -190,7 +191,7 @@ class Shape(Loadable):
     """
     self.shader = shader
     for b in self.buf:
-      b.set_draw_details(shader, textures, ntiles, shiny)
+      b.set_draw_details(shader, textures, ntiles, shiny, umult, vmult)
 
   def set_material(self, mtrl):
     """ wrapper for setting material shade in each Buffer object

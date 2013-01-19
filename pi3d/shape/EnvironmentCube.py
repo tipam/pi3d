@@ -106,7 +106,7 @@ class EnvironmentCube(Shape):
       self.buf.append(Buffer(self, self.vertices[16:20], self.tex_coords[16:20], ((3,0,1), (2,3,1)), self.normals[16:20])) #left
       self.buf.append(Buffer(self, self.vertices[20:24], self.tex_coords[20:24], ((3,1,0), (2,1,3)), self.normals[20:24])) #back
 
-  def set_draw_details(self, shader, textures, ntiles=0.0, shiny=0.0):
+  def set_draw_details(self, shader, textures, ntiles=0.0, shiny=0.0, umult=1.0, vmult=1.0):
     """overrides this method in Shape to cope with nobottom option"""
     if not (type(textures) is list):
       textures = [textures]
@@ -116,5 +116,5 @@ class EnvironmentCube(Shape):
 
     for i, b in enumerate(self.buf):
       j = i - 1 if (self.nobottom and i >= BOTTOM_INDEX) else i
-      b.set_draw_details(shader, [textures[j]], ntiles, shiny)
+      b.set_draw_details(shader, [textures[j]], ntiles, shiny, umult, vmult)
 

@@ -4,7 +4,7 @@ varying vec2 texcoordout;
 varying float dist;
 
 uniform sampler2D tex0;
-uniform vec3 unib[2];
+uniform vec3 unib[3];
 //uniform float blend ====> unib[0][2]
 uniform vec3 unif[16];
 //uniform vec3 fogshade ==> unif[4]

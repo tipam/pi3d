@@ -74,7 +74,7 @@ class xyz(object):
 class Size(xyz):
   """
   Encapsulates a 3D size.
-  Works togetehr with Position to provide intelligent typing. A position plus a
+  Works together with Position to provide intelligent typing. A position plus a
   size is a position, whereas a position minus a position is a size.
   """
   def __init__(self, x,y=None,z=None):
@@ -103,7 +103,7 @@ class Size(xyz):
 class Position(xyz):
   """
   Encapsulates a 3D position.
-  Works togetehr with Size to provide intelligent typing. A position plus a
+  Works together with Size to provide intelligent typing. A position plus a
   size is a position, whereas a position minus a position is a size.
   """
   def __init__(self, x,y=None,z=None):
@@ -260,7 +260,7 @@ class SolidObject(ObjectCuboid):
     """
     self.model = model
     self.details = details
-    self.model.set_draw_details(details[0], details[1], details[2], details[3])
+    self.model.set_draw_details(details[0], details[1], details[2], details[3], details[4], details[5])
 
   @classmethod
   def drawall(self):
@@ -277,8 +277,15 @@ class createMyCuboid(Cuboid):
     system. Fortunately it does not seem to happen with planes. Probably my fault.
     """
     def __init__(self,w,h,d, name="", x=0.0,y=0.0,z=0.0, rx=0.0,ry=0.0,rz=0.0, cx=0.0,cy=0.0,cz=0.0):
-        super(createMyCuboid,self).__init__(w=w, h=h, d=d, name=name, x=x+0.125, y=y, z=z-1.125,
-        rx=rx, ry=ry, rz=rz, cx=cx, cy=cy, cz=cz)
+      fact = 0
+      if w > fact:
+        fact = w
+      if h > fact:
+        fact = h
+      if d > fact:
+        fact = d
+      super(createMyCuboid,self).__init__(w=w, h=h, d=d, name=name, x=x+0.125, y=y, z=z-1.125,
+        rx=rx, ry=ry, rz=rz, cx=cx, cy=cy, cz=cz, tw=w/fact, th=h/fact, td=d/fact)
 
 wallnum=0
 def corridor(x,z, emap, width=10, length=10, height=10, details=None, walls="ns", name="wall", mergeshape=None):
@@ -432,8 +439,6 @@ class Building (object):
 
     self.model = [MergeShape(name=name+"."+str(x)) for x in range(self.scheme["#models"])]
 
-    self.set_draw_details(self.details) # after models created
-
     print "Loading building map ...",mapfile
 
     im = Image.open(mapfile)
@@ -480,21 +485,22 @@ class Building (object):
 
           self._executeScheme(x, y, startx, starty, (colour, None), wallfunc=None, ceilingedgefunc=None, ceilingfunc=self.ceiling, rooffunc=self.roof)
 
+    self.set_draw_details(self.details) # after models created otherwise 
+                                        # details lost by merging
+
   def drawAll(self):
     """
     Draws all the models that comprise the building
     """
     for x in range(len(self.model)):
-      #self.model[x].draw()
-      self.model[x].draw(self.details[x][0], self.details[x][1], self.details[x][2], self.details[x][3])
+      self.model[x].draw()
 
   def set_draw_details(self, details):
     """
     Set the shader, textures, ntiles and reflection strength
     """
-    #TODO this doesn't seem to set the details!
     for x in range(len(self.model)):
-      self.model[x].set_draw_details(details[x][0], details[x][1], details[x][2], details[x][3])
+      self.model[x].set_draw_details(details[x][0], details[x][1], details[x][2], details[x][3], details[x][4], details[x][5])
 
   def _executeScheme (self, x, y, startx, starty, key, wallfunc=None, ceilingedgefunc=None, ceilingfunc=None, rooffunc=None):
     """

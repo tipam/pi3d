@@ -34,11 +34,13 @@ class Buffer(object):
             meeting at this vertex, otherwise just use first (for speed)
     """
     # Uniform variables all in one array!
-    self.unib = (c_float * 6)(0.0, 0.0, 0.0, 0.5, 0.5, 0.5)
+    self.unib = (c_float * 9)(0.0, 0.0, 0.0, 
+                              0.5, 0.5, 0.5,
+                              1.0, 1.0, 0.0)
     """ in shader array of vec3 uniform variables:
     0  ntile, shiny, blend 0-2.
-    1  material 3-5 if any of material is non zero then the UV texture will not
-       be used and the material shade used instead.
+    1  material 3-5 
+    2  umult, vmult 6-8
     """
     self.shape = shape
 
@@ -100,8 +102,10 @@ class Buffer(object):
     opengles.glBindBuffer(GL_ARRAY_BUFFER, self.vbuf);
     opengles.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.ebuf);
 
-  def set_draw_details(self, shader, textures, ntiles = 0.0, shiny = 0.0):
+  def set_draw_details(self, shader, textures, ntiles=0.0, shiny=0.0, 
+                      umult=1.0, vmult=1.0):
     """Can be used to set information needed for drawing as a one off
+    rather than sending as arguments to draw()
 
     Arguments:
     shader -- Shader object
@@ -111,12 +115,16 @@ class Buffer(object):
     ntiles -- multiple for tiling normal map which can be less than or greater
             than 1.0. 0.0 disables the normal mapping, float
     shiny -- how strong to make the reflection 0.0 to 1.0, float
+    umult -- multiplier for tiling the texture in the u direction
+    vmult -- multiplier for tiling the texture in the v direction
     """
     self.shader = shader
     self.shape.shader = shader # set shader for parent shape
     self.textures = textures # array of Textures
     self.unib[0] = ntiles
     self.unib[1] = shiny
+    self.unib[6] = umult
+    self.unib[7] = vmult
 
   def set_material(self, mtrl):
     self.unib[3:6] = mtrl[0:3]
@@ -162,5 +170,5 @@ class Buffer(object):
         # i.e. if any of the textures set to blend then all will for this shader.
         self.unib[2] = 0.05
 
-    opengles.glUniform3fv(shader.unif_unib, 2, ctypes.byref(self.unib))
+    opengles.glUniform3fv(shader.unif_unib, 3, ctypes.byref(self.unib))
     opengles.glDrawElements(GL_TRIANGLES, self.ntris * 3, GL_UNSIGNED_SHORT, 0)
