@@ -7,11 +7,18 @@ from pi3d.util import Utility
 from pi3d.shape.Sprite import ImageSprite
 
 class Ball(ImageSprite):
+  """ This class is used to take some of the functionality of the CollisionBalls
+  demo out of the main file. It inherits from the ImageSprite class that is 
+  passed (in addition to standard Shape constructor arguments) the Shader and
+  the [Texture] to use.
+  In order to fit the Display dimensions the z value has to be set to 1000
+  This allows the Ball dimensions to be set in approximately pixel sizes
+  """
   def __init__(self, camera=None, light=None, shader=None, texture=None,
                radius=0.0, x=0.0, y=0.0, vx=0.0, vy=0.0, decay=0.001):
     super(Ball, self).__init__(texture=texture, shader=shader, camera=camera,
                                light=light, w=2 * radius, h=2 * radius, name="",
-                               x=x, y=y, z=450)
+                               x=x, y=y, z=1000)
     self.radius = radius
     self.unif[0] = x
     self.unif[1] = y
@@ -25,13 +32,14 @@ class Ball(ImageSprite):
     self.translateY(self.vy)
 
   def hit(self, otherball):
-    # Used for pre-checking ball positions.
+    """Used for pre-checking ball positions."""
     dx = (self.unif[0] + self.vx) - (otherball.unif[0] + otherball.vx)
     dy = (self.unif[1] + self.vy) - (otherball.unif[1] + otherball.vy)
     rd = self.radius + otherball.radius
     return Utility.sqsum(dx, dy) <= (rd * rd)
 
   def bounce_collision(self, otherball):
+    """work out resultant velocities using 17th.C phsyics"""
     # relative positions
     dx = self.unif[0] - otherball.unif[0]
     dy = self.unif[1] - otherball.unif[1]
@@ -42,10 +50,10 @@ class Ball(ImageSprite):
                               (self.vy - otherball.vy), 0)
     if dx * dx + dy * dy <= rd * rd and dotP < 0:
       R = otherball.mass / self.mass #ratio of masses
-      # Glancing angle for equating angular momentum before and after collision.
-      # Three more simultaneous equations for x and y components of momentum and
-      # kinetic energy give:
-
+      """Glancing angle for equating angular momentum before and after collision.
+      Three more simultaneous equations for x and y components of momentum and
+      kinetic energy give:
+      """
       if dy:
         D = dx / dy
         delta2y = 2 * (D * self.vx + self.vy -
@@ -86,5 +94,4 @@ class Ball(ImageSprite):
   def repaint(self, t):
     self.move()
     self.bounce_wall(Display.DISPLAY.width, Display.DISPLAY.height)
-    #self.draw(self.shader, [self.texture], 0.0 -1.0)
     self.draw()

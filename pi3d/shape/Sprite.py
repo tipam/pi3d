@@ -7,7 +7,7 @@ from pi3d.util.Loadable import Loadable
 class Sprite(Shape):
   """ 3d model inherits from Shape, differs from Plane in being single sided"""
   def __init__(self, camera=None, light=None, w=1.0, h=1.0, name="",
-               x=0.0, y=0.0, z=10.0,
+               x=0.0, y=0.0, z=20.0,
                rx=0.0, ry=0.0, rz=0.0,
                sx=1.0, sy=1.0, sz=1.0,
                cx=0.0, cy=0.0, cz=0.0):
@@ -45,7 +45,7 @@ class ImageSprite(Sprite, Loadable): #TODO is Loadable needed?
     Loadable.__init__(self) #TODO need this? as Loadable->Shape->Sprite->ImageSprite
     if not isinstance(texture, Texture):
       texture = Texture(texture)
-    self.buf[0].set_draw_details(shader, [texture], 0.0, -1.0)
+    self.buf[0].set_draw_details(shader, [texture])
 
   def _load_opengl(self):
     self.buf[0].textures[0].load_opengl()
