@@ -161,10 +161,7 @@ class Buffer(object):
       opengles.glActiveTexture(GL_TEXTURE0 + t)
       opengles.glBindTexture(GL_TEXTURE_2D, texture.tex())
       opengles.glUniform1i(shader.unif_tex[t], t)
-      opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-                               c_float(GL_LINEAR_MIPMAP_NEAREST))
-      opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
-                               c_float(GL_LINEAR_MIPMAP_NEAREST))
+
       if texture.blend:
         opengles.glEnable(GL_BLEND)
         # i.e. if any of the textures set to blend then all will for this shader.

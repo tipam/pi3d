@@ -46,6 +46,7 @@ class ImageSprite(Sprite, Loadable): #TODO is Loadable needed?
     if not isinstance(texture, Texture):
       texture = Texture(texture)
     self.buf[0].set_draw_details(shader, [texture])
+    self.set_2d_size() # default full window size
 
   def _load_opengl(self):
     self.buf[0].textures[0].load_opengl()

@@ -28,7 +28,7 @@ shader = Shader("shaders/uv_flat")
 # Load textures
 raspimg = Texture("textures/Raspi256x256.png")
 
-pino = 15
+pino = 25
 
 # Setup array of random x,y,z coords and initial rotation
 raspberries=[]

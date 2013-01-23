@@ -21,7 +21,7 @@ class Texture(Loadable):
   to opengl format can happen just in time when tex() is first called
   """
   def __init__(self, file_string, blend=False, flip=False, size=0,
-               defer=DEFER_TEXTURE_LOADING):
+               defer=DEFER_TEXTURE_LOADING, mipmap=True):
     """
     Arguments:
     file_string -- path and name of image file relative to top dir
@@ -32,12 +32,16 @@ class Texture(Loadable):
     size -- to resize image to
     defer -- can load from file in other thread and defer opengl work until
             texture needed, default True
+    mipmap -- use linear interpolation for mipmaps, if set False then nearest
+            pixel values will be used. This is needed for exact pixel represent-
+            ation of images.
     """
     super(Texture, self).__init__()
     self.file_string = file_string
     self.blend = blend
     self.flip = flip
     self.size = size
+    self.mipmap = mipmap
     if defer:
       self.load_disk()
     else:
@@ -110,10 +114,17 @@ class Texture(Loadable):
     opengles.glTexImage2D(GL_TEXTURE_2D, 0, RGBv, self.ix, self.iy, 0, RGBv,
                           GL_UNSIGNED_BYTE,
                           ctypes.string_at(self.image, len(self.image)))
-    opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-                             ctypes.c_float(GL_LINEAR_MIPMAP_LINEAR))
-    opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
-                             ctypes.c_float(GL_LINEAR))
+    if self.mipmap:
+      opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+                               ctypes.c_float(GL_LINEAR_MIPMAP_NEAREST))
+      opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+                               ctypes.c_float(GL_LINEAR_MIPMAP_NEAREST))
+    else:
+      opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+                               ctypes.c_float(GL_NEAREST))
+      opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+                               ctypes.c_float(GL_NEAREST))
+
     opengles.glGenerateMipmap(GL_TEXTURE_2D)
     opengles.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 

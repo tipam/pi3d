@@ -66,11 +66,6 @@ class Shader(object):
       for uv shaders tex0=texture tex1=normal map tex2=reflection
       for material shaders tex0=normal map tex1=reflection
       """
-      opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-                               ctypes.c_float(GL_LINEAR_MIPMAP_NEAREST))
-      opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
-                               ctypes.c_float(GL_LINEAR_MIPMAP_NEAREST))
-
     self.use()
 
   def use(self):

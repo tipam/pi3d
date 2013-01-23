@@ -228,6 +228,18 @@ class Shape(Loadable):
     self.unif[stn:(stn + 3)] = light.lightpos[0:3]
     self.unif[(stn + 3):(stn + 6)] = light.lightcol[0:3]
     self.unif[(stn + 6):(stn + 9)] = light.lightamb[0:3]
+    
+  def set_2d_size(self, w=None, h=None, x=0, y=0):
+    from pi3d.Display import DISPLAY
+    if w == None:
+      w = DISPLAY.width
+    if h == None:
+      h = DISPLAY.height
+    self.unif[42:44] = [x, y]
+    self.unif[45:48] = [w, h, DISPLAY.height]
+    
+  def set_2d_location(self, x, y):
+    self.unif[42:44] = [x, y]
 
   def x(self):
     """get value of x"""

@@ -44,7 +44,7 @@ mysphere2 = Sphere(radius=2.05, slices=24, sides=24,
                    name="clouds", z=5.8)
 mymoon = Sphere(radius=0.4, slices=16, sides=16, name="moon")
 mymoon2 = Sphere(radius=0.1, slices=16, sides=16, name="moon2")
-myplane = Plane(w=50, h=50, name="stars", z=10)
+myplane = Plane(w=50, h=50, name="stars", z=30)
 
 # Fetch key presses
 mykeys = Keyboard()
