@@ -26,7 +26,7 @@ from pi3d.util.Screenshot import screenshot
 # Setup display and initialise pi3d
 DISPLAY = Display.create(x=100, y=100)
 DISPLAY.set_background(1.0,0.4,0.6,1)    	# r,g,b,alpha
-Light((5, -10, -20))
+Light((5, -10, -20), (0.6, 0.6, 0.5), (0.3, 0.3, 0.4))
 
 # load shader
 shader = Shader("shaders/uv_light")
@@ -49,7 +49,7 @@ myecube.set_draw_details(flatsh, ectex)
 # load model_loadmodel
 mymodel = Model(file_string="models/Buckfast Abbey/BuckfastAbbey.egg",
                 name="Abbey",
-                rx=-90, sx=0.03, sy=0.03, sz=0.03)
+                rx=90, sx=0.03, sy=0.03, sz=0.03)
 mymodel.set_shader(shader)
 
 # Create keyboard and mouse event objects
