@@ -34,7 +34,10 @@ class Texture(Loadable):
             texture needed, default True
     mipmap -- use linear interpolation for mipmaps, if set False then nearest
             pixel values will be used. This is needed for exact pixel represent-
-            ation of images.
+            ation of images. **NB BECAUSE THIS BEHAVIOUR IS SET GLOBALLY AT
+            THE TIME THAT THE TEXTURE IS LOADED IT WILL BE SET BY THE LAST
+            TEXTURE TO BE LOADED PRIOR TO DRAWING**
+            TODO possibly reset in Buffer.draw() each time a texture is loaded?
     """
     super(Texture, self).__init__()
     self.file_string = file_string

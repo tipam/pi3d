@@ -25,19 +25,18 @@ class Camera(DefaultInstance):
     """
     super(Camera, self).__init__()
 
+    self.at = at
+    self.start_eye = eye # for reset with different lens settings
     self.eye = [eye[0], eye[1], eye[2]]
-    self.view = LookAtMatrix(at,eye,[0,1,0])
+    self.lens = lens
+    self.view = LookAtMatrix(at, eye, [0,1,0])
     self.projection = ProjectionMatrix(lens[0], lens[1], lens[2], lens[3])
-    #self.mtrx = [row[:] for row in self.model_view]
     self.model_view = dot(self.view, self.projection)
     # Apply transform/rotation first, then shift into perspective space.
     self.mtrx = copy(self.model_view)
     # self.L_reflect = LookAtMatrix(at,eye,[0,1,0],reflect=True)
     self.rtn = [0.0, 0.0, 0.0]
 
-    # self.c_floats will eventually hold the cfloats array for quicker passing
-    # to shader in Shape.draw().
-    self.c_floats = None
     self.was_moved = True
 
   @staticmethod
@@ -46,11 +45,15 @@ class Camera(DefaultInstance):
     return Camera((0, 0, 0), (0, 0, -1),
                   (1, 1000, DISPLAY.width / 1000.0, DISPLAY.height / 1000.0))
 
-  def reset(self):
+  def reset(self, lens=None):
     """Has to be called each loop if the camera position or rotation changes"""
+    if lens != None:
+      view = LookAtMatrix(self.at, self.start_eye, [0,1,0])
+      projection = ProjectionMatrix(lens[0], lens[1], lens[2], lens[3])
+      self.model_view = dot(view, projection)
+    # TODO some way of resetting to original matrix
     self.mtrx = copy(self.model_view)
     self.rtn = [0.0, 0.0, 0.0]
-    self.c_floats = None
     self.was_moved = True
 
   def copy(self,copyMatrix):
@@ -78,7 +81,6 @@ class Camera(DefaultInstance):
                      [-pt[0], -pt[1], -pt[2], 1]],
                     self.mtrx)
     self.eye = [pt[0], pt[1], pt[2]]
-    self.c_floats = None
     self.was_moved = True
 
   def rotateZ(self, angle):
@@ -95,7 +97,6 @@ class Camera(DefaultInstance):
                        [0, 0, 0, 1]],
                       self.mtrx)
       self.rtn[2] = angle
-      self.c_floats = None
       self.was_moved = True
 
   def rotateY(self, angle):
@@ -112,7 +113,6 @@ class Camera(DefaultInstance):
                        [0, 0, 0, 1]],
                       self.mtrx)
       self.rtn[1] = angle
-      self.c_floats = None
       self.was_moved = True
 
   def rotateX(self, angle):
@@ -128,7 +128,6 @@ class Camera(DefaultInstance):
                        [0, -s, c, 0],
                        [0, 0, 0, 1]], self.mtrx)
       self.rtn[0] = angle
-      self.c_floats = None
       self.was_moved = True
 
   def rotate(self, rx, ry, rz):

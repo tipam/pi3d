@@ -43,10 +43,10 @@ class ImageSprite(Sprite, Loadable): #TODO is Loadable needed?
   def __init__(self, texture, shader, **kwds):
     Sprite.__init__(self, **kwds)
     Loadable.__init__(self) #TODO need this? as Loadable->Shape->Sprite->ImageSprite
-    if not isinstance(texture, Texture):
+    if not isinstance(texture, Texture): # i.e. can load from file name
       texture = Texture(texture)
     self.buf[0].set_draw_details(shader, [texture])
-    self.set_2d_size() # default full window size
+    self.set_2d_size() # method in Shape, default full window size
 
   def _load_opengl(self):
     self.buf[0].textures[0].load_opengl()

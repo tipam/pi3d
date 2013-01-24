@@ -186,11 +186,11 @@ def loadFileEGG(model, fileName):
         else: model.vNormal = False
 
         if model.coordinateSystem == "Z-Up":
-          thisV = [structVList[vpKey][j].coords[1], structVList[vpKey][j].coords[2], structVList[vpKey][j].coords[0]]
-          thisN = [structVList[vpKey][j].normal[1], structVList[vpKey][j].normal[2], structVList[vpKey][j].normal[0]]
+          thisV = [structVList[vpKey][j].coords[1], structVList[vpKey][j].coords[2], -structVList[vpKey][j].coords[0]]
+          thisN = [structVList[vpKey][j].normal[1], structVList[vpKey][j].normal[2], -structVList[vpKey][j].normal[0]]
         else:
-          thisV = structVList[vpKey][j].coords
-          thisN = structVList[vpKey][j].normal
+          thisV = [structVList[vpKey][j].coords[0], structVList[vpKey][j].coords[1], -structVList[vpKey][j].coords[2]]
+          thisN = [structVList[vpKey][j].normal[0], structVList[vpKey][j].normal[1], -structVList[vpKey][j].normal[2]]
         g_vertices.append(thisV)
         if model.vNormal: nml = thisN
         else: nml = structPList[p].normal
@@ -203,7 +203,7 @@ def loadFileEGG(model, fileName):
         nv += 1
       n = nv - startV - 1
       for j in range(1,n):
-        g_indices.append((startV, startV + j, startV + j + 1))
+        g_indices.append((startV, startV + j + 1, startV + j))
     
     ilen = len(g_vertices)
     if ilen > 0:
