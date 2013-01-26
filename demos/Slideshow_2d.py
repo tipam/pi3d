@@ -36,14 +36,14 @@ for i, f in enumerate(iFiles):
   NB if some textures are set with different values of mipmap then the last one
   loaded will define how the global behaviour is set.
   """
-  tex = Texture(f)
+  tex = Texture(f, mipmap=False)
   slide.append(ImageSprite(tex, shader, w=10.0, h=10.0, z=0.1))
   xrat = DISPLAY.width/tex.ix
   yrat = DISPLAY.height/tex.iy
   if yrat < xrat:
     xrat = yrat
-  wi = tex.ix * xrat
-  hi = tex.iy * xrat
+  wi, hi = tex.ix * xrat, tex.iy * xrat
+  #wi, hi = tex.ix, tex.iy
   xi = (DISPLAY.width - wi)/2
   yi = (DISPLAY.height - hi)/2
   slide[i].set_2d_size(w=wi, h=hi, x=xi, y=yi)

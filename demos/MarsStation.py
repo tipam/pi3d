@@ -21,9 +21,9 @@ rads = 0.017453292512  # degrees to radians
 
 #Create a Tkinter window
 # TODO: the display will do this for you automatically now
-winw,winh,bord = 1200,600,0   	#64MB GPU memory setting
-#winw,winh,bord = 1920,1080,0	#128MB GPU memory setting
-win = TkWin(None, "Mega Space Station in Pi3D",winw,winh)
+winw,winh,bord = 1200,600,0 #64MB GPU memory setting
+#winw,winh,bord = 1920,1080,0 #128MB GPU memory setting
+win = TkWin(None, "Mars Space Station in Pi3D", winw, winh)
 
 # Setup display and initialise pi3d viewport over the window
 win.update()  #requires a window update first so that window sizes can be retiredx
@@ -57,33 +57,36 @@ sttnbmp = Texture("textures/floor_nm.jpg")
 sttnshn = Texture("textures/stars.jpg")
 x,z = 0,0
 y = mymap.calcHeight(x, z)
-cor_win = Model(file_string="models/MegaStation/corridor_win_lowpoly.egg",
-                x=x, y=y, z=z, sx=0.1, sy=0.1, sz=0.1)
-cor_win.set_shader(shader)
-cor_win90 = cor_win.clone() # TODO seem to be able to 'stamp' the same object in different locations but not different rotations!
-cor_win.rotateToY(90)
 
-corridor = Model(file_string="models/MegaStation/corridor_lowpoly.egg",
+cor_win90 = Model(file_string="models/MegaStation/corridor_win_lowpoly.egg",
+                x=x, y=y, z=z, sx=0.1, sy=0.1, sz=0.1)
+cor_win90.set_shader(shader)
+# TODO seem to be able to 'stamp' the same object in different locations 
+# but not different rotations! need to find out cause
+cor_win00 = cor_win90.clone()
+cor_win90.rotateToY(90)
+
+corridor90 = Model(file_string="models/MegaStation/corridor_lowpoly.egg",
                  x=x, y=y, z=z, sx=0.1, sy=0.1, sz=0.1)
-corridor.set_shader(shader)
-corridor90 = corridor.clone()
-corridor.rotateToY(90)
+corridor90.set_shader(shader)
+corridor00 = corridor90.clone()
+corridor90.rotateToY(90)
 
 cor_cross = Model(file_string="models/MegaStation/cross_room.egg",
                  x=x, y=y, z=z, sx=0.1, sy=0.1, sz=0.1)
 cor_cross.set_shader(shader)
-cor_cross.set_normal_shine(sttnbmp, 32.0, sttnshn, 0.4)
+cor_cross.set_normal_shine(sttnbmp, 32.0, sttnshn, 0.1)
 
 cor_cross_doors = Model(file_string="models/MegaStation/cross_room_doors.egg",
                         x=x, y=y, z=z, sx=0.1, sy=0.1, sz=0.1)
 cor_cross_doors.set_shader(shader)
-cor_cross_doors.set_normal_shine(sttnbmp, 32.0, sttnshn, 0.4)
+cor_cross_doors.set_normal_shine(sttnbmp, 32.0, sttnshn, 0.1)
 
 cor_bend = Model(file_string="models/MegaStation/bend_lowpoly.egg",
                  x=x, y=y, z=z, sx=0.1, sy=0.1, sz=0.1)
 cor_bend.set_shader(shader)
-cor_bend.set_normal_shine(sttnbmp)
-cor_bend.rotateToY(90)
+cor_bend.set_normal_shine(sttnbmp, 32.0)
+cor_bend.rotateToY(180)
 
 #position vars
 mouserot=0.0
@@ -115,28 +118,28 @@ while DISPLAY.loop_running():
   else: sf = 0.5
   xoff, yoff, zoff = sf*math.sin(mouserot*rads), abs(1.25*sf*math.sin(tilt*rads)) + 3.0, -sf*math.cos(mouserot*rads)
   CAMERA.rotate(tilt, mouserot, 0)
-  CAMERA.position((xm + xoff, ym + yoff +5, zm + zoff))   #zoom camera out so we can see our robot
+  CAMERA.position((xm + xoff, ym + yoff +5, zm + zoff))
 
   Utility.lodDraw([xm, ym, zm], [0, mody, 0], [[opendist,cor_cross],[1000,cor_cross_doors]])
-  cor_win.position(0, mody, spc*1.5)
-  cor_win.draw()
-  corridor.position(0, mody, spc*2.5)
-  corridor.draw()
-  cor_win.position(0, mody, spc*3.5)
-  cor_win.draw()
-  Utility.lodDraw([xm, ym, zm], [0, mody, spc*5],[[opendist,cor_cross],[1000,cor_cross_doors]])
-  cor_win.position(0, mody, spc*6.5)
-  cor_win.draw()
-  Utility.lodDraw([xm, ym, zm],[0, mody, spc*8], [[opendist,cor_cross],[1000,cor_cross_doors]])
-  cor_win90.position(-spc*1.5, mody, spc*5)
+  cor_win90.position(0, mody, spc*1.5)
   cor_win90.draw()
+  corridor90.position(0, mody, spc*2.5)
+  corridor90.draw()
+  cor_win90.position(0, mody, spc*3.5)
+  cor_win90.draw()
+  Utility.lodDraw([xm, ym, zm], [0, mody, spc*5],[[opendist,cor_cross],[1000,cor_cross_doors]])
+  cor_win90.position(0, mody, spc*6.5)
+  cor_win90.draw()
+  Utility.lodDraw([xm, ym, zm],[0, mody, spc*8], [[opendist,cor_cross],[1000,cor_cross_doors]])
+  cor_win00.position(-spc*1.5, mody, spc*5)
+  cor_win00.draw()
   cor_bend.position(-spc*2.5, mody, spc*5)
   cor_bend.draw()
   Utility.lodDraw([xm, ym, zm],[-spc*2.6, mody, spc*6.6],[[opendist,cor_cross],[1000,cor_cross_doors]])
-  cor_win90.position(spc*1.5, mody, spc*5)
-  cor_win90.draw()
-  corridor90.position(spc*2.5, mody, spc*5)
-  corridor90.draw()
+  cor_win00.position(spc*1.5, mody, spc*5)
+  cor_win00.draw()
+  corridor00.position(spc*2.5, mody, spc*5)
+  corridor00.draw()
   Utility.lodDraw([xm, ym, zm],[spc*4, mody, spc*5],[[opendist,cor_cross],[1000,cor_cross_doors]])
 
   mymap.draw()  #Draw the landscape

@@ -91,17 +91,17 @@ treemodel2.add(treeplane.buf[0], 0,0,0, 0,120,0)
 
 #Scatter them on map using Merge shape's cluster function
 mytrees1 = MergeShape(name="trees1")
-mytrees1.cluster(treemodel1.buf[0], mymap,0.0,0.0,200.0,200.0,20,"",8.0,3.0)
+mytrees1.cluster(treemodel1.buf[0], mymap,0.0,0.0,120.0,120.0,30,"",8.0,3.0)
 mytrees1.set_draw_details(flatsh, [tree2img], 0.0, 0.0)
 mytrees1.set_fog(*TFOG)
 
 mytrees2 = MergeShape(name="trees2")
-mytrees2.cluster(treemodel2.buf[0], mymap,0.0,0.0,200.0,200.0,20,"",6.0,3.0)
+mytrees2.cluster(treemodel2.buf[0], mymap,0.0,0.0,100.0,100.0,30,"",6.0,3.0)
 mytrees2.set_draw_details(flatsh, [tree1img], 0.0, 0.0)
 mytrees2.set_fog(*TFOG)
 
 mytrees3 = MergeShape(name="trees3")
-mytrees3.cluster(treemodel2, mymap,0.0,0.0,300.0,300.0,20,"",4.0,2.0)
+mytrees3.cluster(treemodel2, mymap,0.0,0.0,300.0,300.0,30,"",4.0,2.0)
 mytrees3.set_draw_details(flatsh, [hb2img], 0.0, 0.0)
 mytrees3.set_fog(*TFOG)
 
