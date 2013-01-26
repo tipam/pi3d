@@ -28,7 +28,7 @@ shader = Shader("shaders/uv_flat")
 # Load textures
 raspimg = Texture("textures/Raspi256x256.png")
 
-pino = 25
+pino = 15
 
 # Setup array of random x,y,z coords and initial rotation
 raspberries=[]
@@ -47,7 +47,7 @@ mykeys = Keyboard()
 while DISPLAY.loop_running():
   for b in raspberries:
     b.draw()
-    b.translateY(-0.1)
+    b.translateY(-0.3)
     b.rotateIncZ(1)
     if b.y() < -2 * b.z():
       b.positionX((random.random()*2 - 1) * b.z())
