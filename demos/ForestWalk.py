@@ -29,7 +29,6 @@ from pi3d.shape.EnvironmentCube import loadECfiles
 from pi3d.shape.MergeShape import MergeShape
 from pi3d.shape.Plane import Plane
 from pi3d.shape.Sphere import Sphere
-from pi3d.shape.Model import Model
 
 from pi3d.util.Screenshot import screenshot
 
@@ -51,7 +50,6 @@ hb2img = Texture("textures/hornbeam2.png")
 bumpimg = Texture("textures/grasstile_n.jpg")
 reflimg = Texture("textures/stars.jpg")
 rockimg = Texture("textures/rock1.jpg")
-treebump = Texture("models/Tree/tree_nm.png")
 
 FOG = ((0.3, 0.3, 0.4, 0.5), 650.0)
 TFOG = ((0.2, 0.24, 0.22, 0.3), 150.0)

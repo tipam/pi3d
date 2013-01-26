@@ -35,7 +35,7 @@ print("=====================================================")
 print("press escape to escape")
 print("move this terminal window to top of screen to see FPS")
 print("=====================================================")
-print(__doc__)
+
 # Setup display and initialise pi3d
 DISPLAY = Display.create(x=200, y=150)
 DISPLAY.set_background(0.4, 0.6, 0.8, 0.5)      # r,g,b,alpha

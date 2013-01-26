@@ -14,7 +14,7 @@ from pi3d.shape.Sprite import ImageSprite
 
 # Setup display and initialise pi3d
 
-DISPLAY = Display.create(is_3d=False, background=(0.0, 0.0, 0.0, 0.0), x=200, y=200)
+DISPLAY = Display.create(is_3d=False, background=(0.0, 0.0, 0.0, 0.0), x=100, y=100)
 
 shader = Shader("shaders/2d_flat")
 #############################
@@ -30,13 +30,16 @@ for i, f in enumerate(iFiles):
   """ here the images are scaled to fit the Display size, if they were to be
   rendered pixel for pixel as the original then the mipmap=False argument would
   be used, which is much faster, and w and h values set to the Texture size i.e.
+
   tex = Texture(f, mipmap=False)
   ...
-  slide[i].set_2d_size(w=tex.ix, h=tex.iy)
+  wi, hi = tex.ix, tex.iy
+
   NB if some textures are set with different values of mipmap then the last one
   loaded will define how the global behaviour is set.
   """
-  tex = Texture(f, mipmap=False)
+  tex = Texture(f)
+  #tex = Texture(f, mipmap=False)
   slide.append(ImageSprite(tex, shader, w=10.0, h=10.0, z=0.1))
   xrat = DISPLAY.width/tex.ix
   yrat = DISPLAY.height/tex.iy
