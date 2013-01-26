@@ -17,7 +17,7 @@ class ElevationMap(Shape):
                width=100.0, depth=100.0, height=10.0,
                divx=0, divy=0, ntiles=1.0, name="",
                x=0.0, y=0.0, z=0.0, rx=0.0, ry=0.0, rz=0.0,
-               sx=1.0, sy=1.0, sz=1.0, cx=0.0, cy=0.0, cz=0.0, smooth=True):
+               sx=1.0, sy=1.0, sz=1.0, cx=0.0, cy=0.0, cz=0.0, smooth=True, cubic=False):
     """uses standard constructor for Shape
     Arguments:
     mapfile -- greyscale image path/file, string
@@ -77,10 +77,31 @@ class ElevationMap(Shape):
     tex_coords = []
     idx = []
 
-    for y in range(0,iy):
-      for x in range(0,ix):
+    for y in xrange(0,iy):
+      for x in xrange(0,ix):
         hgt = (self.pixels[x,y])*ht
-        verts.append((-wh+x*ws, hgt, -hh+y*hs))
+        this_x = -wh + x*ws
+        this_z = -hh + y*hs
+        if cubic:
+          """ this is a bit experimental. It tries to make the map either zero
+          or height high. Vertices are moved 'under' adjacent ones if there is
+          a step to make vertical walls. Goes wrong in places - mainly because
+          it doesn't check diagonals
+          """
+          if hgt > height / 2:
+            hgt = height
+          else:
+            hgt = 0.0
+          if hgt == 0 and y > 0 and y < iy-1 and x > 0 and x < ix-1:
+            if self.pixels[x-1, y] > 127:
+              this_x = -wh + (x-1)*ws
+            if self.pixels[x+1, y] > 127:
+              this_x = -wh + (x+1)*ws
+            if self.pixels[x, y-1] > 127:
+              this_z = -hh + (y-1)*hs
+            if self.pixels[x, y+1] > 127:
+              this_z = -hh + (y+1)*hs
+        verts.append((this_x, hgt, this_z))
         tex_coords.append(((ix-x) * tx,(iy-y) * ty))
 
     s=0

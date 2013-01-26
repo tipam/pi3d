@@ -9,7 +9,7 @@ combine various rotations about different axes without the objects falling apart
 This demo also uses a tkinter tkwindow but creates it as method of Display. Compare
 with the system used in demos/MarsStation.py
 Also look out for:
-2d shader usage. Drawing onto an ImageSprite canvas placed in front of the camera
+2D shader usage. Drawing onto an ImageSprite canvas placed in front of the camera
 imediately after reset() This is used to generate a splash screed during file
 loading and to draw a telescopic site view and a navigation map
 """
@@ -203,6 +203,11 @@ while DISPLAY.loop_running():
   omx, omy = mx, my
 
   CAMERA.reset()
+  """ if blended images drawn here then some background may show through
+  target.draw()
+  if smode:
+    sniper.draw()
+  """
   smmap.draw()
   dot1.set_2d_location(DISPLAY.width - 105.0 + 200.0*xm/mapwidth, 
                       DISPLAY.height - 105.0 - 200.0*zm/mapdepth)
@@ -267,7 +272,7 @@ while DISPLAY.loop_running():
     CAMERA.reset()
     target.draw()
     sniper.draw()
-    
+
 
   # turns player tankt turret towards center of screen which will have a crosshairs
   if turret + 2.0 < mouserot:
