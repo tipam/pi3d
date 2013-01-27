@@ -95,11 +95,23 @@ class ElevationMap(Shape):
           if hgt == 0 and y > 0 and y < iy-1 and x > 0 and x < ix-1:
             if self.pixels[x-1, y] > 127:
               this_x = -wh + (x-1)*ws
-            if self.pixels[x+1, y] > 127:
+            elif self.pixels[x+1, y] > 127:
               this_x = -wh + (x+1)*ws
-            if self.pixels[x, y-1] > 127:
+            elif self.pixels[x, y-1] > 127:
               this_z = -hh + (y-1)*hs
-            if self.pixels[x, y+1] > 127:
+            elif self.pixels[x, y+1] > 127:
+              this_z = -hh + (y+1)*hs
+            elif self.pixels[x-1, y-1] > 127:
+              this_x = -wh + (x-1)*ws
+              this_z = -hh + (y-1)*hs
+            elif self.pixels[x-1, y+1] > 127:
+              this_x = -wh + (x-1)*ws
+              this_z = -hh + (y+1)*hs
+            elif self.pixels[x+1, y-1] > 127:
+              this_x = -wh + (x+1)*ws
+              this_z = -hh + (y-1)*hs
+            elif self.pixels[x+1, y+1] > 127:
+              this_x = -wh + (x+1)*ws
               this_z = -hh + (y+1)*hs
         verts.append((this_x, hgt, this_z))
         tex_coords.append(((ix-x) * tx,(iy-y) * ty))
