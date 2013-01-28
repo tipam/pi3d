@@ -113,25 +113,22 @@ x, z = 20, -320
 y = mymap.calcHeight(x,z)
 
 church = make_model('AllSaints/AllSaints.obj', 'church', x, y, z)
-#churchlow = make_model('AllSaints/AllSaints-lowpoly.obj', 'churchLo', x, y, z)
 
 #Load cottages
 x, z = 250,-40
 y = mymap.calcHeight(x,z)
 
 cottages = make_model('Cottages/cottages_low.obj', 'cottagesLo', x, y, z, ry=-5)
-#cottagesHi = Model('models/Cottages/cottages.egg', 'cottagesHi',
-#                   x,y,z, -90,-5,0, .1,.1,.1)
 
 #cross-hairs in gun sight
 targtex = Texture("textures/target.png", blend=True)
-target = ImageSprite(targtex, shade2d, w=10, h=10, z=0.1)
+target = ImageSprite(targtex, shade2d, w=10, h=10, z=0.4)
 target.set_2d_size(targtex.ix, targtex.iy, (DISPLAY.width - targtex.ix)/2,
                   (DISPLAY.height - targtex.iy)/2)
 
 #telescopic gun sight
 sniptex = Texture("textures/snipermode.png", blend=True)
-sniper = ImageSprite(sniptex, shade2d, w=10, h=10, z=0.2)
+sniper = ImageSprite(sniptex, shade2d, w=10, h=10, z=0.3)
 scx = DISPLAY.width/sniptex.ix
 scy = DISPLAY.height/sniptex.iy
 if scy > scx:
@@ -140,12 +137,12 @@ scw, sch = sniptex.ix * scx, sniptex.iy * scx
 sniper.set_2d_size(scw, sch, (DISPLAY.width - scw)/2,(DISPLAY.height - sch)/2)
 
 #corner map and dots
-smmap = ImageSprite(mountimg1, shade2d, w=10, h=10, z=0.05)
+smmap = ImageSprite(mountimg1, shade2d, w=10, h=10, z=0.2)
 smmap.set_2d_size(w=200, h=200, x=DISPLAY.width - 200, y=DISPLAY.height - 200)
-dot1tex = Texture("textures/red_ball.png")
-dot1 = ImageSprite(dot1tex, shade2d, w=10, h=10, z=0.04)
-dot1.set_2d_size(w=10, h=10)
-dot2 = ImageSprite("textures/blu_ball.png", shade2d, w=10, h=10, z=0.03)
+#dot1tex = Texture("textures/red_ball.png")
+dot1 = ImageSprite("textures/red_ball.png", shade2d, w=10, h=10, z=0.1)
+dot1.set_2d_size(w=10, h=10) # 10x10 pixels
+dot2 = ImageSprite("textures/blu_ball.png", shade2d, w=10, h=10, z=0.05)
 dot2.set_2d_size(w=10, h=10)
 
 #player tank vars
@@ -203,18 +200,13 @@ while DISPLAY.loop_running():
   omx, omy = mx, my
 
   CAMERA.reset()
-  """ if blended images drawn here then some background may show through
-  target.draw()
-  if smode:
-    sniper.draw()
-  """
-  smmap.draw()
   dot1.set_2d_location(DISPLAY.width - 105.0 + 200.0*xm/mapwidth, 
                       DISPLAY.height - 105.0 - 200.0*zm/mapdepth)
-  dot2.draw()
   dot2.set_2d_location(DISPLAY.width - 105.0 + 200.0*etx/mapwidth, 
                       DISPLAY.height - 105.0 - 200.0*etz/mapdepth)
   dot1.draw()
+  dot2.draw()
+  smmap.draw()
   # tilt can be used to prevent the view from going under the landscape!
   sf = 60 - 55.0 / abs(tilt) if tilt < -1 else 5.0
   xoff = sf * math.sin(math.radians(mouserot))
@@ -266,13 +258,10 @@ while DISPLAY.loop_running():
   
   if smode:
     """ because some of the overlays have blend=True they must be done AFTER
-    other objects have been rendered. If this was not the case then it would
-    be much more efficient to do these draw()s straight after the reset() above
+    other objects have been rendered.
     """
-    CAMERA.reset()
     target.draw()
     sniper.draw()
-
 
   # turns player tankt turret towards center of screen which will have a crosshairs
   if turret + 2.0 < mouserot:
