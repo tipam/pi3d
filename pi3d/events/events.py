@@ -353,7 +353,7 @@ class EventStream(object):
 		self.absInfo = [None]*EventStream.numAxes
 
 	#def acquire_abs_info(self, axis):
-	#	assert(axis<EventStream.numAxes, "Axis number out of range")
+	#	assert (axis < EventStream.numAxes), "Axis number out of range"
 	#	self.absinfo[axis] = get_abs_info(EventStream.axisToEvent[axis])
 	def acquire_abs_info(self):
 		"""
@@ -371,7 +371,7 @@ class EventStream(object):
 		acquire_abs_info must have been previously called to acquire the data to
 		do the scaling.
 		"""
-		assert(axis<EventStream.numAxes, "Axis number out of range")
+		assert (axis < EventStream.numAxes), "Axis number out of range"
 		if self.absInfo[axis]:
 			return self.absInfo[axis].scale(value)
 		else:
