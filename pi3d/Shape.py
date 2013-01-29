@@ -195,7 +195,7 @@ class Shape(Loadable):
         b.textures[2 + ofst] = shinetex
         b.unib[1] = shiny
 
-  def set_draw_details(self, shader, textures, ntiles = 0.0, shiny = 0.0, 
+  def set_draw_details(self, shader, textures, ntiles = 0.0, shiny = 0.0,
                       umult=1.0, vmult=1.0):
     """wrapper to call set_draw_details() in each Buffer object
     
@@ -250,16 +250,16 @@ class Shape(Loadable):
     self.unif[stn:(stn + 3)] = light.lightpos[0:3]
     self.unif[(stn + 3):(stn + 6)] = light.lightcol[0:3]
     self.unif[(stn + 6):(stn + 9)] = light.lightamb[0:3]
-    
+
   def set_2d_size(self, w=None, h=None, x=0, y=0):
-    from pi3d.Display import DISPLAY
+    from pi3d.Display import Display
     if w == None:
-      w = DISPLAY.width
+      w = Display.INSTANCE.width
     if h == None:
-      h = DISPLAY.height
+      h = Display.INSTANCE.height
     self.unif[42:44] = [x, y]
-    self.unif[45:48] = [w, h, DISPLAY.height]
-    
+    self.unif[45:48] = [w, h, Display.INSTANCE.height]
+
   def set_2d_location(self, x, y):
     self.unif[42:44] = [x, y]
 

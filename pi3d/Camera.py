@@ -43,9 +43,11 @@ class Camera(DefaultInstance):
 
   @staticmethod
   def _default_instance():
-    from pi3d.Display import DISPLAY
+    from pi3d.Display import Display
     return Camera((0, 0, 0), (0, 0, -1),
-                  (1, 1000, DISPLAY.width / 1000.0, DISPLAY.height / 1000.0))
+                  (1, 1000,
+                   Display.INSTANCE.width / 1000.0,
+                   Display.INSTANCE.height / 1000.0))
 
   def reset(self, lens=None):
     """Has to be called each loop if the camera position or rotation changes"""
