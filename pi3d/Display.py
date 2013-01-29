@@ -14,7 +14,6 @@ from pi3d.util.DisplayOpenGL import DisplayOpenGL
 
 LOGGER = Log.logger(__name__)
 
-DISPLAY = None
 ALLOW_MULTIPLE_DISPLAYS = False
 RAISE_EXCEPTIONS = True
 

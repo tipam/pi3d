@@ -15,10 +15,10 @@ def screenshot(filestring):
   Display.clear()
   the file will be saved in the top directory if you don't add a path
   """
-  from pi3d.Display import DISPLAY
+  from pi3d.Display import Display
   LOGGER.info('Taking screenshot of "%s"', filestring)
 
-  w, h = DISPLAY.width, DISPLAY.height
+  w, h = Display.INSTANCE.width, Display.INSTANCE.height
   size = h * w * 3
   img = (ctypes.c_char * size)()
   opengles.glReadPixels(0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE, ctypes.byref(img))
