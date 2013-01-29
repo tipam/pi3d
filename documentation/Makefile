@@ -30,6 +30,8 @@ main: html
 install: html
 	rm -Rf $(DOCUMENTATION_DIR)
 	cp -R _build/html $(DOCUMENTATION_DIR)
+	touch $(DOCUMENTATION_DIR)/.nojekyll
+	@echo "Installed documentation in $(DOCUMENTATION_DIR)"
 
 help:
 	@echo "Please use \`make <target>' where <target> is one of"

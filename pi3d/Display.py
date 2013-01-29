@@ -14,8 +14,6 @@ from pi3d.util.DisplayOpenGL import DisplayOpenGL
 
 LOGGER = Log.logger(__name__)
 
-CHECK_IF_DISPLAY_THREAD = True
-DISPLAY_THREAD = threading.current_thread()
 DISPLAY = None
 ALLOW_MULTIPLE_DISPLAYS = False
 RAISE_EXCEPTIONS = True
@@ -29,19 +27,17 @@ DEFAULT_FAR_2D = 500.0
 WIDTH = 0
 HEIGHT = 0
 
-def is_display_thread():
-  return not CHECK_IF_DISPLAY_THREAD or (
-    DISPLAY_THREAD is threading.current_thread())
-
 class Display(object):
+  INSTANCE = None
+  """The current unique instance of Display."""
+
   def __init__(self, tkwin):
-    """Opens up the OpenGL library and prepares a window for display."""
-    global DISPLAY
-    if DISPLAY:
+    """Please don't use this constructor, use pi3d.Display.create."""
+    if Display.INSTANCE:
       assert ALLOW_MULTIPLE_DISPLAYS
       LOGGER.warning('A second instance of Display was created')
     else:
-      DISPLAY = self
+      Display.INSTANCE = self
 
     self.tkwin = tkwin
 
@@ -57,22 +53,6 @@ class Display(object):
     self.lock = threading.RLock()
 
     LOGGER.info(STARTUP_MESSAGE)
-
-  def loop(self, loop_function=None):
-    LOGGER.debug('starting')
-    self.time = time.time()
-    assert not self.external_loop, "Use only one of loop and loop_running"
-
-    self.internal_loop = True
-    while self.is_running:
-      self._loop_begin()
-      if loop_function and loop_function():
-        self.stop()
-      else:
-        self._loop_end()
-
-    self.destroy()
-    LOGGER.debug('stopped')
 
   def loop_running(self):
     if self.is_running:
@@ -91,6 +71,7 @@ class Display(object):
     return self.is_running
 
   def resize(self, x=0, y=0, w=0, h=0):
+    """Reshape the window with the given coordinates."""
     if w <= 0:
       w = display.max_width
     if h <= 0:
@@ -105,12 +86,54 @@ class Display(object):
     self.opengl.resize(x, y, w, h)
 
   def add_sprites(self, *sprites):
+    """Add one or more sprites to this Display."""
     with Locker(self.lock):
       self.sprites_to_load.update(sprites)
 
   def remove_sprites(self, *sprites):
+    """Remove one or more sprites from this Display."""
     with Locker(self.lock):
       self.sprites_to_unload.update(sprites)
+
+  def stop(self):
+    """Stop the display loop."""
+    self.is_running = False
+
+  def destroy(self):
+    """Destroy the current display, reset Display.INSTANCE."""
+    self.stop()
+    try:
+      self.opengl.destroy()
+    except:
+      pass
+    try:
+      self.mouse.stop()
+    except:
+      pass
+    try:
+      self.tkwin.destroy()
+    except:
+      pass
+    Display.INSTANCE = None
+
+  def clear(self):
+    """Clear the Display."""
+    # opengles.glBindFramebuffer(GL_FRAMEBUFFER,0)
+    opengles.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+
+  def set_background(self, r, g, b, alpha):
+    opengles.glClearColor(c_float(r), c_float(g), c_float(b), c_float(alpha))
+    opengles.glColorMask(1, 1, 1, 1 if alpha < 1.0 else 0)
+    #switches off alpha blending with desktop (is there a bug in the driver?)
+
+  def mouse_position(self):
+    """Return the current mouse position.  Now deprecated in favor of pi3d.events."""
+    if self.mouse:
+      return self.mouse.position()
+    elif self.tkwin:
+      return self.tkwin.winfo_pointerxy()
+    else:
+      return -1, -1
 
   def _loop_begin(self):
     # TODO(rec):  check if the window was resized and resize it, removing
@@ -130,7 +153,7 @@ class Display(object):
     t = time.time()
     self._for_each_sprite(lambda s: s.repaint(t))
 
-    self.swapBuffers()
+    self._swapBuffers()
 
     for sprite in to_unload:
       sprite.unload_opengl()
@@ -152,52 +175,52 @@ class Display(object):
         if RAISE_EXCEPTIONS:
           raise
 
-  def stop(self):
-    self.is_running = False
-
   def __del__(self):
     self.destroy()
 
-  def destroy(self):
-    try:
-      self.opengl.destroy()
-    except:
-      pass
-    try:
-      self.mouse.stop()
-    except:
-      pass
-    try:
-      self.tkwin.destroy()
-    except:
-      pass
-    global DISPLAY
-    DISPLAY = None
-
-  def swapBuffers(self):
+  def _swapBuffers(self):
     self.opengl.swapBuffers()
 
-  def clear(self):
-    # opengles.glBindFramebuffer(GL_FRAMEBUFFER,0)
-    opengles.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
-  def set_background(self, r, g, b, alpha):
-    opengles.glClearColor(c_float(r), c_float(g), c_float(b), c_float(alpha))
-    opengles.glColorMask(1, 1, 1, 1 if alpha < 1.0 else 0)
-    #switches off alpha blending with desktop (is there a bug in the driver?)
-
-  def mouse_position(self):
-    if self.mouse:
-      return self.mouse.position()
-    elif self.tkwin:
-      return self.tkwin.winfo_pointerxy()
-    else:
-      return -1, -1
-
-
-def create(is_3d=True, x=None, y=None, w=0, h=0, near=None, far=None,
+def create(is_3d=True, x=None, y=None, w=None, h=None, near=None, far=None,
            aspect=DEFAULT_ASPECT, depth=DEFAULT_DEPTH, background=None,
-           tk=False, window_title='', window_parent=None, mouse=False):
+           tk=False, window_title='', window_parent=None, mouse=False,
+           frames_per_second=None):
+
+  """
+  Creates a pi3d Display.
+
+  *is_3d*
+    Are we creating a 2- or 3-d display?
+  *tk*
+    Do we use the tk windowing system?
+  *window_parent*
+    An optional tk parent window.
+  *window_title*
+    A window title for tk windows only.
+  *x*
+    Left x coordinate of the display.  If None, defaults to the x coordinate of
+    the tkwindow parent, if any.
+  *y*
+    Top y coordinate of the display.  If None, defaults to the y coordinate of
+    the tkwindow parent, if any.
+  *w*
+    Width of the display.  If None, full the width of the screen.
+  *h*
+    Height of the display.  If None, full the height of the screen.
+  *near*
+    ?
+  *far*
+    ?
+  *aspect*
+    ?
+  *depth*
+    The bit depth of the display - must be 8, 16 or 24.
+  *mouse*
+    Automatically create mouse (deprecated in favor of the Events system).
+  *frames_per_second*
+    Maximum frames per second to render (None means "free running").
+  """
   if tk:
     from pi3d.util import TkWin
     if not (w and h):
@@ -218,11 +241,11 @@ def create(is_3d=True, x=None, y=None, w=0, h=0, near=None, far=None,
     y = y or 0
 
   display = Display(tkwin)
-  if w <= 0:
+  if (w or 0) <= 0:
      w = display.max_width - 2 * x
      if w <= 0:
        w = display.max_width
-  if h <= 0:
+  if (h or 0) <= 0:
      h = display.max_height - 2 * y
      if h <= 0:
        h = display.max_height

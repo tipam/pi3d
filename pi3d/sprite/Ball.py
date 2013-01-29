@@ -1,6 +1,6 @@
 import math
 
-from pi3d import Display
+from pi3d.Display import Display
 from pi3d.Texture import Texture
 from pi3d.util import Utility
 
@@ -8,7 +8,7 @@ from pi3d.shape.Sprite import ImageSprite
 
 class Ball(ImageSprite):
   """ This class is used to take some of the functionality of the CollisionBalls
-  demo out of the main file. It inherits from the ImageSprite class that is 
+  demo out of the main file. It inherits from the ImageSprite class that is
   passed (in addition to standard Shape constructor arguments) the Shader and
   the [Texture] to use.
   In order to fit the Display dimensions the z value has to be set to 1000
@@ -93,5 +93,5 @@ class Ball(ImageSprite):
 
   def repaint(self, t):
     self.move()
-    self.bounce_wall(Display.DISPLAY.width, Display.DISPLAY.height)
+    self.bounce_wall(Display.INSTANCE.width, Display.INSTANCE.height)
     self.draw()
