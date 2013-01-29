@@ -18,17 +18,17 @@ class Shape(Loadable):
     """
     Arguments:
       *light*
-        Light instance if None then default instance will be created
+        Light instance: if None then Light.instance() will be used.
       *name*
-        handy string
+        Name string for identification.
       *x, y, z*
-        location of the origin of the shape, stored in unif array
+        Location of the origin of the shape, stored in a uniform array.
       *rx, ry, rz*
-        rotation of shape in degrees about each axis
+        Rotation of shape in degrees about each axis.
       *sx, sy, sz*
-        scale in each direction
+        Scale in each direction.
       *cx, cy, cz*
-        offset vertices from origin in each direction
+        Offset vertices from origin in each direction.
     """
     super(Shape, self).__init__()
     self.name = name
@@ -43,7 +43,7 @@ class Shape(Loadable):
       light.lightcol[0], light.lightcol[1], light.lightcol[2],
       light.lightamb[0], light.lightamb[1], light.lightamb[2])
     """ in shader array of vec3 uniform variables:
-    
+
     * 0  location 0-2
     * 1  rotation 3-5
     * 2  scale 6-8
@@ -159,26 +159,26 @@ class Shape(Loadable):
 
   def set_normal_shine(self, normtex, ntiles=1.0, shinetex=None,
                        shiny=0.0, is_uv=True):
-    """used to set some of the draw details for all Buffers in Shape
-    this is useful where a Model object has been loaded from an obj file and
-    the textures assigned automatically
+    """Used to set some of the draw details for all Buffers in Shape.
+    This is useful where a Model object has been loaded from an obj file and
+    the textures assigned automatically.
 
     Arguments:
       *normtex*
-        normal map Texture to use
+        Normal map Texture to use.
 
     Keyword arguments:
       *ntiles*
-        multiplier for the tiling of the normal map
+        Multiplier for the tiling of the normal map.
       *shinetex*
-        reflection Texture to use
+        Reflection Texture to use.
       *shiny*
-        0.0 to 1.0 strength of reflection
+        Strength of reflection (ranging from 0.0 to 1.0).
       *is_uv*
-        if True then the normtex will be textures[1] and shinetex will be
-        textures[2] i.e. for using a 'uv' type Shader. However for 'mat' type
-        Shaders they are moved down one as the basic shade is defined by
-        material rgb rather than from a Texture
+        If True then the normtex will be textures[1] and shinetex will be
+        textures[2] i.e. if using a 'uv' type Shader. However, for 'mat' type
+        Shaders they are moved down one, as the basic shade is defined by
+        material rgb rather than from a Texture.
     """
     ofst = 0 if is_uv else -1
     for b in self.buf:
@@ -197,8 +197,8 @@ class Shape(Loadable):
 
   def set_draw_details(self, shader, textures, ntiles = 0.0, shiny = 0.0,
                       umult=1.0, vmult=1.0):
-    """wrapper to call set_draw_details() in each Buffer object
-    
+    """Wrapper to call set_draw_details() for each Buffer object.
+
     Arguments:
       *shader*
         Shader object
@@ -209,20 +209,20 @@ class Shape(Loadable):
     for b in self.buf:
       b.set_draw_details(shader, textures, ntiles, shiny, umult, vmult)
 
-  def set_material(self, mtrl):
-    """ wrapper for setting material shade in each Buffer object
-    
+  def set_material(self, material):
+    """Wrapper for setting material shade in each Buffer object.
+
     Arguments:
-      *mtrl* 
+      *material*
         tuple (rgb)
     """
     for b in self.buf:
-      b.set_material(mtrl)
+      b.set_material(material)
 
   def set_fog(self, fogshade, fogdist):
     """Set fog for this Shape only, it uses the shader smoothblend function from
     1/3 fogdist to fogdist.
-    
+
     Arguments:
       *fogshade*
         tuple (rgba)
@@ -234,8 +234,8 @@ class Shape(Loadable):
     self.unif[16] = fogshade[3]
 
   def set_light(self, light, num=0):
-    """Set the values of the lights
-    
+    """Set the values of the lights.
+
     Arguments:
       *light*
         Light object to use
@@ -388,24 +388,30 @@ class Shape(Loadable):
     self.inds.append(indx)
 
   def lathe(self, path, rise=0.0, loops=1.0):
-    """returns a Buffer object by rotating the points defined in path
+    """Returns a Buffer object by rotating the points defined in path.
 
     Arguments:
       *path*
-        an array of points [(x0,y0),(x1,y1)..] to rotate around
-        the y axis
-    
-    NB TODO self.sides is not passed as an argument but is required to be
-    set by anything calling this method
-      *self.sides*
-        number of sides to divide each rotation into
+        An array of points [(x0, y0), (x1, y1) ...] to rotate around
+        the y axis.
 
     Keyword arguments:
       *rise*
-        amout to increment the path y values for each rotation (ie helix)
+        Amount to increment the path y values for each rotation (ie helix)
       *loops*
-        numbe of times to rotate the path by 360 (ie helix)
+        Number of times to rotate the path by 360 (ie helix).
     """
+
+# TODO: where does this next comment go?
+# Perhaps create a "Lathable" subset of Shape that requires a "sides" in
+# its construction?
+#
+#    NB TODO self.sides is not passed as an argument but is required to be
+#    set by anything calling this method
+#      *self.sides*
+#        number of sides to divide each rotation into
+
+
     s = len(path)
     rl = int(self.sides * loops)
     ssize = rl * 6 * (s - 1)
