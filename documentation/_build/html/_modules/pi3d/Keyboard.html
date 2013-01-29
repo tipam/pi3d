@@ -1,0 +1,170 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pi3d.Keyboard &mdash; pi3d 0.8 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="pi3d 0.8 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">pi3d 0.8 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for pi3d.Keyboard</h1><div class="highlight"><pre>
+<span class="kn">import</span> <span class="nn">curses</span><span class="o">,</span> <span class="nn">termios</span><span class="o">,</span> <span class="nn">fcntl</span><span class="o">,</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">os</span>
+
+<span class="n">USE_CURSES</span> <span class="o">=</span> <span class="bp">True</span>
+
+<span class="c"># Non-blocking keyboard which requires curses and only works on the current</span>
+<span class="c"># terminal window or session.</span>
+<div class="viewcode-block" id="CursesKeyboard"><a class="viewcode-back" href="../../pi3d.html#pi3d.Keyboard.CursesKeyboard">[docs]</a><span class="k">class</span> <span class="nc">CursesKeyboard</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">=</span> <span class="n">curses</span><span class="o">.</span><span class="n">initscr</span><span class="p">()</span>
+    <span class="n">curses</span><span class="o">.</span><span class="n">cbreak</span><span class="p">()</span>
+    <span class="n">curses</span><span class="o">.</span><span class="n">noecho</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="o">.</span><span class="n">keypad</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="o">.</span><span class="n">nodelay</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CursesKeyboard.read"><a class="viewcode-back" href="../../pi3d.html#pi3d.Keyboard.CursesKeyboard.read">[docs]</a>  <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="o">.</span><span class="n">getch</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="CursesKeyboard.close"><a class="viewcode-back" href="../../pi3d.html#pi3d.Keyboard.CursesKeyboard.close">[docs]</a>  <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">curses</span><span class="o">.</span><span class="n">nocbreak</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="o">.</span><span class="n">keypad</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">curses</span><span class="o">.</span><span class="n">echo</span><span class="p">()</span>
+    <span class="n">curses</span><span class="o">.</span><span class="n">endwin</span><span class="p">()</span>
+</div>
+  <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+      <span class="k">pass</span>
+
+
+<span class="c"># Blocking keyboard which doesn&#39;t require curses and gets any keyboard inputs</span>
+<span class="c"># regardless of which window is in front.</span>
+<span class="c"># From http://stackoverflow.com/a/6599441/43839</span></div>
+<div class="viewcode-block" id="SysKeyboard"><a class="viewcode-back" href="../../pi3d.html#pi3d.Keyboard.SysKeyboard">[docs]</a><span class="k">class</span> <span class="nc">SysKeyboard</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">fd</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">fileno</span><span class="p">()</span>
+    <span class="c"># save old state</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">flags_save</span> <span class="o">=</span> <span class="n">fcntl</span><span class="o">.</span><span class="n">fcntl</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fd</span><span class="p">,</span> <span class="n">fcntl</span><span class="o">.</span><span class="n">F_GETFL</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">attrs_save</span> <span class="o">=</span> <span class="n">termios</span><span class="o">.</span><span class="n">tcgetattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fd</span><span class="p">)</span>
+    <span class="c"># make raw - the way to do this comes from the termios(3) man page.</span>
+    <span class="n">attrs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">attrs_save</span><span class="p">)</span> <span class="c"># copy the stored version to update</span>
+    <span class="c"># iflag</span>
+    <span class="n">attrs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="p">(</span><span class="n">termios</span><span class="o">.</span><span class="n">IGNBRK</span> <span class="o">|</span> <span class="n">termios</span><span class="o">.</span><span class="n">BRKINT</span> <span class="o">|</span> <span class="n">termios</span><span class="o">.</span><span class="n">PARMRK</span>
+                  <span class="o">|</span> <span class="n">termios</span><span class="o">.</span><span class="n">ISTRIP</span> <span class="o">|</span> <span class="n">termios</span><span class="o">.</span><span class="n">INLCR</span> <span class="o">|</span> <span class="n">termios</span><span class="o">.</span> <span class="n">IGNCR</span>
+                  <span class="o">|</span> <span class="n">termios</span><span class="o">.</span><span class="n">ICRNL</span> <span class="o">|</span> <span class="n">termios</span><span class="o">.</span><span class="n">IXON</span> <span class="p">)</span>
+    <span class="c"># oflag</span>
+    <span class="n">attrs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="n">termios</span><span class="o">.</span><span class="n">OPOST</span>
+    <span class="c"># cflag</span>
+    <span class="n">attrs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="p">(</span><span class="n">termios</span><span class="o">.</span><span class="n">CSIZE</span> <span class="o">|</span> <span class="n">termios</span><span class="o">.</span> <span class="n">PARENB</span><span class="p">)</span>
+    <span class="n">attrs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">|=</span> <span class="n">termios</span><span class="o">.</span><span class="n">CS8</span>
+    <span class="c"># lflag</span>
+    <span class="n">attrs</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="p">(</span><span class="n">termios</span><span class="o">.</span><span class="n">ECHONL</span> <span class="o">|</span> <span class="n">termios</span><span class="o">.</span><span class="n">ECHO</span> <span class="o">|</span> <span class="n">termios</span><span class="o">.</span><span class="n">ICANON</span>
+                  <span class="o">|</span> <span class="n">termios</span><span class="o">.</span><span class="n">ISIG</span> <span class="o">|</span> <span class="n">termios</span><span class="o">.</span><span class="n">IEXTEN</span><span class="p">)</span>
+    <span class="n">termios</span><span class="o">.</span><span class="n">tcsetattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fd</span><span class="p">,</span> <span class="n">termios</span><span class="o">.</span><span class="n">TCSANOW</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>
+    <span class="c"># turn off non-blocking</span>
+    <span class="n">fcntl</span><span class="o">.</span><span class="n">fcntl</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fd</span><span class="p">,</span> <span class="n">fcntl</span><span class="o">.</span><span class="n">F_SETFL</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">flags_save</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">os</span><span class="o">.</span><span class="n">O_NONBLOCK</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SysKeyboard.read"><a class="viewcode-back" href="../../pi3d.html#pi3d.Keyboard.SysKeyboard.read">[docs]</a>  <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+      <span class="k">return</span> <span class="nb">ord</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+      <span class="k">return</span> <span class="mi">0</span>
+</div>
+<div class="viewcode-block" id="SysKeyboard.close"><a class="viewcode-back" href="../../pi3d.html#pi3d.Keyboard.SysKeyboard.close">[docs]</a>  <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">termios</span><span class="o">.</span><span class="n">tcsetattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fd</span><span class="p">,</span> <span class="n">termios</span><span class="o">.</span><span class="n">TCSAFLUSH</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">attrs_save</span><span class="p">)</span>
+    <span class="n">fcntl</span><span class="o">.</span><span class="n">fcntl</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fd</span><span class="p">,</span> <span class="n">fcntl</span><span class="o">.</span><span class="n">F_SETFL</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">flags_save</span><span class="p">)</span>
+</div>
+  <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+      <span class="k">pass</span>
+
+</div>
+<div class="viewcode-block" id="Keyboard"><a class="viewcode-back" href="../../pi3d.html#pi3d.Keyboard.Keyboard">[docs]</a><span class="k">def</span> <span class="nf">Keyboard</span><span class="p">(</span><span class="n">use_curses</span><span class="o">=</span><span class="n">USE_CURSES</span><span class="p">):</span>
+  <span class="k">return</span> <span class="n">CursesKeyboard</span><span class="p">()</span> <span class="k">if</span> <span class="n">use_curses</span> <span class="k">else</span> <span class="n">SysKeyboard</span><span class="p">()</span>
+</pre></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">pi3d 0.8 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, The pi3d team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

@@ -11,35 +11,37 @@ from pi3d.util.Ctypes import c_floats, c_shorts
 LOGGER = Log.logger(__name__)
 
 class Buffer(object):
-  """ Holds the vertex, normals, incices and tex_coords for each part of
+  """Holds the vertex, normals, incices and tex_coords for each part of
   a Shape that needs to be rendered with a different material or texture
-  Shape holds an array of Buffer objects
+  Shape holds an array of Buffer objects.
+
   """
   def __init__(self, shape, pts, texcoords, faces, normals=None, smooth=True):
     """Generate a vertex buffer to hold data and indices. If no normals
-    are provided then these are generated
+    are provided then these are generated.
 
     Arguments:
     shape -- Shape object that this Buffer is a child of
     pts -- array of vertices tuples i.e. [(x0,y0,z0), (x1,y1,z1),...]
     texcoords -- array of texture (uv) coordinates tuples
-            i.e. [(u0,v0), (u1,v1),...]
+                 i.e. [(u0,v0), (u1,v1),...]
     faces -- array of indices (of pts array) defining triangles
-            i.e. [(a0,b0,c0), (a1,b1,c1),...]
+             i.e. [(a0,b0,c0), (a1,b1,c1),...]
 
     Keyword arguments:
     normals -- array of vector component tuples defining normals at each
-            vertex i.e. [(x0,y0,z0), (x1,y1,z1),...]
+              vertex i.e. [(x0,y0,z0), (x1,y1,z1),...]
     smooth -- if calculating normals then average normals for all faces
-            meeting at this vertex, otherwise just use first (for speed)
+              meeting at this vertex, otherwise just use first (for speed)
+
     """
     # Uniform variables all in one array!
-    self.unib = (c_float * 9)(0.0, 0.0, 0.0, 
+    self.unib = (c_float * 9)(0.0, 0.0, 0.0,
                               0.5, 0.5, 0.5,
                               1.0, 1.0, 0.0)
     """ in shader array of vec3 uniform variables:
     0  ntile, shiny, blend 0-2.
-    1  material 3-5 
+    1  material 3-5
     2  umult, vmult 6-8
     """
     self.shape = shape
@@ -98,14 +100,14 @@ class Buffer(object):
     self.ntris = len(faces)
 
   def select(self):
-    """Makes our buffers active"""
+    """Makes our buffers active."""
     opengles.glBindBuffer(GL_ARRAY_BUFFER, self.vbuf);
     opengles.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.ebuf);
 
-  def set_draw_details(self, shader, textures, ntiles=0.0, shiny=0.0, 
-                      umult=1.0, vmult=1.0):
+  def set_draw_details(self, shader, textures, ntiles=0.0, shiny=0.0,
+                       umult=1.0, vmult=1.0):
     """Can be used to set information needed for drawing as a one off
-    rather than sending as arguments to draw()
+    rather than sending as arguments to draw().
 
     Arguments:
     shader -- Shader object
@@ -113,10 +115,11 @@ class Buffer(object):
 
     Keyword arguments:
     ntiles -- multiple for tiling normal map which can be less than or greater
-            than 1.0. 0.0 disables the normal mapping, float
+    than 1.0. 0.0 disables the normal mapping, float
     shiny -- how strong to make the reflection 0.0 to 1.0, float
     umult -- multiplier for tiling the texture in the u direction
     vmult -- multiplier for tiling the texture in the v direction
+
     """
     self.shader = shader
     self.shape.shader = shader # set shader for parent shape

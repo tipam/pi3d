@@ -1,0 +1,191 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pi3d.sprite.Ball &mdash; pi3d 0.8 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.8',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="pi3d 0.8 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">pi3d 0.8 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for pi3d.sprite.Ball</h1><div class="highlight"><pre>
+<span class="kn">import</span> <span class="nn">math</span>
+
+<span class="kn">from</span> <span class="nn">pi3d</span> <span class="kn">import</span> <span class="n">Display</span>
+<span class="kn">from</span> <span class="nn">pi3d.Texture</span> <span class="kn">import</span> <span class="n">Texture</span>
+<span class="kn">from</span> <span class="nn">pi3d.util</span> <span class="kn">import</span> <span class="n">Utility</span>
+
+<span class="kn">from</span> <span class="nn">pi3d.shape.Sprite</span> <span class="kn">import</span> <span class="n">ImageSprite</span>
+
+<div class="viewcode-block" id="Ball"><a class="viewcode-back" href="../../../pi3d.sprite.html#pi3d.sprite.Ball.Ball">[docs]</a><span class="k">class</span> <span class="nc">Ball</span><span class="p">(</span><span class="n">ImageSprite</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; This class is used to take some of the functionality of the CollisionBalls</span>
+<span class="sd">  demo out of the main file. It inherits from the ImageSprite class that is </span>
+<span class="sd">  passed (in addition to standard Shape constructor arguments) the Shader and</span>
+<span class="sd">  the [Texture] to use.</span>
+<span class="sd">  In order to fit the Display dimensions the z value has to be set to 1000</span>
+<span class="sd">  This allows the Ball dimensions to be set in approximately pixel sizes</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">camera</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">light</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">shader</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">texture</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+               <span class="n">radius</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">vx</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">vy</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">decay</span><span class="o">=</span><span class="mf">0.001</span><span class="p">):</span>
+    <span class="nb">super</span><span class="p">(</span><span class="n">Ball</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">texture</span><span class="o">=</span><span class="n">texture</span><span class="p">,</span> <span class="n">shader</span><span class="o">=</span><span class="n">shader</span><span class="p">,</span>
+                              <span class="n">camera</span><span class="o">=</span><span class="n">camera</span><span class="p">,</span> <span class="n">light</span><span class="o">=</span><span class="n">light</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="mi">2</span> <span class="o">*</span> <span class="n">radius</span><span class="p">,</span>
+                              <span class="n">h</span><span class="o">=</span><span class="mi">2</span> <span class="o">*</span> <span class="n">radius</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="n">radius</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">unif</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">unif</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">vx</span> <span class="o">=</span> <span class="n">vx</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">vy</span> <span class="o">=</span> <span class="n">vy</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span> <span class="n">radius</span> <span class="o">*</span> <span class="n">radius</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">decay</span> <span class="o">=</span> <span class="n">decay</span>
+
+<div class="viewcode-block" id="Ball.move"><a class="viewcode-back" href="../../../pi3d.sprite.html#pi3d.sprite.Ball.Ball.move">[docs]</a>  <span class="k">def</span> <span class="nf">move</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">translateX</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vx</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">translateY</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vy</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Ball.hit"><a class="viewcode-back" href="../../../pi3d.sprite.html#pi3d.sprite.Ball.Ball.hit">[docs]</a>  <span class="k">def</span> <span class="nf">hit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">otherball</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Used for pre-checking ball positions.&quot;&quot;&quot;</span>
+    <span class="n">dx</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unif</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">vx</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">otherball</span><span class="o">.</span><span class="n">unif</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">otherball</span><span class="o">.</span><span class="n">vx</span><span class="p">)</span>
+    <span class="n">dy</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unif</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">vy</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">otherball</span><span class="o">.</span><span class="n">unif</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">otherball</span><span class="o">.</span><span class="n">vy</span><span class="p">)</span>
+    <span class="n">rd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">+</span> <span class="n">otherball</span><span class="o">.</span><span class="n">radius</span>
+    <span class="k">return</span> <span class="n">Utility</span><span class="o">.</span><span class="n">sqsum</span><span class="p">(</span><span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="n">rd</span> <span class="o">*</span> <span class="n">rd</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Ball.bounce_collision"><a class="viewcode-back" href="../../../pi3d.sprite.html#pi3d.sprite.Ball.Ball.bounce_collision">[docs]</a>  <span class="k">def</span> <span class="nf">bounce_collision</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">otherball</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;work out resultant velocities using 17th.C phsyics&quot;&quot;&quot;</span>
+    <span class="c"># relative positions</span>
+    <span class="n">dx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unif</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">otherball</span><span class="o">.</span><span class="n">unif</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">dy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unif</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">otherball</span><span class="o">.</span><span class="n">unif</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">rd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">+</span> <span class="n">otherball</span><span class="o">.</span><span class="n">radius</span>
+    <span class="c"># check sign of a.b to see if converging</span>
+    <span class="n">dotP</span> <span class="o">=</span> <span class="n">Utility</span><span class="o">.</span><span class="n">dotproduct</span><span class="p">(</span><span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+                              <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vx</span> <span class="o">-</span> <span class="n">otherball</span><span class="o">.</span><span class="n">vx</span><span class="p">),</span>
+                              <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vy</span> <span class="o">-</span> <span class="n">otherball</span><span class="o">.</span><span class="n">vy</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">dx</span> <span class="o">*</span> <span class="n">dx</span> <span class="o">+</span> <span class="n">dy</span> <span class="o">*</span> <span class="n">dy</span> <span class="o">&lt;=</span> <span class="n">rd</span> <span class="o">*</span> <span class="n">rd</span> <span class="ow">and</span> <span class="n">dotP</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+      <span class="n">R</span> <span class="o">=</span> <span class="n">otherball</span><span class="o">.</span><span class="n">mass</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="c">#ratio of masses</span>
+      <span class="sd">&quot;&quot;&quot;Glancing angle for equating angular momentum before and after collision.</span>
+<span class="sd">      Three more simultaneous equations for x and y components of momentum and</span>
+<span class="sd">      kinetic energy give:</span>
+<span class="sd">      &quot;&quot;&quot;</span>
+      <span class="k">if</span> <span class="n">dy</span><span class="p">:</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="n">dx</span> <span class="o">/</span> <span class="n">dy</span>
+        <span class="n">delta2y</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">D</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">vx</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">vy</span> <span class="o">-</span>
+                       <span class="n">D</span> <span class="o">*</span> <span class="n">otherball</span><span class="o">.</span><span class="n">vx</span> <span class="o">-</span> <span class="n">otherball</span><span class="o">.</span><span class="n">vy</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span>
+          <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">D</span> <span class="o">*</span> <span class="n">D</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">R</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">delta2x</span> <span class="o">=</span> <span class="n">D</span> <span class="o">*</span> <span class="n">delta2y</span>
+        <span class="n">delta1y</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">R</span> <span class="o">*</span> <span class="n">delta2y</span>
+        <span class="n">delta1x</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">R</span> <span class="o">*</span> <span class="n">D</span> <span class="o">*</span> <span class="n">delta2y</span>
+      <span class="k">elif</span> <span class="n">dx</span><span class="p">:</span>
+        <span class="c"># Same code as above with x and y reversed.</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="n">dy</span> <span class="o">/</span> <span class="n">dx</span>
+        <span class="n">delta2x</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">D</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">vy</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">vx</span> <span class="o">-</span>
+                       <span class="n">D</span> <span class="o">*</span> <span class="n">otherball</span><span class="o">.</span><span class="n">vy</span> <span class="o">-</span> <span class="n">otherball</span><span class="o">.</span><span class="n">vx</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span>
+          <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">D</span> <span class="o">*</span> <span class="n">D</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">R</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">delta2y</span> <span class="o">=</span> <span class="n">D</span> <span class="o">*</span> <span class="n">delta2x</span>
+        <span class="n">delta1x</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">R</span> <span class="o">*</span> <span class="n">delta2x</span>
+        <span class="n">delta1y</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">R</span> <span class="o">*</span> <span class="n">D</span> <span class="o">*</span> <span class="n">delta2x</span>
+      <span class="k">else</span><span class="p">:</span>
+        <span class="n">delta1x</span> <span class="o">=</span> <span class="n">delta1y</span> <span class="o">=</span> <span class="n">delta2x</span> <span class="o">=</span> <span class="n">delta2y</span> <span class="o">=</span> <span class="mi">0</span>
+
+      <span class="bp">self</span><span class="o">.</span><span class="n">vx</span> <span class="o">+=</span> <span class="n">delta1x</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">vy</span> <span class="o">+=</span> <span class="n">delta1y</span>
+      <span class="n">otherball</span><span class="o">.</span><span class="n">vx</span> <span class="o">+=</span> <span class="n">delta2x</span>
+      <span class="n">otherball</span><span class="o">.</span><span class="n">vy</span> <span class="o">+=</span> <span class="n">delta2y</span>
+</div>
+<div class="viewcode-block" id="Ball.bounce_wall"><a class="viewcode-back" href="../../../pi3d.sprite.html#pi3d.sprite.Ball.Ball.bounce_wall">[docs]</a>  <span class="k">def</span> <span class="nf">bounce_wall</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">):</span>
+    <span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">top</span><span class="p">,</span> <span class="n">bottom</span> <span class="o">=</span> <span class="o">-</span><span class="n">width</span><span class="o">/</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">width</span><span class="o">/</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">height</span><span class="o">/</span><span class="mf">2.0</span><span class="p">,</span> <span class="o">-</span><span class="n">height</span><span class="o">/</span><span class="mf">2.0</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">unif</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">right</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">):</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">vx</span> <span class="o">=</span> <span class="o">-</span><span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vx</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">unif</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">left</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">):</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">vx</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vx</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">unif</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">top</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">):</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">vy</span> <span class="o">=</span> <span class="o">-</span><span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vy</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">unif</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">bottom</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">):</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">vy</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vy</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Ball.repaint"><a class="viewcode-back" href="../../../pi3d.sprite.html#pi3d.sprite.Ball.Ball.repaint">[docs]</a>  <span class="k">def</span> <span class="nf">repaint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">move</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">bounce_wall</span><span class="p">(</span><span class="n">Display</span><span class="o">.</span><span class="n">DISPLAY</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">Display</span><span class="o">.</span><span class="n">DISPLAY</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">pi3d 0.8 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, The pi3d team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

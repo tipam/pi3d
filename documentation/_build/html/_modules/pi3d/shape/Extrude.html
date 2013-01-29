@@ -1,0 +1,193 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pi3d.shape.Extrude &mdash; pi3d 0.8 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.8',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="pi3d 0.8 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">pi3d 0.8 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for pi3d.shape.Extrude</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">pi3d.constants</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">pi3d.Buffer</span> <span class="kn">import</span> <span class="n">Buffer</span>
+<span class="kn">from</span> <span class="nn">pi3d.util</span> <span class="kn">import</span> <span class="n">Utility</span>
+
+<span class="kn">from</span> <span class="nn">pi3d.shape.Shape</span> <span class="kn">import</span> <span class="n">Shape</span>
+
+<div class="viewcode-block" id="Extrude"><a class="viewcode-back" href="../../../pi3d.shape.html#pi3d.shape.Extrude.Extrude">[docs]</a><span class="k">class</span> <span class="nc">Extrude</span><span class="p">(</span><span class="n">Shape</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; 3d model inherits from Shape</span>
+<span class="sd">  NB this shape has an array of three Buffers representing each end face</span>
+<span class="sd">  and the sides of the prism. Each can be textured seperately for drawing.</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">camera</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">light</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="p">[],</span> <span class="n">height</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+               <span class="n">rx</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">ry</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">rz</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">sx</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">sy</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">sz</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+               <span class="n">cx</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">cy</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">cz</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;uses standard constructor for Shape extra Keyword arguments:</span>
+<span class="sd">    path -- coordinates defining crossection of prism [(x0,z0),(x1,z1)..]</span>
+<span class="sd">    height -- distance between end faces in the y direction</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">super</span><span class="p">(</span><span class="n">Extrude</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">camera</span><span class="p">,</span> <span class="n">light</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="n">ry</span><span class="p">,</span> <span class="n">rz</span><span class="p">,</span>
+                                  <span class="n">sx</span><span class="p">,</span> <span class="n">sy</span><span class="p">,</span> <span class="n">sz</span><span class="p">,</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">cz</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">VERBOSE</span><span class="p">:</span>
+      <span class="k">print</span> <span class="s">&quot;Creating Extrude ...&quot;</span>
+
+    <span class="n">s</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">ht</span> <span class="o">=</span> <span class="n">height</span> <span class="o">*</span> <span class="mf">0.5</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">verts</span><span class="o">=</span><span class="p">[]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">norms</span><span class="o">=</span><span class="p">[]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">botface</span><span class="o">=</span><span class="p">[]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">topface</span><span class="o">=</span><span class="p">[]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">sidefaces</span><span class="o">=</span><span class="p">[]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">tex_coords</span><span class="o">=</span><span class="p">[]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">edges</span> <span class="o">=</span> <span class="n">s</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">ttype</span> <span class="o">=</span> <span class="n">GL_TRIANGLES</span>
+
+    <span class="n">minx</span> <span class="o">=</span> <span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">maxx</span> <span class="o">=</span> <span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">minz</span> <span class="o">=</span> <span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">maxz</span> <span class="o">=</span> <span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c">#find min/max values for texture coords</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+      <span class="n">px</span> <span class="o">=</span> <span class="n">path</span><span class="p">[</span><span class="n">p</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+      <span class="n">pz</span> <span class="o">=</span> <span class="n">path</span><span class="p">[</span><span class="n">p</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+      <span class="n">minx</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">minx</span><span class="p">,</span> <span class="n">px</span><span class="p">)</span>
+      <span class="n">minz</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">minz</span><span class="p">,</span> <span class="n">pz</span><span class="p">)</span>
+      <span class="n">maxx</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">maxx</span><span class="p">,</span> <span class="n">px</span><span class="p">)</span>
+      <span class="n">maxz</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">maxz</span><span class="p">,</span> <span class="n">pz</span><span class="p">)</span>
+
+    <span class="n">tx</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">maxx</span> <span class="o">-</span> <span class="n">minx</span><span class="p">)</span>
+    <span class="n">tz</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">maxz</span> <span class="o">-</span> <span class="n">minz</span><span class="p">)</span>
+
+    <span class="c">#vertices for sides</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+      <span class="n">px</span> <span class="o">=</span> <span class="n">path</span><span class="p">[</span><span class="n">p</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+      <span class="n">pz</span> <span class="o">=</span> <span class="n">path</span><span class="p">[</span><span class="n">p</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+      <span class="n">dx</span> <span class="o">=</span> <span class="n">path</span><span class="p">[(</span><span class="n">p</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">s</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">px</span>
+      <span class="n">dz</span> <span class="o">=</span> <span class="n">path</span><span class="p">[(</span><span class="n">p</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">s</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">pz</span>
+      <span class="c">#TODO normalize these vector components, not needed for shadows = 0:2s</span>
+      <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verts</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">px</span><span class="p">,</span> <span class="n">i</span><span class="o">*</span><span class="n">ht</span><span class="p">,</span> <span class="n">pz</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">norms</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="o">-</span><span class="n">dz</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">dx</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tex_coords</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="mf">1.0</span><span class="o">*</span><span class="n">p</span><span class="o">/</span><span class="n">s</span><span class="p">,</span> <span class="n">i</span><span class="o">*</span><span class="mf">0.5</span><span class="p">))</span>
+
+    <span class="c">#vertices for edges of top and bottom, bottom first (n=2s to 3s-1) 2s:3s then top (3s+1 to 4s) 3s+1:4s+1</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+      <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+        <span class="n">px</span> <span class="o">=</span> <span class="n">path</span><span class="p">[</span><span class="n">p</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">pz</span> <span class="o">=</span> <span class="n">path</span><span class="p">[</span><span class="n">p</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verts</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">px</span><span class="p">,</span> <span class="n">i</span><span class="o">*</span><span class="n">ht</span><span class="p">,</span> <span class="n">pz</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">norms</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tex_coords</span><span class="o">.</span><span class="n">append</span><span class="p">(((</span><span class="n">px</span> <span class="o">-</span> <span class="n">minx</span><span class="p">)</span> <span class="o">*</span> <span class="n">tx</span><span class="p">,</span> <span class="p">(</span><span class="n">pz</span> <span class="o">-</span> <span class="n">minz</span><span class="p">)</span> <span class="o">*</span> <span class="n">tz</span><span class="p">))</span>
+      <span class="c">#top and bottom face mid points verts number 3*s and 4*s+1 (bottom and top respectively)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">verts</span><span class="o">.</span><span class="n">append</span><span class="p">(((</span><span class="n">minx</span><span class="o">+</span><span class="n">maxx</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">i</span><span class="o">*</span><span class="n">ht</span><span class="p">,</span> <span class="p">(</span><span class="n">minz</span><span class="o">+</span><span class="n">maxz</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">norms</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">tex_coords</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
+
+
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>    <span class="c">#sides - triangle strip</span>
+      <span class="n">v0</span><span class="p">,</span> <span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">,</span> <span class="n">v3</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">p</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">p</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">p</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span><span class="o">%</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">s</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">p</span><span class="o">+</span><span class="mi">3</span><span class="p">)</span><span class="o">%</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">s</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">sidefaces</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">v0</span><span class="p">,</span> <span class="n">v2</span><span class="p">,</span> <span class="n">v1</span><span class="p">))</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">sidefaces</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">,</span> <span class="n">v3</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>    <span class="c">#bottom face indices - triangle fan</span>
+      <span class="n">p0</span> <span class="o">=</span> <span class="n">s</span> <span class="c">#middle vertex</span>
+      <span class="n">p1</span> <span class="o">=</span> <span class="mi">0</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">botface</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">s</span><span class="p">,</span> <span class="p">(</span><span class="n">p</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">s</span><span class="p">,</span> <span class="n">p</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>    <span class="c">#top face indices - triangle fan</span>
+      <span class="n">p0</span> <span class="o">=</span> <span class="mi">4</span><span class="o">*</span><span class="n">s</span><span class="o">+</span><span class="mi">1</span> <span class="c">#middle vertex</span>
+      <span class="n">p1</span> <span class="o">=</span> <span class="mi">3</span><span class="o">*</span><span class="n">s</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">topface</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">s</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="p">(</span><span class="n">p</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">s</span><span class="p">))</span>
+
+
+    <span class="c"># sides, top, bottom</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">buf</span> <span class="o">=</span> <span class="p">[</span><span class="n">Buffer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">verts</span><span class="p">[</span><span class="mi">0</span><span class="p">:(</span><span class="mi">2</span><span class="o">*</span><span class="n">s</span><span class="p">)],</span> <span class="bp">self</span><span class="o">.</span><span class="n">tex_coords</span><span class="p">[</span><span class="mi">0</span><span class="p">:(</span><span class="mi">2</span><span class="o">*</span><span class="n">s</span><span class="p">)],</span> <span class="bp">self</span><span class="o">.</span><span class="n">sidefaces</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">norms</span><span class="p">[</span><span class="mi">0</span><span class="p">:(</span><span class="mi">2</span><span class="o">*</span><span class="n">s</span><span class="p">)]),</span>
+          <span class="n">Buffer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">verts</span><span class="p">[(</span><span class="mi">2</span><span class="o">*</span><span class="n">s</span><span class="p">):(</span><span class="mi">3</span><span class="o">*</span><span class="n">s</span><span class="o">+</span><span class="mi">1</span><span class="p">)],</span> <span class="bp">self</span><span class="o">.</span><span class="n">tex_coords</span><span class="p">[(</span><span class="mi">2</span><span class="o">*</span><span class="n">s</span><span class="p">):(</span><span class="mi">3</span><span class="o">*</span><span class="n">s</span><span class="o">+</span><span class="mi">1</span><span class="p">)],</span> <span class="bp">self</span><span class="o">.</span><span class="n">botface</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">norms</span><span class="p">[(</span><span class="mi">2</span><span class="o">*</span><span class="n">s</span><span class="p">):(</span><span class="mi">3</span><span class="o">*</span><span class="n">s</span><span class="o">+</span><span class="mi">1</span><span class="p">)]),</span>
+          <span class="n">Buffer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">verts</span><span class="p">[(</span><span class="mi">3</span><span class="o">*</span><span class="n">s</span><span class="o">+</span><span class="mi">1</span><span class="p">):(</span><span class="mi">4</span><span class="o">*</span><span class="n">s</span><span class="o">+</span><span class="mi">2</span><span class="p">)],</span> <span class="bp">self</span><span class="o">.</span><span class="n">tex_coords</span><span class="p">[(</span><span class="mi">3</span><span class="o">*</span><span class="n">s</span><span class="o">+</span><span class="mi">1</span><span class="p">):(</span><span class="mi">4</span><span class="o">*</span><span class="n">s</span><span class="o">+</span><span class="mi">2</span><span class="p">)],</span> <span class="bp">self</span><span class="o">.</span><span class="n">topface</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">norms</span><span class="p">[(</span><span class="mi">3</span><span class="o">*</span><span class="n">s</span><span class="o">+</span><span class="mi">1</span><span class="p">):(</span><span class="mi">4</span><span class="o">*</span><span class="n">s</span><span class="o">+</span><span class="mi">2</span><span class="p">)])]</span>
+</pre></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">pi3d 0.8 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, The pi3d team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

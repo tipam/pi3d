@@ -11,12 +11,18 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys, os
+import sys, os, os.path
 
-# If extensions (or modules to document with autodoc) are in another directory,
-# add these directories to sys.path here. If the directory is relative to the
-# documentation root, use os.path.abspath to make it absolute, like shown here.
-#sys.path.insert(0, os.path.abspath('.'))
+# -- pi3d specific configuration -------------------------------------------------
+
+PI3D_ROOT = os.path.dirname(os.path.dirname(__file__))
+
+sys.path.insert(0, PI3D_ROOT)
+
+autoclass_content = 'both'  # Otherwise no __init__ docstrings!
+autodoc_member_order = 'bysource'
+# bysource seemed better than alphabetic assuming we put the files in the right
+# order in the first place.
 
 # -- General configuration -----------------------------------------------------
 
@@ -227,9 +233,10 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'pi3d', u'pi3d Documentation',
-   u'The pi3d team', 'pi3d', 'One line description of project.',
-   'Miscellaneous'),
+  ('index', 'pi3d', u'pi3d documentation',
+   u'The pi3d team', 'pi3d',
+   'A Python library for doing Open GL ES 2.0 graphics on the Raspberry Pi.',
+   'Graphics'),
 ]
 
 # Documents to append as an appendix to all manuals.

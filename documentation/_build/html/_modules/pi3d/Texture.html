@@ -1,0 +1,241 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pi3d.Texture &mdash; pi3d 0.8 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="pi3d 0.8 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">pi3d 0.8 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for pi3d.Texture</h1><div class="highlight"><pre>
+<span class="kn">import</span> <span class="nn">ctypes</span>
+<span class="kn">import</span> <span class="nn">Image</span>
+
+<span class="kn">from</span> <span class="nn">pi3d.constants</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">pi3d.util.Ctypes</span> <span class="kn">import</span> <span class="n">c_ints</span>
+<span class="kn">from</span> <span class="nn">pi3d.util.Loadable</span> <span class="kn">import</span> <span class="n">Loadable</span>
+
+<span class="n">MAX_SIZE</span> <span class="o">=</span> <span class="mi">1024</span>
+<span class="n">DEFER_TEXTURE_LOADING</span> <span class="o">=</span> <span class="bp">True</span>
+
+<div class="viewcode-block" id="round_up_to_power_of_2"><a class="viewcode-back" href="../../pi3d.html#pi3d.Texture.round_up_to_power_of_2">[docs]</a><span class="k">def</span> <span class="nf">round_up_to_power_of_2</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+  <span class="n">p</span> <span class="o">=</span> <span class="mi">1</span>
+  <span class="k">while</span> <span class="n">p</span> <span class="o">&lt;=</span> <span class="n">x</span><span class="p">:</span>
+    <span class="n">p</span> <span class="o">+=</span> <span class="n">p</span>
+  <span class="k">return</span> <span class="n">p</span>
+</div>
+<div class="viewcode-block" id="Texture"><a class="viewcode-back" href="../../pi3d.html#pi3d.Texture.Texture">[docs]</a><span class="k">class</span> <span class="nc">Texture</span><span class="p">(</span><span class="n">Loadable</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;loads an image file from disk and converts it into an array that</span>
+<span class="sd">  can be used by shaders. It inherits from Loadable in order that the</span>
+<span class="sd">  file access work can happen in another thread. and the conversion</span>
+<span class="sd">  to opengl format can happen just in time when tex() is first called</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_string</span><span class="p">,</span> <span class="n">blend</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">flip</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+               <span class="n">defer</span><span class="o">=</span><span class="n">DEFER_TEXTURE_LOADING</span><span class="p">,</span> <span class="n">mipmap</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Arguments:</span>
+<span class="sd">    file_string -- path and name of image file relative to top dir</span>
+<span class="sd">    blend -- controls if low alpha pixels are discarded (if False) or drawn</span>
+<span class="sd">            by the shader. If set to true then this texture needs to be</span>
+<span class="sd">            drawn AFTER other objects that are FURTHER AWAY</span>
+<span class="sd">    flip -- flips the image</span>
+<span class="sd">    size -- to resize image to</span>
+<span class="sd">    defer -- can load from file in other thread and defer opengl work until</span>
+<span class="sd">            texture needed, default True</span>
+<span class="sd">    mipmap -- use linear interpolation for mipmaps, if set False then nearest</span>
+<span class="sd">            pixel values will be used. This is needed for exact pixel represent-</span>
+<span class="sd">            ation of images. **NB BECAUSE THIS BEHAVIOUR IS SET GLOBALLY AT</span>
+<span class="sd">            THE TIME THAT THE TEXTURE IS LOADED IT WILL BE SET BY THE LAST</span>
+<span class="sd">            TEXTURE TO BE LOADED PRIOR TO DRAWING**</span>
+<span class="sd">            TODO possibly reset in Buffer.draw() each time a texture is loaded?</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">super</span><span class="p">(</span><span class="n">Texture</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">file_string</span> <span class="o">=</span> <span class="n">file_string</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">blend</span> <span class="o">=</span> <span class="n">blend</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">flip</span> <span class="o">=</span> <span class="n">flip</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">size</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">mipmap</span> <span class="o">=</span> <span class="n">mipmap</span>
+    <span class="k">if</span> <span class="n">defer</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">load_disk</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">load_opengl</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Texture.tex"><a class="viewcode-back" href="../../pi3d.html#pi3d.Texture.Texture.tex">[docs]</a>  <span class="k">def</span> <span class="nf">tex</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;do the deferred opengl work and return texture&quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">load_opengl</span><span class="p">()</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tex</span>
+</div>
+  <span class="k">def</span> <span class="nf">_unload_opengl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;clear it out&quot;&quot;&quot;</span>
+    <span class="n">texture_array</span> <span class="o">=</span> <span class="n">c_ints</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_tex</span><span class="o">.</span><span class="n">value</span><span class="p">])</span>
+    <span class="n">opengles</span><span class="o">.</span><span class="n">glDeleteTextures</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">addressof</span><span class="p">(</span><span class="n">texture_array</span><span class="p">))</span>
+
+  <span class="k">def</span> <span class="nf">_load_disk</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;overrides method of Loadable</span>
+<span class="sd">    Font, Ttffont and Defocus inherit from Texture but don&#39;t do all this</span>
+<span class="sd">    so have to override this</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_string</span> <span class="o">+</span> <span class="s">&#39; &#39;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">im</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_string</span><span class="p">)</span> <span class="c"># TODO only load this if needed because loading a Font</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">iy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">im</span><span class="o">.</span><span class="n">size</span>
+    <span class="n">s</span> <span class="o">+=</span> <span class="s">&#39;(</span><span class="si">%s</span><span class="s">)&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">im</span><span class="o">.</span><span class="n">mode</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">im</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s">&#39;RGBA&#39;</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">im</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s">&#39;LA&#39;</span><span class="p">)</span>
+
+    <span class="c"># work out if sizes are not to the power of 2 or &gt;512</span>
+    <span class="c"># TODO: why must texture sizes be a power of 2?</span>
+    <span class="n">xx</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">yy</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">iy</span>
+    <span class="k">while</span> <span class="p">(</span><span class="mi">2</span> <span class="o">**</span> <span class="n">xx</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">nx</span><span class="p">:</span>
+      <span class="n">xx</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">while</span> <span class="p">(</span><span class="mi">2</span> <span class="o">**</span> <span class="n">yy</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">ny</span><span class="p">:</span>
+      <span class="n">yy</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="p">(</span><span class="mi">2</span> <span class="o">**</span> <span class="n">xx</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">nx</span><span class="p">:</span>
+      <span class="n">nx</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">**</span> <span class="n">xx</span>
+    <span class="k">if</span> <span class="p">(</span><span class="mi">2</span> <span class="o">**</span> <span class="n">yy</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">ny</span><span class="p">:</span>
+      <span class="n">ny</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">**</span> <span class="n">yy</span>
+    <span class="n">nx</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">MAX_SIZE</span><span class="p">)</span>
+    <span class="n">ny</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">ny</span><span class="p">,</span> <span class="n">MAX_SIZE</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">nx</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ix</span> <span class="ow">or</span> <span class="n">ny</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iy</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+      <span class="k">if</span> <span class="n">VERBOSE</span><span class="p">:</span>
+        <span class="k">print</span> <span class="bp">self</span><span class="o">.</span><span class="n">self</span><span class="o">.</span><span class="n">ix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">iy</span>
+      <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">iy</span> <span class="o">=</span> <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">im</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">im</span><span class="o">.</span><span class="n">resize</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">iy</span><span class="p">),</span> <span class="n">Image</span><span class="o">.</span><span class="n">ANTIALIAS</span><span class="p">)</span>
+      <span class="n">s</span> <span class="o">+=</span> <span class="s">&#39;Resizing to: </span><span class="si">%d</span><span class="s">, </span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">iy</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="n">s</span> <span class="o">+=</span> <span class="s">&#39;Bitmap size: </span><span class="si">%d</span><span class="s">, </span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">iy</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">VERBOSE</span><span class="p">:</span>
+      <span class="k">print</span> <span class="s">&#39;Loading ...&#39;</span><span class="p">,</span><span class="n">s</span>
+
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">flip</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">im</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">im</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">FLIP_TOP_BOTTOM</span><span class="p">)</span>
+
+    <span class="n">RGBs</span> <span class="o">=</span> <span class="s">&#39;RGBA&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="k">else</span> <span class="s">&#39;RGB&#39;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">im</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">RGBs</span><span class="p">)</span><span class="o">.</span><span class="n">tostring</span><span class="p">(</span><span class="s">&#39;raw&#39;</span><span class="p">,</span><span class="n">RGBs</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_tex</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_int</span><span class="p">()</span>
+
+  <span class="k">def</span> <span class="nf">_load_opengl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;overrides method of Loadable&quot;&quot;&quot;</span>
+    <span class="n">opengles</span><span class="o">.</span><span class="n">glGenTextures</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">byref</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tex</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">opengles</span><span class="o">.</span><span class="n">glBindTexture</span><span class="p">(</span><span class="n">GL_TEXTURE_2D</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tex</span><span class="p">)</span>
+    <span class="n">RGBv</span> <span class="o">=</span> <span class="n">GL_RGBA</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="k">else</span> <span class="n">GL_RGB</span>
+    <span class="n">opengles</span><span class="o">.</span><span class="n">glTexImage2D</span><span class="p">(</span><span class="n">GL_TEXTURE_2D</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">RGBv</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">iy</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">RGBv</span><span class="p">,</span>
+                          <span class="n">GL_UNSIGNED_BYTE</span><span class="p">,</span>
+                          <span class="n">ctypes</span><span class="o">.</span><span class="n">string_at</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="p">)))</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mipmap</span><span class="p">:</span>
+      <span class="n">opengles</span><span class="o">.</span><span class="n">glTexParameterf</span><span class="p">(</span><span class="n">GL_TEXTURE_2D</span><span class="p">,</span> <span class="n">GL_TEXTURE_MIN_FILTER</span><span class="p">,</span>
+                               <span class="n">ctypes</span><span class="o">.</span><span class="n">c_float</span><span class="p">(</span><span class="n">GL_LINEAR_MIPMAP_NEAREST</span><span class="p">))</span>
+      <span class="n">opengles</span><span class="o">.</span><span class="n">glTexParameterf</span><span class="p">(</span><span class="n">GL_TEXTURE_2D</span><span class="p">,</span> <span class="n">GL_TEXTURE_MAG_FILTER</span><span class="p">,</span>
+                               <span class="n">ctypes</span><span class="o">.</span><span class="n">c_float</span><span class="p">(</span><span class="n">GL_LINEAR_MIPMAP_NEAREST</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="n">opengles</span><span class="o">.</span><span class="n">glTexParameterf</span><span class="p">(</span><span class="n">GL_TEXTURE_2D</span><span class="p">,</span> <span class="n">GL_TEXTURE_MIN_FILTER</span><span class="p">,</span>
+                               <span class="n">ctypes</span><span class="o">.</span><span class="n">c_float</span><span class="p">(</span><span class="n">GL_NEAREST</span><span class="p">))</span>
+      <span class="n">opengles</span><span class="o">.</span><span class="n">glTexParameterf</span><span class="p">(</span><span class="n">GL_TEXTURE_2D</span><span class="p">,</span> <span class="n">GL_TEXTURE_MAG_FILTER</span><span class="p">,</span>
+                               <span class="n">ctypes</span><span class="o">.</span><span class="n">c_float</span><span class="p">(</span><span class="n">GL_NEAREST</span><span class="p">))</span>
+
+    <span class="n">opengles</span><span class="o">.</span><span class="n">glGenerateMipmap</span><span class="p">(</span><span class="n">GL_TEXTURE_2D</span><span class="p">)</span>
+    <span class="n">opengles</span><span class="o">.</span><span class="n">glBlendFunc</span><span class="p">(</span><span class="n">GL_SRC_ALPHA</span><span class="p">,</span> <span class="n">GL_ONE_MINUS_SRC_ALPHA</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="Cache"><a class="viewcode-back" href="../../pi3d.html#pi3d.Texture.Cache">[docs]</a><span class="k">class</span> <span class="nc">Cache</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Cache.clear"><a class="viewcode-back" href="../../pi3d.html#pi3d.Texture.Cache.clear">[docs]</a>  <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">cache</span> <span class="o">=</span> <span class="p">{}</span>
+</div>
+<div class="viewcode-block" id="Cache.create"><a class="viewcode-back" href="../../pi3d.html#pi3d.Texture.Cache.create">[docs]</a>  <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_string</span><span class="p">,</span> <span class="n">blend</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">flip</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="n">texture</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="n">file_string</span><span class="p">,</span> <span class="n">blend</span><span class="p">,</span> <span class="n">flip</span><span class="p">,</span> <span class="n">size</span><span class="p">),</span> <span class="bp">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">texture</span><span class="p">:</span>
+      <span class="n">texture</span> <span class="o">=</span> <span class="n">Texture</span><span class="p">(</span><span class="n">file_string</span><span class="p">,</span> <span class="n">blend</span><span class="o">=</span><span class="n">blend</span><span class="p">,</span> <span class="n">flip</span><span class="o">=</span><span class="n">flip</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">[</span><span class="n">file_string</span><span class="p">]</span> <span class="o">=</span> <span class="n">texture</span>
+    <span class="k">return</span> <span class="n">texture</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">pi3d 0.8 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, The pi3d team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,366 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pi3d.Display &mdash; pi3d 0.8 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="pi3d 0.8 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">pi3d 0.8 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for pi3d.Display</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">ctypes</span> <span class="kn">import</span> <span class="n">c_float</span>
+
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+
+<span class="kn">from</span> <span class="nn">echomesh.util</span> <span class="kn">import</span> <span class="n">Log</span>
+<span class="kn">from</span> <span class="nn">echomesh.util.Locker</span> <span class="kn">import</span> <span class="n">Locker</span>
+
+<span class="kn">from</span> <span class="nn">pi3d.constants</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">pi3d.util</span> <span class="kn">import</span> <span class="n">Utility</span>
+<span class="kn">from</span> <span class="nn">pi3d.util.DisplayOpenGL</span> <span class="kn">import</span> <span class="n">DisplayOpenGL</span>
+
+<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">Log</span><span class="o">.</span><span class="n">logger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+<span class="n">CHECK_IF_DISPLAY_THREAD</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="n">DISPLAY_THREAD</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">current_thread</span><span class="p">()</span>
+<span class="n">DISPLAY</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="n">ALLOW_MULTIPLE_DISPLAYS</span> <span class="o">=</span> <span class="bp">False</span>
+<span class="n">RAISE_EXCEPTIONS</span> <span class="o">=</span> <span class="bp">True</span>
+
+<span class="n">DEFAULT_ASPECT</span> <span class="o">=</span> <span class="mf">60.0</span>
+<span class="n">DEFAULT_DEPTH</span> <span class="o">=</span> <span class="mi">24</span>
+<span class="n">DEFAULT_NEAR_3D</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="n">DEFAULT_FAR_3D</span> <span class="o">=</span> <span class="mf">800.0</span>
+<span class="n">DEFAULT_NEAR_2D</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
+<span class="n">DEFAULT_FAR_2D</span> <span class="o">=</span> <span class="mf">500.0</span>
+<span class="n">WIDTH</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">HEIGHT</span> <span class="o">=</span> <span class="mi">0</span>
+
+<div class="viewcode-block" id="is_display_thread"><a class="viewcode-back" href="../../pi3d.html#pi3d.Display.is_display_thread">[docs]</a><span class="k">def</span> <span class="nf">is_display_thread</span><span class="p">():</span>
+  <span class="k">return</span> <span class="ow">not</span> <span class="n">CHECK_IF_DISPLAY_THREAD</span> <span class="ow">or</span> <span class="p">(</span>
+    <span class="n">DISPLAY_THREAD</span> <span class="ow">is</span> <span class="n">threading</span><span class="o">.</span><span class="n">current_thread</span><span class="p">())</span>
+</div>
+<div class="viewcode-block" id="Display"><a class="viewcode-back" href="../../pi3d.html#pi3d.Display.Display">[docs]</a><span class="k">class</span> <span class="nc">Display</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tkwin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Opens up the OpenGL library and prepares a window for display.&quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">DISPLAY</span>
+    <span class="k">if</span> <span class="n">DISPLAY</span><span class="p">:</span>
+      <span class="k">assert</span> <span class="n">ALLOW_MULTIPLE_DISPLAYS</span>
+      <span class="n">LOGGER</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;A second instance of Display was created&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="n">DISPLAY</span> <span class="o">=</span> <span class="bp">self</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">tkwin</span> <span class="o">=</span> <span class="n">tkwin</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">sprites</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">sprites_to_load</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">sprites_to_unload</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">opengl</span> <span class="o">=</span> <span class="n">DisplayOpenGL</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">max_width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">opengl</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">opengl</span><span class="o">.</span><span class="n">height</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">internal_loop</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">external_loop</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">is_running</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">RLock</span><span class="p">()</span>
+
+    <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">STARTUP_MESSAGE</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Display.loop"><a class="viewcode-back" href="../../pi3d.html#pi3d.Display.Display.loop">[docs]</a>  <span class="k">def</span> <span class="nf">loop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loop_function</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;starting&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">external_loop</span><span class="p">,</span> <span class="s">&quot;Use only one of loop and loop_running&quot;</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">internal_loop</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_running</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">_loop_begin</span><span class="p">()</span>
+      <span class="k">if</span> <span class="n">loop_function</span> <span class="ow">and</span> <span class="n">loop_function</span><span class="p">():</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+      <span class="k">else</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_loop_end</span><span class="p">()</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+    <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;stopped&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Display.loop_running"><a class="viewcode-back" href="../../pi3d.html#pi3d.Display.Display.loop_running">[docs]</a>  <span class="k">def</span> <span class="nf">loop_running</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_running</span><span class="p">:</span>
+      <span class="k">assert</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">internal_loop</span><span class="p">,</span> <span class="s">&quot;Use only one of loop and loop_running&quot;</span>
+      <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">external_loop</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_loop_end</span><span class="p">()</span>
+      <span class="k">else</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">external_loop</span> <span class="o">=</span> <span class="bp">True</span>  <span class="c"># First time.</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">_loop_begin</span><span class="p">()</span>
+
+    <span class="k">else</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">_loop_end</span><span class="p">()</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_running</span>
+</div>
+<div class="viewcode-block" id="Display.resize"><a class="viewcode-back" href="../../pi3d.html#pi3d.Display.Display.resize">[docs]</a>  <span class="k">def</span> <span class="nf">resize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">w</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+      <span class="n">w</span> <span class="o">=</span> <span class="n">display</span><span class="o">.</span><span class="n">max_width</span>
+    <span class="k">if</span> <span class="n">h</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+      <span class="n">h</span> <span class="o">=</span> <span class="n">display</span><span class="o">.</span><span class="n">max_height</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">w</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">h</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">left</span> <span class="o">=</span> <span class="n">x</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">top</span> <span class="o">=</span> <span class="n">y</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">right</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">w</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">bottom</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="n">h</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">opengl</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Display.add_sprites"><a class="viewcode-back" href="../../pi3d.html#pi3d.Display.Display.add_sprites">[docs]</a>  <span class="k">def</span> <span class="nf">add_sprites</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">sprites</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">Locker</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lock</span><span class="p">):</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">sprites_to_load</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">sprites</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Display.remove_sprites"><a class="viewcode-back" href="../../pi3d.html#pi3d.Display.Display.remove_sprites">[docs]</a>  <span class="k">def</span> <span class="nf">remove_sprites</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">sprites</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">Locker</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lock</span><span class="p">):</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">sprites_to_unload</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">sprites</span><span class="p">)</span>
+</div>
+  <span class="k">def</span> <span class="nf">_loop_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="c"># TODO(rec):  check if the window was resized and resize it, removing</span>
+    <span class="c"># code from MegaStation to here.</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+    <span class="k">with</span> <span class="n">Locker</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lock</span><span class="p">):</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">sprites_to_load</span><span class="p">,</span> <span class="n">to_load</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">sprites_to_load</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">sprites</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">to_load</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_for_each_sprite</span><span class="p">(</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">load_opengl</span><span class="p">(),</span> <span class="n">to_load</span><span class="p">)</span>
+
+  <span class="k">def</span> <span class="nf">_loop_end</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">Locker</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lock</span><span class="p">):</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">sprites_to_unload</span><span class="p">,</span> <span class="n">to_unload</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">sprites_to_unload</span>
+      <span class="k">if</span> <span class="n">to_unload</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sprites</span> <span class="o">=</span> <span class="p">(</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sprites</span> <span class="k">if</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">to_unload</span><span class="p">)</span>
+
+    <span class="n">t</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_for_each_sprite</span><span class="p">(</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">repaint</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">swapBuffers</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">sprite</span> <span class="ow">in</span> <span class="n">to_unload</span><span class="p">:</span>
+      <span class="n">sprite</span><span class="o">.</span><span class="n">unload_opengl</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;frames_per_second&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">+=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames_per_second</span>
+      <span class="n">delta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">-</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+      <span class="k">if</span> <span class="n">delta</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span>
+
+  <span class="k">def</span> <span class="nf">_for_each_sprite</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">sprites</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">sprites</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+      <span class="n">sprites</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sprites</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sprites</span><span class="p">:</span>
+      <span class="k">try</span><span class="p">:</span>
+        <span class="n">function</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+      <span class="k">except</span><span class="p">:</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">RAISE_EXCEPTIONS</span><span class="p">:</span>
+          <span class="k">raise</span>
+
+<div class="viewcode-block" id="Display.stop"><a class="viewcode-back" href="../../pi3d.html#pi3d.Display.Display.stop">[docs]</a>  <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">is_running</span> <span class="o">=</span> <span class="bp">False</span>
+</div>
+  <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Display.destroy"><a class="viewcode-back" href="../../pi3d.html#pi3d.Display.Display.destroy">[docs]</a>  <span class="k">def</span> <span class="nf">destroy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">opengl</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+      <span class="k">pass</span>
+    <span class="k">try</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+      <span class="k">pass</span>
+    <span class="k">try</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">tkwin</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+      <span class="k">pass</span>
+    <span class="k">global</span> <span class="n">DISPLAY</span>
+    <span class="n">DISPLAY</span> <span class="o">=</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="Display.swapBuffers"><a class="viewcode-back" href="../../pi3d.html#pi3d.Display.Display.swapBuffers">[docs]</a>  <span class="k">def</span> <span class="nf">swapBuffers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">opengl</span><span class="o">.</span><span class="n">swapBuffers</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="Display.clear"><a class="viewcode-back" href="../../pi3d.html#pi3d.Display.Display.clear">[docs]</a>  <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="c"># opengles.glBindFramebuffer(GL_FRAMEBUFFER,0)</span>
+    <span class="n">opengles</span><span class="o">.</span><span class="n">glClear</span><span class="p">(</span><span class="n">GL_COLOR_BUFFER_BIT</span> <span class="o">|</span> <span class="n">GL_DEPTH_BUFFER_BIT</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Display.set_background"><a class="viewcode-back" href="../../pi3d.html#pi3d.Display.Display.set_background">[docs]</a>  <span class="k">def</span> <span class="nf">set_background</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
+    <span class="n">opengles</span><span class="o">.</span><span class="n">glClearColor</span><span class="p">(</span><span class="n">c_float</span><span class="p">(</span><span class="n">r</span><span class="p">),</span> <span class="n">c_float</span><span class="p">(</span><span class="n">g</span><span class="p">),</span> <span class="n">c_float</span><span class="p">(</span><span class="n">b</span><span class="p">),</span> <span class="n">c_float</span><span class="p">(</span><span class="n">alpha</span><span class="p">))</span>
+    <span class="n">opengles</span><span class="o">.</span><span class="n">glColorMask</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">alpha</span> <span class="o">&lt;</span> <span class="mf">1.0</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="c">#switches off alpha blending with desktop (is there a bug in the driver?)</span>
+</div>
+<div class="viewcode-block" id="Display.mouse_position"><a class="viewcode-back" href="../../pi3d.html#pi3d.Display.Display.mouse_position">[docs]</a>  <span class="k">def</span> <span class="nf">mouse_position</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="p">:</span>
+      <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">position</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">tkwin</span><span class="p">:</span>
+      <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tkwin</span><span class="o">.</span><span class="n">winfo_pointerxy</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span>
+
+</div></div>
+<div class="viewcode-block" id="create"><a class="viewcode-back" href="../../pi3d.html#pi3d.Display.create">[docs]</a><span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="n">is_3d</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">near</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">far</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+           <span class="n">aspect</span><span class="o">=</span><span class="n">DEFAULT_ASPECT</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="n">DEFAULT_DEPTH</span><span class="p">,</span> <span class="n">background</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+           <span class="n">tk</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">window_title</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">window_parent</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">mouse</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+  <span class="k">if</span> <span class="n">tk</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">pi3d.util</span> <span class="kn">import</span> <span class="n">TkWin</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">w</span> <span class="ow">and</span> <span class="n">h</span><span class="p">):</span>
+      <span class="c"># TODO: how do we do full-screen in tk?</span>
+      <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;Can&#39;t compute default window size when using tk&quot;</span><span class="p">)</span>
+      <span class="k">raise</span> <span class="ne">Exception</span>
+
+    <span class="n">tkwin</span> <span class="o">=</span> <span class="n">TkWin</span><span class="o">.</span><span class="n">TkWin</span><span class="p">(</span><span class="n">window_parent</span><span class="p">,</span> <span class="n">window_title</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
+    <span class="n">tkwin</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+      <span class="n">x</span> <span class="o">=</span> <span class="n">tkwin</span><span class="o">.</span><span class="n">winx</span>
+    <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+      <span class="n">y</span> <span class="o">=</span> <span class="n">tkwin</span><span class="o">.</span><span class="n">winy</span>
+
+  <span class="k">else</span><span class="p">:</span>
+    <span class="n">tkwin</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="ow">or</span> <span class="mi">0</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">y</span> <span class="ow">or</span> <span class="mi">0</span>
+
+  <span class="n">display</span> <span class="o">=</span> <span class="n">Display</span><span class="p">(</span><span class="n">tkwin</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">w</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+     <span class="n">w</span> <span class="o">=</span> <span class="n">display</span><span class="o">.</span><span class="n">max_width</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">x</span>
+     <span class="k">if</span> <span class="n">w</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+       <span class="n">w</span> <span class="o">=</span> <span class="n">display</span><span class="o">.</span><span class="n">max_width</span>
+  <span class="k">if</span> <span class="n">h</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+     <span class="n">h</span> <span class="o">=</span> <span class="n">display</span><span class="o">.</span><span class="n">max_height</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">y</span>
+     <span class="k">if</span> <span class="n">h</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+       <span class="n">h</span> <span class="o">=</span> <span class="n">display</span><span class="o">.</span><span class="n">max_height</span>
+  <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;Display size is w=</span><span class="si">%d</span><span class="s">, h=</span><span class="si">%d</span><span class="s">&#39;</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
+
+  <span class="k">if</span> <span class="n">near</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="n">near</span> <span class="o">=</span> <span class="n">DEFAULT_NEAR_3D</span> <span class="k">if</span> <span class="n">is_3d</span> <span class="k">else</span> <span class="n">DEFAULT_NEAR_2D</span>
+  <span class="k">if</span> <span class="n">far</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="n">far</span> <span class="o">=</span> <span class="n">DEFAULT_FAR_3D</span> <span class="k">if</span> <span class="n">is_3d</span> <span class="k">else</span> <span class="n">DEFAULT_FAR_2D</span>
+
+  <span class="n">display</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">w</span>
+  <span class="n">display</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">h</span>
+  <span class="n">display</span><span class="o">.</span><span class="n">near</span> <span class="o">=</span> <span class="n">near</span>
+  <span class="n">display</span><span class="o">.</span><span class="n">far</span> <span class="o">=</span> <span class="n">far</span>
+
+  <span class="n">display</span><span class="o">.</span><span class="n">left</span> <span class="o">=</span> <span class="n">x</span>
+  <span class="n">display</span><span class="o">.</span><span class="n">top</span> <span class="o">=</span> <span class="n">y</span>
+  <span class="n">display</span><span class="o">.</span><span class="n">right</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">w</span>
+  <span class="n">display</span><span class="o">.</span><span class="n">bottom</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="n">h</span>
+
+  <span class="n">display</span><span class="o">.</span><span class="n">opengl</span><span class="o">.</span><span class="n">create_display</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
+  <span class="n">display</span><span class="o">.</span><span class="n">mouse</span> <span class="o">=</span> <span class="bp">None</span>
+
+  <span class="k">if</span> <span class="n">mouse</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">pi3d.Mouse</span> <span class="kn">import</span> <span class="n">Mouse</span>
+    <span class="n">display</span><span class="o">.</span><span class="n">mouse</span> <span class="o">=</span> <span class="n">Mouse</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">h</span><span class="p">)</span>
+    <span class="n">display</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+  <span class="n">opengles</span><span class="o">.</span><span class="n">glMatrixMode</span><span class="p">(</span><span class="n">GL_PROJECTION</span><span class="p">)</span>
+  <span class="n">Utility</span><span class="o">.</span><span class="n">load_identity</span><span class="p">()</span>
+  <span class="k">if</span> <span class="n">is_3d</span><span class="p">:</span>
+    <span class="n">hht</span> <span class="o">=</span> <span class="n">near</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">aspect</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">))</span>
+    <span class="n">hwd</span> <span class="o">=</span> <span class="n">hht</span> <span class="o">*</span> <span class="n">w</span> <span class="o">/</span> <span class="n">h</span>
+    <span class="n">opengles</span><span class="o">.</span><span class="n">glFrustumf</span><span class="p">(</span><span class="n">c_float</span><span class="p">(</span><span class="o">-</span><span class="n">hwd</span><span class="p">),</span> <span class="n">c_float</span><span class="p">(</span><span class="n">hwd</span><span class="p">),</span> <span class="n">c_float</span><span class="p">(</span><span class="o">-</span><span class="n">hht</span><span class="p">),</span> <span class="n">c_float</span><span class="p">(</span><span class="n">hht</span><span class="p">),</span>
+                        <span class="n">c_float</span><span class="p">(</span><span class="n">near</span><span class="p">),</span> <span class="n">c_float</span><span class="p">(</span><span class="n">far</span><span class="p">))</span>
+    <span class="n">opengles</span><span class="o">.</span><span class="n">glHint</span><span class="p">(</span><span class="n">GL_PERSPECTIVE_CORRECTION_HINT</span><span class="p">,</span> <span class="n">GL_NICEST</span><span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="n">opengles</span><span class="o">.</span><span class="n">glOrthof</span><span class="p">(</span><span class="n">c_float</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">c_float</span><span class="p">(</span><span class="n">w</span><span class="p">),</span> <span class="n">c_float</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">c_float</span><span class="p">(</span><span class="n">h</span><span class="p">),</span>
+                      <span class="n">c_float</span><span class="p">(</span><span class="n">near</span><span class="p">),</span> <span class="n">c_float</span><span class="p">(</span><span class="n">far</span><span class="p">))</span>
+
+  <span class="n">opengles</span><span class="o">.</span><span class="n">glMatrixMode</span><span class="p">(</span><span class="n">GL_MODELVIEW</span><span class="p">)</span>
+  <span class="n">Utility</span><span class="o">.</span><span class="n">load_identity</span><span class="p">()</span>
+
+  <span class="k">if</span> <span class="n">background</span><span class="p">:</span>
+    <span class="n">display</span><span class="o">.</span><span class="n">set_background</span><span class="p">(</span><span class="o">*</span><span class="n">background</span><span class="p">)</span>
+
+  <span class="k">return</span> <span class="n">display</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">pi3d 0.8 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, The pi3d team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

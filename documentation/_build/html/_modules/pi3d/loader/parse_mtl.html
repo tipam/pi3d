@@ -1,0 +1,184 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pi3d.loader.parse_mtl &mdash; pi3d 0.8 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.8',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="pi3d 0.8 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">pi3d 0.8 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for pi3d.loader.parse_mtl</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
+
+<span class="kn">from</span> <span class="nn">echomesh.util</span> <span class="kn">import</span> <span class="n">Log</span>
+
+<span class="n">RAISE_EXCEPTION_ON_ERROR</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">Log</span><span class="o">.</span><span class="n">logger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">_error</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">exception</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+  <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">RAISE_EXCEPTION_ON_ERROR</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="n">exception</span> <span class="ow">or</span> <span class="ne">Exception</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Materials"><a class="viewcode-back" href="../../../pi3d.loader.html#pi3d.loader.parse_mtl.Materials">[docs]</a><span class="k">class</span> <span class="nc">Materials</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+  <span class="n">NEW_MATERIAL_CHUNK</span> <span class="o">=</span> <span class="s">&#39;newmtl&#39;</span>
+
+  <span class="n">float3_f</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">:</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">z</span><span class="p">)]</span>
+  <span class="n">float_f</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+  <span class="n">int_f</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+  <span class="n">str_f</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+  <span class="n">Prop</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s">&#39;Prop&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="s">&#39;func&#39;</span><span class="p">])</span>
+  <span class="n">PROPERTIES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&#39;Ka&#39;</span><span class="p">:</span> <span class="n">Prop</span><span class="p">(</span><span class="s">&#39;colorAmbient&#39;</span><span class="p">,</span> <span class="n">float3_f</span><span class="p">),</span>
+    <span class="s">&#39;Kd&#39;</span><span class="p">:</span> <span class="n">Prop</span><span class="p">(</span><span class="s">&#39;colorDiffuse&#39;</span><span class="p">,</span> <span class="n">float3_f</span><span class="p">),</span>
+    <span class="s">&#39;Ks&#39;</span><span class="p">:</span> <span class="n">Prop</span><span class="p">(</span><span class="s">&#39;colorSpecular&#39;</span><span class="p">,</span> <span class="n">float3_f</span><span class="p">),</span>
+    <span class="s">&#39;Ni&#39;</span><span class="p">:</span> <span class="n">Prop</span><span class="p">(</span><span class="s">&#39;opticalDensity&#39;</span><span class="p">,</span> <span class="n">float_f</span><span class="p">),</span>
+    <span class="s">&#39;Ns&#39;</span><span class="p">:</span> <span class="n">Prop</span><span class="p">(</span><span class="s">&#39;specularCoef&#39;</span><span class="p">,</span> <span class="n">float_f</span><span class="p">),</span>
+    <span class="s">&#39;Tr&#39;</span><span class="p">:</span> <span class="n">Prop</span><span class="p">(</span><span class="s">&#39;transparency&#39;</span><span class="p">,</span> <span class="n">float_f</span><span class="p">),</span>
+    <span class="s">&#39;bump&#39;</span><span class="p">:</span> <span class="n">Prop</span><span class="p">(</span><span class="s">&#39;mapBump&#39;</span><span class="p">,</span> <span class="n">str_f</span><span class="p">),</span>
+    <span class="s">&#39;d&#39;</span><span class="p">:</span> <span class="n">Prop</span><span class="p">(</span><span class="s">&#39;transparency&#39;</span><span class="p">,</span> <span class="n">float_f</span><span class="p">),</span>
+    <span class="s">&#39;illum&#39;</span><span class="p">:</span> <span class="n">Prop</span><span class="p">(</span><span class="s">&#39;illumination&#39;</span><span class="p">,</span> <span class="n">int_f</span><span class="p">),</span>
+    <span class="s">&#39;map_Ka&#39;</span><span class="p">:</span> <span class="n">Prop</span><span class="p">(</span><span class="s">&#39;mapAmbient&#39;</span><span class="p">,</span> <span class="n">str_f</span><span class="p">),</span>
+    <span class="s">&#39;map_Kd&#39;</span><span class="p">:</span> <span class="n">Prop</span><span class="p">(</span><span class="s">&#39;mapDiffuse&#39;</span><span class="p">,</span> <span class="n">str_f</span><span class="p">),</span>
+    <span class="s">&#39;map_Ks&#39;</span><span class="p">:</span> <span class="n">Prop</span><span class="p">(</span><span class="s">&#39;mapSpecular&#39;</span><span class="p">,</span> <span class="n">str_f</span><span class="p">),</span>
+    <span class="s">&#39;map_bump&#39;</span><span class="p">:</span> <span class="n">Prop</span><span class="p">(</span><span class="s">&#39;mapBump&#39;</span><span class="p">,</span> <span class="n">str_f</span><span class="p">),</span>
+    <span class="s">&#39;map_d&#39;</span><span class="p">:</span> <span class="n">Prop</span><span class="p">(</span><span class="s">&#39;mapAlpha&#39;</span><span class="p">,</span> <span class="n">str_f</span><span class="p">),</span>
+    <span class="p">}</span>
+
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">materials</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">material</span> <span class="o">=</span> <span class="p">{}</span>
+
+<div class="viewcode-block" id="Materials.parse_lines"><a class="viewcode-back" href="../../../pi3d.loader.html#pi3d.loader.parse_mtl.Materials.parse_lines">[docs]</a>  <span class="k">def</span> <span class="nf">parse_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lines</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">parse_line</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">materials</span>
+</div>
+<div class="viewcode-block" id="Materials.parse_line"><a class="viewcode-back" href="../../../pi3d.loader.html#pi3d.loader.parse_mtl.Materials.parse_line">[docs]</a>  <span class="k">def</span> <span class="nf">parse_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
+    <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;#&#39;</span><span class="p">):</span>
+      <span class="n">chunks</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+      <span class="k">if</span> <span class="n">chunks</span><span class="p">:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">chunks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">chunks</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="n">Materials</span><span class="o">.</span><span class="n">NEW_MATERIAL_CHUNK</span><span class="p">:</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">set_identifier</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Materials.set_identifier"><a class="viewcode-back" href="../../../pi3d.loader.html#pi3d.loader.parse_mtl.Materials.set_identifier">[docs]</a>  <span class="k">def</span> <span class="nf">set_identifier</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+      <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;too many arguments in identifier line &quot;</span><span class="si">%s</span><span class="s">&quot;&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">material</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">materials</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="p">{})</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">materials</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">material</span>
+</div>
+<div class="viewcode-block" id="Materials.set_property"><a class="viewcode-back" href="../../../pi3d.loader.html#pi3d.loader.parse_mtl.Materials.set_property">[docs]</a>  <span class="k">def</span> <span class="nf">set_property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="n">prop</span> <span class="o">=</span> <span class="n">Materials</span><span class="o">.</span><span class="n">PROPERTIES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">prop</span><span class="p">:</span>
+      <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;ERROR: Don</span><span class="se">\&#39;</span><span class="s">t understand property &quot;</span><span class="si">%s</span><span class="s">&quot;&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+      <span class="k">if</span> <span class="n">RAISE_EXCEPTION_ON_ERROR</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="k">if</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">material</span><span class="p">:</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;duplicate property </span><span class="si">%s</span><span class="s"> in </span><span class="si">%s</span><span class="s">&#39;</span><span class="p">,</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+      <span class="k">try</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">material</span><span class="p">[</span><span class="n">prop</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+      <span class="k">except</span><span class="p">:</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;Couldn</span><span class="se">\&#39;</span><span class="s">t set </span><span class="si">%s</span><span class="s"> with args &quot;</span><span class="si">%s</span><span class="s">&quot;&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">RAISE_EXCEPTION_ON_ERROR</span><span class="p">:</span>
+          <span class="k">raise</span>
+</div></div>
+<div class="viewcode-block" id="parse_mtl"><a class="viewcode-back" href="../../../pi3d.loader.html#pi3d.loader.parse_mtl.parse_mtl">[docs]</a><span class="k">def</span> <span class="nf">parse_mtl</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;Parse MTL file.</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">return</span> <span class="n">Materials</span><span class="p">()</span><span class="o">.</span><span class="n">parse_lines</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">pi3d 0.8 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, The pi3d team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

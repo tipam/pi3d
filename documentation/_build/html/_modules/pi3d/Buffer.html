@@ -1,0 +1,265 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pi3d.Buffer &mdash; pi3d 0.8 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.8',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="pi3d 0.8 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">pi3d 0.8 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for pi3d.Buffer</h1><div class="highlight"><pre>
+<span class="kn">import</span> <span class="nn">ctypes</span><span class="o">,</span> <span class="nn">itertools</span>
+
+<span class="kn">from</span> <span class="nn">ctypes</span> <span class="kn">import</span> <span class="n">c_float</span><span class="p">,</span> <span class="n">c_int</span>
+
+<span class="kn">from</span> <span class="nn">echomesh.util</span> <span class="kn">import</span> <span class="n">Log</span>
+
+<span class="kn">from</span> <span class="nn">pi3d.constants</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">pi3d.util</span> <span class="kn">import</span> <span class="n">Utility</span>
+<span class="kn">from</span> <span class="nn">pi3d.util.Ctypes</span> <span class="kn">import</span> <span class="n">c_floats</span><span class="p">,</span> <span class="n">c_shorts</span>
+
+<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">Log</span><span class="o">.</span><span class="n">logger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Buffer"><a class="viewcode-back" href="../../pi3d.html#pi3d.Buffer.Buffer">[docs]</a><span class="k">class</span> <span class="nc">Buffer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; Holds the vertex, normals, incices and tex_coords for each part of</span>
+<span class="sd">  a Shape that needs to be rendered with a different material or texture</span>
+<span class="sd">  Shape holds an array of Buffer objects</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">pts</span><span class="p">,</span> <span class="n">texcoords</span><span class="p">,</span> <span class="n">faces</span><span class="p">,</span> <span class="n">normals</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">smooth</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generate a vertex buffer to hold data and indices. If no normals</span>
+<span class="sd">    are provided then these are generated</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">    shape -- Shape object that this Buffer is a child of</span>
+<span class="sd">    pts -- array of vertices tuples i.e. [(x0,y0,z0), (x1,y1,z1),...]</span>
+<span class="sd">    texcoords -- array of texture (uv) coordinates tuples</span>
+<span class="sd">            i.e. [(u0,v0), (u1,v1),...]</span>
+<span class="sd">    faces -- array of indices (of pts array) defining triangles</span>
+<span class="sd">            i.e. [(a0,b0,c0), (a1,b1,c1),...]</span>
+
+<span class="sd">    Keyword arguments:</span>
+<span class="sd">    normals -- array of vector component tuples defining normals at each</span>
+<span class="sd">            vertex i.e. [(x0,y0,z0), (x1,y1,z1),...]</span>
+<span class="sd">    smooth -- if calculating normals then average normals for all faces</span>
+<span class="sd">            meeting at this vertex, otherwise just use first (for speed)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># Uniform variables all in one array!</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">unib</span> <span class="o">=</span> <span class="p">(</span><span class="n">c_float</span> <span class="o">*</span> <span class="mi">9</span><span class="p">)(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> 
+                              <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span>
+                              <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot; in shader array of vec3 uniform variables:</span>
+<span class="sd">    0  ntile, shiny, blend 0-2.</span>
+<span class="sd">    1  material 3-5 </span>
+<span class="sd">    2  umult, vmult 6-8</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="n">shape</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">normals</span><span class="p">:</span>
+      <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;Calculating normals ...&quot;</span><span class="p">)</span>
+
+      <span class="n">normals</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">pts</span><span class="p">]</span>
+      <span class="c"># Calculate normals.</span>
+      <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">faces</span><span class="p">:</span>
+        <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+
+        <span class="n">ab</span> <span class="o">=</span> <span class="n">Utility</span><span class="o">.</span><span class="n">vec_sub</span><span class="p">(</span><span class="n">pts</span><span class="p">[</span><span class="n">a</span><span class="p">],</span> <span class="n">pts</span><span class="p">[</span><span class="n">b</span><span class="p">])</span>
+        <span class="n">bc</span> <span class="o">=</span> <span class="n">Utility</span><span class="o">.</span><span class="n">vec_sub</span><span class="p">(</span><span class="n">pts</span><span class="p">[</span><span class="n">a</span><span class="p">],</span> <span class="n">pts</span><span class="p">[</span><span class="n">c</span><span class="p">])</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">Utility</span><span class="o">.</span><span class="n">vec_normal</span><span class="p">(</span><span class="n">Utility</span><span class="o">.</span><span class="n">vec_cross</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">bc</span><span class="p">)))</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">f</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]:</span>
+          <span class="n">normals</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+
+      <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">normals</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">n</span><span class="p">:</span>
+          <span class="k">if</span> <span class="n">smooth</span><span class="p">:</span>
+            <span class="n">norms</span> <span class="o">=</span> <span class="p">[</span><span class="nb">sum</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
+          <span class="k">else</span><span class="p">:</span>  <span class="c"># This should be slightly faster for large shapes</span>
+            <span class="n">norms</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
+          <span class="n">normals</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">Utility</span><span class="o">.</span><span class="n">vec_normal</span><span class="p">(</span><span class="n">norms</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+          <span class="n">normals</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.01</span>
+
+    <span class="c"># keep a copy for speeding up the collision testing of ElevationMap</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span> <span class="o">=</span> <span class="n">pts</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">normals</span> <span class="o">=</span> <span class="n">normals</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">tex_coords</span> <span class="o">=</span> <span class="n">texcoords</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">indices</span> <span class="o">=</span> <span class="n">faces</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">material</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+
+    <span class="c"># Pack points,normals and texcoords into tuples and convert to ctype floats.</span>
+    <span class="n">points</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="o">+</span> <span class="n">n</span> <span class="o">+</span> <span class="n">t</span> <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">pts</span><span class="p">,</span> <span class="n">normals</span><span class="p">,</span> <span class="n">texcoords</span><span class="p">)]</span>
+    <span class="n">array_buffer</span> <span class="o">=</span> <span class="n">c_floats</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">points</span><span class="p">)))</span>
+
+    <span class="n">points</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">faces</span><span class="p">]</span>
+    <span class="n">element_array_buffer</span> <span class="o">=</span> <span class="n">c_shorts</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">points</span><span class="p">)))</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">vbuf</span> <span class="o">=</span> <span class="n">c_int</span><span class="p">()</span>
+    <span class="n">opengles</span><span class="o">.</span><span class="n">glGenBuffers</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">byref</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vbuf</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">ebuf</span> <span class="o">=</span> <span class="n">c_int</span><span class="p">()</span>
+    <span class="n">opengles</span><span class="o">.</span><span class="n">glGenBuffers</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">byref</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ebuf</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
+    <span class="n">opengles</span><span class="o">.</span><span class="n">glBufferData</span><span class="p">(</span><span class="n">GL_ARRAY_BUFFER</span><span class="p">,</span>
+                          <span class="n">ctypes</span><span class="o">.</span><span class="n">sizeof</span><span class="p">(</span><span class="n">array_buffer</span><span class="p">),</span>
+                          <span class="n">ctypes</span><span class="o">.</span><span class="n">byref</span><span class="p">(</span><span class="n">array_buffer</span><span class="p">),</span>
+                          <span class="n">GL_STATIC_DRAW</span><span class="p">);</span>
+    <span class="n">opengles</span><span class="o">.</span><span class="n">glBufferData</span><span class="p">(</span><span class="n">GL_ELEMENT_ARRAY_BUFFER</span><span class="p">,</span>
+                          <span class="n">ctypes</span><span class="o">.</span><span class="n">sizeof</span><span class="p">(</span><span class="n">element_array_buffer</span><span class="p">),</span>
+                          <span class="n">ctypes</span><span class="o">.</span><span class="n">byref</span><span class="p">(</span><span class="n">element_array_buffer</span><span class="p">),</span>
+                          <span class="n">GL_STATIC_DRAW</span><span class="p">);</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">ntris</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">faces</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Buffer.select"><a class="viewcode-back" href="../../pi3d.html#pi3d.Buffer.Buffer.select">[docs]</a>  <span class="k">def</span> <span class="nf">select</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Makes our buffers active&quot;&quot;&quot;</span>
+    <span class="n">opengles</span><span class="o">.</span><span class="n">glBindBuffer</span><span class="p">(</span><span class="n">GL_ARRAY_BUFFER</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vbuf</span><span class="p">);</span>
+    <span class="n">opengles</span><span class="o">.</span><span class="n">glBindBuffer</span><span class="p">(</span><span class="n">GL_ELEMENT_ARRAY_BUFFER</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ebuf</span><span class="p">);</span>
+</div>
+<div class="viewcode-block" id="Buffer.set_draw_details"><a class="viewcode-back" href="../../pi3d.html#pi3d.Buffer.Buffer.set_draw_details">[docs]</a>  <span class="k">def</span> <span class="nf">set_draw_details</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shader</span><span class="p">,</span> <span class="n">textures</span><span class="p">,</span> <span class="n">ntiles</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">shiny</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> 
+                      <span class="n">umult</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">vmult</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Can be used to set information needed for drawing as a one off</span>
+<span class="sd">    rather than sending as arguments to draw()</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">    shader -- Shader object</span>
+<span class="sd">    textures -- array of Texture objects</span>
+
+<span class="sd">    Keyword arguments:</span>
+<span class="sd">    ntiles -- multiple for tiling normal map which can be less than or greater</span>
+<span class="sd">            than 1.0. 0.0 disables the normal mapping, float</span>
+<span class="sd">    shiny -- how strong to make the reflection 0.0 to 1.0, float</span>
+<span class="sd">    umult -- multiplier for tiling the texture in the u direction</span>
+<span class="sd">    vmult -- multiplier for tiling the texture in the v direction</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">shader</span> <span class="o">=</span> <span class="n">shader</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">shader</span> <span class="o">=</span> <span class="n">shader</span> <span class="c"># set shader for parent shape</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">textures</span> <span class="o">=</span> <span class="n">textures</span> <span class="c"># array of Textures</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">unib</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">ntiles</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">unib</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">shiny</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">unib</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="n">umult</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">unib</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="o">=</span> <span class="n">vmult</span>
+</div>
+<div class="viewcode-block" id="Buffer.set_material"><a class="viewcode-back" href="../../pi3d.html#pi3d.Buffer.Buffer.set_material">[docs]</a>  <span class="k">def</span> <span class="nf">set_material</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mtrl</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">unib</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="n">mtrl</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="Buffer.draw"><a class="viewcode-back" href="../../pi3d.html#pi3d.Buffer.Buffer.draw">[docs]</a>  <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shader</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">textures</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">ntl</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">shny</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">fullset</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Draw this Buffer, called by the parent Shape.draw()</span>
+
+<span class="sd">    Keyword arguments:</span>
+<span class="sd">    shader -- Shader object</span>
+<span class="sd">    textures -- array of Texture objects</span>
+<span class="sd">    ntiles -- multiple for tiling normal map which can be less than or greater</span>
+<span class="sd">            than 1.0. 0.0 disables the normal mapping, float</span>
+<span class="sd">    shiny -- how strong to make the reflection 0.0 to 1.0, float</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">shader</span> <span class="o">=</span> <span class="n">shader</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">shader</span>
+    <span class="n">textures</span> <span class="o">=</span> <span class="n">textures</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">textures</span>
+    <span class="k">if</span> <span class="n">ntl</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">unib</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">ntl</span>
+    <span class="k">if</span> <span class="n">shny</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">unib</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">shny</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
+
+    <span class="n">opengles</span><span class="o">.</span><span class="n">glVertexAttribPointer</span><span class="p">(</span><span class="n">shader</span><span class="o">.</span><span class="n">attr_vertex</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">GL_FLOAT</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">opengles</span><span class="o">.</span><span class="n">glVertexAttribPointer</span><span class="p">(</span><span class="n">shader</span><span class="o">.</span><span class="n">attr_normal</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">GL_FLOAT</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span>
+    <span class="n">opengles</span><span class="o">.</span><span class="n">glVertexAttribPointer</span><span class="p">(</span><span class="n">shader</span><span class="o">.</span><span class="n">attr_texcoord</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">GL_FLOAT</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">24</span><span class="p">)</span>
+    <span class="n">opengles</span><span class="o">.</span><span class="n">glEnableVertexAttribArray</span><span class="p">(</span><span class="n">shader</span><span class="o">.</span><span class="n">attr_normal</span><span class="p">)</span>
+    <span class="n">opengles</span><span class="o">.</span><span class="n">glEnableVertexAttribArray</span><span class="p">(</span><span class="n">shader</span><span class="o">.</span><span class="n">attr_vertex</span><span class="p">)</span>
+    <span class="n">opengles</span><span class="o">.</span><span class="n">glEnableVertexAttribArray</span><span class="p">(</span><span class="n">shader</span><span class="o">.</span><span class="n">attr_texcoord</span><span class="p">)</span>
+
+    <span class="n">opengles</span><span class="o">.</span><span class="n">glDisable</span><span class="p">(</span><span class="n">GL_BLEND</span><span class="p">)</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">unib</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.6</span>
+    <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">texture</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">textures</span><span class="p">):</span>
+      <span class="n">opengles</span><span class="o">.</span><span class="n">glActiveTexture</span><span class="p">(</span><span class="n">GL_TEXTURE0</span> <span class="o">+</span> <span class="n">t</span><span class="p">)</span>
+      <span class="n">opengles</span><span class="o">.</span><span class="n">glBindTexture</span><span class="p">(</span><span class="n">GL_TEXTURE_2D</span><span class="p">,</span> <span class="n">texture</span><span class="o">.</span><span class="n">tex</span><span class="p">())</span>
+      <span class="n">opengles</span><span class="o">.</span><span class="n">glUniform1i</span><span class="p">(</span><span class="n">shader</span><span class="o">.</span><span class="n">unif_tex</span><span class="p">[</span><span class="n">t</span><span class="p">],</span> <span class="n">t</span><span class="p">)</span>
+
+      <span class="k">if</span> <span class="n">texture</span><span class="o">.</span><span class="n">blend</span><span class="p">:</span>
+        <span class="n">opengles</span><span class="o">.</span><span class="n">glEnable</span><span class="p">(</span><span class="n">GL_BLEND</span><span class="p">)</span>
+        <span class="c"># i.e. if any of the textures set to blend then all will for this shader.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unib</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.05</span>
+
+    <span class="n">opengles</span><span class="o">.</span><span class="n">glUniform3fv</span><span class="p">(</span><span class="n">shader</span><span class="o">.</span><span class="n">unif_unib</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">byref</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unib</span><span class="p">))</span>
+    <span class="n">opengles</span><span class="o">.</span><span class="n">glDrawElements</span><span class="p">(</span><span class="n">GL_TRIANGLES</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ntris</span> <span class="o">*</span> <span class="mi">3</span><span class="p">,</span> <span class="n">GL_UNSIGNED_SHORT</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">pi3d 0.8 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, The pi3d team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

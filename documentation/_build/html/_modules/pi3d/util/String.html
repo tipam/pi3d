@@ -1,0 +1,147 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pi3d.util.String &mdash; pi3d 0.8 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.8',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="pi3d 0.8 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">pi3d 0.8 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for pi3d.util.String</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">pi3d</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="kn">from</span> <span class="nn">pi3d.Buffer</span> <span class="kn">import</span> <span class="n">Buffer</span>
+<span class="kn">from</span> <span class="nn">pi3d.shape.Shape</span> <span class="kn">import</span> <span class="n">Shape</span>
+<span class="kn">from</span> <span class="nn">pi3d.util</span> <span class="kn">import</span> <span class="n">Utility</span>
+
+<span class="n">DOTS_PER_INCH</span> <span class="o">=</span> <span class="mf">72.0</span>
+<span class="n">DEFAULT_FONT_DOT_SIZE</span> <span class="o">=</span> <span class="mf">0.24</span>
+<span class="n">DEFAULT_FONT_SCALE</span> <span class="o">=</span> <span class="n">DEFAULT_FONT_DOT_SIZE</span> <span class="o">/</span> <span class="n">DOTS_PER_INCH</span>
+
+<div class="viewcode-block" id="String"><a class="viewcode-back" href="../../../pi3d.util.html#pi3d.util.String.String">[docs]</a><span class="k">class</span> <span class="nc">String</span><span class="p">(</span><span class="n">Shape</span><span class="p">):</span>
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">camera</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">light</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">string</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+               <span class="n">x</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+               <span class="n">sx</span><span class="o">=</span><span class="n">DEFAULT_FONT_SCALE</span><span class="p">,</span> <span class="n">sy</span><span class="o">=</span><span class="n">DEFAULT_FONT_SCALE</span><span class="p">,</span>
+               <span class="n">is_3d</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">DEFAULT_FONT_DOT_SIZE</span><span class="p">,</span>
+               <span class="n">rx</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">ry</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">rz</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_3d</span><span class="p">:</span>
+      <span class="n">sy</span> <span class="o">=</span> <span class="n">sx</span> <span class="o">=</span> <span class="n">size</span> <span class="o">/</span> <span class="n">DOTS_PER_INCH</span>
+    <span class="nb">super</span><span class="p">(</span><span class="n">String</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">camera</span><span class="p">,</span> <span class="n">light</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span>
+                                 <span class="n">rx</span><span class="p">,</span> <span class="n">ry</span><span class="p">,</span> <span class="n">rz</span><span class="p">,</span>  <span class="n">sx</span><span class="p">,</span> <span class="n">sy</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span>  <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">VERBOSE</span><span class="p">:</span>
+      <span class="k">print</span> <span class="s">&quot;Creating string ...&quot;</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">verts</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">texcoords</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">norms</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">inds</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">temp_verts</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">xoff</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">maxh</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="c">#TODO cope with \n characters to give multi line strings</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
+      <span class="n">v</span> <span class="o">=</span> <span class="nb">ord</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">-</span> <span class="mi">32</span>
+      <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">texc</span><span class="p">,</span> <span class="n">verts</span> <span class="o">=</span> <span class="n">font</span><span class="o">.</span><span class="n">ch</span><span class="p">[</span><span class="n">v</span><span class="p">]</span>
+      <span class="k">if</span> <span class="n">v</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">verts</span><span class="p">:</span>
+          <span class="n">temp_verts</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">j</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">xoff</span><span class="p">,</span> <span class="n">j</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">j</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+        <span class="n">xoff</span> <span class="o">+=</span> <span class="n">w</span>
+        <span class="k">if</span> <span class="n">h</span> <span class="o">&gt;</span> <span class="n">maxh</span><span class="p">:</span> <span class="n">maxh</span> <span class="o">=</span> <span class="n">h</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">texc</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">texcoords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="p">[(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">)]:</span> <span class="bp">self</span><span class="o">.</span><span class="n">norms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+        <span class="n">stv</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">i</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="p">[(</span><span class="n">stv</span><span class="p">,</span> <span class="n">stv</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="n">stv</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="n">stv</span><span class="p">,</span> <span class="n">stv</span> <span class="o">+</span> <span class="mi">3</span><span class="p">,</span> <span class="n">stv</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)]:</span> <span class="bp">self</span><span class="o">.</span><span class="n">inds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">temp_verts</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">verts</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">j</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">xoff</span><span class="o">/</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">j</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">maxh</span><span class="o">/</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">j</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">buf</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">buf</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Buffer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">verts</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">texcoords</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inds</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">norms</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">buf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">textures</span> <span class="o">=</span> <span class="p">[</span><span class="n">font</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">buf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">unib</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">pi3d 0.8 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, The pi3d team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

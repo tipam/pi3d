@@ -1,0 +1,419 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pi3d.shape.ElevationMap &mdash; pi3d 0.8 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.8',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="pi3d 0.8 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">pi3d 0.8 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for pi3d.shape.ElevationMap</h1><div class="highlight"><pre>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">Image</span>
+<span class="kn">import</span> <span class="nn">PIL.ImageOps</span>
+
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">cross</span><span class="p">,</span> <span class="n">dot</span><span class="p">,</span> <span class="n">sqrt</span><span class="p">,</span> <span class="n">array</span><span class="p">,</span> <span class="n">arctan2</span><span class="p">,</span> <span class="n">arcsin</span><span class="p">,</span> <span class="n">degrees</span><span class="p">,</span> <span class="n">subtract</span><span class="p">,</span> <span class="n">multiply</span>
+
+<span class="kn">from</span> <span class="nn">pi3d</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">pi3d.Buffer</span> <span class="kn">import</span> <span class="n">Buffer</span>
+<span class="kn">from</span> <span class="nn">pi3d.shape.Shape</span> <span class="kn">import</span> <span class="n">Shape</span>
+<span class="kn">from</span> <span class="nn">pi3d.util</span> <span class="kn">import</span> <span class="n">Utility</span>
+
+<span class="c"># a rectangular surface where elevation is defined by a greyscal image</span>
+<div class="viewcode-block" id="ElevationMap"><a class="viewcode-back" href="../../../pi3d.shape.html#pi3d.shape.ElevationMap.ElevationMap">[docs]</a><span class="k">class</span> <span class="nc">ElevationMap</span><span class="p">(</span><span class="n">Shape</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; 3d model inherits from Shape</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mapfile</span><span class="p">,</span> <span class="n">camera</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">light</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+               <span class="n">width</span><span class="o">=</span><span class="mf">100.0</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="mf">100.0</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span>
+               <span class="n">divx</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">divy</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ntiles</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span>
+               <span class="n">x</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">rx</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">ry</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">rz</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+               <span class="n">sx</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">sy</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">sz</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">cx</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">cy</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">cz</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">smooth</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">cubic</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;uses standard constructor for Shape</span>
+<span class="sd">    Arguments:</span>
+<span class="sd">    mapfile -- greyscale image path/file, string</span>
+<span class="sd">    Keyword arguments:</span>
+<span class="sd">    width, depth, height -- of the map in world units</span>
+<span class="sd">    divx, divy -- number of divisions into which the map will be divided</span>
+<span class="sd">            to create vertices</span>
+<span class="sd">    ntiles -- number of repeats for tiling the texture image</span>
+<span class="sd">    smooth -- calculate normals with averaging rather than pointing</span>
+<span class="sd">            straight up, slightly faster if false</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">super</span><span class="p">(</span><span class="n">ElevationMap</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">camera</span><span class="p">,</span> <span class="n">light</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="n">ry</span><span class="p">,</span> <span class="n">rz</span><span class="p">,</span>
+                                       <span class="n">sx</span><span class="p">,</span> <span class="n">sy</span><span class="p">,</span> <span class="n">sz</span><span class="p">,</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">cz</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">VERBOSE</span><span class="p">:</span>
+      <span class="k">print</span> <span class="s">&quot;Loading height map ...&quot;</span><span class="p">,</span><span class="n">mapfile</span>
+
+    <span class="k">if</span> <span class="n">divx</span><span class="o">&gt;</span><span class="mi">200</span> <span class="ow">or</span> <span class="n">divy</span><span class="o">&gt;</span><span class="mi">200</span><span class="p">:</span>
+      <span class="k">print</span> <span class="s">&quot;... Map size can&#39;t be bigger than 200x200 divisions&quot;</span>
+      <span class="n">divx</span> <span class="o">=</span> <span class="mi">200</span>
+      <span class="n">divy</span> <span class="o">=</span> <span class="mi">200</span>
+
+    <span class="n">im</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">mapfile</span><span class="p">)</span>
+    <span class="n">im</span> <span class="o">=</span> <span class="n">PIL</span><span class="o">.</span><span class="n">ImageOps</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">im</span><span class="p">)</span>
+    <span class="n">ix</span><span class="p">,</span> <span class="n">iy</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">size</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">ix</span><span class="o">&gt;</span><span class="mi">200</span> <span class="ow">and</span> <span class="n">divx</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">divx</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+      <span class="k">if</span> <span class="n">divx</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">divx</span> <span class="o">=</span> <span class="mi">200</span>
+        <span class="n">divy</span> <span class="o">=</span> <span class="mi">200</span>
+      <span class="n">im</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">resize</span><span class="p">((</span><span class="n">divx</span><span class="p">,</span> <span class="n">divy</span><span class="p">),</span> <span class="n">Image</span><span class="o">.</span><span class="n">ANTIALIAS</span><span class="p">)</span>
+      <span class="n">ix</span><span class="p">,</span> <span class="n">iy</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">size</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">im</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s">&quot;P&quot;</span><span class="p">:</span>
+      <span class="n">im</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s">&#39;P&#39;</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="n">Image</span><span class="o">.</span><span class="n">ADAPTIVE</span><span class="p">)</span>
+
+    <span class="n">im</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">FLIP_TOP_BOTTOM</span><span class="p">)</span>
+    <span class="n">im</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">FLIP_LEFT_RIGHT</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">pixels</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">width</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">depth</span> <span class="o">=</span> <span class="n">depth</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">height</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="o">=</span><span class="n">ix</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">iy</span><span class="o">=</span><span class="n">iy</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">ttype</span> <span class="o">=</span> <span class="n">GL_TRIANGLE_STRIP</span>
+
+    <span class="k">if</span> <span class="n">VERBOSE</span><span class="p">:</span>
+      <span class="k">print</span> <span class="s">&quot;Creating Elevation Map ...&quot;</span><span class="p">,</span> <span class="n">ix</span><span class="p">,</span> <span class="n">iy</span>
+
+    <span class="n">wh</span> <span class="o">=</span> <span class="n">width</span> <span class="o">*</span> <span class="mf">0.5</span>
+    <span class="n">hh</span> <span class="o">=</span> <span class="n">depth</span> <span class="o">*</span> <span class="mf">0.5</span>
+    <span class="n">ws</span> <span class="o">=</span> <span class="n">width</span> <span class="o">/</span> <span class="n">ix</span>
+    <span class="n">hs</span> <span class="o">=</span> <span class="n">depth</span> <span class="o">/</span> <span class="n">iy</span>
+    <span class="n">ht</span> <span class="o">=</span> <span class="n">height</span> <span class="o">/</span> <span class="mf">255.0</span>
+    <span class="n">tx</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">*</span><span class="n">ntiles</span> <span class="o">/</span> <span class="n">ix</span>
+    <span class="n">ty</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">*</span><span class="n">ntiles</span> <span class="o">/</span> <span class="n">iy</span>
+
+    <span class="n">verts</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">norms</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">tex_coords</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">iy</span><span class="p">):</span>
+      <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">ix</span><span class="p">):</span>
+        <span class="n">hgt</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pixels</span><span class="p">[</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">])</span><span class="o">*</span><span class="n">ht</span>
+        <span class="n">this_x</span> <span class="o">=</span> <span class="o">-</span><span class="n">wh</span> <span class="o">+</span> <span class="n">x</span><span class="o">*</span><span class="n">ws</span>
+        <span class="n">this_z</span> <span class="o">=</span> <span class="o">-</span><span class="n">hh</span> <span class="o">+</span> <span class="n">y</span><span class="o">*</span><span class="n">hs</span>
+        <span class="k">if</span> <span class="n">cubic</span><span class="p">:</span>
+          <span class="sd">&quot;&quot;&quot; this is a bit experimental. It tries to make the map either zero</span>
+<span class="sd">          or height high. Vertices are moved &#39;under&#39; adjacent ones if there is</span>
+<span class="sd">          a step to make vertical walls. Goes wrong in places - mainly because</span>
+<span class="sd">          it doesn&#39;t check diagonals</span>
+<span class="sd">          &quot;&quot;&quot;</span>
+          <span class="k">if</span> <span class="n">hgt</span> <span class="o">&gt;</span> <span class="n">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">hgt</span> <span class="o">=</span> <span class="n">height</span>
+          <span class="k">else</span><span class="p">:</span>
+            <span class="n">hgt</span> <span class="o">=</span> <span class="mf">0.0</span>
+          <span class="k">if</span> <span class="n">hgt</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">y</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="n">iy</span><span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">ix</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixels</span><span class="p">[</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">127</span><span class="p">:</span>
+              <span class="n">this_x</span> <span class="o">=</span> <span class="o">-</span><span class="n">wh</span> <span class="o">+</span> <span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">ws</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixels</span><span class="p">[</span><span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">127</span><span class="p">:</span>
+              <span class="n">this_x</span> <span class="o">=</span> <span class="o">-</span><span class="n">wh</span> <span class="o">+</span> <span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">ws</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixels</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">127</span><span class="p">:</span>
+              <span class="n">this_z</span> <span class="o">=</span> <span class="o">-</span><span class="n">hh</span> <span class="o">+</span> <span class="p">(</span><span class="n">y</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">hs</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixels</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">127</span><span class="p">:</span>
+              <span class="n">this_z</span> <span class="o">=</span> <span class="o">-</span><span class="n">hh</span> <span class="o">+</span> <span class="p">(</span><span class="n">y</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">hs</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixels</span><span class="p">[</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">127</span><span class="p">:</span>
+              <span class="n">this_x</span> <span class="o">=</span> <span class="o">-</span><span class="n">wh</span> <span class="o">+</span> <span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">ws</span>
+              <span class="n">this_z</span> <span class="o">=</span> <span class="o">-</span><span class="n">hh</span> <span class="o">+</span> <span class="p">(</span><span class="n">y</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">hs</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixels</span><span class="p">[</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">127</span><span class="p">:</span>
+              <span class="n">this_x</span> <span class="o">=</span> <span class="o">-</span><span class="n">wh</span> <span class="o">+</span> <span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">ws</span>
+              <span class="n">this_z</span> <span class="o">=</span> <span class="o">-</span><span class="n">hh</span> <span class="o">+</span> <span class="p">(</span><span class="n">y</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">hs</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixels</span><span class="p">[</span><span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">127</span><span class="p">:</span>
+              <span class="n">this_x</span> <span class="o">=</span> <span class="o">-</span><span class="n">wh</span> <span class="o">+</span> <span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">ws</span>
+              <span class="n">this_z</span> <span class="o">=</span> <span class="o">-</span><span class="n">hh</span> <span class="o">+</span> <span class="p">(</span><span class="n">y</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">hs</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixels</span><span class="p">[</span><span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">127</span><span class="p">:</span>
+              <span class="n">this_x</span> <span class="o">=</span> <span class="o">-</span><span class="n">wh</span> <span class="o">+</span> <span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">ws</span>
+              <span class="n">this_z</span> <span class="o">=</span> <span class="o">-</span><span class="n">hh</span> <span class="o">+</span> <span class="p">(</span><span class="n">y</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">hs</span>
+        <span class="n">verts</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">this_x</span><span class="p">,</span> <span class="n">hgt</span><span class="p">,</span> <span class="n">this_z</span><span class="p">))</span>
+        <span class="n">tex_coords</span><span class="o">.</span><span class="n">append</span><span class="p">(((</span><span class="n">ix</span><span class="o">-</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="n">tx</span><span class="p">,(</span><span class="n">iy</span><span class="o">-</span><span class="n">y</span><span class="p">)</span> <span class="o">*</span> <span class="n">ty</span><span class="p">))</span>
+
+    <span class="n">s</span><span class="o">=</span><span class="mi">0</span>
+    <span class="c">#create one long triangle_strip by alternating X directions</span>
+    <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">iy</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+      <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">ix</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span> <span class="o">*</span> <span class="n">ix</span><span class="p">)</span><span class="o">+</span><span class="n">x</span>
+        <span class="n">idx</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="o">+</span><span class="n">ix</span><span class="p">,</span><span class="n">i</span><span class="o">+</span><span class="n">ix</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">idx</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">i</span><span class="o">+</span><span class="n">ix</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">i</span><span class="p">))</span>
+        <span class="n">s</span><span class="o">+=</span><span class="mi">2</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">buf</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">buf</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Buffer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verts</span><span class="p">,</span> <span class="n">tex_coords</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="n">smooth</span><span class="p">))</span>
+
+<div class="viewcode-block" id="ElevationMap.dropOn"><a class="viewcode-back" href="../../../pi3d.shape.html#pi3d.shape.ElevationMap.ElevationMap.dropOn">[docs]</a>  <span class="k">def</span> <span class="nf">dropOn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">px</span><span class="p">,</span> <span class="n">pz</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;determines approximately how high an object is when dropped on the map</span>
+<span class="sd">     (providing it&#39;s inside the map area)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c">#adjust for map not set at origin</span>
+    <span class="n">px</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unif</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">pz</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unif</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="n">wh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">*</span> <span class="mf">0.5</span>
+    <span class="n">hh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">depth</span> <span class="o">*</span> <span class="mf">0.5</span>
+    <span class="n">ws</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">ix</span>
+    <span class="n">hs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">depth</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">iy</span>
+    <span class="n">ht</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">/</span> <span class="mf">255.0</span>
+
+    <span class="k">if</span> <span class="n">px</span> <span class="o">&gt;</span> <span class="o">-</span><span class="n">wh</span> <span class="ow">and</span> <span class="n">px</span> <span class="o">&lt;</span> <span class="n">wh</span> <span class="ow">and</span> <span class="n">pz</span> <span class="o">&gt;</span> <span class="o">-</span><span class="n">hh</span> <span class="ow">and</span> <span class="n">pz</span> <span class="o">&lt;</span> <span class="n">hh</span><span class="p">:</span>
+      <span class="n">pixht</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixels</span><span class="p">[(</span><span class="n">wh</span> <span class="o">+</span> <span class="n">px</span><span class="p">)</span> <span class="o">/</span> <span class="n">ws</span><span class="p">,(</span><span class="n">hh</span> <span class="o">+</span> <span class="n">pz</span><span class="p">)</span> <span class="o">/</span> <span class="n">hs</span><span class="p">]</span> <span class="o">*</span> <span class="n">ht</span>
+
+    <span class="k">return</span> <span class="n">pixht</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">unif</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="ElevationMap.calcHeight"><a class="viewcode-back" href="../../../pi3d.shape.html#pi3d.shape.ElevationMap.ElevationMap.calcHeight">[docs]</a>  <span class="k">def</span> <span class="nf">calcHeight</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">px</span><span class="p">,</span> <span class="n">pz</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;accurately return the hight of the map at the point specified</span>
+<span class="sd">    Arguments:</span>
+<span class="sd">    px, pz -- location of the point in world coordinates to calculate height</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c">#adjust for map not set at origin</span>
+    <span class="n">px</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unif</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">pz</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unif</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="n">wh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">*</span> <span class="mf">0.5</span>
+    <span class="n">hh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">depth</span> <span class="o">*</span> <span class="mf">0.5</span>
+    <span class="n">ws</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">ix</span>
+    <span class="n">hs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">depth</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">iy</span>
+    <span class="n">ht</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">/</span> <span class="mf">255.0</span>
+    <span class="c">#round off to nearest integer</span>
+    <span class="n">px</span> <span class="o">=</span> <span class="p">(</span><span class="n">wh</span> <span class="o">+</span> <span class="n">px</span><span class="p">)</span> <span class="o">/</span> <span class="n">ws</span>
+    <span class="n">pz</span> <span class="o">=</span> <span class="p">(</span><span class="n">hh</span> <span class="o">+</span> <span class="n">pz</span><span class="p">)</span> <span class="o">/</span> <span class="n">hs</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">px</span><span class="p">)</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">pz</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="o">-</span><span class="mi">2</span><span class="p">):</span> <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="o">-</span><span class="mi">2</span>
+    <span class="k">if</span> <span class="n">z</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span> <span class="n">z</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">z</span> <span class="o">&gt;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iy</span><span class="o">-</span><span class="mi">2</span><span class="p">):</span> <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iy</span><span class="o">-</span><span class="mi">2</span>
+    <span class="c"># use actual vertex location rather than recreate it from pixel*ht</span>
+    <span class="n">p0</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">z</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span> <span class="o">+</span> <span class="n">x</span><span class="p">)</span> <span class="c">#offset 1 to get y values</span>
+    <span class="n">p1</span> <span class="o">=</span> <span class="n">p0</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">p2</span> <span class="o">=</span> <span class="n">p0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">ix</span>
+    <span class="n">p3</span> <span class="o">=</span> <span class="n">p0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">ix</span> <span class="o">+</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="n">pz</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">z</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">px</span> <span class="o">+</span> <span class="n">x</span><span class="p">):</span> <span class="c">#i.e. this point is in the triangle on the</span>
+    <span class="c">#opposite side of the diagonal so swap base corners</span>
+      <span class="n">x0</span><span class="p">,</span> <span class="n">y0</span><span class="p">,</span> <span class="n">z0</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">buf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="n">p3</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">z</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="n">x0</span><span class="p">,</span> <span class="n">y0</span><span class="p">,</span> <span class="n">z0</span> <span class="o">=</span> <span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">buf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="n">p0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">z</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unif</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">intersect_triangle</span><span class="p">((</span><span class="n">x0</span><span class="p">,</span> <span class="n">y0</span><span class="p">,</span> <span class="n">z0</span><span class="p">),</span>
+                            <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">buf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="n">p1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">z</span><span class="p">),</span>
+                            <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">buf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="n">p2</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">z</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+                            <span class="p">(</span><span class="n">px</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">pz</span><span class="p">))</span>
+
+
+  <span class="c"># TODO these functions will be scrambled by any scaling, rotation or offset,</span>
+  <span class="c">#either print warning or stop these operations applying</span></div>
+<div class="viewcode-block" id="ElevationMap.clashTest"><a class="viewcode-back" href="../../../pi3d.shape.html#pi3d.shape.ElevationMap.ElevationMap.clashTest">[docs]</a>  <span class="k">def</span> <span class="nf">clashTest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">px</span><span class="p">,</span> <span class="n">py</span><span class="p">,</span> <span class="n">pz</span><span class="p">,</span> <span class="n">rad</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Works out if an object at a given location and radius will overlap</span>
+<span class="sd">    with the map surface. Returns four values:</span>
+<span class="sd">    boolean whether there is a clash</span>
+<span class="sd">    x, y, z components of the normal vector</span>
+<span class="sd">    the amount of overlap at the x,z location</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">    px, py, pz -- location of object to test in world coordinates</span>
+<span class="sd">    rad -- radius of object to test</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">radSq</span> <span class="o">=</span> <span class="n">rad</span><span class="o">**</span><span class="mi">2</span>
+    <span class="c"># adjust for map not set at origin</span>
+    <span class="n">px</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unif</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">py</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unif</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">pz</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unif</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">ht</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="o">/</span><span class="mi">255</span>
+    <span class="n">halfw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="o">/</span><span class="mf">2.0</span>
+    <span class="n">halfd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">depth</span><span class="o">/</span><span class="mf">2.0</span>
+    <span class="n">dx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span>
+    <span class="n">dz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">depth</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">iy</span>
+
+    <span class="c"># work out x and z ranges to check, x0 etc correspond with vertex indices in grid</span>
+    <span class="n">x0</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">((</span><span class="n">halfw</span> <span class="o">+</span> <span class="n">px</span> <span class="o">-</span> <span class="n">rad</span><span class="p">)</span><span class="o">/</span><span class="n">dx</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">x0</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span> <span class="n">x0</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">x1</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">((</span><span class="n">halfw</span> <span class="o">+</span> <span class="n">px</span> <span class="o">+</span> <span class="n">rad</span><span class="p">)</span><span class="o">/</span><span class="n">dx</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">x1</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span> <span class="n">x1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="o">-</span><span class="mi">1</span>
+    <span class="n">z0</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">((</span><span class="n">halfd</span> <span class="o">+</span> <span class="n">pz</span> <span class="o">-</span> <span class="n">rad</span><span class="p">)</span><span class="o">/</span><span class="n">dz</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">z0</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span> <span class="n">z0</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">z1</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">((</span><span class="n">halfd</span> <span class="o">+</span> <span class="n">pz</span> <span class="o">+</span> <span class="n">rad</span><span class="p">)</span><span class="o">/</span><span class="n">dz</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">z1</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">iy</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span> <span class="n">z1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iy</span><span class="o">-</span><span class="mi">1</span>
+
+    <span class="c"># go through grid around px, pz</span>
+    <span class="n">minDist</span><span class="p">,</span> <span class="n">minLoc</span> <span class="o">=</span> <span class="mi">1000000</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">x0</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">x1</span><span class="p">):</span>
+      <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">z0</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">z1</span><span class="p">):</span>
+        <span class="c"># use the locations stored in the one dimensional vertices matrix</span>
+        <span class="c">#generated in __init__. 3 values for each location</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">j</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span> <span class="o">+</span> <span class="n">i</span> <span class="c"># pointer to the start of xyz for i,j in the vertices array</span>
+        <span class="n">p1</span> <span class="o">=</span> <span class="n">j</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span> <span class="o">+</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span> <span class="c"># pointer to the start of xyz for i-1,j</span>
+        <span class="n">p2</span> <span class="o">=</span> <span class="p">(</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span> <span class="o">+</span> <span class="n">i</span> <span class="c"># pointer to the start of xyz for i, j-1</span>
+        <span class="n">vertp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">buf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="n">p</span><span class="p">]</span>
+        <span class="n">normp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">buf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">normals</span><span class="p">[</span><span class="n">p</span><span class="p">]</span>
+        <span class="c"># work out distance squared from this vertex to the point</span>
+        <span class="n">distSq</span> <span class="o">=</span> <span class="p">(</span><span class="n">px</span> <span class="o">-</span> <span class="n">vertp</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">py</span> <span class="o">-</span> <span class="n">vertp</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">pz</span> <span class="o">-</span> <span class="n">vertp</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span>
+        <span class="k">if</span> <span class="n">distSq</span> <span class="o">&lt;</span> <span class="n">minDist</span><span class="p">:</span> <span class="c"># this vertex is nearest so keep a record</span>
+          <span class="n">minDist</span> <span class="o">=</span> <span class="n">distSq</span>
+          <span class="n">minLoc</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">)</span>
+        <span class="c">#now find the distance between the point and the plane perpendicular</span>
+        <span class="c">#to the normal at this vertex</span>
+        <span class="n">pDist</span> <span class="o">=</span> <span class="n">Utility</span><span class="o">.</span><span class="n">dotproduct</span><span class="p">((</span><span class="n">px</span> <span class="o">-</span> <span class="n">vertp</span><span class="p">[</span><span class="mi">0</span><span class="p">]),(</span><span class="n">py</span> <span class="o">-</span> <span class="n">vertp</span><span class="p">[</span><span class="mi">1</span><span class="p">]),(</span><span class="n">pz</span> <span class="o">-</span> <span class="n">vertp</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span>
+                                  <span class="o">-</span><span class="n">normp</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="n">normp</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">-</span><span class="n">normp</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="c">#and the position where the normal from point crosses the plane</span>
+        <span class="n">xIsect</span> <span class="o">=</span> <span class="n">px</span> <span class="o">-</span> <span class="n">normp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">pDist</span>
+        <span class="n">zIsect</span> <span class="o">=</span> <span class="n">pz</span> <span class="o">-</span> <span class="n">normp</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">pDist</span>
+
+        <span class="c">#if the intersection point is in this rectangle then the x,z values</span>
+        <span class="c">#will lie between edges</span>
+        <span class="k">if</span> <span class="n">xIsect</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">buf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="n">p1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> \
+           <span class="n">xIsect</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">buf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="n">p</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> \
+           <span class="n">zIsect</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">buf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="n">p2</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="ow">and</span> \
+           <span class="n">zIsect</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">buf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="n">p</span><span class="p">][</span><span class="mi">2</span><span class="p">]:</span>
+          <span class="n">pDistSq</span> <span class="o">=</span> <span class="n">pDist</span><span class="o">**</span><span class="mi">2</span>
+          <span class="c"># finally if the perpendicular distance is less than the nearest so far</span>
+          <span class="c">#keep a record</span>
+          <span class="k">if</span> <span class="n">pDistSq</span> <span class="o">&lt;</span> <span class="n">minDist</span><span class="p">:</span>
+            <span class="n">minDist</span> <span class="o">=</span> <span class="n">pDistSq</span>
+            <span class="n">minLoc</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">)</span>
+
+    <span class="n">gLevel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calcHeight</span><span class="p">(</span><span class="n">px</span><span class="p">,</span> <span class="n">pz</span><span class="p">)</span> <span class="c">#check it hasn&#39;t tunnelled through by going fast</span>
+    <span class="k">if</span> <span class="n">gLevel</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">py</span><span class="o">-</span><span class="n">rad</span><span class="p">):</span>
+      <span class="n">minDist</span> <span class="o">=</span> <span class="n">py</span> <span class="o">-</span> <span class="n">gLevel</span>
+      <span class="n">minLoc</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">((</span><span class="n">x0</span><span class="o">+</span><span class="n">x1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span> <span class="nb">int</span><span class="p">((</span><span class="n">z0</span><span class="o">+</span><span class="n">z1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">minDist</span> <span class="o">&lt;=</span> <span class="n">radSq</span><span class="p">:</span> <span class="c">#i.e. near enough to clash so return normal</span>
+      <span class="n">p</span> <span class="o">=</span> <span class="n">minLoc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span> <span class="o">+</span> <span class="n">minLoc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+      <span class="n">normp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">buf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">normals</span><span class="p">[</span><span class="n">p</span><span class="p">]</span>
+      <span class="k">if</span> <span class="n">minDist</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">jump</span> <span class="o">=</span> <span class="n">rad</span> <span class="o">-</span> <span class="n">minDist</span>
+      <span class="k">else</span><span class="p">:</span>
+        <span class="n">jump</span> <span class="o">=</span> <span class="mi">0</span>
+      <span class="k">return</span><span class="p">(</span><span class="bp">True</span><span class="p">,</span> <span class="n">normp</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">normp</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">normp</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>  <span class="n">jump</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="k">return</span> <span class="p">(</span><span class="bp">False</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="ElevationMap.pitch_roll"><a class="viewcode-back" href="../../../pi3d.shape.html#pi3d.shape.ElevationMap.ElevationMap.pitch_roll">[docs]</a>  <span class="k">def</span> <span class="nf">pitch_roll</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">px</span><span class="p">,</span> <span class="n">pz</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;works out the pitch (rx) and roll (rz) to apply to an object</span>
+<span class="sd">    on the surface of the map at this point</span>
+<span class="sd">    returns a tuple (pitch, roll) in degrees</span>
+<span class="sd">    </span>
+<span class="sd">    Arguments:</span>
+<span class="sd">    px -- x location</span>
+<span class="sd">    pz -- z location</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">px</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unif</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">pz</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unif</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">halfw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="o">/</span><span class="mf">2.0</span>
+    <span class="n">halfd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">depth</span><span class="o">/</span><span class="mf">2.0</span>
+    <span class="n">dx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span>
+    <span class="n">dz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">depth</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">iy</span>
+    <span class="n">x0</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">((</span><span class="n">halfw</span> <span class="o">+</span> <span class="n">px</span><span class="p">)</span><span class="o">/</span><span class="n">dx</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">x0</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span> <span class="n">x0</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">x0</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span> <span class="n">x0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="o">-</span><span class="mi">1</span>
+    <span class="n">z0</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">((</span><span class="n">halfd</span> <span class="o">+</span> <span class="n">pz</span><span class="p">)</span><span class="o">/</span><span class="n">dz</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">z0</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span> <span class="n">z0</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">z0</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">iy</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span> <span class="n">z0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iy</span><span class="o">-</span><span class="mi">1</span>
+    <span class="n">normp</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">normals</span><span class="p">[</span><span class="n">z0</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span> <span class="o">+</span> <span class="n">x0</span><span class="p">])</span>
+    <span class="c"># slight simplification to working out cross products as dirctn always 0,0,1</span>
+    <span class="c">#sidev = cross(normp, dirctn)</span>
+    <span class="n">sidev</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="n">normp</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">-</span><span class="n">normp</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mf">0.0</span><span class="p">])</span>
+    <span class="n">sidev</span> <span class="o">=</span> <span class="n">sidev</span> <span class="o">/</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">sidev</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">sidev</span><span class="p">))</span>
+    <span class="c">#forwd = cross(sidev, normp)</span>
+    <span class="n">forwd</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="n">normp</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">normp</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="n">normp</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">normp</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                  <span class="n">normp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">normp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">normp</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">normp</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+    <span class="n">forwd</span> <span class="o">=</span> <span class="n">forwd</span> <span class="o">/</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">forwd</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">forwd</span><span class="p">))</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">degrees</span><span class="p">(</span><span class="n">arcsin</span><span class="p">(</span><span class="o">-</span><span class="n">forwd</span><span class="p">[</span><span class="mi">1</span><span class="p">])),</span> <span class="n">degrees</span><span class="p">(</span><span class="n">arctan2</span><span class="p">(</span><span class="n">sidev</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">normp</span><span class="p">[</span><span class="mi">1</span><span class="p">])))</span>
+
+</div></div>
+<div class="viewcode-block" id="intersect_triangle"><a class="viewcode-back" href="../../../pi3d.shape.html#pi3d.shape.ElevationMap.intersect_triangle">[docs]</a><span class="k">def</span> <span class="nf">intersect_triangle</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">,</span> <span class="n">v3</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;calculates the y intersection of a point on a triangle and returns the y</span>
+<span class="sd">  value of the intersection of the line defined by x,z of pos through the</span>
+<span class="sd">  triange defined by v1,v2,v3</span>
+
+<span class="sd">  Arguments:</span>
+<span class="sd">  v1,v2,v3 -- tuples (x1,y1,z1), (x2,y2,z2).. defining the corners of the triangle</span>
+<span class="sd">  pos -- tuple (x,y,z) defining the x,z of the vertical line intersecting triangle</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="c">#calc normal from two edge vectors v2-v1 and v3-v1</span>
+  <span class="c">#nVec = Utility.crossproduct(v2[0]-v1[0], v2[1]-v1[1], v2[2]-v1[2], v3[0]-v1[0],  v3[1]-v1[1], v3[2]-v1[2])</span>
+  <span class="n">nVec</span> <span class="o">=</span> <span class="n">cross</span><span class="p">(</span><span class="n">subtract</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span><span class="n">v1</span><span class="p">),</span> <span class="n">subtract</span><span class="p">(</span><span class="n">v3</span><span class="p">,</span> <span class="n">v1</span><span class="p">))</span>
+  <span class="c">#equation of plane: Ax + By + Cz = kVal where A,B,C are components of normal. x,y,z for point v1 to find kVal</span>
+  <span class="n">kVal</span> <span class="o">=</span> <span class="n">dot</span><span class="p">(</span><span class="n">nVec</span><span class="p">,</span><span class="n">v1</span><span class="p">)</span>
+  <span class="c">#return y val i.e. y = (kVal - Ax - Cz)/B</span>
+  <span class="k">return</span> <span class="p">(</span><span class="n">kVal</span> <span class="o">-</span> <span class="n">nVec</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">nVec</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">pos</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">/</span><span class="n">nVec</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">pi3d 0.8 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, The pi3d team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
