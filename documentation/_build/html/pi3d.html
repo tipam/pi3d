@@ -319,7 +319,7 @@ field of view height) fields of view in radians</dd>
 
 <dl class="function">
 <dt id="pi3d.Camera.ProjectionMatrix">
-<tt class="descclassname">pi3d.Camera.</tt><tt class="descname">ProjectionMatrix</tt><big>(</big><em>near=10</em>, <em>far=1000.0</em>, <em>fov_w=1.6</em>, <em>fov_h=1.2</em><big>)</big><a class="reference internal" href="_modules/pi3d/Camera.html#ProjectionMatrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.Camera.ProjectionMatrix" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">pi3d.Camera.</tt><tt class="descname">ProjectionMatrix</tt><big>(</big><em>near=10</em>, <em>far=1000.0</em>, <em>fov_w=1.6000000000000001</em>, <em>fov_h=1.2</em><big>)</big><a class="reference internal" href="_modules/pi3d/Camera.html#ProjectionMatrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.Camera.ProjectionMatrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set up projection matrix</p>
 <dl class="docutils">
 <dt>Keyword arguments:</dt>
@@ -362,6 +362,41 @@ Display.</p>
 <dt id="pi3d.Display.Display.loop_running">
 <tt class="descname">loop_running</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pi3d/Display.html#Display.loop_running"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.Display.Display.loop_running" title="Permalink to this definition">¶</a></dt>
 <dd><p><em>loop_running</em> is the main event loop for the Display.</p>
+<p>Most pi3d code will look something like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">DISPLAY</span> <span class="o">=</span> <span class="n">Display</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+
+<span class="c"># Initialize objects and variables here.</span>
+<span class="c"># ...</span>
+
+<span class="k">while</span> <span class="n">DISPLAY</span><span class="o">.</span><span class="n">loop_running</span><span class="p">():</span>
+  <span class="c"># Update the frame, using DISPLAY.time for the current time.</span>
+  <span class="c"># ...</span>
+
+  <span class="c"># Check for quit, then call DISPLAY.stop.</span>
+  <span class="k">if</span> <span class="n">some_quit_condition</span><span class="p">():</span>
+    <span class="n">DISPLAY</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><tt class="docutils literal"><span class="pre">Display.loop_running()</span></tt> <strong>must</strong> be called on the main Python thread,
+or else white screens and program crashes are likely.</p>
+<p>The Display loop can run in two different modes - <em>free</em> or <em>framed</em>.</p>
+<p>If <tt class="docutils literal"><span class="pre">DISPLAY.frames_per_second</span></tt> is empty or 0 then the loop runs <em>free</em> - when
+it finishes one frame, it immediately starts working on the next frame.</p>
+<p>If <tt class="docutils literal"><span class="pre">Display.frames_per_second</span></tt> is a positive number then the Display is
+<em>framed</em> - when the Display finishes one frame before the next frame_time,
+it waits till the next frame starts.</p>
+<p>A free Display gives the highest frame rate, but it will also consume more
+CPU, to the detriment of other threads or other programs.  There is also
+the significant drawback that the framerate will fluctuate as the numbers of
+CPU cycles consumed per loop, resulting in jerky motion and animations.</p>
+<p>A framed Display has a consistent if smaller number of frames, and also
+allows for potentially much smoother motion and animation.  The ability to
+throttle down the number of frames to conserve CPU cycles is essential
+for programs with other important threads like audio.</p>
+<p><tt class="docutils literal"><span class="pre">Display.frames_per_second</span></tt> can be set at construction in
+<tt class="docutils literal"><span class="pre">Display.create</span></tt> or changed on-the-fly during the execution of the
+program.  If <tt class="docutils literal"><span class="pre">Display.frames_per_second</span></tt> is set too high, the Display
+doesn&#8217;t attempt to &#8220;catch up&#8221; but simply runs freely.</p>
 </dd></dl>
 
 <dl class="method">
@@ -385,13 +420,13 @@ Display.</p>
 <dl class="method">
 <dt id="pi3d.Display.Display.stop">
 <tt class="descname">stop</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pi3d/Display.html#Display.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.Display.Display.stop" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stop the display loop.</p>
+<dd><p>Stop the Display.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pi3d.Display.Display.destroy">
 <tt class="descname">destroy</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pi3d/Display.html#Display.destroy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.Display.Display.destroy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Destroy the current display and reset Display.INSTANCE.</p>
+<dd><p>Destroy the current Display and reset Display.INSTANCE.</p>
 </dd></dl>
 
 <dl class="method">
@@ -403,12 +438,20 @@ Display.</p>
 <dl class="method">
 <dt id="pi3d.Display.Display.set_background">
 <tt class="descname">set_background</tt><big>(</big><em>r</em>, <em>g</em>, <em>b</em>, <em>alpha</em><big>)</big><a class="reference internal" href="_modules/pi3d/Display.html#Display.set_background"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.Display.Display.set_background" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Set the Display background.</p>
+<dl class="docutils">
+<dt><em>r, g, b</em></dt>
+<dd>Color values for the display</dd>
+<dt><em>alpha</em></dt>
+<dd>Opacity of the color.  An alpha of 0 means a transparent background,
+an alpha of 1 means full opaque.</dd>
+</dl>
+</dd></dl>
 
 <dl class="method">
 <dt id="pi3d.Display.Display.mouse_position">
 <tt class="descname">mouse_position</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pi3d/Display.html#Display.mouse_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.Display.Display.mouse_position" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the current mouse position.  Now deprecated in favor of pi3d.events.</p>
+<dd><p>The current mouse position as a tuple.</p>
 </dd></dl>
 
 </dd></dl>
@@ -445,7 +488,7 @@ the tkwindow parent, if any.</dd>
 <dt><em>depth</em></dt>
 <dd>The bit depth of the display - must be 8, 16 or 24.</dd>
 <dt><em>mouse</em></dt>
-<dd>Automatically create mouse (deprecated in favor of the Events system).</dd>
+<dd>Automatically create a Mouse.</dd>
 <dt><em>frames_per_second</em></dt>
 <dd>Maximum frames per second to render (None means &#8220;free running&#8221;).</dd>
 </dl>
@@ -503,7 +546,7 @@ terminal window or session.</p>
 <span id="light-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">Light</span></tt> Module<a class="headerlink" href="#module-pi3d.Light" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="pi3d.Light.Light">
-<em class="property">class </em><tt class="descclassname">pi3d.Light.</tt><tt class="descname">Light</tt><big>(</big><em>lightpos=(10</em>, <em>-10</em>, <em>20)</em>, <em>lightcol=(1.0</em>, <em>1.0</em>, <em>1.0)</em>, <em>lightamb=(0.1</em>, <em>0.1</em>, <em>0.2)</em><big>)</big><a class="reference internal" href="_modules/pi3d/Light.html#Light"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.Light.Light" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">pi3d.Light.</tt><tt class="descname">Light</tt><big>(</big><em>lightpos=(10</em>, <em>-10</em>, <em>20)</em>, <em>lightcol=(1.0</em>, <em>1.0</em>, <em>1.0)</em>, <em>lightamb=(0.10000000000000001</em>, <em>0.10000000000000001</em>, <em>0.20000000000000001)</em><big>)</big><a class="reference internal" href="_modules/pi3d/Light.html#Light"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.Light.Light" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">echomesh.util.DefaultInstance.DefaultInstance</span></tt></p>
 <p>Holds information about lighting to be used in shaders</p>
 <p>set light values. These are set in Shape.unif as part of the Shape

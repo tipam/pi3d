@@ -9,7 +9,7 @@ There's plenty of 3D code flying around at the moment for the Raspberry Pi, but 
 
 pi3d is a Python module that aims to greatly simplify writing 3D in Python whilst giving access to the power of the Raspberry Pi GPU. It enables both 3D and 2D rendering and aims to provide a host of exciting commands to load in textured/animated models, create fractal landscapes, shaders and much more.
 
-This is the third release of the pi3d module which has various demo's of built-in shapes, landscapes, model loading, walk-about camera and much more! See the demos included with this code and experiment with them ..
+This is the third release of the pi3d module which has various demos of built-in shapes, landscapes, model loading, walk-about camera and much more! See the demos included with this code and experiment with them ..
 
 
 Demo's included with Pi3D
