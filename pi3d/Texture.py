@@ -24,20 +24,26 @@ class Texture(Loadable):
                defer=DEFER_TEXTURE_LOADING, mipmap=True):
     """
     Arguments:
-    file_string -- path and name of image file relative to top dir
-    blend -- controls if low alpha pixels are discarded (if False) or drawn
-            by the shader. If set to true then this texture needs to be
-            drawn AFTER other objects that are FURTHER AWAY
-    flip -- flips the image
-    size -- to resize image to
-    defer -- can load from file in other thread and defer opengl work until
-            texture needed, default True
-    mipmap -- use linear interpolation for mipmaps, if set False then nearest
-            pixel values will be used. This is needed for exact pixel represent-
-            ation of images. **NB BECAUSE THIS BEHAVIOUR IS SET GLOBALLY AT
-            THE TIME THAT THE TEXTURE IS LOADED IT WILL BE SET BY THE LAST
-            TEXTURE TO BE LOADED PRIOR TO DRAWING**
-            TODO possibly reset in Buffer.draw() each time a texture is loaded?
+      *file_string*
+        path and name of image file relative to top dir
+      *blend*
+        controls if low alpha pixels are discarded (if False) or drawn
+        by the shader. If set to true then this texture needs to be
+        drawn AFTER other objects that are FURTHER AWAY
+      *flip*
+        flips the image
+      *size*
+        to resize image to
+      *defer*
+        can load from file in other thread and defer opengl work until
+        texture needed, default True
+      *mipmap*
+        use linear interpolation for mipmaps, if set False then nearest
+        pixel values will be used. This is needed for exact pixel represent-
+        ation of images. **NB BECAUSE THIS BEHAVIOUR IS SET GLOBALLY AT
+        THE TIME THAT THE TEXTURE IS LOADED IT WILL BE SET BY THE LAST
+        TEXTURE TO BE LOADED PRIOR TO DRAWING**
+        TODO possibly reset in Buffer.draw() each time a texture is loaded?
     """
     super(Texture, self).__init__()
     self.file_string = file_string

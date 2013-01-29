@@ -25,7 +25,6 @@ from pi3d.shape.Plane import Plane
 from pi3d.shape.Model import Model
 from pi3d.shape.TCone import TCone
 
-from pi3d.util.Matrix import Matrix
 from pi3d.util.RotateVec import *
 from pi3d.util.Screenshot import screenshot
 

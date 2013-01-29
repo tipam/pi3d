@@ -23,7 +23,7 @@ from pi3d.util.Screenshot import screenshot
 from pi3d.util.TkWin import TkWin
 from pi3d.util.Utility import lodDraw
 
-from pi3d.context.Light import Light
+from pi3d.Light import Light
 
 rads = 0.017453292512  # degrees to radians
 

@@ -1,7 +1,7 @@
 import re, os
 from pi3d.constants import *
 from pi3d.loader.parse_mtl import parse_mtl
-from pi3d.shape.Shape import Shape
+from pi3d.Shape import Shape
 from pi3d.Texture import Texture
 from pi3d.Buffer import Buffer
 

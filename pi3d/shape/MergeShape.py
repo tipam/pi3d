@@ -6,7 +6,7 @@ from pi3d.constants import *
 from pi3d import Texture
 from pi3d.Buffer import Buffer
 
-from pi3d.shape.Shape import Shape
+from pi3d.Shape import Shape
 from pi3d.util.RotateVec import rotate_vec_x, rotate_vec_y, rotate_vec_z
 
 class MergeShape(Shape):
@@ -15,7 +15,8 @@ class MergeShape(Shape):
   the shader, each time an object is drawn, it is MUCH faster to use a MergeShape
   where several objects will always remain in the same positions relative to
   each other. i.e. trees in a forest.
-    Where the objects have multiple Buffers, each needing a different texture
+  
+  Where the objects have multiple Buffers, each needing a different texture
   (i.e. more complex Model objects) each must be combined into a different
   MergeShape
   """
@@ -96,15 +97,17 @@ class MergeShape(Shape):
 
   def cluster(self, bufr, elevmap, xpos, zpos, w, d, count, options, minscl, maxscl):
     """generates a random cluster on an ElevationMap
+    
     Arguments:
-    bufr -- Buffer object to merge
-    elevmap -- ElevationMap object to merge onto
-    xpos, zpos -- x and z location of centre of cluster
-    w, d -- x and z direction size of the cluster
-    count -- number of objects to generate
-    options -- deprecated
-    minscl -- the minimum scale value for random selection
-    maxscl -- the maximum scale value for random selection
+    
+    * bufr -- Buffer object to merge
+    * elevmap -- ElevationMap object to merge onto
+    * xpos, zpos -- x and z location of centre of cluster
+    * w, d -- x and z direction size of the cluster
+    * count -- number of objects to generate
+    * options -- deprecated
+    * minscl -- the minimum scale value for random selection
+    * maxscl -- the maximum scale value for random selection
     """
     #create a cluster of shapes on an elevation map
     for v in range(count):
@@ -118,14 +121,16 @@ class MergeShape(Shape):
   def radialCopy(self, bufr, x=0, y=0, z=0, startRadius=2.0, endRadius=2.0,
                  startAngle=0.0, endAngle=360.0, step=12):
     """generates a radially copied cluster, axix is in the y direction
+    
     Keyword arguments:
-    x,y,z -- location of centre of cluster relative to origin of MergeShape
-    startRadius -- start radius
-    endRadius -- end radius
-    startAngle -- start angle for merging 0 is in +ve x direction
-    andAngle -- end angle for merging, degrees. Rotation is clockwise
-              looking up the y axis
-    step -- angle between each copy, degrees NB *NOT* number of steps
+    
+    * x,y,z -- location of centre of cluster relative to origin of MergeShape
+    * startRadius -- start radius
+    * endRadius -- end radius
+    * startAngle -- start angle for merging 0 is in +ve x direction
+    * andAngle -- end angle for merging, degrees. Rotation is clockwise
+      looking up the y axis
+    * step -- angle between each copy, degrees NB *NOT* number of steps
     """
     st = (endAngle - startAngle) / step
     rst = (endRadius - startRadius) / int(st)

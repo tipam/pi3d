@@ -36,7 +36,7 @@ from pi3d.shape.Sprite import ImageSprite
 from pi3d.util.Screenshot import screenshot
 from pi3d.util.TkWin import TkWin
 
-from pi3d.context.Light import Light
+from pi3d.Light import Light
 
 LOGGER = Log.logger(__name__)
 

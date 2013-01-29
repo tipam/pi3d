@@ -41,6 +41,14 @@ pi3d Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`Light` Module
+----------------------
+
+.. automodule:: pi3d.Light
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`Mouse` Module
 -------------------
 
@@ -53,6 +61,14 @@ pi3d Package
 --------------------
 
 .. automodule:: pi3d.Shader
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`Shape` Module
+--------------------
+
+.. automodule:: pi3d.Shape
     :members:
     :undoc-members:
     :show-inheritance:
@@ -71,7 +87,6 @@ Subpackages
 .. toctree::
 
     pi3d.constants
-    pi3d.context
     pi3d.events
     pi3d.loader
     pi3d.shape

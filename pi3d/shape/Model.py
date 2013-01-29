@@ -4,9 +4,8 @@ from pi3d import Texture
 
 from pi3d.loader import loaderEgg
 from pi3d.loader import loaderObj
-from pi3d.shape.Shape import Shape
+from pi3d.Shape import Shape
 from pi3d.util.RotateVec import rotate_vec
-from pi3d.util.Matrix import Matrix
 
 class Model(Shape):
   """ 3d model inherits from Shape

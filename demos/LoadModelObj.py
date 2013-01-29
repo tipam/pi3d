@@ -1,42 +1,26 @@
 #!/usr/bin/python
 from __future__ import absolute_import, division, print_function, unicode_literals
-
 """ Wavefront obj model loading. Material properties set in mtl file.
+Uses the import pi3d method to load *everything*
 """
 import demo
-
-from pi3d import Display
-from pi3d.Keyboard import Keyboard
-from pi3d.Texture import Texture
-
-from pi3d.Shader import Shader
-
-from pi3d.shape.Model import Model
-from pi3d.util.Matrix import Matrix
-from pi3d.util.Screenshot import screenshot
-
+import pi3d
 # Setup display and initialise pi3d
-DISPLAY = Display.create(x=100, y=100,
+DISPLAY = pi3d.Display.create(x=100, y=100,
                          background=(0.2, 0.4, 0.6, 1))
-
-shader = Shader("shaders/uv_reflect")
+shader = pi3d.Shader("shaders/uv_reflect")
 #========================================
 # load bump and reflection textures
-bumptex = Texture("textures/floor_nm.jpg")
-shinetex = Texture("textures/stars.jpg")
-
+bumptex = pi3d.Texture("textures/floor_nm.jpg")
+shinetex = pi3d.Texture("textures/stars.jpg")
 # load model_loadmodel
-mymodel = Model(file_string='models/teapot.obj', name='teapot', z=4)
+mymodel = pi3d.Model(file_string='models/teapot.obj', name='teapot', z=4)
 mymodel.set_shader(shader)
 mymodel.set_normal_shine(bumptex, 16.0, shinetex, 0.5)
-
-
 # Fetch key presses
-mykeys = Keyboard()
+mykeys = pi3d.Keyboard()
 
-while 1:
-  DISPLAY.clear()
-
+while DISPLAY.loop_running():
   mymodel.draw()
   mymodel.rotateIncY(2.0)
   mymodel.rotateIncZ(0.1)
@@ -50,7 +34,3 @@ while 1:
       mykeys.close()
       DISPLAY.destroy()
       break
-    else:
-      print(k)
-
-  DISPLAY.swapBuffers()

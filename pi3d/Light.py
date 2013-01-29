@@ -13,9 +13,12 @@ class Light(DefaultInstance):
     lightamb by the texture
     
     Arguments:
-    lightpos -- tuple (x,y,z) vector direction *from* the light
-    lightcol -- tuple (r,g,b) defines shade and brightness
-    lightamb -- tuple (r,g,b) ambient lighting multiplier
+      *lightpos*
+        tuple (x,y,z) vector direction *from* the light
+      *lightcol*
+        tuple (r,g,b) defines shade and brightness
+      *lightamb*
+        tuple (r,g,b) ambient lighting multiplier
     """
     super(Light, self).__init__()
     self.lightpos = lightpos

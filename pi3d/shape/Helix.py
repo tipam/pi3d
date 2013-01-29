@@ -1,7 +1,7 @@
 import math
 
 from pi3d.constants import *
-from pi3d.shape.Shape import Shape
+from pi3d.Shape import Shape
 
 class Helix(Shape):
   """ 3d model inherits from Shape"""

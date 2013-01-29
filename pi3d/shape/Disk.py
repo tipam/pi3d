@@ -3,7 +3,7 @@ from math import pi
 from pi3d.constants import *
 from pi3d.Buffer import Buffer
 from pi3d.util import Utility
-from pi3d.shape.Shape import Shape
+from pi3d.Shape import Shape
 
 class Disk(Shape):
   """ 3d model inherits from Shape"""

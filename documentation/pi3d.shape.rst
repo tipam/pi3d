@@ -1,18 +1,14 @@
 shape Package
 =============
 
+A range of standard shapes of varying complexity. These all inherit from the pi3d.Shape
+class and create an array of Buffer objects (generally containing just one!) that
+hold the vertex information for drawing each of them.
+
 :mod:`Building` Module
 ----------------------
 
 .. automodule:: pi3d.shape.Building
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`Camera` Module
---------------------
-
-.. automodule:: pi3d.shape.Camera
     :members:
     :undoc-members:
     :show-inheritance:
@@ -109,14 +105,6 @@ shape Package
 -------------------
 
 .. automodule:: pi3d.shape.Plane
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`Shape` Module
--------------------
-
-.. automodule:: pi3d.shape.Shape
     :members:
     :undoc-members:
     :show-inheritance:

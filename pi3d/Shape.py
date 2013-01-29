@@ -6,7 +6,7 @@ from math import radians, pi, sin, cos
 
 from pi3d.constants import *
 from pi3d.Buffer import Buffer
-from pi3d.context.Light import Light
+from pi3d.Light import Light
 from pi3d.util import Utility
 
 from pi3d.util.Loadable import Loadable
@@ -17,13 +17,18 @@ class Shape(Loadable):
                rx, ry, rz, sx, sy, sz, cx, cy, cz):
     """
     Arguments:
-    camera -- Camera instance if None then a default instance will be created
-    light -- Light instance if None then default instance will be created
-    name -- handy string
-    x, y, z, -- location of the origin of the shape, stored in unif array
-    rx, ry, rz -- rotation of shape in degrees about each axis
-    sx, sy, sz -- scale in each direction
-    cx, cy, cz -- offset vertices from origin in each direction
+      *light*
+        Light instance if None then default instance will be created
+      *name*
+        handy string
+      *x, y, z*
+        location of the origin of the shape, stored in unif array
+      *rx, ry, rz*
+        rotation of shape in degrees about each axis
+      *sx, sy, sz*
+        scale in each direction
+      *cx, cy, cz*
+        offset vertices from origin in each direction
     """
     super(Shape, self).__init__()
     self.name = name
@@ -38,59 +43,60 @@ class Shape(Loadable):
       light.lightcol[0], light.lightcol[1], light.lightcol[2],
       light.lightamb[0], light.lightamb[1], light.lightamb[2])
     """ in shader array of vec3 uniform variables:
-    0  location 0-2
-    1  rotation 3-5
-    2  scale 6-8
-    3  offset 9-11
-    4  fog shade 12-14
-    5  fog distance and alph (only first two values used at moment) 15, 16
-    6  camera position  18-20
-    7  animation offets x, y, delta 21-23
-    8  light0 position, direction vector 24-26
-    9  light0 strength per shade 27-29
-    10 light0 ambient values 30-32
-    11 light1 position, direction vector 33-35
-    12 light1 strength per shade 36-38
-    13 light1 ambient values 39-41
-    14 defocus dist, amount 42,43
-    15 defocus frame width, height 45,46
+    
+    * 0  location 0-2
+    * 1  rotation 3-5
+    * 2  scale 6-8
+    * 3  offset 9-11
+    * 4  fog shade 12-14
+    * 5  fog distance and alph (only first two values used at moment) 15, 16
+    * 6  camera position  18-20
+    * 7  animation offets x, y, delta 21-23
+    * 8  light0 position, direction vector 24-26
+    * 9  light0 strength per shade 27-29
+    * 10 light0 ambient values 30-32
+    * 11 light1 position, direction vector 33-35
+    * 12 light1 strength per shade 36-38
+    * 13 light1 ambient values 39-41
+    * 14 defocus dist, amount 42,43
+    * 15 defocus frame width, height 45,46
     """
     """Shape holds matrices which are updated each time it is moved or rotated
     this saves time recalculating them each frame as the Shape is drawn
     """
-    """translate to position - offset"""
     self.tr1 = array([[1.0, 0.0, 0.0, 0.0],
                       [0.0, 1.0, 0.0, 0.0],
                       [0.0, 0.0, 1.0, 0.0],
                       [self.unif[0] - self.unif[9], self.unif[1] - self.unif[10], self.unif[2] - self.unif[11], 1.0]])
-    """rotate about x axis"""
+    """translate to position - offset"""
     s, c = sin(radians(self.unif[3])), cos(radians(self.unif[3]))
     self.rox = array([[1.0, 0.0, 0.0, 0.0],
                       [0.0, c, s, 0.0],
                       [0.0, -s, c, 0.0],
                       [0.0, 0.0, 0.0, 1.0]])
-    """rotate about y axis"""
+    """rotate about x axis"""
     s, c = sin(radians(self.unif[4])), cos(radians(self.unif[4]))
     self.roy = array([[c, 0.0, -s, 0.0],
                       [0.0, 1.0, 0.0, 0.0],
                       [s, 0.0, c, 0.0],
                       [0.0, 0.0, 0.0, 1.0]])
-    """rotate about z axis"""
+    """rotate about y axis"""
     s, c = sin(radians(self.unif[5])), cos(radians(self.unif[5]))
     self.roz = array([[c, s, 0.0, 0.0],
                       [-s, c, 0.0, 0.0],
                       [0.0, 0.0, 1.0, 0.0],
                       [0.0, 0.0, 0.0, 1.0]])
-    """scale"""
+    """rotate about z axis"""
     self.scl = array([[self.unif[6], 0.0, 0.0, 0.0],
                       [0.0, self.unif[7], 0.0, 0.0],
                       [0.0, 0.0, self.unif[8], 0.0],
                       [0.0, 0.0, 0.0, 1.0]])
-    """translate to offset"""
+    """scale"""
     self.tr2 = array([[1.0, 0.0, 0.0, 0.0],
                       [0.0, 1.0, 0.0, 0.0],
                       [0.0, 0.0, 1.0, 0.0],
                       [self.unif[9], self.unif[10], self.unif[11], 1.0]])
+    """translate to offset"""
     self.MFlg = True
     self.M = (ctypes.c_float * 32)(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
                             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -158,16 +164,21 @@ class Shape(Loadable):
     the textures assigned automatically
 
     Arguments:
-    normtex -- normal map Texture to use
+      *normtex*
+        normal map Texture to use
 
     Keyword arguments:
-    ntiles -- multiplier for the tiling of the normal map
-    shinetex -- reflection Texture to use
-    shiny -- 0.0 to 1.0 strength of reflection
-    is_uv -- if True then the normtex will be textures[1] and shinetex will be
-          textures[2] i.e. for using a uv_ type Shader. However for mat_ type
-          Shaders they are moved down one as the basic shade is defined by
-          material rgb rather than from a Texture
+      *ntiles*
+        multiplier for the tiling of the normal map
+      *shinetex*
+        reflection Texture to use
+      *shiny*
+        0.0 to 1.0 strength of reflection
+      *is_uv*
+        if True then the normtex will be textures[1] and shinetex will be
+        textures[2] i.e. for using a 'uv' type Shader. However for 'mat' type
+        Shaders they are moved down one as the basic shade is defined by
+        material rgb rather than from a Texture
     """
     ofst = 0 if is_uv else -1
     for b in self.buf:
@@ -187,9 +198,12 @@ class Shape(Loadable):
   def set_draw_details(self, shader, textures, ntiles = 0.0, shiny = 0.0, 
                       umult=1.0, vmult=1.0):
     """wrapper to call set_draw_details() in each Buffer object
+    
     Arguments:
-    shader -- Shader object
-    textures -- array of Texture objects
+      *shader*
+        Shader object
+      *textures*
+        array of Texture objects
     """
     self.shader = shader
     for b in self.buf:
@@ -197,8 +211,10 @@ class Shape(Loadable):
 
   def set_material(self, mtrl):
     """ wrapper for setting material shade in each Buffer object
+    
     Arguments:
-    mtrl -- tuple (rgb)
+      *mtrl* 
+        tuple (rgb)
     """
     for b in self.buf:
       b.set_material(mtrl)
@@ -206,9 +222,12 @@ class Shape(Loadable):
   def set_fog(self, fogshade, fogdist):
     """Set fog for this Shape only, it uses the shader smoothblend function from
     1/3 fogdist to fogdist.
+    
     Arguments:
-    fogshade -- tuple (rgba)
-    fogdist -- distance from Camera at which Shape is 100% fogshade
+      *fogshade*
+        tuple (rgba)
+      *fogdist*
+        distance from Camera at which Shape is 100% fogshade
     """
     self.unif[12:15] = fogshade[0:3]
     self.unif[15] = fogdist
@@ -216,9 +235,12 @@ class Shape(Loadable):
 
   def set_light(self, light, num=0):
     """Set the values of the lights
+    
     Arguments:
-    light -- Light object to use
-    num -- number of the light to set
+      *light*
+        Light object to use
+      *num*
+        number of the light to set
     """
     #TODO (pg) need MAXLIGHTS global variable, room for two now but shader
     # only uses 1. Also shader doesn't use light colour or ambient colour
@@ -369,15 +391,20 @@ class Shape(Loadable):
     """returns a Buffer object by rotating the points defined in path
 
     Arguments:
-    path -- an array of points [(x0,y0),(x1,y1)..] to rotate around
+      *path*
+        an array of points [(x0,y0),(x1,y1)..] to rotate around
         the y axis
+    
     NB TODO self.sides is not passed as an argument but is required to be
     set by anything calling this method
-    [self.sides -- number of sides to divide each rotation into]
+      *self.sides*
+        number of sides to divide each rotation into
 
     Keyword arguments:
-    rise -- amout to increment the path y values for each rotation (ie helix)
-    loops -- numbe of times to rotate the path by 360 (ie helix)
+      *rise*
+        amout to increment the path y values for each rotation (ie helix)
+      *loops*
+        numbe of times to rotate the path by 360 (ie helix)
     """
     s = len(path)
     rl = int(self.sides * loops)

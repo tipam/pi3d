@@ -34,6 +34,9 @@ def is_display_thread():
     DISPLAY_THREAD is threading.current_thread())
 
 class Display(object):
+  """This is the central control object of the pi3d system and an instance
+  must be created before some of the other class methods are called.
+  """
   def __init__(self, tkwin):
     """Opens up the OpenGL library and prepares a window for display."""
     global DISPLAY
@@ -75,6 +78,7 @@ class Display(object):
     LOGGER.debug('stopped')
 
   def loop_running(self):
+    """This is the preferred way of looping in pi3d"""
     if self.is_running:
       assert not self.internal_loop, "Use only one of loop and loop_running"
       if self.external_loop:
@@ -198,6 +202,8 @@ class Display(object):
 def create(is_3d=True, x=None, y=None, w=0, h=0, near=None, far=None,
            aspect=DEFAULT_ASPECT, depth=DEFAULT_DEPTH, background=None,
            tk=False, window_title='', window_parent=None, mouse=False):
+  """function to create Display instance. TODO add description here
+  """
   if tk:
     from pi3d.util import TkWin
     if not (w and h):

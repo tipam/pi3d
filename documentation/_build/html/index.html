@@ -26,7 +26,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="pi3d 0.8 documentation" href="#" />
-    <link rel="next" title="pi3d Package" href="pi3d.html" /> 
+    <link rel="next" title="Introduction to Pi3D" href="ReadMe.html" /> 
   </head>
   <body>
     <div class="related">
@@ -39,7 +39,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="pi3d.html" title="pi3d Package"
+          <a href="ReadMe.html" title="Introduction to Pi3D"
              accesskey="N">next</a> |</li>
         <li><a href="#">pi3d 0.8 documentation</a> &raquo;</li> 
       </ul>
@@ -55,14 +55,22 @@
 <p>Contents:</p>
 <div class="toctree-wrapper compound">
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="ReadMe.html">Introduction to Pi3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ReadMe.html#demo-s-included-with-pi3d">Demo&#8217;s included with Pi3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ReadMe.html#files-and-folders-in-this-repository">Files and folders in this repository</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ReadMe.html#setup-on-the-raspberry-pi">Setup on the Raspberry Pi</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ReadMe.html#documentation">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ReadMe.html#acknowledgements">Acknowledgements</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pi3d.html">pi3d Package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="pi3d.html#id1"><tt class="docutils literal"><span class="pre">pi3d</span></tt> Package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pi3d.html#module-pi3d.Buffer"><tt class="docutils literal"><span class="pre">Buffer</span></tt> Module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pi3d.html#module-pi3d.Camera"><tt class="docutils literal"><span class="pre">Camera</span></tt> Module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pi3d.html#module-pi3d.Display"><tt class="docutils literal"><span class="pre">Display</span></tt> Module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pi3d.html#module-pi3d.Keyboard"><tt class="docutils literal"><span class="pre">Keyboard</span></tt> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pi3d.html#module-pi3d.Light"><tt class="docutils literal"><span class="pre">Light</span></tt> Module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pi3d.html#module-pi3d.Mouse"><tt class="docutils literal"><span class="pre">Mouse</span></tt> Module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pi3d.html#module-pi3d.Shader"><tt class="docutils literal"><span class="pre">Shader</span></tt> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pi3d.html#module-pi3d.Shape"><tt class="docutils literal"><span class="pre">Shape</span></tt> Module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pi3d.html#module-pi3d.Texture"><tt class="docutils literal"><span class="pre">Texture</span></tt> Module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pi3d.html#subpackages">Subpackages</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="pi3d.constants.html">constants Package</a><ul>
@@ -72,10 +80,6 @@
 <li class="toctree-l4"><a class="reference internal" href="pi3d.constants.html#module-pi3d.constants.gl2"><tt class="docutils literal"><span class="pre">gl2</span></tt> Module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pi3d.constants.html#module-pi3d.constants.gl2ext"><tt class="docutils literal"><span class="pre">gl2ext</span></tt> Module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pi3d.constants.html#module-pi3d.constants.glext"><tt class="docutils literal"><span class="pre">glext</span></tt> Module</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="pi3d.context.html">context Package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="pi3d.context.html#module-pi3d.context.Light"><tt class="docutils literal"><span class="pre">Light</span></tt> Module</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="pi3d.events.html">events Package</a><ul>
@@ -93,7 +97,6 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="pi3d.shape.html">shape Package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="pi3d.shape.html#module-pi3d.shape.Building"><tt class="docutils literal"><span class="pre">Building</span></tt> Module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pi3d.shape.html#module-pi3d.shape.Camera"><tt class="docutils literal"><span class="pre">Camera</span></tt> Module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pi3d.shape.html#module-pi3d.shape.Cone"><tt class="docutils literal"><span class="pre">Cone</span></tt> Module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pi3d.shape.html#module-pi3d.shape.Cuboid"><tt class="docutils literal"><span class="pre">Cuboid</span></tt> Module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pi3d.shape.html#module-pi3d.shape.Cylinder"><tt class="docutils literal"><span class="pre">Cylinder</span></tt> Module</a></li>
@@ -106,7 +109,6 @@
 <li class="toctree-l4"><a class="reference internal" href="pi3d.shape.html#module-pi3d.shape.MergeShape"><tt class="docutils literal"><span class="pre">MergeShape</span></tt> Module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pi3d.shape.html#module-pi3d.shape.Model"><tt class="docutils literal"><span class="pre">Model</span></tt> Module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pi3d.shape.html#module-pi3d.shape.Plane"><tt class="docutils literal"><span class="pre">Plane</span></tt> Module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pi3d.shape.html#module-pi3d.shape.Shape"><tt class="docutils literal"><span class="pre">Shape</span></tt> Module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pi3d.shape.html#module-pi3d.shape.Sphere"><tt class="docutils literal"><span class="pre">Sphere</span></tt> Module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pi3d.shape.html#module-pi3d.shape.Sprite"><tt class="docutils literal"><span class="pre">Sprite</span></tt> Module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pi3d.shape.html#module-pi3d.shape.TCone"><tt class="docutils literal"><span class="pre">TCone</span></tt> Module</a></li>
@@ -125,7 +127,6 @@
 <li class="toctree-l4"><a class="reference internal" href="pi3d.util.html#module-pi3d.util.DisplayOpenGL"><tt class="docutils literal"><span class="pre">DisplayOpenGL</span></tt> Module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pi3d.util.html#module-pi3d.util.Font"><tt class="docutils literal"><span class="pre">Font</span></tt> Module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pi3d.util.html#module-pi3d.util.Loadable"><tt class="docutils literal"><span class="pre">Loadable</span></tt> Module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pi3d.util.html#module-pi3d.util.Matrix"><tt class="docutils literal"><span class="pre">Matrix</span></tt> Module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pi3d.util.html#module-pi3d.util.RotateVec"><tt class="docutils literal"><span class="pre">RotateVec</span></tt> Module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pi3d.util.html#module-pi3d.util.Screenshot"><tt class="docutils literal"><span class="pre">Screenshot</span></tt> Module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pi3d.util.html#module-pi3d.util.String"><tt class="docutils literal"><span class="pre">String</span></tt> Module</a></li>
@@ -165,8 +166,8 @@
 </ul>
 
   <h4>Next topic</h4>
-  <p class="topless"><a href="pi3d.html"
-                        title="next chapter">pi3d Package</a></p>
+  <p class="topless"><a href="ReadMe.html"
+                        title="next chapter">Introduction to Pi3D</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/index.txt"
@@ -199,7 +200,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="pi3d.html" title="pi3d Package"
+          <a href="ReadMe.html" title="Introduction to Pi3D"
              >next</a> |</li>
         <li><a href="#">pi3d 0.8 documentation</a> &raquo;</li> 
       </ul>

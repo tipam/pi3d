@@ -8,6 +8,7 @@ from echomesh.util import Log
 LOGGER = Log.logger(__name__)
 
 class _Mouse(threading.Thread):
+  """holds Mouse object, see also (the preferred) events methods"""
   BUTTON_1 = 1 << 1
   BUTTON_2 = 1 << 2
   BUTTONS = BUTTON_1 & BUTTON_2
@@ -17,6 +18,17 @@ class _Mouse(threading.Thread):
   INSTANCE = None
 
   def __init__(self, mouse='mice', restrict=True, width=1920, height=1200):
+    """
+    Arguments:
+      *mouse*
+        /dev/input/ device name
+      *restrict*
+        stops or allows the mouse x and y values to carry on going beyond:
+      *width*
+        mouse x limit
+      *height*
+        mouse y limit
+    """
     super(_Mouse, self).__init__()
     self.fd = open('/dev/input/' + mouse, 'r')
     self.running = False

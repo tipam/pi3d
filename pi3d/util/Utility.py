@@ -157,15 +157,20 @@ def angleVecs(x1,y1,x2,y2,x3,y3):
     if dist>0.0: return PI2-angle
     else: return angle
 
-#Level Of Detail checking and rendering. NB this will only work if the shader and texture information has been set for all the buf object in the model
 def lodDraw(here, there, mlist):
-  """
-  no return value
-  parameters:
-  here -- (x,y,z) tuple or array of view point
-  there --- (x,y,z) tuple or array of model position
-  mlist -- array of arrays with distance and model pairs. i.e. [[20, model1],[100, model2],[250, None]]
-      Model is used up to that distance until the last entry then for all distances beyond, None can be used to draw nothing
+  """Level Of Detail checking and rendering. NB this will only work if the shader
+  and texture information has been set for all the buf object in the model.
+  No return value
+  
+  Arguments:
+    *here*
+      (x,y,z) tuple or array of view point
+    *there*
+      (x,y,z) tuple or array of model position
+    *mlist*
+      array of arrays with distance and model pairs. i.e. [[20, model1],[100, model2],[250, None]]
+      Model is used up to that distance until the last entry then for all distances beyond, 
+      'None' can be used to draw nothing at a certain distance
   """
   dist = distance(here, there)
   for model in mlist:

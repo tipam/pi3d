@@ -25,7 +25,7 @@ from pi3d.shape.Building import Building, corridor, SolidObject, Size, Position
 
 from pi3d.util.Screenshot import screenshot
 
-from pi3d.context.Light import Light
+from pi3d.Light import Light
 
 from pi3d.events.events import InputEvents, nameOf, codeOf
 

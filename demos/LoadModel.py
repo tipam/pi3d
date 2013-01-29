@@ -13,10 +13,9 @@ from pi3d.Keyboard import Keyboard
 from pi3d.Texture import Texture
 
 from pi3d.Shader import Shader
-from pi3d.context.Light import Light
+from pi3d.Light import Light
 
 from pi3d.shape.Model import Model
-from pi3d.util.Matrix import Matrix
 from pi3d.util.Screenshot import screenshot
 
 # Setup display and initialise pi3d

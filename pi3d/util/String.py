@@ -1,7 +1,7 @@
 from pi3d import *
 
 from pi3d.Buffer import Buffer
-from pi3d.shape.Shape import Shape
+from pi3d.Shape import Shape
 from pi3d.util import Utility
 
 DOTS_PER_INCH = 72.0

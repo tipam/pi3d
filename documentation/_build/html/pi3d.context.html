@@ -25,10 +25,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="pi3d 0.8 documentation" href="index.html" />
-    <link rel="up" title="pi3d Package" href="pi3d.html" />
-    <link rel="next" title="events Package" href="pi3d.events.html" />
-    <link rel="prev" title="constants Package" href="pi3d.constants.html" /> 
+    <link rel="top" title="pi3d 0.8 documentation" href="index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -40,14 +37,7 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="pi3d.events.html" title="events Package"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="pi3d.constants.html" title="constants Package"
-             accesskey="P">previous</a> |</li>
-        <li><a href="index.html">pi3d 0.8 documentation</a> &raquo;</li>
-          <li><a href="pi3d.html" accesskey="U">pi3d Package</a> &raquo;</li> 
+        <li><a href="index.html">pi3d 0.8 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -58,39 +48,8 @@
             
   <div class="section" id="context-package">
 <h1>context Package<a class="headerlink" href="#context-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-pi3d.context.Light">
-<span id="light-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">Light</span></tt> Module<a class="headerlink" href="#module-pi3d.context.Light" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="pi3d.context.Light.Light">
-<em class="property">class </em><tt class="descclassname">pi3d.context.Light.</tt><tt class="descname">Light</tt><big>(</big><em>lightpos=(10</em>, <em>-10</em>, <em>20)</em>, <em>lightcol=(1.0</em>, <em>1.0</em>, <em>1.0)</em>, <em>lightamb=(0.10000000000000001</em>, <em>0.10000000000000001</em>, <em>0.20000000000000001)</em><big>)</big><a class="reference internal" href="_modules/pi3d/context/Light.html#Light"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.context.Light.Light" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">echomesh.util.DefaultInstance.DefaultInstance</span></tt></p>
-<p>Holds information about lighting to be used in shaders</p>
-<p>set light values. These are set in Shape.unif as part of the Shape
-constructor. They can be changed using Shape.set_light()
-The pixel shade is calculated by componet multiplying lightcol by the
-texture by the dot product of direction and -normal + component multiplying
-lightamb by the texture</p>
-<p>Arguments:
-lightpos &#8211; tuple (x,y,z) vector direction <em>from</em> the light
-lightcol &#8211; tuple (r,g,b) defines shade and brightness
-lightamb &#8211; tuple (r,g,b) ambient lighting multiplier</p>
-<dl class="method">
-<dt id="pi3d.context.Light.Light.position">
-<tt class="descname">position</tt><big>(</big><em>lightpos</em><big>)</big><a class="reference internal" href="_modules/pi3d/context/Light.html#Light.position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.context.Light.Light.position" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pi3d.context.Light.Light.color">
-<tt class="descname">color</tt><big>(</big><em>lightcol</em><big>)</big><a class="reference internal" href="_modules/pi3d/context/Light.html#Light.color"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.context.Light.Light.color" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pi3d.context.Light.Light.ambient">
-<tt class="descname">ambient</tt><big>(</big><em>lightamb</em><big>)</big><a class="reference internal" href="_modules/pi3d/context/Light.html#Light.ambient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.context.Light.Light.ambient" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
+<div class="section" id="light-module">
+<h2><tt class="xref py py-mod docutils literal"><span class="pre">Light</span></tt> Module<a class="headerlink" href="#light-module" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -103,17 +62,11 @@ lightamb &#8211; tuple (r,g,b) ambient lighting multiplier</p>
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">context Package</a><ul>
-<li><a class="reference internal" href="#module-pi3d.context.Light"><tt class="docutils literal"><span class="pre">Light</span></tt> Module</a></li>
+<li><a class="reference internal" href="#light-module"><tt class="docutils literal"><span class="pre">Light</span></tt> Module</a></li>
 </ul>
 </li>
 </ul>
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="pi3d.constants.html"
-                        title="previous chapter">constants Package</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="pi3d.events.html"
-                        title="next chapter">events Package</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/pi3d.context.txt"
@@ -145,14 +98,7 @@ lightamb &#8211; tuple (r,g,b) ambient lighting multiplier</p>
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="pi3d.events.html" title="events Package"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="pi3d.constants.html" title="constants Package"
-             >previous</a> |</li>
-        <li><a href="index.html">pi3d 0.8 documentation</a> &raquo;</li>
-          <li><a href="pi3d.html" >pi3d Package</a> &raquo;</li> 
+        <li><a href="index.html">pi3d 0.8 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

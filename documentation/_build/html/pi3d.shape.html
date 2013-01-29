@@ -58,6 +58,9 @@
             
   <div class="section" id="shape-package">
 <h1>shape Package<a class="headerlink" href="#shape-package" title="Permalink to this headline">¶</a></h1>
+<p>A range of standard shapes of varying complexity. These all inherit from the pi3d.Shape
+class and create an array of Buffer objects (generally containing just one!) that
+hold the vertex information for drawing each of them.</p>
 <div class="section" id="module-pi3d.shape.Building">
 <span id="building-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">Building</span></tt> Module<a class="headerlink" href="#module-pi3d.shape.Building" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
@@ -96,12 +99,10 @@ size is a position, whereas a position minus a position is a size.</p>
 <dt id="pi3d.shape.Building.ObjectCuboid">
 <em class="property">class </em><tt class="descclassname">pi3d.shape.Building.</tt><tt class="descname">ObjectCuboid</tt><big>(</big><em>name</em>, <em>s</em>, <em>p</em>, <em>bulk</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Building.html#ObjectCuboid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Building.ObjectCuboid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
-<dl class="docutils">
-<dt>An ObjectCuboid has a size and position (of its centre) and a bulk.</dt>
-<dd>The size is its extent beyond the centre on the three axes, the position is the position of its centre.
-Note that this is different from the size of an ObjectCuboid. The bulk</dd>
-</dl>
-<p>is an aura around it that the auras of other objects can not enter. The bulk can be zero.</p>
+<p>An ObjectCuboid has a size and position (of its centre) and a bulk.
+The size is its extent beyond the centre on the three axes, the position is the position of its centre.
+Note that this is different from the size of an ObjectCuboid. The bulk
+is an aura around it that the auras of other objects can not enter. The bulk can be zero.</p>
 <p>Constructor</p>
 <dl class="method">
 <dt id="pi3d.shape.Building.ObjectCuboid.x">
@@ -238,12 +239,12 @@ Each cell is width on the x axis and depth on the z axis, and the walls are heig
 <p>The function returns a merged shape with the entire building in it.</p>
 <dl class="attribute">
 <dt id="pi3d.shape.Building.Building.baseScheme">
-<tt class="descname">baseScheme</tt><em class="property"> = {(0, None): [['R', 0]], '#models': 1, (0, 0, 'edge'): [['W', 0], ['CE', 0]], (1, 0, 'edge'): [['W', 0], ['CE', 0]], (1, 0): [['W', 0], ['CE', 0]], (1, None): [['R', 0], ['C', 0]]}</em><a class="headerlink" href="#pi3d.shape.Building.Building.baseScheme" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">baseScheme</tt><em class="property"> = {'#models': 1, (0, 0, 'edge'): [['W', 0], ['CE', 0]], (1, 0, 'edge'): [['W', 0], ['CE', 0]], (0, None): [['R', 0]], (1, None): [['R', 0], ['C', 0]], (1, 0): [['W', 0], ['CE', 0]]}</em><a class="headerlink" href="#pi3d.shape.Building.Building.baseScheme" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="pi3d.shape.Building.Building.openSectionScheme">
-<tt class="descname">openSectionScheme</tt><em class="property"> = {(1, 2): [['CE', 0]], (2, None): [['C', 0], ['R', 0]], (0, None): [['R', 0]], (2, 0, 'edge'): [['W', 0], ['CE', 0]], (1, 0, 'edge'): [['W', 0], ['CE', 0]], (1, 0): [['W', 0], ['CE', 0]], (2, 0): [['W', 0]], '#models': 1, (2, 2, 'edge'): [['CE', 0]], (0, 0, 'edge'): [['W', 0], ['CE', 0]]}</em><a class="headerlink" href="#pi3d.shape.Building.Building.openSectionScheme" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">openSectionScheme</tt><em class="property"> = {(1, 2): [['CE', 0]], (1, 0, 'edge'): [['W', 0], ['CE', 0]], (2, 0, 'edge'): [['W', 0], ['CE', 0]], (0, None): [['R', 0]], (2, 0): [['W', 0]], (1, 0): [['W', 0], ['CE', 0]], '#models': 1, (2, 2, 'edge'): [['CE', 0]], (0, 0, 'edge'): [['W', 0], ['CE', 0]], (2, None): [['C', 0], ['R', 0]]}</em><a class="headerlink" href="#pi3d.shape.Building.Building.openSectionScheme" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -381,31 +382,12 @@ The cell is centred at (x,y,z). The cell is &#8220;width&#8221; along the z axis
 </dd></dl>
 
 </div>
-<div class="section" id="module-pi3d.shape.Camera">
-<span id="camera-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">Camera</span></tt> Module<a class="headerlink" href="#module-pi3d.shape.Camera" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="pi3d.shape.Camera.Camera">
-<em class="property">class </em><tt class="descclassname">pi3d.shape.Camera.</tt><tt class="descname">Camera</tt><big>(</big><em>name=''</em>, <em>x=0.0</em>, <em>y=0.0</em>, <em>z=0.0</em>, <em>rx=0.0</em>, <em>ry=0.0</em>, <em>rz=0.0</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Camera.html#Camera"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Camera.Camera" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pi3d.shape.Shape.Shape" title="pi3d.shape.Shape.Shape"><tt class="xref py py-class docutils literal"><span class="pre">pi3d.shape.Shape.Shape</span></tt></a></p>
-<dl class="method">
-<dt id="pi3d.shape.Camera.Camera.orthographic">
-<tt class="descname">orthographic</tt><big>(</big><em>left</em>, <em>right</em>, <em>bottom</em>, <em>top</em>, <em>zoom=1</em>, <em>near=-1</em>, <em>far=10</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Camera.html#Camera.orthographic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Camera.Camera.orthographic" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pi3d.shape.Camera.Camera.perspective">
-<tt class="descname">perspective</tt><big>(</big><em>w</em>, <em>h</em>, <em>zoom</em>, <em>near=1</em>, <em>far=500</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Camera.html#Camera.perspective"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Camera.Camera.perspective" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</div>
 <div class="section" id="module-pi3d.shape.Cone">
 <span id="cone-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">Cone</span></tt> Module<a class="headerlink" href="#module-pi3d.shape.Cone" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="pi3d.shape.Cone.Cone">
 <em class="property">class </em><tt class="descclassname">pi3d.shape.Cone.</tt><tt class="descname">Cone</tt><big>(</big><em>camera=None</em>, <em>light=None</em>, <em>radius=1.0</em>, <em>height=2.0</em>, <em>sides=12</em>, <em>name=''</em>, <em>x=0.0</em>, <em>y=0.0</em>, <em>z=0.0</em>, <em>rx=0.0</em>, <em>ry=0.0</em>, <em>rz=0.0</em>, <em>sx=1.0</em>, <em>sy=1.0</em>, <em>sz=1.0</em>, <em>cx=0.0</em>, <em>cy=0.0</em>, <em>cz=0.0</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Cone.html#Cone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Cone.Cone" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pi3d.shape.Shape.Shape" title="pi3d.shape.Shape.Shape"><tt class="xref py py-class docutils literal"><span class="pre">pi3d.shape.Shape.Shape</span></tt></a></p>
+<dd><p>Bases: <a class="reference internal" href="pi3d.html#pi3d.Shape.Shape" title="pi3d.Shape.Shape"><tt class="xref py py-class docutils literal"><span class="pre">pi3d.Shape.Shape</span></tt></a></p>
 <p>3d model inherits from Shape</p>
 <p>uses standard constructor for Shape extra Keyword arguments:
 radius &#8211; radius at bottom
@@ -419,7 +401,7 @@ sides &#8211; number of sides</p>
 <dl class="class">
 <dt id="pi3d.shape.Cuboid.Cuboid">
 <em class="property">class </em><tt class="descclassname">pi3d.shape.Cuboid.</tt><tt class="descname">Cuboid</tt><big>(</big><em>camera=None</em>, <em>light=None</em>, <em>w=1.0</em>, <em>h=1.0</em>, <em>d=1.0</em>, <em>name=''</em>, <em>x=0.0</em>, <em>y=0.0</em>, <em>z=0.0</em>, <em>rx=0.0</em>, <em>ry=0.0</em>, <em>rz=0.0</em>, <em>cx=0.0</em>, <em>cy=0.0</em>, <em>cz=0.0</em>, <em>tw=1.0</em>, <em>th=1.0</em>, <em>td=1.0</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Cuboid.html#Cuboid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Cuboid.Cuboid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pi3d.shape.Shape.Shape" title="pi3d.shape.Shape.Shape"><tt class="xref py py-class docutils literal"><span class="pre">pi3d.shape.Shape.Shape</span></tt></a></p>
+<dd><p>Bases: <a class="reference internal" href="pi3d.html#pi3d.Shape.Shape" title="pi3d.Shape.Shape"><tt class="xref py py-class docutils literal"><span class="pre">pi3d.Shape.Shape</span></tt></a></p>
 <p>3d model inherits from Shape</p>
 <p>uses standard constructor for Shape extra Keyword arguments:
 w &#8211; width
@@ -439,7 +421,7 @@ proportional to the relative dimension</p>
 <dl class="class">
 <dt id="pi3d.shape.Cylinder.Cylinder">
 <em class="property">class </em><tt class="descclassname">pi3d.shape.Cylinder.</tt><tt class="descname">Cylinder</tt><big>(</big><em>camera=None</em>, <em>light=None</em>, <em>radius=1.0</em>, <em>height=2.0</em>, <em>sides=12</em>, <em>name=''</em>, <em>x=0.0</em>, <em>y=0.0</em>, <em>z=0.0</em>, <em>rx=0.0</em>, <em>ry=0.0</em>, <em>rz=0.0</em>, <em>sx=1.0</em>, <em>sy=1.0</em>, <em>sz=1.0</em>, <em>cx=0.0</em>, <em>cy=0.0</em>, <em>cz=0.0</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Cylinder.html#Cylinder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Cylinder.Cylinder" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pi3d.shape.Shape.Shape" title="pi3d.shape.Shape.Shape"><tt class="xref py py-class docutils literal"><span class="pre">pi3d.shape.Shape.Shape</span></tt></a></p>
+<dd><p>Bases: <a class="reference internal" href="pi3d.html#pi3d.Shape.Shape" title="pi3d.Shape.Shape"><tt class="xref py py-class docutils literal"><span class="pre">pi3d.Shape.Shape</span></tt></a></p>
 <p>3d model inherits from Shape</p>
 <p>uses standard constructor for Shape extra Keyword arguments:
 sides &#8211; number of edges for the end polygons</p>
@@ -451,7 +433,7 @@ sides &#8211; number of edges for the end polygons</p>
 <dl class="class">
 <dt id="pi3d.shape.Disk.Disk">
 <em class="property">class </em><tt class="descclassname">pi3d.shape.Disk.</tt><tt class="descname">Disk</tt><big>(</big><em>camera=None</em>, <em>light=None</em>, <em>radius=1</em>, <em>sides=12</em>, <em>name=''</em>, <em>x=0.0</em>, <em>y=0.0</em>, <em>z=0.0</em>, <em>rx=0.0</em>, <em>ry=0.0</em>, <em>rz=0.0</em>, <em>sx=1.0</em>, <em>sy=1.0</em>, <em>sz=1.0</em>, <em>cx=0.0</em>, <em>cy=0.0</em>, <em>cz=0.0</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Disk.html#Disk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Disk.Disk" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pi3d.shape.Shape.Shape" title="pi3d.shape.Shape.Shape"><tt class="xref py py-class docutils literal"><span class="pre">pi3d.shape.Shape.Shape</span></tt></a></p>
+<dd><p>Bases: <a class="reference internal" href="pi3d.html#pi3d.Shape.Shape" title="pi3d.Shape.Shape"><tt class="xref py py-class docutils literal"><span class="pre">pi3d.Shape.Shape</span></tt></a></p>
 <p>3d model inherits from Shape</p>
 <p>uses standard constructor for Shape extra Keyword arguments:
 radius &#8211; radius of disk
@@ -464,20 +446,22 @@ sides &#8211; number of sides to polygon representing disk</p>
 <dl class="class">
 <dt id="pi3d.shape.ElevationMap.ElevationMap">
 <em class="property">class </em><tt class="descclassname">pi3d.shape.ElevationMap.</tt><tt class="descname">ElevationMap</tt><big>(</big><em>mapfile</em>, <em>camera=None</em>, <em>light=None</em>, <em>width=100.0</em>, <em>depth=100.0</em>, <em>height=10.0</em>, <em>divx=0</em>, <em>divy=0</em>, <em>ntiles=1.0</em>, <em>name=''</em>, <em>x=0.0</em>, <em>y=0.0</em>, <em>z=0.0</em>, <em>rx=0.0</em>, <em>ry=0.0</em>, <em>rz=0.0</em>, <em>sx=1.0</em>, <em>sy=1.0</em>, <em>sz=1.0</em>, <em>cx=0.0</em>, <em>cy=0.0</em>, <em>cz=0.0</em>, <em>smooth=True</em>, <em>cubic=False</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/ElevationMap.html#ElevationMap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.ElevationMap.ElevationMap" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pi3d.shape.Shape.Shape" title="pi3d.shape.Shape.Shape"><tt class="xref py py-class docutils literal"><span class="pre">pi3d.shape.Shape.Shape</span></tt></a></p>
+<dd><p>Bases: <a class="reference internal" href="pi3d.html#pi3d.Shape.Shape" title="pi3d.Shape.Shape"><tt class="xref py py-class docutils literal"><span class="pre">pi3d.Shape.Shape</span></tt></a></p>
 <p>3d model inherits from Shape</p>
-<p>uses standard constructor for Shape
-Arguments:
-mapfile &#8211; greyscale image path/file, string
-Keyword arguments:
-width, depth, height &#8211; of the map in world units
-divx, divy &#8211; number of divisions into which the map will be divided</p>
-<blockquote>
-<div>to create vertices</div></blockquote>
-<p>ntiles &#8211; number of repeats for tiling the texture image
-smooth &#8211; calculate normals with averaging rather than pointing</p>
-<blockquote>
-<div>straight up, slightly faster if false</div></blockquote>
+<p>uses standard constructor for Shape</p>
+<p>Arguments:</p>
+<ul class="simple">
+<li>mapfile &#8211; greyscale image path/file, string</li>
+</ul>
+<p>Keyword arguments:</p>
+<ul class="simple">
+<li>width, depth, height &#8211; of the map in world units</li>
+<li>divx, divy &#8211; number of divisions into which the map will be divided
+to create vertices</li>
+<li>ntiles &#8211; number of repeats for tiling the texture image</li>
+<li>smooth &#8211; calculate normals with averaging rather than pointing
+straight up, slightly faster if false</li>
+</ul>
 <dl class="method">
 <dt id="pi3d.shape.ElevationMap.ElevationMap.dropOn">
 <tt class="descname">dropOn</tt><big>(</big><em>px</em>, <em>pz</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/ElevationMap.html#ElevationMap.dropOn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.ElevationMap.ElevationMap.dropOn" title="Permalink to this definition">¶</a></dt>
@@ -488,22 +472,28 @@ smooth &#8211; calculate normals with averaging rather than pointing</p>
 <dl class="method">
 <dt id="pi3d.shape.ElevationMap.ElevationMap.calcHeight">
 <tt class="descname">calcHeight</tt><big>(</big><em>px</em>, <em>pz</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/ElevationMap.html#ElevationMap.calcHeight"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.ElevationMap.ElevationMap.calcHeight" title="Permalink to this definition">¶</a></dt>
-<dd><p>accurately return the hight of the map at the point specified
-Arguments:
-px, pz &#8211; location of the point in world coordinates to calculate height</p>
+<dd><p>accurately return the hight of the map at the point specified</p>
+<p>Arguments:</p>
+<ul class="simple">
+<li>px, pz &#8211; location of the point in world coordinates to calculate height</li>
+</ul>
 </dd></dl>
 
 <dl class="method">
 <dt id="pi3d.shape.ElevationMap.ElevationMap.clashTest">
 <tt class="descname">clashTest</tt><big>(</big><em>px</em>, <em>py</em>, <em>pz</em>, <em>rad</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/ElevationMap.html#ElevationMap.clashTest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.ElevationMap.ElevationMap.clashTest" title="Permalink to this definition">¶</a></dt>
 <dd><p>Works out if an object at a given location and radius will overlap
-with the map surface. Returns four values:
-boolean whether there is a clash
-x, y, z components of the normal vector
-the amount of overlap at the x,z location</p>
-<p>Arguments:
-px, py, pz &#8211; location of object to test in world coordinates
-rad &#8211; radius of object to test</p>
+with the map surface. Returns four values:</p>
+<ul class="simple">
+<li>boolean whether there is a clash</li>
+<li>x, y, z components of the normal vector</li>
+<li>the amount of overlap at the x,z location</li>
+</ul>
+<p>Arguments:</p>
+<ul class="simple">
+<li>px, py, pz &#8211; location of object to test in world coordinates</li>
+<li>rad &#8211; radius of object to test</li>
+</ul>
 </dd></dl>
 
 <dl class="method">
@@ -512,9 +502,11 @@ rad &#8211; radius of object to test</p>
 <dd><p>works out the pitch (rx) and roll (rz) to apply to an object
 on the surface of the map at this point
 returns a tuple (pitch, roll) in degrees</p>
-<p>Arguments:
-px &#8211; x location
-pz &#8211; z location</p>
+<p>Arguments:</p>
+<ul class="simple">
+<li>px &#8211; x location</li>
+<li>pz &#8211; z location</li>
+</ul>
 </dd></dl>
 
 </dd></dl>
@@ -525,9 +517,11 @@ pz &#8211; z location</p>
 <dd><p>calculates the y intersection of a point on a triangle and returns the y
 value of the intersection of the line defined by x,z of pos through the
 triange defined by v1,v2,v3</p>
-<p>Arguments:
-v1,v2,v3 &#8211; tuples (x1,y1,z1), (x2,y2,z2).. defining the corners of the triangle
-pos &#8211; tuple (x,y,z) defining the x,z of the vertical line intersecting triangle</p>
+<p>Arguments:</p>
+<ul class="simple">
+<li>v1,v2,v3 &#8211; tuples (x1,y1,z1), (x2,y2,z2).. defining the corners of the triangle</li>
+<li>pos &#8211; tuple (x,y,z) defining the x,z of the vertical line intersecting triangle</li>
+</ul>
 </dd></dl>
 
 </div>
@@ -537,27 +531,29 @@ pos &#8211; tuple (x,y,z) defining the x,z of the vertical line intersecting tri
 <dt id="pi3d.shape.EnvironmentCube.loadECfiles">
 <tt class="descclassname">pi3d.shape.EnvironmentCube.</tt><tt class="descname">loadECfiles</tt><big>(</big><em>path</em>, <em>fname</em>, <em>suffix='jpg'</em>, <em>nobottom=False</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/EnvironmentCube.html#loadECfiles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.EnvironmentCube.loadECfiles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper for loading environment cube faces.
-#TODO this will scramble all the rest of the cube. It needs to substitute a blank (black) texture instead!
-Arguments:
-path &#8211; to the image files relative to the top directory
-fname &#8211; the stem of the file name without the _top, _bottom, _right etc
-Keyword arguments:
-suffix &#8211; string to add after the &#8216;_top&#8217;,&#8217;_bottom&#8217; has been added to the stem
-nobottom &#8211; if True then only load five parts into array the bottom will be</p>
-<blockquote>
-<div>drawn with the previous image i.e. top</div></blockquote>
+#TODO this will scramble all the rest of the cube. It needs to substitute a blank (black) texture instead!</p>
+<p>Arguments:</p>
+<ul class="simple">
+<li>path &#8211; to the image files relative to the top directory</li>
+<li>fname &#8211; the stem of the file name without the _top, _bottom, _right etc</li>
+<li>Keyword arguments:</li>
+<li>suffix &#8211; string to add after the &#8216;_top&#8217;,&#8217;_bottom&#8217; has been added to the stem</li>
+<li>nobottom &#8211; if True then only load five parts into array the bottom will be
+drawn with the previous image i.e. top</li>
+</ul>
 </dd></dl>
 
 <dl class="class">
 <dt id="pi3d.shape.EnvironmentCube.EnvironmentCube">
 <em class="property">class </em><tt class="descclassname">pi3d.shape.EnvironmentCube.</tt><tt class="descname">EnvironmentCube</tt><big>(</big><em>camera=None</em>, <em>light=None</em>, <em>size=500.0</em>, <em>maptype='HALFCROSS'</em>, <em>name=''</em>, <em>x=0.0</em>, <em>y=0.0</em>, <em>z=0.0</em>, <em>rx=0.0</em>, <em>ry=0.0</em>, <em>rz=0.0</em>, <em>cx=0.0</em>, <em>cy=0.0</em>, <em>cz=0.0</em>, <em>nobottom=False</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/EnvironmentCube.html#EnvironmentCube"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.EnvironmentCube.EnvironmentCube" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pi3d.shape.Shape.Shape" title="pi3d.shape.Shape.Shape"><tt class="xref py py-class docutils literal"><span class="pre">pi3d.shape.Shape.Shape</span></tt></a></p>
+<dd><p>Bases: <a class="reference internal" href="pi3d.html#pi3d.Shape.Shape" title="pi3d.Shape.Shape"><tt class="xref py py-class docutils literal"><span class="pre">pi3d.Shape.Shape</span></tt></a></p>
 <p>3d model inherits from Shape</p>
-<p>uses standard constructor for Shape extra Keyword arguments:
-size &#8211; dimensions of the cube
-maptype &#8211; HALFCROSS (default) or CROSS any other defaults to CUBE type</p>
-<blockquote>
-<div>and will require 6 (or 5 with nobottom) image files to render it</div></blockquote>
+<p>uses standard constructor for Shape extra Keyword arguments:</p>
+<ul class="simple">
+<li>size &#8211; dimensions of the cube</li>
+<li>maptype &#8211; HALFCROSS (default) or CROSS any other defaults to CUBE type
+and will require 6 (or 5 with nobottom) image files to render it</li>
+</ul>
 <dl class="method">
 <dt id="pi3d.shape.EnvironmentCube.EnvironmentCube.set_draw_details">
 <tt class="descname">set_draw_details</tt><big>(</big><em>shader</em>, <em>textures</em>, <em>ntiles=0.0</em>, <em>shiny=0.0</em>, <em>umult=1.0</em>, <em>vmult=1.0</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/EnvironmentCube.html#EnvironmentCube.set_draw_details"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.EnvironmentCube.EnvironmentCube.set_draw_details" title="Permalink to this definition">¶</a></dt>
@@ -572,7 +568,7 @@ maptype &#8211; HALFCROSS (default) or CROSS any other defaults to CUBE type</p>
 <dl class="class">
 <dt id="pi3d.shape.Extrude.Extrude">
 <em class="property">class </em><tt class="descclassname">pi3d.shape.Extrude.</tt><tt class="descname">Extrude</tt><big>(</big><em>camera=None</em>, <em>light=None</em>, <em>path=</em><span class="optional">[</span><span class="optional">]</span>, <em>height=1.0</em>, <em>name=''</em>, <em>x=0.0</em>, <em>y=0.0</em>, <em>z=0.0</em>, <em>rx=0.0</em>, <em>ry=0.0</em>, <em>rz=0.0</em>, <em>sx=1.0</em>, <em>sy=1.0</em>, <em>sz=1.0</em>, <em>cx=0.0</em>, <em>cy=0.0</em>, <em>cz=0.0</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Extrude.html#Extrude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Extrude.Extrude" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pi3d.shape.Shape.Shape" title="pi3d.shape.Shape.Shape"><tt class="xref py py-class docutils literal"><span class="pre">pi3d.shape.Shape.Shape</span></tt></a></p>
+<dd><p>Bases: <a class="reference internal" href="pi3d.html#pi3d.Shape.Shape" title="pi3d.Shape.Shape"><tt class="xref py py-class docutils literal"><span class="pre">pi3d.Shape.Shape</span></tt></a></p>
 <p>3d model inherits from Shape
 NB this shape has an array of three Buffers representing each end face
 and the sides of the prism. Each can be textured seperately for drawing.</p>
@@ -586,8 +582,8 @@ height &#8211; distance between end faces in the y direction</p>
 <span id="helix-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">Helix</span></tt> Module<a class="headerlink" href="#module-pi3d.shape.Helix" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="pi3d.shape.Helix.Helix">
-<em class="property">class </em><tt class="descclassname">pi3d.shape.Helix.</tt><tt class="descname">Helix</tt><big>(</big><em>camera=None</em>, <em>light=None</em>, <em>radius=1.0</em>, <em>thickness=0.20000000000000001</em>, <em>ringrots=6</em>, <em>sides=12</em>, <em>rise=1.0</em>, <em>loops=2.0</em>, <em>name=''</em>, <em>x=0.0</em>, <em>y=0.0</em>, <em>z=0.0</em>, <em>rx=0.0</em>, <em>ry=0.0</em>, <em>rz=0.0</em>, <em>sx=1.0</em>, <em>sy=1.0</em>, <em>sz=1.0</em>, <em>cx=0.0</em>, <em>cy=0.0</em>, <em>cz=0.0</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Helix.html#Helix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Helix.Helix" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pi3d.shape.Shape.Shape" title="pi3d.shape.Shape.Shape"><tt class="xref py py-class docutils literal"><span class="pre">pi3d.shape.Shape.Shape</span></tt></a></p>
+<em class="property">class </em><tt class="descclassname">pi3d.shape.Helix.</tt><tt class="descname">Helix</tt><big>(</big><em>camera=None</em>, <em>light=None</em>, <em>radius=1.0</em>, <em>thickness=0.2</em>, <em>ringrots=6</em>, <em>sides=12</em>, <em>rise=1.0</em>, <em>loops=2.0</em>, <em>name=''</em>, <em>x=0.0</em>, <em>y=0.0</em>, <em>z=0.0</em>, <em>rx=0.0</em>, <em>ry=0.0</em>, <em>rz=0.0</em>, <em>sx=1.0</em>, <em>sy=1.0</em>, <em>sz=1.0</em>, <em>cx=0.0</em>, <em>cy=0.0</em>, <em>cz=0.0</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Helix.html#Helix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Helix.Helix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pi3d.html#pi3d.Shape.Shape" title="pi3d.Shape.Shape"><tt class="xref py py-class docutils literal"><span class="pre">pi3d.Shape.Shape</span></tt></a></p>
 <p>3d model inherits from Shape</p>
 <p>uses standard constructor for Shape extra Keyword arguments:
 radius &#8211; radius of helix
@@ -604,7 +600,7 @@ loops &#8211; number of turns that the helix makes</p>
 <dl class="class">
 <dt id="pi3d.shape.Lathe.Lathe">
 <em class="property">class </em><tt class="descclassname">pi3d.shape.Lathe.</tt><tt class="descname">Lathe</tt><big>(</big><em>camera=None</em>, <em>light=None</em>, <em>path=</em><span class="optional">[</span><span class="optional">]</span>, <em>sides=12</em>, <em>name=''</em>, <em>x=0.0</em>, <em>y=0.0</em>, <em>z=0.0</em>, <em>rx=0.0</em>, <em>ry=0.0</em>, <em>rz=0.0</em>, <em>sx=1.0</em>, <em>sy=1.0</em>, <em>sz=1.0</em>, <em>cx=0.0</em>, <em>cy=0.0</em>, <em>cz=0.0</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Lathe.html#Lathe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Lathe.Lathe" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pi3d.shape.Shape.Shape" title="pi3d.shape.Shape.Shape"><tt class="xref py py-class docutils literal"><span class="pre">pi3d.shape.Shape.Shape</span></tt></a></p>
+<dd><p>Bases: <a class="reference internal" href="pi3d.html#pi3d.Shape.Shape" title="pi3d.Shape.Shape"><tt class="xref py py-class docutils literal"><span class="pre">pi3d.Shape.Shape</span></tt></a></p>
 <p>3d model inherits from Shape
 made by rotating a path of x,y locations around the y axis
 NB the path should start at the top of the object to generate the correct normals
@@ -622,15 +618,14 @@ sides &#8211; number of sides for Shape.lathe() to use</p>
 <dl class="class">
 <dt id="pi3d.shape.MergeShape.MergeShape">
 <em class="property">class </em><tt class="descclassname">pi3d.shape.MergeShape.</tt><tt class="descname">MergeShape</tt><big>(</big><em>camera=None</em>, <em>light=None</em>, <em>name=''</em>, <em>x=0.0</em>, <em>y=0.0</em>, <em>z=0.0</em>, <em>rx=0.0</em>, <em>ry=0.0</em>, <em>rz=0.0</em>, <em>sx=1.0</em>, <em>sy=1.0</em>, <em>sz=1.0</em>, <em>cx=0.0</em>, <em>cy=0.0</em>, <em>cz=0.0</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/MergeShape.html#MergeShape"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.MergeShape.MergeShape" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pi3d.shape.Shape.Shape" title="pi3d.shape.Shape.Shape"><tt class="xref py py-class docutils literal"><span class="pre">pi3d.shape.Shape.Shape</span></tt></a></p>
+<dd><p>Bases: <a class="reference internal" href="pi3d.html#pi3d.Shape.Shape" title="pi3d.Shape.Shape"><tt class="xref py py-class docutils literal"><span class="pre">pi3d.Shape.Shape</span></tt></a></p>
 <p>3d model inherits from Shape. As there is quite a time penalty for
 doing the matrix recalculations and changing the variables being sent to
 the shader, each time an object is drawn, it is MUCH faster to use a MergeShape
 where several objects will always remain in the same positions relative to
 each other. i.e. trees in a forest.</p>
-<blockquote>
-<div>Where the objects have multiple Buffers, each needing a different texture</div></blockquote>
-<p>(i.e. more complex Model objects) each must be combined into a different
+<p>Where the objects have multiple Buffers, each needing a different texture
+(i.e. more complex Model objects) each must be combined into a different
 MergeShape</p>
 <p>uses standard constructor for Shape</p>
 <dl class="method">
@@ -651,31 +646,34 @@ is a Shape and its first Buffer object will be merged</p>
 <dl class="method">
 <dt id="pi3d.shape.MergeShape.MergeShape.cluster">
 <tt class="descname">cluster</tt><big>(</big><em>bufr</em>, <em>elevmap</em>, <em>xpos</em>, <em>zpos</em>, <em>w</em>, <em>d</em>, <em>count</em>, <em>options</em>, <em>minscl</em>, <em>maxscl</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/MergeShape.html#MergeShape.cluster"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.MergeShape.MergeShape.cluster" title="Permalink to this definition">¶</a></dt>
-<dd><p>generates a random cluster on an ElevationMap
-Arguments:
-bufr &#8211; Buffer object to merge
-elevmap &#8211; ElevationMap object to merge onto
-xpos, zpos &#8211; x and z location of centre of cluster
-w, d &#8211; x and z direction size of the cluster
-count &#8211; number of objects to generate
-options &#8211; deprecated
-minscl &#8211; the minimum scale value for random selection
-maxscl &#8211; the maximum scale value for random selection</p>
+<dd><p>generates a random cluster on an ElevationMap</p>
+<p>Arguments:</p>
+<ul class="simple">
+<li>bufr &#8211; Buffer object to merge</li>
+<li>elevmap &#8211; ElevationMap object to merge onto</li>
+<li>xpos, zpos &#8211; x and z location of centre of cluster</li>
+<li>w, d &#8211; x and z direction size of the cluster</li>
+<li>count &#8211; number of objects to generate</li>
+<li>options &#8211; deprecated</li>
+<li>minscl &#8211; the minimum scale value for random selection</li>
+<li>maxscl &#8211; the maximum scale value for random selection</li>
+</ul>
 </dd></dl>
 
 <dl class="method">
 <dt id="pi3d.shape.MergeShape.MergeShape.radialCopy">
 <tt class="descname">radialCopy</tt><big>(</big><em>bufr</em>, <em>x=0</em>, <em>y=0</em>, <em>z=0</em>, <em>startRadius=2.0</em>, <em>endRadius=2.0</em>, <em>startAngle=0.0</em>, <em>endAngle=360.0</em>, <em>step=12</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/MergeShape.html#MergeShape.radialCopy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.MergeShape.MergeShape.radialCopy" title="Permalink to this definition">¶</a></dt>
-<dd><p>generates a radially copied cluster, axix is in the y direction
-Keyword arguments:
-x,y,z &#8211; location of centre of cluster relative to origin of MergeShape
-startRadius &#8211; start radius
-endRadius &#8211; end radius
-startAngle &#8211; start angle for merging 0 is in +ve x direction
-andAngle &#8211; end angle for merging, degrees. Rotation is clockwise</p>
-<blockquote>
-<div>looking up the y axis</div></blockquote>
-<p>step &#8211; angle between each copy, degrees NB <em>NOT</em> number of steps</p>
+<dd><p>generates a radially copied cluster, axix is in the y direction</p>
+<p>Keyword arguments:</p>
+<ul class="simple">
+<li>x,y,z &#8211; location of centre of cluster relative to origin of MergeShape</li>
+<li>startRadius &#8211; start radius</li>
+<li>endRadius &#8211; end radius</li>
+<li>startAngle &#8211; start angle for merging 0 is in +ve x direction</li>
+<li>andAngle &#8211; end angle for merging, degrees. Rotation is clockwise
+looking up the y axis</li>
+<li>step &#8211; angle between each copy, degrees NB <em>NOT</em> number of steps</li>
+</ul>
 </dd></dl>
 
 </dd></dl>
@@ -686,7 +684,7 @@ andAngle &#8211; end angle for merging, degrees. Rotation is clockwise</p>
 <dl class="class">
 <dt id="pi3d.shape.Model.Model">
 <em class="property">class </em><tt class="descclassname">pi3d.shape.Model.</tt><tt class="descname">Model</tt><big>(</big><em>camera=None</em>, <em>light=None</em>, <em>file_string=None</em>, <em>name=''</em>, <em>x=0.0</em>, <em>y=0.0</em>, <em>z=0.0</em>, <em>rx=0.0</em>, <em>ry=0.0</em>, <em>rz=0.0</em>, <em>sx=1.0</em>, <em>sy=1.0</em>, <em>sz=1.0</em>, <em>cx=0.0</em>, <em>cy=0.0</em>, <em>cz=0.0</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Model.html#Model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Model.Model" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pi3d.shape.Shape.Shape" title="pi3d.shape.Shape.Shape"><tt class="xref py py-class docutils literal"><span class="pre">pi3d.shape.Shape.Shape</span></tt></a></p>
+<dd><p>Bases: <a class="reference internal" href="pi3d.html#pi3d.Shape.Shape" title="pi3d.Shape.Shape"><tt class="xref py py-class docutils literal"><span class="pre">pi3d.Shape.Shape</span></tt></a></p>
 <p>3d model inherits from Shape
 loads vertex, normal, uv, index, texture and material data from obj or egg files
 at the moment it doesn&#8217;t fully implement the features such as animation, 
@@ -713,289 +711,11 @@ so much quicker to create than reloading all the vertices etc</p>
 <dl class="class">
 <dt id="pi3d.shape.Plane.Plane">
 <em class="property">class </em><tt class="descclassname">pi3d.shape.Plane.</tt><tt class="descname">Plane</tt><big>(</big><em>camera=None</em>, <em>light=None</em>, <em>w=1.0</em>, <em>h=1.0</em>, <em>name=''</em>, <em>x=0.0</em>, <em>y=0.0</em>, <em>z=0.0</em>, <em>rx=0.0</em>, <em>ry=0.0</em>, <em>rz=0.0</em>, <em>sx=1.0</em>, <em>sy=1.0</em>, <em>sz=1.0</em>, <em>cx=0.0</em>, <em>cy=0.0</em>, <em>cz=0.0</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Plane.html#Plane"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Plane.Plane" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pi3d.shape.Shape.Shape" title="pi3d.shape.Shape.Shape"><tt class="xref py py-class docutils literal"><span class="pre">pi3d.shape.Shape.Shape</span></tt></a></p>
+<dd><p>Bases: <a class="reference internal" href="pi3d.html#pi3d.Shape.Shape" title="pi3d.Shape.Shape"><tt class="xref py py-class docutils literal"><span class="pre">pi3d.Shape.Shape</span></tt></a></p>
 <p>3d model inherits from Shape, differs from Sprite in being two sided</p>
 <p>uses standard constructor for Shape extra Keyword arguments:
 w &#8211; width
 h &#8211; height</p>
-</dd></dl>
-
-</div>
-<div class="section" id="module-pi3d.shape.Shape">
-<span id="shape-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">Shape</span></tt> Module<a class="headerlink" href="#module-pi3d.shape.Shape" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="pi3d.shape.Shape.Shape">
-<em class="property">class </em><tt class="descclassname">pi3d.shape.Shape.</tt><tt class="descname">Shape</tt><big>(</big><em>camera</em>, <em>light</em>, <em>name</em>, <em>x</em>, <em>y</em>, <em>z</em>, <em>rx</em>, <em>ry</em>, <em>rz</em>, <em>sx</em>, <em>sy</em>, <em>sz</em>, <em>cx</em>, <em>cy</em>, <em>cz</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Shape.html#Shape"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Shape.Shape" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="pi3d.util.html#pi3d.util.Loadable.Loadable" title="pi3d.util.Loadable.Loadable"><tt class="xref py py-class docutils literal"><span class="pre">pi3d.util.Loadable.Loadable</span></tt></a></p>
-<p>inherited by all shape objects, including simple 2D sprite types</p>
-<p>Arguments:
-camera &#8211; Camera instance if None then a default instance will be created
-light &#8211; Light instance if None then default instance will be created
-name &#8211; handy string
-x, y, z, &#8211; location of the origin of the shape, stored in unif array
-rx, ry, rz &#8211; rotation of shape in degrees about each axis
-sx, sy, sz &#8211; scale in each direction
-cx, cy, cz &#8211; offset vertices from origin in each direction</p>
-<dl class="attribute">
-<dt id="pi3d.shape.Shape.Shape.unif">
-<tt class="descname">unif</tt><em class="property"> = None</em><a class="headerlink" href="#pi3d.shape.Shape.Shape.unif" title="Permalink to this definition">¶</a></dt>
-<dd><p>in shader array of vec3 uniform variables:
-0  location 0-2
-1  rotation 3-5
-2  scale 6-8
-3  offset 9-11
-4  fog shade 12-14
-5  fog distance and alph (only first two values used at moment) 15, 16
-6  camera position  18-20
-7  animation offets x, y, delta 21-23
-8  light0 position, direction vector 24-26
-9  light0 strength per shade 27-29
-10 light0 ambient values 30-32
-11 light1 position, direction vector 33-35
-12 light1 strength per shade 36-38
-13 light1 ambient values 39-41
-14 defocus dist, amount 42,43
-15 defocus frame width, height 45,46</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="pi3d.shape.Shape.Shape.tr1">
-<tt class="descname">tr1</tt><em class="property"> = None</em><a class="headerlink" href="#pi3d.shape.Shape.Shape.tr1" title="Permalink to this definition">¶</a></dt>
-<dd><p>rotate about x axis</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="pi3d.shape.Shape.Shape.rox">
-<tt class="descname">rox</tt><em class="property"> = None</em><a class="headerlink" href="#pi3d.shape.Shape.Shape.rox" title="Permalink to this definition">¶</a></dt>
-<dd><p>rotate about y axis</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="pi3d.shape.Shape.Shape.roy">
-<tt class="descname">roy</tt><em class="property"> = None</em><a class="headerlink" href="#pi3d.shape.Shape.Shape.roy" title="Permalink to this definition">¶</a></dt>
-<dd><p>rotate about z axis</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="pi3d.shape.Shape.Shape.roz">
-<tt class="descname">roz</tt><em class="property"> = None</em><a class="headerlink" href="#pi3d.shape.Shape.Shape.roz" title="Permalink to this definition">¶</a></dt>
-<dd><p>scale</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="pi3d.shape.Shape.Shape.scl">
-<tt class="descname">scl</tt><em class="property"> = None</em><a class="headerlink" href="#pi3d.shape.Shape.Shape.scl" title="Permalink to this definition">¶</a></dt>
-<dd><p>translate to offset</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="pi3d.shape.Shape.Shape.buf">
-<tt class="descname">buf</tt><em class="property"> = None</em><a class="headerlink" href="#pi3d.shape.Shape.Shape.buf" title="Permalink to this definition">¶</a></dt>
-<dd><p>self.buf contains a buffer for each part of this shape that needs
-rendering with a different Shader/Texture. self.draw() relies on objects
-inheriting from this filling buf with at least one element.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pi3d.shape.Shape.Shape.draw">
-<tt class="descname">draw</tt><big>(</big><em>shader=None</em>, <em>txtrs=None</em>, <em>ntl=None</em>, <em>shny=None</em>, <em>camera=None</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Shape.html#Shape.draw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Shape.Shape.draw" title="Permalink to this definition">¶</a></dt>
-<dd><p>If called without parameters, there has to have been a previous call to
-set_draw_details() for each Buffer in buf[].
-NB there is no facility for setting umult and vmult with draw they must be
-set using set_draw_details or Buffer.set_draw_details</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pi3d.shape.Shape.Shape.set_shader">
-<tt class="descname">set_shader</tt><big>(</big><em>shader</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Shape.html#Shape.set_shader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Shape.Shape.set_shader" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pi3d.shape.Shape.Shape.set_normal_shine">
-<tt class="descname">set_normal_shine</tt><big>(</big><em>normtex</em>, <em>ntiles=1.0</em>, <em>shinetex=None</em>, <em>shiny=0.0</em>, <em>is_uv=True</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Shape.html#Shape.set_normal_shine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Shape.Shape.set_normal_shine" title="Permalink to this definition">¶</a></dt>
-<dd><p>used to set some of the draw details for all Buffers in Shape
-this is useful where a Model object has been loaded from an obj file and
-the textures assigned automatically</p>
-<p>Arguments:
-normtex &#8211; normal map Texture to use</p>
-<p>Keyword arguments:
-ntiles &#8211; multiplier for the tiling of the normal map
-shinetex &#8211; reflection Texture to use
-shiny &#8211; 0.0 to 1.0 strength of reflection
-is_uv &#8211; if True then the normtex will be textures[1] and shinetex will be</p>
-<blockquote>
-<div>textures[2] i.e. for using a <a href="#id1"><span class="problematic" id="id2">uv_</span></a> type Shader. However for <a href="#id3"><span class="problematic" id="id4">mat_</span></a> type
-Shaders they are moved down one as the basic shade is defined by
-material rgb rather than from a Texture</div></blockquote>
-</dd></dl>
-
-<dl class="method">
-<dt id="pi3d.shape.Shape.Shape.set_draw_details">
-<tt class="descname">set_draw_details</tt><big>(</big><em>shader</em>, <em>textures</em>, <em>ntiles=0.0</em>, <em>shiny=0.0</em>, <em>umult=1.0</em>, <em>vmult=1.0</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Shape.html#Shape.set_draw_details"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Shape.Shape.set_draw_details" title="Permalink to this definition">¶</a></dt>
-<dd><p>wrapper to call set_draw_details() in each Buffer object
-Arguments:
-shader &#8211; Shader object
-textures &#8211; array of Texture objects</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pi3d.shape.Shape.Shape.set_material">
-<tt class="descname">set_material</tt><big>(</big><em>mtrl</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Shape.html#Shape.set_material"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Shape.Shape.set_material" title="Permalink to this definition">¶</a></dt>
-<dd><p>wrapper for setting material shade in each Buffer object
-Arguments:
-mtrl &#8211; tuple (rgb)</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pi3d.shape.Shape.Shape.set_fog">
-<tt class="descname">set_fog</tt><big>(</big><em>fogshade</em>, <em>fogdist</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Shape.html#Shape.set_fog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Shape.Shape.set_fog" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set fog for this Shape only, it uses the shader smoothblend function from
-1/3 fogdist to fogdist.
-Arguments:
-fogshade &#8211; tuple (rgba)
-fogdist &#8211; distance from Camera at which Shape is 100% fogshade</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pi3d.shape.Shape.Shape.set_light">
-<tt class="descname">set_light</tt><big>(</big><em>light</em>, <em>num=0</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Shape.html#Shape.set_light"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Shape.Shape.set_light" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set the values of the lights
-Arguments:
-light &#8211; Light object to use
-num &#8211; number of the light to set</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pi3d.shape.Shape.Shape.set_2d_size">
-<tt class="descname">set_2d_size</tt><big>(</big><em>w=None</em>, <em>h=None</em>, <em>x=0</em>, <em>y=0</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Shape.html#Shape.set_2d_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Shape.Shape.set_2d_size" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pi3d.shape.Shape.Shape.set_2d_location">
-<tt class="descname">set_2d_location</tt><big>(</big><em>x</em>, <em>y</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Shape.html#Shape.set_2d_location"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Shape.Shape.set_2d_location" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pi3d.shape.Shape.Shape.x">
-<tt class="descname">x</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Shape.html#Shape.x"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Shape.Shape.x" title="Permalink to this definition">¶</a></dt>
-<dd><p>get value of x</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pi3d.shape.Shape.Shape.y">
-<tt class="descname">y</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Shape.html#Shape.y"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Shape.Shape.y" title="Permalink to this definition">¶</a></dt>
-<dd><p>get value of y</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pi3d.shape.Shape.Shape.z">
-<tt class="descname">z</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Shape.html#Shape.z"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Shape.Shape.z" title="Permalink to this definition">¶</a></dt>
-<dd><p>get value of z</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pi3d.shape.Shape.Shape.scale">
-<tt class="descname">scale</tt><big>(</big><em>sx</em>, <em>sy</em>, <em>sz</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Shape.html#Shape.scale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Shape.Shape.scale" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pi3d.shape.Shape.Shape.position">
-<tt class="descname">position</tt><big>(</big><em>x</em>, <em>y</em>, <em>z</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Shape.html#Shape.position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Shape.Shape.position" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pi3d.shape.Shape.Shape.positionX">
-<tt class="descname">positionX</tt><big>(</big><em>v</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Shape.html#Shape.positionX"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Shape.Shape.positionX" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pi3d.shape.Shape.Shape.positionY">
-<tt class="descname">positionY</tt><big>(</big><em>v</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Shape.html#Shape.positionY"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Shape.Shape.positionY" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pi3d.shape.Shape.Shape.positionZ">
-<tt class="descname">positionZ</tt><big>(</big><em>v</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Shape.html#Shape.positionZ"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Shape.Shape.positionZ" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pi3d.shape.Shape.Shape.translate">
-<tt class="descname">translate</tt><big>(</big><em>dx</em>, <em>dy</em>, <em>dz</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Shape.html#Shape.translate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Shape.Shape.translate" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pi3d.shape.Shape.Shape.translateX">
-<tt class="descname">translateX</tt><big>(</big><em>v</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Shape.html#Shape.translateX"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Shape.Shape.translateX" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pi3d.shape.Shape.Shape.translateY">
-<tt class="descname">translateY</tt><big>(</big><em>v</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Shape.html#Shape.translateY"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Shape.Shape.translateY" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pi3d.shape.Shape.Shape.translateZ">
-<tt class="descname">translateZ</tt><big>(</big><em>v</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Shape.html#Shape.translateZ"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Shape.Shape.translateZ" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pi3d.shape.Shape.Shape.rotateToX">
-<tt class="descname">rotateToX</tt><big>(</big><em>v</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Shape.html#Shape.rotateToX"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Shape.Shape.rotateToX" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pi3d.shape.Shape.Shape.rotateToY">
-<tt class="descname">rotateToY</tt><big>(</big><em>v</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Shape.html#Shape.rotateToY"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Shape.Shape.rotateToY" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pi3d.shape.Shape.Shape.rotateToZ">
-<tt class="descname">rotateToZ</tt><big>(</big><em>v</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Shape.html#Shape.rotateToZ"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Shape.Shape.rotateToZ" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pi3d.shape.Shape.Shape.rotateIncX">
-<tt class="descname">rotateIncX</tt><big>(</big><em>v</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Shape.html#Shape.rotateIncX"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Shape.Shape.rotateIncX" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pi3d.shape.Shape.Shape.rotateIncY">
-<tt class="descname">rotateIncY</tt><big>(</big><em>v</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Shape.html#Shape.rotateIncY"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Shape.Shape.rotateIncY" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pi3d.shape.Shape.Shape.rotateIncZ">
-<tt class="descname">rotateIncZ</tt><big>(</big><em>v</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Shape.html#Shape.rotateIncZ"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Shape.Shape.rotateIncZ" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pi3d.shape.Shape.Shape.add_vertex">
-<tt class="descname">add_vertex</tt><big>(</big><em>vert</em>, <em>norm</em>, <em>texc</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Shape.html#Shape.add_vertex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Shape.Shape.add_vertex" title="Permalink to this definition">¶</a></dt>
-<dd><p>add vertex,normal and tex_coords ...</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pi3d.shape.Shape.Shape.add_tri">
-<tt class="descname">add_tri</tt><big>(</big><em>indx</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Shape.html#Shape.add_tri"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Shape.Shape.add_tri" title="Permalink to this definition">¶</a></dt>
-<dd><p>add triangle refs.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pi3d.shape.Shape.Shape.lathe">
-<tt class="descname">lathe</tt><big>(</big><em>path</em>, <em>rise=0.0</em>, <em>loops=1.0</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Shape.html#Shape.lathe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Shape.Shape.lathe" title="Permalink to this definition">¶</a></dt>
-<dd><p>returns a Buffer object by rotating the points defined in path</p>
-<p>Arguments:
-path &#8211; an array of points [(x0,y0),(x1,y1)..] to rotate around</p>
-<blockquote>
-<div>the y axis</div></blockquote>
-<p>NB TODO self.sides is not passed as an argument but is required to be
-set by anything calling this method
-[self.sides &#8211; number of sides to divide each rotation into]</p>
-<p>Keyword arguments:
-rise &#8211; amout to increment the path y values for each rotation (ie helix)
-loops &#8211; numbe of times to rotate the path by 360 (ie helix)</p>
-</dd></dl>
-
 </dd></dl>
 
 </div>
@@ -1004,7 +724,7 @@ loops &#8211; numbe of times to rotate the path by 360 (ie helix)</p>
 <dl class="class">
 <dt id="pi3d.shape.Sphere.Sphere">
 <em class="property">class </em><tt class="descclassname">pi3d.shape.Sphere.</tt><tt class="descname">Sphere</tt><big>(</big><em>camera=None</em>, <em>light=None</em>, <em>radius=1</em>, <em>slices=12</em>, <em>sides=12</em>, <em>hemi=0.0</em>, <em>name=''</em>, <em>x=0.0</em>, <em>y=0.0</em>, <em>z=0.0</em>, <em>rx=0.0</em>, <em>ry=0.0</em>, <em>rz=0.0</em>, <em>sx=1.0</em>, <em>sy=1.0</em>, <em>sz=1.0</em>, <em>cx=0.0</em>, <em>cy=0.0</em>, <em>cz=0.0</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Sphere.html#Sphere"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Sphere.Sphere" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pi3d.shape.Shape.Shape" title="pi3d.shape.Shape.Shape"><tt class="xref py py-class docutils literal"><span class="pre">pi3d.shape.Shape.Shape</span></tt></a></p>
+<dd><p>Bases: <a class="reference internal" href="pi3d.html#pi3d.Shape.Shape" title="pi3d.Shape.Shape"><tt class="xref py py-class docutils literal"><span class="pre">pi3d.Shape.Shape</span></tt></a></p>
 <p>3d model inherits from Shape</p>
 <p>uses standard constructor for Shape extra Keyword arguments:
 radius &#8211; radius of sphere
@@ -1019,7 +739,7 @@ sides &#8211; number of sides for Shape.lathe() to use</p>
 <dl class="class">
 <dt id="pi3d.shape.Sprite.Sprite">
 <em class="property">class </em><tt class="descclassname">pi3d.shape.Sprite.</tt><tt class="descname">Sprite</tt><big>(</big><em>camera=None</em>, <em>light=None</em>, <em>w=1.0</em>, <em>h=1.0</em>, <em>name=''</em>, <em>x=0.0</em>, <em>y=0.0</em>, <em>z=20.0</em>, <em>rx=0.0</em>, <em>ry=0.0</em>, <em>rz=0.0</em>, <em>sx=1.0</em>, <em>sy=1.0</em>, <em>sz=1.0</em>, <em>cx=0.0</em>, <em>cy=0.0</em>, <em>cz=0.0</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Sprite.html#Sprite"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Sprite.Sprite" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pi3d.shape.Shape.Shape" title="pi3d.shape.Shape.Shape"><tt class="xref py py-class docutils literal"><span class="pre">pi3d.shape.Shape.Shape</span></tt></a></p>
+<dd><p>Bases: <a class="reference internal" href="pi3d.html#pi3d.Shape.Shape" title="pi3d.Shape.Shape"><tt class="xref py py-class docutils literal"><span class="pre">pi3d.Shape.Shape</span></tt></a></p>
 <p>3d model inherits from Shape, differs from Plane in being single sided</p>
 <p>uses standard constructor for Shape extra Keyword arguments:
 w &#8211; width
@@ -1038,8 +758,8 @@ h &#8211; height</p>
 <span id="tcone-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">TCone</span></tt> Module<a class="headerlink" href="#module-pi3d.shape.TCone" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="pi3d.shape.TCone.TCone">
-<em class="property">class </em><tt class="descclassname">pi3d.shape.TCone.</tt><tt class="descname">TCone</tt><big>(</big><em>camera=None</em>, <em>light=None</em>, <em>radiusBot=1.2</em>, <em>radiusTop=0.80000000000000004</em>, <em>height=2.0</em>, <em>sides=12</em>, <em>name=''</em>, <em>x=0.0</em>, <em>y=0.0</em>, <em>z=0.0</em>, <em>rx=0.0</em>, <em>ry=0.0</em>, <em>rz=0.0</em>, <em>sx=1.0</em>, <em>sy=1.0</em>, <em>sz=1.0</em>, <em>cx=0.0</em>, <em>cy=0.0</em>, <em>cz=0.0</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/TCone.html#TCone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.TCone.TCone" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pi3d.shape.Shape.Shape" title="pi3d.shape.Shape.Shape"><tt class="xref py py-class docutils literal"><span class="pre">pi3d.shape.Shape.Shape</span></tt></a></p>
+<em class="property">class </em><tt class="descclassname">pi3d.shape.TCone.</tt><tt class="descname">TCone</tt><big>(</big><em>camera=None</em>, <em>light=None</em>, <em>radiusBot=1.2</em>, <em>radiusTop=0.8</em>, <em>height=2.0</em>, <em>sides=12</em>, <em>name=''</em>, <em>x=0.0</em>, <em>y=0.0</em>, <em>z=0.0</em>, <em>rx=0.0</em>, <em>ry=0.0</em>, <em>rz=0.0</em>, <em>sx=1.0</em>, <em>sy=1.0</em>, <em>sz=1.0</em>, <em>cx=0.0</em>, <em>cy=0.0</em>, <em>cz=0.0</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/TCone.html#TCone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.TCone.TCone" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pi3d.html#pi3d.Shape.Shape" title="pi3d.Shape.Shape"><tt class="xref py py-class docutils literal"><span class="pre">pi3d.Shape.Shape</span></tt></a></p>
 <p>3d model inherits from Shape, creates truncated cone axis y direction</p>
 <p>uses standard constructor for Shape extra Keyword arguments:
 radiusBot &#8211; radius of the bottom
@@ -1054,7 +774,7 @@ sides &#8211; number of sides to divide edges of polygons</p>
 <dl class="class">
 <dt id="pi3d.shape.Torus.Torus">
 <em class="property">class </em><tt class="descclassname">pi3d.shape.Torus.</tt><tt class="descname">Torus</tt><big>(</big><em>camera=None</em>, <em>light=None</em>, <em>radius=2.0</em>, <em>thickness=0.5</em>, <em>ringrots=6</em>, <em>sides=12</em>, <em>name=''</em>, <em>x=0.0</em>, <em>y=0.0</em>, <em>z=0.0</em>, <em>rx=0.0</em>, <em>ry=0.0</em>, <em>rz=0.0</em>, <em>sx=1.0</em>, <em>sy=1.0</em>, <em>sz=1.0</em>, <em>cx=0.0</em>, <em>cy=0.0</em>, <em>cz=0.0</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Torus.html#Torus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Torus.Torus" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pi3d.shape.Shape.Shape" title="pi3d.shape.Shape.Shape"><tt class="xref py py-class docutils literal"><span class="pre">pi3d.shape.Shape.Shape</span></tt></a></p>
+<dd><p>Bases: <a class="reference internal" href="pi3d.html#pi3d.Shape.Shape" title="pi3d.Shape.Shape"><tt class="xref py py-class docutils literal"><span class="pre">pi3d.Shape.Shape</span></tt></a></p>
 <p>3d model inherits from Shape</p>
 <p>uses standard constructor for Shape extra Keyword arguments:
 radius &#8211; major radius of torus
@@ -1069,7 +789,7 @@ sides &#8211; number of sides for Shape.lathe() to use</p>
 <dl class="class">
 <dt id="pi3d.shape.Tube.Tube">
 <em class="property">class </em><tt class="descclassname">pi3d.shape.Tube.</tt><tt class="descname">Tube</tt><big>(</big><em>camera=None</em>, <em>light=None</em>, <em>radius=1.0</em>, <em>thickness=0.5</em>, <em>height=2.0</em>, <em>sides=12</em>, <em>name=''</em>, <em>x=0.0</em>, <em>y=0.0</em>, <em>z=0.0</em>, <em>rx=0.0</em>, <em>ry=0.0</em>, <em>rz=0.0</em>, <em>sx=1.0</em>, <em>sy=1.0</em>, <em>sz=1.0</em>, <em>cx=0.0</em>, <em>cy=0.0</em>, <em>cz=0.0</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Tube.html#Tube"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Tube.Tube" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pi3d.shape.Shape.Shape" title="pi3d.shape.Shape.Shape"><tt class="xref py py-class docutils literal"><span class="pre">pi3d.shape.Shape.Shape</span></tt></a></p>
+<dd><p>Bases: <a class="reference internal" href="pi3d.html#pi3d.Shape.Shape" title="pi3d.Shape.Shape"><tt class="xref py py-class docutils literal"><span class="pre">pi3d.Shape.Shape</span></tt></a></p>
 <p>3d model inherits from Shape</p>
 <p>uses standard constructor for Shape extra Keyword arguments:
 radius &#8211; radius of to mid point of wall
@@ -1091,7 +811,6 @@ sides &#8211; number of sides for Shape.lathe() to use</p>
   <ul>
 <li><a class="reference internal" href="#">shape Package</a><ul>
 <li><a class="reference internal" href="#module-pi3d.shape.Building"><tt class="docutils literal"><span class="pre">Building</span></tt> Module</a></li>
-<li><a class="reference internal" href="#module-pi3d.shape.Camera"><tt class="docutils literal"><span class="pre">Camera</span></tt> Module</a></li>
 <li><a class="reference internal" href="#module-pi3d.shape.Cone"><tt class="docutils literal"><span class="pre">Cone</span></tt> Module</a></li>
 <li><a class="reference internal" href="#module-pi3d.shape.Cuboid"><tt class="docutils literal"><span class="pre">Cuboid</span></tt> Module</a></li>
 <li><a class="reference internal" href="#module-pi3d.shape.Cylinder"><tt class="docutils literal"><span class="pre">Cylinder</span></tt> Module</a></li>
@@ -1104,7 +823,6 @@ sides &#8211; number of sides for Shape.lathe() to use</p>
 <li><a class="reference internal" href="#module-pi3d.shape.MergeShape"><tt class="docutils literal"><span class="pre">MergeShape</span></tt> Module</a></li>
 <li><a class="reference internal" href="#module-pi3d.shape.Model"><tt class="docutils literal"><span class="pre">Model</span></tt> Module</a></li>
 <li><a class="reference internal" href="#module-pi3d.shape.Plane"><tt class="docutils literal"><span class="pre">Plane</span></tt> Module</a></li>
-<li><a class="reference internal" href="#module-pi3d.shape.Shape"><tt class="docutils literal"><span class="pre">Shape</span></tt> Module</a></li>
 <li><a class="reference internal" href="#module-pi3d.shape.Sphere"><tt class="docutils literal"><span class="pre">Sphere</span></tt> Module</a></li>
 <li><a class="reference internal" href="#module-pi3d.shape.Sprite"><tt class="docutils literal"><span class="pre">Sprite</span></tt> Module</a></li>
 <li><a class="reference internal" href="#module-pi3d.shape.TCone"><tt class="docutils literal"><span class="pre">TCone</span></tt> Module</a></li>

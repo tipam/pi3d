@@ -4,7 +4,7 @@ import ctypes
 from random import randint
 
 from pi3d.Texture import Texture
-from pi3d.shape.Shape import Shape
+from pi3d.Shape import Shape
 from pi3d.Buffer import Buffer
 
 #########################################################################################

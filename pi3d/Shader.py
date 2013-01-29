@@ -19,11 +19,9 @@ def _opengl_log(shader, function, caption):
 class Shader(object):
   def __init__(self, shfile):
     """
-    shfile -- path/name without vs or fs ending i.e. "shaders/bumpShade"
-    textures[] -- array of Texture() objects 0.texture map 1.normal map 2.reflection map
-    scene -- Scene() object
-    bumpTiles -- number to subdivide UV map by for normal texture map, 0.0 disables
-    shiny -- proportion of shininess 0.0 to 1.0, 0.0 disables
+    Arguments:
+      *shfile*
+        path/name without vs or fs ending i.e. "shaders/bumpShade"
     """
 
     #self.scene = scene
@@ -63,8 +61,10 @@ class Shader(object):
     for t in range(3):
       self.unif_tex.append(opengles.glGetUniformLocation(self.program, "tex"+str(t)))
       """
-      for uv shaders tex0=texture tex1=normal map tex2=reflection
-      for material shaders tex0=normal map tex1=reflection
+      *NB*
+        for *uv* shaders tex0=texture tex1=normal map tex2=reflection
+      
+        for *mat* shaders tex0=normal map tex1=reflection
       """
     self.use()
 

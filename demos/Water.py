@@ -21,7 +21,7 @@ from pi3d import Display
 from pi3d.Texture import Texture
 from pi3d.Keyboard import Keyboard
 
-from pi3d.context.Light import Light
+from pi3d.Light import Light
 from pi3d.Shader import Shader
 
 from pi3d.shape.Sphere import Sphere

@@ -21,28 +21,34 @@ class Buffer(object):
     are provided then these are generated.
 
     Arguments:
-    shape -- Shape object that this Buffer is a child of
-    pts -- array of vertices tuples i.e. [(x0,y0,z0), (x1,y1,z1),...]
-    texcoords -- array of texture (uv) coordinates tuples
-                 i.e. [(u0,v0), (u1,v1),...]
-    faces -- array of indices (of pts array) defining triangles
-             i.e. [(a0,b0,c0), (a1,b1,c1),...]
+      *shape*
+        Shape object that this Buffer is a child of
+      *pts*
+        array of vertices tuples i.e. [(x0,y0,z0), (x1,y1,z1),...]
+      *texcoords*
+        array of texture (uv) coordinates tuples
+        i.e. [(u0,v0), (u1,v1),...]
+      *faces*
+        array of indices (of pts array) defining triangles
+        i.e. [(a0,b0,c0), (a1,b1,c1),...]
 
     Keyword arguments:
-    normals -- array of vector component tuples defining normals at each
-              vertex i.e. [(x0,y0,z0), (x1,y1,z1),...]
-    smooth -- if calculating normals then average normals for all faces
-              meeting at this vertex, otherwise just use first (for speed)
-
+      *normals*
+        array of vector component tuples defining normals at each
+        vertex i.e. [(x0,y0,z0), (x1,y1,z1),...]
+      *smooth*
+        if calculating normals then average normals for all faces
+        meeting at this vertex, otherwise just use first (for speed)
     """
     # Uniform variables all in one array!
     self.unib = (c_float * 9)(0.0, 0.0, 0.0,
                               0.5, 0.5, 0.5,
                               1.0, 1.0, 0.0)
     """ in shader array of vec3 uniform variables:
-    0  ntile, shiny, blend 0-2.
-    1  material 3-5
-    2  umult, vmult 6-8
+    
+    * 0  ntile, shiny, blend 0-2.
+    * 1  material 3-5
+    * 2  umult, vmult 6-8
     """
     self.shape = shape
 
@@ -110,16 +116,21 @@ class Buffer(object):
     rather than sending as arguments to draw().
 
     Arguments:
-    shader -- Shader object
-    textures -- array of Texture objects
+      *shader*
+        Shader object
+      *textures*
+        array of Texture objects
 
     Keyword arguments:
-    ntiles -- multiple for tiling normal map which can be less than or greater
-    than 1.0. 0.0 disables the normal mapping, float
-    shiny -- how strong to make the reflection 0.0 to 1.0, float
-    umult -- multiplier for tiling the texture in the u direction
-    vmult -- multiplier for tiling the texture in the v direction
-
+      *ntiles*
+        multiple for tiling normal map which can be less than or greater
+        than 1.0. 0.0 disables the normal mapping, float
+      *shiny*
+        how strong to make the reflection 0.0 to 1.0, float
+      *umult*
+        multiplier for tiling the texture in the u direction
+      *vmult*
+        multiplier for tiling the texture in the v direction
     """
     self.shader = shader
     self.shape.shader = shader # set shader for parent shape
@@ -136,11 +147,15 @@ class Buffer(object):
     """Draw this Buffer, called by the parent Shape.draw()
 
     Keyword arguments:
-    shader -- Shader object
-    textures -- array of Texture objects
-    ntiles -- multiple for tiling normal map which can be less than or greater
-            than 1.0. 0.0 disables the normal mapping, float
-    shiny -- how strong to make the reflection 0.0 to 1.0, float
+      *shader*
+        Shader object
+      *textures*
+        array of Texture objects
+      *ntiles*
+        multiple for tiling normal map which can be less than or greater
+        than 1.0. 0.0 disables the normal mapping, float
+      *shiny*
+        how strong to make the reflection 0.0 to 1.0, float
     """
     shader = shader or self.shader
     textures = textures or self.textures

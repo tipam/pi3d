@@ -1,5 +1,5 @@
 from pi3d import *
-from pi3d.shape.Shape import Shape
+from pi3d.Shape import Shape
 
 class Cylinder(Shape):
   """ 3d model inherits from Shape"""

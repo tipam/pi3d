@@ -1,7 +1,7 @@
 from pi3d import *
 from pi3d import Texture
 from pi3d.Buffer import Buffer
-from pi3d.shape.Shape import Shape
+from pi3d.Shape import Shape
 
 class Plane(Shape):
   """ 3d model inherits from Shape, differs from Sprite in being two sided"""

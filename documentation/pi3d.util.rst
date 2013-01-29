@@ -41,14 +41,6 @@ util Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`Matrix` Module
---------------------
-
-.. automodule:: pi3d.util.Matrix
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`RotateVec` Module
 -----------------------
 

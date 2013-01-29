@@ -2,7 +2,7 @@ import os.path
 
 from pi3d import *
 from pi3d.Buffer import Buffer
-from pi3d.shape.Shape import Shape
+from pi3d.Shape import Shape
 from pi3d.Texture import Texture
 
 CUBE_PARTS = ['front', 'right', 'top', 'bottom', 'left', 'back']
@@ -11,13 +11,15 @@ BOTTOM_INDEX = 3
 def loadECfiles(path, fname, suffix='jpg', nobottom=False):
   """Helper for loading environment cube faces.
   #TODO this will scramble all the rest of the cube. It needs to substitute a blank (black) texture instead!
+  
   Arguments:
-  path -- to the image files relative to the top directory
-  fname -- the stem of the file name without the _top, _bottom, _right etc
-  Keyword arguments:
-  suffix -- string to add after the '_top','_bottom' has been added to the stem
-  nobottom -- if True then only load five parts into array the bottom will be
-            drawn with the previous image i.e. top
+  
+  * path -- to the image files relative to the top directory
+  * fname -- the stem of the file name without the _top, _bottom, _right etc
+  * Keyword arguments:
+  * suffix -- string to add after the '_top','_bottom' has been added to the stem
+  * nobottom -- if True then only load five parts into array the bottom will be
+    drawn with the previous image i.e. top
   """
   if nobottom:
     parts = [p for p in CUBE_PARTS if p != 'bottom']
@@ -32,9 +34,10 @@ class EnvironmentCube(Shape):
   def __init__(self, camera=None, light=None, size=500.0, maptype="HALFCROSS", name="", x=0.0, y=0.0, z=0.0,
                rx=0.0, ry=0.0, rz=0.0, cx=0.0, cy=0.0, cz=0.0, nobottom=False):
     """uses standard constructor for Shape extra Keyword arguments:
-    size -- dimensions of the cube
-    maptype -- HALFCROSS (default) or CROSS any other defaults to CUBE type
-              and will require 6 (or 5 with nobottom) image files to render it
+    
+    * size -- dimensions of the cube
+    * maptype -- HALFCROSS (default) or CROSS any other defaults to CUBE type
+      and will require 6 (or 5 with nobottom) image files to render it
     """
     super(EnvironmentCube,self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                 1.0, 1.0, 1.0, cx, cy, cz)
