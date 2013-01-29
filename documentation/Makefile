@@ -1,6 +1,14 @@
 # Makefile for Sphinx documentation
 #
 
+# pi3d variables
+
+# This is hardcoded and assumes that you have parallel directories named
+# pi3d and pi3d.github.com
+
+DOCUMENTATION_DIR = ../../pi3d.github.com/doc
+
+
 # You can set these variables from the command line.
 SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
@@ -14,7 +22,14 @@ ALLSPHINXOPTS   = -d $(BUILDDIR)/doctrees $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) .
 # the i18n builder cannot share the environment and doctrees with the others
 I18NSPHINXOPTS  = $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) .
 
-.PHONY: help clean html dirhtml singlehtml pickle json htmlhelp qthelp devhelp epub latex latexpdf text man changes linkcheck doctest gettext
+.PHONY: main install help clean html dirhtml singlehtml pickle json htmlhelp qthelp devhelp epub latex latexpdf text man changes linkcheck doctest gettext
+
+main: html
+
+# USES rm -Rf, PLEASE BE CAREFUL.
+install: html
+	rm -Rf $(DOCUMENTATION_DIR)
+	cp -R _build/html $(DOCUMENTATION_DIR)
 
 help:
 	@echo "Please use \`make <target>' where <target> is one of"
