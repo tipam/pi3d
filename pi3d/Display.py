@@ -33,8 +33,15 @@ class Display(object):
   INSTANCE = None
   """The current unique instance of Display."""
 
-  def __init__(self, tkwin):
-    """Please don't use this constructor, use pi3d.Display.create."""
+  def __init__(self, tkwin=None):
+    """
+    Constructs a raw Display.  Use pi3d.Display.create to create an initialized
+    Display.
+
+    *tkwin*
+      An optional Tk window.
+
+    """
     if Display.INSTANCE:
       assert ALLOW_MULTIPLE_DISPLAYS
       LOGGER.warning('A second instance of Display was created')
@@ -49,24 +56,23 @@ class Display(object):
 
     self.opengl = DisplayOpenGL()
     self.max_width, self.max_height = self.opengl.width, self.opengl.height
-    self.internal_loop = False
-    self.external_loop = False
+    self.first_time = True
     self.is_running = True
     self.lock = threading.RLock()
 
     LOGGER.info(STARTUP_MESSAGE)
 
   def loop_running(self):
-    """This is the preferred way of looping in pi3d"""
+    """
+    *loop_running* is the main event loop for the Display.
+    """
     if self.is_running:
-      assert not self.internal_loop, "Use only one of loop and loop_running"
-      if self.external_loop:
-        self._loop_end()
-      else:
+      if self.first_time:
         self.time = time.time()
-        self.external_loop = True  # First time.
+        self.first_time = False
+      else:
+        self._loop_end()  # Finish the previous loop.
       self._loop_begin()
-
     else:
       self._loop_end()
       self.destroy()
@@ -103,7 +109,7 @@ class Display(object):
     self.is_running = False
 
   def destroy(self):
-    """Destroy the current display, reset Display.INSTANCE."""
+    """Destroy the current display and reset Display.INSTANCE."""
     self.stop()
     try:
       self.opengl.destroy()
@@ -187,7 +193,6 @@ class Display(object):
 
 def create(is_3d=True, x=None, y=None, w=None, h=None, near=None, far=None,
            aspect=DEFAULT_ASPECT, depth=DEFAULT_DEPTH, background=None,
-           tk=False, window_title='', window_parent=None, mouse=False):
            tk=False, window_title='', window_parent=None, mouse=False,
            frames_per_second=None):
   """
