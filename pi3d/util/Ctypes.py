@@ -1,5 +1,13 @@
 from ctypes import c_byte, c_char, c_float, c_int, c_short
 
+"""
+Converts iterables of Python types into tuple of types from ctypes.
+
+We need this because we do all our calculations in Python types but then pass
+them to an external C library which wants ctypes.
+
+"""
+
 def c_bytes(x):
   return (c_byte * len(x))(*x)
 
