@@ -1,0 +1,232 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Introduction to Pi3D &mdash; pi3d 0.8 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.8',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="pi3d 0.8 documentation" href="index.html" />
+    <link rel="next" title="pi3d Package" href="pi3d.html" />
+    <link rel="prev" title="Welcome to pi3d’s documentation!" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pi3d.html" title="pi3d Package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to pi3d’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">pi3d 0.8 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="introduction-to-pi3d">
+<h1>Introduction to Pi3D<a class="headerlink" href="#introduction-to-pi3d" title="Permalink to this headline">¶</a></h1>
+<p><strong>Pi3D written by Tim Skillman, Paddy Gaunt, Tom Swirly Copyright (c) 2013</strong></p>
+<p>There&#8217;s plenty of 3D code flying around at the moment for the Raspberry Pi, but much of it is rather complicated to understand and most of it can sit under the bonnet!</p>
+<p>pi3d is a Python module that aims to greatly simplify writing 3D in Python whilst giving access to the power of the Raspberry Pi GPU. It enables both 3D and 2D rendering and aims to provide a host of exciting commands to load in textured/animated models, create fractal landscapes, shaders and much more.</p>
+<p>This is the third release of the pi3d module which has various demo&#8217;s of built-in shapes, landscapes, model loading, walk-about camera and much more! See the demos included with this code and experiment with them ..</p>
+</div>
+<div class="section" id="demo-s-included-with-pi3d">
+<h1>Demo&#8217;s included with Pi3D<a class="headerlink" href="#demo-s-included-with-pi3d" title="Permalink to this headline">¶</a></h1>
+<ol class="arabic simple">
+<li><strong>ForestWalk.py</strong> Walk about a forest on a landscape generated from a bitmap</li>
+</ol>
+<ol class="arabic simple" start="2">
+<li><strong>Triceratops.py</strong> Large model loading with several bitmaps</li>
+</ol>
+<ol class="arabic simple" start="3">
+<li><strong>BuckfastAbbey.py</strong> Explore a model of the beautiful Buckfast Abbey in Buckfastleigh, Devon</li>
+</ol>
+<ol class="arabic simple" start="4">
+<li><strong>Earth.py</strong> Demonstrates semi-transparent clouds and hierarchical rotations</li>
+</ol>
+<ol class="arabic simple" start="5">
+<li><strong>Raspberry_Rain.py</strong> Raining Raspberries,  full-screen, over the desktop</li>
+</ol>
+<ol class="arabic simple" start="6">
+<li><strong>Clouds3D.py</strong> Blended sprites in perspective view</li>
+</ol>
+<ol class="arabic simple" start="7">
+<li><strong>CollisionBalls.py</strong> More bouncing balls across the screen - this time bouncing off each other on the desktop</li>
+</ol>
+<ol class="arabic simple" start="8">
+<li><strong>EnvironmentCube.py</strong> New environment cubes to try out in texture/ecubes - some high quality ones!</li>
+</ol>
+<ol class="arabic simple" start="9">
+<li><strong>RobotWalkabout.py</strong> Another off-planet example of a basic avatar robot drifting about</li>
+</ol>
+<ol class="arabic simple" start="10">
+<li><strong>Shapes.py</strong> Demos available shapes and text in a 3D context</li>
+</ol>
+<p>11) <strong>MarsStation.py</strong> Navigate around an abandoned Mars base-station with open/shut doors.
+Implements a new Level-Of-Detail (LOD) feature and TKwindow interface</p>
+<p>12) <strong>TigerTank.py</strong> Ever played World Of Tanks (WOT)? This tank emulates how a WOT tank works.
+Uses realistic modelling and LODing in a TKwindow</p>
+<ol class="arabic simple" start="13">
+<li><strong>Amazong.py</strong> Can you find yourself around the amazing maze?  Written by Paddy Gaunt.</li>
+</ol>
+<ol class="arabic simple" start="14">
+<li><strong>Pong.py</strong>  A snazzy 3D version of landscape pinball and pong against a Raspberry!   Written by Paddy Gaunt.</li>
+</ol>
+</div>
+<div class="section" id="files-and-folders-in-this-repository">
+<h1>Files and folders in this repository<a class="headerlink" href="#files-and-folders-in-this-repository" title="Permalink to this headline">¶</a></h1>
+<ol class="arabic simple">
+<li><strong>pi3d.py</strong> The main pi3d module</li>
+<li><strong>include</strong> Contains pi3d support files</li>
+<li><strong>textures</strong> Various textures to play with</li>
+<li><strong>models</strong> Demo egg models</li>
+<li><strong>fonts</strong> Bitmap fonts that can be using for drawing text</li>
+<li><strong>screenshots</strong> Example screenshots of the demos included</li>
+<li><strong>images</strong> used for ReadMe.html</li>
+<li><strong>ChangeLog.txt</strong> Latest changes of Pi3D</li>
+<li><strong>ReadMe.md</strong> This file</li>
+<li><strong>ReadMe.htm</strong> HTML readme</li>
+</ol>
+</div>
+<div class="section" id="setup-on-the-raspberry-pi">
+<h1>Setup on the Raspberry Pi<a class="headerlink" href="#setup-on-the-raspberry-pi" title="Permalink to this headline">¶</a></h1>
+<ol class="arabic simple">
+<li><strong>Memory Split setup</strong></li>
+</ol>
+<p>Although most demos work on 64MB of memory, you are strongly advised to have a 128MB of graphics memory split, especially for full-screen 3D graphics.  In the latest Raspbian build you need to edit the config.txt file (in the boot directory) and set the variable &#8216;gpu_mem=128&#8217; for 128MB of graphics memory.</p>
+<ol class="arabic simple" start="2">
+<li><strong>Install Python Imaging</strong></li>
+</ol>
+<p>Before trying any of the demos or Pi3D, you must download the Python Imaging Library as this is needed for importing any graphics used by Pi3. To install on the terminal, type:</p>
+<blockquote>
+<div>sudo apt-get install python-imaging</div></blockquote>
+<ol class="arabic simple" start="3">
+<li><strong>Install Geany to run Pi3D</strong></li>
+</ol>
+<p>Geany is by far the easiest and most compatible application to use for creating and running Python scripts. Download and install it with:</p>
+<blockquote>
+<div>sudo apt-get install geany xterm</div></blockquote>
+<ol class="arabic simple" start="4">
+<li><strong>Optionally, install tk.</strong></li>
+</ol>
+<p>Some of the demos require the tk graphics toolkit.  To download and install it:</p>
+<blockquote>
+<div>sudo apt-get install tk</div></blockquote>
+<ol class="arabic simple" start="5">
+<li><strong>Load and run</strong></li>
+</ol>
+<p>Load any of the demos into Geany and run (using the cogs icon)</p>
+</div>
+<div class="section" id="documentation">
+<h1>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h1>
+<p>A short &#8216;manual&#8217; on using pi3d can be found on this github. Please note that Pi3D functions may change significantly during it&#8217;s development.</p>
+<p>Bug reports, comments, feature requests and fixes are most welcome!</p>
+<p>Please email on <a class="reference external" href="mailto:timskillman&#37;&#52;&#48;gmail&#46;com">timskillman<span>&#64;</span>gmail<span>&#46;</span>com</a> or contact me through the Raspberry Pi forums.</p>
+</div>
+<div class="section" id="acknowledgements">
+<h1>Acknowledgements<a class="headerlink" href="#acknowledgements" title="Permalink to this headline">¶</a></h1>
+<p>Pi3D started with code based on Peter de Rivaz &#8216;pyopengles&#8217; (<a class="reference external" href="https://github.com/peterderivaz/pyopengles">https://github.com/peterderivaz/pyopengles</a>) with some tweaking from Jon Macey&#8217;s code (jonmacey.blogspot.co.uk/2012/06/).</p>
+<p>The Panda3D loaderEgg.py and LoaderObj.py modules are written by Paddy Gaunt (Copyright (c) 2013)</p>
+<p>Many Thanks, especially to Paddy Gaunt, Peter de Rivaz, Tom Swirly, Jon Macey and others who have contributed to Pi3D - keep up the good work!</p>
+<p><strong>PLEASE READ LICENSING AND COPYRIGHT NOTICES IF USING FOR COMMERCIAL PURPOSES ESPECIALLY</strong></p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Introduction to Pi3D</a></li>
+<li><a class="reference internal" href="#demo-s-included-with-pi3d">Demo&#8217;s included with Pi3D</a></li>
+<li><a class="reference internal" href="#files-and-folders-in-this-repository">Files and folders in this repository</a></li>
+<li><a class="reference internal" href="#setup-on-the-raspberry-pi">Setup on the Raspberry Pi</a></li>
+<li><a class="reference internal" href="#documentation">Documentation</a></li>
+<li><a class="reference internal" href="#acknowledgements">Acknowledgements</a></li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to pi3d&#8217;s documentation!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="pi3d.html"
+                        title="next chapter">pi3d Package</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/ReadMe.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pi3d.html" title="pi3d Package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to pi3d’s documentation!"
+             >previous</a> |</li>
+        <li><a href="index.html">pi3d 0.8 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, The pi3d team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

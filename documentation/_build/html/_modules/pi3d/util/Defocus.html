@@ -1,0 +1,170 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pi3d.util.Defocus &mdash; pi3d 0.8 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.8',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="pi3d 0.8 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">pi3d 0.8 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for pi3d.util.Defocus</h1><div class="highlight"><pre>
+<span class="kn">import</span> <span class="nn">ctypes</span>
+<span class="kn">import</span> <span class="nn">Image</span>
+
+<span class="kn">from</span> <span class="nn">pi3d.constants</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">pi3d.Shader</span> <span class="kn">import</span> <span class="n">Shader</span>
+<span class="kn">from</span> <span class="nn">pi3d.Texture</span> <span class="kn">import</span> <span class="n">Texture</span>
+
+<div class="viewcode-block" id="Defocus"><a class="viewcode-back" href="../../../pi3d.util.html#pi3d.util.Defocus.Defocus">[docs]</a><span class="k">class</span> <span class="nc">Defocus</span><span class="p">(</span><span class="n">Texture</span><span class="p">):</span>
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; calls Texture.__init__ but doesn&#39;t need to set file name as</span>
+<span class="sd">    texture generated from the framebuffer</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">super</span><span class="p">(</span><span class="n">Defocus</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="s">&quot;defocus&quot;</span><span class="p">)</span>
+    <span class="kn">from</span> <span class="nn">pi3d.Display</span> <span class="kn">import</span> <span class="n">DISPLAY</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">iy</span> <span class="o">=</span> <span class="n">DISPLAY</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">DISPLAY</span><span class="o">.</span><span class="n">height</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">im</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s">&quot;RGBA&quot;</span><span class="p">,(</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">iy</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">im</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s">&quot;RGBA&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">tostring</span><span class="p">(</span><span class="s">&#39;raw&#39;</span><span class="p">,</span> <span class="s">&quot;RGBA&quot;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">blend</span> <span class="o">=</span> <span class="bp">False</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">_tex</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_int</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">framebuffer</span> <span class="o">=</span> <span class="p">(</span><span class="n">ctypes</span><span class="o">.</span><span class="n">c_int</span> <span class="o">*</span> <span class="mi">1</span><span class="p">)()</span>
+    <span class="n">opengles</span><span class="o">.</span><span class="n">glGenFramebuffers</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">framebuffer</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">depthbuffer</span> <span class="o">=</span> <span class="p">(</span><span class="n">ctypes</span><span class="o">.</span><span class="n">c_int</span> <span class="o">*</span> <span class="mi">1</span><span class="p">)()</span>
+    <span class="n">opengles</span><span class="o">.</span><span class="n">glGenRenderbuffers</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">depthbuffer</span><span class="p">)</span>
+
+    <span class="c"># load blur shader</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">shader</span> <span class="o">=</span> <span class="n">Shader</span><span class="p">(</span><span class="s">&quot;shaders/defocus&quot;</span><span class="p">)</span>
+
+  <span class="k">def</span> <span class="nf">_load_disk</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; have to override this</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Defocus.start_blur"><a class="viewcode-back" href="../../../pi3d.util.html#pi3d.util.Defocus.Defocus.start_blur">[docs]</a>  <span class="k">def</span> <span class="nf">start_blur</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; after calling this method all object.draw()s will rendered</span>
+<span class="sd">    to this texture and not appear on the display. If you want blurred</span>
+<span class="sd">    edges you will have to capture the rendering of an object and its</span>
+<span class="sd">    background then re-draw them using the blur() method. Large objects</span>
+<span class="sd">    will obviously take a while to draw and re-draw</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">opengles</span><span class="o">.</span><span class="n">glBindFramebuffer</span><span class="p">(</span><span class="n">GL_FRAMEBUFFER</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">framebuffer</span><span class="p">)</span>
+    <span class="n">opengles</span><span class="o">.</span><span class="n">glFramebufferTexture2D</span><span class="p">(</span><span class="n">GL_FRAMEBUFFER</span><span class="p">,</span> <span class="n">GL_COLOR_ATTACHMENT0</span><span class="p">,</span>
+                <span class="n">GL_TEXTURE_2D</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tex</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="c">#thanks to PeterO c.o. RPi forum for pointing out missing depth attchmnt</span>
+    <span class="n">opengles</span><span class="o">.</span><span class="n">glBindRenderbuffer</span><span class="p">(</span><span class="n">GL_RENDERBUFFER</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">depthbuffer</span><span class="p">)</span>
+    <span class="n">opengles</span><span class="o">.</span><span class="n">glRenderbufferStorage</span><span class="p">(</span><span class="n">GL_RENDERBUFFER</span><span class="p">,</span> <span class="n">GL_DEPTH_COMPONENT16</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">iy</span><span class="p">)</span>
+    <span class="n">opengles</span><span class="o">.</span><span class="n">glFramebufferRenderbuffer</span><span class="p">(</span><span class="n">GL_FRAMEBUFFER</span><span class="p">,</span> <span class="n">GL_DEPTH_ATTACHMENT</span><span class="p">,</span>
+                <span class="n">GL_RENDERBUFFER</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">depthbuffer</span><span class="p">)</span>
+    <span class="n">opengles</span><span class="o">.</span><span class="n">glClear</span><span class="p">(</span><span class="n">GL_DEPTH_BUFFER_BIT</span><span class="p">)</span>
+
+    <span class="n">opengles</span><span class="o">.</span><span class="n">glEnable</span><span class="p">(</span><span class="n">GL_TEXTURE_2D</span><span class="p">)</span>
+    <span class="n">opengles</span><span class="o">.</span><span class="n">glActiveTexture</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="c">#assert opengles.glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE</span>
+</div>
+<div class="viewcode-block" id="Defocus.end_blur"><a class="viewcode-back" href="../../../pi3d.util.html#pi3d.util.Defocus.Defocus.end_blur">[docs]</a>  <span class="k">def</span> <span class="nf">end_blur</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; stop capturing to texture and resume normal rendering to default</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">opengles</span><span class="o">.</span><span class="n">glBindTexture</span><span class="p">(</span><span class="n">GL_TEXTURE_2D</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">opengles</span><span class="o">.</span><span class="n">glBindFramebuffer</span><span class="p">(</span><span class="n">GL_FRAMEBUFFER</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Defocus.blur"><a class="viewcode-back" href="../../../pi3d.util.html#pi3d.util.Defocus.Defocus.blur">[docs]</a>  <span class="k">def</span> <span class="nf">blur</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">dist_fr</span><span class="p">,</span> <span class="n">dist_to</span><span class="p">,</span> <span class="n">amount</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; draw the shape using the saved texture</span>
+<span class="sd">    Arguments:</span>
+<span class="sd">    shape--Shape object that will be drawn</span>
+<span class="sd">    dist_fr--distance from zero plane that will be in focus, float</span>
+<span class="sd">    dist_to--distance beyond which everything will be at max blur, float</span>
+<span class="sd">    amount--degree of max blur, float. Values over 5 will cause banding</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">shape</span><span class="o">.</span><span class="n">unif</span><span class="p">[</span><span class="mi">42</span><span class="p">]</span> <span class="o">=</span> <span class="n">dist_fr</span> <span class="c"># shader unif[14]</span>
+    <span class="n">shape</span><span class="o">.</span><span class="n">unif</span><span class="p">[</span><span class="mi">43</span><span class="p">]</span> <span class="o">=</span> <span class="n">dist_to</span>
+    <span class="n">shape</span><span class="o">.</span><span class="n">unif</span><span class="p">[</span><span class="mi">44</span><span class="p">]</span> <span class="o">=</span> <span class="n">amount</span>
+    <span class="n">shape</span><span class="o">.</span><span class="n">unif</span><span class="p">[</span><span class="mi">45</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span> <span class="c"># shader unif[15]</span>
+    <span class="n">shape</span><span class="o">.</span><span class="n">unif</span><span class="p">[</span><span class="mi">46</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">iy</span>
+    <span class="n">shape</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shader</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="p">],</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">pi3d 0.8 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, The pi3d team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
