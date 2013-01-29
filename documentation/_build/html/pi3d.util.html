@@ -219,10 +219,10 @@ amount&#8211;degree of max blur, float. Values over 5 will cause banding</p>
 <dl class="function">
 <dt id="pi3d.util.Screenshot.screenshot">
 <tt class="descclassname">pi3d.util.Screenshot.</tt><tt class="descname">screenshot</tt><big>(</big><em>filestring</em><big>)</big><a class="reference internal" href="_modules/pi3d/util/Screenshot.html#screenshot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.util.Screenshot.screenshot" title="Permalink to this definition">¶</a></dt>
-<dd><p>save what in the display to a file
-is will save whatever has been rendered prior to this call since the last
-Display.clear()
-the file will be saved in the top directory if you don&#8217;t add a path</p>
+<dd><p>Save whatever&#8217;s in the display to a file.</p>
+<p>Will save whatever has been rendered since the last call to Display.clear().</p>
+<p>The file will be saved in the top-level directory if you don&#8217;t add a path
+to it!</p>
 </dd></dl>
 
 </div>
@@ -241,6 +241,16 @@ the file will be saved in the top directory if you don&#8217;t add a path</p>
 <dt id="pi3d.util.TkWin.TkWin">
 <em class="property">class </em><tt class="descclassname">pi3d.util.TkWin.</tt><tt class="descname">TkWin</tt><big>(</big><em>parent</em>, <em>title</em>, <em>width</em>, <em>height</em><big>)</big><a class="reference internal" href="_modules/pi3d/util/TkWin.html#TkWin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.util.TkWin.TkWin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">Tkinter.Tk</span></tt></p>
+<p><em>TkWin</em> encapsulates a Tk window and keeps track of the mouse and keyboard.</p>
+<p>Arguments:</p>
+<dl class="docutils">
+<dt><em>parent</em></dt>
+<dd>Parent Tk window or Null for none.</dd>
+<dt><em>title</em></dt>
+<dd>Title for window.</dd>
+<dt><em>width, height</em></dt>
+<dd>Dimensions of window.</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -268,27 +278,47 @@ the file will be saved in the top directory if you don&#8217;t add a path</p>
 <dl class="function">
 <dt id="pi3d.util.Utility.sqsum">
 <tt class="descclassname">pi3d.util.Utility.</tt><tt class="descname">sqsum</tt><big>(</big><em>*args</em><big>)</big><a class="reference internal" href="_modules/pi3d/util/Utility.html#sqsum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.util.Utility.sqsum" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Return the sum of the squares of its arguments.</p>
+<p>DEPRECATED:  use numpy.dot(x, x).</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="pi3d.util.Utility.magnitude">
 <tt class="descclassname">pi3d.util.Utility.</tt><tt class="descname">magnitude</tt><big>(</big><em>*args</em><big>)</big><a class="reference internal" href="_modules/pi3d/util/Utility.html#magnitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.util.Utility.magnitude" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Return the magnitude (root mean square) of the vector.</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="pi3d.util.Utility.distance">
 <tt class="descclassname">pi3d.util.Utility.</tt><tt class="descname">distance</tt><big>(</big><em>v1</em>, <em>v2</em><big>)</big><a class="reference internal" href="_modules/pi3d/util/Utility.html#distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.util.Utility.distance" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Return the distance between two points.</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="pi3d.util.Utility.from_polar">
 <tt class="descclassname">pi3d.util.Utility.</tt><tt class="descname">from_polar</tt><big>(</big><em>direction=0.0</em>, <em>magnitude=1.0</em><big>)</big><a class="reference internal" href="_modules/pi3d/util/Utility.html#from_polar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.util.Utility.from_polar" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Convert polar coordinates into Cartesian (x, y) coordinates.</p>
+<p>Arguments:</p>
+<dl class="docutils">
+<dt><em>direction</em></dt>
+<dd>Vector angle in degrees.</dd>
+<dt><em>magnitude</em></dt>
+<dd>Vector length.</dd>
+</dl>
+</dd></dl>
 
 <dl class="function">
 <dt id="pi3d.util.Utility.from_polar_rad">
 <tt class="descclassname">pi3d.util.Utility.</tt><tt class="descname">from_polar_rad</tt><big>(</big><em>direction=0.0</em>, <em>magnitude=1.0</em><big>)</big><a class="reference internal" href="_modules/pi3d/util/Utility.html#from_polar_rad"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.util.Utility.from_polar_rad" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Convert polar coordinates into Cartesian (x, y) coordinates.</p>
+<p>Arguments:</p>
+<dl class="docutils">
+<dt><em>direction</em></dt>
+<dd>Vector angle in radians.</dd>
+<dt><em>magnitude</em></dt>
+<dd>Vector length.</dd>
+</dl>
+</dd></dl>
 
 <dl class="function">
 <dt id="pi3d.util.Utility.load_identity">
@@ -312,12 +342,12 @@ the file will be saved in the top directory if you don&#8217;t add a path</p>
 
 <dl class="function">
 <dt id="pi3d.util.Utility.vec_sub">
-<tt class="descclassname">pi3d.util.Utility.</tt><tt class="descname">vec_sub</tt><big>(</big><em>A</em>, <em>B</em><big>)</big><a class="reference internal" href="_modules/pi3d/util/Utility.html#vec_sub"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.util.Utility.vec_sub" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">pi3d.util.Utility.</tt><tt class="descname">vec_sub</tt><big>(</big><em>x</em>, <em>y</em><big>)</big><a class="reference internal" href="_modules/pi3d/util/Utility.html#vec_sub"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.util.Utility.vec_sub" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="pi3d.util.Utility.vec_dot">
-<tt class="descclassname">pi3d.util.Utility.</tt><tt class="descname">vec_dot</tt><big>(</big><em>A</em>, <em>B</em><big>)</big><a class="reference internal" href="_modules/pi3d/util/Utility.html#vec_dot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.util.Utility.vec_dot" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">pi3d.util.Utility.</tt><tt class="descname">vec_dot</tt><big>(</big><em>x</em>, <em>y</em><big>)</big><a class="reference internal" href="_modules/pi3d/util/Utility.html#vec_dot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.util.Utility.vec_dot" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
@@ -406,7 +436,7 @@ No return value</p>
 <dd>(x,y,z) tuple or array of model position</dd>
 <dt><em>mlist</em></dt>
 <dd>array of arrays with distance and model pairs. i.e. [[20, model1],[100, model2],[250, None]]
-Model is used up to that distance until the last entry then for all distances beyond, 
+Model is used up to that distance until the last entry then for all distances beyond,
 &#8216;None&#8217; can be used to draw nothing at a certain distance</dd>
 </dl>
 </dd>

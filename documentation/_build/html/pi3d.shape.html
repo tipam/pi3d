@@ -239,12 +239,12 @@ Each cell is width on the x axis and depth on the z axis, and the walls are heig
 <p>The function returns a merged shape with the entire building in it.</p>
 <dl class="attribute">
 <dt id="pi3d.shape.Building.Building.baseScheme">
-<tt class="descname">baseScheme</tt><em class="property"> = {'#models': 1, (0, 0, 'edge'): [['W', 0], ['CE', 0]], (1, 0, 'edge'): [['W', 0], ['CE', 0]], (0, None): [['R', 0]], (1, None): [['R', 0], ['C', 0]], (1, 0): [['W', 0], ['CE', 0]]}</em><a class="headerlink" href="#pi3d.shape.Building.Building.baseScheme" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">baseScheme</tt><em class="property"> = {(0, None): [['R', 0]], '#models': 1, (0, 0, 'edge'): [['W', 0], ['CE', 0]], (1, 0, 'edge'): [['W', 0], ['CE', 0]], (1, 0): [['W', 0], ['CE', 0]], (1, None): [['R', 0], ['C', 0]]}</em><a class="headerlink" href="#pi3d.shape.Building.Building.baseScheme" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="pi3d.shape.Building.Building.openSectionScheme">
-<tt class="descname">openSectionScheme</tt><em class="property"> = {(1, 2): [['CE', 0]], (1, 0, 'edge'): [['W', 0], ['CE', 0]], (2, 0, 'edge'): [['W', 0], ['CE', 0]], (0, None): [['R', 0]], (2, 0): [['W', 0]], (1, 0): [['W', 0], ['CE', 0]], '#models': 1, (2, 2, 'edge'): [['CE', 0]], (0, 0, 'edge'): [['W', 0], ['CE', 0]], (2, None): [['C', 0], ['R', 0]]}</em><a class="headerlink" href="#pi3d.shape.Building.Building.openSectionScheme" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">openSectionScheme</tt><em class="property"> = {(1, 2): [['CE', 0]], (2, None): [['C', 0], ['R', 0]], (0, None): [['R', 0]], (2, 0, 'edge'): [['W', 0], ['CE', 0]], (1, 0, 'edge'): [['W', 0], ['CE', 0]], (1, 0): [['W', 0], ['CE', 0]], (2, 0): [['W', 0]], '#models': 1, (2, 2, 'edge'): [['CE', 0]], (0, 0, 'edge'): [['W', 0], ['CE', 0]]}</em><a class="headerlink" href="#pi3d.shape.Building.Building.openSectionScheme" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -582,7 +582,7 @@ height &#8211; distance between end faces in the y direction</p>
 <span id="helix-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">Helix</span></tt> Module<a class="headerlink" href="#module-pi3d.shape.Helix" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="pi3d.shape.Helix.Helix">
-<em class="property">class </em><tt class="descclassname">pi3d.shape.Helix.</tt><tt class="descname">Helix</tt><big>(</big><em>camera=None</em>, <em>light=None</em>, <em>radius=1.0</em>, <em>thickness=0.2</em>, <em>ringrots=6</em>, <em>sides=12</em>, <em>rise=1.0</em>, <em>loops=2.0</em>, <em>name=''</em>, <em>x=0.0</em>, <em>y=0.0</em>, <em>z=0.0</em>, <em>rx=0.0</em>, <em>ry=0.0</em>, <em>rz=0.0</em>, <em>sx=1.0</em>, <em>sy=1.0</em>, <em>sz=1.0</em>, <em>cx=0.0</em>, <em>cy=0.0</em>, <em>cz=0.0</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Helix.html#Helix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Helix.Helix" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">pi3d.shape.Helix.</tt><tt class="descname">Helix</tt><big>(</big><em>camera=None</em>, <em>light=None</em>, <em>radius=1.0</em>, <em>thickness=0.20000000000000001</em>, <em>ringrots=6</em>, <em>sides=12</em>, <em>rise=1.0</em>, <em>loops=2.0</em>, <em>name=''</em>, <em>x=0.0</em>, <em>y=0.0</em>, <em>z=0.0</em>, <em>rx=0.0</em>, <em>ry=0.0</em>, <em>rz=0.0</em>, <em>sx=1.0</em>, <em>sy=1.0</em>, <em>sz=1.0</em>, <em>cx=0.0</em>, <em>cy=0.0</em>, <em>cz=0.0</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/Helix.html#Helix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.Helix.Helix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="pi3d.html#pi3d.Shape.Shape" title="pi3d.Shape.Shape"><tt class="xref py py-class docutils literal"><span class="pre">pi3d.Shape.Shape</span></tt></a></p>
 <p>3d model inherits from Shape</p>
 <p>uses standard constructor for Shape extra Keyword arguments:
@@ -758,7 +758,7 @@ h &#8211; height</p>
 <span id="tcone-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">TCone</span></tt> Module<a class="headerlink" href="#module-pi3d.shape.TCone" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="pi3d.shape.TCone.TCone">
-<em class="property">class </em><tt class="descclassname">pi3d.shape.TCone.</tt><tt class="descname">TCone</tt><big>(</big><em>camera=None</em>, <em>light=None</em>, <em>radiusBot=1.2</em>, <em>radiusTop=0.8</em>, <em>height=2.0</em>, <em>sides=12</em>, <em>name=''</em>, <em>x=0.0</em>, <em>y=0.0</em>, <em>z=0.0</em>, <em>rx=0.0</em>, <em>ry=0.0</em>, <em>rz=0.0</em>, <em>sx=1.0</em>, <em>sy=1.0</em>, <em>sz=1.0</em>, <em>cx=0.0</em>, <em>cy=0.0</em>, <em>cz=0.0</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/TCone.html#TCone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.TCone.TCone" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">pi3d.shape.TCone.</tt><tt class="descname">TCone</tt><big>(</big><em>camera=None</em>, <em>light=None</em>, <em>radiusBot=1.2</em>, <em>radiusTop=0.80000000000000004</em>, <em>height=2.0</em>, <em>sides=12</em>, <em>name=''</em>, <em>x=0.0</em>, <em>y=0.0</em>, <em>z=0.0</em>, <em>rx=0.0</em>, <em>ry=0.0</em>, <em>rz=0.0</em>, <em>sx=1.0</em>, <em>sy=1.0</em>, <em>sz=1.0</em>, <em>cx=0.0</em>, <em>cy=0.0</em>, <em>cz=0.0</em><big>)</big><a class="reference internal" href="_modules/pi3d/shape/TCone.html#TCone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.shape.TCone.TCone" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="pi3d.html#pi3d.Shape.Shape" title="pi3d.Shape.Shape"><tt class="xref py py-class docutils literal"><span class="pre">pi3d.Shape.Shape</span></tt></a></p>
 <p>3d model inherits from Shape, creates truncated cone axis y direction</p>
 <p>uses standard constructor for Shape extra Keyword arguments:

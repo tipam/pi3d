@@ -136,20 +136,26 @@ vertex index / / normal index</dd>
 <dl class="attribute">
 <dt id="pi3d.loader.parse_mtl.Materials.Prop.func">
 <tt class="descname">func</tt><a class="headerlink" href="#pi3d.loader.parse_mtl.Materials.Prop.func" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 1</p>
+<dd><p>itemgetter(item, ...) &#8211;&gt; itemgetter object</p>
+<p>Return a callable object that fetches the given item(s) from its operand.
+After, f=itemgetter(2), the call f(r) returns r[2].
+After, g=itemgetter(2,5,3), the call g(r) returns (r[2], r[5], r[3])</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pi3d.loader.parse_mtl.Materials.Prop.name">
 <tt class="descname">name</tt><a class="headerlink" href="#pi3d.loader.parse_mtl.Materials.Prop.name" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 0</p>
+<dd><p>itemgetter(item, ...) &#8211;&gt; itemgetter object</p>
+<p>Return a callable object that fetches the given item(s) from its operand.
+After, f=itemgetter(2), the call f(r) returns r[2].
+After, g=itemgetter(2,5,3), the call g(r) returns (r[2], r[5], r[3])</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pi3d.loader.parse_mtl.Materials.PROPERTIES">
-<tt class="descclassname">Materials.</tt><tt class="descname">PROPERTIES</tt><em class="property"> = {'Ni': Prop(name='opticalDensity', func=&lt;function &lt;lambda&gt; at 0x332f2f0&gt;), 'Ka': Prop(name='colorAmbient', func=&lt;function &lt;lambda&gt; at 0x332f2b0&gt;), 'Kd': Prop(name='colorDiffuse', func=&lt;function &lt;lambda&gt; at 0x332f2b0&gt;), 'bump': Prop(name='mapBump', func=&lt;function &lt;lambda&gt; at 0x332f370&gt;), 'Tr': Prop(name='transparency', func=&lt;function &lt;lambda&gt; at 0x332f2f0&gt;), 'illum': Prop(name='illumination', func=&lt;function &lt;lambda&gt; at 0x332f330&gt;), 'Ks': Prop(name='colorSpecular', func=&lt;function &lt;lambda&gt; at 0x332f2b0&gt;), 'Ns': Prop(name='specularCoef', func=&lt;function &lt;lambda&gt; at 0x332f2f0&gt;), 'map_Kd': Prop(name='mapDiffuse', func=&lt;function &lt;lambda&gt; at 0x332f370&gt;), 'd': Prop(name='transparency', func=&lt;function &lt;lambda&gt; at 0x332f2f0&gt;), 'map_Ka': Prop(name='mapAmbient', func=&lt;function &lt;lambda&gt; at 0x332f370&gt;), 'map_d': Prop(name='mapAlpha', func=&lt;function &lt;lambda&gt; at 0x332f370&gt;), 'map_bump': Prop(name='mapBump', func=&lt;function &lt;lambda&gt; at 0x332f370&gt;), 'map_Ks': Prop(name='mapSpecular', func=&lt;function &lt;lambda&gt; at 0x332f370&gt;)}</em><a class="headerlink" href="#pi3d.loader.parse_mtl.Materials.PROPERTIES" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">Materials.</tt><tt class="descname">PROPERTIES</tt><em class="property"> = {'Ni': Prop(name='opticalDensity', func=&lt;function &lt;lambda&gt; at 0x1029586e0&gt;), 'Ka': Prop(name='colorAmbient', func=&lt;function &lt;lambda&gt; at 0x102958668&gt;), 'Kd': Prop(name='colorDiffuse', func=&lt;function &lt;lambda&gt; at 0x102958668&gt;), 'bump': Prop(name='mapBump', func=&lt;function &lt;lambda&gt; at 0x1029587d0&gt;), 'Tr': Prop(name='transparency', func=&lt;function &lt;lambda&gt; at 0x1029586e0&gt;), 'illum': Prop(name='illumination', func=&lt;function &lt;lambda&gt; at 0x102958758&gt;), 'Ks': Prop(name='colorSpecular', func=&lt;function &lt;lambda&gt; at 0x102958668&gt;), 'Ns': Prop(name='specularCoef', func=&lt;function &lt;lambda&gt; at 0x1029586e0&gt;), 'map_Kd': Prop(name='mapDiffuse', func=&lt;function &lt;lambda&gt; at 0x1029587d0&gt;), 'd': Prop(name='transparency', func=&lt;function &lt;lambda&gt; at 0x1029586e0&gt;), 'map_Ka': Prop(name='mapAmbient', func=&lt;function &lt;lambda&gt; at 0x1029587d0&gt;), 'map_d': Prop(name='mapAlpha', func=&lt;function &lt;lambda&gt; at 0x1029587d0&gt;), 'map_bump': Prop(name='mapBump', func=&lt;function &lt;lambda&gt; at 0x1029587d0&gt;), 'map_Ks': Prop(name='mapSpecular', func=&lt;function &lt;lambda&gt; at 0x1029587d0&gt;)}</em><a class="headerlink" href="#pi3d.loader.parse_mtl.Materials.PROPERTIES" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -186,7 +192,7 @@ vertex index / / normal index</dd>
 <dl class="class">
 <dt id="pi3d.loader.parse_mtl_test.ParseMtlTest">
 <em class="property">class </em><tt class="descclassname">pi3d.loader.parse_mtl_test.</tt><tt class="descname">ParseMtlTest</tt><big>(</big><em>methodName='runTest'</em><big>)</big><a class="reference internal" href="_modules/pi3d/loader/parse_mtl_test.html#ParseMtlTest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pi3d.loader.parse_mtl_test.ParseMtlTest" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></tt></p>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">unittest.TestCase</span></tt></p>
 <p>Create an instance of the class that will use the named test
 method when executed. Raises a ValueError if the instance does
 not have a method with the specified name.</p>
