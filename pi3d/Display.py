@@ -187,7 +187,6 @@ class Display(object):
 
 def create(is_3d=True, x=None, y=None, w=None, h=None, near=None, far=None,
            aspect=DEFAULT_ASPECT, depth=DEFAULT_DEPTH, background=None,
-           tk=False, window_title='', window_parent=None, mouse=False):
            tk=False, window_title='', window_parent=None, mouse=False,
            frames_per_second=None):
   """
