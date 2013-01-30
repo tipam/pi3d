@@ -48,8 +48,6 @@ while DISPLAY.loop_running():
     for ball2 in SPRITES[0:i]:
       ball1.bounce_collision(ball2)
 
-  k = KEYBOARD.read()
-  if k == 27:
+  if KEYBOARD.read() == 27:
     DISPLAY.stop()
-  elif k == 112: 
-    pi3d.screenshot("collision1.jpg")
+  elif 
