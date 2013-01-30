@@ -6,7 +6,6 @@ import threading
 import traceback
 
 from echomesh.util import Log
-from echomesh.util.Locker import Locker
 
 from pi3d.constants import *
 from pi3d.util import Utility
@@ -138,12 +137,12 @@ class Display(object):
 
   def add_sprites(self, *sprites):
     """Add one or more sprites to this Display."""
-    with Locker(self.lock):
+    with self.lock:
       self.sprites_to_load.update(sprites)
 
   def remove_sprites(self, *sprites):
     """Remove one or more sprites from this Display."""
-    with Locker(self.lock):
+    with self.lock:
       self.sprites_to_unload.update(sprites)
 
   def stop(self):
@@ -199,13 +198,13 @@ class Display(object):
     # TODO(rec):  check if the window was resized and resize it, removing
     # code from MegaStation to here.
     self.clear()
-    with Locker(self.lock):
+    with self.lock:
       self.sprites_to_load, to_load = set(), self.sprites_to_load
       self.sprites.extend(to_load)
     self._for_each_sprite(lambda s: s.load_opengl(), to_load)
 
   def _loop_end(self):
-    with Locker(self.lock):
+    with self.lock:
       self.sprites_to_unload, to_unload = set(), self.sprites_to_unload
       if to_unload:
         self.sprites = (s for s in self.sprites if s in to_unload)

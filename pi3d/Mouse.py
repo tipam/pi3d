@@ -2,7 +2,6 @@ import signal
 import threading
 import traceback
 
-from echomesh.util.Locker import Locker
 from echomesh.util import Log
 
 LOGGER = Log.logger(__name__)
@@ -41,7 +40,7 @@ class _Mouse(threading.Thread):
     self.reset()
 
   def reset(self):
-    with Locker(self.lock):
+    with self.lock:
       self._x = self._y = self._dx = self._dy = 0
     self.button = False
 
@@ -56,11 +55,11 @@ class _Mouse(threading.Thread):
     self.fd.close()
 
   def position(self):
-    with Locker(self.lock):
+    with self.lock:
       return self._x, self._y
 
   def velocity(self):
-    with Locker(self.lock):
+    with self.lock:
       return self._dx, self._dy
 
   def _check_event(self):
@@ -82,7 +81,7 @@ class _Mouse(threading.Thread):
           x = min(max(x, 0), self.width - 1)
           y = min(max(y, 0), self.height - 1)
 
-        with Locker(self.lock):
+        with self.lock:
           self._x, self._y, self._dx, self._dy = x, y, dx, dy
 
     else:
