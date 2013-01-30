@@ -31,11 +31,11 @@ def sqsum(*args):
 
 def magnitude(*args):
   """Return the magnitude (root mean square) of the vector."""
-  return numpy.sqrt(numpy.dot(*args))
+  return numpy.sqrt(numpy.dot(args, args))
 
 def distance(v1, v2):
   """Return the distance between two points."""
-  return magnitude(subtract(v2, v1))
+  return magnitude(*subtract(v2, v1))
 
 def from_polar(direction=0.0, magnitude=1.0):
   """
