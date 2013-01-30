@@ -94,7 +94,10 @@ while DISPLAY.loop_running():
     next_time = time.time() + 2.0
   tick+=1
 
-  if mykeys.read() == 27:
+  k = mykeys.read()
+  if k==112: 
+    screenshot("blur1.jpg")
+  elif k==27:
     mykeys.close()
     DISPLAY.destroy()
     break

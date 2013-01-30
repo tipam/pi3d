@@ -166,12 +166,8 @@ walk = True
 
 angle = 0
 
-#################################################### LOOP ###############################################
-
 CAMERA = Camera.instance()
-while 1:
-  DISPLAY.clear()
-
+while DISPLAY.loop_running():
   # movement of camera
   mx, my = mymouse.position()
   rot -= (mx-omx)*0.2
@@ -271,8 +267,8 @@ while 1:
       zm += dz
       ym += dy
       hp -= 1
-    elif k==102: #f key to fire
-      missile.fire(xm, ym, zm, -dx, -math.sin(tilt*rads), -dz, 10)
+    #elif k==102: #f key to fire
+    #  missile.fire(xm, ym, zm, -dx, -math.sin(tilt*rads), -dz, 10)
     elif k==27: #Escape key
       DISPLAY.destroy()
       mykeys.close()
@@ -280,6 +276,5 @@ while 1:
       break
   # this will save a little time each loop if the camera is not moved
   CAMERA.was_moved = False
-  DISPLAY.swapBuffers()
 
 quit()

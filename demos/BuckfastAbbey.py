@@ -71,8 +71,7 @@ ym = avhgt
 omx, omy = mymouse.position()
 CAMERA = Camera.instance()
 
-while 1:
-  DISPLAY.clear()
+while DISPLAY.loop_running():
 
   CAMERA.reset()
   CAMERA.rotate(tilt, 0, 0)
@@ -118,5 +117,4 @@ while 1:
     else:
       print(k)
 
-  DISPLAY.swapBuffers()
 quit()

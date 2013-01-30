@@ -29,7 +29,7 @@ while DISPLAY.loop_running():
   k = mykeys.read()
   if k >-1:
     if k==112:
-      screenshot('teapot.jpg')
+      pi3d.screenshot('teapot.jpg')
     elif k==27:
       mykeys.close()
       DISPLAY.destroy()

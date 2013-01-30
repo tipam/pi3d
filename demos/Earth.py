@@ -63,7 +63,8 @@ while DISPLAY.loop_running():
 
   k = mykeys.read()
   if k >-1:
-    if k==112: screenshot("earthPic.jpg")
+    if k==112:
+      pi3d.screenshot("earth1.jpg")
     elif k==27:
       mykeys.close()
       DISPLAY.stop()

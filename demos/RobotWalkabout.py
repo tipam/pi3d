@@ -102,8 +102,7 @@ omx, omy = mymouse.position()
 
 # Display scene and rotate cuboid
 CAMERA = Camera.instance()
-while 1:
-  DISPLAY.clear()
+while DISPLAY.loop_running():
 
   CAMERA.reset()
   #tilt can be used as a means to prevent the view from going under the landscape!
@@ -162,5 +161,3 @@ while 1:
       break
     else:
         print(k)
-
-  DISPLAY.swapBuffers()

@@ -34,8 +34,8 @@ DISPLAY = Display.create(x=win.winx, y=win.winy, w=winw, h=winh - bord,
 shader = Shader("shaders/uv_reflect")
 flatsh = Shader("shaders/uv_flat")
 #############################
-ectex = EnvironmentCube.loadECfiles("textures/ecubes/RedPlanet", "redplanet_256", "png", True)
-myecube = EnvironmentCube.EnvironmentCube(size=1800.0, maptype="FACES")
+ectex = loadECfiles("textures/ecubes/RedPlanet", "redplanet_256", "png", True)
+myecube = EnvironmentCube(size=1800.0, maptype="FACES")
 myecube.set_draw_details(flatsh,ectex)
 
 
