@@ -112,9 +112,7 @@ inputs.get_mouse_movement()
 frame = 400
 record = False
 CAMERA = Camera.instance()
-while not inputs.key_state("KEY_ESC"):
-  DISPLAY.clear()
-
+while DISPLAY.loop_running() and not inputs.key_state("KEY_ESC"):
   CAMERA.reset()
   CAMERA.rotate(tilt, rot, 0)
   CAMERA.position((man.x(), man.y(), man.z() - aveyeleveladjust))
@@ -195,9 +193,6 @@ while not inputs.key_state("KEY_ESC"):
     scshots += 1
   if inputs.key_state("KEY_ENTER"):  #key RETURN
     mc = 0
-
-  DISPLAY.swapBuffers()
-
 
 inputs.release()
 DISPLAY.destroy()

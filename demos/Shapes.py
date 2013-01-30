@@ -112,7 +112,7 @@ while DISPLAY.loop_running():
 
   k = mykeys.read()
   if k >-1:
-    if k==112: screenshot("shapesPic.jpg")
+    if k==112: pi3d.screenshot("shapesPic.jpg")
     elif k==27:
       mykeys.close()
       DISPLAY.destroy()

@@ -60,7 +60,7 @@ shade2d = Shader('shaders/2d_flat')
 # create splash screen and draw it
 splash = ImageSprite("textures/tiger_splash.jpg", shade2d, w=10, h=10, z=0.2)
 splash.draw()
-DISPLAY.swapBuffers()
+DISPLAY._swapBuffers()
 
 # create environment cube
 ectex = EnvironmentCube.loadECfiles('textures/ecubes/Miramar', 'miramar_256',

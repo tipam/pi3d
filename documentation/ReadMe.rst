@@ -26,36 +26,35 @@ Demo's included with Pi3D
 =========================
 
 1) **ForestWalk.py** Walk about a forest on a landscape generated from a bitmap
-.. image: images/ForestWalk_sml.png
+.. image: images/forestwalk_sml.png
 2) **Triceratops.py** Large model loading with several bitmaps
-.. image: images/Triceratops_sml.png
+.. image: images/triceratops_sml.png
 3) **BuckfastAbbey.py** Explore a model of the beautiful Buckfast Abbey in
 Buckfastleigh, Devon, England
-.. image: images/BuckfastAbbey_sml.png
+.. image: images/buckfast_sml.png
 4) **Earth.py** Demonstrates semi-transparent clouds and hierarchical rotations
-.. image: images/earthPic_sml.png
+.. image: images/earth_sml.png
 5) **Raspberry_Rain.py** Raining Raspberries,  full-screen, over the desktop
-.. image: images/raspberryRain_sml.png
+.. image: images/raspberryrain_sml.png
 6) **Clouds3D.py** Blended sprites in perspective view
-.. image: images/clouds3D_sml.png
+.. image: images/clouds3d_sml.png
 7) **CollisionBalls.py** More bouncing balls across the screen - this time
 bouncing off each other on the desktop
-.. image: images/bouncingballs_sml.png
 8) **EnvironmentCube.py** New environment cubes to try out in texture/ecubes -
 some high quality ones!
 .. image: images/envcube_sml.png
 9) **RobotWalkabout.py** Another off-planet example of a basic avatar robot
 drifting about
-.. image: images/walkaboutRobot_sml.png
+.. image: images/walkabout_sml.png
 10) **Shapes.py** Demos available shapes and text in a 3D context
 .. image: images/shapes_sml.png
 11) **MarsStation.py** Navigate around an abandoned Mars base-station with
 open/shut doors. Implements a new Level-Of-Detail (LOD) feature and TKwindow
 interface
-.. image: images/MegaStation_sml.png)
+.. image: images/marsstation_sml.png)
 12) **TigerTank.py** Ever played World Of Tanks (WOT)? This tank emulates how
 a WOT tank works. Uses realistic modelling in a TKwindow
-.. image: images/TigerTank_sm.png
+.. image: images/tigertank_sml.png
 13) **Amazing.py** Can you find yourself around the amazing maze?
 .. image: images/amazing_sml.png
 14) **Pong.py**  A snazzy 3D version of landscape pinball and pong against
@@ -63,11 +62,19 @@ a Raspberry!
 .. image: images/pong_sml.png
 15) **Blur.py** Simulates giving the camera a focal distance and blurs nearer
 and further objects
-16) **Silo.py** Uses the Building class to create a claustrophobic maze set
+.. image: images/blur_sml.png
+16) **LoadModelObj.py** Loads a model from obj file (quicker) and applies
+a normal map and relfection map
+.. image: images/teapot_sml.png
+17) **Silo.py** Uses the Building class to create a claustrophobic maze set
 in the desert.
-17) **ClashWalk.py** The graphics processor calculates where the camera can
+.. image: images/silo_sml.png
+18) **ClashWalk.py** The graphics processor calculates where the camera can
 or cannot go depending on what is drawn in front of it. Potentially useful for
 first person navigation
+19) **Water.py** A series of wave normal maps are used to animate a surface
+and produce a realistic moving reflection.
+.. image: images/water_sml.png
 
 Files and folders in this repository
 ====================================

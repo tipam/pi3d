@@ -120,10 +120,12 @@ while DISPLAY.loop_running():
   #screenshot("/media/E856-DA25/New/fr%03d.jpg" % fr)
   #fr += 1
 
-  if mykeys.read() == 27:
+  k = mykeys.read()
+  if k==112: 
+    screenshot("water1.jpg")
+  elif k==27:    
     mykeys.close()
     DISPLAY.destroy()
     break
-
 
 quit()

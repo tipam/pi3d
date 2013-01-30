@@ -62,6 +62,7 @@ next_time = time.time() + tm
 # Fetch key presses
 mykeys = Keyboard()
 CAMERA = Camera.instance()
+CAMERA.was_moved = False #to save a tiny bit of work each loop
 
 while DISPLAY.loop_running():
   slide[pici].draw()
@@ -78,11 +79,4 @@ while DISPLAY.loop_running():
       mykeys.close()
       DISPLAY.stop()
       break
-    elif k==97: #a
-      dist-=1
-      rasp.position(0, 0, dist)
-    elif k==100: #d
-      dist+=1
-      rasp.position(0, 0, dist)
 
-  CAMERA.was_moved = False #to save a tiny bit of work each loop
