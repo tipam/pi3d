@@ -6,7 +6,6 @@ import threading
 import traceback
 
 from echomesh.util import Log
-from echomesh.util.Locker import Locker
 
 from pi3d.constants import *
 from pi3d.util import Utility
@@ -63,8 +62,50 @@ class Display(object):
     LOGGER.info(STARTUP_MESSAGE)
 
   def loop_running(self):
-    """
-    *loop_running* is the main event loop for the Display.
+    """*loop_running* is the main event loop for the Display.
+
+    Most pi3d code will look something like this::
+
+      DISPLAY = Display.create()
+
+      # Initialize objects and variables here.
+      # ...
+
+      while DISPLAY.loop_running():
+        # Update the frame, using DISPLAY.time for the current time.
+        # ...
+
+        # Check for quit, then call DISPLAY.stop.
+        if some_quit_condition():
+          DISPLAY.stop()
+
+    ``Display.loop_running()`` **must** be called on the main Python thread,
+    or else white screens and program crashes are likely.
+
+    The Display loop can run in two different modes - *free* or *framed*.
+
+    If ``DISPLAY.frames_per_second`` is empty or 0 then the loop runs *free* - when
+    it finishes one frame, it immediately starts working on the next frame.
+
+    If ``Display.frames_per_second`` is a positive number then the Display is
+    *framed* - when the Display finishes one frame before the next frame_time,
+    it waits till the next frame starts.
+
+    A free Display gives the highest frame rate, but it will also consume more
+    CPU, to the detriment of other threads or other programs.  There is also
+    the significant drawback that the framerate will fluctuate as the numbers of
+    CPU cycles consumed per loop, resulting in jerky motion and animations.
+
+    A framed Display has a consistent if smaller number of frames, and also
+    allows for potentially much smoother motion and animation.  The ability to
+    throttle down the number of frames to conserve CPU cycles is essential
+    for programs with other important threads like audio.
+
+    ``Display.frames_per_second`` can be set at construction in
+    ``Display.create`` or changed on-the-fly during the execution of the
+    program.  If ``Display.frames_per_second`` is set too high, the Display
+    doesn't attempt to "catch up" but simply runs freely.
+
     """
     if self.is_running:
       if self.first_time:
@@ -96,20 +137,20 @@ class Display(object):
 
   def add_sprites(self, *sprites):
     """Add one or more sprites to this Display."""
-    with Locker(self.lock):
+    with self.lock:
       self.sprites_to_load.update(sprites)
 
   def remove_sprites(self, *sprites):
     """Remove one or more sprites from this Display."""
-    with Locker(self.lock):
+    with self.lock:
       self.sprites_to_unload.update(sprites)
 
   def stop(self):
-    """Stop the display loop."""
+    """Stop the Display."""
     self.is_running = False
 
   def destroy(self):
-    """Destroy the current display and reset Display.INSTANCE."""
+    """Destroy the current Display and reset Display.INSTANCE."""
     self.stop()
     try:
       self.opengl.destroy()
@@ -131,12 +172,21 @@ class Display(object):
     opengles.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
   def set_background(self, r, g, b, alpha):
+    """Set the Display background.
+
+    *r, g, b*
+      Color values for the display
+    *alpha*
+      Opacity of the color.  An alpha of 0 means a transparent background,
+      an alpha of 1 means full opaque.
+    """
     opengles.glClearColor(c_float(r), c_float(g), c_float(b), c_float(alpha))
-    opengles.glColorMask(1, 1, 1, 1 if alpha < 1.0 else 0)
-    #switches off alpha blending with desktop (is there a bug in the driver?)
+    opengles.glColorMask(1, 1, 1, int(alpha < 1.0))
+    # Switches off alpha blending with desktop (is there a bug in the driver?)
 
   def mouse_position(self):
-    """Return the current mouse position.  Now deprecated in favor of pi3d.events."""
+    """The current mouse position as a tuple."""
+    # TODO: add: Now deprecated in favor of pi3d.events
     if self.mouse:
       return self.mouse.position()
     elif self.tkwin:
@@ -148,13 +198,13 @@ class Display(object):
     # TODO(rec):  check if the window was resized and resize it, removing
     # code from MegaStation to here.
     self.clear()
-    with Locker(self.lock):
+    with self.lock:
       self.sprites_to_load, to_load = set(), self.sprites_to_load
       self.sprites.extend(to_load)
     self._for_each_sprite(lambda s: s.load_opengl(), to_load)
 
   def _loop_end(self):
-    with Locker(self.lock):
+    with self.lock:
       self.sprites_to_unload, to_unload = set(), self.sprites_to_unload
       if to_unload:
         self.sprites = (s for s in self.sprites if s in to_unload)
@@ -225,7 +275,7 @@ def create(is_3d=True, x=None, y=None, w=None, h=None, near=None, far=None,
   *depth*
     The bit depth of the display - must be 8, 16 or 24.
   *mouse*
-    Automatically create mouse (deprecated in favor of the Events system).
+    Automatically create a Mouse.
   *frames_per_second*
     Maximum frames per second to render (None means "free running").
   """

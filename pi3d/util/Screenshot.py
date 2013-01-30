@@ -10,11 +10,15 @@ from pi3d.constants import *
 LOGGER = Log.logger(__name__)
 
 def screenshot(filestring):
-  """save what in the display to a file
-  is will save whatever has been rendered prior to this call since the last
-  Display.clear()
-  the file will be saved in the top directory if you don't add a path
   """
+  Save whatever's in the display to a file.
+
+  Will save whatever has been rendered since the last call to Display.clear().
+
+  The file will be saved in the top-level directory if you don't add a path
+  to it!
+  """
+
   from pi3d.Display import Display
   LOGGER.info('Taking screenshot of "%s"', filestring)
 

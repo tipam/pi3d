@@ -1,0 +1,161 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pi3d.loader.parse_mtl_test &mdash; pi3d 0.8 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.8',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="pi3d 0.8 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">pi3d 0.8 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for pi3d.loader.parse_mtl_test</h1><div class="highlight"><pre>
+<span class="kn">import</span> <span class="nn">unittest</span>
+
+<span class="kn">from</span> <span class="nn">pi3d.loader.parse_mtl</span> <span class="kn">import</span> <span class="n">parse_mtl</span>
+
+<div class="viewcode-block" id="ParseMtlTest"><a class="viewcode-back" href="../../../pi3d.loader.html#pi3d.loader.parse_mtl_test.ParseMtlTest">[docs]</a><span class="k">class</span> <span class="nc">ParseMtlTest</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+<div class="viewcode-block" id="ParseMtlTest.setUp"><a class="viewcode-back" href="../../../pi3d.loader.html#pi3d.loader.parse_mtl_test.ParseMtlTest.setUp">[docs]</a>  <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="ParseMtlTest.test_cow"><a class="viewcode-back" href="../../../pi3d.loader.html#pi3d.loader.parse_mtl_test.ParseMtlTest.test_cow">[docs]</a>  <span class="k">def</span> <span class="nf">test_cow</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">COW_RESULT</span><span class="p">,</span> <span class="n">parse_mtl</span><span class="p">(</span><span class="n">COW_MTL</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()))</span>
+</div>
+<div class="viewcode-block" id="ParseMtlTest.test_teapot"><a class="viewcode-back" href="../../../pi3d.loader.html#pi3d.loader.parse_mtl_test.ParseMtlTest.test_teapot">[docs]</a>  <span class="k">def</span> <span class="nf">test_teapot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">TEAPOT_RESULT</span><span class="p">,</span> <span class="n">parse_mtl</span><span class="p">(</span><span class="n">TEAPOT_MTL</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()))</span>
+</div></div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">unittest</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+
+<span class="n">COW_MTL</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s"># Blender3D MTL File: LD_COW_CC0_2012.blend</span>
+<span class="s"># Material Count: 1</span>
+<span class="s">newmtl Material_rock1.jpg</span>
+<span class="s">Ns 96.078431</span>
+<span class="s">Ka 0.000000 0.000000 0.000000</span>
+<span class="s">Kd 0.471461 0.471461 0.471461</span>
+<span class="s">Ks 0.500000 0.500000 0.500000</span>
+<span class="s">Ni 1.000000</span>
+<span class="s">d 1.000000</span>
+<span class="s">illum 2</span>
+<span class="s">map_Kd ../textures/rock1.jpg</span>
+<span class="s">&quot;&quot;&quot;</span>
+
+<span class="n">COW_RESULT</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="s">&#39;Material_rock1.jpg&#39;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s">&#39;colorAmbient&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+    <span class="s">&#39;colorDiffuse&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.471461</span><span class="p">,</span> <span class="mf">0.471461</span><span class="p">,</span> <span class="mf">0.471461</span><span class="p">],</span>
+    <span class="s">&#39;colorSpecular&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
+    <span class="s">&#39;illumination&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="s">&#39;mapDiffuse&#39;</span><span class="p">:</span> <span class="s">&#39;../textures/rock1.jpg&#39;</span><span class="p">,</span>
+    <span class="s">&#39;opticalDensity&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+    <span class="s">&#39;specularCoef&#39;</span><span class="p">:</span> <span class="mf">96.078431</span><span class="p">,</span>
+    <span class="s">&#39;transparency&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="p">}</span>
+
+<span class="n">TEAPOT_MTL</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s"># Blender MTL File: &#39;None&#39;</span>
+<span class="s"># Material Count: 1</span>
+<span class="s">newmtl</span>
+<span class="s">Ns 0</span>
+<span class="s">Ka 0.000000 0.000000 0.000000</span>
+<span class="s">Kd 0.8 0.8 0.8</span>
+<span class="s">Ks 0.8 0.8 0.8</span>
+<span class="s">d 1</span>
+<span class="s">illum 2</span>
+<span class="s">map_Kd ../textures/Raspi256x256.png</span>
+<span class="s">&quot;&quot;&quot;</span>
+
+<span class="n">TEAPOT_RESULT</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="s">&#39;&#39;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s">&#39;colorAmbient&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+    <span class="s">&#39;colorDiffuse&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">],</span>
+    <span class="s">&#39;colorSpecular&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">],</span>
+    <span class="s">&#39;illumination&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="s">&#39;mapDiffuse&#39;</span><span class="p">:</span> <span class="s">&#39;../textures/Raspi256x256.png&#39;</span><span class="p">,</span>
+    <span class="s">&#39;specularCoef&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="s">&#39;transparency&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+    <span class="p">}}</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">pi3d 0.8 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, The pi3d team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
