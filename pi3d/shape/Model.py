@@ -18,7 +18,8 @@ class Model(Shape):
                rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0,
                cx=0.0, cy=0.0, cz=0.0):
     """uses standard constructor for Shape extra Keyword arguments:
-    file_string -- path and name of obj or egg file    
+      *file_string*
+        path and name of obj or egg file    
     """
     super(Model, self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                 sx, sy, sz, cx, cy, cz)

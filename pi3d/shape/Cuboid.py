@@ -8,15 +8,21 @@ class Cuboid(Shape):
                name="", x=0.0, y=0.0, z=0.0,
                rx=0.0, ry=0.0, rz=0.0, cx=0.0, cy=0.0, cz=0.0, tw=1.0, th=1.0, td=1.0):
     """uses standard constructor for Shape extra Keyword arguments:
-    w -- width
-    h -- height
-    d -- depth    
-    tw -- scale width
-    th -- scale height
-    td -- scale depth
-    the scale factors represent how much of the texture to show along that
+      *w*
+        width
+      *h*
+        height
+      *d*
+        depth    
+      *tw*
+        scale width
+      *th*
+        scale height
+      *td*
+        scale depth
+    The scale factors represent how much of the texture to show along that
     dimension. For no distortion of the image the scale factors need to be
-    proportional to the relative dimension    
+    proportional to the relative dimension.    
     """
     super(Cuboid,self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                 1.0, 1.0, 1.0, cx, cy, cz)

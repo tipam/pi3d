@@ -2,8 +2,8 @@ from pi3d.constants import *
 from pi3d.Shape import Shape
 
 class Lathe(Shape):
-  """ 3d model inherits from Shape
-  made by rotating a path of x,y locations around the y axis
+  """ 3d model inherits from Shape.
+  Makes a shape by rotating a path of x,y locations around the y axis
   NB the path should start at the top of the object to generate the correct normals
   also in order for edges to show correctly include a tiny bevel
   i.e. [..(0,2),(2,1),(1.5,0)..] has a sharp corner at 2,1 and should be entered as
@@ -13,8 +13,10 @@ class Lathe(Shape):
                rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0,
                cx=0.0, cy=0.0, cz=0.0):
     """uses standard constructor for Shape extra Keyword arguments:
-    path -- array of coordinates rotated to form shape [(x0,y0),(x1,y1)..]
-    sides -- number of sides for Shape.lathe() to use
+      *path*
+        Array of coordinates rotated to form shape [(x0,y0),(x1,y1)..]
+      *sides*
+        Number of sides for Shape.lathe() to use.
     """
     super(Lathe, self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                 sx, sy, sz, cx, cy, cz)
@@ -23,11 +25,10 @@ class Lathe(Shape):
       print "Creating lathe ..."
 
     self.path = path
-    self.sides = sides
     self.ttype = GL_TRIANGLES
 
     self.buf = []
-    self.buf.append(self.lathe(path))
+    self.buf.append(self.lathe(path, sides))
 
   # TODO intervene in call to Buffer.draw() so that face culling can be disabled
   #this draw method disables face culling which allows the backs of faces to show,

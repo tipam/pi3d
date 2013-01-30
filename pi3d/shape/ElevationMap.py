@@ -21,17 +21,20 @@ class ElevationMap(Shape):
     """uses standard constructor for Shape
     
     Arguments:
-    
-    * mapfile -- greyscale image path/file, string
+      *mapfile*
+        Greyscale image path/file, string.
     
     Keyword arguments:
-    
-    * width, depth, height -- of the map in world units
-    * divx, divy -- number of divisions into which the map will be divided
-      to create vertices
-    * ntiles -- number of repeats for tiling the texture image
-    * smooth -- calculate normals with averaging rather than pointing
-      straight up, slightly faster if false
+      *width, depth, height*
+        Of the map in world units.
+      *divx, divy*
+        Number of divisions into which the map will be divided.
+        to create vertices
+      *ntiles*
+        Number of repeats for tiling the texture image.
+      *smooth*
+        Calculate normals with averaging rather than pointing
+        straight up, slightly faster if false.
     """
     super(ElevationMap, self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                        sx, sy, sz, cx, cy, cz)
@@ -155,8 +158,8 @@ class ElevationMap(Shape):
     """accurately return the hight of the map at the point specified
     
     Arguments:
-    
-    * px, pz -- location of the point in world coordinates to calculate height
+      *px, pz*
+        Location of the point in world coordinates to calculate height.
     """
     #adjust for map not set at origin
     px -= self.unif[0]
@@ -198,15 +201,15 @@ class ElevationMap(Shape):
   def clashTest(self, px, py, pz, rad):
     """Works out if an object at a given location and radius will overlap
     with the map surface. Returns four values:
-    
-    * boolean whether there is a clash
-    * x, y, z components of the normal vector
-    * the amount of overlap at the x,z location
+      * boolean whether there is a clash
+      * x, y, z components of the normal vector
+      * the amount of overlap at the x,z location
 
     Arguments:
-    
-    * px, py, pz -- location of object to test in world coordinates
-    * rad -- radius of object to test
+      *px, py, pz*
+        Location of object to test in world coordinates.
+      *rad*
+        Radius of object to test.
     """
     radSq = rad**2
     # adjust for map not set at origin
@@ -285,12 +288,13 @@ class ElevationMap(Shape):
   def pitch_roll(self, px, pz):
     """works out the pitch (rx) and roll (rz) to apply to an object
     on the surface of the map at this point
-    returns a tuple (pitch, roll) in degrees
+      * returns a tuple (pitch, roll) in degrees
     
     Arguments:
-    
-    * px -- x location
-    * pz -- z location
+      *px*
+        x location
+      *pz*
+        z location
     """
     px -= self.unif[0]
     pz -= self.unif[2]
@@ -322,9 +326,10 @@ def intersect_triangle(v1, v2, v3, pos):
   triange defined by v1,v2,v3
 
   Arguments:
-  
-  * v1,v2,v3 -- tuples (x1,y1,z1), (x2,y2,z2).. defining the corners of the triangle
-  * pos -- tuple (x,y,z) defining the x,z of the vertical line intersecting triangle
+    *v1,v2,v3*
+      tuples (x1,y1,z1), (x2,y2,z2).. defining the corners of the triangle
+    *pos*
+      tuple (x,y,z) defining the x,z of the vertical line intersecting triangle
   """
   #calc normal from two edge vectors v2-v1 and v3-v1
   #nVec = Utility.crossproduct(v2[0]-v1[0], v2[1]-v1[1], v2[2]-v1[2], v3[0]-v1[0],  v3[1]-v1[1], v3[2]-v1[2])

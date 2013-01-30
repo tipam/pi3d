@@ -387,7 +387,7 @@ class Shape(Loadable):
     """add triangle refs."""
     self.inds.append(indx)
 
-  def lathe(self, path, rise=0.0, loops=1.0):
+  def lathe(self, path, sides=12, rise=0.0, loops=1.0):
     """Returns a Buffer object by rotating the points defined in path.
 
     Arguments:
@@ -396,21 +396,14 @@ class Shape(Loadable):
         the y axis.
 
     Keyword arguments:
-      *rise*
+      *self.sides*
+        Number of sides to divide each rotation into.
+       *rise*
         Amount to increment the path y values for each rotation (ie helix)
       *loops*
         Number of times to rotate the path by 360 (ie helix).
     """
-
-# TODO: where does this next comment go?
-# Perhaps create a "Lathable" subset of Shape that requires a "sides" in
-# its construction?
-#
-#    NB TODO self.sides is not passed as an argument but is required to be
-#    set by anything calling this method
-#      *self.sides*
-#        number of sides to divide each rotation into
-
+    self.sides = sides
 
     s = len(path)
     rl = int(self.sides * loops)

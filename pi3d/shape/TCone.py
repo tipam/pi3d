@@ -8,10 +8,14 @@ class TCone(Shape):
                name="", x=0.0, y=0.0, z=0.0, rx=0.0, ry=0.0, rz=0.0,
                sx=1.0, sy=1.0, sz=1.0, cx=0.0, cy=0.0, cz=0.0):
     """uses standard constructor for Shape extra Keyword arguments:
-    radiusBot -- radius of the bottom
-    radiusTop -- radius at the top
-    height -- height
-    sides -- number of sides to divide edges of polygons
+      *radiusBot*
+        Radius of the bottom.
+      *radiusTop*
+        Radius at the top.
+      *height*
+        Height.
+      *sides*
+        Number of sides to divide edges of polygons.
     """
     super(TCone, self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                 sx, sy, sz, cx, cy, cz)
@@ -30,8 +34,7 @@ class TCone(Shape):
     self.radiusBot = radiusBot
     self.radiusTop = radiusTop
     self.height = height
-    self.sides = sides
     self.ttype = GL_TRIANGLES
 
     self.buf = []
-    self.buf.append(self.lathe(path))
+    self.buf.append(self.lathe(path, sides))

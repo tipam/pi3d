@@ -20,10 +20,10 @@ def parse_vertex(text):
   """Parse text chunk specifying single vertex.
 
   Possible formats:
-    vertex index
-    vertex index / texture index
-    vertex index / texture index / normal index
-    vertex index / / normal index
+  *  vertex index
+  *  vertex index / texture index
+  *  vertex index / texture index / normal index
+  *  vertex index / / normal index
   """
 
   v = 0
@@ -44,6 +44,13 @@ def parse_vertex(text):
 
 #########################################################################################
 def loadFileOBJ(model, fileName):
+  """Loads an obj file with associated mtl file to produce Buffer object
+  as part of a Shape. Arguments:
+    *model*
+      Model object to add to.
+    *fileName*
+      Path and name of obj file relative to top directory.
+  """
   model.coordinateSystem = "Y-up"
   model.parent = None
   model.childModel = [] # don't really need parent and child pointers but will speed up traversing tree

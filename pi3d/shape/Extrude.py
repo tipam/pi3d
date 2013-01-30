@@ -13,8 +13,10 @@ class Extrude(Shape):
                rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0,
                cx=0.0, cy=0.0, cz=0.0):
     """uses standard constructor for Shape extra Keyword arguments:
-    path -- coordinates defining crossection of prism [(x0,z0),(x1,z1)..]
-    height -- distance between end faces in the y direction
+      *path*
+        Coordinates defining crossection of prism [(x0,z0),(x1,z1)..]
+      *height*
+        Distance between end faces in the y direction.
     """
     super(Extrude, self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                   sx, sy, sz, cx, cy, cz)

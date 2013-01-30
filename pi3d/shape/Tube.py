@@ -7,10 +7,14 @@ class Tube(Shape):
                x=0.0, y=0.0, z=0.0, rx=0.0, ry=0.0, rz=0.0,
                sx=1.0, sy=1.0, sz=1.0, cx=0.0, cy=0.0, cz=0.0):
     """uses standard constructor for Shape extra Keyword arguments:
-    radius -- radius of to mid point of wall
-    thickness -- of wall of tube
-    height -- length of tube
-    sides -- number of sides for Shape.lathe() to use
+      *radius*
+        Radius of to mid point of wall.
+      *thickness*
+        of wall of tube.
+      *height*
+        Length of tube.
+      *sides*
+        Number of sides for Shape.lathe() to use.
     """
     super(Tube,self).__init__(camera, light, name, x, y, z, rx, ry, rz, sx, sy, sz, cx, cy, cz)
 
@@ -32,8 +36,7 @@ class Tube(Shape):
     self.radius = radius
     self.thickness = thickness
     self.height = height
-    self.sides = sides
     self.ttype = GL_TRIANGLES
 
     self.buf = []
-    self.buf.append(self.lathe(path))
+    self.buf.append(self.lathe(path, sides))

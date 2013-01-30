@@ -5,7 +5,7 @@ from pi3d.constants import *
 from pi3d.util.Ctypes import c_ints
 from pi3d.util.Loadable import Loadable
 
-MAX_SIZE = 1024
+MAX_SIZE = 2048
 DEFER_TEXTURE_LOADING = True
 
 def round_up_to_power_of_2(x):
@@ -83,6 +83,8 @@ class Texture(Loadable):
     xx = 0
     yy = 0
     nx, ny = self.ix, self.iy
+    print(nx, ny)
+    """
     while (2 ** xx) < nx:
       xx += 1
     while (2 ** yy) < ny:
@@ -104,6 +106,7 @@ class Texture(Loadable):
       s += 'Resizing to: %d, %d' % (self.ix, self.iy)
     else:
       s += 'Bitmap size: %d, %d' % (self.ix, self.iy)
+    """
 
     if VERBOSE:
       print 'Loading ...',s
