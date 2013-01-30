@@ -212,7 +212,7 @@ class Display(object):
     t = time.time()
     self._for_each_sprite(lambda s: s.repaint(t))
 
-    self._swapBuffers()
+    self.swap_buffers()
 
     for sprite in to_unload:
       sprite.unload_opengl()
@@ -237,8 +237,8 @@ class Display(object):
   def __del__(self):
     self.destroy()
 
-  def _swapBuffers(self):
-    self.opengl.swapBuffers()
+  def swap_buffers(self):
+    self.opengl.swap_buffers()
 
 
 def create(is_3d=True, x=None, y=None, w=None, h=None, near=None, far=None,

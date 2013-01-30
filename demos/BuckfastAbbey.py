@@ -72,7 +72,6 @@ omx, omy = mymouse.position()
 CAMERA = Camera.instance()
 
 while DISPLAY.loop_running():
-
   CAMERA.reset()
   CAMERA.rotate(tilt, 0, 0)
   CAMERA.rotate(0, rot, 0)

@@ -216,7 +216,7 @@ while True:
   score1.draw()
 
   camera.was_moved = False
-  DISPLAY.swapBuffers()
+  DISPLAY.swap_buffers()
 
   #Press ESCAPE to terminate
   k = mykeys.read()

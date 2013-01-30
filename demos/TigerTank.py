@@ -4,7 +4,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 """ Landscape from ElevationMap with model tanks and buildings. Demonstrates using
 a function to draw the various parts of the tank and the ElevationMap.pitch_roll()
 method to make models conform (aproximately) to the surface of an ElevationMap.
-The tank gun is raised as the mouse view point to looking up. This shows how to 
+The tank gun is raised as the mouse view point to looking up. This shows how to
 combine various rotations about different axes without the objects falling apart!
 This demo also uses a tkinter tkwindow but creates it as method of Display. Compare
 with the system used in demos/MarsStation.py
@@ -60,7 +60,7 @@ shade2d = Shader('shaders/2d_flat')
 # create splash screen and draw it
 splash = ImageSprite("textures/tiger_splash.jpg", shade2d, w=10, h=10, z=0.2)
 splash.draw()
-DISPLAY._swapBuffers()
+DISPLAY.swap_buffers()
 
 # create environment cube
 ectex = EnvironmentCube.loadECfiles('textures/ecubes/Miramar', 'miramar_256',
@@ -200,9 +200,9 @@ while DISPLAY.loop_running():
   omx, omy = mx, my
 
   CAMERA.reset()
-  dot1.set_2d_location(DISPLAY.width - 105.0 + 200.0*xm/mapwidth, 
+  dot1.set_2d_location(DISPLAY.width - 105.0 + 200.0*xm/mapwidth,
                       DISPLAY.height - 105.0 - 200.0*zm/mapdepth)
-  dot2.set_2d_location(DISPLAY.width - 105.0 + 200.0*etx/mapwidth, 
+  dot2.set_2d_location(DISPLAY.width - 105.0 + 200.0*etx/mapwidth,
                       DISPLAY.height - 105.0 - 200.0*etz/mapdepth)
   dot1.draw()
   dot2.draw()
@@ -224,7 +224,7 @@ while DISPLAY.loop_running():
   CAMERA.rotate(tilt, mouserot, 0)
   CAMERA.position((xm + xoff, ym + yoff + 5, zm + zoff))
   oxm, ozm = xm, zm
-  
+
   #draw player tank with smoothing on pitch and roll to lessen jerkiness
   tmnow = time.time()
   if tmnow > (ltm + 0.5):
@@ -255,7 +255,7 @@ while DISPLAY.loop_running():
 
   myecube.position(xm, ym, zm)
   myecube.draw()  #Draw environment cube
-  
+
   if smode:
     """ because some of the overlays have blend=True they must be done AFTER
     other objects have been rendered.
