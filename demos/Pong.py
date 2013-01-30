@@ -115,8 +115,7 @@ mymouse.start()
 
 omx, omy = mymouse.position()
 
-while True:
-  DISPLAY.clear()
+while DISPLAY.loop_running():
 
   # mouse movement checking here to get bat movment values
   mx, my = mymouse.position()
@@ -216,7 +215,6 @@ while True:
   score1.draw()
 
   camera.was_moved = False
-  DISPLAY.swap_buffers()
 
   #Press ESCAPE to terminate
   k = mykeys.read()
