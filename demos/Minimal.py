@@ -1,14 +1,13 @@
+import ctypes
 import demo
 import pi3d
-DISPLAY = pi3d.Display.create(x=100, y=100)
+from pi3d.constants import *
+DISPLAY = pi3d.Display.create(w=400, h=300)
 shader = pi3d.Shader("shaders/2d_flat")
 sprite = pi3d.ImageSprite("textures/PATRN.PNG", shader)
-mkeys = pi3d.Keyboard()
+maxtex = ctypes.c_int(0)
+opengles.glGetIntegerv(GL_MAX_TEXTURE_SIZE, ctypes.byref(maxtex))
+print(maxtex)
 while DISPLAY.loop_running():
   sprite.draw()
-  k = mkeys.read()
-  if k > -1:
-    mykeys.close()
-    DISPLAY.destroy()
-    break
 

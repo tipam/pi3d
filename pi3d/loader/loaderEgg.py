@@ -48,11 +48,14 @@ class polygon():
 
 def loadFileEGG(model, fileName):
   """Loads an panda3d egg file to produce Buffer object
-  as part of a Shape. Arguments:
+  as part of a Shape. 
+  
+  Arguments:
     *model*
       Model object to add to.
     *fileName*
       Path and name of egg file relative to top directory.
+      
   """
   model.coordinateSystem = "Y-up"
   model.materialList = {}

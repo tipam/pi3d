@@ -396,12 +396,13 @@ class Shape(Loadable):
         the y axis.
 
     Keyword arguments:
-      *self.sides*
+      *sides*
         Number of sides to divide each rotation into.
        *rise*
         Amount to increment the path y values for each rotation (ie helix)
       *loops*
         Number of times to rotate the path by 360 (ie helix).
+    
     """
     self.sides = sides
 
