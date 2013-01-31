@@ -83,8 +83,6 @@ class Texture(Loadable):
     xx = 0
     yy = 0
     nx, ny = self.ix, self.iy
-    print(nx, ny)
-    """
     while (2 ** xx) < nx:
       xx += 1
     while (2 ** yy) < ny:
@@ -106,7 +104,6 @@ class Texture(Loadable):
       s += 'Resizing to: %d, %d' % (self.ix, self.iy)
     else:
       s += 'Bitmap size: %d, %d' % (self.ix, self.iy)
-    """
 
     if VERBOSE:
       print 'Loading ...',s
