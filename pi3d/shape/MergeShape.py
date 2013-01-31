@@ -50,6 +50,7 @@ class MergeShape(Shape):
     the MergeShape. If bufr is not a Buffer then it will be treated as if it
     is a Shape and its first Buffer object will be merged. Argument additional
     to standard Shape:
+    
       *bufr*
         Buffer object or Shape with a member buf[0] that is a Buffer object.
     """

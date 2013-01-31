@@ -13,6 +13,7 @@ class Extrude(Shape):
                rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0,
                cx=0.0, cy=0.0, cz=0.0):
     """uses standard constructor for Shape extra Keyword arguments:
+    
       *path*
         Coordinates defining crossection of prism [(x0,z0),(x1,z1)..]
       *height*

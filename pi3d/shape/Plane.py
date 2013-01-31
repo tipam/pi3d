@@ -11,6 +11,7 @@ class Plane(Shape):
                sx=1.0, sy=1.0, sz=1.0,
                cx=0.0, cy=0.0, cz=0.0):
     """uses standard constructor for Shape extra Keyword arguments:
+    
       *w*
         width
       *h*

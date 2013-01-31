@@ -8,6 +8,7 @@ class Cuboid(Shape):
                name="", x=0.0, y=0.0, z=0.0,
                rx=0.0, ry=0.0, rz=0.0, cx=0.0, cy=0.0, cz=0.0, tw=1.0, th=1.0, td=1.0):
     """uses standard constructor for Shape extra Keyword arguments:
+    
       *w*
         width
       *h*
