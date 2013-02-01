@@ -1,14 +1,15 @@
 import array
 import fcntl
-from threading import Lock
 import os
 import re
 import select
 import struct
 import sys
 
-from event_consts import *
-import ioctl
+from threading import Lock
+
+from pi3d.events.constants import *
+from pi3d.events import ioctl
 
 EVIOCGRAB = ioctl._IOW(ord("E"), 0x90, "i")          # Grab/Release device
 
