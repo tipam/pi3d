@@ -78,7 +78,7 @@ class Texture(Loadable):
     s += '(%s)' % self.im.mode
     self.alpha = (self.im.mode == 'RGBA' or self.im.mode == 'LA')
 
-    # work out if sizes are not to the power of 2 or >512
+    # work out if sizes are not to the power of 2 or > MAX_SIZE
     # TODO: why must texture sizes be a power of 2?
     xx = 0
     yy = 0
@@ -104,7 +104,7 @@ class Texture(Loadable):
       s += 'Resizing to: %d, %d' % (self.ix, self.iy)
     else:
       s += 'Bitmap size: %d, %d' % (self.ix, self.iy)
-
+    
     if VERBOSE:
       print 'Loading ...',s
 

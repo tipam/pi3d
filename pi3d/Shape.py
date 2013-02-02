@@ -34,7 +34,7 @@ class Shape(Loadable):
     self.name = name
     light = light or Light.instance()
     # uniform variables all in one array (for Shape and one for Buffer)
-    self.unif = (ctypes.c_float * 48)(
+    self.unif = (ctypes.c_float * 60)(
       x, y, z, rx, ry, rz,
       sx, sy, sz, cx, cy, cz,
       0.5, 0.5, 0.5, 5000.0, 0.8, 0.0,
@@ -60,6 +60,10 @@ class Shape(Loadable):
     * 13 light1 ambient values 39-41
     * 14 defocus dist, amount 42,43
     * 15 defocus frame width, height 45,46
+    * 16 custom data space 48-50
+    * 17 custom data space 51-52
+    * 18 custom data space 54-56
+    * 19 custom data space 57-59
     """
     """Shape holds matrices which are updated each time it is moved or rotated
     this saves time recalculating them each frame as the Shape is drawn
@@ -252,6 +256,20 @@ class Shape(Loadable):
     self.unif[(stn + 6):(stn + 9)] = light.lightamb[0:3]
 
   def set_2d_size(self, w=None, h=None, x=0, y=0):
+    """saves size to be drawn and location in pixels for use by 2d shader
+    
+    Keyword arguments:
+    
+      *w*
+        Width, pixels.
+      *h*
+        Height, pixels.
+      *x*
+        Left edge of image from left edge of display, pixels.
+      *y*
+        Top of image from top of display, pixels
+
+    """
     from pi3d.Display import Display
     if w == None:
       w = Display.INSTANCE.width
@@ -261,7 +279,33 @@ class Shape(Loadable):
     self.unif[45:48] = [w, h, Display.INSTANCE.height]
 
   def set_2d_location(self, x, y):
+    """saves location in pixels for use by 2d shader
+    
+    Arguments:
+    
+      *x*
+        Left edge of image from left edge of display, pixels.
+      *y*
+        Top of image from top of display, pixels
+
+    """
     self.unif[42:44] = [x, y]
+    
+  def set_custom_data(self, index_from, data):
+    """save general purpose custom data for use by any shader **NB it is up
+    to the user to provide data in the form of a suitable array of values
+    that will fit into the space available in the unif array**
+    
+    Arguments:
+    
+      *index_from*
+        start index in unif array for filling data should be 48 to 59 though
+        42 to 47 could be used if they do not conflict with existing shaders
+        i.e. 2d_flat, defocus etc
+      *data*
+        array of values to put in
+    """
+    self.unif[index_from:(index_from + len(data))] = data
 
   def x(self):
     """get value of x"""

@@ -132,7 +132,10 @@ while DISPLAY.loop_running() and not inputs.key_state("KEY_ESC"):
   rot -= (mx)*0.2
   tilt -= (my)*0.2
 
-  jrx, jry = inputs.get_joystickR()
+  #jrx, jry, jrz = inputs.get_joystickB3d() # xbox 360
+  # sudo apt-get install xboxdrv
+  # sudo xboxdrv -s -i 0
+  jrx, jry = inputs.get_joystickR() # gamepad
   if abs(jrx) > 0.1:
       rot -= jrx*3
 
