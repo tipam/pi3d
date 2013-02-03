@@ -150,7 +150,7 @@ class Shape(Loadable):
                                 ctypes.c_int(0),
                                 ctypes.byref(self.M))
 
-    opengles.glUniform3fv(shader.unif_unif, 16, ctypes.byref(self.unif))
+    opengles.glUniform3fv(shader.unif_unif, 20, ctypes.byref(self.unif))
     for b in self.buf:
       # Shape.draw has to be passed either parameter == None or values to pass
       # on.
