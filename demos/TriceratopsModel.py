@@ -50,4 +50,4 @@ while 1:
     else:
       print(k)
 
-  DISPLAY.swapBuffers()
+  DISPLAY.swap_buffers()

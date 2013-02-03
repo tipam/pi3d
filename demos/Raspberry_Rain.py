@@ -47,7 +47,7 @@ mykeys = Keyboard()
 while DISPLAY.loop_running():
   for b in raspberries:
     b.draw()
-    b.translateY(-0.1)
+    b.translateY(-0.3)
     b.rotateIncZ(1)
     if b.y() < -2 * b.z():
       b.positionX((random.random()*2 - 1) * b.z())

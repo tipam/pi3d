@@ -2,12 +2,12 @@ import signal
 import threading
 import traceback
 
-from echomesh.util.Locker import Locker
 from echomesh.util import Log
 
 LOGGER = Log.logger(__name__)
 
 class _Mouse(threading.Thread):
+  """holds Mouse object, see also (the preferred) events methods"""
   BUTTON_1 = 1 << 1
   BUTTON_2 = 1 << 2
   BUTTONS = BUTTON_1 & BUTTON_2
@@ -17,6 +17,17 @@ class _Mouse(threading.Thread):
   INSTANCE = None
 
   def __init__(self, mouse='mice', restrict=True, width=1920, height=1200):
+    """
+    Arguments:
+      *mouse*
+        /dev/input/ device name
+      *restrict*
+        stops or allows the mouse x and y values to carry on going beyond:
+      *width*
+        mouse x limit
+      *height*
+        mouse y limit
+    """
     super(_Mouse, self).__init__()
     self.fd = open('/dev/input/' + mouse, 'r')
     self.running = False
@@ -29,7 +40,7 @@ class _Mouse(threading.Thread):
     self.reset()
 
   def reset(self):
-    with Locker(self.lock):
+    with self.lock:
       self._x = self._y = self._dx = self._dy = 0
     self.button = False
 
@@ -44,11 +55,11 @@ class _Mouse(threading.Thread):
     self.fd.close()
 
   def position(self):
-    with Locker(self.lock):
+    with self.lock:
       return self._x, self._y
 
   def velocity(self):
-    with Locker(self.lock):
+    with self.lock:
       return self._dx, self._dy
 
   def _check_event(self):
@@ -70,7 +81,7 @@ class _Mouse(threading.Thread):
           x = min(max(x, 0), self.width - 1)
           y = min(max(y, 0), self.height - 1)
 
-        with Locker(self.lock):
+        with self.lock:
           self._x, self._y, self._dx, self._dy = x, y, dx, dy
 
     else:

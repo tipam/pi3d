@@ -17,7 +17,6 @@ from pi3d.Shader import Shader
 from pi3d.shape.EnvironmentCube import EnvironmentCube
 from pi3d.shape.EnvironmentCube import loadECfiles
 
-from pi3d.util.Matrix import Matrix
 from pi3d.util.Screenshot import screenshot
 from pi3d.util import Utility
 

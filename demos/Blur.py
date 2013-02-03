@@ -18,7 +18,7 @@ from pi3d import Display
 from pi3d.Texture import Texture
 from pi3d.Keyboard import Keyboard
 
-from pi3d.context.Light import Light
+from pi3d.Light import Light
 from pi3d.Shader import Shader
 
 from pi3d.util.String import String
@@ -94,7 +94,10 @@ while DISPLAY.loop_running():
     next_time = time.time() + 2.0
   tick+=1
 
-  if mykeys.read() == 27:
+  k = mykeys.read()
+  if k==112: 
+    screenshot("blur1.jpg")
+  elif k==27:
     mykeys.close()
     DISPLAY.destroy()
     break

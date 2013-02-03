@@ -122,7 +122,7 @@ class DisplayOpenGL(object):
       bcm.vc_dispmanx_element_remove(self.dispman_update, self.dispman_element)
       self.active = False
 
-  def swapBuffers(self):
+  def swap_buffers(self):
     #opengles.glFlush()
     #opengles.glFinish()
     #clear_matrices

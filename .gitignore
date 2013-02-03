@@ -8,7 +8,7 @@
 *.egg-info
 dist
 build
-eggs
+eggs_
 parts
 bin
 var
@@ -23,8 +23,16 @@ pip-log.txt
 .coverage
 .tox
 
-#Translations
+# Translations
 *.mo
 
-#Mr Developer
+# Mr Developer
 .mr.developer.cfg
+
+# Mac OS.
+.DS_Store
+
+# documentation
+documentation/_build/doctrees/*
+documentation/_build/html/*
+

@@ -11,8 +11,8 @@ class Defocus(Texture):
     texture generated from the framebuffer
     """
     super(Defocus, self).__init__("defocus")
-    from pi3d.Display import DISPLAY
-    self.ix, self.iy = DISPLAY.width, DISPLAY.height
+    from pi3d.Display import Display
+    self.ix, self.iy = Display.INSTANCE.width, Display.INSTANCE.height
     self.im = Image.new("RGBA",(self.ix, self.iy))
     self.image = self.im.convert("RGBA").tostring('raw', "RGBA")
     self.alpha = True

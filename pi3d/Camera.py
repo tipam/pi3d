@@ -6,7 +6,7 @@ from numpy import array, dot, copy, tan, cos, sin, radians
 from numpy.linalg import norm
 
 from pi3d.constants import *
-from pi3d.shape.Shape import Shape
+from pi3d.Shape import Shape
 from pi3d.util.Utility import vec_normal, vec_cross, vec_sub, vec_dot
 
 class Camera(DefaultInstance):
@@ -17,40 +17,47 @@ class Camera(DefaultInstance):
     """Set up view matrix to look from eye to at including perspective
 
     Arguments:
-
-    at   -- tuple (x,y,z) location to look at
-    eye  -- tuple (x,y,z) location to look from
-    lens -- tuple (near plane distance, far plane value, field of view width,
-            field of view height) fields of view in radians
+      *at*
+        tuple (x,y,z) location to look at
+      *eye*
+        tuple (x,y,z) location to look from
+      *lens*
+        tuple (near plane distance, far plane value, field of view width,
+        field of view height) fields of view in radians
     """
     super(Camera, self).__init__()
 
+    self.at = at
+    self.start_eye = eye # for reset with different lens settings
     self.eye = [eye[0], eye[1], eye[2]]
-    self.view = LookAtMatrix(at,eye,[0,1,0])
+    self.lens = lens
+    self.view = LookAtMatrix(at, eye, [0,1,0])
     self.projection = ProjectionMatrix(lens[0], lens[1], lens[2], lens[3])
-    #self.mtrx = [row[:] for row in self.model_view]
     self.model_view = dot(self.view, self.projection)
     # Apply transform/rotation first, then shift into perspective space.
     self.mtrx = copy(self.model_view)
     # self.L_reflect = LookAtMatrix(at,eye,[0,1,0],reflect=True)
     self.rtn = [0.0, 0.0, 0.0]
 
-    # self.c_floats will eventually hold the cfloats array for quicker passing
-    # to shader in Shape.draw().
-    self.c_floats = None
     self.was_moved = True
 
   @staticmethod
   def _default_instance():
-    from pi3d.Display import DISPLAY
+    from pi3d.Display import Display
     return Camera((0, 0, 0), (0, 0, -1),
-                  (1, 1000, DISPLAY.width / 1000.0, DISPLAY.height / 1000.0))
+                  (1, 1000,
+                   Display.INSTANCE.width / 1000.0,
+                   Display.INSTANCE.height / 1000.0))
 
-  def reset(self):
+  def reset(self, lens=None):
     """Has to be called each loop if the camera position or rotation changes"""
+    if lens != None:
+      view = LookAtMatrix(self.at, self.start_eye, [0,1,0])
+      projection = ProjectionMatrix(lens[0], lens[1], lens[2], lens[3])
+      self.model_view = dot(view, projection)
+    # TODO some way of resetting to original matrix
     self.mtrx = copy(self.model_view)
     self.rtn = [0.0, 0.0, 0.0]
-    self.c_floats = None
     self.was_moved = True
 
   def copy(self,copyMatrix):
@@ -68,9 +75,11 @@ class Camera(DefaultInstance):
                        [0, 0, 0, 1]], dtype=ctypes.c_float)
 
   def position(self, pt):
-    """
+    """position camera
+    
     Arguments:
-    pt -- tuple (x, y, z) floats
+      *pt*
+        tuple (x, y, z) floats
     """
     self.mtrx = dot([[1, 0, 0, 0],
                      [0, 1, 0, 0],
@@ -78,13 +87,14 @@ class Camera(DefaultInstance):
                      [-pt[0], -pt[1], -pt[2], 1]],
                     self.mtrx)
     self.eye = [pt[0], pt[1], pt[2]]
-    self.c_floats = None
     self.was_moved = True
 
   def rotateZ(self, angle):
-    """
+    """Rotate camera z axis
+    
     Arguments:
-    angle -- in degrees
+      *angle*
+        in degrees
     """
     if angle:
       c = cos(radians(angle))
@@ -95,13 +105,14 @@ class Camera(DefaultInstance):
                        [0, 0, 0, 1]],
                       self.mtrx)
       self.rtn[2] = angle
-      self.c_floats = None
       self.was_moved = True
 
   def rotateY(self, angle):
-    """
+    """Rotate camera y axis
+    
     Arguments:
-    angle -- in degrees
+      *angle*
+        in degrees
     """
     if angle:
       c = cos(radians(angle))
@@ -112,13 +123,14 @@ class Camera(DefaultInstance):
                        [0, 0, 0, 1]],
                       self.mtrx)
       self.rtn[1] = angle
-      self.c_floats = None
       self.was_moved = True
 
   def rotateX(self, angle):
-    """
+    """Rotate camera x axis
+    
     Arguments:
-    angle -- in degrees
+      *angle*
+        in degrees
     """
     if angle:
       c = cos(radians(angle))
@@ -128,29 +140,37 @@ class Camera(DefaultInstance):
                        [0, -s, c, 0],
                        [0, 0, 0, 1]], self.mtrx)
       self.rtn[0] = angle
-      self.c_floats = None
       self.was_moved = True
 
   def rotate(self, rx, ry, rz):
-    """
+    """Rotate camera
+    
     Arguments:
-    rx -- x rotation in degrees
-    ry -- x rotation in degrees
-    rz -- x rotation in degrees
+      *rx* 
+        x rotation in degrees
+      *ry*
+        y rotation in degrees
+      *rz*
+        z rotation in degrees
     """
     self.rotateZ(rz)
     self.rotateX(rx)
     self.rotateY(ry)
 
 def LookAtMatrix(at, eye, up=[0,1,0], reflect=False):
-  """Define a matrix looking
+  """Define a matrix looking at.
+
   Arguments:
-  at -- tuple (x,y,z) of point camera pointed at, floats
-  eye -- matrix [x,y,z] position of camera, floats
+    *at* 
+      tuple (x,y,z) of point camera pointed at, floats
+    *eye*
+      matrix [x,y,z] position of camera, floats
 
   Keyword arguments:
-  up -- array vector of up direction
-  reflect -- boolean if matrix is reflected
+    *up*
+      array vector of up direction
+    *eflect*
+      boolean if matrix is reflected
   """
   # If reflect, then reflect in plane -20.0 (water depth)
   if reflect:
@@ -168,12 +188,17 @@ def LookAtMatrix(at, eye, up=[0,1,0], reflect=False):
                dtype=ctypes.c_float)
 
 def ProjectionMatrix(near=10, far=1000.0, fov_w=1.6, fov_h=1.2):
-  """Setup projection matrix
+  """Set up projection matrix
+  
   Keyword arguments:
-  near -- distance to near plane, float
-  far -- distance to far plane, float
-  fov_w -- horizontal field of view in radians
-  fov_h -- vertical field of view in radians
+    *near*
+      distance to near plane, float
+    *far*
+      distance to far plane, float
+    *fov_w*
+      horizontal field of view in radians
+    *fov_h*
+      vertical field of view in radians
   """
   # Matrices are considered to be M[row][col]
   # Use DirectX convention, so need to do rowvec*Matrix to transform

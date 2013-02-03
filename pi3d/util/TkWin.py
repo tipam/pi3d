@@ -3,7 +3,21 @@ import os
 from Tkinter import Tk
 
 class TkWin(Tk):
+  """
+  *TkWin* encapsulates a Tk window and keeps track of the mouse and keyboard.
+
+  """
   def __init__(self, parent, title, width, height):
+    """
+    Arguments:
+
+    *parent*
+      Parent Tk window or Null for none.
+    *title*
+      Title for window.
+    *width, height*
+      Dimensions of window.
+    """
     display = os.environ.get('DISPLAY', None)
     if not display:
       os.environ['DISPLAY'] = ':0'

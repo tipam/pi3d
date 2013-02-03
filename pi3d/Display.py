@@ -6,7 +6,6 @@ import threading
 import traceback
 
 from echomesh.util import Log
-from echomesh.util.Locker import Locker
 
 from pi3d.constants import *
 from pi3d.util import Utility
@@ -14,9 +13,6 @@ from pi3d.util.DisplayOpenGL import DisplayOpenGL
 
 LOGGER = Log.logger(__name__)
 
-CHECK_IF_DISPLAY_THREAD = True
-DISPLAY_THREAD = threading.current_thread()
-DISPLAY = None
 ALLOW_MULTIPLE_DISPLAYS = False
 RAISE_EXCEPTIONS = True
 
@@ -29,19 +25,27 @@ DEFAULT_FAR_2D = 500.0
 WIDTH = 0
 HEIGHT = 0
 
-def is_display_thread():
-  return not CHECK_IF_DISPLAY_THREAD or (
-    DISPLAY_THREAD is threading.current_thread())
-
 class Display(object):
-  def __init__(self, tkwin):
-    """Opens up the OpenGL library and prepares a window for display."""
-    global DISPLAY
-    if DISPLAY:
+  """This is the central control object of the pi3d system and an instance
+  must be created before some of the other class methods are called.
+  """
+  INSTANCE = None
+  """The current unique instance of Display."""
+
+  def __init__(self, tkwin=None):
+    """
+    Constructs a raw Display.  Use pi3d.Display.create to create an initialized
+    Display.
+
+    *tkwin*
+      An optional Tk window.
+
+    """
+    if Display.INSTANCE:
       assert ALLOW_MULTIPLE_DISPLAYS
       LOGGER.warning('A second instance of Display was created')
     else:
-      DISPLAY = self
+      Display.INSTANCE = self
 
     self.tkwin = tkwin
 
@@ -51,39 +55,65 @@ class Display(object):
 
     self.opengl = DisplayOpenGL()
     self.max_width, self.max_height = self.opengl.width, self.opengl.height
-    self.internal_loop = False
-    self.external_loop = False
+    self.first_time = True
     self.is_running = True
     self.lock = threading.RLock()
 
     LOGGER.info(STARTUP_MESSAGE)
 
-  def loop(self, loop_function=None):
-    LOGGER.debug('starting')
-    self.time = time.time()
-    assert not self.external_loop, "Use only one of loop and loop_running"
-
-    self.internal_loop = True
-    while self.is_running:
-      self._loop_begin()
-      if loop_function and loop_function():
-        self.stop()
-      else:
-        self._loop_end()
-
-    self.destroy()
-    LOGGER.debug('stopped')
-
   def loop_running(self):
-    if self.is_running:
-      assert not self.internal_loop, "Use only one of loop and loop_running"
-      if self.external_loop:
-        self._loop_end()
-      else:
-        self.time = time.time()
-        self.external_loop = True  # First time.
-      self._loop_begin()
+    """*loop_running* is the main event loop for the Display.
 
+    Most pi3d code will look something like this::
+
+      DISPLAY = Display.create()
+
+      # Initialize objects and variables here.
+      # ...
+
+      while DISPLAY.loop_running():
+        # Update the frame, using DISPLAY.time for the current time.
+        # ...
+
+        # Check for quit, then call DISPLAY.stop.
+        if some_quit_condition():
+          DISPLAY.stop()
+
+    ``Display.loop_running()`` **must** be called on the main Python thread,
+    or else white screens and program crashes are likely.
+
+    The Display loop can run in two different modes - *free* or *framed*.
+
+    If ``DISPLAY.frames_per_second`` is empty or 0 then the loop runs *free* - when
+    it finishes one frame, it immediately starts working on the next frame.
+
+    If ``Display.frames_per_second`` is a positive number then the Display is
+    *framed* - when the Display finishes one frame before the next frame_time,
+    it waits till the next frame starts.
+
+    A free Display gives the highest frame rate, but it will also consume more
+    CPU, to the detriment of other threads or other programs.  There is also
+    the significant drawback that the framerate will fluctuate as the numbers of
+    CPU cycles consumed per loop, resulting in jerky motion and animations.
+
+    A framed Display has a consistent if smaller number of frames, and also
+    allows for potentially much smoother motion and animation.  The ability to
+    throttle down the number of frames to conserve CPU cycles is essential
+    for programs with other important threads like audio.
+
+    ``Display.frames_per_second`` can be set at construction in
+    ``Display.create`` or changed on-the-fly during the execution of the
+    program.  If ``Display.frames_per_second`` is set too high, the Display
+    doesn't attempt to "catch up" but simply runs freely.
+
+    """
+    if self.is_running:
+      if self.first_time:
+        self.time = time.time()
+        self.first_time = False
+      else:
+        self._loop_end()  # Finish the previous loop.
+      self._loop_begin()
     else:
       self._loop_end()
       self.destroy()
@@ -91,6 +121,7 @@ class Display(object):
     return self.is_running
 
   def resize(self, x=0, y=0, w=0, h=0):
+    """Reshape the window with the given coordinates."""
     if w <= 0:
       w = display.max_width
     if h <= 0:
@@ -105,24 +136,75 @@ class Display(object):
     self.opengl.resize(x, y, w, h)
 
   def add_sprites(self, *sprites):
-    with Locker(self.lock):
+    """Add one or more sprites to this Display."""
+    with self.lock:
       self.sprites_to_load.update(sprites)
 
   def remove_sprites(self, *sprites):
-    with Locker(self.lock):
+    """Remove one or more sprites from this Display."""
+    with self.lock:
       self.sprites_to_unload.update(sprites)
+
+  def stop(self):
+    """Stop the Display."""
+    self.is_running = False
+
+  def destroy(self):
+    """Destroy the current Display and reset Display.INSTANCE."""
+    self.stop()
+    try:
+      self.opengl.destroy()
+    except:
+      pass
+    try:
+      self.mouse.stop()
+    except:
+      pass
+    try:
+      self.tkwin.destroy()
+    except:
+      pass
+    Display.INSTANCE = None
+
+  def clear(self):
+    """Clear the Display."""
+    # opengles.glBindFramebuffer(GL_FRAMEBUFFER,0)
+    opengles.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+
+  def set_background(self, r, g, b, alpha):
+    """Set the Display background.
+
+    *r, g, b*
+      Color values for the display
+    *alpha*
+      Opacity of the color.  An alpha of 0 means a transparent background,
+      an alpha of 1 means full opaque.
+    """
+    opengles.glClearColor(c_float(r), c_float(g), c_float(b), c_float(alpha))
+    opengles.glColorMask(1, 1, 1, int(alpha < 1.0))
+    # Switches off alpha blending with desktop (is there a bug in the driver?)
+
+  def mouse_position(self):
+    """The current mouse position as a tuple."""
+    # TODO: add: Now deprecated in favor of pi3d.events
+    if self.mouse:
+      return self.mouse.position()
+    elif self.tkwin:
+      return self.tkwin.winfo_pointerxy()
+    else:
+      return -1, -1
 
   def _loop_begin(self):
     # TODO(rec):  check if the window was resized and resize it, removing
     # code from MegaStation to here.
     self.clear()
-    with Locker(self.lock):
+    with self.lock:
       self.sprites_to_load, to_load = set(), self.sprites_to_load
       self.sprites.extend(to_load)
     self._for_each_sprite(lambda s: s.load_opengl(), to_load)
 
   def _loop_end(self):
-    with Locker(self.lock):
+    with self.lock:
       self.sprites_to_unload, to_unload = set(), self.sprites_to_unload
       if to_unload:
         self.sprites = (s for s in self.sprites if s in to_unload)
@@ -130,7 +212,7 @@ class Display(object):
     t = time.time()
     self._for_each_sprite(lambda s: s.repaint(t))
 
-    self.swapBuffers()
+    self.swap_buffers()
 
     for sprite in to_unload:
       sprite.unload_opengl()
@@ -152,52 +234,51 @@ class Display(object):
         if RAISE_EXCEPTIONS:
           raise
 
-  def stop(self):
-    self.is_running = False
-
   def __del__(self):
     self.destroy()
 
-  def destroy(self):
-    try:
-      self.opengl.destroy()
-    except:
-      pass
-    try:
-      self.mouse.stop()
-    except:
-      pass
-    try:
-      self.tkwin.destroy()
-    except:
-      pass
-    global DISPLAY
-    DISPLAY = None
-
-  def swapBuffers(self):
-    self.opengl.swapBuffers()
-
-  def clear(self):
-    # opengles.glBindFramebuffer(GL_FRAMEBUFFER,0)
-    opengles.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-
-  def set_background(self, r, g, b, alpha):
-    opengles.glClearColor(c_float(r), c_float(g), c_float(b), c_float(alpha))
-    opengles.glColorMask(1, 1, 1, 1 if alpha < 1.0 else 0)
-    #switches off alpha blending with desktop (is there a bug in the driver?)
-
-  def mouse_position(self):
-    if self.mouse:
-      return self.mouse.position()
-    elif self.tkwin:
-      return self.tkwin.winfo_pointerxy()
-    else:
-      return -1, -1
+  def swap_buffers(self):
+    self.opengl.swap_buffers()
 
 
-def create(is_3d=True, x=None, y=None, w=0, h=0, near=None, far=None,
+def create(is_3d=True, x=None, y=None, w=None, h=None, near=None, far=None,
            aspect=DEFAULT_ASPECT, depth=DEFAULT_DEPTH, background=None,
-           tk=False, window_title='', window_parent=None, mouse=False):
+           tk=False, window_title='', window_parent=None, mouse=False,
+           frames_per_second=None):
+  """
+  Creates a pi3d Display.
+
+  *is_3d*
+    Are we creating a 2- or 3-d display?
+  *tk*
+    Do we use the tk windowing system?
+  *window_parent*
+    An optional tk parent window.
+  *window_title*
+    A window title for tk windows only.
+  *x*
+    Left x coordinate of the display.  If None, defaults to the x coordinate of
+    the tkwindow parent, if any.
+  *y*
+    Top y coordinate of the display.  If None, defaults to the y coordinate of
+    the tkwindow parent, if any.
+  *w*
+    Width of the display.  If None, full the width of the screen.
+  *h*
+    Height of the display.  If None, full the height of the screen.
+  *near*
+    ?
+  *far*
+    ?
+  *aspect*
+    ?
+  *depth*
+    The bit depth of the display - must be 8, 16 or 24.
+  *mouse*
+    Automatically create a Mouse.
+  *frames_per_second*
+    Maximum frames per second to render (None means "free running").
+  """
   if tk:
     from pi3d.util import TkWin
     if not (w and h):
@@ -218,11 +299,11 @@ def create(is_3d=True, x=None, y=None, w=0, h=0, near=None, far=None,
     y = y or 0
 
   display = Display(tkwin)
-  if w <= 0:
+  if (w or 0) <= 0:
      w = display.max_width - 2 * x
      if w <= 0:
        w = display.max_width
-  if h <= 0:
+  if (h or 0) <= 0:
      h = display.max_height - 2 * y
      if h <= 0:
        h = display.max_height

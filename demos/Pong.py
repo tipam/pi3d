@@ -19,7 +19,7 @@ from pi3d.Mouse import Mouse
 from pi3d.Texture import Texture
 from pi3d.util.Font import Font
 
-from pi3d.context.Light import Light
+from pi3d.Light import Light
 from pi3d.Camera import Camera
 from pi3d.Shader import Shader
 
@@ -115,8 +115,7 @@ mymouse.start()
 
 omx, omy = mymouse.position()
 
-while True:
-  DISPLAY.clear()
+while DISPLAY.loop_running():
 
   # mouse movement checking here to get bat movment values
   mx, my = mymouse.position()
@@ -216,7 +215,6 @@ while True:
   score1.draw()
 
   camera.was_moved = False
-  DISPLAY.swapBuffers()
 
   #Press ESCAPE to terminate
   k = mykeys.read()

@@ -2,8 +2,9 @@ import curses, termios, fcntl, sys, os
 
 USE_CURSES = True
 
-# Non-blocking keyboard which requires curses and only works on the current
-# terminal window or session.
+"""Non-blocking keyboard which requires curses and only works on the current
+terminal window or session.
+"""
 class CursesKeyboard(object):
   def __init__(self):
     self.key = curses.initscr()
@@ -28,9 +29,10 @@ class CursesKeyboard(object):
       pass
 
 
-# Blocking keyboard which doesn't require curses and gets any keyboard inputs
-# regardless of which window is in front.
-# From http://stackoverflow.com/a/6599441/43839
+"""Blocking keyboard which doesn't require curses and gets any keyboard inputs
+regardless of which window is in front.
+From http://stackoverflow.com/a/6599441/43839
+"""
 class SysKeyboard(object):
   def __init__(self):
     self.fd = sys.stdin.fileno()

@@ -1,7 +1,7 @@
 import math
 
 from pi3d.constants import *
-from pi3d.shape.Shape import Shape
+from pi3d.Shape import Shape
 
 class Helix(Shape):
   """ 3d model inherits from Shape"""
@@ -9,12 +9,19 @@ class Helix(Shape):
                loops=2.0, name="", x=0.0, y=0.0, z=0.0, rx=0.0, ry=0.0, rz=0.0,
                sx=1.0, sy=1.0, sz=1.0, cx=0.0, cy=0.0, cz=0.0):
     """uses standard constructor for Shape extra Keyword arguments:
-    radius -- radius of helix
-    thickness -- radius of 'bar' being 'bent' to form the helical shape
-    ringrots -- number of sides for the circlular secon of the 'bar'
-    sides -- number of sides for Shape.lathe() to use
-    rise -- distance between 'threads'
-    loops -- number of turns that the helix makes
+    
+      *radius*
+        Radius of helix.
+      *thickness*
+        Radius of 'bar' being 'bent' to form the helical shape.
+      *ringrots*
+        Number of sides for the circlular secon of the 'bar'.
+      *sides*
+        Number of sides for Shape.lathe() to use.
+      *rise*
+        Distance between 'threads'.
+      *loops*
+        Number of turns that the helix makes.
     """
     super(Helix,self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                 sx, sy, sz, cx, cy, cz)
@@ -34,8 +41,7 @@ class Helix(Shape):
     self.radius = radius
     self.thickness = thickness
     self.ringrots = ringrots
-    self.sides = sides
     self.ttype = GL_TRIANGLES
 
     self.buf = []
-    self.buf.append(self.lathe(path, rise=rise, loops=loops))
+    self.buf.append(self.lathe(path, sides, rise=rise, loops=loops))

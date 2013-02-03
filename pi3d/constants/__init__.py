@@ -37,7 +37,6 @@ def _load_library(name):
   except:
     from echomesh.util import Log
     Log.logger(__name__).error("Couldn't load library %s" % name)
-    raise
 
 bcm = _load_library('bcm_host')
 opengles = _load_library('GLESv2')

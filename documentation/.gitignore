@@ -1,0 +1,4 @@
+# Sphinx automatically recreates make.bat at the drop of a hat - some tools don't
+# let you pass a flag to turn it off.
+
+make.bat

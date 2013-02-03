@@ -8,7 +8,6 @@ applied to objects so that their details become masked with distance.
 The lighting is also defined with a yellow directional tinge and an indigo tinge
 to the ambient light
 """
-from __future__ import absolute_import
 
 import demo
 
@@ -19,7 +18,7 @@ from pi3d.Keyboard import Keyboard
 from pi3d.Mouse import Mouse
 from pi3d.Texture import Texture
 
-from pi3d.context.Light import Light
+from pi3d.Light import Light
 from pi3d.Camera import Camera
 from pi3d.Shader import Shader
 
@@ -36,7 +35,7 @@ from pi3d.util.Screenshot import screenshot
 DISPLAY = Display.create(x=200, y=200)
 DISPLAY.set_background(0.4,0.8,0.8,1)      # r,g,b,alpha
 # yellowish directional light blueish ambient light
-Light(lightpos=(1, -1, -3), lightcol =(1.0, 1.0, 0.7), lightamb=(0.15, 0.1, 0.3))
+Light(lightpos=(1, -1, -3), lightcol =(1.0, 1.0, 0.8), lightamb=(0.25, 0.2, 0.3))
 
 #========================================
 
@@ -52,7 +51,7 @@ reflimg = Texture("textures/stars.jpg")
 rockimg = Texture("textures/rock1.jpg")
 
 FOG = ((0.3, 0.3, 0.4, 0.5), 650.0)
-TFOG = ((0.1, 0.14, 0.12, 0.3), 150.0)
+TFOG = ((0.2, 0.24, 0.22, 0.3), 150.0)
 
 #myecube = EnvironmentCube(900.0,"HALFCROSS")
 ectex=loadECfiles("textures/ecubes","sbox")

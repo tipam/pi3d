@@ -47,7 +47,7 @@ import PIL.ImageOps, ImageDraw, Image
 from pi3d.shape.MergeShape import MergeShape
 from pi3d.shape.Cuboid import Cuboid
 from pi3d.shape.Plane import Plane
-from pi3d.shape.Shape import Shape
+from pi3d.Shape import Shape
 from pi3d.Buffer import Buffer
 from pi3d.Texture import Texture
 
@@ -148,8 +148,8 @@ def _overlap(x1,w1, x2, w2):
 class ObjectCuboid(object):
   """
   An ObjectCuboid has a size and position (of its centre) and a bulk.
-   The size is its extent beyond the centre on the three axes, the position is the position of its centre.
-   Note that this is different from the size of an ObjectCuboid. The bulk
+  The size is its extent beyond the centre on the three axes, the position is the position of its centre.
+  Note that this is different from the size of an ObjectCuboid. The bulk
   is an aura around it that the auras of other objects can not enter. The bulk can be zero.
   """
   def __init__(self, name, s, p, bulk):

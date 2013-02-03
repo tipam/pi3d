@@ -1,7 +1,7 @@
 from pi3d import *
 from pi3d.Texture import Texture
 from pi3d.Buffer import Buffer
-from pi3d.shape.Shape import Shape
+from pi3d.Shape import Shape
 from pi3d.util.Loadable import Loadable
 
 class Sprite(Shape):
@@ -11,9 +11,12 @@ class Sprite(Shape):
                rx=0.0, ry=0.0, rz=0.0,
                sx=1.0, sy=1.0, sz=1.0,
                cx=0.0, cy=0.0, cz=0.0):
-    """uses standard constructor for Shape extra Keyword arguments:
-    w -- width
-    h -- height
+    """uses standard constructor for Shape.E xtra Keyword arguments:
+    
+      *w*
+        Width.
+      *h*
+        Height.
     """  
     super(Sprite, self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                 sx, sy, sz, cx, cy, cz)
@@ -43,9 +46,10 @@ class ImageSprite(Sprite, Loadable): #TODO is Loadable needed?
   def __init__(self, texture, shader, **kwds):
     Sprite.__init__(self, **kwds)
     Loadable.__init__(self) #TODO need this? as Loadable->Shape->Sprite->ImageSprite
-    if not isinstance(texture, Texture):
+    if not isinstance(texture, Texture): # i.e. can load from file name
       texture = Texture(texture)
     self.buf[0].set_draw_details(shader, [texture])
+    self.set_2d_size() # method in Shape, default full window size
 
   def _load_opengl(self):
     self.buf[0].textures[0].load_opengl()

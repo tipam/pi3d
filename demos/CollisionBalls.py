@@ -50,3 +50,4 @@ while DISPLAY.loop_running():
 
   if KEYBOARD.read() == 27:
     DISPLAY.stop()
+  elif 

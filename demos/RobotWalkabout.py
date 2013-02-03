@@ -59,30 +59,31 @@ mymap.set_fog((0.3,0.15,0.1,0.1), 300.0)
 
 #create robot
 metalimg = Texture("textures/metalhull.jpg")
-robot_head= Sphere(radius=2.0)
-robot_body = Cylinder(radius=2.0, height=4.0, sides=12)
-robot_leg = Cuboid(w=0.7, h=4.0)
+robot_head= Sphere(radius=1.0)
+robot_body = Cylinder(radius=1.0, height=2.0, sides=12)
+robot_leg = Cuboid(w=0.35, h=2.0)
 
 robot = MergeShape()
-robot.add(robot_head.buf[0], 0.0, 3.2)
-robot.add(robot_body.buf[0], 0.0, 1.0)
-robot.add(robot_leg.buf[0], -2.1, 0, 0)
-robot.add(robot_leg.buf[0], 2.1, 0, 0)
-robot.set_draw_details(shader, [metalimg, metalimg, reflcn], 1.0, 0.5)
+robot.add(robot_head.buf[0], 0.0, 1.6)
+robot.add(robot_body.buf[0], 0.0, 0.5)
+robot.add(robot_leg.buf[0], -1.04, 0, 0)
+robot.add(robot_leg.buf[0], 1.05, 0, 0)
+robot.set_draw_details(shader, [metalimg, metalimg, reflcn], 0.0, 0.5)
 
 #create space station
 ssphere = Sphere(radius=10, slices=16, sides=16)
 scorrid = Cylinder(radius=4, height=22)
 
 station = MergeShape(y=mymap.calcHeight(0, 0), rx=4, ry=4, rz=4)
-station.add(ssphere.buf[0], -20,0,-20)
-station.add(ssphere.buf[0], 20,0,-20)
-station.add(ssphere.buf[0], 20,0,20)
-station.add(ssphere.buf[0], -20,0,20)
-station.add(scorrid.buf[0], -20,0,0, 90,0,0)
-station.add(scorrid.buf[0], 0,0,20, 90,90,0)
-station.add(scorrid.buf[0], 0,0,-20, 90,90,0)
-station.set_draw_details(shader, [metalimg, metalimg], 2.0)
+station.add(ssphere.buf[0], -20, 0, 20)
+station.add(ssphere.buf[0], 20, 0, 20)
+station.add(ssphere.buf[0], 20, 0, -20)
+station.add(ssphere.buf[0], -20, 0, -20)
+station.add(scorrid.buf[0], -20, 0, 0, 90, 0, 0)
+station.add(scorrid.buf[0], 0, 0, -20, 90, 90, 0)
+station.add(scorrid.buf[0], 0, 0, 20, 90, 90, 0)
+station.set_draw_details(shader, [metalimg, metalimg], 0.0)
+station.set_fog((0.3,0.15,0.1,0.1), 300.0)
 
 #avatar camera
 rot = 0.0
@@ -101,8 +102,7 @@ omx, omy = mymouse.position()
 
 # Display scene and rotate cuboid
 CAMERA = Camera.instance()
-while 1:
-  DISPLAY.clear()
+while DISPLAY.loop_running():
 
   CAMERA.reset()
   #tilt can be used as a means to prevent the view from going under the landscape!
@@ -161,5 +161,3 @@ while 1:
       break
     else:
         print(k)
-
-  DISPLAY.swapBuffers()

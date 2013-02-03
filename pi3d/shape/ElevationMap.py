@@ -6,7 +6,7 @@ from numpy import cross, dot, sqrt, array, arctan2, arcsin, degrees, subtract, m
 
 from pi3d import *
 from pi3d.Buffer import Buffer
-from pi3d.shape.Shape import Shape
+from pi3d.Shape import Shape
 from pi3d.util import Utility
 
 # a rectangular surface where elevation is defined by a greyscal image
@@ -17,17 +17,24 @@ class ElevationMap(Shape):
                width=100.0, depth=100.0, height=10.0,
                divx=0, divy=0, ntiles=1.0, name="",
                x=0.0, y=0.0, z=0.0, rx=0.0, ry=0.0, rz=0.0,
-               sx=1.0, sy=1.0, sz=1.0, cx=0.0, cy=0.0, cz=0.0, smooth=True):
+               sx=1.0, sy=1.0, sz=1.0, cx=0.0, cy=0.0, cz=0.0, smooth=True, cubic=False):
     """uses standard constructor for Shape
+    
     Arguments:
-    mapfile -- greyscale image path/file, string
+      *mapfile*
+        Greyscale image path/file, string.
+    
     Keyword arguments:
-    width, depth, height -- of the map in world units
-    divx, divy -- number of divisions into which the map will be divided
-            to create vertices
-    ntiles -- number of repeats for tiling the texture image
-    smooth -- calculate normals with averaging rather than pointing
-            straight up, slightly faster if false
+      *width, depth, height*
+        Of the map in world units.
+      *divx, divy*
+        Number of divisions into which the map will be divided.
+        to create vertices
+      *ntiles*
+        Number of repeats for tiling the texture image.
+      *smooth*
+        Calculate normals with averaging rather than pointing
+        straight up, slightly faster if false.
     """
     super(ElevationMap, self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                        sx, sy, sz, cx, cy, cz)
@@ -77,10 +84,43 @@ class ElevationMap(Shape):
     tex_coords = []
     idx = []
 
-    for y in range(0,iy):
-      for x in range(0,ix):
+    for y in xrange(0,iy):
+      for x in xrange(0,ix):
         hgt = (self.pixels[x,y])*ht
-        verts.append((-wh+x*ws, hgt, -hh+y*hs))
+        this_x = -wh + x*ws
+        this_z = -hh + y*hs
+        if cubic:
+          """ this is a bit experimental. It tries to make the map either zero
+          or height high. Vertices are moved 'under' adjacent ones if there is
+          a step to make vertical walls. Goes wrong in places - mainly because
+          it doesn't check diagonals
+          """
+          if hgt > height / 2:
+            hgt = height
+          else:
+            hgt = 0.0
+          if hgt == 0 and y > 0 and y < iy-1 and x > 0 and x < ix-1:
+            if self.pixels[x-1, y] > 127:
+              this_x = -wh + (x-1)*ws
+            elif self.pixels[x+1, y] > 127:
+              this_x = -wh + (x+1)*ws
+            elif self.pixels[x, y-1] > 127:
+              this_z = -hh + (y-1)*hs
+            elif self.pixels[x, y+1] > 127:
+              this_z = -hh + (y+1)*hs
+            elif self.pixels[x-1, y-1] > 127:
+              this_x = -wh + (x-1)*ws
+              this_z = -hh + (y-1)*hs
+            elif self.pixels[x-1, y+1] > 127:
+              this_x = -wh + (x-1)*ws
+              this_z = -hh + (y+1)*hs
+            elif self.pixels[x+1, y-1] > 127:
+              this_x = -wh + (x+1)*ws
+              this_z = -hh + (y-1)*hs
+            elif self.pixels[x+1, y+1] > 127:
+              this_x = -wh + (x+1)*ws
+              this_z = -hh + (y+1)*hs
+        verts.append((this_x, hgt, this_z))
         tex_coords.append(((ix-x) * tx,(iy-y) * ty))
 
     s=0
@@ -116,8 +156,10 @@ class ElevationMap(Shape):
 
   def calcHeight(self, px, pz):
     """accurately return the hight of the map at the point specified
+    
     Arguments:
-    px, pz -- location of the point in world coordinates to calculate height
+      *px, pz*
+        Location of the point in world coordinates to calculate height.
     """
     #adjust for map not set at origin
     px -= self.unif[0]
@@ -159,13 +201,15 @@ class ElevationMap(Shape):
   def clashTest(self, px, py, pz, rad):
     """Works out if an object at a given location and radius will overlap
     with the map surface. Returns four values:
-    boolean whether there is a clash
-    x, y, z components of the normal vector
-    the amount of overlap at the x,z location
+      * boolean whether there is a clash
+      * x, y, z components of the normal vector
+      * the amount of overlap at the x,z location
 
     Arguments:
-    px, py, pz -- location of object to test in world coordinates
-    rad -- radius of object to test
+      *px, py, pz*
+        Location of object to test in world coordinates.
+      *rad*
+        Radius of object to test.
     """
     radSq = rad**2
     # adjust for map not set at origin
@@ -244,11 +288,13 @@ class ElevationMap(Shape):
   def pitch_roll(self, px, pz):
     """works out the pitch (rx) and roll (rz) to apply to an object
     on the surface of the map at this point
-    returns a tuple (pitch, roll) in degrees
+      * returns a tuple (pitch, roll) in degrees
     
     Arguments:
-    px -- x location
-    pz -- z location
+      *px*
+        x location
+      *pz*
+        z location
     """
     px -= self.unif[0]
     pz -= self.unif[2]
@@ -280,8 +326,10 @@ def intersect_triangle(v1, v2, v3, pos):
   triange defined by v1,v2,v3
 
   Arguments:
-  v1,v2,v3 -- tuples (x1,y1,z1), (x2,y2,z2).. defining the corners of the triangle
-  pos -- tuple (x,y,z) defining the x,z of the vertical line intersecting triangle
+    *v1,v2,v3*
+      tuples (x1,y1,z1), (x2,y2,z2).. defining the corners of the triangle
+    *pos*
+      tuple (x,y,z) defining the x,z of the vertical line intersecting triangle
   """
   #calc normal from two edge vectors v2-v1 and v3-v1
   #nVec = Utility.crossproduct(v2[0]-v1[0], v2[1]-v1[1], v2[2]-v1[2], v3[0]-v1[0],  v3[1]-v1[1], v3[2]-v1[2])

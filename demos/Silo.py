@@ -25,7 +25,7 @@ from pi3d.shape.Building import Building, corridor, SolidObject, Size, Position
 
 from pi3d.util.Screenshot import screenshot
 
-from pi3d.context.Light import Light
+from pi3d.Light import Light
 
 from pi3d.events.events import InputEvents, nameOf, codeOf
 
@@ -112,9 +112,7 @@ inputs.get_mouse_movement()
 frame = 400
 record = False
 CAMERA = Camera.instance()
-while not inputs.key_state("KEY_ESC"):
-  DISPLAY.clear()
-
+while DISPLAY.loop_running() and not inputs.key_state("KEY_ESC"):
   CAMERA.reset()
   CAMERA.rotate(tilt, rot, 0)
   CAMERA.position((man.x(), man.y(), man.z() - aveyeleveladjust))
@@ -134,7 +132,10 @@ while not inputs.key_state("KEY_ESC"):
   rot -= (mx)*0.2
   tilt -= (my)*0.2
 
-  jrx, jry = inputs.get_joystickR()
+  #jrx, jry, jrz = inputs.get_joystickB3d() # xbox 360
+  # sudo apt-get install xboxdrv
+  # sudo xboxdrv -s -i 0
+  jrx, jry = inputs.get_joystickR() # gamepad
   if abs(jrx) > 0.1:
       rot -= jrx*3
 
@@ -195,9 +196,6 @@ while not inputs.key_state("KEY_ESC"):
     scshots += 1
   if inputs.key_state("KEY_ENTER"):  #key RETURN
     mc = 0
-
-  DISPLAY.swapBuffers()
-
 
 inputs.release()
 DISPLAY.destroy()

@@ -5,7 +5,7 @@ from pi3d.constants import *
 from pi3d.util.Ctypes import c_ints
 from pi3d.util.Loadable import Loadable
 
-MAX_SIZE = 1024
+MAX_SIZE = 2048
 DEFER_TEXTURE_LOADING = True
 
 def round_up_to_power_of_2(x):
@@ -21,23 +21,36 @@ class Texture(Loadable):
   to opengl format can happen just in time when tex() is first called
   """
   def __init__(self, file_string, blend=False, flip=False, size=0,
-               defer=DEFER_TEXTURE_LOADING):
+               defer=DEFER_TEXTURE_LOADING, mipmap=True):
     """
     Arguments:
-    file_string -- path and name of image file relative to top dir
-    blend -- controls if low alpha pixels are discarded (if False) or drawn
-            by the shader. If set to true then this texture needs to be
-            drawn AFTER other objects that are FURTHER AWAY
-    flip -- flips the image
-    size -- to resize image to
-    defer -- can load from file in other thread and defer opengl work until
-            texture needed, default True
+      *file_string*
+        path and name of image file relative to top dir
+      *blend*
+        controls if low alpha pixels are discarded (if False) or drawn
+        by the shader. If set to true then this texture needs to be
+        drawn AFTER other objects that are FURTHER AWAY
+      *flip*
+        flips the image
+      *size*
+        to resize image to
+      *defer*
+        can load from file in other thread and defer opengl work until
+        texture needed, default True
+      *mipmap*
+        use linear interpolation for mipmaps, if set False then nearest
+        pixel values will be used. This is needed for exact pixel represent-
+        ation of images. **NB BECAUSE THIS BEHAVIOUR IS SET GLOBALLY AT
+        THE TIME THAT THE TEXTURE IS LOADED IT WILL BE SET BY THE LAST
+        TEXTURE TO BE LOADED PRIOR TO DRAWING**
+        TODO possibly reset in Buffer.draw() each time a texture is loaded?
     """
     super(Texture, self).__init__()
     self.file_string = file_string
     self.blend = blend
     self.flip = flip
     self.size = size
+    self.mipmap = mipmap
     if defer:
       self.load_disk()
     else:
@@ -65,7 +78,7 @@ class Texture(Loadable):
     s += '(%s)' % self.im.mode
     self.alpha = (self.im.mode == 'RGBA' or self.im.mode == 'LA')
 
-    # work out if sizes are not to the power of 2 or >512
+    # work out if sizes are not to the power of 2 or > MAX_SIZE
     # TODO: why must texture sizes be a power of 2?
     xx = 0
     yy = 0
@@ -91,7 +104,7 @@ class Texture(Loadable):
       s += 'Resizing to: %d, %d' % (self.ix, self.iy)
     else:
       s += 'Bitmap size: %d, %d' % (self.ix, self.iy)
-
+    
     if VERBOSE:
       print 'Loading ...',s
 
@@ -110,10 +123,17 @@ class Texture(Loadable):
     opengles.glTexImage2D(GL_TEXTURE_2D, 0, RGBv, self.ix, self.iy, 0, RGBv,
                           GL_UNSIGNED_BYTE,
                           ctypes.string_at(self.image, len(self.image)))
-    opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-                             ctypes.c_float(GL_LINEAR_MIPMAP_LINEAR))
-    opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
-                             ctypes.c_float(GL_LINEAR))
+    if self.mipmap:
+      opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+                               ctypes.c_float(GL_LINEAR_MIPMAP_NEAREST))
+      opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+                               ctypes.c_float(GL_LINEAR_MIPMAP_NEAREST))
+    else:
+      opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+                               ctypes.c_float(GL_NEAREST))
+      opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+                               ctypes.c_float(GL_NEAREST))
+
     opengles.glGenerateMipmap(GL_TEXTURE_2D)
     opengles.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 

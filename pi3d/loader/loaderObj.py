@@ -1,7 +1,7 @@
 import re, os
 from pi3d.constants import *
 from pi3d.loader.parse_mtl import parse_mtl
-from pi3d.shape.Shape import Shape
+from pi3d.Shape import Shape
 from pi3d.Texture import Texture
 from pi3d.Buffer import Buffer
 
@@ -20,10 +20,10 @@ def parse_vertex(text):
   """Parse text chunk specifying single vertex.
 
   Possible formats:
-    vertex index
-    vertex index / texture index
-    vertex index / texture index / normal index
-    vertex index / / normal index
+  *  vertex index
+  *  vertex index / texture index
+  *  vertex index / texture index / normal index
+  *  vertex index / / normal index
   """
 
   v = 0
@@ -44,6 +44,13 @@ def parse_vertex(text):
 
 #########################################################################################
 def loadFileOBJ(model, fileName):
+  """Loads an obj file with associated mtl file to produce Buffer object
+  as part of a Shape. Arguments:
+    *model*
+      Model object to add to.
+    *fileName*
+      Path and name of obj file relative to top directory.
+  """
   model.coordinateSystem = "Y-up"
   model.parent = None
   model.childModel = [] # don't really need parent and child pointers but will speed up traversing tree
@@ -85,7 +92,7 @@ def loadFileOBJ(model, fileName):
       if chunks[0] == "v" and len(chunks) == 4:
         x = float(chunks[1])
         y = float(chunks[2])
-        z = float(chunks[3])
+        z = -float(chunks[3]) # z direction away in gl es 2.0 shaders
         vertices.append((x,y,z))
 
       # Normals in (x,y,z) form; normals might not be unit
@@ -93,7 +100,7 @@ def loadFileOBJ(model, fileName):
       if chunks[0] == "vn" and len(chunks) == 4:
         x = float(chunks[1])
         y = float(chunks[2])
-        z = float(chunks[3])
+        z = -float(chunks[3]) # z direction away in gl es 2.0 shaders
         normals.append((x,y,z))
 
       # Texture coordinates in (u,v)
@@ -202,7 +209,7 @@ def loadFileOBJ(model, fileName):
         i += 1
       n = i - iStart - 1
       for t in range(1,n):
-        g_indices.append((iStart, iStart + t, iStart + t +1))
+        g_indices.append((iStart, iStart + t + 1, iStart + t))
 
     model.buf.append(Buffer(model, g_vertices, g_tex_coords, g_indices, g_normals))
     n = len(model.buf) - 1

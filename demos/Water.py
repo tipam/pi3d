@@ -21,7 +21,7 @@ from pi3d import Display
 from pi3d.Texture import Texture
 from pi3d.Keyboard import Keyboard
 
-from pi3d.context.Light import Light
+from pi3d.Light import Light
 from pi3d.Shader import Shader
 
 from pi3d.shape.Sphere import Sphere
@@ -85,7 +85,7 @@ mystring.set_shader(flatsh)
 tick = 0
 av_fps = 0
 i_n=0
-spf = 0.08 # seconds per frame, i.e. water image change
+spf = 0.1 # seconds per frame, i.e. water image change
 next_time = time.time() + spf
 dx = 0.02
 
@@ -120,10 +120,12 @@ while DISPLAY.loop_running():
   #screenshot("/media/E856-DA25/New/fr%03d.jpg" % fr)
   #fr += 1
 
-  if mykeys.read() == 27:
+  k = mykeys.read()
+  if k==112: 
+    screenshot("water1.jpg")
+  elif k==27:    
     mykeys.close()
     DISPLAY.destroy()
     break
-
 
 quit()
