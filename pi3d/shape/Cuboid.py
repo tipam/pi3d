@@ -21,7 +21,8 @@ class Cuboid(Shape):
         scale height
       *td*
         scale depth
-    The scale factors represent how much of the texture to show along that
+        
+    The scale factors are the multiple of the texture to show along that
     dimension. For no distortion of the image the scale factors need to be
     proportional to the relative dimension.    
     """

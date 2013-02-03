@@ -201,9 +201,10 @@ class ElevationMap(Shape):
   def clashTest(self, px, py, pz, rad):
     """Works out if an object at a given location and radius will overlap
     with the map surface. Returns four values:
-      * boolean whether there is a clash
-      * x, y, z components of the normal vector
-      * the amount of overlap at the x,z location
+    
+    * boolean whether there is a clash
+    * x, y, z components of the normal vector
+    * the amount of overlap at the x,z location
 
     Arguments:
       *px, py, pz*
@@ -288,7 +289,8 @@ class ElevationMap(Shape):
   def pitch_roll(self, px, pz):
     """works out the pitch (rx) and roll (rz) to apply to an object
     on the surface of the map at this point
-      * returns a tuple (pitch, roll) in degrees
+    
+    * returns a tuple (pitch, roll) in degrees
     
     Arguments:
       *px*

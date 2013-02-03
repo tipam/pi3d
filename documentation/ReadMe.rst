@@ -3,7 +3,7 @@ Introduction to Pi3D
 
 .. image:: images/rpilogoshad128.png
 
-**Pi3D written by Tim Skillman, Paddy Gaunt, Tom Swirly Copyright (c) 2013**
+**Pi3D written by Tim Skillman, Paddy Gaunt, Tom Ritchford Copyright (c) 2013**
 
 There's plenty of 3D code flying around at the moment for the Raspberry Pi,
 but much of it is rather complicated to understand and most of it can sit
@@ -36,11 +36,11 @@ Demo's included with Pi3D
 #. **BuckfastAbbey.py** Explore a model of the beautiful Buckfast Abbey in
    Buckfastleigh, Devon, England
 
-   .. image:: ~/pi3d_int/pi3d/documentation/images/buckfast_sml.png
+   .. image:: images/buckfast_sml.png
 
 #. **Earth.py** Demonstrates semi-transparent clouds and hierarchical rotations
 
-   .. image:: /home/pi/pi3d_int/pi3d/documentation/images/earth_sml.png
+   .. image:: images/earth_sml.png
 
 #. **Raspberry_Rain.py** Raining Raspberries,  full-screen, over the desktop
 
@@ -71,12 +71,12 @@ Demo's included with Pi3D
    open/shut doors. Implements a new Level-Of-Detail (LOD) feature and TKwindow
    interface
    
-   .. image:: images/marsstation_sml.png)
+   .. image:: images/marsstation_sml.png
 
 #. **TigerTank.py** Ever played World Of Tanks (WOT)? This tank emulates how
    a WOT tank works. Uses realistic modelling in a TKwindow
    
-   .. image: images/tigertank_sml.png
+   .. image:: images/tigertank_sml.png
 
 #. **Amazing.py** Can you find yourself around the amazing maze?
 
@@ -103,8 +103,8 @@ Demo's included with Pi3D
    .. image:: images/silo_sml.png
 
 #. **ClashWalk.py** The graphics processor calculates where the camera can
-or cannot go depending on what is drawn in front of it. Potentially useful for
-first person navigation
+   or cannot go depending on what is drawn in front of it. Potentially useful for
+   first person navigation
 
 #. **Water.py** A series of wave normal maps are used to animate a surface
    and produce a realistic moving reflection.
@@ -114,71 +114,122 @@ first person navigation
 Files and folders in this repository
 ====================================
 
-1. **pi3d** The main pi3d module files
-2. **shaders** Shader files used by the pi3d module
-3. **textures** Various textures to play with
-4. **models** Demo obj and egg models
-5. **fonts** ttf and Bitmap fonts that can be using for drawing text
-6. **screenshots** Example screenshots of the demos included
-7. **documentation** Where this documentation lives
-8. **ChangeLog.txt** Latest changes of Pi3D
-9. **ReadMe.md** This file TODO
-10. **ReadMe.htm** HTML readme TODO
+#. **pi3d** The main pi3d module files
+#. **shaders** Shader files used by the pi3d module
+#. **textures** Various textures to play with
+#. **models** Demo obj and egg models
+#. **fonts** ttf and Bitmap fonts that can be using for drawing text
+#. **demos** Source code of the demos included
+#. **screenshots** Example screenshots of the demos included
+#. **documentation** Where this documentation lives
+#. **ChangeLog.txt** Latest changes of Pi3D
+#. **ReadMe.md** This file TODO
+#. **ReadMe.htm** HTML readme TODO
 
 
 Setup on the Raspberry Pi
 =========================
 
-1) **Memory Split setup**
+#.  **Memory Split setup**
 
-Although most demos work on 64MB of memory, you are strongly advised to have
-a 128MB of graphics memory split, especially for full-screen 3D graphics.
-In the latest Raspbian build you need to edit the config.txt file (in the
-boot directory) and set the variable 'gpu_mem=128' for 128MB of graphics memory.
+    Although most demos work on 64MB of memory, you are strongly advised to have
+    a 128MB of graphics memory split, especially for full-screen 3D graphics.
+    In the latest Raspbian build you need to edit the config.txt file (in the
+    boot directory) and set the variable 'gpu_mem=128' for 128MB of graphics memory.
 
 
-2) **Install Python Imaging**
+#.  **Install Python Imaging**
 
-Before trying any of the demos or Pi3D, you must download the Python Imaging
-Library as this is needed for importing any graphics used by Pi3. To install
-on the terminal, type::
+    Before trying any of the demos or Pi3D, you must download the Python Imaging
+    Library as this is needed for importing any graphics used by Pi3. To install
+    on the terminal, type::
 
-  sudo apt-get install python-imaging
+      sudo apt-get install python-imaging
 
-3) **Install Geany to run Pi3D**
+#.  **Install Geany to run Pi3D**
 
-Although you can use any editor and run the scripts in a terminal using python,
-Geany is by far the easiest and most compatible application to use for creating
-and running Python scripts. Download and install it with::
+    Although you can use any editor and run the scripts in a terminal using python,
+    Geany is by far the easiest and most compatible application to use for creating
+    and running Python scripts. Download and install it with::
 
-  sudo apt-get install geany xterm
+      sudo apt-get install geany xterm
 
-4) **Optionally, install tk.**
+#.  **Optionally, install tk.**
 
-Some of the demos require the tk graphics toolkit.  To download and install it::
+    Some of the demos require the tk graphics toolkit.  To download and install it::
 
-  sudo apt-get install tk
+      sudo apt-get install tk
 
-5) **Load and run**
+#.  **Load and run**
 
-Load any of the demos into Geany and run (using the cogs icon). As a minimum,
-scripts need these elements in order to use the pi3d library::
+    Load any of the demos into Geany and run (using the cogs icon). As a minimum,
+    scripts need these elements in order to use the pi3d library::
 
-  import pi3d
-  DISPLAY = pi3d.Display.create(w=128, h=128)
-  shader = pi3d.Shader("shaders/2d_flat")
-  sprite = pi3d.ImageSprite("textures/PATRN.PNG", shader)
-  while DISPLAY.loop_running():
-    sprite.draw()
+      import pi3d
+      DISPLAY = pi3d.Display.create(w=128, h=128)
+      shader = pi3d.Shader("shaders/2d_flat")
+      sprite = pi3d.ImageSprite("textures/PATRN.PNG", shader)
+      while DISPLAY.loop_running():
+        sprite.draw()
 
-But.. a real application will need other code to actually do something, for
-instance to get user input in order to stop the program!
+    But.. a real application will need other code to actually do something, for
+    instance to get user input in order to stop the program!
+
+
+A Very Brief Explanation
+========================
+
+The whole idea of Pi3d is that you don't have to get involved in too many of
+the nuts and bolts of how the OpenGL graphics processor works however it might
+help to get an overview of the layout of Pi3d. More detailed explanations can
+be found in the documentation of each of the modules.
+
+  The **Diplay** class is the core and is used to hold screen dimension information,
+  to initiate the graphics functionality and for 'central' information, such as timing,
+  for the animation. There needs to be an instance of Display in existence
+  before some of the other objects are created so it's a good idea to create one
+  first job.
+  
+  All objects to be drawn by Pi3d inherit from the **Shape** class which holds
+  details of position, rotation, scale as well as specific data needed for
+  drawing the shape. Each Shape contains an array of **Buffer** objects; normally
+  only containing one but there could be more in complicated models created
+  with external 3D applications. The Buffer objects contain the arrays of values
+  representing vertices, normals, faces and texture coordinates in a form that
+  can be quickly read by the graphics processor. Each Buffer object within a Shape
+  can be textured using a different image or shade (RGB) value and, if needed,
+  a different Shader.
+  
+  The **Shader** class is used to compile *very fast* programs that are run on
+  the graphics processor. They have two parts: *Vertex Shaders* that do calculation
+  for each of the vertices of the Buffer and *Fragment Shaders* applied to
+  each pixel. In Pi3d we have kept the shaders out of the main python files
+  and divided them using the two extensions .vs and .fs The shader language
+  is C like, very clever indeed, but rather hard to fathom out.
+  
+  In order to draw a Shape on the Display the Shader needs to be passed the
+  vertex information in the Buffers and needs know how the Shape has been moved.
+  But it also needs to know how the **Camera** has moved. The Camera class generally
+  has just one instance and if you do not create one explicitly then Diplay will
+  generate a default one when you first try to draw something. The Camera
+  has position and rotation information similar to Shapes but also information
+  to create the view, such as how wide-angle or telephoto the lens is.
+  
+  **Texture** objects are used to load images from file into a form that
+  can be passed to the Shader to draw onto a surface. They can also be applied as
+  normal maps to give much finer local detail or as reflection maps - a much
+  faster way to make surfaces look shiny than ray tracing.
+  
+  To produce a 3D appearance most of the Shaders use directional lighting and
+  if you draw a Shape without creating a **Light** a default instance will be
+  created by the Display. The Light has properties defining the direction,
+  the colour (and strength i.e. RGB values) and ambient colour (and strength).
+
 
 Documentation
 =============
 
-https://www.pi3d.github/docs Please note that
-Pi3D functions may change significantly during it's development.
+Please note that Pi3D functions may change significantly during it's development.
 
 Bug reports, comments, feature requests and fixes are most welcome!
 

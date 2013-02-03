@@ -442,7 +442,7 @@ class Shape(Loadable):
     Keyword arguments:
       *sides*
         Number of sides to divide each rotation into.
-       *rise*
+      *rise*
         Amount to increment the path y values for each rotation (ie helix)
       *loops*
         Number of times to rotate the path by 360 (ie helix).
