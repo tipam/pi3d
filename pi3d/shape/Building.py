@@ -71,6 +71,10 @@ class xyz(object):
       self.y = float(y)
       self.z = float(z)
 
+def __str__(self):
+      return "({0}, {1}, {2})".format(self.x, self.y, self.z)
+
+
 class Size(xyz):
   """
   Encapsulates a 3D size.
@@ -170,6 +174,18 @@ class ObjectCuboid(object):
     Returns the x coordinate of the centre of this object
     """
     return self.position.y
+  
+  def top_y(self):
+      """
+      Returns the y coordinate of the top of this object
+      """
+      return self.position.y + self.size.y + self.bulk
+
+  def bottom_y(self):
+      """
+      Returns the y coordinate of the top of this object
+      """
+      return self.position.y - self.size.y - self.bulk
 
   def z(self):
     """
@@ -250,7 +266,10 @@ class SolidObject(ObjectCuboid):
     """
     if not isinstance(p, Position): raise TypeError
     r = filter(lambda(x): x.Overlaps(self,p), type(self).objectlist)
-    r.remove(self)
+    try:
+        r.remove(self)
+    except ValueError:
+        pass
     return r
 
   def setmodel(self, model, details):
@@ -742,8 +761,7 @@ class Building (object):
     e = x + length/2
     w = x - length/2
 
-    ceiling = SolidObject(name+str(wallnum), Size(length, 1, width), Position(x, y+height+self.ceilingthickness/2, z), 0)
-    ceilingmodel = Plane(w=ceiling.w()*2, h=ceiling.d()*2, name=name+str(wallnum))
+    ceilingmodel = Plane(w=length, h=width, name=name+str(wallnum))
     mergeshape.add(ceilingmodel,x,y+height,z,rx=90.0,ry=0.0,rz=0.0)
 
     wallnum += 1
@@ -762,6 +780,7 @@ class Building (object):
     """
     global wallnum
 
+    roof = SolidObject(name+str(wallnum), Size(length, 1, width), Position(x, y+height+self.ceilingthickness/2, z), 0)
     roofmodel = Plane(w=length, h=width, name=name+str(wallnum))
     mergeshape.add(roofmodel,x,y+height+self.ceilingthickness,z,rx=90.0,ry=0.0,rz=0.0)
 
