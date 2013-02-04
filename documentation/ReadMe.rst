@@ -61,7 +61,8 @@ Demo's included with Pi3D
       .. image:: images/envcube_sml.png
         :align: right
 
-#.  **RobotWalkabout.py** Another off-planet example of a basic avatar robot drifting about
+#.  **RobotWalkabout.py** Another off-planet example of a basic avatar robot
+    drifting about
       .. image:: images/walkabout_sml.png
 
 #.  **Shapes.py** Demos available shapes and text
@@ -124,7 +125,7 @@ Files and folders in this repository
 #.  **screenshots** Example screenshots of the demos included
 #.  **documentation** Where this documentation lives
 #.  **ChangeLog.txt** Latest changes of Pi3D
-#.  **ReadMe.md** This file TODO conv to markdown for githum
+#.  **ReadMe.md** Simplified markdown summary of this file
 
 
 
