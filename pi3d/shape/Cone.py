@@ -33,4 +33,4 @@ class Cone(Shape):
     self.ttype = GL_TRIANGLES
 
     self.buf = []
-    self.buf.append(self.lathe(path, sides))
+    self.buf.append(self._lathe(path, sides))

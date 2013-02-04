@@ -15,7 +15,7 @@ class Tube(Shape):
       *height*
         Length of tube.
       *sides*
-        Number of sides for Shape.lathe() to use.
+        Number of sides for Shape._lathe() to use.
     """
     super(Tube,self).__init__(camera, light, name, x, y, z, rx, ry, rz, sx, sy, sz, cx, cy, cz)
 
@@ -40,4 +40,4 @@ class Tube(Shape):
     self.ttype = GL_TRIANGLES
 
     self.buf = []
-    self.buf.append(self.lathe(path, sides))
+    self.buf.append(self._lathe(path, sides))

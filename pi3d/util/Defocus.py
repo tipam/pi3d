@@ -63,10 +63,15 @@ class Defocus(Texture):
   def blur(self, shape, dist_fr, dist_to, amount):
     """ draw the shape using the saved texture
     Arguments:
-    shape--Shape object that will be drawn
-    dist_fr--distance from zero plane that will be in focus, float
-    dist_to--distance beyond which everything will be at max blur, float
-    amount--degree of max blur, float. Values over 5 will cause banding
+    
+      *shape*
+        Shape object that will be drawn
+      *dist_fr*
+        distance from zero plane that will be in focus, float
+      *dist_to*
+        distance beyond which everything will be at max blur, float
+      *amount*
+        degree of max blur, float. Values over 5 will cause banding
     """
     shape.unif[42] = dist_fr # shader unif[14]
     shape.unif[43] = dist_to

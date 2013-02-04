@@ -19,7 +19,7 @@ class Sphere(Shape):
       *hemi*
         if set to 0.5 it will only construct the top half of sphere
       *sides*
-        number of sides for Shape.lathe() to use
+        number of sides for Shape._lathe() to use
     """
     super(Sphere,self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                 sx, sy, sz, cx, cy, cz)
@@ -39,4 +39,4 @@ class Sphere(Shape):
     self.ttype = GL_TRIANGLES
 
     self.buf = []
-    self.buf.append(self.lathe(path, sides))
+    self.buf.append(self._lathe(path, sides))

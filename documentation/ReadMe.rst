@@ -225,7 +225,41 @@ be found in the documentation of each of the modules.
   created by the Display. The Light has properties defining the direction,
   the colour (and strength i.e. RGB values) and ambient colour (and strength).
 
+  When you look through the demos you will see one or two things that may
+  not be immediately obvious. They all start::
+  
+    #!/usr/bin/python
+    from __future__ import absolute_import, division, print_function, unicode_literals
 
+  Although these can be left out, the first tells any process running the file
+  as a script that it's python and the second is basically to help the transition
+  of this code to python 3::
+  
+    import demo
+
+  Allows the demo files to be put in a subdirectory but still run. If you write
+  a program in the top directory then you will need to take this out::
+  
+    import pi3d
+
+  Is an alternative to importing just what you need::
+  
+    from pi3d.constants import *
+    from pi3d import Display
+    from pi3d.Texture import Texture
+    from pi3d.Keyboard import Keyboard
+    from pi3d.Light import Light
+    from pi3d.Shader import Shader
+    from pi3d.util.String import String
+    ...
+    from pi3d.shape.Sphere import Sphere
+    from pi3d.shape.Sprite import Sprite
+
+  If you import the whole lot then you need to prefix classes and functions
+  with "pi3d." And you are loading a large number of variable names which
+  might cause a conflict, isn't as explicit and is generally less tidy!
+  
+  
 Documentation
 =============
 
@@ -247,8 +281,8 @@ code (jonmacey.blogspot.co.uk/2012/06/).
 The Panda3D loaderEgg.py and LoaderObj.py modules are written by Paddy Gaunt
 (Copyright (c) 2013)
 
-Many Thanks, especially to Paddy Gaunt, Peter de Rivaz, Tom Swirly, Jon Macey
-and others who have contributed to Pi3D - keep up the good work!
+Many Thanks, especially to Peter de Rivaz, Jon Macey, Richar Urwin, Peter Hess,
+David Wallin and others who have contributed to Pi3D - keep up the good work!
 
 
 **PLEASE READ LICENSING AND COPYRIGHT NOTICES ESPECIALLY IF USING FOR COMMERCIAL PURPOSES**

@@ -18,7 +18,7 @@ class Torus(Shape):
       *ringrots*
         Sides around minor radius circle
       *sides* 
-        Number of sides for Shape.lathe() to use
+        Number of sides for Shape._lathe() to use
     """
     super(Torus,self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                sx, sy, sz, cx, cy, cz)
@@ -38,4 +38,4 @@ class Torus(Shape):
     self.ttype = GL_TRIANGLES
 
     self.buf = []
-    self.buf.append(self.lathe(path, sides))
+    self.buf.append(self._lathe(path, sides))

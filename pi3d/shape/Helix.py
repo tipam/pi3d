@@ -17,7 +17,7 @@ class Helix(Shape):
       *ringrots*
         Number of sides for the circlular secon of the 'bar'.
       *sides*
-        Number of sides for Shape.lathe() to use.
+        Number of sides for Shape._lathe() to use.
       *rise*
         Distance between 'threads'.
       *loops*
@@ -44,4 +44,4 @@ class Helix(Shape):
     self.ttype = GL_TRIANGLES
 
     self.buf = []
-    self.buf.append(self.lathe(path, sides, rise=rise, loops=loops))
+    self.buf.append(self._lathe(path, sides, rise=rise, loops=loops))

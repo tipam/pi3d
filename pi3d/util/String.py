@@ -9,11 +9,20 @@ DEFAULT_FONT_DOT_SIZE = 0.24
 DEFAULT_FONT_SCALE = DEFAULT_FONT_DOT_SIZE / DOTS_PER_INCH
 
 class String(Shape):
+  """Shape used for writing text on screen. It is a flat, one sided rectangualar plane"""
   def __init__(self, camera=None, light=None, font=None, string=None,
                x=0.0, y=0.0, z=1.0,
                sx=DEFAULT_FONT_SCALE, sy=DEFAULT_FONT_SCALE,
                is_3d=True, size=DEFAULT_FONT_DOT_SIZE,
                rx=0.0, ry=0.0, rz=0.0):
+    """Standard Shape constructor without the facility to change z scale or 
+    any of the offset values. Additional keyword arguments:
+    
+      *font*
+        Font or Ttffont class object.
+      *string*
+        of ASCI characters in range(32, 128)
+    """
     if not is_3d:
       sy = sx = size / DOTS_PER_INCH
     super(String, self).__init__(camera, light, "", x, y, z,

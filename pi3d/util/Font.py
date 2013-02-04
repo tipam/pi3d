@@ -10,6 +10,8 @@ from pi3d.Texture import Texture
 # TODO TEXTURES NEED CLEANING UP
 
 class Font(Texture):
+  """A method of writing in pi3d using 'hand designed' fonts. Mainly superseded
+  by the Ttffont class."""
   def __init__(self, font, col="#ffffff"):
     super(Font, self).__init__("fonts/%s.png" % font)
     self.font = font

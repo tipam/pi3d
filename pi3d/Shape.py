@@ -157,6 +157,16 @@ class Shape(Loadable):
       b.draw(shader, txtrs, ntl, shny)
 
   def set_shader(self, shader):
+    """Wrapper method to set just the Shader for all the Buffer objects of
+    this Shape. Used, for instance, in a Model where the Textures have been
+    defined in the obj & mtl files, so you can't use set_draw_details.
+    
+    Arguments:
+    
+      *shader*
+        Shader to use
+        
+    """
     self.shader = shader
     for b in self.buf:
       b.shader = shader
@@ -320,6 +330,15 @@ class Shape(Loadable):
     return self.unif[2]
 
   def scale(self, sx, sy, sz):
+    """Arguments:
+    
+      *sx*
+        x scale
+      *sy*
+        y scale
+      *sz*
+        z scale
+    """
     self.scl[0, 0] = sx
     self.scl[1, 1] = sy
     self.scl[2, 2] = sz
@@ -327,6 +346,15 @@ class Shape(Loadable):
     self.MFlg = True
 
   def position(self, x, y, z):
+    """Arguments:
+    
+      *x*
+        x position
+      *y*
+        y position
+      *z*
+        z position
+    """
     self.tr1[3, 0] = x - self.unif[9]
     self.tr1[3, 1] = y - self.unif[10]
     self.tr1[3, 2] = z - self.unif[11]
@@ -334,21 +362,45 @@ class Shape(Loadable):
     self.MFlg = True
 
   def positionX(self, v):
+    """Arguments:
+    
+      *v*
+        x position
+    """
     self.tr1[3, 0] = v - self.unif[9]
     self.unif[0] = v
     self.MFlg = True
 
   def positionY(self, v):
+    """Arguments:
+    
+      *v*
+        y position
+    """
     self.tr1[3, 1] = v - self.unif[10]
     self.unif[1] = v
     self.MFlg = True
 
   def positionZ(self, v):
+    """Arguments:
+    
+      *v*
+        z position
+    """
     self.tr1[3, 2] = v - self.unif[11]
     self.unif[2] = v
     self.MFlg = True
 
   def translate(self, dx, dy, dz):
+    """Arguments:
+    
+      *dx*
+        x translation
+      *dy*
+        y translation
+      *dz*
+        z translation
+    """
     self.tr1[3, 0] += dx
     self.tr1[3, 1] += dy
     self.tr1[3, 2] += dz
@@ -358,21 +410,41 @@ class Shape(Loadable):
     self.unif[2] += dz
 
   def translateX(self, v):
+    """Arguments:
+    
+      *v*
+        x translation
+    """
     self.tr1[3, 0] += v
     self.unif[0] += v
     self.MFlg = True
 
   def translateY(self, v):
+    """Arguments:
+    
+      *v*
+        y translation
+    """
     self.tr1[3, 1] += v
     self.unif[1] += v
     self.MFlg = True
 
   def translateZ(self, v):
+    """Arguments:
+    
+      *v*
+        z translation
+    """
     self.tr1[3, 2] += v
     self.unif[2] += v
     self.MFlg = True
 
   def rotateToX(self, v):
+    """Arguments:
+    
+      *v*
+        x rotation
+    """
     s, c = sin(radians(v)), cos(radians(v))
     self.rox[1, 1] = self.rox[2, 2] = c
     self.rox[1, 2] = s
@@ -381,6 +453,11 @@ class Shape(Loadable):
     self.MFlg = True
 
   def rotateToY(self, v):
+    """Arguments:
+    
+      *v*
+        y rotation
+    """
     s, c = sin(radians(v)), cos(radians(v))
     self.roy[0, 0] = self.roy[2, 2] = c
     self.roy[0, 2] = -s
@@ -389,6 +466,11 @@ class Shape(Loadable):
     self.MFlg = True
 
   def rotateToZ(self, v):
+    """Arguments:
+    
+      *v*
+        z rotation
+    """
     s, c = sin(radians(v)), cos(radians(v))
     self.roz[0, 0] = self.roz[1, 1] = c
     self.roz[0, 1] = s
@@ -397,6 +479,11 @@ class Shape(Loadable):
     self.MFlg = True
 
   def rotateIncX(self,v):
+    """Arguments:
+    
+      *v*
+        x rotational increment
+    """
     self.unif[3] += v
     s, c = sin(radians(self.unif[3])), cos(radians(self.unif[3]))
     self.rox[1, 1] = self.rox[2, 2] = c
@@ -405,6 +492,11 @@ class Shape(Loadable):
     self.MFlg = True
 
   def rotateIncY(self,v):
+    """Arguments:
+    
+      *v*
+        y rotational increment
+    """
     self.unif[4] += v
     s, c = sin(radians(self.unif[4])), cos(radians(self.unif[4]))
     self.roy[0, 0] = self.roy[2, 2] = c
@@ -413,6 +505,11 @@ class Shape(Loadable):
     self.MFlg = True
 
   def rotateIncZ(self,v):
+    """Arguments:
+    
+      *v*
+        z rotational increment
+    """
     self.unif[5] += v
     s, c = sin(radians(self.unif[5])), cos(radians(self.unif[5]))
     self.roz[0, 0] = self.roz[1, 1] = c
@@ -420,18 +517,18 @@ class Shape(Loadable):
     self.roz[1, 0] = -s
     self.MFlg = True
 
-  def add_vertex(self, vert, norm, texc):
+  def _add_vertex(self, vert, norm, texc):
     """add vertex,normal and tex_coords ..."""
     self.verts.append(vert)
     self.norms.append(norm)
     self.texcoords.append(texc)
 
 
-  def add_tri(self, indx):
+  def _add_tri(self, indx):
     """add triangle refs."""
     self.inds.append(indx)
 
-  def lathe(self, path, sides=12, rise=0.0, loops=1.0):
+  def _lathe(self, path, sides=12, rise=0.0, loops=1.0):
     """Returns a Buffer object by rotating the points defined in path.
 
     Arguments:

@@ -10,7 +10,7 @@ class Clashtest(Texture):
     """ calls Texture.__init__ but doesn't need to set file name as
     texture generated from the framebuffer
     """
-    super(Clashtest, self).__init__("defocus")
+    super(Clashtest, self).__init__("clashtest")
     from pi3d.Display import Display
     self.ix, self.iy = Display.INSTANCE.width, Display.INSTANCE.height
     self.im = Image.new("RGB",(self.ix, self.iy))
@@ -69,16 +69,18 @@ class Clashtest(Texture):
     """ draw the shape using the clashtest Shader
 
     Arguments:
-    shape--Shape object that will be drawn
+      *shape*
+        Shape object that will be drawn
     """
     shape.draw(shader=self.shader)
 
   def check(self, grain=50):
-    """ checks the pixels of the texture to see if there is any change, in which
-    case returns True else returns False. 
+    """ checks the pixels of the texture to see if there is any change from the
+    first pixel sampled; in which case returns True else returns False. 
     
     Keyword argument:
-    grain -- number of locations to check over the whole image
+      *grain*
+        Number of locations to check over the whole image
     """
     opengles.glReadPixels(0, 0, self.ix, self.iy, GL_RGB, GL_UNSIGNED_BYTE, ctypes.byref(self.img))
     r0 = self.img[0:3]
@@ -88,12 +90,3 @@ class Clashtest(Texture):
         return True
         
     return False
-
-    """
-    ima = Image.frombuffer('RGB', (self.ix, self.iy), self.img, 'raw', 'RGB', 0, 1)
-    colors = ima.getcolors(2) # set maxcolors to 2 so it stops quickly
-    if colors == None or len(colors) > 1:
-      return True
-    else:
-      return False
-    """

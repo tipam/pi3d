@@ -7,7 +7,23 @@ from pi3d.constants import *
 from pi3d.Texture import Texture
 
 class Ttffont(Texture):
+  """Loads a Ttf font from disk and creates a Texture and lookup table for
+  the String class to write with"""
   def __init__(self, font, col="#ffffff", fontsize=48, imagesize=512):
+    """Arguments:
+    
+      *font*
+        file path/name to a ttf file
+        
+    Keyword arguments:
+    
+      *col*
+        colour in standard hex format #RRGGBB
+      *fontsize*
+        point size for drawing the letters on the internal Texture
+      *imagesize*
+        pixels square, needs to be bigger for large point size
+    """
     super(Ttffont, self).__init__(font)
     self.font = font
     imgfont = ImageFont.truetype(font, fontsize)

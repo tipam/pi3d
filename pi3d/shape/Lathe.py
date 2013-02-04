@@ -17,7 +17,7 @@ class Lathe(Shape):
       *path*
         Array of coordinates rotated to form shape [(x0,y0),(x1,y1)..]
       *sides*
-        Number of sides for Shape.lathe() to use.
+        Number of sides for Shape._lathe() to use.
     """
     super(Lathe, self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                 sx, sy, sz, cx, cy, cz)
@@ -29,7 +29,7 @@ class Lathe(Shape):
     self.ttype = GL_TRIANGLES
 
     self.buf = []
-    self.buf.append(self.lathe(path, sides))
+    self.buf.append(self._lathe(path, sides))
 
   # TODO intervene in call to Buffer.draw() so that face culling can be disabled
   #this draw method disables face culling which allows the backs of faces to show,
