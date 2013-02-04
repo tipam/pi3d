@@ -2,6 +2,7 @@ Introduction to Pi3D
 ====================
 
 .. image:: images/rpilogoshad128.png
+   :align: left 
 
 **Pi3D written by Tim Skillman, Paddy Gaunt, Tom Ritchford Copyright (c) 2013**
 
@@ -25,106 +26,106 @@ included with this code and experiment with them ..
 Demo's included with Pi3D
 =========================
 
-#. **ForestWalk.py** Walk about a forest on a landscape generated from a bitmap
+#.  **ForestWalk.py** Walk about a forest on a landscape generated from a
+    bitmap
+      .. image:: images/forestwalk_sml.png
+        :align: right
 
-   .. image:: images/forestwalk_sml.png
+#.  **Triceratops.py** Large model loading with several
+    bitmaps
+      .. image:: images/triceratops_sml.png
 
-#. **Triceratops.py** Large model loading with several bitmaps
+#.  **BuckfastAbbey.py** Explore a model of the beautiful Buckfast Abbey in 
+    Buckfastleigh, Devon, England
+      .. image:: images/buckfast_sml.png
+          :align: right
 
-   .. image:: images/triceratops_sml.png
+#.  **Earth.py** Demonstrates semi-transparent clouds and hierarchical
+    rotations
+      .. image:: images/earth_sml.png
 
-#. **BuckfastAbbey.py** Explore a model of the beautiful Buckfast Abbey in
-   Buckfastleigh, Devon, England
+#.  **Raspberry_Rain.py** Raining Raspberries,  full-screen, over the
+    desktop
+      .. image:: images/raspberryrain_sml.png
+        :align: right
 
-   .. image:: images/buckfast_sml.png
+#.  **Clouds3D.py** Blended sprites in
+    perspective view
+      .. image:: images/clouds3d_sml.png
 
-#. **Earth.py** Demonstrates semi-transparent clouds and hierarchical rotations
+#.  **CollisionBalls.py** More bouncing balls across the screen -
+    this time  bouncing off each other on the desktop
 
-   .. image:: images/earth_sml.png
+#.  **EnvironmentCube.py** New environment cubes to try out in texture/ecubes -
+    some high quality ones!
+      .. image:: images/envcube_sml.png
+        :align: right
 
-#. **Raspberry_Rain.py** Raining Raspberries,  full-screen, over the desktop
+#.  **RobotWalkabout.py** Another off-planet example of a basic avatar robot drifting about
+      .. image:: images/walkabout_sml.png
 
-   .. image:: images/raspberryrain_sml.png
+#.  **Shapes.py** Demos available shapes and text
+    in a 3D context
+      .. image:: images/shapes_sml.png
+        :align: right
 
-#. **Clouds3D.py** Blended sprites in perspective view
+#.  **MarsStation.py** Navigate around an abandoned Mars base-station with
+    open/shut doors. Implements a new Level-Of-Detail (LOD) feature and TKwindow
+    interface
+      .. image:: images/marsstation_sml.png
 
-   .. image:: images/clouds3d_sml.png
+#.  **TigerTank.py** Ever played World Of Tanks (WOT)? This tank emulates
+    how a WOT tank works. Uses realistic modelling in a TKwindow
+      .. image:: images/tigertank_sml.png
+        :align: right
 
-#. **CollisionBalls.py** More bouncing balls across the screen - this time
-   bouncing off each other on the desktop
+#.  **Amazing.py** Can you find yourself around the
+    amazing maze?
+      .. image:: images/amazing_sml.png
 
-#. **EnvironmentCube.py** New environment cubes to try out in texture/ecubes -
-   some high quality ones!
-   
-   .. image:: images/envcube_sml.png
+#.  **Pong.py**  A snazzy 3D version of landscape pinball and pong
+    against a Raspberry!
+      .. image:: images/pong_sml.png
+        :align: right
 
-#. **RobotWalkabout.py** Another off-planet example of a basic avatar robot
-   drifting about
-   
-   .. image:: images/walkabout_sml.png
+#.  **Blur.py** Simulates giving the camera a focal distance and blurs
+    nearer and further objects
+      .. image:: images/blur_sml.png
 
-#. **Shapes.py** Demos available shapes and text in a 3D context
+#.  **LoadModelObj.py** Loads a model from obj file (quicker) and applies
+    a normal map and relfection map
+      .. image:: images/teapot_sml.png
+        :align: right
 
-   .. image:: images/shapes_sml.png
+#.  **Silo.py** Uses the Building class to create a claustrophobic maze
+    set in the desert.
+      .. image:: images/silo_sml.png
 
-#. **MarsStation.py** Navigate around an abandoned Mars base-station with
-   open/shut doors. Implements a new Level-Of-Detail (LOD) feature and TKwindow
-   interface
-   
-   .. image:: images/marsstation_sml.png
+#.  **ClashWalk.py** The graphics processor calculates where the camera can
+    or cannot go depending on what is drawn in front of it. Potentially useful
+    for first person navigation
 
-#. **TigerTank.py** Ever played World Of Tanks (WOT)? This tank emulates how
-   a WOT tank works. Uses realistic modelling in a TKwindow
-   
-   .. image:: images/tigertank_sml.png
-
-#. **Amazing.py** Can you find yourself around the amazing maze?
-
-   .. image:: images/amazing_sml.png
-
-#. **Pong.py**  A snazzy 3D version of landscape pinball and pong against
-   a Raspberry!
-
-   .. image:: images/pong_sml.png
-
-#. **Blur.py** Simulates giving the camera a focal distance and blurs nearer
-   and further objects
-
-   .. image:: images/blur_sml.png
-
-#. **LoadModelObj.py** Loads a model from obj file (quicker) and applies
-   a normal map and relfection map
-
-   .. image:: images/teapot_sml.png
-
-#. **Silo.py** Uses the Building class to create a claustrophobic maze set
-   in the desert.
-
-   .. image:: images/silo_sml.png
-
-#. **ClashWalk.py** The graphics processor calculates where the camera can
-   or cannot go depending on what is drawn in front of it. Potentially useful for
-   first person navigation
-
-#. **Water.py** A series of wave normal maps are used to animate a surface
-   and produce a realistic moving reflection.
-
-   .. image:: images/water_sml.png
+#.  **Water.py** A series of wave normal maps are used to animate a surface
+    and produce a realistic moving reflection.
+      .. image:: images/water_sml.png
+        :align: right
+     
 
 Files and folders in this repository
 ====================================
 
-#. **pi3d** The main pi3d module files
-#. **shaders** Shader files used by the pi3d module
-#. **textures** Various textures to play with
-#. **models** Demo obj and egg models
-#. **fonts** ttf and Bitmap fonts that can be using for drawing text
-#. **demos** Source code of the demos included
-#. **screenshots** Example screenshots of the demos included
-#. **documentation** Where this documentation lives
-#. **ChangeLog.txt** Latest changes of Pi3D
-#. **ReadMe.md** This file TODO
-#. **ReadMe.htm** HTML readme TODO
+#.  **pi3d** The main pi3d module files
+#.  **shaders** Shader files used by the pi3d module
+#.  **textures** Various textures to play with
+#.  **models** Demo obj and egg models
+#.  **fonts** ttf and Bitmap fonts that can be using for drawing text see in
+    /usr/share/fonts/truetype for others, or look online.
+#.  **demos** Source code of the demos included
+#.  **screenshots** Example screenshots of the demos included
+#.  **documentation** Where this documentation lives
+#.  **ChangeLog.txt** Latest changes of Pi3D
+#.  **ReadMe.md** This file TODO conv to markdown for githum
+
 
 
 Setup on the Raspberry Pi
