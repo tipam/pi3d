@@ -332,21 +332,30 @@ def draw_level_of_detail(here, there, mlist):
       way to make sure that nothing is drawn past a certain distance.
   """
   dist = distance(here, there)
+  use_bisect = False
 
-  # This should use bisect.
-  for model in mlist:
-    if dist < model[0]:
-      if not (model[1] == None):
-        model[1].position(there[0], there[1], there[2])
-        model[1].draw()
-      return
+  if use_bisect:
+    import bisect
 
-  # dist is more than any model dist so draw last
-  model = mlist[len(mlist) - 1]
-  if not (model[1] == None):
-    model[1].position(there[0], there[1], there[2])
-    model[1].draw()
+    index = bisect.bisect_left(mlist, [dist, None])
+    model = mlist[min(index, len(mlist) - 1)][1]
+    model.position(there[0], there[1], there[2])
+    model.draw()
 
+  else:
+    # TODO: delete this.
+    for model in mlist:
+      if dist < model[0]:
+        if not (model[1] == None):
+          model[1].position(there[0], there[1], there[2])
+          model[1].draw()
+        return
+
+    # dist is more than any model dist so draw last
+    model = mlist[len(mlist) - 1]
+    if not (model[1] == None):
+      model[1].position(there[0], there[1], there[2])
+      model[1].draw()
 
 """
 # TODO: None of these functions is actually called in the codebase.
