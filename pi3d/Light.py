@@ -8,9 +8,12 @@ class Light(DefaultInstance):
                lightamb=(0.1, 0.1, 0.2)):
     """ set light values. These are set in Shape.unif as part of the Shape
     constructor. They can be changed using Shape.set_light()
-    The pixel shade is calculated by componet multiplying lightcol by the
-    texture by the dot product of direction and -normal + component multiplying
-    lightamb by the texture
+    The pixel shade is calculated as::
+    
+      (lightcol * texture) * dot(lightpos, -normal) + (lightamb * texture)
+    
+    where * means component multiplying if between two vectors and dot() is
+    the dot product of two vectors.
     
     Arguments:
       *lightpos*

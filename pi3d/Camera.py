@@ -31,12 +31,12 @@ class Camera(DefaultInstance):
     self.start_eye = eye # for reset with different lens settings
     self.eye = [eye[0], eye[1], eye[2]]
     self.lens = lens
-    self.view = LookAtMatrix(at, eye, [0,1,0])
-    self.projection = ProjectionMatrix(lens[0], lens[1], lens[2], lens[3])
+    self.view = _LookAtMatrix(at, eye, [0,1,0])
+    self.projection = _ProjectionMatrix(lens[0], lens[1], lens[2], lens[3])
     self.model_view = dot(self.view, self.projection)
     # Apply transform/rotation first, then shift into perspective space.
     self.mtrx = copy(self.model_view)
-    # self.L_reflect = LookAtMatrix(at,eye,[0,1,0],reflect=True)
+    # self.L_reflect = _LookAtMatrix(at,eye,[0,1,0],reflect=True)
     self.rtn = [0.0, 0.0, 0.0]
 
     self.was_moved = True
@@ -52,27 +52,13 @@ class Camera(DefaultInstance):
   def reset(self, lens=None):
     """Has to be called each loop if the camera position or rotation changes"""
     if lens != None:
-      view = LookAtMatrix(self.at, self.start_eye, [0,1,0])
-      projection = ProjectionMatrix(lens[0], lens[1], lens[2], lens[3])
+      view = _LookAtMatrix(self.at, self.start_eye, [0,1,0])
+      projection = _ProjectionMatrix(lens[0], lens[1], lens[2], lens[3])
       self.model_view = dot(view, projection)
     # TODO some way of resetting to original matrix
     self.mtrx = copy(self.model_view)
     self.rtn = [0.0, 0.0, 0.0]
     self.was_moved = True
-
-  def copy(self,copyMatrix):
-    """Usually copies the model_view matrix to begin with."""
-    self.mtrx = copy(copyMatrix)
-
-  def copynew(self):
-    """wrapper for copy"""
-    return copy(self.mtrx)
-
-  def identity(self):
-    self.mtrx = array([[1, 0, 0, 0],
-                       [0, 1, 0, 0],
-                       [0, 0, 1, 0],
-                       [0, 0, 0, 1]], dtype=ctypes.c_float)
 
   def position(self, pt):
     """position camera
@@ -157,7 +143,7 @@ class Camera(DefaultInstance):
     self.rotateX(rx)
     self.rotateY(ry)
 
-def LookAtMatrix(at, eye, up=[0,1,0], reflect=False):
+def _LookAtMatrix(at, eye, up=[0,1,0], reflect=False):
   """Define a matrix looking at.
 
   Arguments:
@@ -187,7 +173,7 @@ def LookAtMatrix(at, eye, up=[0,1,0], reflect=False):
   return array([[xaxis[a], yaxis[a], zaxis[a], z[a]] for a in range(4)],
                dtype=ctypes.c_float)
 
-def ProjectionMatrix(near=10, far=1000.0, fov_w=1.6, fov_h=1.2):
+def _ProjectionMatrix(near=10, far=1000.0, fov_w=1.6, fov_h=1.2):
   """Set up projection matrix
   
   Keyword arguments:

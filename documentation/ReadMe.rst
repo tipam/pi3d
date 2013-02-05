@@ -29,7 +29,7 @@ Demo's included with Pi3D
 #.  **ForestWalk.py** Walk about a forest on a landscape generated from a
     bitmap
       .. image:: images/forestwalk_sml.png
-        :align: right
+         :align: right
 
 #.  **Triceratops.py** Large model loading with several
     bitmaps
@@ -38,7 +38,7 @@ Demo's included with Pi3D
 #.  **BuckfastAbbey.py** Explore a model of the beautiful Buckfast Abbey in 
     Buckfastleigh, Devon, England
       .. image:: images/buckfast_sml.png
-          :align: right
+         :align: right
 
 #.  **Earth.py** Demonstrates semi-transparent clouds and hierarchical
     rotations
@@ -47,7 +47,7 @@ Demo's included with Pi3D
 #.  **Raspberry_Rain.py** Raining Raspberries,  full-screen, over the
     desktop
       .. image:: images/raspberryrain_sml.png
-        :align: right
+         :align: right
 
 #.  **Clouds3D.py** Blended sprites in
     perspective view
@@ -59,7 +59,7 @@ Demo's included with Pi3D
 #.  **EnvironmentCube.py** New environment cubes to try out in texture/ecubes -
     some high quality ones!
       .. image:: images/envcube_sml.png
-        :align: right
+         :align: right
 
 #.  **RobotWalkabout.py** Another off-planet example of a basic avatar robot
     drifting about
@@ -68,7 +68,7 @@ Demo's included with Pi3D
 #.  **Shapes.py** Demos available shapes and text
     in a 3D context
       .. image:: images/shapes_sml.png
-        :align: right
+         :align: right
 
 #.  **MarsStation.py** Navigate around an abandoned Mars base-station with
     open/shut doors. Implements a new Level-Of-Detail (LOD) feature and TKwindow
@@ -78,7 +78,7 @@ Demo's included with Pi3D
 #.  **TigerTank.py** Ever played World Of Tanks (WOT)? This tank emulates
     how a WOT tank works. Uses realistic modelling in a TKwindow
       .. image:: images/tigertank_sml.png
-        :align: right
+         :align: right
 
 #.  **Amazing.py** Can you find yourself around the
     amazing maze?
@@ -87,7 +87,7 @@ Demo's included with Pi3D
 #.  **Pong.py**  A snazzy 3D version of landscape pinball and pong
     against a Raspberry!
       .. image:: images/pong_sml.png
-        :align: right
+         :align: right
 
 #.  **Blur.py** Simulates giving the camera a focal distance and blurs
     nearer and further objects
@@ -96,7 +96,7 @@ Demo's included with Pi3D
 #.  **LoadModelObj.py** Loads a model from obj file (quicker) and applies
     a normal map and relfection map
       .. image:: images/teapot_sml.png
-        :align: right
+         :align: right
 
 #.  **Silo.py** Uses the Building class to create a claustrophobic maze
     set in the desert.
@@ -186,56 +186,57 @@ the nuts and bolts of how the OpenGL graphics processor works however it might
 help to get an overview of the layout of Pi3d. More detailed explanations can
 be found in the documentation of each of the modules.
 
-  The **Diplay** class is the core and is used to hold screen dimension information,
+  **Display** The `Display`_ class is the core and is used to hold screen dimension information,
   to initiate the graphics functionality and for 'central' information, such as timing,
-  for the animation. There needs to be an instance of Display in existence
+  for the animation. There needs to be an instance of `Display`_ in existence
   before some of the other objects are created so it's a good idea to create one
   first job.
   
-  All objects to be drawn by Pi3d inherit from the **Shape** class which holds
+  **Shape** All objects to be drawn by Pi3d inherit from the `Shape`_ class which holds
   details of position, rotation, scale as well as specific data needed for
-  drawing the shape. Each Shape contains an array of **Buffer** objects; normally
+  drawing the shape. Each `Shape`_ contains an array of `Buffer`_ objects; normally
   only containing one but there could be more in complicated models created
-  with external 3D applications. The Buffer objects contain the arrays of values
-  representing vertices, normals, faces and texture coordinates in a form that
-  can be quickly read by the graphics processor. Each Buffer object within a Shape
-  can be textured using a different image or shade (RGB) value and, if needed,
-  a different Shader.
+  with external 3D applications. 
   
-  The **Shader** class is used to compile *very fast* programs that are run on
+  **Buffer** The `Buffer`_ objects contain the arrays of values representing vertices,
+  normals, faces and texture coordinates in a form that can be quickly read by
+  the graphics processor. Each Buffer_ object within a `Shape`_ can be textured
+  using a different image or shade (RGB) value and, if needed, a different `Shader`_
+  
+  **Shader** The `Shader`_ class is used to compile *very fast* programs that are run on
   the graphics processor. They have two parts: *Vertex Shaders* that do calculation
-  for each of the vertices of the Buffer and *Fragment Shaders* applied to
+  for each of the vertices of the `Buffer`_ and *Fragment Shaders* applied to
   each pixel. In Pi3d we have kept the shaders out of the main python files
   and divided them using the two extensions .vs and .fs The shader language
   is C like, very clever indeed, but rather hard to fathom out.
   
-  In order to draw a Shape on the Display the Shader needs to be passed the
-  vertex information in the Buffers and needs know how the Shape has been moved.
-  But it also needs to know how the **Camera** has moved. The Camera class generally
-  has just one instance and if you do not create one explicitly then Diplay will
-  generate a default one when you first try to draw something. The Camera
+  **Camera** In order to draw a `Shape`_ on the `Display`_ the `Shader`_ needs to be passed the
+  vertex information in the Buffers and needs know how the `Shape`_ has been moved.
+  But it also needs to know how the `Camera`_ has moved. The `Camera`_ class generally
+  has just one instance and if you do not create one explicitly then `Display`_ will
+  generate a default one when you first try to draw something. The `Camera`_
   has position and rotation information similar to Shapes but also information
   to create the view, such as how wide-angle or telephoto the lens is.
   
-  **Texture** objects are used to load images from file into a form that
-  can be passed to the Shader to draw onto a surface. They can also be applied as
+  **Texture** The `Texture`_ objects are used to load images from file into a form that
+  can be passed to the `Shader`_ to draw onto a surface. They can also be applied as
   normal maps to give much finer local detail or as reflection maps - a much
   faster way to make surfaces look shiny than ray tracing.
   
-  To produce a 3D appearance most of the Shaders use directional lighting and
-  if you draw a Shape without creating a **Light** a default instance will be
-  created by the Display. The Light has properties defining the direction,
+  **Light** To produce a 3D appearance most of the Shaders use directional lighting and
+  if you draw a `Shape`_ without creating a `Light`_ a default instance will be
+  created by the `Display`_. The `Light`_ has properties defining the direction,
   the colour (and strength i.e. RGB values) and ambient colour (and strength).
 
   When you look through the demos you will see one or two things that may
-  not be immediately obvious. They all start::
+  not be immediately obvious. All the demos start with::
   
     #!/usr/bin/python
     from __future__ import absolute_import, division, print_function, unicode_literals
 
-  Although these can be left out, the first tells any process running the file
+  Although these lines can often be left out, the first tells any process running the file
   as a script that it's python and the second is basically to help the transition
-  of this code to python 3::
+  of this code to run using python 3::
   
     import demo
 
@@ -257,10 +258,18 @@ be found in the documentation of each of the modules.
     from pi3d.shape.Sphere import Sphere
     from pi3d.shape.Sprite import Sprite
 
-  If you import the whole lot then you need to prefix classes and functions
-  with "pi3d." And you are loading a large number of variable names which
-  might cause a conflict, isn't as explicit and is generally less tidy!
+  If you import the whole lot using 'import pi3d' then you need to prefix classes
+  and functions with "pi3d." And you are loading a large number of variable names
+  which might cause a conflict, isn't as explicit and is less tidy (in the non-
+  superficial sense)!
   
+.. _Display: pi3d.html#pi3d.Display.Display
+.. _Shape: pi3d.html#pi3d.Shape.Shape
+.. _Buffer: pi3d.html#pi3d.Buffer.Buffer
+.. _Shader: pi3d.html#pi3d.Shader.Shader
+.. _Camera: pi3d.html#pi3d.Camera.Camera
+.. _Texture: pi3d.html#pi3d.Texture.Texture
+.. _Light: pi3d.html#pi3d.Light.Light
   
 Documentation
 =============
@@ -269,8 +278,8 @@ Please note that Pi3D functions may change significantly during it's development
 
 Bug reports, comments, feature requests and fixes are most welcome!
 
-Please email on timskillman@gmail.com or contact me through the Raspberry Pi
-forums.
+Please email on pi3d@googlegroups.com or contact us through the Raspberry Pi forums
+or on pi3d.github.com
 
 
 Acknowledgements
@@ -279,9 +288,6 @@ Acknowledgements
 Pi3D started with code based on Peter de Rivaz 'pyopengles'
 (https://github.com/peterderivaz/pyopengles) with some tweaking from Jon Macey's
 code (jonmacey.blogspot.co.uk/2012/06/).
-
-The Panda3D loaderEgg.py and LoaderObj.py modules are written by Paddy Gaunt
-(Copyright (c) 2013)
 
 Many Thanks, especially to Peter de Rivaz, Jon Macey, Richar Urwin, Peter Hess,
 David Wallin and others who have contributed to Pi3D - keep up the good work!

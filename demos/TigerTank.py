@@ -45,8 +45,8 @@ winw, winh, bord = 1200, 600, 0     #64MB GPU memory setting
 # winw,winh,bord = 1920,1200,0   #128MB GPU memory setting
 
 DISPLAY = Display.create(tk=True, window_title='Tiger Tank demo in Pi3D',
-                         mouse=True, w=winw, h=winh - bord,
-                         far=2200.0, background=(0.4, 0.8, 0.8, 1))
+                        mouse=True, w=winw, h=winh - bord, far=2200.0,
+                        background=(0.4, 0.8, 0.8, 1), frames_per_second=16)
 DISPLAY.mouse.restrict = False #TODO improve mouse/camera interaction
 Light(lightpos=(-1, -1, 1), lightcol =(0.8, 0.8, 0.8), lightamb=(0.30, 0.30, 0.32))
 
@@ -308,5 +308,5 @@ while DISPLAY.loop_running():
 
   CAMERA.was_moved = False
 
-
+quit()
 

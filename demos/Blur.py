@@ -30,7 +30,7 @@ from pi3d.shape.Sphere import Sphere
 from pi3d.shape.Sprite import Sprite
 
 # Setup display and initialise pi3d
-DISPLAY = Display.create(x=10, y=10, w=1000, h=800)
+DISPLAY = Display.create(x=10, y=10, w=1000, h=800, frames_per_second=16)
 DISPLAY.set_background(0.4, 0.6, 0.8, 1.0)      # r,g,b,alpha
 
 #setup textures, light position and initial model position
