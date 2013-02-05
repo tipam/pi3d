@@ -12,7 +12,7 @@ STARTUP_MESSAGE = """
 
   Copyright (c) Tim Skillman, 2012-2013
   Copyright (c) Patrick Gaunt, 2012-2013
-  Copyright (c) Tom Swirly, 2012-2013
+  Copyright (c) Tom Ritchford, 2012-2013
 
   Updates available from www.github.com/tipam/pi3d
 """ % {'version': VERSION}
