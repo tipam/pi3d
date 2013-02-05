@@ -1,3 +1,8 @@
+"""
+This module contains integer constants from a C header file named something
+like gl2ext.h.
+"""
+
 GL_ETC1_RGB8_OES = 0x8D64
 GL_PALETTE4_RGB8_OES = 0x8B90
 GL_PALETTE4_RGBA8_OES = 0x8B91

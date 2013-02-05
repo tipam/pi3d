@@ -1,3 +1,8 @@
+"""
+This module contains integer constants from a C header file named something
+like egl.h.
+"""
+
 EGL_SUCCESS = 0x3000
 EGL_NOT_INITIALIZED = 0x3001
 EGL_BAD_ACCESS = 0x3002

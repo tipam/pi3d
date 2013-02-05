@@ -1,3 +1,8 @@
+"""
+This module contains integer constants from a C header file named something
+like glext.h.
+"""
+
 # TODO: this file is not used anywhere.
 
 GL_BLEND_EQUATION_RGB_OES = 0x8009

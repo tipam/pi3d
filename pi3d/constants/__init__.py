@@ -1,5 +1,9 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+"""
+pi3d.constants contains constant values, mainly integers, from OpenGL ES 2.0.
+"""
+
 VERSION = '0.06'
 
 STARTUP_MESSAGE = """
@@ -14,6 +18,7 @@ STARTUP_MESSAGE = """
 """ % {'version': VERSION}
 
 VERBOSE = False
+# TODO: get rid of verbose in favor of logging.
 
 # Pick up our constants extracted from the header files with prepare_constants.py
 from pi3d.constants.egl import *

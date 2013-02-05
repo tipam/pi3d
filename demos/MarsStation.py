@@ -6,7 +6,7 @@ loaded from panda3d egg files. The models demostrate various things:
 1. loading the shader for them to be drawn with 2. loading the normal map
 file and reflection map file, although this is done for the whole model it can
 be used to set them differently for each Buffer, i.e. different parts of the
-Model. 3. level of detail drawing using Utility.lodDraw() This allows different
+Model. 3. level of detail drawing using Utility.draw_level_of_detail() This allows different
 versions of the model to be shown as the viewpoint gets nearer, in this case
 the distant one has the doors and windows closed, the near one open
 """
@@ -61,7 +61,7 @@ y = mymap.calcHeight(x, z)
 cor_win90 = Model(file_string="models/MegaStation/corridor_win_lowpoly.egg",
                 x=x, y=y, z=z, sx=0.1, sy=0.1, sz=0.1)
 cor_win90.set_shader(shader)
-# TODO seem to be able to 'stamp' the same object in different locations 
+# TODO seem to be able to 'stamp' the same object in different locations
 # but not different rotations! need to find out cause
 cor_win00 = cor_win90.clone()
 cor_win90.rotateToY(90)
@@ -120,27 +120,27 @@ while DISPLAY.loop_running():
   CAMERA.rotate(tilt, mouserot, 0)
   CAMERA.position((xm + xoff, ym + yoff +5, zm + zoff))
 
-  Utility.lodDraw([xm, ym, zm], [0, mody, 0], [[opendist,cor_cross],[1000,cor_cross_doors]])
+  Utility.draw_level_of_detail([xm, ym, zm], [0, mody, 0], [[opendist,cor_cross],[1000,cor_cross_doors]])
   cor_win90.position(0, mody, spc*1.5)
   cor_win90.draw()
   corridor90.position(0, mody, spc*2.5)
   corridor90.draw()
   cor_win90.position(0, mody, spc*3.5)
   cor_win90.draw()
-  Utility.lodDraw([xm, ym, zm], [0, mody, spc*5],[[opendist,cor_cross],[1000,cor_cross_doors]])
+  Utility.draw_level_of_detail([xm, ym, zm], [0, mody, spc*5],[[opendist,cor_cross],[1000,cor_cross_doors]])
   cor_win90.position(0, mody, spc*6.5)
   cor_win90.draw()
-  Utility.lodDraw([xm, ym, zm],[0, mody, spc*8], [[opendist,cor_cross],[1000,cor_cross_doors]])
+  Utility.draw_level_of_detail([xm, ym, zm],[0, mody, spc*8], [[opendist,cor_cross],[1000,cor_cross_doors]])
   cor_win00.position(-spc*1.5, mody, spc*5)
   cor_win00.draw()
   cor_bend.position(-spc*2.5, mody, spc*5)
   cor_bend.draw()
-  Utility.lodDraw([xm, ym, zm],[-spc*2.6, mody, spc*6.6],[[opendist,cor_cross],[1000,cor_cross_doors]])
+  Utility.draw_level_of_detail([xm, ym, zm],[-spc*2.6, mody, spc*6.6],[[opendist,cor_cross],[1000,cor_cross_doors]])
   cor_win00.position(spc*1.5, mody, spc*5)
   cor_win00.draw()
   corridor00.position(spc*2.5, mody, spc*5)
   corridor00.draw()
-  Utility.lodDraw([xm, ym, zm],[spc*4, mody, spc*5],[[opendist,cor_cross],[1000,cor_cross_doors]])
+  Utility.draw_level_of_detail([xm, ym, zm],[spc*4, mody, spc*5],[[opendist,cor_cross],[1000,cor_cross_doors]])
 
   mymap.draw()  #Draw the landscape
 

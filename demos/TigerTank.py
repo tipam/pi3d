@@ -249,7 +249,7 @@ while DISPLAY.loop_running():
   drawTiger(etx, ety, etz, etr, roll, pitch, etr, 0)
 
   #Draw buildings
-  #Draw.lodDraw3(-xm, -ym, -zm, 300, church, 1000, churchlow)
+  #Draw.draw_level_of_detail3(-xm, -ym, -zm, 300, church, 1000, churchlow)
   church.draw()
   cottages.draw()
 

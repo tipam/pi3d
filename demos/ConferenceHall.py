@@ -21,7 +21,6 @@ from pi3d.shape.Model import Model
 
 from pi3d.util.Screenshot import screenshot
 from pi3d.util.TkWin import TkWin
-from pi3d.util.Utility import lodDraw
 
 from pi3d.Light import Light
 
@@ -37,7 +36,7 @@ win.update()  #requires a window update first so that window sizes can be retrei
 
 DISPLAY = Display.create(x=win.winx, y=win.winy, w=winw, h=winh - bord,
                          far=2200.0, background=(0.4, 0.8, 0.8, 1))
-                         
+
 Light((1,-1,1), (1.0, 1.0, 1.0), (0.5, 0.5, 0.5))
 
 shader = Shader("shaders/uv_reflect")
