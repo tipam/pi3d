@@ -37,7 +37,7 @@ print("move this terminal window to top of screen to see FPS")
 print("=====================================================")
 
 # Setup display and initialise pi3d
-DISPLAY = Display.create(x=200, y=150)
+DISPLAY = Display.create(x=200, y=150, frames_per_second=25.0)
 DISPLAY.set_background(0.4, 0.6, 0.8, 0.5)      # r,g,b,alpha
 
 #setup textures, light position and initial model position
@@ -70,8 +70,8 @@ myshape.position(0.0, 0.0, 5)
 myshape.set_draw_details(shader, [shapeimg, shapebump, shapeshine], 1.0, 0.1)
 myshape.set_material((1.0, 0.5, 0.2, 0.5))
 
-mywater = Plane(w=120.0, h=120.0)
-mywater.set_draw_details(matsh, [waterbump[0], shapeshine], 8.0, 0.6)
+mywater = Plane(w=130.0, h=130.0)
+mywater.set_draw_details(matsh, [waterbump[0], shapeshine], 12.0, 0.6)
 mywater.set_material((0.0, 0.05, 0.1))
 mywater.set_fog((0.4, 0.6, 0.8, 0.0),150)
 mywater.rotateToX(90)
