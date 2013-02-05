@@ -192,7 +192,7 @@ be found in the documentation of each of the modules.
   before some of the other objects are created so it's a good idea to create one
   first job.
   
-  **Shape** All objects to be drawn by Pi3d inherit from the `Shape`_ class which holds
+  **Shape** `All objects to be drawn by Pi3d`_ inherit from the `Shape`_ class which holds
   details of position, rotation, scale as well as specific data needed for
   drawing the shape. Each `Shape`_ contains an array of `Buffer`_ objects; normally
   only containing one but there could be more in complicated models created
@@ -270,7 +270,9 @@ be found in the documentation of each of the modules.
 .. _Camera: pi3d.html#pi3d.Camera.Camera
 .. _Texture: pi3d.html#pi3d.Texture.Texture
 .. _Light: pi3d.html#pi3d.Light.Light
-  
+.. _`All objects to be drawn by Pi3d`: pi3d.shape.html#module-pi3d.shape.Cone
+
+
 Documentation
 =============
 
