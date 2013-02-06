@@ -6,6 +6,7 @@ from pi3d.Shader import Shader
 from pi3d.Texture import Texture
 
 class Defocus(Texture):
+  """For creating a depth-of-field blurring effect on selected objects"""
   def __init__(self):
     """ calls Texture.__init__ but doesn't need to set file name as
     texture generated from the framebuffer

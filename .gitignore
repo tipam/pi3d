@@ -35,4 +35,6 @@ pip-log.txt
 # documentation
 documentation/_build/doctrees/*
 documentation/_build/html/*
+documentation/conf.py
+documentation/Makefile
 

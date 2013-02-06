@@ -1,6 +1,9 @@
 util Package
 ============
 
+Miscellaneous utilities, some for mainly internal use but others are generally
+useful: `Defocus`, `Screenshot`, `String`, `Ttffont`, and `Utility.draw_level_of_detail`
+
 :mod:`Ctypes` Module
 --------------------
 

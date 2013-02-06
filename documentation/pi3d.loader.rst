@@ -2,8 +2,8 @@ loader Package
 ==============
 
 This directory holds functions used to parse 3D models into Shape and Buffer
-objects that can be used by pi3d. At the moment there only versions for Panda3d
-egg files and Wavefront obj files.
+objects that can be used by pi3d. At the moment there are only versions for
+Panda3d egg files and Wavefront obj files.
 
 :mod:`loaderEgg` Module
 -----------------------

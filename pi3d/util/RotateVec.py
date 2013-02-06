@@ -1,5 +1,6 @@
 from pi3d.util.Utility import from_polar
 
+"""Calculate position or direction 3D vector after rotation about axis"""
 def rotate_vec(rx, ry, rz, xyz):
   x, y, z = xyz
   if rx:
