@@ -136,8 +136,9 @@ Setup on the Raspberry Pi
 
     Although most demos work on 64MB of memory, you are strongly advised to have
     a 128MB of graphics memory split, especially for full-screen 3D graphics.
-    In the latest Raspbian build you need to edit the config.txt file (in the
-    boot directory) and set the variable 'gpu_mem=128' for 128MB of graphics memory.
+    In the latest Raspbian build you need to either run ``sudo raspi-config``
+    or edit the config.txt file (in the boot directory) and set the variable
+    ``gpu_mem=128`` for 128MB of graphics memory.
 
 
 #.  **Install Python Imaging**
@@ -245,7 +246,7 @@ be found in the documentation of each of the modules.
   
     import pi3d
 
-  Is an alternative to importing just what you need::
+  Is an alternative to importing just what you need i.e.::
   
     from pi3d.constants import *
     from pi3d import Display
