@@ -172,7 +172,11 @@ class Display(object):
     opengles.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
   def set_background(self, r, g, b, alpha):
-    """Set the Display background.
+    """Set the Display background. **NB the actual drawing of the background
+    happens during the rendering of the framebuffer by the shader so if no
+    draw() is done by anything during each Display loop the screen will
+    remain black** If you want to see just the background you will have to
+    draw() something out of view (i.e. behind) the Camera.
 
     *r, g, b*
       Color values for the display
