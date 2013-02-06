@@ -1,6 +1,10 @@
 pi3d Package
 ============
 
+The directory containing pi3d's working code. At this top level are the main
+classes needed for virtually all applications. Other support classes are
+grouped by function in the Subpackages directories.
+
 :mod:`pi3d` Package
 -------------------
 
