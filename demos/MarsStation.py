@@ -16,6 +16,7 @@ import demo
 from pi3d import *
 
 from pi3d.util.TkWin import TkWin
+from pi3d.events.events import InputEvents, nameOf, codeOf
 
 rads = 0.017453292512  # degrees to radians
 
@@ -23,21 +24,28 @@ rads = 0.017453292512  # degrees to radians
 # TODO: the display will do this for you automatically now
 winw,winh,bord = 1200,600,0 #64MB GPU memory setting
 #winw,winh,bord = 1920,1080,0 #128MB GPU memory setting
-win = TkWin(None, "Mars Space Station in Pi3D", winw, winh)
 
-# Setup display and initialise pi3d viewport over the window
-win.update()  #requires a window update first so that window sizes can be retiredx
+DISPLAY = Display.create(tk=True, window_title='Mars Station demo in Pi3D',
+                        w=winw, h=winh - bord, far=2200.0,
+                        background=(0.4, 0.8, 0.8, 1), frames_per_second=20)
 
+inputs = InputEvents()
 
-DISPLAY = Display.create(x=win.winx, y=win.winy, w=winw, h=winh - bord,
-                         far=2200.0, background=(0.4, 0.8, 0.8, 1))
+win = DISPLAY.tkwin
+
 shader = Shader("shaders/uv_reflect")
 flatsh = Shader("shaders/uv_flat")
+shade2d = Shader('shaders/2d_flat')
+
+#========================================
+# create splash screen and draw it
+splash = ImageSprite("textures/tiger_splash.jpg", shade2d, w=10, h=10, z=0.2)
+splash.draw()
+DISPLAY.swap_buffers()
 #############################
 ectex = loadECfiles("textures/ecubes/RedPlanet", "redplanet_256", "png", True)
 myecube = EnvironmentCube(size=1800.0, maptype="FACES")
 myecube.set_draw_details(flatsh,ectex)
-
 
 # Create elevation map
 mapwidth=2000.0
@@ -99,20 +107,22 @@ spc = 39.32
 mody = ym + 3.0
 opendist = 80
 
-# Fetch key presses
-mymouse = Mouse(restrict = False)
-mymouse.start()
-
-omx, omy = mymouse.position()
-
 # Update display before we begin (user might have moved window)
 win.update()
 DISPLAY.resize(win.winx, win.winy, win.width, win.height - bord)
 
 CAMERA = Camera.instance()
+inputs.get_mouse_movement()
 
-while DISPLAY.loop_running():
+while DISPLAY.loop_running() and not inputs.key_state("KEY_ESC"):
   CAMERA.reset()
+
+  #update mouse
+  inputs.do_input_events()
+  mx, my, mv, mh, md = inputs.get_mouse_movement()
+  mouserot -= (mx)*0.2
+  tilt -= (my)*0.2
+
   #tilt can be used as a means to prevent the view from going under the landscape!
   if tilt < -1: sf = 6 - 5.5/abs(tilt)
   else: sf = 0.5
@@ -147,60 +157,29 @@ while DISPLAY.loop_running():
   myecube.position(xm, ym, zm)
   myecube.draw()#Draw environment cube
 
-  #update mouse/keyboard input
-  mx, my = mymouse.position()
+  if inputs.key_state("BTN_LEFT"):
+    xm-=math.sin(mouserot*rads)*2
+    zm+=math.cos(mouserot*rads)*2
+  if inputs.key_state("KEY_W"):  #key W
+    xm-=math.sin(mouserot*rads)*2
+    zm+=math.cos(mouserot*rads)*2
+  if inputs.key_state("KEY_S"): #key S
+    xm+=math.sin(mouserot*rads)*2
+    zm-=math.cos(mouserot*rads)*2
+  if inputs.key_state("KEY_A"):  #key A
+    mouserot -= 2
+  if inputs.key_state("KEY_D"): #key D
+    mouserot += 2
+  if inputs.key_state("KEY_P"): #key P
+    screenshot("MarsStation.jpg")
 
-  mouserot -= (mx-omx)*0.2
-  tilt += (my-omy)*0.2
-  omx=mx
-  omy=my
-
-  #Press ESCAPE to terminate
-
-  #Handle window events
-  try:
-    win.update()
-  except:
-    print("bye bye 3")
-    DISPLAY.destroy()
-    try:
-      win.destroy()
-    except:
-      pass
-    mymouse.stop()
-    exit()
-
-  if win.ev=="resized":
-    print("resized")
-    DISPLAY.resize(win.winx,win.winy,win.width,win.height-bord)
-    win.resized=False
-
-  if win.ev=="key":
-    if win.key=="w":
-      xm-=math.sin(mouserot*rads)*2
-      zm+=math.cos(mouserot*rads)*2
-    #ym = -(mymap.calcHeight(xm,zm)+avhgt)
-    elif win.key=="s":
-      xm+=math.sin(mouserot*rads)*2
-      zm-=math.cos(mouserot*rads)*2
-    #ym = -(mymap.calcHeight(xm,zm)+avhgt)
-    elif win.key=="a":
-      mouserot -= 2
-    elif win.key=="d":
-      mouserot += 2
-    elif win.key=="p":
-      screenshot("MegaStation.jpg")
-    elif win.key=="Escape":
-      try:
-        display.destroy()
-        win.destroy()
-        print("Bye bye! 1")
-      except Exception:
-        print("Bye bye! 2")
 
   if win.ev=="drag" or win.ev=="click" or win.ev=="wheel":
     xm-=math.sin(mouserot*rads)*2
     zm+=math.cos(mouserot*rads)*2
 
   win.ev=""  #clear the event so it doesn't repeat
+
+inputs.release()
+DISPLAY.destroy()
 
