@@ -38,6 +38,8 @@ from pi3d.util.TkWin import TkWin
 
 from pi3d.Light import Light
 
+from pi3d.events.events import InputEvents, nameOf, codeOf
+
 LOGGER = Log.logger(__name__)
 
 # Create a Tkinter window
@@ -45,9 +47,12 @@ winw, winh, bord = 1200, 600, 0     #64MB GPU memory setting
 # winw,winh,bord = 1920,1200,0   #128MB GPU memory setting
 
 DISPLAY = Display.create(tk=True, window_title='Tiger Tank demo in Pi3D',
-                        mouse=True, w=winw, h=winh - bord, far=2200.0,
+                        w=winw, h=winh - bord, far=2200.0,
                         background=(0.4, 0.8, 0.8, 1), frames_per_second=16)
-DISPLAY.mouse.restrict = False #TODO improve mouse/camera interaction
+
+inputs = InputEvents()
+inputs.get_mouse_movement()
+
 Light(lightpos=(-1, -1, 1), lightcol =(0.8, 0.8, 0.8), lightamb=(0.30, 0.30, 0.32))
 
 win = DISPLAY.tkwin
@@ -157,16 +162,12 @@ tilt = 0.0
 avhgt = 0.85
 xm, oxm = 0.0, -1.0
 zm, ozm = -200.0, -1.0
-dxm = 0.0
-dzm = -1.0
 ym = mymap.calcHeight(xm, zm) + avhgt
 
 #enemy tank vars
 etx = 120
 etz = -120
 etr = 0.0
-
-omx, omy = DISPLAY.mouse_position()
 
 ltm = 0.0 #last pitch roll check
 smode = False #sniper mode
@@ -192,12 +193,11 @@ def drawTiger(x, y, z, rot, roll, pitch, turret, gunangle):
 is_running = True
 CAMERA = Camera.instance()
 
-while DISPLAY.loop_running():
-  #update mouse/keyboard input
-  mx, my = DISPLAY.mouse_position()
-  mouserot -= (mx - omx) * 0.2
-  tilt += (my - omy) * 0.1
-  omx, omy = mx, my
+while DISPLAY.loop_running() and not inputs.key_state("KEY_ESC"):
+  inputs.do_input_events()
+  mx, my, mv, mh, md = inputs.get_mouse_movement()
+  mouserot -= (mx)*0.2
+  tilt -= (my)*0.2
 
   CAMERA.reset()
   dot1.set_2d_location(DISPLAY.width - 105.0 + 200.0*xm/mapwidth,
@@ -249,7 +249,6 @@ while DISPLAY.loop_running():
   drawTiger(etx, ety, etz, etr, roll, pitch, etr, 0)
 
   #Draw buildings
-  #Draw.draw_level_of_detail3(-xm, -ym, -zm, 300, church, 1000, churchlow)
   church.draw()
   cottages.draw()
 
@@ -269,35 +268,24 @@ while DISPLAY.loop_running():
   if turret - 2.0 > mouserot:
     turret -= 2.0
 
-  # Handle window events
-  try:
-    win.update()
-  except:
-    print('bye bye 3')
-    DISPLAY.stop()
-    break
-
-  if win.ev=='key':
-    if win.key == 'w':
-      dxm = -math.sin(math.radians(tankrot)) * 2
-      dzm = -math.cos(math.radians(tankrot)) * 2
-      xm += dxm
-      zm += dzm
-      ym = (mymap.calcHeight(xm, zm) + avhgt)
-
-    elif win.key == 's':
-      xm += math.sin(math.radians(tankrot)) * 2
-      zm += math.cos(math.radians(tankrot)) * 2
-      ym = (mymap.calcHeight(xm, zm) + avhgt)
-    elif win.key == 'a':
-      tankrot -= 2
-    elif win.key == 'd':
-      tankrot += 2
-    elif win.key == 'p':
-      screenshot('TigerTank.jpg')
-    elif win.key == 'Escape':
-      DISPLAY.stop()
-      break
+  if inputs.key_state("BTN_LEFT"):
+    xm -= math.sin(math.radians(tankrot)) * 2
+    zm -= math.cos(math.radians(tankrot)) * 2
+    ym = (mymap.calcHeight(xm, zm) + avhgt)
+  if inputs.key_state("KEY_W"):  #key W
+    xm -= math.sin(math.radians(tankrot)) * 2
+    zm -= math.cos(math.radians(tankrot)) * 2
+    ym = (mymap.calcHeight(xm, zm) + avhgt)
+  if inputs.key_state("KEY_S"): #key S
+    xm += math.sin(math.radians(tankrot)) * 2
+    zm += math.cos(math.radians(tankrot)) * 2
+    ym = (mymap.calcHeight(xm, zm) + avhgt)
+  if inputs.key_state("KEY_A"):  #key A
+    tankrot -= 2
+  if inputs.key_state("KEY_D"): #key D
+    tankrot += 2
+  if inputs.key_state("KEY_P"): #key P
+    screenshot('TigerTank.jpg')
 
   elif win.ev == 'resized':
     DISPLAY.resize(win.winx, win.winy, win.width, win.height - bord)
@@ -308,5 +296,6 @@ while DISPLAY.loop_running():
 
   CAMERA.was_moved = False
 
-quit()
+inputs.release()
+DISPLAY.destroy()
 
