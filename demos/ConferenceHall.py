@@ -47,7 +47,7 @@ myecube = EnvironmentCube.EnvironmentCube(size=1800.0, maptype="FACES",
                                           nobottom=True)
 myecube.set_draw_details(flatsh,ectex)
 
-x,z = 0,0
+x,z = 0.0, 0.0
 
 y = 0.0
 cor_win = Model(file_string="models/ConferenceHall/conferencehall.egg",
@@ -55,13 +55,12 @@ cor_win = Model(file_string="models/ConferenceHall/conferencehall.egg",
 cor_win.set_shader(shader)
 
 #position vars
-mouserot=0.0
-tilt=0.0
+mouserot = 0.0
+tilt = 0.0
 avhgt = 2.3
-xm=0.0
-zm=0.0
-#ym= (mymap.calcHeight(xm,zm) + avhgt)
-ym=0.0
+xm = 0.0
+zm = -70.0
+ym = 0.0
 spc = 39.32
 mody = ym
 opendist = 80
@@ -83,11 +82,12 @@ while DISPLAY.loop_running():
   #tilt can be used as a means to prevent the view from going under the landscape!
   if tilt < -1: sf = 6 - 5.5/abs(tilt)
   else: sf = 0.5
-  xoff, yoff, zoff = sf*math.sin(mouserot*rads), abs(1.25*sf*math.sin(tilt*rads)) + 3.0, -sf*math.cos(mouserot*rads)
-  CAMERA.rotate(tilt, mouserot, 0)           #Tank still affected by scene tilt
-  CAMERA.position((xm + xoff, ym + yoff +5, zm + zoff))   #zoom camera out so we can see our robot
+  xoff = sf*math.sin(mouserot*rads)
+  yoff = abs(1.25*sf*math.sin(tilt*rads)) + 3.0
+  zoff = -sf*math.cos(mouserot*rads)
+  CAMERA.rotate(tilt, mouserot, 0)
+  CAMERA.position((xm + xoff, ym + yoff +5, zm + zoff)) 
 
-  #mymap.draw()		#Draw the landscape
 
   cor_win.position(0, mody, -spc*1.5)
   cor_win.draw()
