@@ -1,6 +1,6 @@
 ## **Pi3D ReadMe**
 
-![Pi3D logo](pi3d.github.com/doc/images/rpilogoshad128.png)
+![Pi3D logo](pi3d.github.com/html/_images/rpilogoshad128.png)
 
 **Pi3D (vsn 0.08) written by Tim Skillman, Paddy Gaunt, Tom Ritchford Copyright (c) 2013**
 
