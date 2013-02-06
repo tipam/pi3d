@@ -22,7 +22,7 @@ included with this code and experiment with them ..
 
 A short introduction to using pi3d can be found on this github. There are links from there
 to the full documentation of the different modules.
-http://pi3d.github.com/doc/ReadMe.html
+http://pi3d.github.com/html/ReadMe.html
 
 Please note that Pi3D functions may change significantly during it's development.
 
