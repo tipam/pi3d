@@ -7,6 +7,8 @@ Font class which has really been superceded by the Ttffont method but shown here
 for documentation. This demo also uses the Defoucs class to blur things in the
 distance. The monster is not blurred as it is at a constant distance and could have
 been blurred in the actual png image file using gimp or shuchlike.
+The Display.frames_per_second has been throttled to 20 as there is a big change in
+speed depending on camera movement whick effects game play.
 """
 
 import math, random
@@ -39,7 +41,7 @@ print("############################################################")
 print()
 
 # Setup display and initialise pi3d
-DISPLAY = Display.create(x=200, y=200)
+DISPLAY = Display.create(x=200, y=200, frames_per_second=20)
 DISPLAY.set_background(0.4,0.8,0.8,1) # r,g,b,alpha
 camera = Camera((0, 0, 0), (0, 0, -1), (1, 1000, DISPLAY.width/1000.0, DISPLAY.height/1000.0))
 light = Light((10, -10, 20))
