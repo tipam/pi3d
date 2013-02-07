@@ -8,7 +8,7 @@ for documentation. This demo also uses the Defoucs class to blur things in the
 distance. The monster is not blurred as it is at a constant distance and could have
 been blurred in the actual png image file using gimp or shuchlike.
 The Display.frames_per_second has been throttled to 20 as there is a big change in
-speed depending on camera movement whick effects game play.
+speed depending on camera movement which effects game play.
 """
 
 import math, random

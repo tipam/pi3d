@@ -45,9 +45,9 @@ class Camera(DefaultInstance):
   def _default_instance():
     from pi3d.Display import Display
     return Camera((0, 0, 0), (0, 0, -1),
-                  (1, 1000,
-                   Display.INSTANCE.width / 1000.0,
-                   Display.INSTANCE.height / 1000.0))
+                  (Display.INSTANCE.near, Display.INSTANCE.far,
+                   Display.INSTANCE.width / Display.INSTANCE.far,
+                   Display.INSTANCE.height / Display.INSTANCE.far))
 
   def reset(self, lens=None):
     """Has to be called each loop if the camera position or rotation changes"""
@@ -173,7 +173,7 @@ def _LookAtMatrix(at, eye, up=[0,1,0], reflect=False):
   return array([[xaxis[a], yaxis[a], zaxis[a], z[a]] for a in range(4)],
                dtype=ctypes.c_float)
 
-def _ProjectionMatrix(near=10, far=1000.0, fov_w=1.6, fov_h=1.2):
+def _ProjectionMatrix(near=1.0, far=1000.0, fov_w=1.6, fov_h=1.2):
   """Set up projection matrix
   
   Keyword arguments:
@@ -190,7 +190,7 @@ def _ProjectionMatrix(near=10, far=1000.0, fov_w=1.6, fov_h=1.2):
   # Use DirectX convention, so need to do rowvec*Matrix to transform
   w = 2.0 / fov_w
   h = 2.0 / fov_h
-  q = far / (far - near)
+  q = int(far / (far - near)) # this is effectively always going to be 1!
   M = [[0] * 4 for i in range(4)]
   M[0][0] = w
   M[1][1] = h

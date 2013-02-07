@@ -18,10 +18,10 @@ RAISE_EXCEPTIONS = True
 
 DEFAULT_ASPECT = 60.0
 DEFAULT_DEPTH = 24
-DEFAULT_NEAR_3D = 0.5
-DEFAULT_FAR_3D = 800.0
-DEFAULT_NEAR_2D = -1.0
-DEFAULT_FAR_2D = 500.0
+DEFAULT_NEAR_3D = 1.0
+DEFAULT_FAR_3D = 1000.0
+DEFAULT_NEAR_2D = 1.0
+DEFAULT_FAR_2D = 1000.0
 WIDTH = 0
 HEIGHT = 0
 
@@ -271,11 +271,11 @@ def create(is_3d=True, x=None, y=None, w=None, h=None, near=None, far=None,
   *h*
     Height of the display.  If None, full the height of the screen.
   *near*
-    ?
+    This will be used for the default instance of Camera *near* plane
   *far*
-    ?
+    This will be used for the default instance of Camera *far* plane
   *aspect*
-    ?
+    Not used in OpenGL ES 2.0, replaced by Camera lens definition
   *depth*
     The bit depth of the display - must be 8, 16 or 24.
   *mouse*
@@ -338,6 +338,7 @@ def create(is_3d=True, x=None, y=None, w=None, h=None, near=None, far=None,
     display.mouse = Mouse(width=w, height=h)
     display.mouse.start()
 
+  """ TODO none of this does anything in OpenGL ES 2.0
   opengles.glMatrixMode(GL_PROJECTION)
   Utility.load_identity()
   if is_3d:
@@ -352,6 +353,7 @@ def create(is_3d=True, x=None, y=None, w=None, h=None, near=None, far=None,
 
   opengles.glMatrixMode(GL_MODELVIEW)
   Utility.load_identity()
+  """
 
   if background:
     display.set_background(*background)
