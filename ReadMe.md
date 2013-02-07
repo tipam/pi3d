@@ -24,6 +24,21 @@ A short introduction to using pi3d can be found on this github. There are links 
 to the full documentation of the different modules.
 http://pi3d.github.com/html/ReadMe.html
 
+# Files and folders in this repository
+
+1.  **pi3d** The main pi3d module files 540 kB
+2.  **shaders** Shader files used by the pi3d module 33 kB
+3.  **echomesh** Utility functions 14kB
+4.  **textures** Various textures to play with 13 MB
+5.  **models** Demo obj and egg models 26 MB
+6.  **fonts** ttf and Bitmap fonts that can be using for drawing text see in
+    /usr/share/fonts/truetype for others, or look online. 1.0 MB
+7.  **demos** Source code of the demos included 96 kB
+8.  **screenshots** Example screenshots of the demos included 860 kB
+9.  **documentation** Where this documentation lives 5.7 MB
+10.  **ChangeLog.txt** Latest changes of Pi3D
+11.  **ReadMe.md** Simplified markdown summary of this file
+
 Please note that Pi3D functions may change significantly during it's development.
 
 Bug reports, comments, feature requests and fixes are most welcome!

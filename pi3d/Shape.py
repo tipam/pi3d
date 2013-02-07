@@ -42,30 +42,36 @@ class Shape(Loadable):
       light.lightpos[0], light.lightpos[1], light.lightpos[2],
       light.lightcol[0], light.lightcol[1], light.lightcol[2],
       light.lightamb[0], light.lightamb[1], light.lightamb[2])
-    """ in shader array of vec3 uniform variables:
+    """ pass to shader array of vec3 uniform variables:
 
-    * 0  location 0-2
-    * 1  rotation 3-5
-    * 2  scale 6-8
-    * 3  offset 9-11
-    * 4  fog shade 12-14
-    * 5  fog distance and alph (only first two values used at moment) 15, 16
-    * 6  camera position  18-20
-    * 7  animation offets x, y, delta 21-23
-    * 8  light0 position, direction vector 24-26
-    * 9  light0 strength per shade 27-29
-    * 10 light0 ambient values 30-32
-    * 11 light1 position, direction vector 33-35
-    * 12 light1 strength per shade 36-38
-    * 13 light1 ambient values 39-41
-    * 14 defocus dist, amount 42,43
-    * 15 defocus frame width, height 45,46
-    * 16 custom data space 48-50
-    * 17 custom data space 51-52
-    * 18 custom data space 54-56
-    * 19 custom data space 57-59
-    """
-    """Shape holds matrices which are updated each time it is moved or rotated
+    ===== ========================================== ==== ==
+    vec3  description                                python
+    ----- ------------------------------------------ -------
+    index                                            from to
+    ===== ========================================== ==== ==
+       0  location                                     0   2
+       1  rotation                                     3   5
+       2  scale                                        6   8
+       3  offset                                       9  11
+       4  fog shade                                   12  14
+       5  fog distance and alph (only 2 used)         15  16
+       6  camera position                             18  20
+       7  unused: custom data space                   21  23
+       8  light0 position, direction vector           24  26
+       9  light0 strength per shade                   27  29
+      10  light0 ambient values                       30  32
+      11  light1 position, direction vector           33  35
+      12  light1 strength per shade                   36  38
+      13  light1 ambient values                       39  41
+      14  defocus dist, amount (only 2 used)          42  43
+      15  defocus frame width, height (only 2 used)   45  46
+      16  custom data space                           48  50
+      17  custom data space                           51  53
+      18  custom data space                           54  56
+      19  custom data space                           57  59
+    ===== ========================================== ==== ==
+    
+    Shape holds matrices that are updated each time it is moved or rotated
     this saves time recalculating them each frame as the Shape is drawn
     """
     self.tr1 = array([[1.0, 0.0, 0.0, 0.0],
