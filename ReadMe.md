@@ -26,6 +26,8 @@ http://pi3d.github.com/html/ReadMe.html
 
 # Files and folders in this repository
 
+Total zipped download from github c. 24 MB
+
 1.  **pi3d** The main pi3d module files 540 kB
 2.  **shaders** Shader files used by the pi3d module 33 kB
 3.  **echomesh** Utility functions 14kB

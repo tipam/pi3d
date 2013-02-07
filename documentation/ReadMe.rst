@@ -115,6 +115,8 @@ Demo's included with Pi3D
 Files and folders in this repository
 ====================================
 
+Total zipped download from github c. 24 MB
+
 #.  **pi3d** The main pi3d module files 540 kB
 #.  **shaders** Shader files used by the pi3d module 33 kB
 #.  **echomesh** Utility functions 14kB
