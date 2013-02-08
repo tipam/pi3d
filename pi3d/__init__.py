@@ -1,8 +1,10 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 """
 Allows the use of:
+
   import pi3d
-to drag in *all* the classes
+
+to drag in most of the important classes of pi3d.
 """
 from echomesh.util import Log
 
@@ -16,6 +18,7 @@ from pi3d.Mouse import Mouse
 from pi3d.Shader import Shader
 from pi3d.Shape import Shape
 from pi3d.Texture import Texture
+from pi3d.Texture import TextureCache
 
 from pi3d.Light import Light
 

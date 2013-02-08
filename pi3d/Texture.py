@@ -139,7 +139,7 @@ class Texture(Loadable):
     opengles.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
 
-class Cache(object):
+class TextureCache(object):
   def __init__(self, max_size=None):
     self.clear()
 
