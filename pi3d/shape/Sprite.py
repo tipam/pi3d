@@ -11,15 +11,15 @@ class Sprite(Shape):
                rx=0.0, ry=0.0, rz=0.0,
                sx=1.0, sy=1.0, sz=1.0,
                cx=0.0, cy=0.0, cz=0.0):
-    """uses standard constructor for Shape.E xtra Keyword arguments:
-    
+    """Uses standard constructor for Shape. Extra Keyword arguments:
+
       *w*
         Width.
       *h*
         Height.
-    """  
+    """
     super(Sprite, self).__init__(camera, light, name, x, y, z, rx, ry, rz,
-                                sx, sy, sz, cx, cy, cz)
+                                 sx, sy, sz, cx, cy, cz)
     self.width = w
     self.height = h
     self.ttype = GL_TRIANGLES
