@@ -69,21 +69,21 @@ class Shader(object):
     self.program = opengles.glCreateProgram()
     self.shfile = shfile
 
-    vshader_source = vshader_source or self.loadShader(shfile + ".vs")
-    self.vshader_source = ctypes.c_char_p(vshader_source)
-    self.vshader = opengles.glCreateShader(GL_VERTEX_SHADER);
-    opengles.glShaderSource(self.vshader, 1, ctypes.byref(self.vshader_source), 0)
-    opengles.glCompileShader(self.vshader)
-    self.showshaderlog(self.vshader)
-    opengles.glAttachShader(self.program, self.vshader)
+    def make_shader(src, suffix, shader_type):
+      src = src or self.loadShader(shfile + suffix)
+      characters = ctypes.c_char_p(src)
+      shader = opengles.glCreateShader(shader_type);
+      opengles.glShaderSource(shader, 1, ctypes.byref(characters), 0)
+      opengles.glCompileShader(shader)
+      self.showshaderlog(shader)
+      opengles.glAttachShader(self.program, shader)
+      return shader, src
 
-    fshader_source = fshader_source or self.loadShader(shfile + ".fs")
-    self.fshader_source = ctypes.c_char_p(fshader_source)
-    self.fshader = opengles.glCreateShader(GL_FRAGMENT_SHADER);
-    opengles.glShaderSource(self.fshader, 1, ctypes.byref(self.fshader_source), 0)
-    opengles.glCompileShader(self.fshader)
-    self.showshaderlog(self.fshader)
-    opengles.glAttachShader(self.program, self.fshader)
+    self.vshader_source, self.vshader = make_shader(
+      vshader_source, '.vs', GL_VERTEX_SHADER)
+
+    self.fshader_source, self.fshader = make_shader(
+      fshader_source, '.fs', GL_FRAGMENT_SHADER)
 
     opengles.glLinkProgram(self.program)
     self.showprogramlog(self.program)
