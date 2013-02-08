@@ -3,11 +3,15 @@ import ioctl
 import os
 import select
 
+from echomesh.util import Log
+
 from pi3d.event.Constants import *
 
 from pi3d.event import AbsAxisScaling
 from pi3d.event import EventStruct
 from pi3d.event import Format
+
+LOGGER = Log.logger(__name__)
 
 EVIOCGRAB = ioctl._IOW(ord('E'), 0x90, "i")          # Grab/Release device
 
@@ -151,7 +155,7 @@ class EventStream(object):
     map(lambda x: x.grab(grab), reqdStreams)
 
   @classmethod
-  def allNext(self, streams=None):
+  def allNext(cls, streams=None):
     """
     A generator fuction returning all waiting events in the given streams
 
@@ -162,14 +166,24 @@ class EventStream(object):
     if streams == None:
       streams = EventStream.AllStreams
 
-    selectlist = map(lambda(x):x.filehandle, streams)
+    selectlist = map(lambda x: x.filehandle, streams)
 
     ready = select.select(selectlist,[ ], [ ], 0)[0]
     if not ready: return
     while ready:
       for fd in ready:
         stream = filter(lambda x: x.filehandle == fd, streams)[0]
-        s = os.read(fd, Format.EventSize)
+        try:
+          s = os.read(fd, Format.EventSize)
+        except Exception as e:
+          failed = getattr(cls, 'failed', None)
+          if not failed:
+            failed = set()
+            setattr(cls, 'failed', failed)
+          if fd not in failed:
+            LOGGER.error("Couldn't read fd %d %s", fd, e)
+            failed.add(fd)
+          continue
         if s:
           event = EventStruct.EventStruct(stream)
           event.decode(s)
