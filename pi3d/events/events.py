@@ -1,5 +1,5 @@
-import array
 import fcntl
+import ioctl
 import os
 import re
 import select
@@ -7,55 +7,13 @@ import struct
 import sys
 import threading
 
+from pi3d.events import AbsAxisScaling
 from pi3d.events import EventHandler
 from pi3d.events import EventStruct
-from pi3d.events.Constants import *
 from pi3d.events import Format
-
-import ioctl
+from pi3d.events.Constants import *
 
 EVIOCGRAB = ioctl._IOW(ord('E'), 0x90, "i")          # Grab/Release device
-
-def EVIOCGABS(axis):
-  return ioctl._IOR(ord('E'), 0x40 + axis, "ffffff")	# get abs value/limits
-
-
-
-class get_abs_info(object):
-	"""
-	fetches and implements the EV_ABS axis scaling
-
-	The constructor fetches the scaling values from the given stream for the
-	given axis using an ioctl.
-
-	There is a scale method, which scales a given value to the range -1..+1.
-	"""
-	def __init__(self,stream, axis):
-		"""
-		Fetch the scale values for this stream and fill in the instance
-		variables accordingly.
-		"""
-		s = array.array("f",[1,2,3,4,5,6])
- 		try:
- 			x = fcntl.ioctl(stream.filehandle, EVIOCGABS(axis), s)
- 		except IOError:
- 			self.value = 1
- 			self.minimum = 1
- 			self.maximum = 1
- 			self.fuzz = 1
- 			self.flat = 1
- 			self.resolution = 1
- 		else:
- 			self.value, self.minimum, self.maximum, self.fuzz, self.flat, self.resolution = struct.unpack("llllll", s)
-
- 	def __str__(self):
- 		return "Value {0} Min {1}, Max {2}, Fuzz {3}, Flat {4}, Res {5}".format(self.value, self.minimum, self.maximum, self.fuzz, self.flat, self.resolution)
-
-	def scale(self, value):
-		"""
-		scales the given value into the range -1..+1
-		"""
-		return (float(value)-float(self.minimum))/float(self.maximum-self.minimum)*2.0 - 1.0
 
 class EventStream(object):
 	"""
@@ -109,7 +67,7 @@ class EventStream(object):
 
 	#def acquire_abs_info(self, axis):
 	#	assert (axis < EventStream.numAxes), "Axis number out of range"
-	#	self.absinfo[axis] = get_abs_info(EventStream.axisToEvent[axis])
+	#	self.absinfo[axis] = AbsAxisScaling(EventStream.axisToEvent[axis])
 	def acquire_abs_info(self):
 		"""
 		Acquires the axis limits for all the ABS axes.
@@ -117,7 +75,7 @@ class EventStream(object):
 		This will only be called for joystick-type devices.
 		"""
 		for axis in range(EventStream.numAxes):
-			self.absInfo[axis] = get_abs_info(self, EventStream.axisToEvent[axis])
+			self.absInfo[axis] = AbsAxisScaling.AbsAxisScaling(self, EventStream.axisToEvent[axis])
 
 	def scale(self, axis, value):
 		"""
