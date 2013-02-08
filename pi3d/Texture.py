@@ -51,6 +51,7 @@ class Texture(Loadable):
     self.flip = flip
     self.size = size
     self.mipmap = mipmap
+    self.byte_size = 0
     if defer:
       self.load_disk()
     else:
@@ -104,7 +105,7 @@ class Texture(Loadable):
       s += 'Resizing to: %d, %d' % (self.ix, self.iy)
     else:
       s += 'Bitmap size: %d, %d' % (self.ix, self.iy)
-    
+
     if VERBOSE:
       print 'Loading ...',s
 
@@ -112,7 +113,7 @@ class Texture(Loadable):
       self.im = self.im.transpose(Image.FLIP_TOP_BOTTOM)
 
     RGBs = 'RGBA' if self.alpha else 'RGB'
-    self.image = self.im.convert(RGBs).tostring('raw',RGBs)
+    self.image = self.im.convert(RGBs).tostring('raw', RGBs)
     self._tex = ctypes.c_int()
 
   def _load_opengl(self):
@@ -139,15 +140,16 @@ class Texture(Loadable):
 
 
 class Cache(object):
-  def __init__(self):
+  def __init__(self, max_size=None):
     self.clear()
 
   def clear(self):
     self.cache = {}
 
-  def create(self, file_string, blend=False, flip=False, size=0):
+  def create(self, file_string, blend=False, flip=False, size=0, **kwds):
     texture = self.cache.get((file_string, blend, flip, size), None)
     if not texture:
-      texture = Texture(file_string, blend=blend, flip=flip, size=size)
+      texture = Texture(file_string, blend=blend, flip=flip, size=size, **kwds)
       self.cache[file_string] = texture
+
     return texture
