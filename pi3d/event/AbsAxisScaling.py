@@ -1,6 +1,7 @@
 import array
 import fcntl
 import ioctl
+import struct
 
 def EVIOCGABS(axis):
   return ioctl._IOR(ord('E'), 0x40 + axis, "ffffff")	# get abs value/limits

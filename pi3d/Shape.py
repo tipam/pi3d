@@ -70,7 +70,7 @@ class Shape(Loadable):
       18  custom data space                           54  56
       19  custom data space                           57  59
     ===== ========================================== ==== ==
-    
+
     Shape holds matrices that are updated each time it is moved or rotated
     this saves time recalculating them each frame as the Shape is drawn
     """
@@ -122,11 +122,12 @@ class Shape(Loadable):
     rendering with a different Shader/Texture. self.draw() relies on objects
     inheriting from this filling buf with at least one element.
     """
+
   def draw(self, shader=None, txtrs=None, ntl=None, shny=None, camera=None):
     """If called without parameters, there has to have been a previous call to
     set_draw_details() for each Buffer in buf[].
-    NB there is no facility for setting umult and vmult with draw they must be
-    set using set_draw_details or Buffer.set_draw_details
+    NB there is no facility for setting umult and vmult with draw: they must be
+    set using set_draw_details or Buffer.set_draw_details.
     """
     from pi3d.Camera import Camera
 
@@ -138,9 +139,9 @@ class Shape(Loadable):
       # Calculate rotation and translation matrix for this model using numpy.
       self.MRaw = dot(self.tr2,
         dot(self.scl,
-        dot(self.roy,
-        dot(self.rox,
-        dot(self.roz, self.tr1)))))
+            dot(self.roy,
+                dot(self.rox,
+                    dot(self.roz, self.tr1)))))
       self.M[0:16] = self.MRaw.ravel()
       self.M[16:32] = dot(self.MRaw, camera.mtrx).ravel()
       self.MFlg = False
@@ -166,12 +167,12 @@ class Shape(Loadable):
     """Wrapper method to set just the Shader for all the Buffer objects of
     this Shape. Used, for instance, in a Model where the Textures have been
     defined in the obj & mtl files, so you can't use set_draw_details.
-    
+
     Arguments:
-    
+
       *shader*
         Shader to use
-        
+
     """
     self.shader = shader
     for b in self.buf:
@@ -273,9 +274,9 @@ class Shape(Loadable):
 
   def set_2d_size(self, w=None, h=None, x=0, y=0):
     """saves size to be drawn and location in pixels for use by 2d shader
-    
+
     Keyword arguments:
-    
+
       *w*
         Width, pixels.
       *h*
@@ -296,9 +297,9 @@ class Shape(Loadable):
 
   def set_2d_location(self, x, y):
     """saves location in pixels for use by 2d shader
-    
+
     Arguments:
-    
+
       *x*
         Left edge of image from left edge of display, pixels.
       *y*
@@ -306,14 +307,14 @@ class Shape(Loadable):
 
     """
     self.unif[42:44] = [x, y]
-    
+
   def set_custom_data(self, index_from, data):
     """save general purpose custom data for use by any shader **NB it is up
     to the user to provide data in the form of a suitable array of values
     that will fit into the space available in the unif array**
-    
+
     Arguments:
-    
+
       *index_from*
         start index in unif array for filling data should be 48 to 59 though
         42 to 47 could be used if they do not conflict with existing shaders
@@ -337,7 +338,7 @@ class Shape(Loadable):
 
   def scale(self, sx, sy, sz):
     """Arguments:
-    
+
       *sx*
         x scale
       *sy*
@@ -353,7 +354,7 @@ class Shape(Loadable):
 
   def position(self, x, y, z):
     """Arguments:
-    
+
       *x*
         x position
       *y*
@@ -369,7 +370,7 @@ class Shape(Loadable):
 
   def positionX(self, v):
     """Arguments:
-    
+
       *v*
         x position
     """
@@ -379,7 +380,7 @@ class Shape(Loadable):
 
   def positionY(self, v):
     """Arguments:
-    
+
       *v*
         y position
     """
@@ -389,7 +390,7 @@ class Shape(Loadable):
 
   def positionZ(self, v):
     """Arguments:
-    
+
       *v*
         z position
     """
@@ -399,7 +400,7 @@ class Shape(Loadable):
 
   def translate(self, dx, dy, dz):
     """Arguments:
-    
+
       *dx*
         x translation
       *dy*
@@ -417,7 +418,7 @@ class Shape(Loadable):
 
   def translateX(self, v):
     """Arguments:
-    
+
       *v*
         x translation
     """
@@ -427,7 +428,7 @@ class Shape(Loadable):
 
   def translateY(self, v):
     """Arguments:
-    
+
       *v*
         y translation
     """
@@ -437,7 +438,7 @@ class Shape(Loadable):
 
   def translateZ(self, v):
     """Arguments:
-    
+
       *v*
         z translation
     """
@@ -447,7 +448,7 @@ class Shape(Loadable):
 
   def rotateToX(self, v):
     """Arguments:
-    
+
       *v*
         x rotation
     """
@@ -460,7 +461,7 @@ class Shape(Loadable):
 
   def rotateToY(self, v):
     """Arguments:
-    
+
       *v*
         y rotation
     """
@@ -473,7 +474,7 @@ class Shape(Loadable):
 
   def rotateToZ(self, v):
     """Arguments:
-    
+
       *v*
         z rotation
     """
@@ -486,7 +487,7 @@ class Shape(Loadable):
 
   def rotateIncX(self,v):
     """Arguments:
-    
+
       *v*
         x rotational increment
     """
@@ -499,7 +500,7 @@ class Shape(Loadable):
 
   def rotateIncY(self,v):
     """Arguments:
-    
+
       *v*
         y rotational increment
     """
@@ -512,7 +513,7 @@ class Shape(Loadable):
 
   def rotateIncZ(self,v):
     """Arguments:
-    
+
       *v*
         z rotational increment
     """
@@ -549,7 +550,7 @@ class Shape(Loadable):
         Amount to increment the path y values for each rotation (ie helix)
       *loops*
         Number of times to rotate the path by 360 (ie helix).
-    
+
     """
     self.sides = sides
 
