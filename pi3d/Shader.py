@@ -23,9 +23,9 @@ class Shader(object):
   automatically when you create an instance of the Defocus class. Shaders can
   be 're-used' to draw different objects and the same object can be drawn using
   different Shaders.
-  
+
   The shaders included with the pi3d module fall into two categories:
-  
+
   * Textured - generally defined using the **uv** prefix, where an image needs
     to be loaded via the Texture class which is then mapped to the surface
     of the object. The **2d_flat** shader is a special case of a textured shader
@@ -33,11 +33,11 @@ class Shader(object):
     scaling and offset.
   * Material - generally defined using the **mat** prefix, where a material
     shade (rgb) has to be set for the object to be rendered
-    
+
   Within these categories the shaders have been subdivided with a postfix to
   give full names like uv_flat, mat_bump etc:
-  
-  * flat - no lighting is used, the shade rendered is the rgb value of the 
+
+  * flat - no lighting is used, the shade rendered is the rgb value of the
     texture or material
   * light - Light direction, shade and ambient shade are used give a 3D effect
     to the surface
@@ -49,38 +49,42 @@ class Shader(object):
     map which may be different from the tiling of the general texture. If
     set to 0.0 then no normal mapping will occur.
   * reflect - in addition to a normal map an image needs to be supplied to
-    act as a reflection. The shader is passed a value from 0.0 to 1.0 to 
+    act as a reflection. The shader is passed a value from 0.0 to 1.0 to
     determine the strength of the reflection.
-    
+
   The reason for using a host of different shaders rather than one that can
   do everything is that 'if' statements within the shader language are **very**
   time consuming.
   """
-  def __init__(self, shfile):
+  def __init__(self, shfile=None, vshader_source=None, fshader_source=None):
     """
     Arguments:
       *shfile*
-        path/name without vs or fs ending i.e. "shaders/uv_light"
+        Pathname without vs or fs ending i.e. "shaders/uv_light"
+      *vshader_source*
+        String with the code for the vertex shader.
+      *vshader_source*
+        String with the code for the fragment shader.
     """
-
-    #self.scene = scene
+    self.program = opengles.glCreateProgram()
     self.shfile = shfile
-    self.vshader_source = ctypes.c_char_p(self.loadShader(shfile + ".vs"))
-    self.fshader_source = ctypes.c_char_p(self.loadShader(shfile + ".fs"))
 
+    vshader_source = vshader_source or self.loadShader(shfile + ".vs")
+    self.vshader_source = ctypes.c_char_p(vshader_source)
     self.vshader = opengles.glCreateShader(GL_VERTEX_SHADER);
     opengles.glShaderSource(self.vshader, 1, ctypes.byref(self.vshader_source), 0)
     opengles.glCompileShader(self.vshader)
     self.showshaderlog(self.vshader)
+    opengles.glAttachShader(self.program, self.vshader)
 
+    fshader_source = fshader_source or self.loadShader(shfile + ".fs")
+    self.fshader_source = ctypes.c_char_p(fshader_source)
     self.fshader = opengles.glCreateShader(GL_FRAGMENT_SHADER);
     opengles.glShaderSource(self.fshader, 1, ctypes.byref(self.fshader_source), 0)
     opengles.glCompileShader(self.fshader)
     self.showshaderlog(self.fshader)
-
-    self.program = opengles.glCreateProgram()
-    opengles.glAttachShader(self.program, self.vshader)
     opengles.glAttachShader(self.program, self.fshader)
+
     opengles.glLinkProgram(self.program)
     self.showprogramlog(self.program)
 
@@ -102,7 +106,7 @@ class Shader(object):
       """
       *NB*
         for *uv* shaders tex0=texture tex1=normal map tex2=reflection
-      
+
         for *mat* shaders tex0=normal map tex1=reflection
       """
     self.use()
