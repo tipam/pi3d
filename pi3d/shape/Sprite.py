@@ -41,11 +41,10 @@ class Sprite(Shape):
     self.buf.append(Buffer(self, self.verts, self.texcoords, self.inds, self.norms))
 
 
-class ImageSprite(Sprite, Loadable): #TODO is Loadable needed?
-  """for 2D sprites"""
+class ImageSprite(Sprite):
+  """A 2D sprite containing a texture."""
   def __init__(self, texture, shader, **kwds):
-    Sprite.__init__(self, **kwds)
-    Loadable.__init__(self) #TODO need this? as Loadable->Shape->Sprite->ImageSprite
+    super(ImageSprite, self).__init__(**kwds)
     if not isinstance(texture, Texture): # i.e. can load from file name
       texture = Texture(texture)
     self.buf[0].set_draw_details(shader, [texture])
