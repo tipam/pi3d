@@ -7,77 +7,16 @@ import select
 import struct
 import sys
 
-from event_consts import *
+from pi3d.events import EventStruct
+from pi3d.events.event_consts import *
+from pi3d.events import Format
+
 import ioctl
 
 EVIOCGRAB = ioctl._IOW(ord("E"), 0x90, "i")          # Grab/Release device
 
 def EVIOCGABS(axis):
   return	ioctl._IOR(ord('E'), 0x40 + axis, "ffffff")	# get abs value/limits
-
-EventFormat = "llHHi"
-EventSize = struct.calcsize(EventFormat)
-
-class EventStruct(object):
-	"""
-	A single event from the linux input event system.
-
-	Events are tuples: (Time, Type, Code, Value)
-	In addition we remember the stream it came from.
-
-	Externally, only the unhandled event handler gets passed the whole event,
-	but the SYN handler gets the code and value. (Also the keyboard handler, but
-	those are renamed to key and value.)
-
-	This class is responsible for converting the Linux input event structure into
-	one of these objects and back again.
-	"""
-	def __init__(self, stream, time=None, eventType=None, eventCode=None, eventValue=None):
-		"""
-		create a new event
-
-		Generally all but the stream parameter are left out; we will want to
-		populate the object from a Linux input event using decode.
-		"""
-		self.stream = stream
-		self.time = time
-		self.eventType = eventType
-		self.eventCode = eventCode
-		self.eventValue = eventValue
-
-	def __str__(self):
-		"""
-		standard __str__ function
-
-		Uses the stream to give the device type and whether it is currently grabbed.
-		"""
-		return "Input event %s[%d], %d -- %f: 0x%x(0x%x) = 0x%x" % (self.stream.deviceType, self.stream.deviceIndex, self.stream.grabbed, self.time, self.eventType, self.eventCode, self.eventValue)
-
-	def __repr__(self):
-		"""
-		standard __repr__ function
-		"""
-		return "EventStruct(%s, %f, 0x%x, 0x%x, 0x%x)" % (repr(self.stream), self.time, self.eventType, self.eventCode, self.eventValue)
-
-	def encode(self):
-		"""
-		encode this event into a Linux input event structure
-
-		The output is packed into a string. It is unlikely that this function
-		will be required, but it might as well be here.
-		"""
-		tint = long(self.time)
-		tfrac = long((self.time - tint)*1000000)
-		return struct.pack(EventFormat, tsec, tfrac,  self.eventType, self.eventCode, self.eventValue)
-
-	def decode(self,s):
-		"""
-		decode a Linux input event into the fields of this object
-
-		The input parameter is a binary structure packed into a string.
-		"""
-		tsec, tfrac,  self.eventType, self.eventCode, self.eventValue = struct.unpack(EventFormat,s)
-		self.time = tsec + tfrac / 1000000.0
 
 
 class EventHandler(object):
@@ -407,9 +346,9 @@ class EventStream(object):
 		"""
 		ready = select.select([self.filehandle],[ ], [ ], 0)[0]
 		if ready:
-			s = os.read(self.filehandle,EventSize)
+			s = os.read(self.filehandle,Format.EventSize)
 			if s:
-				event = EventStruct(self)
+				event = EventStruct.EventStruct(self)
 				event.decode(s)
 				return event
 
@@ -445,9 +384,9 @@ class EventStream(object):
 		while ready:
 			for fd in ready:
 				stream = filter(lambda x: x.filehandle == fd, streams)[0]
-				s = os.read(fd,EventSize)
+				s = os.read(fd,Format.EventSize)
 				if s:
-					event = EventStruct(stream)
+					event = EventStruct.EventStruct(stream)
 					event.decode(s)
 					yield event
 			ready = select.select(selectlist,[ ], [ ], 0)[0]
