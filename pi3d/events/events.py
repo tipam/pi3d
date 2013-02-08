@@ -8,7 +8,7 @@ import struct
 import sys
 
 from pi3d.events import EventStruct
-from pi3d.events.event_consts import *
+from pi3d.events.Constants import *
 from pi3d.events import Format
 
 import ioctl
@@ -489,7 +489,7 @@ class InputEvents(object):
 	at zero, and event is an EventStruct object. Key is the key code, not it's
 	ASCII value or anything	simple. Use codeOf[ ] to convert from the name of a
 	key to its code, and nameOf[ ] to convert a code to a name. The keys are
-	listed in event_consts.py or /usr/include/linux/input.h Note that the key
+	listed in pi3d.events.Constants.py or /usr/include/linux/input.h Note that the key
 	names refer to a US keyboard.
 	"""
 	def __init__(self, keyboardHandler=None, mouseHandler=None, joystickHandler=None, synHandler=None, unhandledHandler=None, wantKeyboard=True, wantMouse=True, wantJoystick=True):
