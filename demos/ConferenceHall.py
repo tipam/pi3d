@@ -25,7 +25,7 @@ from pi3d.util.TkWin import TkWin
 
 from pi3d.Light import Light
 
-from pi3d.events.events import InputEvents, nameOf, codeOf
+from pi3d.events.events import InputEvents
 
 rads = 0.017453292512  # degrees to radians
 
@@ -99,7 +99,7 @@ while DISPLAY.loop_running() and not inputs.key_state("KEY_ESC"):
   yoff = abs(1.25*sf*math.sin(tilt*rads)) + 3.0
   zoff = -sf*math.cos(mouserot*rads)
   CAMERA.rotate(tilt, mouserot, 0)
-  CAMERA.position((xm + xoff, ym + yoff +5, zm + zoff)) 
+  CAMERA.position((xm + xoff, ym + yoff +5, zm + zoff))
 
   cor_win.position(0, mody, -spc*1.5)
   cor_win.draw()

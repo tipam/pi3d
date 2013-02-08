@@ -27,7 +27,7 @@ from pi3d.util.Screenshot import screenshot
 
 from pi3d.Light import Light
 
-from pi3d.events.events import InputEvents, nameOf, codeOf
+from pi3d.events.events import InputEvents
 
 # Setup display and initialise pi3d
 DISPLAY = Display.create(x=150, y=150, background=(0.4, 0.8, 0.8, 1))
@@ -145,7 +145,7 @@ while DISPLAY.loop_running() and not inputs.key_state("KEY_ESC"):
   xm = man.x()
   ym = man.y()
   zm = man.z()
-  
+
   jx, jy = inputs.get_joystick()
   if abs(jy) > 0.2:
       xm += math.sin(math.radians(rot))*jy
@@ -162,7 +162,7 @@ while DISPLAY.loop_running() and not inputs.key_state("KEY_ESC"):
   if inputs.key_state("KEY_W"):  #key W
     xm -= math.sin(math.radians(rot))
     zm += math.cos(math.radians(rot))
-    
+
   if inputs.key_state("KEY_S"): #key S
     xm += math.sin(math.radians(rot))
     zm -= math.cos(math.radians(rot))
@@ -173,13 +173,13 @@ while DISPLAY.loop_running() and not inputs.key_state("KEY_ESC"):
 
   if not collisions:
     man.move(NewPos)
-    
+
   if inFlag and abs(man.z() - building.zpos) > 55:
     inFlag = False
     for b in building.model:
       b.set_light(outLight, 0)
     mymap.set_light(outLight, 0)
-    
+
   if inputs.key_state("KEY_APOSTROPHE"):  #key '
     tilt -= 2.0
   if inputs.key_state("KEY_SLASH"):  #key /

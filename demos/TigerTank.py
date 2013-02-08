@@ -38,7 +38,7 @@ from pi3d.util.TkWin import TkWin
 
 from pi3d.Light import Light
 
-from pi3d.events.events import InputEvents, nameOf, codeOf
+from pi3d.events.events import InputEvents
 
 LOGGER = Log.logger(__name__)
 
