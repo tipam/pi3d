@@ -16,7 +16,7 @@ import demo
 from pi3d import *
 
 from pi3d.util.TkWin import TkWin
-from pi3d.events.events import InputEvents
+from pi3d.event.Event import InputEvents
 
 rads = 0.017453292512  # degrees to radians
 

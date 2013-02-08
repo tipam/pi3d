@@ -1,6 +1,6 @@
 import struct
 
-from pi3d.events import Format
+from pi3d.event import Format
 
 class EventStruct(object):
   """

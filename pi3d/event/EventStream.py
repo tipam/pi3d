@@ -3,11 +3,11 @@ import ioctl
 import os
 import select
 
-from pi3d.events.Constants import *
+from pi3d.event.Constants import *
 
-from pi3d.events import AbsAxisScaling
-from pi3d.events import EventStruct
-from pi3d.events import Format
+from pi3d.event import AbsAxisScaling
+from pi3d.event import EventStruct
+from pi3d.event import Format
 
 EVIOCGRAB = ioctl._IOW(ord('E'), 0x90, "i")          # Grab/Release device
 

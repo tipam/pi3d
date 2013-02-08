@@ -4,12 +4,12 @@ import struct
 import sys
 import threading
 
-from pi3d.events import EventHandler
-from pi3d.events import Format
-from pi3d.events import Keys
-from pi3d.events.FindDevices import find_devices
-from pi3d.events.Constants import *
-from pi3d.events.EventStream import EventStream
+from pi3d.event import EventHandler
+from pi3d.event import Format
+from pi3d.event import Keys
+from pi3d.event.FindDevices import find_devices
+from pi3d.event.Constants import *
+from pi3d.event.EventStream import EventStream
 
 _KEYS = (k for k in vars(Keys) if not k.startswith('_'))
 KEY_CODE = dict((k, getattr(Keys, k)) for k in _KEYS)
@@ -50,7 +50,7 @@ class InputEvents(object):
   at zero, and event is an EventStruct object. Key is the key code, not it's
   ASCII value or anything  simple. Use key_to_code() to convert from the name of a
   key to its code, and code_to_key() to convert a code to a name. The keys are
-  listed in pi3d.events.Constants.py or /usr/include/linux/input.h Note that the key
+  listed in pi3d.event.Constants.py or /usr/include/linux/input.h Note that the key
   names refer to a US keyboard.
   """
   def __init__(self, keyboardHandler=None, mouseHandler=None, joystickHandler=None, synHandler=None, unhandledHandler=None, wantKeyboard=True, wantMouse=True, wantJoystick=True):

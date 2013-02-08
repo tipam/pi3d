@@ -1,6 +1,6 @@
 import threading
 
-from pi3d.events.Constants import *
+from pi3d.event.Constants import *
 
 class EventHandler(object):
   """

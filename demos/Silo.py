@@ -27,7 +27,7 @@ from pi3d.util.Screenshot import screenshot
 
 from pi3d.Light import Light
 
-from pi3d.events.events import InputEvents
+from pi3d.event.Event import InputEvents
 
 # Setup display and initialise pi3d
 DISPLAY = Display.create(x=150, y=150, background=(0.4, 0.8, 0.8, 1))
