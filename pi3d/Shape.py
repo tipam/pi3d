@@ -152,8 +152,6 @@ class Shape(Loadable):
 
     if camera.was_moved:
       self.unif[18:21] = camera.eye[0:3]
-      # TODO: should we enable the next line?
-      # camera.was_moved = False
 
     opengles.glUniformMatrix4fv(shader.unif_modelviewmatrix, 2,
                                 ctypes.c_int(0),
