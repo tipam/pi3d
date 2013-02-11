@@ -21,12 +21,12 @@ class Loadable(object):
     self.opengl_loaded = False
 
   def __del__(self):
-    if not self.unload_opengl(False):
-      try:
+    try:
+      if not self.unload_opengl(False):  # Why does this sometimes fail?
         Display.display.unload_opengl(self)
-      except:
-        # Many legit reasons why this might fail, particularly during shutdown.
-        pass
+    except:
+      # Many legit reasons why this might fail, particularly during shutdown.
+      pass
 
   def load_disk(self):
     if not self.disk_loaded:

@@ -59,7 +59,7 @@ class Display(object):
     self.is_running = True
     self.lock = threading.RLock()
 
-    LOGGER.info(STARTUP_MESSAGE)
+    LOGGER.debug(STARTUP_MESSAGE)
 
   def loop_running(self):
     """*loop_running* is the main event loop for the Display.
@@ -312,7 +312,7 @@ def create(is_3d=True, x=None, y=None, w=None, h=None, near=None, far=None,
      if h <= 0:
        h = display.max_height
   LOGGER.debug('Display size is w=%d, h=%d', w, h)
-  
+
   display.frames_per_second = frames_per_second
 
   if near is None:
