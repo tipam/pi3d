@@ -18,7 +18,7 @@ BACKGROUND = (0.0, 0.0, 0.0, 0.0)
 DISPLAY = pi3d.Display.create(background=BACKGROUND)
 SHADER = pi3d.Shader('shaders/uv_flat')
 
-RASPBERRY_TEXTURE = pi3d.Texture('textures/Raspi256x256.png')
+TEXTURE = pi3d.Texture('textures/Raspi256x256.png')
 BERRY_COUNT = 15
 
 # Setup array of random x,y,z coords and initial rotation
@@ -27,7 +27,7 @@ RASPBERRIES = []
 for b in range(BERRY_COUNT):
   # Select size as a random number 0.2 and 2.5.
   size = random.uniform(0.5, 2.5)
-  rasp = pi3d.Sprite(w=size, h=size)
+  rasp = pi3d.ImageSprite(texture=TEXTURE, shader=SHADER, w=size, h=size)
 
   # distance from the camera.
   dist = random.uniform(2.0, 10.0)
@@ -35,7 +35,6 @@ for b in range(BERRY_COUNT):
                 random.uniform(0.0, 4.0) * dist,
                 dist)
   rasp.rotateToZ(random.uniform(0.0, 360.0))
-  rasp.buf[0].set_draw_details(SHADER, [RASPBERRY_TEXTURE])
 
   RASPBERRIES.append(rasp)
 
