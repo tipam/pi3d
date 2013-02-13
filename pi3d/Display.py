@@ -15,6 +15,7 @@ LOGGER = Log.logger(__name__)
 
 ALLOW_MULTIPLE_DISPLAYS = False
 RAISE_EXCEPTIONS = True
+MARK_CAMERA_CLEAN_ON_EACH_LOOP = True
 
 DEFAULT_ASPECT = 60.0
 DEFAULT_DEPTH = 24
@@ -206,6 +207,12 @@ class Display(object):
       self.sprites_to_load, to_load = set(), self.sprites_to_load
       self.sprites.extend(to_load)
     self._for_each_sprite(lambda s: s.load_opengl(), to_load)
+
+    if MARK_CAMERA_CLEAN_ON_EACH_LOOP:
+      from pi3d.Camera import Camera
+      camera = Camera.instance()
+      if camera:
+        camera.was_moved = False
 
   def _loop_end(self):
     with self.lock:
