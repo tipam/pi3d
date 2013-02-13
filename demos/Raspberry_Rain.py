@@ -37,13 +37,13 @@ for b in range(BERRY_COUNT):
   rasp.rotateToZ(random.uniform(0.0, 360.0))
 
   RASPBERRIES.append(rasp)
+  DISPLAY.add_sprites(rasp)
 
 # Fetch key presses
 KEYBOARD = pi3d.Keyboard()
 
 while DISPLAY.loop_running():
   for b in RASPBERRIES:
-    b.draw()
     b.translateY(-0.3)
     b.rotateIncZ(1)
     if b.y() < -2 * b.z():

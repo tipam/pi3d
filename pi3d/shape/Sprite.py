@@ -40,6 +40,9 @@ class Sprite(Shape):
     self.buf = []
     self.buf.append(Buffer(self, self.verts, self.texcoords, self.inds, self.norms))
 
+  def repaint(self, t):
+    self.draw()
+
 
 class ImageSprite(Sprite):
   """A 2D sprite containing a texture."""
