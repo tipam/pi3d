@@ -211,7 +211,7 @@ class Display(object):
     with self.lock:
       self.sprites_to_unload, to_unload = set(), self.sprites_to_unload
       if to_unload:
-        self.sprites = (s for s in self.sprites if s in to_unload)
+        self.sprites = [s for s in self.sprites if s not in to_unload]
 
     t = time.time()
     self._for_each_sprite(lambda s: s.repaint(t))
