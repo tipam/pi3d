@@ -68,6 +68,10 @@ class Shader(object):
         String with the code for the fragment shader.
     """
     assert Loadable.is_display_thread()
+
+    # TODO: the rest of the constructor should be split into load_disk
+    # and load_opengl so that we can delete that assert.
+
     self.program = opengles.glCreateProgram()
     self.shfile = shfile
 
