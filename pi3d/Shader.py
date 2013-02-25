@@ -4,6 +4,7 @@ from echomesh.util import Log
 
 from pi3d.constants import *
 from pi3d.util.Ctypes import c_chars
+from pi3d.util import Loadable
 
 # This class based on Peter de Rivaz's mandlebrot example + Tim Skillman's work on pi3d2
 LOGGER = Log.logger(__name__)
@@ -66,6 +67,7 @@ class Shader(object):
       *vshader_source*
         String with the code for the fragment shader.
     """
+    assert Loadable.is_display_thread()
     self.program = opengles.glCreateProgram()
     self.shfile = shfile
 

@@ -11,7 +11,7 @@ LOGGER = Log.logger(__name__)
 CHECK_IF_DISPLAY_THREAD = True
 DISPLAY_THREAD = threading.current_thread()
 
-def _is_display_thread():
+def is_display_thread():
   return not CHECK_IF_DISPLAY_THREAD or (
     DISPLAY_THREAD is threading.current_thread())
 
@@ -36,7 +36,7 @@ class Loadable(object):
   def load_opengl(self):
     self.load_disk()
     if not self.opengl_loaded:
-      if _is_display_thread():
+      if is_display_thread():
         self._load_opengl()
         self.opengl_loaded = True
       else:
@@ -48,7 +48,7 @@ class Loadable(object):
 
     else:
       try:
-        if _is_display_thread():
+        if is_display_thread():
           self._unload_opengl()
           self.opengl_loaded = False
           return True

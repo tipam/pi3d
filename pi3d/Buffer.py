@@ -45,7 +45,7 @@ class Buffer(object):
                               0.5, 0.5, 0.5,
                               1.0, 1.0, 0.0)
     """ pass to shader array of vec3 uniform variables:
-    
+
     ===== ============================ ==== ==
     vec3        description            python
     ----- ---------------------------- -------
@@ -183,7 +183,9 @@ class Buffer(object):
     self.unib[2] = 0.6
     for t, texture in enumerate(textures):
       opengles.glActiveTexture(GL_TEXTURE0 + t)
+      assert texture.tex(), "There was an empty texture in your Buffer."
       opengles.glBindTexture(GL_TEXTURE_2D, texture.tex())
+
       opengles.glUniform1i(shader.unif_tex[t], t)
 
       if texture.blend:
