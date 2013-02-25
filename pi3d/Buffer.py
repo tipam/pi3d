@@ -6,11 +6,12 @@ from echomesh.util import Log
 
 from pi3d.constants import *
 from pi3d.util import Utility
+from pi3d.util.Loadable import Loadable
 from pi3d.util.Ctypes import c_floats, c_shorts
 
 LOGGER = Log.logger(__name__)
 
-class Buffer(object):
+class Buffer(Loadable):
   """Holds the vertex, normals, incices and tex_coords for each part of
   a Shape that needs to be rendered with a different material or texture
   Shape holds an array of Buffer objects.
@@ -38,8 +39,11 @@ class Buffer(object):
         vertex i.e. [(x0,y0,z0), (x1,y1,z1),...]
       *smooth*
         if calculating normals then average normals for all faces
-        meeting at this vertex, otherwise just use first (for speed)
+        meeting at this vertex, otherwise just use first (for speed).
+
     """
+    super(Buffer, self).__init__()
+
     # Uniform variables all in one array!
     self.unib = (c_float * 9)(0.0, 0.0, 0.0,
                               0.5, 0.5, 0.5,
@@ -91,27 +95,30 @@ class Buffer(object):
 
     # Pack points,normals and texcoords into tuples and convert to ctype floats.
     points = [p + n + t for p, n, t in zip(pts, normals, texcoords)]
-    array_buffer = c_floats(list(itertools.chain(*points)))
+    self.array_buffer = c_floats(list(itertools.chain(*points)))
 
+    self.ntris = len(faces)
     points = [f[0:3] for f in faces]
-    element_array_buffer = c_shorts(list(itertools.chain(*points)))
+    self.element_array_buffer = c_shorts(list(itertools.chain(*points)))
+    # TODO: Don't call this in the constructor, make sure it's called elsewhere.
+    self.load_opengl()
 
+  def _load_opengl(self):
     self.vbuf = c_int()
     opengles.glGenBuffers(1, ctypes.byref(self.vbuf))
     self.ebuf = c_int()
     opengles.glGenBuffers(1, ctypes.byref(self.ebuf))
-    self.select()
+    self._select()
     opengles.glBufferData(GL_ARRAY_BUFFER,
-                          ctypes.sizeof(array_buffer),
-                          ctypes.byref(array_buffer),
+                          ctypes.sizeof(self.array_buffer),
+                          ctypes.byref(self.array_buffer),
                           GL_STATIC_DRAW);
     opengles.glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                          ctypes.sizeof(element_array_buffer),
-                          ctypes.byref(element_array_buffer),
+                          ctypes.sizeof(self.element_array_buffer),
+                          ctypes.byref(self.element_array_buffer),
                           GL_STATIC_DRAW);
-    self.ntris = len(faces)
 
-  def select(self):
+  def _select(self):
     """Makes our buffers active."""
     opengles.glBindBuffer(GL_ARRAY_BUFFER, self.vbuf);
     opengles.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.ebuf);
@@ -169,7 +176,7 @@ class Buffer(object):
       self.unib[0] = ntl
     if shny:
       self.unib[1] = shny
-    self.select()
+    self._select()
 
     opengles.glVertexAttribPointer(shader.attr_vertex, 3, GL_FLOAT, 0, 32, 0)
     opengles.glVertexAttribPointer(shader.attr_normal, 3, GL_FLOAT, 0, 32, 12)

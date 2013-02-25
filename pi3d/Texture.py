@@ -147,9 +147,10 @@ class TextureCache(object):
     self.cache = {}
 
   def create(self, file_string, blend=False, flip=False, size=0, **kwds):
-    texture = self.cache.get((file_string, blend, flip, size), None)
+    key = file_string, blend, flip, size
+    texture = self.cache.get(key, None)
     if not texture:
-      texture = Texture(file_string, blend=blend, flip=flip, size=size, **kwds)
-      self.cache[file_string] = texture
+      texture = Texture(*key, **kwds)
+      self.cache[key] = texture
 
     return texture
