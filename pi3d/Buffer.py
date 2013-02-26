@@ -100,8 +100,6 @@ class Buffer(Loadable):
     self.ntris = len(faces)
     points = [f[0:3] for f in faces]
     self.element_array_buffer = c_shorts(list(itertools.chain(*points)))
-    # TODO: Don't call this in the constructor, make sure it's called elsewhere.
-    self.load_opengl()
 
   def _load_opengl(self):
     self.vbuf = c_int()
@@ -170,6 +168,8 @@ class Buffer(Loadable):
       *shiny*
         how strong to make the reflection 0.0 to 1.0, float
     """
+    self.load_opengl()
+
     shader = shader or self.shader
     textures = textures or self.textures
     if ntl:
