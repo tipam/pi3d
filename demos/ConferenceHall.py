@@ -28,7 +28,7 @@ from pi3d.Light import Light
 rads = 0.017453292512  # degrees to radians
 
 #Create a Tkinter window in Display
-winw,winh = 1200, 600   	#64MB GPU memory setting
+winw,winh = 200, 600   	#64MB GPU memory setting
 #winw,winh = 1920,1180	#128MB GPU memory setting
 
 DISPLAY = Display.create(tk=True, window_title='ConferenceHall demo in Pi3D',
@@ -112,6 +112,8 @@ try:
     if win.ev == "resized":
       print("resized")
       DISPLAY.resize(win.winx, win.winy, win.width, win.height)
+      CAMERA.reset((DISPLAY.near, DISPLAY.far, DISPLAY.fov, 
+                  DISPLAY.width / float(DISPLAY.height)))
       win.resized = False
     if win.ev == "key":
       if win.key == "w":

@@ -176,6 +176,8 @@ try:
     if win.ev == "resized":
       print("resized")
       DISPLAY.resize(win.winx, win.winy, win.width, win.height-bord)
+      CAMERA.reset((DISPLAY.near, DISPLAY.far, DISPLAY.fov, 
+                  DISPLAY.width / float(DISPLAY.height)))
       win.resized = False
     if win.ev == "key":
       if win.key == "w":
