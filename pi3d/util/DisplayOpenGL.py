@@ -18,7 +18,7 @@ class DisplayOpenGL(object):
     assert s >= 0
     self.width, self.height = w.value, h.value
 
-  def create_display(self, x=0, y=0, w=0, h=0):
+  def create_display(self, x=0, y=0, w=0, h=0, depth=24):
     self.display = openegl.eglGetDisplay(EGL_DEFAULT_DISPLAY)
     assert self.display != EGL_NO_DISPLAY
 
@@ -28,7 +28,7 @@ class DisplayOpenGL(object):
     attribute_list = c_ints((EGL_RED_SIZE, 8,
                              EGL_GREEN_SIZE, 8,
                              EGL_BLUE_SIZE, 8,
-                             EGL_DEPTH_SIZE, 24,  # TOD: use self.depth?
+                             EGL_DEPTH_SIZE, depth,  # TOD: use self.depth?
                              EGL_ALPHA_SIZE, 8,
                              EGL_BUFFER_SIZE, 32,
                              EGL_SURFACE_TYPE, EGL_WINDOW_BIT,

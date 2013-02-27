@@ -260,7 +260,7 @@ def create(is_3d=True, x=None, y=None, w=None, h=None, near=None, far=None,
   Creates a pi3d Display.
 
   *is_3d*
-    Are we creating a 2- or 3-d display?
+    Are we creating a 2- or 3-d display? TODO use this more scientifically, keep in
   *tk*
     Do we use the tk windowing system?
   *window_parent*
@@ -340,7 +340,7 @@ def create(is_3d=True, x=None, y=None, w=None, h=None, near=None, far=None,
   display.right = x + w
   display.bottom = y + h
 
-  display.opengl.create_display(x, y, w, h)
+  display.opengl.create_display(x, y, w, h, depth)
   display.mouse = None
 
   if mouse:
