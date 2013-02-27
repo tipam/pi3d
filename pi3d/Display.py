@@ -19,10 +19,8 @@ MARK_CAMERA_CLEAN_ON_EACH_LOOP = True
 
 DEFAULT_FOV = 45.0
 DEFAULT_DEPTH = 24
-DEFAULT_NEAR_3D = 1.0
-DEFAULT_FAR_3D = 1000.0
-DEFAULT_NEAR_2D = 1.0
-DEFAULT_FAR_2D = 1000.0
+DEFAULT_NEAR = 1.0
+DEFAULT_FAR = 1000.0
 WIDTH = 0
 HEIGHT = 0
 
@@ -252,21 +250,13 @@ class Display(object):
     self.opengl.swap_buffers()
 
 
-def create(is_3d=True, x=None, y=None, w=None, h=None, near=None, far=None,
+def create(x=None, y=None, w=None, h=None, near=None, far=None,
            fov=DEFAULT_FOV, depth=DEFAULT_DEPTH, background=None,
            tk=False, window_title='', window_parent=None, mouse=False,
            frames_per_second=None):
   """
   Creates a pi3d Display.
 
-  *is_3d*
-    Are we creating a 2- or 3-d display? TODO use this more scientifically, keep in
-  *tk*
-    Do we use the tk windowing system?
-  *window_parent*
-    An optional tk parent window.
-  *window_title*
-    A window title for tk windows only.
   *x*
     Left x coordinate of the display.  If None, defaults to the x coordinate of
     the tkwindow parent, if any.
@@ -285,6 +275,14 @@ def create(is_3d=True, x=None, y=None, w=None, h=None, near=None, far=None,
     Used to define the Camera lens field of view
   *depth*
     The bit depth of the display - must be 8, 16 or 24.
+  *background*
+    r,g,b,alpha (opacity)
+  *tk*
+    Do we use the tk windowing system?
+  *window_title*
+    A window title for tk windows only.
+  *window_parent*
+    An optional tk parent window.
   *mouse*
     Automatically create a Mouse.
   *frames_per_second*
@@ -325,9 +323,9 @@ def create(is_3d=True, x=None, y=None, w=None, h=None, near=None, far=None,
   display.frames_per_second = frames_per_second
 
   if near is None:
-    near = DEFAULT_NEAR_3D if is_3d else DEFAULT_NEAR_2D
+    near = DEFAULT_NEAR
   if far is None:
-    far = DEFAULT_FAR_3D if is_3d else DEFAULT_FAR_2D
+    far = DEFAULT_FAR
 
   display.width = w
   display.height = h

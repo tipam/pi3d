@@ -14,7 +14,7 @@ from pi3d.shape.Sprite import ImageSprite
 
 # Setup display and initialise pi3d
 
-DISPLAY = Display.create(is_3d=False, background=(0.0, 0.0, 0.0, 0.0), x=100, y=100)
+DISPLAY = Display.create(background=(0.0, 0.0, 0.0, 0.0), x=100, y=100)
 
 shader = Shader("shaders/2d_flat")
 #############################
