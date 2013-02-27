@@ -22,8 +22,8 @@ class Camera(DefaultInstance):
       *eye*
         tuple (x,y,z) location to look from
       *lens*
-        tuple (near plane distance, far plane value, field of view width,
-        field of view height) fields of view in radians
+        tuple (near plane dist, far plane dist, field of view width in degrees,
+        display aspect ratio w/h)
     """
     super(Camera, self).__init__()
 
@@ -44,10 +44,10 @@ class Camera(DefaultInstance):
   @staticmethod
   def _default_instance():
     from pi3d.Display import Display
-    return Camera((0, 0, 0), (0, 0, -1),
-                  (Display.INSTANCE.near, Display.INSTANCE.far,
-                   Display.INSTANCE.width / Display.INSTANCE.far,
-                   Display.INSTANCE.height / Display.INSTANCE.far))
+    
+    return Camera((0, 0, 0), (0, 0, -0.1),
+                  (Display.INSTANCE.near, Display.INSTANCE.far, Display.INSTANCE.fov, 
+                  Display.INSTANCE.width / float(Display.INSTANCE.height)))
 
   def reset(self, lens=None):
     """Has to be called each loop if the camera position or rotation changes"""
@@ -161,8 +161,8 @@ def _LookAtMatrix(at, eye, up=[0,1,0], reflect=False):
   # If reflect, then reflect in plane -20.0 (water depth)
   if reflect:
     depth = -20.0 # Shallower to avoid edge effects
-    eye[2] = 2 * depth - eye[2]
-    at[2] = 2 * depth - at[2]
+    eye = [eye[0],-eye[1],eye[2]]
+    at = [at[0],-at[1],at[2]]
   zaxis = vec_normal(vec_sub(at, eye))
   xaxis = vec_normal(vec_cross(up, zaxis))
   yaxis = vec_cross(zaxis, xaxis)
@@ -173,7 +173,7 @@ def _LookAtMatrix(at, eye, up=[0,1,0], reflect=False):
   return array([[xaxis[a], yaxis[a], zaxis[a], z[a]] for a in range(4)],
                dtype=ctypes.c_float)
 
-def _ProjectionMatrix(near=1.0, far=1000.0, fov_w=1.6, fov_h=1.2):
+def _ProjectionMatrix(near=1.0, far=1000.0, fov=45.0, aspectRatio=1.6):
   """Set up projection matrix
   
   Keyword arguments:
@@ -181,21 +181,19 @@ def _ProjectionMatrix(near=1.0, far=1000.0, fov_w=1.6, fov_h=1.2):
       distance to near plane, float
     *far*
       distance to far plane, float
-    *fov_w*
-      horizontal field of view in radians
-    *fov_h*
-      vertical field of view in radians
+    *fov*
+      field of view in degrees, float
+    *aspectRatio*
+      aspect ratio between the width and height of the scene, float
   """
   # Matrices are considered to be M[row][col]
   # Use DirectX convention, so need to do rowvec*Matrix to transform
-  w = 2.0 / fov_w
-  h = 2.0 / fov_h
-  q = int(far / (far - near)) # this is effectively always going to be 1!
+  size = 1 / tan(radians(fov)/2.0)   #calculate 'field of view' (fov)
   M = [[0] * 4 for i in range(4)]
-  M[0][0] = w
-  M[1][1] = h
-  M[2][2] = q
-  M[3][2] = -q * near
+  M[0][0] = size/aspectRatio
+  M[1][1] = size  #negative value reflects scene on the Y axis
+  M[2][2] = (far + near) / (far - near)
   M[2][3] = 1
+  M[3][2] = -(2 * far * near)/(far - near)
   return array(M, dtype=ctypes.c_float)
 

@@ -18,7 +18,7 @@ class Ball(ImageSprite):
                radius=0.0, x=0.0, y=0.0, vx=0.0, vy=0.0, decay=0.001):
     super(Ball, self).__init__(texture=texture, shader=shader,
                               camera=camera, light=light, w=2 * radius,
-                              h=2 * radius, name="",x=x, y=y, z=1000)
+                              h=2 * radius, name="",x=x, y=y, z=999)
     self.radius = radius
     self.unif[0] = x
     self.unif[1] = y

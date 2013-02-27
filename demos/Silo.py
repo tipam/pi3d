@@ -108,6 +108,7 @@ man = SolidObject("man", Size(1, avhgt, 1), Position(0, (mymap.calcHeight(5, 5) 
 inputs = InputEvents()
 
 inputs.get_mouse_movement()
+mouseOn = True
 
 frame = 400
 record = False
@@ -196,6 +197,11 @@ while DISPLAY.loop_running() and not inputs.key_state("KEY_ESC"):
     scshots += 1
   if inputs.key_state("KEY_ENTER"):  #key RETURN
     mc = 0
+  if inputs.key_state("KEY_X"):  #key RETURN
+    while inputs.key_state("KEY_X"):
+      inputs.do_input_events() # wait for key to go up
+    mouseOn != mouseOn
+    inputs.grab_by_type("keyboard", grab=mouseOn)
 
 inputs.release()
 DISPLAY.destroy()

@@ -24,38 +24,38 @@ shapeshine = pi3d.Texture("textures/stars.jpg")
 
 #Create inbuilt shapes
 mysphere = pi3d.Sphere(radius=1, sides=24, slices=24, name="sphere",
-        x=-4, y=2, z=8)
+        x=-4, y=2, z=10)
 mytcone = pi3d.TCone(radiusBot=0.8, radiusTop=0.6, height=1, sides=24, name="TCone", 
-        x=-2, y=2, z=8)
+        x=-2, y=2, z=10)
 myhelix = pi3d.Helix(radius=0.4, thickness=0.1, ringrots=12, sides=24, rise=1.5, 
-        loops=3.0, name="helix",x=0, y=2, z=8)
+        loops=3.0, name="helix",x=0, y=2, z=10)
 mytube = pi3d.Tube(radius=0.4, thickness=0.1, height=1.5, sides=24, name="tube",
-        x=2, y=2, z=8, rx=30)
+        x=2, y=2, z=10, rx=30)
 myextrude = pi3d.Extrude(path=((-0.5, 0.5), (0.5,0.7), (0.9,0.2),
         (0.2,0.05), (1.0,0.0), (0.5,-0.7), (-0.5, -0.5)), height=0.5, name="Extrude",
-        x=4, y=2, z=8)
+        x=4, y=2, z=10)
 # Extrude can use three different textures if they are loaded prior to draw()
 myextrude.buf[0].set_draw_details(shader, [coffimg, shapebump, shapeshine], 4.0, 0.2)
 myextrude.buf[1].set_draw_details(shader, [patimg, shapebump, shapeshine], 4.0, 0.2)
 myextrude.buf[2].set_draw_details(shader, [shapeshine, shapebump, shapeshine], 4.0, 0.2)
 
 mycone = pi3d.Cone(radius=1, height=2, sides=24, name="Cone",
-        x=-4, y=-1, z=8)
+        x=-4, y=-1, z=10)
 mycylinder = pi3d.Cylinder(radius=0.7, height=1.5, sides=24, name="Cyli",
-        x=-2, y=-1, z=8)
+        x=-2, y=-1, z=10)
 myhemisphere = pi3d.Sphere(radius=1, sides=24, slices=24, hemi=0.5, name="hsphere",
-        x=0, y=-1, z=8)
+        x=0, y=-1, z=10)
 mytorus = pi3d.Torus(radius=1, thickness=0.3, ringrots=12, sides=24, name="Torus",
-        x=2, y=-1, z=8)
+        x=2, y=-1, z=10)
 # NB Lathe needs to start at the top otherwise normals are calculated in reverse,
 # also inside surfaces need to be defined otherwise normals are wrong
 mylathe = pi3d.Lathe(path=((0,1),(0.6,1.2),(0.8,1.4),(1.09,1.7), (1.1,1.7),
         (0.9, 1.4),(0.7,1.2),(0.08,1),(0.08,0.21),(0.1,0.2),(1,0.05),(1,0),(0,0)), 
-         sides=24, name="Cup", x=4, y=-1, z=8, sx=0.8, sy=0.8, sz=0.8)
-myPlane = pi3d.Plane(w=4, h=4, name="plane", z=10)
+         sides=24, name="Cup", x=4, y=-1, z=10, sx=0.8, sy=0.8, sz=0.8)
+myPlane = pi3d.Plane(w=4, h=4, name="plane", z=12)
 # Load ttf font and set the font colour to 'raspberry'
 arialFont = pi3d.Ttffont("fonts/FreeMonoBoldOblique.ttf", "#dd00aa")
-mystring = pi3d.String(font=arialFont, string="Now the Raspberry Pi really does rock")
+mystring = pi3d.String(font=arialFont, string="Now the Raspberry Pi really does rock", z=4)
 mystring.set_shader(flatsh)
 
 # Fetch key presses

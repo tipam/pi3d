@@ -17,7 +17,7 @@ ALLOW_MULTIPLE_DISPLAYS = False
 RAISE_EXCEPTIONS = True
 MARK_CAMERA_CLEAN_ON_EACH_LOOP = True
 
-DEFAULT_ASPECT = 60.0
+DEFAULT_FOV = 45.0
 DEFAULT_DEPTH = 24
 DEFAULT_NEAR_3D = 1.0
 DEFAULT_FAR_3D = 1000.0
@@ -253,7 +253,7 @@ class Display(object):
 
 
 def create(is_3d=True, x=None, y=None, w=None, h=None, near=None, far=None,
-           aspect=None, depth=None, background=None,
+           fov=DEFAULT_FOV, depth=DEFAULT_DEPTH, background=None,
            tk=False, window_title='', window_parent=None, mouse=False,
            frames_per_second=None):
   """
@@ -281,8 +281,8 @@ def create(is_3d=True, x=None, y=None, w=None, h=None, near=None, far=None,
     This will be used for the default instance of Camera *near* plane
   *far*
     This will be used for the default instance of Camera *far* plane
-  *aspect*
-    Not used in OpenGL ES 2.0, replaced by Camera lens definition
+  *fov*
+    Used to define the Camera lens field of view
   *depth*
     The bit depth of the display - must be 8, 16 or 24.
   *mouse*
@@ -294,9 +294,11 @@ def create(is_3d=True, x=None, y=None, w=None, h=None, near=None, far=None,
     from pi3d.util import TkWin
     if not (w and h):
       # TODO: how do we do full-screen in tk?
-      LOGGER.error("Can't compute default window size when using tk")
-      raise Exception
-
+      #LOGGER.error("Can't compute default window size when using tk")
+      #raise Exception
+      # ... just force full screen - TK will automatically fit itself into the screen
+      w=1920
+      h=1180
     tkwin = TkWin.TkWin(window_parent, window_title, w, h)
     tkwin.update()
     if x is None:
@@ -331,6 +333,7 @@ def create(is_3d=True, x=None, y=None, w=None, h=None, near=None, far=None,
   display.height = h
   display.near = near
   display.far = far
+  display.fov = fov
 
   display.left = x
   display.top = y
@@ -345,8 +348,8 @@ def create(is_3d=True, x=None, y=None, w=None, h=None, near=None, far=None,
     display.mouse = Mouse(width=w, height=h)
     display.mouse.start()
 
-  """ TODO none of this does anything in OpenGL ES 2.0
-  opengles.glMatrixMode(GL_PROJECTION)
+  # This code now replaced by camera 'lens'
+  """opengles.glMatrixMode(GL_PROJECTION)
   Utility.load_identity()
   if is_3d:
     hht = near * math.tan(math.radians(aspect / 2.0))
@@ -357,10 +360,10 @@ def create(is_3d=True, x=None, y=None, w=None, h=None, near=None, far=None,
   else:
     opengles.glOrthof(c_float(0), c_float(w), c_float(0), c_float(h),
                       c_float(near), c_float(far))
-
+  """
   opengles.glMatrixMode(GL_MODELVIEW)
   Utility.load_identity()
-  """
+
 
   if background:
     display.set_background(*background)

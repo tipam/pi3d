@@ -16,7 +16,7 @@ import demo
 from pi3d import *
 
 from pi3d.util.TkWin import TkWin
-from pi3d.event.Event import InputEvents
+#from pi3d.event.Event import InputEvents
 
 rads = 0.017453292512  # degrees to radians
 
@@ -29,7 +29,7 @@ DISPLAY = Display.create(tk=True, window_title='Mars Station demo in Pi3D',
                         w=winw, h=winh - bord, far=2200.0,
                         background=(0.4, 0.8, 0.8, 1), frames_per_second=20)
 
-inputs = InputEvents()
+#inputs = InputEvents()
 
 win = DISPLAY.tkwin
 
@@ -39,7 +39,7 @@ shade2d = Shader('shaders/2d_flat')
 
 #========================================
 # create splash screen and draw it
-splash = ImageSprite("textures/tiger_splash.jpg", shade2d, w=10, h=10, z=0.2)
+splash = ImageSprite("textures/pi3d_splash.jpg", shade2d, w=10, h=10, z=0.2)
 splash.draw()
 DISPLAY.swap_buffers()
 #############################
@@ -107,79 +107,114 @@ spc = 39.32
 mody = ym + 3.0
 opendist = 80
 
+#key presses
+mymouse = Mouse(restrict = False)
+mymouse.start()
+omx, omy = mymouse.position()
+
 # Update display before we begin (user might have moved window)
 win.update()
 DISPLAY.resize(win.winx, win.winy, win.width, win.height - bord)
 
 CAMERA = Camera.instance()
-inputs.get_mouse_movement()
+#inputs.get_mouse_movement()
 
-while DISPLAY.loop_running() and not inputs.key_state("KEY_ESC"):
-  CAMERA.reset()
+try:
+  while DISPLAY.loop_running():
+    CAMERA.reset()
 
-  #update mouse
-  inputs.do_input_events()
-  mx, my, mv, mh, md = inputs.get_mouse_movement()
-  mouserot -= (mx)*0.2
-  tilt -= (my)*0.2
+    #tilt can be used as a means to prevent the view from going under the landscape!
+    if tilt < -1: sf = 6 - 5.5/abs(tilt)
+    else: sf = 0.5
+    xoff, yoff, zoff = sf*math.sin(mouserot*rads), abs(1.25*sf*math.sin(tilt*rads)) + 3.0, -sf*math.cos(mouserot*rads)
+    CAMERA.rotate(tilt, mouserot, 0)
+    CAMERA.position((xm + xoff, ym + yoff +5, zm + zoff))
 
-  #tilt can be used as a means to prevent the view from going under the landscape!
-  if tilt < -1: sf = 6 - 5.5/abs(tilt)
-  else: sf = 0.5
-  xoff, yoff, zoff = sf*math.sin(mouserot*rads), abs(1.25*sf*math.sin(tilt*rads)) + 3.0, -sf*math.cos(mouserot*rads)
-  CAMERA.rotate(tilt, mouserot, 0)
-  CAMERA.position((xm + xoff, ym + yoff +5, zm + zoff))
+    Utility.draw_level_of_detail([xm, ym, zm], [0, mody, 0], [[opendist,cor_cross],[1000,cor_cross_doors]])
+    cor_win90.position(0, mody, spc*1.5)
+    cor_win90.draw()
+    corridor90.position(0, mody, spc*2.5)
+    corridor90.draw()
+    cor_win90.position(0, mody, spc*3.5)
+    cor_win90.draw()
+    Utility.draw_level_of_detail([xm, ym, zm], [0, mody, spc*5],[[opendist,cor_cross],[1000,cor_cross_doors]])
+    cor_win90.position(0, mody, spc*6.5)
+    cor_win90.draw()
+    Utility.draw_level_of_detail([xm, ym, zm],[0, mody, spc*8], [[opendist,cor_cross],[1000,cor_cross_doors]])
+    cor_win00.position(-spc*1.5, mody, spc*5)
+    cor_win00.draw()
+    cor_bend.position(-spc*2.5, mody, spc*5)
+    cor_bend.draw()
+    Utility.draw_level_of_detail([xm, ym, zm],[-spc*2.6, mody, spc*6.6],[[opendist,cor_cross],[1000,cor_cross_doors]])
+    cor_win00.position(spc*1.5, mody, spc*5)
+    cor_win00.draw()
+    corridor00.position(spc*2.5, mody, spc*5)
+    corridor00.draw()
+    Utility.draw_level_of_detail([xm, ym, zm],[spc*4, mody, spc*5],[[opendist,cor_cross],[1000,cor_cross_doors]])
 
-  Utility.draw_level_of_detail([xm, ym, zm], [0, mody, 0], [[opendist,cor_cross],[1000,cor_cross_doors]])
-  cor_win90.position(0, mody, spc*1.5)
-  cor_win90.draw()
-  corridor90.position(0, mody, spc*2.5)
-  corridor90.draw()
-  cor_win90.position(0, mody, spc*3.5)
-  cor_win90.draw()
-  Utility.draw_level_of_detail([xm, ym, zm], [0, mody, spc*5],[[opendist,cor_cross],[1000,cor_cross_doors]])
-  cor_win90.position(0, mody, spc*6.5)
-  cor_win90.draw()
-  Utility.draw_level_of_detail([xm, ym, zm],[0, mody, spc*8], [[opendist,cor_cross],[1000,cor_cross_doors]])
-  cor_win00.position(-spc*1.5, mody, spc*5)
-  cor_win00.draw()
-  cor_bend.position(-spc*2.5, mody, spc*5)
-  cor_bend.draw()
-  Utility.draw_level_of_detail([xm, ym, zm],[-spc*2.6, mody, spc*6.6],[[opendist,cor_cross],[1000,cor_cross_doors]])
-  cor_win00.position(spc*1.5, mody, spc*5)
-  cor_win00.draw()
-  corridor00.position(spc*2.5, mody, spc*5)
-  corridor00.draw()
-  Utility.draw_level_of_detail([xm, ym, zm],[spc*4, mody, spc*5],[[opendist,cor_cross],[1000,cor_cross_doors]])
+    mymap.draw()  #Draw the landscape
 
-  mymap.draw()  #Draw the landscape
+    myecube.position(xm, ym, zm)
+    myecube.draw()#Draw environment cube
 
-  myecube.position(xm, ym, zm)
-  myecube.draw()#Draw environment cube
+    mx, my = mymouse.position()
+    mouserot -= (mx-omx)*0.2
+    tilt += (my-omy)*0.2
+    omx=mx
+    omy=my
+    try:
+      win.update()
+    except Exception as e:
+      print("bye,bye2", e)
+      DISPLAY.destroy()
+      try:
+        win.destroy()
+      except:
+        pass
+      mymouse.stop()
+      exit()
+    if win.ev == "resized":
+      print("resized")
+      DISPLAY.resize(win.winx, win.winy, win.width, win.height-bord)
+      win.resized = False
+    if win.ev == "key":
+      if win.key == "w":
+        xm-=math.sin(mouserot*rads)*2
+        zm+=math.cos(mouserot*rads)*2
+      if win.key == "s":
+        xm+=math.sin(mouserot*rads)*2
+        zm-=math.cos(mouserot*rads)*2
+      if win.key == "a":
+        mouserot -= 2
+      if win.key == "d":
+        mouserot += 2
+      if win.key == "p":
+        screenshot("MarsStation.jpg")
+      if win.key == "Escape":
+        try:
+          print("bye,bye1")
+          DISPLAY.destroy()
+          try:
+            win.destroy()
+          except:
+            pass
+          mymouse.stop()
+          exit()
+        except:
+          pass
+    if win.ev=="drag" or win.ev=="click" or win.ev=="wheel":
+      xm-=math.sin(mouserot*rads)*2
+      zm+=math.cos(mouserot*rads)*2
+    else:
+      win.ev=""  #clear the event so it doesn't repeat
 
-  if inputs.key_state("BTN_LEFT"):
-    xm-=math.sin(mouserot*rads)*2
-    zm+=math.cos(mouserot*rads)*2
-  if inputs.key_state("KEY_W"):  #key W
-    xm-=math.sin(mouserot*rads)*2
-    zm+=math.cos(mouserot*rads)*2
-  if inputs.key_state("KEY_S"): #key S
-    xm+=math.sin(mouserot*rads)*2
-    zm-=math.cos(mouserot*rads)*2
-  if inputs.key_state("KEY_A"):  #key A
-    mouserot -= 2
-  if inputs.key_state("KEY_D"): #key D
-    mouserot += 2
-  if inputs.key_state("KEY_P"): #key P
-    screenshot("MarsStation.jpg")
-
-
-  if win.ev=="drag" or win.ev=="click" or win.ev=="wheel":
-    xm-=math.sin(mouserot*rads)*2
-    zm+=math.cos(mouserot*rads)*2
-
-  win.ev=""  #clear the event so it doesn't repeat
-
-inputs.release()
-DISPLAY.destroy()
+except Exception as e:
+  print("bye,bye3", e)
+  DISPLAY.destroy()
+  try:
+    win.destroy()
+  except:
+    pass
+  mymouse.stop()
+  exit()
 

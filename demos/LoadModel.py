@@ -30,7 +30,7 @@ bumptex = Texture("textures/floor_nm.jpg")
 shinetex = Texture("textures/stars.jpg")
 
 # load model_loadmodel
-mymodel = Model(file_string='models/teapot.egg', name='teapot', x=0, y=-2, z=8)
+mymodel = Model(file_string='models/teapot.egg', name='teapot', x=0, y=0, z=10)
 mymodel.set_shader(shader)
 # material is set in the file
 mymodel.set_normal_shine(bumptex, 4.0, shinetex, 0.2, is_uv = False)

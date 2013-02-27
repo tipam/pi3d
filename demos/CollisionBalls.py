@@ -19,7 +19,7 @@ MAX_BALL_VELOCITY = 10.0
 KEYBOARD = pi3d.Keyboard()
 
 BACKGROUND_COLOR = (1.0, 1.0, 1.0, 0.0)
-DISPLAY = pi3d.Display.create(is_3d=False, background=BACKGROUND_COLOR)
+DISPLAY = pi3d.Display.create(is_3d=False, background=BACKGROUND_COLOR, y=200)
 WIDTH, HEIGHT = DISPLAY.width, DISPLAY.height
 
 SHADER = pi3d.Shader('shaders/uv_flat')
