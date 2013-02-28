@@ -26,6 +26,7 @@ from pi3d.shape.EnvironmentCube import EnvironmentCube, loadECfiles
 from pi3d.shape.Sprite import Sprite, ImageSprite
 
 from pi3d.shape.Building import Building
+from pi3d.shape.Canvas import Canvas
 from pi3d.shape.Cone import Cone
 from pi3d.shape.Cuboid import Cuboid
 from pi3d.shape.Cylinder import Cylinder

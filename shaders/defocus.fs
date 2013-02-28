@@ -22,7 +22,7 @@ void main(void) {
       texc.rgb += texture2D(tex0, fcoord).rgb;
     }
   }
-  gl_FragColor = texc / 25.0;
+  gl_FragColor = texc * 0.04;
 }
 
 
