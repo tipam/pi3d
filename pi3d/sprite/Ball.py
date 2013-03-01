@@ -15,13 +15,14 @@ class Ball(ImageSprite):
   This allows the Ball dimensions to be set in approximately pixel sizes
   """
   def __init__(self, camera=None, light=None, shader=None, texture=None,
-               radius=0.0, x=0.0, y=0.0, vx=0.0, vy=0.0, decay=0.001):
+               radius=0.0, x=0.0, y=0.0, z=1000, vx=0.0, vy=0.0, decay=0.001):
     super(Ball, self).__init__(texture=texture, shader=shader,
-                              camera=camera, light=light, w=2 * radius,
-                              h=2 * radius, name="",x=x, y=y, z=680)
+                              camera=camera, light=light, w=2.0*radius,
+                              h=2.0*radius, name="",x=x, y=y, z=z)
     self.radius = radius
-    self.unif[0] = x
-    self.unif[1] = y
+    #self.unif[0] = x
+    #self.unif[1] = y
+    #self.unif[2] = z
     self.vx = vx
     self.vy = vy
     self.mass = radius * radius

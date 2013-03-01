@@ -7,6 +7,7 @@ included in the pi3d.sprites.Ball class
 
 import random
 import sys
+import math
 
 import demo
 import pi3d
@@ -21,10 +22,12 @@ KEYBOARD = pi3d.Keyboard()
 BACKGROUND_COLOR = (1.0, 1.0, 1.0, 0.0)
 DISPLAY = pi3d.Display.create(background=BACKGROUND_COLOR)
 WIDTH, HEIGHT = DISPLAY.width, DISPLAY.height
-CAMERA = pi3d.Camera((0, 0, 0), (0, 0, -0.1),
-                (1, 1000, WIDTH * 0.0573, 
-                 WIDTH / float(HEIGHT)))
+ZPLANE = 1000
+fov = 2.0 * math.degrees(math.atan(HEIGHT/2.0/ZPLANE))
 
+CAMERA = pi3d.Camera((0, 0, 0), (0, 0, -1.0),
+                (1, 1100, fov, 
+                 WIDTH / float(HEIGHT)))
 SHADER = pi3d.Shader('shaders/uv_flat')
 
 TEXTURE_NAMES = ['textures/red_ball.png',
@@ -38,7 +41,7 @@ def random_ball():
                    texture=random.choice(TEXTURES),
                    radius=random.uniform(MIN_BALL_SIZE, MAX_BALL_SIZE),
                    x=random.uniform(-WIDTH / 2.0, WIDTH / 2.0),
-                   y=random.uniform(-HEIGHT / 2.0, HEIGHT / 2.0),
+                   y=random.uniform(-HEIGHT / 2.0, HEIGHT / 2.0), z=ZPLANE,
                    vx=random.uniform(-MAX_BALL_VELOCITY, MAX_BALL_VELOCITY),
                    vy=random.uniform(-MAX_BALL_VELOCITY, MAX_BALL_VELOCITY))
 

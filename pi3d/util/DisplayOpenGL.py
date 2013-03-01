@@ -28,7 +28,7 @@ class DisplayOpenGL(object):
     attribute_list = c_ints((EGL_RED_SIZE, 8,
                              EGL_GREEN_SIZE, 8,
                              EGL_BLUE_SIZE, 8,
-                             EGL_DEPTH_SIZE, depth,  # TOD: use self.depth?
+                             EGL_DEPTH_SIZE, depth,
                              EGL_ALPHA_SIZE, 8,
                              EGL_BUFFER_SIZE, 32,
                              EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
