@@ -1,4 +1,7 @@
 import math
+import ctypes
+
+from pi3d.constants import *
 
 from pi3d.Display import Display
 from pi3d.util import Utility
@@ -23,6 +26,7 @@ class Ball_2d(object):
     self.vx = vx
     self.vy = vy
     self.mass = radius * radius
+    opengles.glEnable(GL_SCISSOR_TEST)
 
   def move(self):
     self.translateX(self.vx)
@@ -83,14 +87,23 @@ class Ball_2d(object):
     elif self.x < (left + self.radius):
       self.vx = abs(self.vx)
 
-    if self.y < (top - self.radius):
+    if self.y < (top + self.radius):
       self.vy = abs(self.vy)
-    elif self.y > (bottom + self.radius):
+    elif self.y > (bottom - self.radius):
       self.vy = -abs(self.vy)
 
   def repaint(self, t):
     self.bounce_wall(Display.INSTANCE.width, Display.INSTANCE.height)
     self.canvas.set_2d_size(self.w, self.h, self.x - self.radius, self.y - self.radius)
+    if t == 0: #TODO this is not good but there needs to be a way to say last ball!
+      opengles.glScissor(0, 0, ctypes.c_int(int(Display.INSTANCE.width)), 
+                        ctypes.c_int(int(Display.INSTANCE.height)))
+      #NB the screen coordinates for glScissor have origin in BOTTOM left
+    else:
+      opengles.glScissor(ctypes.c_int(int(self.x - self.radius - 5)),
+                        ctypes.c_int(int(Display.INSTANCE.height - self.y - self.radius - 5)),
+                        ctypes.c_int(int(self.w + 10)), ctypes.c_int(int(self.h + 10)))
+    
     self.canvas.set_texture(self.texture)
     self.canvas.draw()
     self.x += self.vx

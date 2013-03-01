@@ -1,8 +1,12 @@
 #!/usr/bin/python
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-""" Example of using the loop control in the Display class with the behaviour
-included in the pi3d.sprites.Ball class
+""" Example as the CollisionBalls demo but using 2d shader with the behaviour
+included in the pi3d.sprites.Ball_2d class. The drawing is done repeatedly on
+the Canvas but the Texture, location are held in Ball_2d and reset in repaint
+To speed up rendering a scissor rectangle is set for each draw apart for the
+last Ball which has to render the whole area to see the background! All a bit
+complicated
 """
 
 import random
@@ -47,7 +51,7 @@ while DISPLAY.loop_running():
   for i, ball1 in enumerate(SPRITES):
     for ball2 in SPRITES[0:i]:
       ball1.bounce_collision(ball2)
-    ball1.repaint(0)
+    ball1.repaint(0 if i == (MAX_BALLS - 1) else 1)
 
   if KEYBOARD.read() == 27:
     DISPLAY.stop()

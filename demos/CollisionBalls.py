@@ -12,7 +12,7 @@ import math
 import demo
 import pi3d
 
-MAX_BALLS = 15
+MAX_BALLS = 25
 MIN_BALL_SIZE = 5
 MAX_BALL_SIZE = 100
 MAX_BALL_VELOCITY = 10.0
