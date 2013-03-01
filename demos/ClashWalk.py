@@ -10,7 +10,9 @@ undulating surface, MergeShape.cluster to create a forest that renders quickly,
 uv_reflect shader is used give texture and reflection to a monolith, fog is
 applied to objects so that their details become masked with distance.
 The lighting is also defined with a yellow directional tinge and an indigo tinge
-to the ambient light
+to the ambient light.
+
+There is also demonstration of the point_at method of Camera, press the D key
 """
 from __future__ import absolute_import
 
@@ -164,8 +166,9 @@ while DISPLAY.loop_running():
       tilt += 2.0
     elif k==97:   #key A
       rot -= 2
-    elif k==100:  #key D
+    elif k==100:  #key D now used for point_at monolith!
       rot += 2
+      tilt, rot = CAMERA.point_at([monolith.x(), monolith.y(), monolith.z()])
     elif k==112:  #key P
       screenshot("forestWalk"+str(scshots)+".jpg")
       scshots += 1

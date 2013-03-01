@@ -2,7 +2,7 @@ import ctypes
 
 from echomesh.util.DefaultInstance import DefaultInstance
 
-from numpy import array, dot, copy, tan, cos, sin, radians
+from numpy import array, dot, copy, tan, cos, sin, radians, degrees, arctan2, sqrt
 from numpy.linalg import norm
 
 from pi3d.constants import *
@@ -22,7 +22,7 @@ class Camera(DefaultInstance):
       *eye*
         tuple (x,y,z) location to look from
       *lens*
-        tuple (near plane dist, far plane dist, field of view width in degrees,
+        tuple (near plane dist, far plane dist, **VERTICAL** field of view in degrees,
         display aspect ratio w/h)
     """
     super(Camera, self).__init__()
@@ -59,6 +59,22 @@ class Camera(DefaultInstance):
     self.mtrx = copy(self.model_view)
     self.rtn = [0.0, 0.0, 0.0]
     self.was_moved = True
+    
+  def point_at(self, target=[0.0, 0.0, 10000.0]):
+    """ point the camera at a point also return the tilt and rotation values
+    Keyword argument:
+      *target*
+        Location as [x,y,z] array to point at, defaults to a high +ve z value as
+        a kind of compass!
+    """
+    if target[0] == self.eye[0] and target[1] == self.eye[1] and target[2] == self.eye[2]:
+      return
+    dx, dy, dz = target[0] - self.eye[0], target[1] - self.eye[1], target[2] - self.eye[2]
+    rot = -degrees(arctan2(dx, dz))
+    horiz = sqrt(dot([dx,dz], [dx,dz]))
+    tilt = degrees(arctan2(dy, horiz))
+    self.rotate(tilt, rot, 0)
+    return tilt, rot
 
   def position(self, pt):
     """position camera
@@ -182,9 +198,9 @@ def _ProjectionMatrix(near=1.0, far=1000.0, fov=45.0, aspectRatio=1.6):
     *far*
       distance to far plane, float
     *fov*
-      field of view in degrees, float
+      **VERTICAL** field of view in degrees, float
     *aspectRatio*
-      aspect ratio between the width and height of the scene, float
+      aspect ratio = width / height of the scene, float
   """
   # Matrices are considered to be M[row][col]
   # Use DirectX convention, so need to do rowvec*Matrix to transform
