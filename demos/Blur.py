@@ -4,9 +4,16 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 """ Depth of field blurring also demos MergeShape radial copying
 To blur something against its background both object are drawn to an offscreen
 texture. They are then drawn to the screen with a depth blur effect.
-The Ttffont class is also demonstrated. This generates an texture from
+
+The Ttffont class is also demonstrated. This generates a texture from
 a true-type font file on the RPi system or added from an external resource
 (standard fonts are available on raspbian in /usr/share/fonts/truetype)
+
+This demo also shows the use of an additional orthographic camera for
+rendering the string in 2D. If you change the Display size you will see
+that the text stays the same size, also the text will be rendered on top
+of the 3d view. x and y locations for the text represent pixel offsets
+from the centre of the screen
 """
 import math, random, time
 
@@ -17,6 +24,7 @@ from pi3d.constants import *
 from pi3d import Display
 from pi3d.Texture import Texture
 from pi3d.Keyboard import Keyboard
+from pi3d.Camera import Camera
 
 from pi3d.Light import Light
 from pi3d.Shader import Shader
@@ -30,8 +38,11 @@ from pi3d.shape.Sphere import Sphere
 from pi3d.shape.Sprite import Sprite
 
 # Setup display and initialise pi3d
-DISPLAY = Display.create(x=10, y=10, w=1000, h=200, frames_per_second=25)
+DISPLAY = Display.create(x=10, y=10, w=900, h=600, frames_per_second=25)
 DISPLAY.set_background(0.4, 0.6, 0.8, 1.0)      # r,g,b,alpha
+
+persp_cam = Camera.instance() # default instance camera perspecive view
+ortho_cam = Camera(is_3d=False) # 2d orthographic view camera
 
 #setup textures, light position and initial model position
 Light((0, 5, 0))
@@ -46,13 +57,13 @@ shapebump = Texture("textures/floor_nm.jpg", True)
 shapeshine = Texture("textures/pong3.png")
 
 #Create shape
-myshape = MergeShape()
+myshape = MergeShape(camera=persp_cam) #specify perspective view
 asphere = Sphere(sides=16, slices=16)
 myshape.radialCopy(asphere, step=72)
 myshape.position(0.0, 0.0, 5.0)
 myshape.set_draw_details(shader, [shapeimg, shapebump, shapeshine], 8.0, 0.1)
 
-mysprite = Sprite(w=10.0, h=10.0)
+mysprite = Sprite(w=10.0, h=10.0, camera=persp_cam)
 mysprite.position(0.0, 0.0, 15.0)
 mysprite.set_draw_details(flatsh, [shapebump])
 
@@ -61,8 +72,8 @@ next_time = time.time()+2.0
 
 #load ttf font and set the font colour to 'raspberry'
 arialFont = Ttffont("fonts/FreeMonoBoldOblique.ttf", "#dd00aa")
-mystring = String(font=arialFont, string="blurring with distance!")
-mystring.translate(0.0, 0.0, 1)
+mystring = String(font=arialFont, string="blurring with distance!",
+                  camera=ortho_cam, z=1.0, is_3d=False) # orthographic view
 mystring.set_shader(flatsh)
 
 # Fetch key presses.

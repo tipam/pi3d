@@ -4,7 +4,9 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 """ Various standard shapes demonstrates different ways of setting draw details
 either prior to or while drawing.
 The demo also shows the way to import all the pi3d modules and using the String
-and Ttffont classes (see /usr/share/fonts/truetype/ for other fonts)
+and Ttffont classes (see /usr/share/fonts/truetype/ for other fonts) The string
+is a 3d object like the others. See the Blur demo for use of an orthographic (2D)
+string object.
 """
 # just allow this to run in a subdirectory
 import demo
