@@ -13,7 +13,7 @@ class Camera(DefaultInstance):
   """required object for creating and drawing Shape objects. Default instance
   created if none specified in script prior to creating a Shape
   """
-  def __init__(self, at, eye, lens):
+  def __init__(self, at=(0,0,0), eye=(0,0,-0.1), lens=(1.0, 1000.0, 45.0, 1.6), is_3d=True):
     """Set up view matrix to look from eye to at including perspective
 
     Arguments:
@@ -24,6 +24,9 @@ class Camera(DefaultInstance):
       *lens*
         tuple (near plane dist, far plane dist, **VERTICAL** field of view in degrees,
         display aspect ratio w/h)
+      *is_3d*
+        determines whether the camera uses a perspective or orthographic
+        projection matrix
     """
     super(Camera, self).__init__()
 
@@ -32,7 +35,10 @@ class Camera(DefaultInstance):
     self.eye = [eye[0], eye[1], eye[2]]
     self.lens = lens
     self.view = _LookAtMatrix(at, eye, [0,1,0])
-    self.projection = _ProjectionMatrix(lens[0], lens[1], lens[2], lens[3])
+    if is_3d:
+      self.projection = _ProjectionMatrix(lens[0], lens[1], lens[2], lens[3])
+    else:
+      self.projection = _OrthographicMatrix()
     self.model_view = dot(self.view, self.projection)
     # Apply transform/rotation first, then shift into perspective space.
     self.mtrx = copy(self.model_view)
@@ -49,11 +55,15 @@ class Camera(DefaultInstance):
                   (Display.INSTANCE.near, Display.INSTANCE.far, Display.INSTANCE.fov, 
                   Display.INSTANCE.width / float(Display.INSTANCE.height)))
 
-  def reset(self, lens=None):
+  def reset(self, lens=None, is_3d=True):
     """Has to be called each loop if the camera position or rotation changes"""
     if lens != None:
       view = _LookAtMatrix(self.at, self.start_eye, [0,1,0])
       projection = _ProjectionMatrix(lens[0], lens[1], lens[2], lens[3])
+      self.model_view = dot(view, projection)
+    elif not is_3d:
+      view = _LookAtMatrix(self.at, self.start_eye, [0,1,0])
+      projection = _OrthographicMatrix()
       self.model_view = dot(view, projection)
     # TODO some way of resetting to original matrix
     self.mtrx = copy(self.model_view)
@@ -62,6 +72,7 @@ class Camera(DefaultInstance):
     
   def point_at(self, target=[0.0, 0.0, 10000.0]):
     """ point the camera at a point also return the tilt and rotation values
+    
     Keyword argument:
       *target*
         Location as [x,y,z] array to point at, defaults to a high +ve z value as
@@ -189,8 +200,8 @@ def _LookAtMatrix(at, eye, up=[0,1,0], reflect=False):
   return array([[xaxis[a], yaxis[a], zaxis[a], z[a]] for a in range(4)],
                dtype=ctypes.c_float)
 
-def _ProjectionMatrix(near=1.0, far=1000.0, fov=45.0, aspectRatio=1.6):
-  """Set up projection matrix
+def _ProjectionMatrix(near, far, fov, aspectRatio):
+  """Set up perspective projection matrix
   
   Keyword arguments:
     *near*
@@ -204,7 +215,7 @@ def _ProjectionMatrix(near=1.0, far=1000.0, fov=45.0, aspectRatio=1.6):
   """
   # Matrices are considered to be M[row][col]
   # Use DirectX convention, so need to do rowvec*Matrix to transform
-  size = 1 / tan(radians(fov)/2.0)   #calculate 'field of view' (fov)
+  size = 1 / tan(radians(fov)/2.0) 
   M = [[0] * 4 for i in range(4)]
   M[0][0] = size/aspectRatio
   M[1][1] = size  #negative value reflects scene on the Y axis
@@ -212,4 +223,15 @@ def _ProjectionMatrix(near=1.0, far=1000.0, fov=45.0, aspectRatio=1.6):
   M[2][3] = 1
   M[3][2] = -(2 * far * near)/(far - near)
   return array(M, dtype=ctypes.c_float)
+  
+def _OrthographicMatrix():
+  """Set up orthographic projection matrix"""
+  from pi3d.Display import Display
+  M = [[0] * 4 for i in range(4)]
+  M[0][0] = 2.0 / Display.INSTANCE.width
+  M[1][1] = 2.0 / Display.INSTANCE.height
+  M[2][2] = 2.0 / Display.INSTANCE.width
+  M[3][2] = -1
+  M[3][3] = 1
+  return array(M, dtype=ctypes.c_float)  
 

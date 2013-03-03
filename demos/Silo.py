@@ -129,7 +129,7 @@ while DISPLAY.loop_running() and not inputs.key_state("KEY_ESC"):
 
   inputs.do_input_events()
   """On some combined keyboard/mouse arrangements you might need to change
-  this to inputs.get_mouse_movement() in order to get the correct input
+  this to inputs.get_mouse_movement(1) in order to get the correct input
   """
   mx, my, mv, mh, md = inputs.get_mouse_movement()
 
