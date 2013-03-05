@@ -128,7 +128,7 @@ class Shader(object):
     loglen = ctypes.c_int()
     opengles.glGetShaderInfoLog(shader, N, ctypes.byref(loglen),
                                 ctypes.byref(log))
-    print log.value
+    print "shader", self.shfile, log.value
 
   def showprogramlog(self,shader):
     """Prints the compile log for a program"""
@@ -137,7 +137,7 @@ class Shader(object):
     loglen = ctypes.c_int()
     opengles.glGetProgramInfoLog(shader, N, ctypes.byref(loglen),
                                  ctypes.byref(log))
-    print log.value
+    print "program", self.shfile, log.value
 
   def loadShader(self, sfile):
     return open(sfile,'r').read()

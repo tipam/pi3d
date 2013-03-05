@@ -50,8 +50,8 @@ DISPLAY = Display.create(tk=True, window_title='Tiger Tank demo in Pi3D',
                         w=winw, h=winh - bord, far=2200.0,
                         background=(0.4, 0.8, 0.8, 1), frames_per_second=16)
 
-inputs = InputEvents()
-inputs.get_mouse_movement()
+#inputs = InputEvents()
+#inputs.get_mouse_movement()
 
 Light(lightpos=(-1, -1, 1), lightcol =(0.8, 0.8, 0.8), lightamb=(0.30, 0.30, 0.32))
 
@@ -156,6 +156,11 @@ turret = 0.0
 tankroll = 0.0     #side-to-side roll of tank on ground
 tankpitch = 0.0   #too and fro pitch of tank on ground lol catface
 
+#key presses
+mymouse = Mouse(restrict = False)
+mymouse.start()
+omx, omy = mymouse.position()
+
 #position vars
 mouserot = 0.0
 tilt = 0.0
@@ -190,112 +195,176 @@ def drawTiger(x, y, z, rot, roll, pitch, turret, gunangle):
   tank_gun.rotateToZ(roll - math.sin(math.radians(turret - 180)) * gunangle)
   tank_gun.draw()
 
+
+# Update display before we begin (user might have moved window)
+win.update()
+DISPLAY.resize(win.winx, win.winy, win.width, win.height - bord)
+
 is_running = True
 CAMERA = Camera.instance()
 
-while DISPLAY.loop_running() and not inputs.key_state("KEY_ESC"):
-  inputs.do_input_events()
-  mx, my, mv, mh, md = inputs.get_mouse_movement()
-  mouserot -= (mx)*0.2
-  tilt -= (my)*0.2
+try:
+  while DISPLAY.loop_running():
+    mx, my = mymouse.position()
+    mouserot -= (mx-omx)*0.2
+    tilt += (my-omy)*0.2
+    omx=mx
+    omy=my
 
-  CAMERA.reset()
-  dot1.set_2d_location(DISPLAY.width - 105.0 + 200.0*xm/mapwidth,
-                      DISPLAY.height - 105.0 - 200.0*zm/mapdepth)
-  dot2.set_2d_location(DISPLAY.width - 105.0 + 200.0*etx/mapwidth,
-                      DISPLAY.height - 105.0 - 200.0*etz/mapdepth)
-  dot1.draw()
-  dot2.draw()
-  smmap.draw()
-  # tilt can be used to prevent the view from going under the landscape!
-  sf = 60 - 55.0 / abs(tilt) if tilt < -1 else 5.0
-  xoff = sf * math.sin(math.radians(mouserot))
-  yoff = abs(1.25 * sf * math.sin(math.radians(tilt))) + 3.0
-  zoff = -sf * math.cos(math.radians(mouserot))
+    CAMERA.reset()
+    dot1.set_2d_location(DISPLAY.width - 105.0 + 200.0*xm/mapwidth,
+                        DISPLAY.height - 105.0 - 200.0*zm/mapdepth)
+    dot2.set_2d_location(DISPLAY.width - 105.0 + 200.0*etx/mapwidth,
+                        DISPLAY.height - 105.0 - 200.0*etz/mapdepth)
+    dot1.draw()
+    dot2.draw()
+    smmap.draw()
+    # tilt can be used to prevent the view from going under the landscape!
+    sf = 60 - 55.0 / abs(tilt) if tilt < -1 else 5.0
+    xoff = sf * math.sin(math.radians(mouserot))
+    yoff = abs(1.25 * sf * math.sin(math.radians(tilt))) + 3.0
+    zoff = -sf * math.cos(math.radians(mouserot))
 
-  if tilt > -5 and smode == False: # zoom in
-    CAMERA.reset((1, 1000, DISPLAY.width / 4000.0, DISPLAY.height / 4000.0))
-    smode = True
-  elif tilt <= -5 and smode == True: # zoom out
-    CAMERA.reset((1, 1000, DISPLAY.width / 1000.0, DISPLAY.height / 1000.0))
-    smode = False
+    if tilt > -5 and smode == False: # zoom in
+      CAMERA.reset(lens=(1, 1000, 12.5, DISPLAY.width / DISPLAY.height))
+      smode = True
+    elif tilt <= -5 and smode == True: # zoom out
+      CAMERA.reset(lens=(1, 1000, 45, DISPLAY.width / DISPLAY.height))
+      smode = False
 
-  #adjust CAMERA position in and out so we can see our tank
-  CAMERA.rotate(tilt, mouserot, 0)
-  CAMERA.position((xm + xoff, ym + yoff + 5, zm + zoff))
-  oxm, ozm = xm, zm
+    #adjust CAMERA position in and out so we can see our tank
+    CAMERA.rotate(tilt, mouserot, 0)
+    CAMERA.position((xm + xoff, ym + yoff + 5, zm + zoff))
+    oxm, ozm = xm, zm
 
-  #draw player tank with smoothing on pitch and roll to lessen jerkiness
-  tmnow = time.time()
-  if tmnow > (ltm + 0.5):
-    tankpitch_to, tankroll_to = mymap.pitch_roll(xm, zm)
-  tankpitch += (tankpitch_to - tankpitch)/3.0
-  tankroll += (tankroll_to - tankroll)/3.0
-  drawTiger(xm, ym, zm, tankrot, tankroll, tankpitch, 180 - turret, (tilt*-2.0 if tilt > 0.0 else 0.0))
+    #draw player tank with smoothing on pitch and roll to lessen jerkiness
+    tmnow = time.time()
+    if tmnow > (ltm + 0.5):
+      tankpitch_to, tankroll_to = mymap.pitch_roll(xm, zm)
+    tankpitch += (tankpitch_to - tankpitch)/3.0
+    tankroll += (tankroll_to - tankroll)/3.0
+    drawTiger(xm, ym, zm, tankrot, tankroll, tankpitch, 180 - turret, (tilt*-2.0 if tilt > 0.0 else 0.0))
 
-  mymap.draw()           # Draw the landscape
+    mymap.draw()           # Draw the landscape
 
-  #Draw enemy tank
-  etdx = -math.sin(math.radians(etr))
-  etdz = -math.cos(math.radians(etr))
-  etx += etdx
-  etz += etdz
-  ety = mymap.calcHeight(etx, etz) + avhgt
-  etr += 0.5
-  if tmnow > (ltm + 0.5):
-    pitch, roll = mymap.pitch_roll(etx, etz)
-    ltm = tmnow # updating this here but not for users tank relies on everything
-                # being done in the right order
-  drawTiger(etx, ety, etz, etr, roll, pitch, etr, 0)
+    #Draw enemy tank
+    etdx = -math.sin(math.radians(etr))
+    etdz = -math.cos(math.radians(etr))
+    etx += etdx
+    etz += etdz
+    ety = mymap.calcHeight(etx, etz) + avhgt
+    etr += 0.5
+    if tmnow > (ltm + 0.5):
+      pitch, roll = mymap.pitch_roll(etx, etz)
+      ltm = tmnow # updating this here but not for users tank relies on everything
+                  # being done in the right order
+    drawTiger(etx, ety, etz, etr, roll, pitch, etr, 0)
 
-  #Draw buildings
-  church.draw()
-  cottages.draw()
+    #Draw buildings
+    church.draw()
+    cottages.draw()
 
-  myecube.position(xm, ym, zm)
-  myecube.draw()  #Draw environment cube
+    myecube.position(xm, ym, zm)
+    myecube.draw()  #Draw environment cube
 
-  if smode:
-    """ because some of the overlays have blend=True they must be done AFTER
-    other objects have been rendered.
+    if smode:
+      """ because some of the overlays have blend=True they must be done AFTER
+      other objects have been rendered.
+      """
+      target.draw()
+      sniper.draw()
+
+    # turns player tankt turret towards center of screen which will have a crosshairs
+    if turret + 2.0 < mouserot:
+      turret += 2.0
+    if turret - 2.0 > mouserot:
+      turret -= 2.0
     """
-    target.draw()
-    sniper.draw()
+    if inputs.key_state("BTN_LEFT"):
+      xm -= math.sin(math.radians(tankrot)) * 2
+      zm -= math.cos(math.radians(tankrot)) * 2
+      ym = (mymap.calcHeight(xm, zm) + avhgt)
+    if inputs.key_state("KEY_W"):  #key W
+      xm -= math.sin(math.radians(tankrot)) * 2
+      zm -= math.cos(math.radians(tankrot)) * 2
+      ym = (mymap.calcHeight(xm, zm) + avhgt)
+    if inputs.key_state("KEY_S"): #key S
+      xm += math.sin(math.radians(tankrot)) * 2
+      zm += math.cos(math.radians(tankrot)) * 2
+      ym = (mymap.calcHeight(xm, zm) + avhgt)
+    if inputs.key_state("KEY_A"):  #key A
+      tankrot -= 2
+    if inputs.key_state("KEY_D"): #key D
+      tankrot += 2
+    if inputs.key_state("KEY_P"): #key P
+      screenshot('TigerTank.jpg')
 
-  # turns player tankt turret towards center of screen which will have a crosshairs
-  if turret + 2.0 < mouserot:
-    turret += 2.0
-  if turret - 2.0 > mouserot:
-    turret -= 2.0
+    elif win.ev == 'resized':
+      DISPLAY.resize(win.winx, win.winy, win.width, win.height - bord)
+      win.resized = False
+      # This flag must be reset otherwise no further events will be detected
 
-  if inputs.key_state("BTN_LEFT"):
-    xm -= math.sin(math.radians(tankrot)) * 2
-    zm -= math.cos(math.radians(tankrot)) * 2
-    ym = (mymap.calcHeight(xm, zm) + avhgt)
-  if inputs.key_state("KEY_W"):  #key W
-    xm -= math.sin(math.radians(tankrot)) * 2
-    zm -= math.cos(math.radians(tankrot)) * 2
-    ym = (mymap.calcHeight(xm, zm) + avhgt)
-  if inputs.key_state("KEY_S"): #key S
-    xm += math.sin(math.radians(tankrot)) * 2
-    zm += math.cos(math.radians(tankrot)) * 2
-    ym = (mymap.calcHeight(xm, zm) + avhgt)
-  if inputs.key_state("KEY_A"):  #key A
-    tankrot -= 2
-  if inputs.key_state("KEY_D"): #key D
-    tankrot += 2
-  if inputs.key_state("KEY_P"): #key P
-    screenshot('TigerTank.jpg')
+    win.ev = ''  # Clear the event so it doesn't repeat.
 
-  elif win.ev == 'resized':
-    DISPLAY.resize(win.winx, win.winy, win.width, win.height - bord)
-    win.resized = False
-    # This flag must be reset otherwise no further events will be detected
+    CAMERA.was_moved = False
+    """
+    try:
+      win.update()
+    except Exception as e:
+      print("bye,bye2", e)
+      DISPLAY.destroy()
+      try:
+        win.destroy()
+      except:
+        pass
+      mymouse.stop()
+      exit()
+    if win.ev == "resized":
+      print("resized")
+      DISPLAY.resize(win.winx, win.winy, win.width, win.height-bord)
+      CAMERA.reset((DISPLAY.near, DISPLAY.far, DISPLAY.fov, 
+                  DISPLAY.width / float(DISPLAY.height)))
+      win.resized = False
+    if win.ev == "key":
+      if win.key == "w":
+        xm -= math.sin(math.radians(tankrot)) * 2
+        zm -= math.cos(math.radians(tankrot)) * 2
+        ym = (mymap.calcHeight(xm, zm) + avhgt)
+      if win.key == "s":
+        xm += math.sin(math.radians(tankrot)) * 2
+        zm += math.cos(math.radians(tankrot)) * 2
+        ym = (mymap.calcHeight(xm, zm) + avhgt)
+      if win.key == "a":
+        tankrot -= 2
+      if win.key == "d":
+        tankrot += 2
+      if win.key == "p":
+        screenshot("TigerTank.jpg")
+      if win.key == "Escape":
+        try:
+          print("bye,bye1")
+          DISPLAY.destroy()
+          try:
+            win.destroy()
+          except:
+            pass
+          mymouse.stop()
+          exit()
+        except:
+          pass
+    if win.ev=="drag" or win.ev=="click" or win.ev=="wheel":
+      xm -= math.sin(math.radians(tankrot)) * 2
+      zm -= math.cos(math.radians(tankrot)) * 2
+      ym = (mymap.calcHeight(xm, zm) + avhgt)
+    else:
+      win.ev=""  #clear the event so it doesn't repeat
 
-  win.ev = ''  # Clear the event so it doesn't repeat.
-
-  CAMERA.was_moved = False
-
-inputs.release()
-DISPLAY.destroy()
-
+except Exception as e:
+  print("bye,bye3", e)
+  DISPLAY.destroy()
+  try:
+    win.destroy()
+  except:
+    pass
+  mymouse.stop()
+  exit()

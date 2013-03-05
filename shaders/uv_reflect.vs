@@ -5,9 +5,10 @@ attribute vec3 normal;
 attribute vec2 texcoord;
 
 uniform mat4 modelviewmatrix[2]; // [0] model movement in real coords, [1] in camera coords
-uniform vec3 unib[3];
+uniform vec3 unib[4];
 //uniform float ntiles => unib[0][0]
 //uniform vec2 umult, vmult => unib[2]
+//uniform vec2 u_off, v_off => unib[3]
 uniform vec3 unif[16];
 //uniform vec3 eye > unif[6]
 //uniform vec3 lightpos > unif[8]
@@ -35,7 +36,7 @@ void main(void) {
     t * a.x * a.y - a.z * s, t * a.y * a.y + c, t * a.z * a.y + a.x * s, 0.0,
     t * a.x * a.z + a.y * s, t * a.y * a.z - a.x * s, t * a.z * a.z + c, 0.0,
     0.0, 0.0, 0.0, 1.0) * vec4(lightVector, 0.0)); // ----- vector mult for rotation about axis
-  bumpcoordout = texcoord * unib[0][0];
+  bumpcoordout = (texcoord + unib[3].xy) * unib[0][0];
 
   vec3 inray = vec3(relPosn - vec4(unif[6], 0.0)); // ----- vector from the camera to this vertex
   dist = length(inray);
@@ -49,7 +50,7 @@ void main(void) {
   // ----- now work out the horizonal and vertical angles relative to inray and map them to range 0 to 1
   shinecoordout = vec2(clamp(0.5 - atan(hval, zval)/6.2831853, 0.05, 0.95), clamp(0.5 - atan(vval, zval)/6.2831853, 0.05, 0.95));
 
-  texcoordout = texcoord * vec2(unib[2][0], unib[2][1]);
+  texcoordout = texcoord * unib[2].xy + unib[3].xy;
 
   gl_Position = modelviewmatrix[1] * vec4(vertex,1.0);
 }

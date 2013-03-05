@@ -5,7 +5,7 @@ varying vec3 lightVector;
 varying float dist;
 
 uniform sampler2D tex0; // NB bump texture is the first texture loaded, not second as with UV shading
-uniform vec3 unib[2];
+uniform vec3 unib[4];
 //uniform float ntiles ===> unib[0][0]
 //uniform float shiny ====> unib[0][1]
 //uniform vec4 material ==> unib[1]

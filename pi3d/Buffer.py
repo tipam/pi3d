@@ -45,9 +45,10 @@ class Buffer(Loadable):
     super(Buffer, self).__init__()
 
     # Uniform variables all in one array!
-    self.unib = (c_float * 9)(0.0, 0.0, 0.0,
+    self.unib = (c_float * 12)(0.0, 0.0, 0.0,
                               0.5, 0.5, 0.5,
-                              1.0, 1.0, 0.0)
+                              1.0, 1.0, 0.0,
+                              0.0, 0.0, 0.0)
     """ pass to shader array of vec3 uniform variables:
 
     ===== ============================ ==== ==
@@ -58,6 +59,7 @@ class Buffer(Loadable):
         0  ntile, shiny, blend           0   2
         1  material                      3   5
         2  umult, vmult (only 2 used)    6   7
+        3  u_off, v_off (only 2 used)    9  10
     ===== ============================ ==== ==
     """
     self.shape = shape
@@ -153,6 +155,9 @@ class Buffer(Loadable):
 
   def set_material(self, mtrl):
     self.unib[3:6] = mtrl[0:3]
+    
+  def set_offset(self, offset=(0.0, 0.0)):
+    self.unib[9:11] = offset
 
   def draw(self, shader=None, textures=None, ntl=None, shny=None, fullset=True):
     """Draw this Buffer, called by the parent Shape.draw()
@@ -162,7 +167,7 @@ class Buffer(Loadable):
         Shader object
       *textures*
         array of Texture objects
-      *ntiles*
+      *ntl*
         multiple for tiling normal map which can be less than or greater
         than 1.0. 0.0 disables the normal mapping, float
       *shiny*
@@ -200,5 +205,5 @@ class Buffer(Loadable):
         # i.e. if any of the textures set to blend then all will for this shader.
         self.unib[2] = 0.05
 
-    opengles.glUniform3fv(shader.unif_unib, 3, ctypes.byref(self.unib))
+    opengles.glUniform3fv(shader.unif_unib, 4, ctypes.byref(self.unib))
     opengles.glDrawElements(GL_TRIANGLES, self.ntris * 3, GL_UNSIGNED_SHORT, 0)

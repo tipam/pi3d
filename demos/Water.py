@@ -1,12 +1,17 @@
 #!/usr/bin/python
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-""" animated normal map to give rippling reflection as off the surface of water
+""" Animated normal map to give rippling reflection as off the surface of water
 there is a fog applied to the water surface with an alpha of zero so that it fades
 in the distance
-TODO this doesn't work for non-reflection map object, the shader probably needs
-to be tweaked.
-the demo also shows normal mapping for texture and the Ttffont class
+TODO transparency from fog doesn't work for non-reflection map object, the shader
+probably needs to be tweaked.
+The demo also shows normal mapping for texture and the Ttffont class.
+
+There is also an offset applied applied to the uv texture mapping for the water.
+Although there is no texture (it uses mat_reflect shader) the offset is
+carried through to the normal map texture. It is not used to offset the
+reflection image.
 
 3D perlin noise creation application in
 textures/water/noise_normal.py
@@ -74,7 +79,7 @@ mywater = Plane(w=130.0, h=130.0)
 mywater.set_draw_details(matsh, [waterbump[0], shapeshine], 12.0, 0.6)
 mywater.set_material((0.0, 0.05, 0.1))
 mywater.set_fog((0.4, 0.6, 0.8, 0.0),150)
-mywater.rotateToX(90)
+mywater.rotateToX(90.001)
 mywater.position(0.0, -2.0, 50.0)
 
 arialFont = Ttffont("fonts/FreeMonoBoldOblique.ttf", "#dd00aa")   #load ttf font and set the font colour to 'raspberry'
@@ -88,6 +93,8 @@ i_n=0
 spf = 0.1 # seconds per frame, i.e. water image change
 next_time = time.time() + spf
 dx = 0.02
+offset = 0.0 # uv offset
+do = -0.001 # uv increment
 
 # Fetch key presses.
 mykeys = Keyboard()
@@ -103,6 +110,8 @@ while DISPLAY.loop_running():
   elif myshape.x() < -5: dx = 0.05
 
   mywater.draw()
+  offset = (offset + do) % 1.0 # move texture offset in v direction
+  mywater.set_offset((0.0, offset))
 
   mystring.draw()
   mystring.rotateIncZ(0.05)

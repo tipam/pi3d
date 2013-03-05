@@ -240,6 +240,17 @@ class Shape(Loadable):
     for b in self.buf:
       b.set_material(material)
 
+  def set_offset(self, offset):
+    """Wrapper for setting uv texture offset in each Buffer object.
+
+    Arguments:
+      *offset*
+        tuple (u_off, v_off) values between 0.0 and 1.0 to offset the texture
+        sampler by
+    """
+    for b in self.buf:
+      b.set_offset(offset)
+
   def set_fog(self, fogshade, fogdist):
     """Set fog for this Shape only, it uses the shader smoothblend function from
     1/3 fogdist to fogdist.
