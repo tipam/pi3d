@@ -104,7 +104,7 @@ def make_model(filename, name, x=0, y=0, z=0, rx=0, ry=0, rz=0):
 set_fog(mymap)
 
 #Load tank
-tank_body = make_model('Tiger/body.obj', 'TigerBody', ry=90)
+tank_body = make_model('Tiger/body.obj', 'TigerBody')
 tank_body.set_normal_shine(tigerbmp)
 
 tank_gun = make_model('Tiger/gun.obj', 'TigerGun')

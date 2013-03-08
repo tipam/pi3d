@@ -194,13 +194,14 @@ def loadFileEGG(model, fileName):
 
         if (len(structVList[vpKey][j].normal) > 0): model.vNormal = True
         else: model.vNormal = False
-
-        if model.coordinateSystem == "Z-Up":
+        if model.coordinateSystem == "z-up":
           thisV = [structVList[vpKey][j].coords[1], structVList[vpKey][j].coords[2], -structVList[vpKey][j].coords[0]]
-          thisN = [structVList[vpKey][j].normal[1], structVList[vpKey][j].normal[2], -structVList[vpKey][j].normal[0]]
+          if model.vNormal:
+            thisN = [structVList[vpKey][j].normal[1], structVList[vpKey][j].normal[2], -structVList[vpKey][j].normal[0]]
         else:
           thisV = [structVList[vpKey][j].coords[0], structVList[vpKey][j].coords[1], -structVList[vpKey][j].coords[2]]
-          thisN = [structVList[vpKey][j].normal[0], structVList[vpKey][j].normal[1], -structVList[vpKey][j].normal[2]]
+          if model.vNormal:
+            thisN = [structVList[vpKey][j].normal[0], structVList[vpKey][j].normal[1], -structVList[vpKey][j].normal[2]]
         g_vertices.append(thisV)
         if model.vNormal: nml = thisN
         else: nml = structPList[p].normal
@@ -258,7 +259,7 @@ def loadFileEGG(model, fileName):
         print filePath, model.textureList[x[1]]["filename"]
       model.textureList[x[1]]["texID"] = Texture(os.path.join(filePath, model.textureList[x[1]]["filename"]),False,True) # load from file
     if "<CoordinateSystem>" in x[0]:
-      model.coordinateSystem = x[2]
+      model.coordinateSystem = x[2].lower()
     if "<Material>" in x[0]:
       model.materialList[x[1]] = {}
       for i in xrange(len(x[3])): model.materialList[x[1]][x[3][i][1]] = x[3][i][2]

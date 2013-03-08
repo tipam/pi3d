@@ -56,7 +56,7 @@ flatsh = Shader("shaders/uv_flat")
 shapeimg = Texture("textures/straw1.jpg")
 shapebump = Texture("textures/mudnormal.jpg")
 waterbump = []
-iFiles = glob.glob("textures/water/n_norm0??.png")
+iFiles = glob.glob("textures/water/n_norm???.png")
 iFiles.sort() # order is vital to animation!
 for f in iFiles:
   waterbump.append(Texture(f))
@@ -80,7 +80,7 @@ mywater.set_draw_details(matsh, [waterbump[0], shapeshine], 12.0, 0.6)
 mywater.set_material((0.0, 0.05, 0.1))
 mywater.set_fog((0.4, 0.6, 0.8, 0.0),150)
 mywater.rotateToX(90.001)
-mywater.position(0.0, -2.0, 50.0)
+mywater.position(0.0, -2.0, 0.0)
 
 arialFont = Ttffont("fonts/FreeMonoBoldOblique.ttf", "#dd00aa")   #load ttf font and set the font colour to 'raspberry'
 mystring = String(font=arialFont, string="Now the Raspberry Pi really does rock")
