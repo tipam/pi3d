@@ -122,6 +122,13 @@ class Shape(Loadable):
     rendering with a different Shader/Texture. self.draw() relies on objects
     inheriting from this filling buf with at least one element.
     """
+    
+  def _unload_opengl(self):
+    """If recreating Shapes to change their shape then the old buffers must be
+    tidied up explicitly as the python garbage collector will miss this"""
+    for b in self.buf:
+      opengles.glDeleteBuffers(1, ctypes.byref(b.vbuf))
+      opengles.glDeleteBuffers(1, ctypes.byref(b.ebuf))
 
   def draw(self, shader=None, txtrs=None, ntl=None, shny=None, camera=None):
     """If called without parameters, there has to have been a previous call to
@@ -129,6 +136,8 @@ class Shape(Loadable):
     NB there is no facility for setting umult and vmult with draw: they must be
     set using set_draw_details or Buffer.set_draw_details.
     """
+    self.load_opengl() # really just to set the flag so _unload_opengl runs
+
     from pi3d.Camera import Camera
 
     camera = camera or self._camera or Camera.instance()
@@ -174,6 +183,7 @@ class Shape(Loadable):
         Shader to use
 
     """
+    
     self.shader = shader
     for b in self.buf:
       b.shader = shader

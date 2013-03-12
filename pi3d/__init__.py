@@ -40,6 +40,7 @@ from pi3d.shape.Model import Model
 from pi3d.shape.Plane import Plane
 from pi3d.shape.Sphere import Sphere
 from pi3d.shape.TCone import TCone
+from pi3d.shape.Tetrahedron import Tetrahedron
 from pi3d.shape.Torus import Torus
 from pi3d.shape.Tube import Tube
 
