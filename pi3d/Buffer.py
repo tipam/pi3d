@@ -105,7 +105,10 @@ class Buffer(Loadable):
 
   def re_init(self, shape, pts, texcoords, faces, normals=None, smooth=True):
     """Only reset the opengl buffer variables: vertices, tex_coords, indices
-    normals (generated if not supplied)"""
+    normals (which is generated if not supplied) **NB this method will
+    go horribly wrong if you change the size of the arrays supplied in
+    the argument as the opengles buffers are reused** Arguments are
+    as per __init__()"""
     tmp_unib = (c_float * 12)(self.unib[0], self.unib[1], self.unib[2],
                               self.unib[3], self.unib[4], self.unib[5],
                               self.unib[6], self.unib[7], self.unib[8],
