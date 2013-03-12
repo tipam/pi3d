@@ -103,6 +103,25 @@ class Buffer(Loadable):
     points = [f[0:3] for f in faces]
     self.element_array_buffer = c_shorts(list(itertools.chain(*points)))
 
+  def re_init(self, shape, pts, texcoords, faces, normals=None, smooth=True):
+    """Only reset the opengl buffer variables: vertices, tex_coords, indices
+    normals (generated if not supplied)"""
+    tmp_unib = (c_float * 12)(self.unib[0], self.unib[1], self.unib[2],
+                              self.unib[3], self.unib[4], self.unib[5],
+                              self.unib[6], self.unib[7], self.unib[8],
+                              self.unib[9], self.unib[10], self.unib[11])
+    self.__init__(shape, pts, texcoords, faces, normals=None, smooth=True)
+    opengles.glBufferData(GL_ARRAY_BUFFER,
+                          ctypes.sizeof(self.array_buffer),
+                          ctypes.byref(self.array_buffer),
+                          GL_STATIC_DRAW);
+    opengles.glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+                          ctypes.sizeof(self.element_array_buffer),
+                          ctypes.byref(self.element_array_buffer),
+                          GL_STATIC_DRAW);
+    self.opengl_loaded = True
+    self.unib = tmp_unib
+
   def _load_opengl(self):
     self.vbuf = c_int()
     opengles.glGenBuffers(1, ctypes.byref(self.vbuf))

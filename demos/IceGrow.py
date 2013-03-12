@@ -9,7 +9,7 @@ from time import time
 import demo
 import pi3d
 
-DISPLAY = pi3d.Display.create(x=150, y=150, frames_per_second=16)
+DISPLAY = pi3d.Display.create(x=50, y=50, frames_per_second=16)
 shader = pi3d.Shader("shaders/uv_reflect")
 tex = pi3d.Texture("textures/metalhull.jpg")
 bump = pi3d.Texture("textures/rocktile2.jpg")
@@ -92,15 +92,17 @@ while DISPLAY.loop_running():
   for tetra in tetras:
     #as moving slowly only need to regenerate shapes now and then
     if tm  > nextgrow: #need to make sure this happens first time round loop!
-      if tetra[0]: # help with garbage collection
-        tetra[0].unload_opengl()
-        tetra[0] = None
-      tetra[0] = pi3d.Tetrahedron(x=0.0, y=0.0, z=0.0, 
-          corners=interpolate(tetra[1], tm))
-      tetra[0].set_draw_details(shader,[tex, bump, shine], 1.0, 0.4)
-      #n_obj += 1
-      #print(n_obj)
-
+      if tetra[0] == None: # new one needed
+        tetra[0] = pi3d.Tetrahedron(x=0.0, y=0.0, z=0.0, 
+            corners=interpolate(tetra[1], tm))
+        tetra[0].set_draw_details(shader,[tex, bump, shine], 1.0, 0.4)
+      else:
+        b = tetra[0].buf[0]
+        c = interpolate(tetra[1], tm)
+        b.re_init(b.shape, (c[0], c[3], c[1], c[2], c[3], c[0],
+                  c[1], c[3], c[2], c[0], c[1], c[2]), b.tex_coords, b.indices,
+                  normals=None, smooth=False)
+        
     tetra[0].set_offset((0.0, sc))
     tetra[0].draw()
 
