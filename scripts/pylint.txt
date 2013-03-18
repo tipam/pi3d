@@ -1,0 +1,2291 @@
+-*- mode: compilation; default-directory: "/development/pi3d/" -*-
+Compilation started at Mon Mar 18 15:13:19
+
+cd /development/pi3d && /development/pi3d/scripts/pylint.sh
+/development/pi3d /development/pi3d
+No config file found, using default configuration
+************* Module pi3d.pi3d
+C0301:  1,0: Line too long (82/80)
+W0105:  8,-1: String statement has no effect
+************* Module pi3d.pi3d.Buffer
+W0301:120,0: Unnecessary semicolon
+W0301:124,0: Unnecessary semicolon
+W0301:137,0: Unnecessary semicolon
+W0301:141,0: Unnecessary semicolon
+W0301:145,0: Unnecessary semicolon
+W0301:146,0: Unnecessary semicolon
+C0301:227,0: Line too long (81/80)
+W0105: 64,-1:Buffer.__init__: String statement has no effect
+W0613:106,50:Buffer.re_init: Unused argument 'normals'
+W0613:106,64:Buffer.re_init: Unused argument 'smooth'
+E1101:198,4:Buffer.draw: Instance of 'Buffer' has no 'load_opengl' member
+W0613:184,66:Buffer.draw: Unused argument 'fullset'
+W0201:172,4:Buffer.set_draw_details: Attribute 'textures' defined outside __init__
+W0201:125,4:Buffer.re_init: Attribute 'opengl_loaded' defined outside __init__
+W0201:170,4:Buffer.set_draw_details: Attribute 'shader' defined outside __init__
+W0201:131,4:Buffer._load_opengl: Attribute 'ebuf' defined outside __init__
+W0201:129,4:Buffer._load_opengl: Attribute 'vbuf' defined outside __init__
+************* Module pi3d.pi3d.Camera
+C0301:  5,0: Line too long (82/80)
+C0301: 16,0: Line too long (92/80)
+C0301: 55,0: Line too long (86/80)
+C0301: 81,0: Line too long (90/80)
+C0301: 83,0: Line too long (90/80)
+C0324: 16,2:Camera.__init__: Comma not followed by a space
+  def __init__(self, at=(0,0,0), eye=(0,0,-0.1), lens=(1.0, 1000.0, 45.0, 1.6), is_3d=True):
+                          ^^
+C0324: 37,4:Camera.__init__: Comma not followed by a space
+    self.view = _LookAtMatrix(at, eye, [0,1,0])
+                                         ^^
+C0324: 61,6:Camera.reset: Comma not followed by a space
+      view = _LookAtMatrix(self.at, self.start_eye, [0,1,0])
+                                                      ^^
+C0324: 65,6:Camera.reset: Comma not followed by a space
+      view = _LookAtMatrix(self.at, self.start_eye, [0,1,0])
+                                                      ^^
+W0102: 73,2:Camera.point_at: Dangerous default value [0.0, 0.0, 10000.0] as argument
+C0324: 85,4:Camera.point_at: Comma not followed by a space
+    horiz = sqrt(dot([dx,dz], [dx,dz]))
+                        ^^
+C0324:173,0:_LookAtMatrix: Comma not followed by a space
+def _LookAtMatrix(at, eye, up=[0,1,0], reflect=False):
+                                ^^
+W0102:173,0:_LookAtMatrix: Dangerous default value [0, 1, 0] as argument
+C0324:191,4:_LookAtMatrix: Comma not followed by a space
+    eye = [eye[0],-eye[1],eye[2]]
+                 ^^
+C0324:192,4:_LookAtMatrix: Comma not followed by a space
+    at = [at[0],-at[1],at[2]]
+               ^^
+W0612:190,4:_LookAtMatrix: Unused variable 'depth'
+W0612:219,19:_ProjectionMatrix: Unused variable 'i'
+W0612:230,19:_OrthographicMatrix: Unused variable 'i'
+W0611:  9,0: Unused import Shape
+W0611:  6,0: Unused import norm
+************* Module pi3d.pi3d.Display
+C0301:297,0: Line too long (85/80)
+W0311:314,0: Bad indentation. Found 5 spaces, expected 4
+W0311:315,0: Bad indentation. Found 5 spaces, expected 4
+W0311:316,0: Bad indentation. Found 7 spaces, expected 6
+W0311:318,0: Bad indentation. Found 5 spaces, expected 4
+W0311:319,0: Bad indentation. Found 5 spaces, expected 4
+W0311:320,0: Bad indentation. Found 7 spaces, expected 6
+W0105: 32,2:Display: String statement has no effect
+R0201:168,2:Display.clear: Method could be a function
+R0201:173,2:Display.set_background: Method could be a function
+W0201:338,2:create: Attribute 'right' defined outside __init__
+W0201:331,2:create: Attribute 'height' defined outside __init__
+W0201:346,4:create: Attribute 'mouse' defined outside __init__
+W0201:334,2:create: Attribute 'fov' defined outside __init__
+W0201:337,2:create: Attribute 'top' defined outside __init__
+W0201:330,2:create: Attribute 'width' defined outside __init__
+W0201:323,2:create: Attribute 'frames_per_second' defined outside __init__
+W0201:333,2:create: Attribute 'far' defined outside __init__
+W0201:339,2:create: Attribute 'bottom' defined outside __init__
+W0201:332,2:create: Attribute 'near' defined outside __init__
+W0201:111,8:Display.loop_running: Attribute 'time' defined outside __init__
+W0201:336,2:create: Attribute 'left' defined outside __init__
+C0322:298,6:create: Operator not preceded by a space
+      w=1920
+       ^
+C0322:299,6:create: Operator not preceded by a space
+      h=1180
+       ^
+W0105:361,-1:create: String statement has no effect
+W0611:  3,0: Unused import math
+************* Module pi3d.pi3d.Keyboard
+W0105:  7,-1: String statement has no effect
+W0105: 35,-1: String statement has no effect
+R0201: 60,2:SysKeyboard.read: Method could be a function
+************* Module pi3d.pi3d.Mouse
+W0141: 70,17:_Mouse._check_event: Used builtin function 'map'
+W0201: 85,28:_Mouse._check_event: Attribute '_dx' defined outside __init__
+W0201: 85,19:_Mouse._check_event: Attribute '_y' defined outside __init__
+W0201: 85,10:_Mouse._check_event: Attribute '_x' defined outside __init__
+W0201: 72,8:_Mouse._check_event: Attribute 'button' defined outside __init__
+W0201: 85,38:_Mouse._check_event: Attribute '_dy' defined outside __init__
+W0611:  1,0: Unused import signal
+W0611:  3,0: Unused import traceback
+************* Module pi3d.pi3d.Shader
+C0301:  9,0: Line too long (88/80)
+W0301: 81,0: Unnecessary semicolon
+C0301:100,0: Line too long (94/80)
+C0301:101,0: Line too long (96/80)
+C0301:111,0: Line too long (85/80)
+W0105:117,-1:Shader.__init__: String statement has no effect
+C0324:124,2:Shader.showshaderlog: Comma not followed by a space
+  def showshaderlog(self,shader):
+                        ^^
+C0322:126,4:Shader.showshaderlog: Operator not preceded by a space
+    N=1024
+     ^
+C0324:133,2:Shader.showprogramlog: Comma not followed by a space
+  def showprogramlog(self,shader):
+                         ^^
+R0201:142,2:Shader.loadShader: Method could be a function
+************* Module pi3d.pi3d.Shape
+C0301: 80,0: Line too long (118/80)
+W0105: 76,-1:Shape.__init__: String statement has no effect
+W0105: 81,4:Shape.__init__: String statement has no effect
+W0105: 87,4:Shape.__init__: String statement has no effect
+W0105: 93,4:Shape.__init__: String statement has no effect
+W0105: 99,4:Shape.__init__: String statement has no effect
+W0105:104,4:Shape.__init__: String statement has no effect
+W0105:109,4:Shape.__init__: String statement has no effect
+W0105:124,-1:Shape.__init__: String statement has no effect
+E1101:139,4:Shape.draw: Instance of 'Shape' has no 'load_opengl' member
+C0324:509,2:Shape.rotateIncX: Comma not followed by a space
+  def rotateIncX(self,v):
+                     ^^
+C0324:522,2:Shape.rotateIncY: Comma not followed by a space
+  def rotateIncY(self,v):
+                     ^^
+C0324:535,2:Shape.rotateIncZ: Comma not followed by a space
+  def rotateIncZ(self,v):
+                     ^^
+E1101:550,4:Shape._add_vertex: Instance of 'Shape' has no 'verts' member
+E1101:551,4:Shape._add_vertex: Instance of 'Shape' has no 'norms' member
+E1101:552,4:Shape._add_vertex: Instance of 'Shape' has no 'texcoords' member
+E1101:557,4:Shape._add_tri: Instance of 'Shape' has no 'inds' member
+W0612:580,4:Shape._lathe: Unused variable 'ssize'
+W0612:587,4:Shape._lathe: Unused variable 'ss'
+W0201:149,6:Shape.draw: Attribute 'MRaw' defined outside __init__
+W0201:576,4:Shape._lathe: Attribute 'sides' defined outside __init__
+W0611:  3,0: Unused import chain
+W0611:  4,0: Unused import ravel
+************* Module pi3d.pi3d.Texture
+C0301: 76,0: Line too long (97/80)
+E1101: 56,6:Texture.__init__: Instance of 'Texture' has no 'load_disk' member
+E1101: 58,6:Texture.__init__: Instance of 'Texture' has no 'load_opengl' member
+E1101: 62,4:Texture.tex: Instance of 'Texture' has no 'load_opengl' member
+E1101:100,14:Texture._load_disk: Instance of 'Texture' has no 'self' member
+C0324:110,6:Texture._load_disk: Comma not followed by a space
+      print 'Loading ...',s
+                         ^^
+W0201:103,15:Texture._load_disk: Attribute 'iy' defined outside __init__
+W0201:117,4:Texture._load_disk: Attribute '_tex' defined outside __init__
+W0201:103,6:Texture._load_disk: Attribute 'ix' defined outside __init__
+W0201:116,4:Texture._load_disk: Attribute 'image' defined outside __init__
+W0201:113,6:Texture._load_disk: Attribute 'im' defined outside __init__
+W0201: 80,4:Texture._load_disk: Attribute 'alpha' defined outside __init__
+R0903: 17,0:Texture: Too few public methods (1/2)
+W0613:143,21:TextureCache.__init__: Unused argument 'max_size'
+W0201:147,4:TextureCache.clear: Attribute 'cache' defined outside __init__
+************* Module pi3d.pi3d.constants.__init__
+C0301:  1,0: Line too long (82/80)
+C0301: 23,0: Line too long (81/80)
+************* Module pi3d.pi3d.constants
+W0105:  5,-1: String statement has no effect
+************* Module pi3d.pi3d.event.AbsAxisScaling
+C0301: 27,0: Line too long (92/80)
+C0301: 29,0: Line too long (112/80)
+C0301: 32,0: Line too long (154/80)
+C0301: 38,0: Line too long (88/80)
+W0403:  3,0: Relative import 'ioctl', should be 'pi3d.pi3d.event.ioctl'
+W0212:  7,9:EVIOCGABS: Access to a protected member _IOR of a client class
+C0324: 18,2:AbsAxisScaling.__init__: Comma not followed by a space
+  def __init__(self,stream, axis):
+                   ^^
+C0324: 23,4:AbsAxisScaling.__init__: Comma not followed by a space
+    s = array.array("f",[1,2,3,4,5,6])
+                       ^^
+W0612: 25,6:AbsAxisScaling.__init__: Unused variable 'x'
+R0903:  9,0:AbsAxisScaling: Too few public methods (1/2)
+************* Module pi3d.pi3d.event.Event
+C0301: 56,0: Line too long (178/80)
+C0301:150,0: Line too long (89/80)
+C0301:174,0: Line too long (92/80)
+C0324: 61,6:InputEvents.__init__: Comma not followed by a space
+      self.streams += map(lambda x: EventStream(x, "keyboard"),keyboards)
+                                                              ^^
+W0141: 61,22:InputEvents.__init__: Used builtin function 'map'
+W0110: 61,22:InputEvents.__init__: map/filter on lambda could be replaced by comprehension
+W0141: 68,22:InputEvents.__init__: Used builtin function 'map'
+W0110: 68,22:InputEvents.__init__: map/filter on lambda could be replaced by comprehension
+W0141: 74,19:InputEvents.__init__: Used builtin function 'map'
+W0110: 74,19:InputEvents.__init__: map/filter on lambda could be replaced by comprehension
+C0324: 90,2:InputEvents.key_state: Comma not followed by a space
+  def key_state(self,key):
+                    ^^
+C0324:122,2:InputEvents.clear_key: Comma not followed by a space
+  def clear_key(self,key):
+                    ^^
+C0324:152,2:InputEvents.get_joystickR: Comma not followed by a space
+  def get_joystickR(self,index=0):
+                        ^^
+W0611:  4,0: Unused import sys
+W0611:  2,0: Unused import re
+W0611:  3,0: Unused import struct
+W0611:  8,0: Unused import Format
+W0611:  5,0: Unused import threading
+W0611:  1,0: Unused import os
+************* Module pi3d.pi3d.event.EventHandler
+C0301: 14,0: Line too long (89/80)
+C0301: 74,0: Line too long (111/80)
+C0301: 81,0: Line too long (111/80)
+W0311: 84,0: Bad indentation. Found 10 spaces, expected 8
+W0311: 85,0: Bad indentation. Found 12 spaces, expected 10
+W0311: 86,0: Bad indentation. Found 12 spaces, expected 10
+C0301: 87,0: Line too long (105/80)
+W0311: 87,0: Bad indentation. Found 14 spaces, expected 12
+W0311: 88,0: Bad indentation. Found 12 spaces, expected 10
+W0311: 89,0: Bad indentation. Found 10 spaces, expected 8
+W0311: 90,0: Bad indentation. Found 12 spaces, expected 10
+W0311: 91,0: Bad indentation. Found 12 spaces, expected 10
+C0301: 92,0: Line too long (106/80)
+W0311: 92,0: Bad indentation. Found 14 spaces, expected 12
+W0311: 93,0: Bad indentation. Found 12 spaces, expected 10
+W0311: 94,0: Bad indentation. Found 10 spaces, expected 8
+W0311: 95,0: Bad indentation. Found 12 spaces, expected 10
+W0311: 96,0: Bad indentation. Found 12 spaces, expected 10
+C0301: 97,0: Line too long (106/80)
+W0311: 97,0: Bad indentation. Found 14 spaces, expected 12
+W0311: 98,0: Bad indentation. Found 12 spaces, expected 10
+W0311: 99,0: Bad indentation. Found 10 spaces, expected 8
+W0311:100,0: Bad indentation. Found 12 spaces, expected 10
+W0311:101,0: Bad indentation. Found 12 spaces, expected 10
+C0301:102,0: Line too long (105/80)
+W0311:102,0: Bad indentation. Found 14 spaces, expected 12
+W0311:103,0: Bad indentation. Found 10 spaces, expected 8
+W0311:104,0: Bad indentation. Found 12 spaces, expected 10
+W0311:105,0: Bad indentation. Found 12 spaces, expected 10
+C0301:106,0: Line too long (105/80)
+W0311:106,0: Bad indentation. Found 14 spaces, expected 12
+W0311:107,0: Bad indentation. Found 12 spaces, expected 10
+C0301:111,0: Line too long (103/80)
+C0301:114,0: Line too long (103/80)
+C0301:117,0: Line too long (103/80)
+C0301:120,0: Line too long (105/80)
+C0301:123,0: Line too long (105/80)
+C0301:126,0: Line too long (105/80)
+C0301:129,0: Line too long (110/80)
+C0301:132,0: Line too long (110/80)
+C0301:136,0: Line too long (124/80)
+C0301:137,0: Line too long (127/80)
+C0301:138,0: Line too long (93/80)
+W0403:  4,0: Relative import 'EventStream', should be 'pi3d.pi3d.event.EventStream'
+C0322: 75,10:EventHandler.event: Operator not preceded by a space
+          ret= None
+             ^
+C0324: 87,14:EventHandler.event: Comma not followed by a space
+              self.relHandler(event.stream.deviceType, event.stream.deviceIndex, event.eventValue, 0,0,0)
+                                                                                                    ^^
+C0324: 92,14:EventHandler.event: Comma not followed by a space
+              self.relHandler(event.stream.deviceType, event.stream.deviceIndex, 0, event.eventValue, 0,0)
+                                                                                                       ^^
+C0324: 97,14:EventHandler.event: Comma not followed by a space
+              self.relHandler(event.stream.deviceType, event.stream.deviceIndex, 0,0, event.eventValue, 0)
+                                                                                  ^^
+C0324:102,14:EventHandler.event: Comma not followed by a space
+              self.relHandler(event.stream.deviceType, event.stream.deviceIndex, 0,0,0, event.eventValue)
+                                                                                  ^^
+C0324:106,14:EventHandler.event: Comma not followed by a space
+              self.relHandler(event.stream.deviceType, event.stream.deviceIndex, 0,0,0, event.eventValue)
+                                                                                  ^^
+C0322:186,6:EventHandler.clear_key: Operator not preceded by a space
+      self.buttons[buttonCode]=0
+                              ^
+************* Module pi3d.pi3d.event.EventStream
+C0301: 93,0: Line too long (93/80)
+C0301:118,0: Line too long (84/80)
+C0301:154,0: Line too long (129/80)
+W0403:  2,0: Relative import 'ioctl', should be 'pi3d.pi3d.event.ioctl'
+W0212: 16,12: Access to a protected member _IOW of a client class
+C0322: 47,2:EventStream: Operator not preceded by a space
+  axisWheel=16
+           ^
+C0322: 49,2:EventStream: Operator not preceded by a space
+  axisBrake=18
+           ^
+C0324:136,4:EventStream.next: Comma not followed by a space
+    ready = select.select([self.filehandle],[ ], [ ], 0)[0]
+                                           ^^
+C0202:147,2:EventStream.grab_by_type: Class method grab_by_type should have 'cls' as first argument
+W0141:154,18:EventStream.grab_by_type: Used builtin function 'filter'
+W0110:154,18:EventStream.grab_by_type: map/filter on lambda could be replaced by comprehension
+W0141:155,4:EventStream.grab_by_type: Used builtin function 'map'
+W0110:155,4:EventStream.grab_by_type: map/filter on lambda could be replaced by comprehension
+W0141:169,17:EventStream.allNext: Used builtin function 'map'
+W0110:169,17:EventStream.allNext: map/filter on lambda could be replaced by comprehension
+C0324:171,4:EventStream.allNext: Comma not followed by a space
+    ready = select.select(selectlist,[ ], [ ], 0)[0]
+                                    ^^
+C0321:172,18:EventStream.allNext: More than one statement on a single line
+W0141:175,17:EventStream.allNext: Used builtin function 'filter'
+W0110:175,17:EventStream.allNext: map/filter on lambda could be replaced by comprehension
+W0703:178,15:EventStream.allNext: Catching too general exception Exception
+C0324:191,6:EventStream.allNext: Comma not followed by a space
+      ready = select.select(selectlist,[ ], [ ], 0)[0]
+                                      ^^
+W0622:207,21:EventStream.__exit__: Redefining built-in 'type'
+************* Module pi3d.pi3d.event.FindDevices
+W0311:  5,0: Bad indentation. Found 4 spaces, expected 2
+W0311:  6,0: Bad indentation. Found 4 spaces, expected 2
+W0311:  7,0: Bad indentation. Found 4 spaces, expected 2
+W0311:  8,0: Bad indentation. Found 8 spaces, expected 4
+W0311:  9,0: Bad indentation. Found 4 spaces, expected 2
+W0311: 10,0: Bad indentation. Found 8 spaces, expected 4
+W0311: 11,0: Bad indentation. Found 4 spaces, expected 2
+W0311: 12,0: Bad indentation. Found 8 spaces, expected 4
+W0311: 16,0: Bad indentation. Found 4 spaces, expected 2
+W0311: 17,0: Bad indentation. Found 4 spaces, expected 2
+W0311: 18,0: Bad indentation. Found 4 spaces, expected 2
+W0311: 19,0: Bad indentation. Found 4 spaces, expected 2
+W0311: 20,0: Bad indentation. Found 4 spaces, expected 2
+W0311: 21,0: Bad indentation. Found 4 spaces, expected 2
+W0311: 22,0: Bad indentation. Found 4 spaces, expected 2
+W0311: 23,0: Bad indentation. Found 4 spaces, expected 2
+W0311: 24,0: Bad indentation. Found 4 spaces, expected 2
+W0311: 25,0: Bad indentation. Found 4 spaces, expected 2
+W0311: 26,0: Bad indentation. Found 4 spaces, expected 2
+W0311: 27,0: Bad indentation. Found 4 spaces, expected 2
+W0311: 29,0: Bad indentation. Found 4 spaces, expected 2
+W0311: 32,0: Bad indentation. Found 4 spaces, expected 2
+W0311: 33,0: Bad indentation. Found 8 spaces, expected 4
+W0311: 34,0: Bad indentation. Found 8 spaces, expected 4
+W0311: 35,0: Bad indentation. Found 8 spaces, expected 4
+W0311: 36,0: Bad indentation. Found 8 spaces, expected 4
+W0311: 37,0: Bad indentation. Found 8 spaces, expected 4
+W0311: 38,0: Bad indentation. Found 8 spaces, expected 4
+W0311: 39,0: Bad indentation. Found 8 spaces, expected 4
+W0311: 40,0: Bad indentation. Found 8 spaces, expected 4
+W0311: 41,0: Bad indentation. Found 8 spaces, expected 4
+W0311: 42,0: Bad indentation. Found 8 spaces, expected 4
+W0311: 43,0: Bad indentation. Found 8 spaces, expected 4
+W0311: 44,0: Bad indentation. Found 8 spaces, expected 4
+C0301: 46,0: Line too long (133/80)
+W0311: 46,0: Bad indentation. Found 8 spaces, expected 4
+W0311: 47,0: Bad indentation. Found 8 spaces, expected 4
+W0311: 48,0: Bad indentation. Found 12 spaces, expected 6
+W0311: 49,0: Bad indentation. Found 12 spaces, expected 6
+W0311: 50,0: Bad indentation. Found 12 spaces, expected 6
+W0311: 51,0: Bad indentation. Found 12 spaces, expected 6
+W0311: 52,0: Bad indentation. Found 12 spaces, expected 6
+W0311: 53,0: Bad indentation. Found 8 spaces, expected 4
+W0311: 54,0: Bad indentation. Found 12 spaces, expected 6
+W0311: 55,0: Bad indentation. Found 12 spaces, expected 6
+W0311: 56,0: Bad indentation. Found 12 spaces, expected 6
+W0311: 57,0: Bad indentation. Found 12 spaces, expected 6
+W0311: 58,0: Bad indentation. Found 8 spaces, expected 4
+W0311: 59,0: Bad indentation. Found 12 spaces, expected 6
+W0311: 60,0: Bad indentation. Found 16 spaces, expected 8
+W0311: 61,0: Bad indentation. Found 12 spaces, expected 6
+W0311: 62,0: Bad indentation. Found 16 spaces, expected 8
+W0311: 63,0: Bad indentation. Found 16 spaces, expected 8
+W0311: 64,0: Bad indentation. Found 20 spaces, expected 10
+W0311: 65,0: Bad indentation. Found 16 spaces, expected 8
+W0311: 66,0: Bad indentation. Found 20 spaces, expected 10
+W0311: 67,0: Bad indentation. Found 12 spaces, expected 6
+W0311: 68,0: Bad indentation. Found 16 spaces, expected 8
+W0311: 69,0: Bad indentation. Found 16 spaces, expected 8
+W0311: 70,0: Bad indentation. Found 20 spaces, expected 10
+W0311: 71,0: Bad indentation. Found 16 spaces, expected 8
+W0311: 72,0: Bad indentation. Found 20 spaces, expected 10
+W0311: 73,0: Bad indentation. Found 12 spaces, expected 6
+W0311: 74,0: Bad indentation. Found 16 spaces, expected 8
+W0311: 75,0: Bad indentation. Found 16 spaces, expected 8
+W0311: 76,0: Bad indentation. Found 20 spaces, expected 10
+W0311: 77,0: Bad indentation. Found 16 spaces, expected 8
+W0311: 78,0: Bad indentation. Found 20 spaces, expected 10
+W0311: 79,0: Bad indentation. Found 12 spaces, expected 6
+W0311: 80,0: Bad indentation. Found 16 spaces, expected 8
+W0311: 81,0: Bad indentation. Found 16 spaces, expected 8
+W0311: 82,0: Bad indentation. Found 20 spaces, expected 10
+W0311: 83,0: Bad indentation. Found 16 spaces, expected 8
+W0311: 84,0: Bad indentation. Found 20 spaces, expected 10
+W0311: 85,0: Bad indentation. Found 12 spaces, expected 6
+W0311: 86,0: Bad indentation. Found 16 spaces, expected 8
+W0311: 87,0: Bad indentation. Found 16 spaces, expected 8
+W0311: 88,0: Bad indentation. Found 20 spaces, expected 10
+W0311: 89,0: Bad indentation. Found 16 spaces, expected 8
+W0311: 90,0: Bad indentation. Found 20 spaces, expected 10
+W0311: 91,0: Bad indentation. Found 12 spaces, expected 6
+W0311: 92,0: Bad indentation. Found 16 spaces, expected 8
+W0311: 93,0: Bad indentation. Found 16 spaces, expected 8
+W0311: 94,0: Bad indentation. Found 16 spaces, expected 8
+W0311: 95,0: Bad indentation. Found 12 spaces, expected 6
+W0311: 96,0: Bad indentation. Found 16 spaces, expected 8
+W0311: 97,0: Bad indentation. Found 16 spaces, expected 8
+W0311: 98,0: Bad indentation. Found 16 spaces, expected 8
+W0311: 99,0: Bad indentation. Found 12 spaces, expected 6
+W0311:100,0: Bad indentation. Found 16 spaces, expected 8
+W0311:101,0: Bad indentation. Found 16 spaces, expected 8
+W0311:102,0: Bad indentation. Found 16 spaces, expected 8
+W0311:103,0: Bad indentation. Found 12 spaces, expected 6
+W0311:104,0: Bad indentation. Found 16 spaces, expected 8
+W0311:105,0: Bad indentation. Found 16 spaces, expected 8
+W0311:106,0: Bad indentation. Found 16 spaces, expected 8
+W0311:107,0: Bad indentation. Found 12 spaces, expected 6
+W0311:108,0: Bad indentation. Found 16 spaces, expected 8
+W0311:109,0: Bad indentation. Found 16 spaces, expected 8
+W0311:110,0: Bad indentation. Found 16 spaces, expected 8
+W0311:111,0: Bad indentation. Found 12 spaces, expected 6
+W0311:112,0: Bad indentation. Found 16 spaces, expected 8
+W0311:113,0: Bad indentation. Found 16 spaces, expected 8
+W0311:114,0: Bad indentation. Found 16 spaces, expected 8
+W0311:118,0: Bad indentation. Found 8 spaces, expected 4
+W0311:119,0: Bad indentation. Found 12 spaces, expected 6
+W0311:120,0: Bad indentation. Found 16 spaces, expected 8
+W0311:122,0: Bad indentation. Found 8 spaces, expected 4
+W0311:123,0: Bad indentation. Found 8 spaces, expected 4
+W0311:124,0: Bad indentation. Found 8 spaces, expected 4
+W0311:126,0: Bad indentation. Found 4 spaces, expected 2
+W0311:127,0: Bad indentation. Found 8 spaces, expected 4
+W0311:128,0: Bad indentation. Found 12 spaces, expected 6
+C0301:129,0: Line too long (86/80)
+W0311:129,0: Bad indentation. Found 8 spaces, expected 4
+C0301:130,0: Line too long (86/80)
+W0311:130,0: Bad indentation. Found 8 spaces, expected 4
+C0301:131,0: Line too long (86/80)
+W0311:131,0: Bad indentation. Found 8 spaces, expected 4
+C0301:132,0: Line too long (86/80)
+W0311:132,0: Bad indentation. Found 8 spaces, expected 4
+C0301:133,0: Line too long (86/80)
+W0311:133,0: Bad indentation. Found 8 spaces, expected 4
+C0301:134,0: Line too long (86/80)
+W0311:134,0: Bad indentation. Found 8 spaces, expected 4
+C0301:135,0: Line too long (86/80)
+W0311:135,0: Bad indentation. Found 8 spaces, expected 4
+C0301:136,0: Line too long (86/80)
+W0311:136,0: Bad indentation. Found 8 spaces, expected 4
+C0301:137,0: Line too long (85/80)
+W0311:137,0: Bad indentation. Found 8 spaces, expected 4
+C0301:138,0: Line too long (86/80)
+W0311:138,0: Bad indentation. Found 8 spaces, expected 4
+C0301:139,0: Line too long (98/80)
+W0311:139,0: Bad indentation. Found 8 spaces, expected 4
+W0311:140,0: Bad indentation. Found 8 spaces, expected 4
+W0311:142,0: Bad indentation. Found 4 spaces, expected 2
+W0311:143,0: Bad indentation. Found 8 spaces, expected 4
+C0301:145,0: Line too long (90/80)
+C0301:146,0: Line too long (92/80)
+C0301:147,0: Line too long (86/80)
+W0311:155,0: Bad indentation. Found 4 spaces, expected 2
+W0311:156,0: Bad indentation. Found 4 spaces, expected 2
+W0311:157,0: Bad indentation. Found 8 spaces, expected 4
+W0311:158,0: Bad indentation. Found 12 spaces, expected 6
+W0311:159,0: Bad indentation. Found 16 spaces, expected 8
+W0311:161,0: Bad indentation. Found 4 spaces, expected 2
+W0311:203,0: Bad indentation. Found 4 spaces, expected 2
+W0311:204,0: Bad indentation. Found 4 spaces, expected 2
+W0311:205,0: Bad indentation. Found 8 spaces, expected 4
+C0301:206,0: Line too long (81/80)
+W0311:206,0: Bad indentation. Found 8 spaces, expected 4
+C0301:207,0: Line too long (81/80)
+W0311:207,0: Bad indentation. Found 8 spaces, expected 4
+C0301:208,0: Line too long (81/80)
+W0311:208,0: Bad indentation. Found 8 spaces, expected 4
+C0301:209,0: Line too long (82/80)
+W0311:209,0: Bad indentation. Found 8 spaces, expected 4
+C0301:210,0: Line too long (81/80)
+W0311:210,0: Bad indentation. Found 8 spaces, expected 4
+W0311:211,0: Bad indentation. Found 8 spaces, expected 4
+W0403:  2,0: Relative import 'Constants', should be 'pi3d.pi3d.event.Constants'
+W0401:  2,0: Wildcard import Constants
+C0321: 17,39:EvToStr: More than one statement on a single line
+C0321: 18,39:EvToStr: More than one statement on a single line
+C0321: 19,39:EvToStr: More than one statement on a single line
+C0321: 20,39:EvToStr: More than one statement on a single line
+C0321: 21,39:EvToStr: More than one statement on a single line
+C0321: 22,39:EvToStr: More than one statement on a single line
+C0321: 23,39:EvToStr: More than one statement on a single line
+C0321: 24,39:EvToStr: More than one statement on a single line
+C0321: 25,39:EvToStr: More than one statement on a single line
+C0321: 26,39:EvToStr: More than one statement on a single line
+C0321: 27,39:EvToStr: More than one statement on a single line
+W0621: 92,49:DeviceCapabilities.__init__: Redefining name 'x' from outer scope (line 206)
+E0601: 48,50:DeviceCapabilities.__init__: Using variable 'line' before assignment
+C0324: 92,16:DeviceCapabilities.__init__: Comma not followed by a space
+                eventsNums = [int(x,base=16) for x in line [6:].split()]
+                                   ^^
+C0324: 96,16:DeviceCapabilities.__init__: Comma not followed by a space
+                eventsNums = [int(x,base=16) for x in line [7:].split()]
+                                   ^^
+C0324:100,16:DeviceCapabilities.__init__: Comma not followed by a space
+                eventsNums = [int(x,base=16) for x in line [7:].split()]
+                                   ^^
+C0324:104,16:DeviceCapabilities.__init__: Comma not followed by a space
+                eventsNums = [int(x,base=16) for x in line [7:].split()]
+                                   ^^
+C0324:108,16:DeviceCapabilities.__init__: Comma not followed by a space
+                eventsNums = [int(x,base=16) for x in line [7:].split()]
+                                   ^^
+C0324:112,16:DeviceCapabilities.__init__: Comma not followed by a space
+                eventsNums = [int(x,base=16) for x in line [7:].split()]
+                                   ^^
+C0321:129,75:DeviceCapabilities.doesProduce: More than one statement on a single line
+C0321:130,75:DeviceCapabilities.doesProduce: More than one statement on a single line
+C0321:131,75:DeviceCapabilities.doesProduce: More than one statement on a single line
+C0321:132,75:DeviceCapabilities.doesProduce: More than one statement on a single line
+C0321:133,75:DeviceCapabilities.doesProduce: More than one statement on a single line
+C0321:134,75:DeviceCapabilities.doesProduce: More than one statement on a single line
+C0321:135,75:DeviceCapabilities.doesProduce: More than one statement on a single line
+C0321:136,75:DeviceCapabilities.doesProduce: More than one statement on a single line
+C0321:137,74:DeviceCapabilities.doesProduce: More than one statement on a single line
+C0321:138,75:DeviceCapabilities.doesProduce: More than one statement on a single line
+C0321:139,87:DeviceCapabilities.doesProduce: More than one statement on a single line
+R0911:126,4:DeviceCapabilities.doesProduce: Too many return statements (13/6)
+R0903: 31,0:DeviceCapabilities: Too few public methods (1/2)
+W0602:155,4:get_devices: Using global for 'deviceCapabilities' but no assignment is done
+W0613:154,16:get_devices: Unused argument 'filename'
+W0102:163,0:find_devices: Dangerous default value [] as argument
+W0614:  2,0: Unused import ABS_DISTANCE from wildcard import
+W0614:  2,0: Unused import ABS_RZ from wildcard import
+W0614:  2,0: Unused import ABS_HAT2Y from wildcard import
+W0614:  2,0: Unused import REL_RZ from wildcard import
+W0614:  2,0: Unused import REL_DIAL from wildcard import
+W0614:  2,0: Unused import ABS_X from wildcard import
+W0614:  2,0: Unused import ABS_Y from wildcard import
+W0614:  2,0: Unused import ABS_Z from wildcard import
+W0614:  2,0: Unused import ABS_MISC from wildcard import
+W0614:  2,0: Unused import ABS_HAT3X from wildcard import
+W0614:  2,0: Unused import REL_HWHEEL from wildcard import
+W0614:  2,0: Unused import SYN_CONFIG from wildcard import
+W0614:  2,0: Unused import ABS_HAT3Y from wildcard import
+W0614:  2,0: Unused import ABS_GAS from wildcard import
+W0614:  2,0: Unused import REL_Y from wildcard import
+W0614:  2,0: Unused import REL_Z from wildcard import
+W0614:  2,0: Unused import SYN_REPORT from wildcard import
+W0614:  2,0: Unused import ABS_RY from wildcard import
+W0614:  2,0: Unused import ABS_RX from wildcard import
+W0614:  2,0: Unused import ABS_WHEEL from wildcard import
+W0614:  2,0: Unused import ABS_RUDDER from wildcard import
+W0614:  2,0: Unused import REL_RX from wildcard import
+W0614:  2,0: Unused import REL_RY from wildcard import
+W0614:  2,0: Unused import REL_WHEEL from wildcard import
+W0614:  2,0: Unused import REL_MAX from wildcard import
+W0614:  2,0: Unused import ABS_PRESSURE from wildcard import
+W0614:  2,0: Unused import ABS_HAT0Y from wildcard import
+W0614:  2,0: Unused import ABS_VOLUME from wildcard import
+W0614:  2,0: Unused import REL_MISC from wildcard import
+W0614:  2,0: Unused import ABS_HAT0X from wildcard import
+W0614:  2,0: Unused import ABS_MAX from wildcard import
+W0614:  2,0: Unused import EV_SW from wildcard import
+W0614:  2,0: Unused import ABS_HAT2X from wildcard import
+W0614:  2,0: Unused import ABS_TILT_Y from wildcard import
+W0614:  2,0: Unused import ABS_TILT_X from wildcard import
+W0614:  2,0: Unused import ABS_HAT1Y from wildcard import
+W0614:  2,0: Unused import ABS_THROTTLE from wildcard import
+W0614:  2,0: Unused import REL_X from wildcard import
+W0614:  2,0: Unused import ABS_HAT1X from wildcard import
+W0614:  2,0: Unused import ABS_BRAKE from wildcard import
+W0614:  2,0: Unused import ABS_TOOL_WIDTH from wildcard import
+************* Module pi3d.pi3d.event.ioctl
+C0301:  2,0: Line too long (81/80)
+W0312: 59,0: Found indentation with tabs instead of spaces
+C0301: 66,0: Line too long (86/80)
+C0301: 67,0: Line too long (87/80)
+C0301: 68,0: Line too long (98/80)
+C0301: 71,0: Line too long (91/80)
+C0324: 58,0:_IOC: Comma not followed by a space
+def _IOC(dir,type,nr,size):
+            ^^
+W0622: 58,13:_IOC: Redefining built-in 'type'
+W0622: 58,9:_IOC: Redefining built-in 'dir'
+C0324: 65,0:_IO: Comma not followed by a space
+def _IO(type,nr):			return _IOC(_IOC_NONE,(type),(nr),0)
+            ^^
+W0622: 65,8:_IO: Redefining built-in 'type'
+C0321: 65,20:_IO: More than one statement on a single line
+C0324: 66,0:_IOR: Comma not followed by a space
+def _IOR(type,nr,format):		return _IOC(_IOC_READ,(type),(nr),(_IOC_TYPECHECK(format)))
+             ^^
+W0622: 66,9:_IOR: Redefining built-in 'type'
+W0622: 66,17:_IOR: Redefining built-in 'format'
+C0321: 66,27:_IOR: More than one statement on a single line
+C0324: 67,0:_IOW: Comma not followed by a space
+def _IOW(type,nr,format):		return _IOC(_IOC_WRITE,(type),(nr),(_IOC_TYPECHECK(format)))
+             ^^
+W0622: 67,9:_IOW: Redefining built-in 'type'
+W0622: 67,17:_IOW: Redefining built-in 'format'
+C0321: 67,27:_IOW: More than one statement on a single line
+C0324: 68,0:_IOWR: Comma not followed by a space
+def _IOWR(type,nr,format):		return _IOC(_IOC_READ|_IOC_WRITE,(type),(nr),(_IOC_TYPECHECK(format)))
+              ^^
+W0622: 68,10:_IOWR: Redefining built-in 'type'
+W0622: 68,18:_IOWR: Redefining built-in 'format'
+C0321: 68,28:_IOWR: More than one statement on a single line
+C0324: 69,0:_IOR_BAD: Comma not followed by a space
+def _IOR_BAD(type,nr,format):	return _IOC(_IOC_READ,(type),(nr),sizeof(format))
+                 ^^
+W0622: 69,13:_IOR_BAD: Redefining built-in 'type'
+W0622: 69,21:_IOR_BAD: Redefining built-in 'format'
+C0321: 69,30:_IOR_BAD: More than one statement on a single line
+C0324: 70,0:_IOW_BAD: Comma not followed by a space
+def _IOW_BAD(type,nr,format):	return _IOC(_IOC_WRITE,(type),(nr),sizeof(format))
+                 ^^
+W0622: 70,13:_IOW_BAD: Redefining built-in 'type'
+W0622: 70,21:_IOW_BAD: Redefining built-in 'format'
+C0321: 70,30:_IOW_BAD: More than one statement on a single line
+C0324: 71,0:_IOWR_BAD: Comma not followed by a space
+def _IOWR_BAD(type,nr,format):	return _IOC(_IOC_READ|_IOC_WRITE,(type),(nr),sizeof(format))
+                  ^^
+W0622: 71,14:_IOWR_BAD: Redefining built-in 'type'
+W0622: 71,22:_IOWR_BAD: Redefining built-in 'format'
+C0321: 71,31:_IOWR_BAD: More than one statement on a single line
+C0321: 74,19:_IOC_DIR: More than one statement on a single line
+C0321: 75,20:_IOC_TYPE: More than one statement on a single line
+C0321: 76,18:_IOC_NR: More than one statement on a single line
+C0321: 77,20:_IOC_SIZE: More than one statement on a single line
+************* Module pi3d.pi3d.event.Test
+C0301:  7,0: Line too long (89/80)
+C0301:  8,0: Line too long (136/80)
+C0301: 23,0: Line too long (126/80)
+W0311: 38,0: Bad indentation. Found 10 spaces, expected 8
+W0311: 42,0: Bad indentation. Found 10 spaces, expected 8
+W0311: 50,0: Bad indentation. Found 10 spaces, expected 8
+W0621:  3,56:mouse_handler_func: Redefining name 'v' from outer scope (line 36)
+C0323:  4,4:mouse_handler_func: Operator not followed by a space
+    print "Relative[%d] (%d, %d), (%d, %d)" %(sourceIndex, x, y, v, h)
+                                            ^
+W0107:  5,4:mouse_handler_func: Unnecessary pass statement
+W0613:  3,25:mouse_handler_func: Unused argument 'sourceType'
+C0323:  8,4:joystick_handler_func: Operator not followed by a space
+    print "Absolute[%d] (%6.3f, %6.3f, %6.3f), (%6.3f, %6.3f, %6.3f), (%2.0f, %2.0f)" %(sourceIndex, x1, y1, z1, x2, y2, z2, hatx, haty)
+                                                                                      ^
+W0107:  9,4:joystick_handler_func: Unnecessary pass statement
+W0613:  7,28:joystick_handler_func: Unused argument 'sourceType'
+W0107: 13,4:unhandled_handler_func: Unnecessary pass statement
+C0324: 16,4:key_handler_func: Comma not followed by a space
+    print nameOf[key],"[",sourceIndex,"] =",value
+                     ^^
+W0107: 17,4:key_handler_func: Unnecessary pass statement
+W0613: 15,23:key_handler_func: Unused argument 'sourceType'
+W0613: 19,35:syn_handler_func: Unused argument 'sourceIndex'
+W0613: 19,48:syn_handler_func: Unused argument 'code'
+W0613: 19,23:syn_handler_func: Unused argument 'sourceType'
+W0613: 19,54:syn_handler_func: Unused argument 'value'
+C0324: 33,6: Comma not followed by a space
+      print "Hello",s
+                   ^^
+C0324: 37,6: Comma not followed by a space
+      if v != (0,0,0,0,0):
+                ^^
+C0324: 41,6: Comma not followed by a space
+      if v != (0,0,0,0,0):
+                ^^
+C0324: 49,6: Comma not followed by a space
+      if v != (0,0):
+                ^^
+************* Module pi3d.pi3d.loader.loaderEgg
+C0301: 10,0: Line too long (89/80)
+C0301: 15,0: Line too long (89/80)
+C0301: 27,0: Line too long (83/80)
+C0301: 68,0: Line too long (103/80)
+C0301: 78,0: Line too long (100/80)
+C0301: 80,0: Line too long (99/80)
+C0301: 82,0: Line too long (96/80)
+C0301: 89,0: Line too long (87/80)
+C0301:128,0: Line too long (98/80)
+C0301:133,0: Line too long (84/80)
+C0301:135,0: Line too long (165/80)
+C0301:137,0: Line too long (168/80)
+C0301:140,0: Line too long (86/80)
+C0301:146,0: Line too long (91/80)
+C0301:153,0: Line too long (84/80)
+C0301:163,0: Line too long (104/80)
+C0301:164,0: Line too long (83/80)
+C0301:170,0: Line too long (158/80)
+C0301:198,0: Line too long (118/80)
+C0301:200,0: Line too long (120/80)
+C0301:202,0: Line too long (118/80)
+C0301:204,0: Line too long (120/80)
+C0301:221,0: Line too long (85/80)
+C0301:229,0: Line too long (100/80)
+C0301:231,0: Line too long (82/80)
+C0301:232,0: Line too long (82/80)
+C0301:236,0: Line too long (90/80)
+C0301:256,0: Line too long (82/80)
+C0301:260,0: Line too long (137/80)
+C0301:265,0: Line too long (83/80)
+W0401:  2,0: Wildcard import pi3d
+R0903: 17,0:vertex: Too few public methods (0/2)
+R0903: 26,0:polygon: Too few public methods (0/2)
+C0321: 85,11:loadFileEGG.pRec: More than one statement on a single line
+C0321: 86,14:loadFileEGG.pRec: More than one statement on a single line
+C0322: 88,6:loadFileEGG.pRec: Operator not preceded by a space
+      if c=="<": # add entry to array at this level
+          ^^
+C0321: 89,27:loadFileEGG.pRec: More than one statement on a single line
+C0324: 91,8:loadFileEGG.pRec: Comma not followed by a space
+        x[3].append(["","","",[]])
+                       ^^
+C0322: 93,11:loadFileEGG.pRec: Operator not preceded by a space
+      elif c=="{":
+            ^^
+C0321:100,27:loadFileEGG.pRec: More than one statement on a single line
+C0321:113,22:loadFileEGG.groupDrill: More than one statement on a single line
+C0324:118,10:loadFileEGG.groupDrill: Comma not followed by a space
+          nextnp = np+str(randint(10000,99999))
+                                       ^^
+C0321:133,33:loadFileEGG.groupDrill: More than one statement on a single line
+C0321:140,37:loadFileEGG.groupDrill: More than one statement on a single line
+C0321:142,53:loadFileEGG.groupDrill: More than one statement on a single line
+C0321:153,35:loadFileEGG.groupDrill: More than one statement on a single line
+C0321:154,33:loadFileEGG.groupDrill: More than one statement on a single line
+C0321:155,33:loadFileEGG.groupDrill: More than one statement on a single line
+C0321:156,33:loadFileEGG.groupDrill: More than one statement on a single line
+C0321:185,41:loadFileEGG.groupDrill: More than one statement on a single line
+C0321:187,41:loadFileEGG.groupDrill: More than one statement on a single line
+C0321:195,52:loadFileEGG.groupDrill: More than one statement on a single line
+C0321:206,26:loadFileEGG.groupDrill: More than one statement on a single line
+C0324:216,6:loadFileEGG.groupDrill: Comma not followed by a space
+      for j in range(1,n):
+                      ^^
+W0612:179,4:loadFileEGG.groupDrill: Unused variable 'ni'
+W0612:111,4:loadFileEGG.groupDrill: Unused variable 'numi'
+W0612:110,4:loadFileEGG.groupDrill: Unused variable 'numv'
+C0324:247,2:loadFileEGG: Comma not followed by a space
+  bReg = re.finditer("[{}<]",l)
+                            ^^
+C0324:248,2:loadFileEGG: Comma not followed by a space
+  xx = ["","","",[]]
+          ^^
+C0321:256,34:loadFileEGG: More than one statement on a single line
+C0324:260,6:loadFileEGG: Comma not followed by a space
+      model.textureList[x[1]]["texID"] = Texture(os.path.join(filePath, model.textureList[x[1]]["filename"]),False,True) # load from file
+                                                                                                            ^^
+C0321:265,34:loadFileEGG: More than one statement on a single line
+W0611:  7,0: Unused import Shape
+W0611:  3,0: Unused import ctypes
+************* Module pi3d.pi3d.loader.loaderObj
+C0301:  8,0: Line too long (89/80)
+C0301: 15,0: Line too long (89/80)
+C0301: 18,0: Line too long (89/80)
+C0301: 45,0: Line too long (89/80)
+C0301: 56,0: Line too long (103/80)
+C0301: 76,0: Line too long (89/80)
+C0301:145,0: Line too long (110/80)
+C0301:214,0: Line too long (83/80)
+C0301:239,0: Line too long (129/80)
+C0301:243,0: Line too long (116/80)
+C0301:248,0: Line too long (86/80)
+C0301:249,0: Line too long (82/80)
+W0622: 83,2:loadFileOBJ: Redefining built-in 'object'
+C0324: 96,8:loadFileOBJ: Comma not followed by a space
+        vertices.append((x,y,z))
+                          ^^
+C0324:104,8:loadFileOBJ: Comma not followed by a space
+        normals.append((x,y,z))
+                         ^^
+C0324:111,8:loadFileOBJ: Comma not followed by a space
+        uvs.append((u,v))
+                     ^^
+C0321:126,37:loadFileOBJ: More than one statement on a single line
+C0321:127,37:loadFileOBJ: More than one statement on a single line
+C0321:146,34:loadFileOBJ: More than one statement on a single line
+C0324:201,6:loadFileOBJ: Comma not followed by a space
+      print "len uv=",len(vertices)
+                     ^^
+C0324:211,6:loadFileOBJ: Comma not followed by a space
+      for t in range(1,n):
+                      ^^
+C0324:227,6:loadFileOBJ: Comma not followed by a space
+      print "indices=",len(model.buf[n].indices)
+                      ^^
+C0324:228,6:loadFileOBJ: Comma not followed by a space
+      print "vertices=",len(model.buf[n].vertices)
+                       ^^
+C0324:229,6:loadFileOBJ: Comma not followed by a space
+      print "normals=",len(model.buf[n].normals)
+                      ^^
+C0324:230,6:loadFileOBJ: Comma not followed by a space
+      print "tex_coords=",len(model.buf[n].tex_coords)
+                         ^^
+W0612:199,4:loadFileOBJ: Unused variable 'j'
+W0611:  1,0: Unused import re
+W0611:  4,0: Unused import Shape
+************* Module pi3d.pi3d.loader.parse_mtl
+W0108: 17,12:Materials.<lambda>: Lambda may not be necessary
+W0108: 18,10:Materials.<lambda>: Lambda may not be necessary
+W0108: 19,10:Materials.<lambda>: Lambda may not be necessary
+************* Module pi3d.pi3d.loader.parse_mtl_test
+W0311: 16,0: Bad indentation. Found 4 spaces, expected 2
+************* Module pi3d.pi3d.shape.Building
+C0301:  8,0: Line too long (82/80)
+C0301: 17,0: Line too long (81/80)
+C0301: 32,0: Line too long (82/80)
+C0301: 33,0: Line too long (90/80)
+C0301: 40,0: Line too long (88/80)
+W0311: 75,0: Bad indentation. Found 6 spaces, expected 2
+W0311:179,0: Bad indentation. Found 6 spaces, expected 4
+W0311:182,0: Bad indentation. Found 6 spaces, expected 4
+W0311:185,0: Bad indentation. Found 6 spaces, expected 4
+W0311:188,0: Bad indentation. Found 6 spaces, expected 4
+C0301:233,0: Line too long (110/80)
+C0301:234,0: Line too long (105/80)
+C0301:235,0: Line too long (99/80)
+W0311:270,0: Bad indentation. Found 8 spaces, expected 6
+W0311:272,0: Bad indentation. Found 8 spaces, expected 6
+C0301:282,0: Line too long (103/80)
+W0311:294,0: Bad indentation. Found 4 spaces, expected 2
+C0301:298,0: Line too long (101/80)
+W0311:298,0: Bad indentation. Found 4 spaces, expected 2
+W0311:299,0: Bad indentation. Found 6 spaces, expected 4
+W0311:300,0: Bad indentation. Found 6 spaces, expected 4
+W0311:301,0: Bad indentation. Found 8 spaces, expected 6
+W0311:302,0: Bad indentation. Found 6 spaces, expected 4
+W0311:303,0: Bad indentation. Found 8 spaces, expected 6
+W0311:304,0: Bad indentation. Found 6 spaces, expected 4
+W0311:305,0: Bad indentation. Found 8 spaces, expected 6
+C0301:306,0: Line too long (94/80)
+W0311:306,0: Bad indentation. Found 6 spaces, expected 4
+C0301:307,0: Line too long (82/80)
+C0301:310,0: Line too long (112/80)
+C0301:337,0: Line too long (122/80)
+C0301:351,0: Line too long (122/80)
+C0301:364,0: Line too long (121/80)
+C0301:377,0: Line too long (121/80)
+C0301:391,0: Line too long (121/80)
+C0301:414,0: Line too long (104/80)
+C0301:417,0: Line too long (85/80)
+C0301:418,0: Line too long (125/80)
+C0301:419,0: Line too long (124/80)
+C0301:420,0: Line too long (125/80)
+C0301:421,0: Line too long (108/80)
+C0301:422,0: Line too long (88/80)
+C0301:423,0: Line too long (109/80)
+C0301:424,0: Line too long (96/80)
+C0301:426,0: Line too long (144/80)
+C0301:449,0: Line too long (107/80)
+C0301:450,0: Line too long (81/80)
+C0301:459,0: Line too long (90/80)
+W0311:475,0: Bad indentation. Found 8 spaces, expected 6
+W0311:483,0: Bad indentation. Found 10 spaces, expected 8
+W0311:485,0: Bad indentation. Found 10 spaces, expected 8
+C0301:486,0: Line too long (189/80)
+W0311:486,0: Bad indentation. Found 12 spaces, expected 10
+W0311:487,0: Bad indentation. Found 10 spaces, expected 8
+C0301:488,0: Line too long (181/80)
+W0311:488,0: Bad indentation. Found 12 spaces, expected 10
+W0311:490,0: Bad indentation. Found 10 spaces, expected 8
+C0301:491,0: Line too long (189/80)
+W0311:491,0: Bad indentation. Found 12 spaces, expected 10
+W0311:492,0: Bad indentation. Found 10 spaces, expected 8
+C0301:493,0: Line too long (181/80)
+W0311:493,0: Bad indentation. Found 12 spaces, expected 10
+W0311:495,0: Bad indentation. Found 10 spaces, expected 8
+C0301:496,0: Line too long (191/80)
+W0311:496,0: Bad indentation. Found 12 spaces, expected 10
+W0311:497,0: Bad indentation. Found 10 spaces, expected 8
+C0301:498,0: Line too long (183/80)
+W0311:498,0: Bad indentation. Found 12 spaces, expected 10
+W0311:500,0: Bad indentation. Found 10 spaces, expected 8
+C0301:501,0: Line too long (192/80)
+W0311:501,0: Bad indentation. Found 12 spaces, expected 10
+W0311:502,0: Bad indentation. Found 10 spaces, expected 8
+C0301:503,0: Line too long (183/80)
+W0311:503,0: Bad indentation. Found 12 spaces, expected 10
+C0301:505,0: Line too long (150/80)
+W0311:505,0: Bad indentation. Found 10 spaces, expected 8
+C0301:522,0: Line too long (126/80)
+C0301:524,0: Line too long (125/80)
+C0301:553,0: Line too long (82/80)
+C0301:557,0: Line too long (108/80)
+C0301:575,0: Line too long (98/80)
+C0301:582,0: Line too long (108/80)
+C0301:605,0: Line too long (108/80)
+C0301:623,0: Line too long (98/80)
+C0301:629,0: Line too long (108/80)
+C0301:648,0: Line too long (85/80)
+C0301:652,0: Line too long (107/80)
+C0301:670,0: Line too long (97/80)
+C0301:676,0: Line too long (107/80)
+C0301:695,0: Line too long (86/80)
+C0301:699,0: Line too long (107/80)
+C0301:717,0: Line too long (97/80)
+C0301:723,0: Line too long (107/80)
+C0301:742,0: Line too long (85/80)
+C0301:746,0: Line too long (138/80)
+C0301:769,0: Line too long (135/80)
+C0301:783,0: Line too long (118/80)
+C0301:785,0: Line too long (86/80)
+C0324: 60,2:xyz.__init__: Comma not followed by a space
+  def __init__(self, x,y=None,z=None):
+                      ^^
+R0903: 56,0:xyz: Too few public methods (0/2)
+C0324: 84,2:Size.__init__: Comma not followed by a space
+  def __init__(self, x,y=None,z=None):
+                      ^^
+C0324: 85,4:Size.__init__: Comma not followed by a space
+    super(Size,self).__init__(x,y,z)
+              ^^
+C0324: 95,2:Size.__sub__: Comma not followed by a space
+  def __sub__(self,a):
+                  ^^
+C0324:103,2:Size.__div__: Comma not followed by a space
+  def __div__(self,a):
+                  ^^
+R0903: 78,0:Size: Too few public methods (0/2)
+C0324:113,2:Position.__init__: Comma not followed by a space
+  def __init__(self, x,y=None,z=None):
+                      ^^
+C0324:114,4:Position.__init__: Comma not followed by a space
+    super(Position,self).__init__(x,y,z)
+                  ^^
+C0324:124,2:Position.__sub__: Comma not followed by a space
+  def __sub__(self,a):
+                  ^^
+C0324:132,2:Position.setvalue: Comma not followed by a space
+  def setvalue(self,p):
+                   ^^
+C0321:133,36:Position.setvalue: More than one statement on a single line
+R0903:107,0:Position: Too few public methods (1/2)
+C0324:138,0:_overlap: Comma not followed by a space
+def _overlap(x1,w1, x2, w2):
+               ^^
+C0321:143,20:_overlap: More than one statement on a single line
+C0321:144,20:_overlap: More than one statement on a single line
+C0321:159,32:ObjectCuboid.__init__: More than one statement on a single line
+C0321:160,36:ObjectCuboid.__init__: More than one statement on a single line
+C0324:250,2:SolidObject.__init__: Comma not followed by a space
+  def __init__(self,name,s,p, bulk):
+                   ^^
+C0324:259,2:SolidObject.CollisionList: Comma not followed by a space
+  def CollisionList(self,p):
+                        ^^
+C0321:267,36:SolidObject.CollisionList: More than one statement on a single line
+C0324:268,4:SolidObject.CollisionList: Comma not followed by a space
+    r = filter(lambda(x): x.Overlaps(self,p), type(self).objectlist)
+                                         ^^
+W0141:268,8:SolidObject.CollisionList: Used builtin function 'filter'
+W0110:268,8:SolidObject.CollisionList: map/filter on lambda could be replaced by comprehension
+C0202:285,2:SolidObject.drawall: Class method drawall should have 'cls' as first argument
+C0324:298,4:createMyCuboid.__init__: Comma not followed by a space
+    def __init__(self,w,h,d, name="", x=0.0,y=0.0,z=0.0, rx=0.0,ry=0.0,rz=0.0, cx=0.0,cy=0.0,cz=0.0):
+                     ^^
+C0324:306,6:createMyCuboid.__init__: Comma not followed by a space
+      super(createMyCuboid,self).__init__(w=w, h=h, d=d, name=name, x=x+0.125, y=y, z=z-1.125,
+                          ^^
+        rx=rx, ry=ry, rz=rz, cx=cx, cy=cy, cz=cz, tw=w/fact, th=h/fact, td=d/fact)
+R0903:293,0:createMyCuboid: Too few public methods (0/2)
+C0322:309,0: Operator not preceded by a space
+wallnum=0
+       ^
+C0324:310,0:corridor: Comma not followed by a space
+def corridor(x,z, emap, width=10, length=10, height=10, details=None, walls="ns", name="wall", mergeshape=None):
+              ^^
+W0603:330,2:corridor: Using the global statement
+C0324:461,4:Building.__init__: Comma not followed by a space
+    print "Loading building map ...",mapfile
+                                    ^^
+C0324:465,4:Building.__init__: Comma not followed by a space
+    ix,iy = im.size
+      ^^
+C0324:472,4:Building.__init__: Comma not followed by a space
+    yoff += emap.calcHeight(-xpos,-zpos)
+                                 ^^
+C0324:480,4:Building.__init__: Comma not followed by a space
+    for y in range(1,iy-1):
+                    ^^
+C0324:482,6:Building.__init__: Comma not followed by a space
+      for x in range(1,ix-1):
+                      ^^
+C0324:483,10:Building.__init__: Comma not followed by a space
+          colour = pixels[x,y]
+                           ^^
+C0324:486,12:Building.__init__: Comma not followed by a space
+            self._executeScheme(x, y, startx, starty, (colour, pixels[x-1,y], "edge"), wallfunc=self.west_wall, ceilingedgefunc=self.west_edge, ceilingfunc=self.ceiling, rooffunc=self.roof)
+                                                                         ^^
+C0324:488,12:Building.__init__: Comma not followed by a space
+            self._executeScheme(x, y, startx, starty, (colour, pixels[x-1,y]), wallfunc=self.west_wall, ceilingedgefunc=self.west_edge, ceilingfunc=self.ceiling, rooffunc=self.roof)
+                                                                         ^^
+C0324:491,12:Building.__init__: Comma not followed by a space
+            self._executeScheme(x, y, startx, starty, (colour, pixels[x+1,y], "edge"), wallfunc=self.east_wall, ceilingedgefunc=self.east_edge, ceilingfunc=self.ceiling, rooffunc=self.roof)
+                                                                         ^^
+C0324:493,12:Building.__init__: Comma not followed by a space
+            self._executeScheme(x, y, startx, starty, (colour, pixels[x+1,y]), wallfunc=self.east_wall, ceilingedgefunc=self.east_edge, ceilingfunc=self.ceiling, rooffunc=self.roof)
+                                                                         ^^
+C0324:496,12:Building.__init__: Comma not followed by a space
+            self._executeScheme(x, y, startx, starty, (colour, pixels[x,y-1], "edge"), wallfunc=self.south_wall, ceilingedgefunc=self.south_edge, ceilingfunc=self.ceiling, rooffunc=self.roof)
+                                                                       ^^
+C0324:498,12:Building.__init__: Comma not followed by a space
+            self._executeScheme(x, y, startx, starty, (colour, pixels[x,y-1]), wallfunc=self.south_wall, ceilingedgefunc=self.south_edge, ceilingfunc=self.ceiling, rooffunc=self.roof)
+                                                                       ^^
+C0324:503,12:Building.__init__: Comma not followed by a space
+            self._executeScheme(x, y, startx, starty, (colour, pixels[x,y+1]), wallfunc=self.north_wall, ceilingedgefunc=self.north_edge, ceilingfunc=self.ceiling, rooffunc=self.roof)
+                                                                       ^^
+W0603:569,4:Building.north_wall: Using the global statement
+W0612:572,4:Building.north_wall: Unused variable 'e'
+W0612:571,4:Building.north_wall: Unused variable 's'
+W0613:557,64:Building.north_wall: Unused argument 'details'
+W0612:573,4:Building.north_wall: Unused variable 'w'
+R0201:557,2:Building.north_wall: Method could be a function
+W0603:594,4:Building.north_edge: Using the global statement
+W0612:597,4:Building.north_edge: Unused variable 'e'
+W0612:596,4:Building.north_edge: Unused variable 's'
+W0613:582,64:Building.north_edge: Unused argument 'details'
+W0612:598,4:Building.north_edge: Unused variable 'w'
+W0603:617,4:Building.south_wall: Using the global statement
+C0324:625,4:Building.south_wall: Comma not followed by a space
+    mergeshape.add(model, swall.x(),swall.y(),swall.z(), rx=0.0,ry=0.0,rz=0.0)
+                                   ^^
+W0612:620,4:Building.south_wall: Unused variable 'e'
+W0612:618,4:Building.south_wall: Unused variable 'n'
+W0613:605,64:Building.south_wall: Unused argument 'details'
+W0612:621,4:Building.south_wall: Unused variable 'w'
+R0201:605,2:Building.south_wall: Method could be a function
+W0603:641,4:Building.south_edge: Using the global statement
+C0324:648,4:Building.south_edge: Comma not followed by a space
+    mergeshape.add(model, x,y+height+self.ceilingthickness/2,s, rx=0.0,ry=0.0,rz=0.0)
+                           ^^
+W0612:644,4:Building.south_edge: Unused variable 'e'
+W0613:629,64:Building.south_edge: Unused argument 'details'
+W0612:645,4:Building.south_edge: Unused variable 'w'
+W0612:642,4:Building.south_edge: Unused variable 'n'
+W0603:664,4:Building.east_wall: Using the global statement
+C0324:672,4:Building.east_wall: Comma not followed by a space
+    mergeshape.add(model, ewall.x(),ewall.y(),ewall.z(), rx=0.0,ry=90.0,rz=0.0)
+                                   ^^
+W0612:665,4:Building.east_wall: Unused variable 'n'
+W0612:666,4:Building.east_wall: Unused variable 's'
+W0613:652,63:Building.east_wall: Unused argument 'details'
+W0612:668,4:Building.east_wall: Unused variable 'w'
+R0201:652,2:Building.east_wall: Method could be a function
+W0603:688,4:Building.east_edge: Using the global statement
+C0324:695,4:Building.east_edge: Comma not followed by a space
+    mergeshape.add(model, e,y+height+self.ceilingthickness/2,z, rx=0.0,ry=90.0,rz=0.0)
+                           ^^
+W0612:690,4:Building.east_edge: Unused variable 's'
+W0613:676,63:Building.east_edge: Unused argument 'details'
+W0612:692,4:Building.east_edge: Unused variable 'w'
+W0612:689,4:Building.east_edge: Unused variable 'n'
+W0603:711,4:Building.west_wall: Using the global statement
+C0324:719,4:Building.west_wall: Comma not followed by a space
+    mergeshape.add(model, wwall.x(),wwall.y(),wwall.z(),rx=0.0,ry=90.0,rz=0.0)
+                                   ^^
+W0612:714,4:Building.west_wall: Unused variable 'e'
+W0612:712,4:Building.west_wall: Unused variable 'n'
+W0612:713,4:Building.west_wall: Unused variable 's'
+W0613:699,63:Building.west_wall: Unused argument 'details'
+R0201:699,2:Building.west_wall: Method could be a function
+W0603:735,4:Building.west_edge: Using the global statement
+C0324:742,4:Building.west_edge: Comma not followed by a space
+    mergeshape.add(model, w,y+height+self.ceilingthickness/2,z,rx=0.0,ry=90.0,rz=0.0)
+                           ^^
+W0612:738,4:Building.west_edge: Unused variable 'e'
+W0612:737,4:Building.west_edge: Unused variable 's'
+W0613:723,63:Building.west_edge: Unused argument 'details'
+W0612:736,4:Building.west_edge: Unused variable 'n'
+W0603:758,4:Building.ceiling: Using the global statement
+C0324:765,4:Building.ceiling: Comma not followed by a space
+    mergeshape.add(ceilingmodel,x,y+height,z,rx=90.0,ry=0.0,rz=0.0)
+                               ^^
+W0613:746,105:Building.ceiling: Unused argument 'makeroof'
+W0613:746,120:Building.ceiling: Unused argument 'makeceiling'
+W0612:761,4:Building.ceiling: Unused variable 'e'
+W0612:759,4:Building.ceiling: Unused variable 'n'
+W0612:760,4:Building.ceiling: Unused variable 's'
+W0613:746,61:Building.ceiling: Unused argument 'details'
+W0612:762,4:Building.ceiling: Unused variable 'w'
+R0201:746,2:Building.ceiling: Method could be a function
+W0603:781,4:Building.roof: Using the global statement
+C0324:785,4:Building.roof: Comma not followed by a space
+    mergeshape.add(roofmodel,x,y+height+self.ceilingthickness,z,rx=90.0,ry=0.0,rz=0.0)
+                            ^^
+W0613:769,102:Building.roof: Unused argument 'makeroof'
+W0613:769,117:Building.roof: Unused argument 'makeceiling'
+W0612:783,4:Building.roof: Unused variable 'roof'
+W0613:769,58:Building.roof: Unused argument 'details'
+W0611: 44,0: Unused import random
+W0611: 52,0: Unused import Texture
+W0611: 44,0: Unused import sys
+W0611: 51,0: Unused import Buffer
+W0611: 45,0: Unused import ImageDraw
+W0611: 50,0: Unused import Shape
+W0611: 44,0: Unused import exceptions
+W0611: 41,0: Unused import os
+W0611: 44,0: Unused import math
+************* Module pi3d.pi3d.shape.Canvas
+C0301: 41,0: Line too long (84/80)
+W0401:  1,0: Wildcard import pi3d
+E1101: 47,4:Canvas.repaint: Instance of 'Canvas' has no 'draw' member
+W0613: 46,20:Canvas.repaint: Unused argument 't'
+W0611:  5,0: Unused import Loadable
+W0611:  2,0: Unused import Texture
+************* Module pi3d.pi3d.shape.Cone
+C0301:  7,0: Line too long (88/80)
+E1101: 36,20:Cone.__init__: Instance of 'Cone' has no '_lathe' member
+R0903:  5,0:Cone: Too few public methods (0/2)
+W0611:  2,0: Unused import Buffer
+************* Module pi3d.pi3d.shape.Cuboid
+C0301:  9,0: Line too long (87/80)
+C0301: 53,0: Line too long (85/80)
+C0301: 69,0: Line too long (124/80)
+C0301: 70,0: Line too long (110/80)
+C0301: 71,0: Line too long (110/80)
+C0301: 72,0: Line too long (110/80)
+C0301: 73,0: Line too long (110/80)
+C0301: 74,0: Line too long (110/80)
+C0301: 77,0: Line too long (93/80)
+W0401:  1,0: Wildcard import pi3d
+C0324: 29,4:Cuboid.__init__: Comma not followed by a space
+    super(Cuboid,self).__init__(camera, light, name, x, y, z, rx, ry, rz,
+                ^^
+                                1.0, 1.0, 1.0, cx, cy, cz)
+C0324: 47,4:Cuboid.__init__: Comma not followed by a space
+    self.vertices = ((-ww, hh, dd), (ww, hh, dd), (ww,-hh, dd), (-ww, -hh, dd),
+                                                     ^^
+        (ww, hh, dd),  (ww, hh, -dd),  (ww, -hh, -dd), (ww, -hh, dd),
+        (-ww, hh, dd), (-ww, hh, -dd), (ww, hh, -dd),  (ww, hh, dd),
+        (ww, -hh, dd), (ww, -hh, -dd), (-ww, -hh, -dd),(-ww, -hh, dd),
+        (-ww, -hh, dd),(-ww, -hh, -dd),(-ww, hh, -dd), (-ww, hh, dd),
+        (-ww, hh, -dd),(ww, hh, -dd),  (ww, -hh, -dd), (-ww,-hh,-dd))
+R0903:  5,0:Cuboid: Too few public methods (0/2)
+************* Module pi3d.pi3d.shape.Cylinder
+W0401:  1,0: Wildcard import pi3d
+E1101: 33,20:Cylinder.__init__: Instance of 'Cylinder' has no '_lathe' member
+R0903:  4,0:Cylinder: Too few public methods (0/2)
+************* Module pi3d.pi3d.shape.Disk
+C0301: 10,0: Line too long (95/80)
+C0301: 20,0: Line too long (84/80)
+C0301: 39,0: Line too long (81/80)
+C0301: 43,0: Line too long (93/80)
+C0301: 48,0: Line too long (84/80)
+E1101: 35,6:Disk.__init__: Instance of 'Disk' has no '_add_vertex' member
+E1101: 38,8:Disk.__init__: Instance of 'Disk' has no '_add_vertex' member
+E1101: 45,8:Disk.__init__: Instance of 'Disk' has no '_add_tri' member
+E1101: 48,4:Disk.__init__: Instance of 'Disk' has no 'buf' member
+R0903:  8,0:Disk: Too few public methods (0/2)
+************* Module pi3d.pi3d.shape.ElevationMap
+C0301:  5,0: Line too long (87/80)
+C0301: 20,0: Line too long (89/80)
+C0301:226,0: Line too long (85/80)
+C0301:242,0: Line too long (85/80)
+C0301:254,0: Line too long (83/80)
+C0301:267,0: Line too long (81/80)
+C0301:273,0: Line too long (85/80)
+C0301:337,0: Line too long (109/80)
+C0301:339,0: Line too long (111/80)
+W0401:  7,0: Wildcard import pi3d
+C0324: 42,6:ElevationMap.__init__: Comma not followed by a space
+      print "Loading height map ...",mapfile
+                                    ^^
+C0322: 44,4:ElevationMap.__init__: Operator not preceded by a space
+    if divx>200 or divy>200:
+           ^
+C0322: 67,4:ElevationMap.__init__: Operator not preceded by a space
+    self.ix=ix
+           ^
+C0322: 68,4:ElevationMap.__init__: Operator not preceded by a space
+    self.iy=iy
+           ^
+C0324: 87,4:ElevationMap.__init__: Comma not followed by a space
+    for y in xrange(0,iy):
+                     ^^
+C0324: 88,6:ElevationMap.__init__: Comma not followed by a space
+      for x in xrange(0,ix):
+                       ^^
+C0324: 89,8:ElevationMap.__init__: Comma not followed by a space
+        hgt = (self.pixels[x,y])*ht
+                            ^^
+W0105: 97,-1:ElevationMap.__init__: String statement has no effect
+C0322:126,4:ElevationMap.__init__: Operator not preceded by a space
+    s=0
+     ^
+C0324:128,4:ElevationMap.__init__: Comma not followed by a space
+    for y in range(0,iy-1):
+                    ^^
+C0324:129,6:ElevationMap.__init__: Comma not followed by a space
+      for x in range(0,ix-1):
+                      ^^
+C0324:131,8:ElevationMap.__init__: Comma not followed by a space
+        idx.append((i,i+ix,i+ix+1))
+                     ^^
+C0324:132,8:ElevationMap.__init__: Comma not followed by a space
+        idx.append((i+ix+1,i+1,i))
+                          ^^
+C0322:133,8:ElevationMap.__init__: Operator not preceded by a space
+        s+=2
+         ^^
+W0612: 83,4:ElevationMap.__init__: Unused variable 'norms'
+W0612:126,4:ElevationMap.__init__: Unused variable 's'
+E1101:143,10:ElevationMap.dropOn: Instance of 'ElevationMap' has no 'unif' member
+E1101:144,10:ElevationMap.dropOn: Instance of 'ElevationMap' has no 'unif' member
+E1101:155,19:ElevationMap.dropOn: Instance of 'ElevationMap' has no 'unif' member
+E1101:165,10:ElevationMap.calcHeight: Instance of 'ElevationMap' has no 'unif' member
+E1101:166,10:ElevationMap.calcHeight: Instance of 'ElevationMap' has no 'unif' member
+C0321:178,14:ElevationMap.calcHeight: More than one statement on a single line
+C0321:179,24:ElevationMap.calcHeight: More than one statement on a single line
+C0321:180,14:ElevationMap.calcHeight: More than one statement on a single line
+C0321:181,24:ElevationMap.calcHeight: More than one statement on a single line
+E1101:193,11:ElevationMap.calcHeight: Instance of 'ElevationMap' has no 'unif' member
+W0612:172,4:ElevationMap.calcHeight: Unused variable 'ht'
+E1101:217,10:ElevationMap.clashTest: Instance of 'ElevationMap' has no 'unif' member
+E1101:218,10:ElevationMap.clashTest: Instance of 'ElevationMap' has no 'unif' member
+E1101:219,10:ElevationMap.clashTest: Instance of 'ElevationMap' has no 'unif' member
+C0321:228,15:ElevationMap.clashTest: More than one statement on a single line
+C0321:230,23:ElevationMap.clashTest: More than one statement on a single line
+C0321:232,15:ElevationMap.clashTest: More than one statement on a single line
+C0321:234,23:ElevationMap.clashTest: More than one statement on a single line
+C0324:237,4:ElevationMap.clashTest: Comma not followed by a space
+    minDist, minLoc = 1000000, (0,0)
+                                 ^^
+C0324:251,10:ElevationMap.clashTest: Comma not followed by a space
+          minLoc = (i,j)
+                     ^^
+C0324:271,12:ElevationMap.clashTest: Comma not followed by a space
+            minLoc = (i,j)
+                       ^^
+W0612:220,4:ElevationMap.clashTest: Unused variable 'ht'
+E1101:301,10:ElevationMap.pitch_roll: Instance of 'ElevationMap' has no 'unif' member
+E1101:302,10:ElevationMap.pitch_roll: Instance of 'ElevationMap' has no 'unif' member
+C0321:308,15:ElevationMap.pitch_roll: More than one statement on a single line
+C0321:309,23:ElevationMap.pitch_roll: More than one statement on a single line
+C0321:311,15:ElevationMap.pitch_roll: More than one statement on a single line
+C0321:312,23:ElevationMap.pitch_roll: More than one statement on a single line
+C0324:338,2:intersect_triangle: Comma not followed by a space
+  nVec = cross(subtract(v2,v1), subtract(v3, v1))
+                          ^^
+C0324:340,2:intersect_triangle: Comma not followed by a space
+  kVal = dot(nVec,v1)
+                 ^^
+W0611:  5,0: Unused import multiply
+************* Module pi3d.pi3d.shape.EnvironmentCube
+C0301: 39,0: Line too long (108/80)
+C0301: 49,0: Line too long (82/80)
+C0301: 71,0: Line too long (85/80)
+C0301: 82,0: Line too long (87/80)
+C0301: 90,0: Line too long (95/80)
+C0301: 93,0: Line too long (85/80)
+C0301:101,0: Line too long (95/80)
+C0301:104,0: Line too long (83/80)
+C0301:112,0: Line too long (123/80)
+C0301:113,0: Line too long (123/80)
+C0301:114,0: Line too long (124/80)
+C0301:115,0: Line too long (130/80)
+C0301:116,0: Line too long (128/80)
+C0301:117,0: Line too long (128/80)
+C0301:119,0: Line too long (92/80)
+C0301:124,0: Line too long (81/80)
+W0401:  3,0: Wildcard import pi3d
+C0324: 49,4:EnvironmentCube.__init__: Comma not followed by a space
+    super(EnvironmentCube,self).__init__(camera, light, name, x, y, z, rx, ry, rz,
+                         ^^
+                                1.0, 1.0, 1.0, cx, cy, cz)
+C0324: 65,4:EnvironmentCube.__init__: Comma not followed by a space
+    self.vertices = ((-ww, hh, dd), (ww, hh, dd), (ww,-hh, dd), (-ww, -hh, dd),
+                                                     ^^
+        (ww, hh, dd),  (ww, hh, -dd),  (ww, -hh, -dd), (ww, -hh, dd),
+        (-ww, hh, dd), (-ww, hh, -dd), (ww, hh, -dd),  (ww, hh, dd),
+        (ww, -hh, dd), (ww, -hh, -dd), (-ww, -hh, -dd),(-ww, -hh, dd),
+        (-ww, -hh, dd),(-ww, -hh, -dd),(-ww, hh, -dd), (-ww, hh, dd),
+        (-ww, hh, -dd),(ww, hh, -dd),  (ww, -hh, -dd), (-ww,-hh,-dd))
+C0324: 93,6:EnvironmentCube.__init__: Comma not followed by a space
+      self.tex_coords = ((0.25,0.25), (0.25,0.75), (-0.25,0.75), (-0.25,0.25), #front
+                              ^^
+        (0.25,0.75), (0.75,0.75), (0.75,1.25), (0.25,1.25), #right
+        (0.25,0.25), (0.75,0.25), (0.75,0.75), (0.25,0.75), #top
+        (0,0), (1,0), (1,1), (0,1), #bottom
+        (0.25,-0.25), (0.75,-0.25), (0.75,0.25), (0.25,0.25), #left
+        (0.75,0.25), (0.75,0.75), (1.25,0.75), (1.25,0.25)) #back
+C0324:104,6:EnvironmentCube.__init__: Comma not followed by a space
+      self.tex_coords = ((0.002,0.002), (0.998,0.002), (0.998,0.998),(0.002,0.998),
+                               ^^
+            (0.002,0.002), (0.998,0.002), (0.998,0.998), (0.002,0.998),
+            (0.002,0.998), (0.002,0.002), (0.998,0.002), (0.998,0.998),
+            (0.998,0.002), (0.998,0.998), (0.002,0.998), (0.002,0.002),
+            (0.998,0.998), (0.002,0.998), (0.002,0.002), (0.998,0.002),
+            (0.998,0.002), (0.002,0.002), (0.002,0.998), (0.998,0.998))
+C0324:112,6:EnvironmentCube.__init__: Comma not followed by a space
+      self.buf.append(Buffer(self, self.vertices[0:4], self.tex_coords[0:4], ((3,0,1), (2,3,1)), self.normals[0:4])) #front
+                                                                                ^^
+C0324:113,6:EnvironmentCube.__init__: Comma not followed by a space
+      self.buf.append(Buffer(self, self.vertices[4:8], self.tex_coords[4:8], ((3,0,1), (2,3,1)), self.normals[4:8])) #right
+                                                                                ^^
+C0324:114,6:EnvironmentCube.__init__: Comma not followed by a space
+      self.buf.append(Buffer(self, self.vertices[8:12], self.tex_coords[8:12], ((3,0,1), (2,3,1)), self.normals[8:12])) #top
+                                                                                  ^^
+C0324:115,6:EnvironmentCube.__init__: Comma not followed by a space
+      self.buf.append(Buffer(self, self.vertices[12:16], self.tex_coords[12:16], ((3,0,1), (2,3,1)), self.normals[12:16])) #bottom
+                                                                                    ^^
+C0324:116,6:EnvironmentCube.__init__: Comma not followed by a space
+      self.buf.append(Buffer(self, self.vertices[16:20], self.tex_coords[16:20], ((3,0,1), (2,3,1)), self.normals[16:20])) #left
+                                                                                    ^^
+C0324:117,6:EnvironmentCube.__init__: Comma not followed by a space
+      self.buf.append(Buffer(self, self.vertices[20:24], self.tex_coords[20:24], ((3,1,0), (2,1,3)), self.normals[20:24])) #back
+                                                                                    ^^
+R0903: 37,0:EnvironmentCube: Too few public methods (1/2)
+************* Module pi3d.pi3d.shape.Extrude
+C0301: 12,0: Line too long (96/80)
+C0301: 69,0: Line too long (108/80)
+C0301: 77,0: Line too long (94/80)
+C0301:100,0: Line too long (113/80)
+C0301:101,0: Line too long (123/80)
+C0301:102,0: Line too long (129/80)
+W0102: 12,2:Extrude.__init__: Dangerous default value [] as argument
+C0322: 31,4:Extrude.__init__: Operator not preceded by a space
+    self.verts=[]
+              ^
+C0322: 32,4:Extrude.__init__: Operator not preceded by a space
+    self.norms=[]
+              ^
+C0322: 33,4:Extrude.__init__: Operator not preceded by a space
+    self.botface=[]
+                ^
+C0322: 34,4:Extrude.__init__: Operator not preceded by a space
+    self.topface=[]
+                ^
+C0322: 35,4:Extrude.__init__: Operator not preceded by a space
+    self.sidefaces=[]
+                  ^
+C0322: 36,4:Extrude.__init__: Operator not preceded by a space
+    self.tex_coords=[]
+                   ^
+W0612: 89,6:Extrude.__init__: Unused variable 'p0'
+W0612: 90,6:Extrude.__init__: Unused variable 'p1'
+R0903:  7,0:Extrude: Too few public methods (0/2)
+W0611:  3,0: Unused import Utility
+************* Module pi3d.pi3d.shape.Helix
+C0301:  8,0: Line too long (104/80)
+C0324: 26,4:Helix.__init__: Comma not followed by a space
+    super(Helix,self).__init__(camera, light, name, x, y, z, rx, ry, rz,
+               ^^
+                                sx, sy, sz, cx, cy, cz)
+E1101: 47,20:Helix.__init__: Instance of 'Helix' has no '_lathe' member
+R0903:  6,0:Helix: Too few public methods (0/2)
+************* Module pi3d.pi3d.shape.Lathe
+C0301: 12,0: Line too long (94/80)
+C0301: 35,0: Line too long (82/80)
+C0301: 36,0: Line too long (125/80)
+W0102: 12,2:Lathe.__init__: Dangerous default value [] as argument
+E1101: 32,20:Lathe.__init__: Instance of 'Lathe' has no '_lathe' member
+R0903:  4,0:Lathe: Too few public methods (0/2)
+************* Module pi3d.pi3d.shape.MergeShape
+C0301: 29,0: Line too long (90/80)
+C0301: 41,0: Line too long (93/80)
+C0301: 91,0: Line too long (128/80)
+C0301: 95,0: Line too long (93/80)
+C0301:102,0: Line too long (85/80)
+C0322: 35,4:MergeShape.__init__: Operator not preceded by a space
+    self.vertices=[]
+                 ^
+C0322: 36,4:MergeShape.__init__: Operator not preceded by a space
+    self.normals=[]
+                ^
+C0322: 37,4:MergeShape.__init__: Operator not preceded by a space
+    self.tex_coords=[]
+                   ^
+C0322: 38,4:MergeShape.__init__: Operator not preceded by a space
+    self.indices=[]    #stores all indices for single render
+                ^
+W0612: 66,4:MergeShape.merge: Unused variable 'vertices'
+W0613: 47,28:MergeShape.merge: Unused argument 'cz'
+W0613: 47,20:MergeShape.merge: Unused argument 'cy'
+W0613: 47,12:MergeShape.merge: Unused argument 'cx'
+W0612: 67,4:MergeShape.merge: Unused variable 'normals'
+C0324:130,6:MergeShape.cluster: Comma not followed by a space
+      self.merge(bufr, x,y,z, 0.0, rt, 0.0, rh, rh, rh)
+                        ^^
+W0612:124,8:MergeShape.cluster: Unused variable 'v'
+W0613:102,60:MergeShape.cluster: Unused argument 'options'
+C0324:164,6:MergeShape.radialCopy: Comma not followed by a space
+      self.merge(bufr, x + ca * rd, y ,z + sa * rd, 0, sta, 0)
+                                      ^^
+W0611:  6,0: Unused import Texture
+************* Module pi3d.pi3d.shape.Model
+C0301: 48,0: Line too long (94/80)
+C0301: 49,0: Line too long (116/80)
+W0401:  1,0: Wildcard import pi3d
+E0101: 16,2:Model.__init__: Explicit return in __init__
+C0324: 32,6:Model.__init__: Comma not followed by a space
+      print "Loading ",file_string
+                      ^^
+C0324: 48,4:Model.clone: Comma not followed by a space
+    newModel = Model(file_string = "__clone__",x=self.unif[0], y=self.unif[1], z=self.unif[2],
+                                              ^^
+               rx=self.unif[3], ry=self.unif[4], rz=self.unif[5], sx=self.unif[6], sy=self.unif[7], sz=self.unif[8],
+               cx=self.unif[9], cy=self.unif[10], cz=self.unif[11])
+E1101: 48,49:Model.clone: Instance of 'Model' has no 'unif' member
+E1101: 48,65:Model.clone: Instance of 'Model' has no 'unif' member
+E1101: 48,81:Model.clone: Instance of 'Model' has no 'unif' member
+E1101: 49,18:Model.clone: Instance of 'Model' has no 'unif' member
+E1101: 49,35:Model.clone: Instance of 'Model' has no 'unif' member
+E1101: 49,52:Model.clone: Instance of 'Model' has no 'unif' member
+E1101: 49,69:Model.clone: Instance of 'Model' has no 'unif' member
+E1101: 49,86:Model.clone: Instance of 'Model' has no 'unif' member
+E1101: 49,103:Model.clone: Instance of 'Model' has no 'unif' member
+E1101: 50,18:Model.clone: Instance of 'Model' has no 'unif' member
+E1101: 50,35:Model.clone: Instance of 'Model' has no 'unif' member
+E1101: 50,53:Model.clone: Instance of 'Model' has no 'unif' member
+W0613: 44,33:Model.clone: Unused argument 'light'
+W0613: 44,18:Model.clone: Unused argument 'camera'
+W0201: 52,4:Model.clone: Attribute 'vGroup' defined outside __init__
+W0201: 54,4:Model.clone: Attribute 'textures' defined outside __init__
+W0201: 53,4:Model.clone: Attribute 'shader' defined outside __init__
+W0201: 51,4:Model.clone: Attribute 'buf' defined outside __init__
+W0611:  8,0: Unused import rotate_vec
+W0611:  3,0: Unused import Texture
+************* Module pi3d.pi3d.shape.Plane
+C0301: 39,0: Line too long (82/80)
+C0301: 47,0: Line too long (84/80)
+W0401:  1,0: Wildcard import pi3d
+C0324: 37,4:Plane.__init__: Comma not followed by a space
+    self.verts = ((-ww, hh, 0.0), (ww, hh, 0.0), (ww, -hh, 0.0), (-ww,-hh, 0.0),
+                                                                     ^^
+                  (-ww, hh, 0.0), (ww, hh, 0.0), (ww, -hh, 0.0), (-ww,-hh, 0.0))
+C0324: 41,4:Plane.__init__: Comma not followed by a space
+    self.texcoords = ((0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0 ,1.0),
+                                                               ^^
+                      (0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0 ,1.0))
+R0903:  6,0:Plane: Too few public methods (0/2)
+W0611:  2,0: Unused import Texture
+************* Module pi3d.pi3d.shape.Sphere
+W0401:  3,0: Wildcard import pi3d
+C0324: 24,4:Sphere.__init__: Comma not followed by a space
+    super(Sphere,self).__init__(camera, light, name, x, y, z, rx, ry, rz,
+                ^^
+                                sx, sy, sz, cx, cy, cz)
+E1101: 42,20:Sphere.__init__: Instance of 'Sphere' has no '_lathe' member
+R0903:  7,0:Sphere: Too few public methods (0/2)
+************* Module pi3d.pi3d.shape.Sprite
+C0301: 41,0: Line too long (84/80)
+W0401:  1,0: Wildcard import pi3d
+C0324: 34,4:Sprite.__init__: Comma not followed by a space
+    self.verts = ((-ww, hh, 0.0), (ww, hh, 0.0), (ww, -hh, 0.0), (-ww,-hh, 0.0))
+                                                                     ^^
+C0324: 36,4:Sprite.__init__: Comma not followed by a space
+    self.texcoords = ((0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0 ,1.0))
+                                                               ^^
+E1101: 44,4:Sprite.repaint: Instance of 'Sprite' has no 'draw' member
+W0613: 43,20:Sprite.repaint: Unused argument 't'
+R0903:  7,0:Sprite: Too few public methods (1/2)
+E1101: 63,4:ImageSprite.__init__: Instance of 'ImageSprite' has no 'set_2d_size' member
+R0903: 47,0:ImageSprite: Too few public methods (1/2)
+W0611:  5,0: Unused import Loadable
+************* Module pi3d.pi3d.shape.TCone
+W0401:  1,0: Wildcard import pi3d
+E1101: 41,20:TCone.__init__: Instance of 'TCone' has no '_lathe' member
+R0903:  4,0:TCone: Too few public methods (0/2)
+************* Module pi3d.pi3d.shape.Tetrahedron
+C0301: 40,0: Line too long (100/80)
+W0401:  1,0: Wildcard import pi3d
+R0903:  7,0:Tetrahedron: Too few public methods (0/2)
+W0611:  5,0: Unused import Loadable
+W0611:  2,0: Unused import Texture
+************* Module pi3d.pi3d.shape.Torus
+C0301:  9,0: Line too long (103/80)
+C0324: 23,4:Torus.__init__: Comma not followed by a space
+    super(Torus,self).__init__(camera, light, name, x, y, z, rx, ry, rz,
+               ^^
+                               sx, sy, sz, cx, cy, cz)
+E1101: 41,20:Torus.__init__: Instance of 'Torus' has no '_lathe' member
+R0903:  7,0:Torus: Too few public methods (0/2)
+************* Module pi3d.pi3d.shape.Tube
+C0301:  6,0: Line too long (103/80)
+C0301: 20,0: Line too long (95/80)
+C0324: 20,4:Tube.__init__: Comma not followed by a space
+    super(Tube,self).__init__(camera, light, name, x, y, z, rx, ry, rz, sx, sy, sz, cx, cy, cz)
+              ^^
+E1101: 43,20:Tube.__init__: Instance of 'Tube' has no '_lathe' member
+R0903:  4,0:Tube: Too few public methods (0/2)
+************* Module pi3d.pi3d.sprite.Ball
+C0301: 54,0: Line too long (81/80)
+E1101: 32,4:Ball.move: Instance of 'Ball' has no 'translateX' member
+E1101: 33,4:Ball.move: Instance of 'Ball' has no 'translateY' member
+E1101: 37,10:Ball.hit: Instance of 'Ball' has no 'unif' member
+E1101: 38,10:Ball.hit: Instance of 'Ball' has no 'unif' member
+E1101: 45,9:Ball.bounce_collision: Instance of 'Ball' has no 'unif' member
+E1101: 46,9:Ball.bounce_collision: Instance of 'Ball' has no 'unif' member
+W0105: 57,-1:Ball.bounce_collision: String statement has no effect
+E1101: 85,7:Ball.bounce_wall: Instance of 'Ball' has no 'unif' member
+E1101: 87,9:Ball.bounce_wall: Instance of 'Ball' has no 'unif' member
+E1101: 90,7:Ball.bounce_wall: Instance of 'Ball' has no 'unif' member
+E1101: 92,9:Ball.bounce_wall: Instance of 'Ball' has no 'unif' member
+E1101: 98,4:Ball.repaint: Instance of 'Ball' has no 'draw' member
+W0613: 95,20:Ball.repaint: Unused argument 't'
+W0611:  1,0: Unused import math
+W0611:  4,0: Unused import Texture
+************* Module pi3d.pi3d.sprite.Ball_2d
+C0301: 54,0: Line too long (81/80)
+C0301: 97,0: Line too long (87/80)
+C0301: 98,0: Line too long (83/80)
+C0301:104,0: Line too long (94/80)
+C0301:105,0: Line too long (87/80)
+E1101: 32,4:Ball_2d.move: Instance of 'Ball_2d' has no 'translateX' member
+E1101: 33,4:Ball_2d.move: Instance of 'Ball_2d' has no 'translateY' member
+W0105: 57,-1:Ball_2d.bounce_collision: String statement has no effect
+W0611:  1,0: Unused import math
+************* Module pi3d.pi3d.sprite.Missile
+C0322: 19,4:Missile.__init__: Operator not preceded by a space
+    self.countDown=0
+                  ^
+************* Module pi3d.pi3d.util.Clashtest
+C0301: 53,0: Line too long (110/80)
+C0301: 60,0: Line too long (88/80)
+C0301: 85,0: Line too long (99/80)
+W0401:  4,0: Wildcard import pi3d
+R0201: 62,2:Clashtest.end_check: Method could be a function
+W0613: 77,18:Clashtest.check: Unused argument 'grain'
+************* Module pi3d.pi3d.util.Ctypes
+W0105:  9,-1: String statement has no effect
+W0101: 21,2:c_floats: Unreachable code
+W0105: 21,2:c_floats: String statement has no effect
+************* Module pi3d.pi3d.util.Defocus
+C0301: 56,0: Line too long (88/80)
+R0201: 58,2:Defocus.end_blur: Method could be a function
+************* Module pi3d.pi3d.util.DisplayOpenGL
+C0301: 45,0: Line too long (91/80)
+C0301: 51,0: Line too long (83/80)
+W0301: 51,0: Unnecessary semicolon
+W0301: 85,0: Unnecessary semicolon
+C0301: 91,0: Line too long (90/80)
+W0301:115,0: Unnecessary semicolon
+C0324: 50,4:DisplayOpenGL.create_display: Comma not followed by a space
+    opengles.glDepthRangef(c_float(-1.0),c_float(1.0))
+                                        ^^
+C0324: 52,4:DisplayOpenGL.create_display: Comma not followed by a space
+    opengles.glBindFramebuffer(GL_FRAMEBUFFER,0)
+                                             ^^
+W0612: 25,4:DisplayOpenGL.create_display: Unused variable 'r'
+W0201: 76,4:DisplayOpenGL.create_surface: Attribute 'dispman_update' defined outside __init__
+W0201: 75,4:DisplayOpenGL.create_surface: Attribute 'dispman_display' defined outside __init__
+W0201: 89,4:DisplayOpenGL.create_surface: Attribute 'nw_p' defined outside __init__
+W0201: 77,4:DisplayOpenGL.create_surface: Attribute 'dispman_element' defined outside __init__
+W0201: 91,4:DisplayOpenGL.create_surface: Attribute 'surface' defined outside __init__
+W0201: 44,4:DisplayOpenGL.create_display: Attribute 'context' defined outside __init__
+W0201:123,6:DisplayOpenGL.destroy: Attribute 'active' defined outside __init__
+W0201: 37,4:DisplayOpenGL.create_display: Attribute 'config' defined outside __init__
+W0201: 22,4:DisplayOpenGL.create_display: Attribute 'display' defined outside __init__
+W0611:  7,0: Unused import c_chars
+************* Module pi3d.pi3d.util.Font
+E1101: 33,13:Font.__init__: Instance of 'Font' has no 'im' member
+E1101: 39,40:Font.__init__: Instance of 'Font' has no 'ix' member
+E1101: 40,46:Font.__init__: Instance of 'Font' has no 'iy' member
+E1101: 43,28:Font.__init__: Instance of 'Font' has no 'ix' member
+E1101: 44,30:Font.__init__: Instance of 'Font' has no 'iy' member
+E1101: 53,11:Font.__init__: Instance of 'Font' has no 'im' member
+E1101: 54,26:Font.__init__: Instance of 'Font' has no 'im' member
+E1101: 55,26:Font.__init__: Instance of 'Font' has no 'ix' member
+E1101: 55,35:Font.__init__: Instance of 'Font' has no 'iy' member
+E1101: 56,4:Font.__init__: Instance of 'Font' has no 'im' member
+E1101: 58,21:Font.__init__: Instance of 'Font' has no 'alpha' member
+C0324: 59,4:Font.__init__: Comma not followed by a space
+    self.image = self.im.convert(RGBs).tostring('raw',RGBs)
+                                                     ^^
+E1101: 59,17:Font.__init__: Instance of 'Font' has no 'im' member
+R0903: 12,0:Font: Too few public methods (0/2)
+W0611:  2,0: Unused import Image
+************* Module pi3d.pi3d.util.Loadable
+C0301:  1,0: Line too long (82/80)
+C0301: 56,0: Line too long (82/80)
+************* Module pi3d.pi3d.util.RotateVec
+W0105:  3,0: String statement has no effect
+************* Module pi3d.pi3d.util.Screenshot
+C0301:  1,0: Line too long (82/80)
+************* Module pi3d.pi3d.util.String
+C0301: 12,0: Line too long (89/80)
+C0301: 63,0: Line too long (99/80)
+C0301: 65,0: Line too long (88/80)
+C0301: 71,0: Line too long (84/80)
+W0401:  1,0: Wildcard import pi3d
+C0321: 61,21:String.__init__: More than one statement on a single line
+C0321: 62,23:String.__init__: More than one statement on a single line
+C0324: 63,8:String.__init__: Comma not followed by a space
+        for j in [(0.0,0.0,1.0), (0.0,0.0,1.0), (0.0,0.0,1.0), (0.0,0.0,1.0)]: self.norms.append(j)
+                      ^^
+C0321: 63,79:String.__init__: More than one statement on a single line
+C0321: 65,69:String.__init__: More than one statement on a single line
+R0903: 11,0:String: Too few public methods (0/2)
+W0611:  5,0: Unused import Utility
+************* Module pi3d.pi3d.util.TkWin
+W0612: 50,8:TkWin.__init__.drag_callback: Unused variable 'mouserot'
+W0201: 54,6:TkWin.__init__.resize_callback: Attribute 'winx' defined outside __init__
+W0201: 55,6:TkWin.__init__.resize_callback: Attribute 'winy' defined outside __init__
+W0201: 57,6:TkWin.__init__.resize_callback: Attribute 'height' defined outside __init__
+W0201: 64,8:TkWin.__init__.key_callback: Attribute 'char' defined outside __init__
+W0201: 56,6:TkWin.__init__.resize_callback: Attribute 'width' defined outside __init__
+W0201: 42,8:TkWin.__init__.mousewheel_callback: Attribute 'num' defined outside __init__
+W0201: 63,8:TkWin.__init__.key_callback: Attribute 'key' defined outside __init__
+W0201: 43,8:TkWin.__init__.mousewheel_callback: Attribute 'delta' defined outside __init__
+W0201: 49,8:TkWin.__init__.drag_callback: Attribute 'y' defined outside __init__
+W0201: 48,8:TkWin.__init__.drag_callback: Attribute 'x' defined outside __init__
+R0924:  5,0:TkWin: Badly implemented Container, implements __setitem__ but not __delitem__, __getitem__, __len__
+************* Module pi3d.pi3d.util.Ttffont
+C0301: 66,0: Line too long (91/80)
+W0612: 41,4:Ttffont.__init__: Unused variable 'characters'
+W0612: 61,6:Ttffont.__init__: Unused variable 'w'
+W0612: 62,6:Ttffont.__init__: Unused variable 'h'
+R0903:  9,0:Ttffont: Too few public methods (0/2)
+************* Module pi3d.pi3d.util.Utility
+W0621: 41,30:from_polar: Redefining name 'magnitude' from outer scope (line 33)
+W0621: 54,34:from_polar_rad: Redefining name 'magnitude' from outer scope (line 33)
+C0324: 97,0:vec_cross: Comma not followed by a space
+def vec_cross(a,b):
+               ^^
+W0105:409,-1: String statement has no effect
+W0611:  5,0: Unused import tan
+W0611:  5,0: Unused import dot
+R0801:  1,0: Similar lines in 2 files
+==pi3d.pi3d.constants.gl2ext:162
+==pi3d.pi3d.constants.glext:161
+GL_TEXTURE_WIDTH_QCOM = 0x8BD2
+GL_TEXTURE_HEIGHT_QCOM = 0x8BD3
+GL_TEXTURE_DEPTH_QCOM = 0x8BD4
+GL_TEXTURE_INTERNAL_FORMAT_QCOM = 0x8BD5
+GL_TEXTURE_FORMAT_QCOM = 0x8BD6
+GL_TEXTURE_TYPE_QCOM = 0x8BD7
+GL_TEXTURE_IMAGE_VALID_QCOM = 0x8BD8
+GL_TEXTURE_NUM_LEVELS_QCOM = 0x8BD9
+GL_TEXTURE_TARGET_QCOM = 0x8BDA
+GL_TEXTURE_OBJECT_VALID_QCOM = 0x8BDB
+GL_STATE_RESTORE = 0x8BDC
+GL_PERFMON_GLOBAL_MODE_QCOM = 0x8FA0
+GL_WRITEONLY_RENDERING_QCOM = 0x8823
+GL_COLOR_BUFFER_BIT0_QCOM = 0x00000001
+GL_COLOR_BUFFER_BIT1_QCOM = 0x00000002
+GL_COLOR_BUFFER_BIT2_QCOM = 0x00000004
+GL_COLOR_BUFFER_BIT3_QCOM = 0x00000008
+GL_COLOR_BUFFER_BIT4_QCOM = 0x00000010
+GL_COLOR_BUFFER_BIT5_QCOM = 0x00000020
+GL_COLOR_BUFFER_BIT6_QCOM = 0x00000040
+GL_COLOR_BUFFER_BIT7_QCOM = 0x00000080
+GL_DEPTH_BUFFER_BIT0_QCOM = 0x00000100
+GL_DEPTH_BUFFER_BIT1_QCOM = 0x00000200
+GL_DEPTH_BUFFER_BIT2_QCOM = 0x00000400
+GL_DEPTH_BUFFER_BIT3_QCOM = 0x00000800
+GL_DEPTH_BUFFER_BIT4_QCOM = 0x00001000
+GL_DEPTH_BUFFER_BIT5_QCOM = 0x00002000
+GL_DEPTH_BUFFER_BIT6_QCOM = 0x00004000
+GL_DEPTH_BUFFER_BIT7_QCOM = 0x00008000
+GL_STENCIL_BUFFER_BIT0_QCOM = 0x00010000
+GL_STENCIL_BUFFER_BIT1_QCOM = 0x00020000
+GL_STENCIL_BUFFER_BIT2_QCOM = 0x00040000
+GL_STENCIL_BUFFER_BIT3_QCOM = 0x00080000
+GL_STENCIL_BUFFER_BIT4_QCOM = 0x00100000
+GL_STENCIL_BUFFER_BIT5_QCOM = 0x00200000
+GL_STENCIL_BUFFER_BIT6_QCOM = 0x00400000
+GL_STENCIL_BUFFER_BIT7_QCOM = 0x00800000
+GL_MULTISAMPLE_BUFFER_BIT0_QCOM = 0x01000000
+GL_MULTISAMPLE_BUFFER_BIT1_QCOM = 0x02000000
+GL_MULTISAMPLE_BUFFER_BIT2_QCOM = 0x04000000
+GL_MULTISAMPLE_BUFFER_BIT3_QCOM = 0x08000000
+GL_MULTISAMPLE_BUFFER_BIT4_QCOM = 0x10000000
+GL_MULTISAMPLE_BUFFER_BIT5_QCOM = 0x20000000
+GL_MULTISAMPLE_BUFFER_BIT6_QCOM = 0x40000000
+GL_MULTISAMPLE_BUFFER_BIT7_QCOM = 0x80000000
+R0801:  1,0: Similar lines in 2 files
+==pi3d.pi3d.sprite.Ball:46
+==pi3d.pi3d.sprite.Ball_2d:46
+    rd = self.radius + otherball.radius
+    # check sign of a.b to see if converging
+    dotP = Utility.dotproduct(dx, dy, 0,
+                              (self.vx - otherball.vx),
+                              (self.vy - otherball.vy), 0)
+    if dx * dx + dy * dy <= rd * rd and dotP < 0:
+      R = otherball.mass / self.mass #ratio of masses
+      """Glancing angle for equating angular momentum before and after collision.
+      Three more simultaneous equations for x and y components of momentum and
+      kinetic energy give:
+      """
+      if dy:
+        D = dx / dy
+        delta2y = 2 * (D * self.vx + self.vy -
+                       D * otherball.vx - otherball.vy) / (
+          (1 + D * D) * (R + 1))
+        delta2x = D * delta2y
+        delta1y = -1 * R * delta2y
+        delta1x = -1 * R * D * delta2y
+      elif dx:
+        # Same code as above with x and y reversed.
+        D = dy / dx
+        delta2x = 2 * (D * self.vy + self.vx -
+                       D * otherball.vy - otherball.vx) / (
+          (1 + D * D) * (R + 1))
+        delta2y = D * delta2x
+        delta1x = -1 * R * delta2x
+        delta1y = -1 * R * D * delta2x
+      else:
+        delta1x = delta1y = delta2x = delta2y = 0
+
+      self.vx += delta1x
+      self.vy += delta1y
+      otherball.vx += delta2x
+      otherball.vy += delta2y
+
+  def bounce_wall(self, width, height):
+R0801:  1,0: Similar lines in 2 files
+==pi3d.pi3d.constants.gl2:196
+==pi3d.pi3d.constants.gl:255
+GL_TEXTURE0 = 0x84C0
+GL_TEXTURE1 = 0x84C1
+GL_TEXTURE2 = 0x84C2
+GL_TEXTURE3 = 0x84C3
+GL_TEXTURE4 = 0x84C4
+GL_TEXTURE5 = 0x84C5
+GL_TEXTURE6 = 0x84C6
+GL_TEXTURE7 = 0x84C7
+GL_TEXTURE8 = 0x84C8
+GL_TEXTURE9 = 0x84C9
+GL_TEXTURE10 = 0x84CA
+GL_TEXTURE11 = 0x84CB
+GL_TEXTURE12 = 0x84CC
+GL_TEXTURE13 = 0x84CD
+GL_TEXTURE14 = 0x84CE
+GL_TEXTURE15 = 0x84CF
+GL_TEXTURE16 = 0x84D0
+GL_TEXTURE17 = 0x84D1
+GL_TEXTURE18 = 0x84D2
+GL_TEXTURE19 = 0x84D3
+GL_TEXTURE20 = 0x84D4
+GL_TEXTURE21 = 0x84D5
+GL_TEXTURE22 = 0x84D6
+GL_TEXTURE23 = 0x84D7
+GL_TEXTURE24 = 0x84D8
+GL_TEXTURE25 = 0x84D9
+GL_TEXTURE26 = 0x84DA
+GL_TEXTURE27 = 0x84DB
+GL_TEXTURE28 = 0x84DC
+GL_TEXTURE29 = 0x84DD
+GL_TEXTURE30 = 0x84DE
+GL_TEXTURE31 = 0x84DF
+GL_ACTIVE_TEXTURE = 0x84E0
+R0801:  1,0: Similar lines in 2 files
+==pi3d.pi3d.shape.Cuboid:46
+==pi3d.pi3d.shape.EnvironmentCube:64
+    self.vertices = ((-ww, hh, dd), (ww, hh, dd), (ww,-hh, dd), (-ww, -hh, dd),
+        (ww, hh, dd),  (ww, hh, -dd),  (ww, -hh, -dd), (ww, -hh, dd),
+        (-ww, hh, dd), (-ww, hh, -dd), (ww, hh, -dd),  (ww, hh, dd),
+        (ww, -hh, dd), (ww, -hh, -dd), (-ww, -hh, -dd),(-ww, -hh, dd),
+        (-ww, -hh, dd),(-ww, -hh, -dd),(-ww, hh, -dd), (-ww, hh, dd),
+        (-ww, hh, -dd),(ww, hh, -dd),  (ww, -hh, -dd), (-ww,-hh,-dd))
+    self.normals = ((0.0, 0.0, 1),    (0.0, 0.0, 1),   (0.0, 0.0, 1),  (0.0, 0.0, 1),
+        (1, 0.0, 0),  (1, 0.0, 0),    (1, 0.0, 0),     (1, 0.0, 0),
+        (0.0, 1, 0),  (0.0, 1, 0),    (0.0, 1, 0),     (0.0, 1, 0),
+        (0.0, -1, 0), (0,- 1, 0),     (0.0, -1, 0),    (0.0, -1, 0),
+        (-1, 0.0, 0),  (-1, 0.0, 0),  (-1, 0.0, 0),    (-1, 0.0, 0),
+        (0.0, 0.0, -1),(0.0, 0.0, -1),(0.0, 0.0, -1),  (0.0, 0.0, -1))
+R0801:  1,0: Similar lines in 2 files
+==pi3d.pi3d.shape.Plane:25
+==pi3d.pi3d.shape.Sprite:22
+    self.width = w
+    self.height = h
+    self.ttype = GL_TRIANGLES
+    self.verts = []
+    self.norms = []
+    self.texcoords = []
+    self.inds = []
+
+    ww = w / 2.0
+    hh = h / 2.0
+
+R0801:  1,0: Similar lines in 2 files
+==pi3d.pi3d.constants.gl2ext:81
+==pi3d.pi3d.constants.glext:120
+GL_MIN_EXT = 0x8007
+GL_MAX_EXT = 0x8008
+GL_COLOR_EXT = 0x1800
+GL_DEPTH_EXT = 0x1801
+GL_STENCIL_EXT = 0x1802
+GL_BGRA_EXT = 0x80E1
+GL_UNSIGNED_SHORT_4_4_4_4_REV_EXT = 0x8365
+GL_UNSIGNED_SHORT_1_5_5_5_REV_EXT = 0x8366
+GL_TEXTURE_MAX_ANISOTROPY_EXT = 0x84FE
+GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT = 0x84FF
+GL_BGRA_EXT = 0x80E1
+R0801:  1,0: Similar lines in 2 files
+==pi3d.pi3d.shape.Cone:26
+==pi3d.pi3d.shape.Cylinder:23
+    path.append((radius, -height * .4999))
+    path.append((radius, -height * .5))
+    path.append((0, -height * .5))
+
+    self.radius = radius
+    self.height = height
+    self.ttype = GL_TRIANGLES
+
+    self.buf = []
+    self.buf.append(self._lathe(path, sides))
+R0801:  1,0: Similar lines in 2 files
+==pi3d.pi3d.constants.gl2ext:6
+==pi3d.pi3d.constants.gl:338
+GL_PALETTE4_RGB8_OES = 0x8B90
+GL_PALETTE4_RGBA8_OES = 0x8B91
+GL_PALETTE4_R5_G6_B5_OES = 0x8B92
+GL_PALETTE4_RGBA4_OES = 0x8B93
+GL_PALETTE4_RGB5_A1_OES = 0x8B94
+GL_PALETTE8_RGB8_OES = 0x8B95
+GL_PALETTE8_RGBA8_OES = 0x8B96
+GL_PALETTE8_R5_G6_B5_OES = 0x8B97
+GL_PALETTE8_RGBA4_OES = 0x8B98
+GL_PALETTE8_RGB5_A1_OES = 0x8B99
+R0801:  1,0: Similar lines in 2 files
+==pi3d.pi3d.constants.gl2:176
+==pi3d.pi3d.constants.gl:244
+GL_NEAREST = 0x2600
+GL_LINEAR = 0x2601
+GL_NEAREST_MIPMAP_NEAREST = 0x2700
+GL_LINEAR_MIPMAP_NEAREST = 0x2701
+GL_NEAREST_MIPMAP_LINEAR = 0x2702
+GL_LINEAR_MIPMAP_LINEAR = 0x2703
+GL_TEXTURE_MAG_FILTER = 0x2800
+GL_TEXTURE_MIN_FILTER = 0x2801
+GL_TEXTURE_WRAP_S = 0x2802
+GL_TEXTURE_WRAP_T = 0x2803
+R0801:  1,0: Similar lines in 2 files
+==pi3d.pi3d.constants.gl2:5
+==pi3d.pi3d.constants.gl:5
+GL_DEPTH_BUFFER_BIT = 0x00000100
+GL_STENCIL_BUFFER_BIT = 0x00000400
+GL_COLOR_BUFFER_BIT = 0x00004000
+GL_POINTS = 0x0000
+GL_LINES = 0x0001
+GL_LINE_LOOP = 0x0002
+GL_LINE_STRIP = 0x0003
+GL_TRIANGLES = 0x0004
+GL_TRIANGLE_STRIP = 0x0005
+GL_TRIANGLE_FAN = 0x0006
+R0801:  1,0: Similar lines in 2 files
+==pi3d.pi3d.util.Clashtest:43
+==pi3d.pi3d.util.Defocus:41
+    opengles.glBindFramebuffer(GL_FRAMEBUFFER, self.framebuffer)
+    opengles.glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+                GL_TEXTURE_2D, self._tex.value, 0)
+    #thanks to PeterO c.o. RPi forum for pointing out missing depth attchmnt
+    opengles.glBindRenderbuffer(GL_RENDERBUFFER, self.depthbuffer)
+    opengles.glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16,
+                self.ix, self.iy)
+    opengles.glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+                GL_RENDERBUFFER, self.depthbuffer)
+R0801:  1,0: Similar lines in 2 files
+==pi3d.pi3d.util.Clashtest:18
+==pi3d.pi3d.util.Defocus:19
+    self.blend = False
+
+    self._tex = ctypes.c_int()
+    self.framebuffer = (ctypes.c_int * 1)()
+    opengles.glGenFramebuffers(1, self.framebuffer)
+    self.depthbuffer = (ctypes.c_int * 1)()
+    opengles.glGenRenderbuffers(1, self.depthbuffer)
+
+    # load clashtest shader
+R0801:  1,0: Similar lines in 2 files
+==pi3d.pi3d.constants.gl2ext:71
+==pi3d.pi3d.constants.glext:111
+GL_RENDERBUFFER_SAMPLES_APPLE = 0x8CAB
+GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE_APPLE = 0x8D56
+GL_MAX_SAMPLES_APPLE = 0x8D57
+GL_READ_FRAMEBUFFER_APPLE = 0x8CA8
+GL_DRAW_FRAMEBUFFER_APPLE = 0x8CA9
+GL_DRAW_FRAMEBUFFER_BINDING_APPLE = 0x8CA6
+GL_READ_FRAMEBUFFER_BINDING_APPLE = 0x8CAA
+GL_BGRA_EXT = 0x80E1
+GL_TEXTURE_MAX_LEVEL_APPLE = 0x813D
+R0801:  1,0: Similar lines in 2 files
+==pi3d.pi3d.constants.gl2:110
+==pi3d.pi3d.constants.gl:164
+GL_SAMPLE_BUFFERS = 0x80A8
+GL_SAMPLES = 0x80A9
+GL_SAMPLE_COVERAGE_VALUE = 0x80AA
+GL_SAMPLE_COVERAGE_INVERT = 0x80AB
+GL_NUM_COMPRESSED_TEXTURE_FORMATS = 0x86A2
+GL_COMPRESSED_TEXTURE_FORMATS = 0x86A3
+GL_DONT_CARE = 0x1100
+GL_FASTEST = 0x1101
+GL_NICEST = 0x1102
+R0801:  1,0: Similar lines in 2 files
+==pi3d.pi3d.constants.gl2:15
+==pi3d.pi3d.constants.gl:23
+GL_SRC_COLOR = 0x0300
+GL_ONE_MINUS_SRC_COLOR = 0x0301
+GL_SRC_ALPHA = 0x0302
+GL_ONE_MINUS_SRC_ALPHA = 0x0303
+GL_DST_ALPHA = 0x0304
+GL_ONE_MINUS_DST_ALPHA = 0x0305
+GL_DST_COLOR = 0x0306
+GL_ONE_MINUS_DST_COLOR = 0x0307
+GL_SRC_ALPHA_SATURATE = 0x0308
+R0801:  1,0: Similar lines in 2 files
+==pi3d.pi3d.constants.gl2:100
+==pi3d.pi3d.constants.gl:138
+GL_SUBPIXEL_BITS = 0x0D50
+GL_RED_BITS = 0x0D52
+GL_GREEN_BITS = 0x0D53
+GL_BLUE_BITS = 0x0D54
+GL_ALPHA_BITS = 0x0D55
+GL_DEPTH_BITS = 0x0D56
+GL_STENCIL_BITS = 0x0D57
+GL_POLYGON_OFFSET_UNITS = 0x2A00
+R0801:  1,0: Similar lines in 2 files
+==pi3d.pi3d.constants.gl2:157
+==pi3d.pi3d.constants.gl:15
+GL_NEVER = 0x0200
+GL_LESS = 0x0201
+GL_EQUAL = 0x0202
+GL_LEQUAL = 0x0203
+GL_GREATER = 0x0204
+GL_NOTEQUAL = 0x0205
+GL_GEQUAL = 0x0206
+GL_ALWAYS = 0x0207
+R0801:  1,0: Similar lines in 2 files
+==pi3d.pi3d.shape.Helix:40
+==pi3d.pi3d.shape.Torus:34
+    self.radius = radius
+    self.thickness = thickness
+    self.ringrots = ringrots
+    self.ttype = GL_TRIANGLES
+
+    self.buf = []
+R0801:  1,0: Similar lines in 3 files
+==pi3d.pi3d.shape.Canvas:0
+==pi3d.pi3d.shape.Sprite:0
+==pi3d.pi3d.shape.Tetrahedron:0
+from pi3d import *
+from pi3d.Texture import Texture
+from pi3d.Buffer import Buffer
+from pi3d.Shape import Shape
+from pi3d.util.Loadable import Loadable
+
+R0801:  1,0: Similar lines in 2 files
+==pi3d.pi3d.constants.gl2:73
+==pi3d.pi3d.constants.gl:99
+GL_DEPTH_RANGE = 0x0B70
+GL_DEPTH_WRITEMASK = 0x0B72
+GL_DEPTH_CLEAR_VALUE = 0x0B73
+GL_DEPTH_FUNC = 0x0B74
+GL_STENCIL_CLEAR_VALUE = 0x0B91
+GL_STENCIL_FUNC = 0x0B92
+R0801:  1,0: Similar lines in 3 files
+==pi3d.pi3d.shape.Canvas:23
+==pi3d.pi3d.shape.Plane:27
+==pi3d.pi3d.shape.Sprite:24
+    self.ttype = GL_TRIANGLES
+    self.verts = []
+    self.norms = []
+    self.texcoords = []
+    self.inds = []
+R0801:  1,0: Similar lines in 2 files
+==pi3d.pi3d.constants.gl2ext:48
+==pi3d.pi3d.constants.glext:106
+GL_3DC_X_AMD = 0x87F9
+GL_3DC_XY_AMD = 0x87FA
+GL_ATC_RGB_AMD = 0x8C92
+GL_ATC_RGBA_EXPLICIT_ALPHA_AMD = 0x8C93
+GL_ATC_RGBA_INTERPOLATED_ALPHA_AMD = 0x87EE
+R0801:  1,0: Similar lines in 2 files
+==pi3d.pi3d.constants.gl2ext:30
+==pi3d.pi3d.constants.glext:81
+GL_DEPTH_STENCIL_OES = 0x84F9
+GL_UNSIGNED_INT_24_8_OES = 0x84FA
+GL_DEPTH24_STENCIL8_OES = 0x88F0
+GL_RGB8_OES = 0x8051
+GL_RGBA8_OES = 0x8058
+R0801:  1,0: Similar lines in 2 files
+==pi3d.pi3d.constants.gl2:129
+==pi3d.pi3d.constants.gl:218
+GL_ALPHA = 0x1906
+GL_RGB = 0x1907
+GL_RGBA = 0x1908
+GL_LUMINANCE = 0x1909
+GL_LUMINANCE_ALPHA = 0x190A
+
+
+Report
+======
+5414 statements analysed.
+
+Messages by category
+--------------------
+
++-----------+-------+---------+-----------+
+|type       |number |previous |difference |
++===========+=======+=========+===========+
+|convention |511    |511      |=          |
++-----------+-------+---------+-----------+
+|refactor   |65     |65       |=          |
++-----------+-------+---------+-----------+
+|warning    |560    |559      |+1.00      |
++-----------+-------+---------+-----------+
+|error      |75     |75       |=          |
++-----------+-------+---------+-----------+
+
+
+
+% errors / warnings by module
+-----------------------------
+
++--------------------------------+------+--------+---------+-----------+
+|module                          |error |warning |refactor |convention |
++================================+======+========+=========+===========+
+|pi3d.pi3d.shape.Model           |17.33 |1.61    |0.00     |0.78       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.util.Font             |16.00 |0.18    |1.54     |0.20       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.shape.ElevationMap    |14.67 |1.25    |0.00     |7.63       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.sprite.Ball           |14.67 |0.71    |0.00     |0.20       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.Shape                 |6.67  |2.50    |0.00     |0.78       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.Texture               |5.33  |1.43    |1.54     |0.39       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.shape.Disk            |5.33  |0.00    |1.54     |0.98       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.shape.Sprite          |2.67  |0.54    |3.08     |0.59       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.sprite.Ball_2d        |2.67  |0.36    |0.00     |0.98       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.event.FindDevices     |1.33  |33.57   |3.08     |9.39       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.Buffer                |1.33  |2.68    |0.00     |0.20       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.shape.Canvas          |1.33  |0.71    |0.00     |0.20       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.shape.Lathe           |1.33  |0.18    |1.54     |0.59       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.shape.Sphere          |1.33  |0.18    |1.54     |0.20       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.shape.Cone            |1.33  |0.18    |1.54     |0.20       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.shape.TCone           |1.33  |0.18    |1.54     |0.00       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.shape.Cylinder        |1.33  |0.18    |1.54     |0.00       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.shape.Tube            |1.33  |0.00    |1.54     |0.59       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.shape.Torus           |1.33  |0.00    |1.54     |0.39       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.shape.Helix           |1.33  |0.00    |1.54     |0.39       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.shape.Building        |0.00  |18.04   |13.85    |20.94      |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.event.EventHandler    |0.00  |4.46    |0.00     |5.09       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.Display               |0.00  |3.75    |3.08     |0.59       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.event.ioctl           |0.00  |2.86    |0.00     |4.70       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.event.Test            |0.00  |2.68    |0.00     |1.96       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.util.DisplayOpenGL    |0.00  |2.50    |0.00     |0.98       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.event.EventStream     |0.00  |2.14    |0.00     |1.96       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.event.Event           |0.00  |2.14    |0.00     |1.37       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.util.TkWin            |0.00  |1.96    |1.54     |0.00       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.shape.MergeShape      |0.00  |1.43    |0.00     |2.15       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.Mouse                 |0.00  |1.43    |0.00     |0.00       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.Camera                |0.00  |1.25    |0.00     |2.54       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.loader.loaderEgg      |0.00  |1.07    |3.08     |10.96      |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.util.Utility          |0.00  |0.89    |36.92    |0.20       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.shape.Extrude         |0.00  |0.71    |1.54     |2.35       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.loader.loaderObj      |0.00  |0.71    |0.00     |4.70       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.event.AbsAxisScaling  |0.00  |0.54    |1.54     |1.17       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.util.Ttffont          |0.00  |0.54    |1.54     |0.20       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.shape.Tetrahedron     |0.00  |0.54    |1.54     |0.20       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.util.Ctypes           |0.00  |0.54    |0.00     |0.00       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.loader.parse_mtl      |0.00  |0.54    |0.00     |0.00       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.util.String           |0.00  |0.36    |1.54     |1.76       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.Shader                |0.00  |0.36    |1.54     |1.37       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.shape.Plane           |0.00  |0.36    |1.54     |0.78       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.util.Clashtest        |0.00  |0.36    |1.54     |0.59       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.Keyboard              |0.00  |0.36    |1.54     |0.00       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.shape.EnvironmentCube |0.00  |0.18    |1.54     |5.09       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.shape.Cuboid          |0.00  |0.18    |1.54     |2.15       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.constants.__init__    |0.00  |0.18    |0.00     |0.39       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d                       |0.00  |0.18    |0.00     |0.20       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.util.RotateVec        |0.00  |0.18    |0.00     |0.00       |
++--------------------------------+------+--------+---------+-----------+
+|pi3d.pi3d.loader.parse_mtl_test |0.00  |0.18    |0.00     |0.00       |
++--------------------------------+------+--------+---------+-----------+
+
+
+
+Messages
+--------
+
++-----------+------------+
+|message id |occurrences |
++===========+============+
+|C0301      |263         |
++-----------+------------+
+|W0311      |211         |
++-----------+------------+
+|C0324      |141         |
++-----------+------------+
+|C0321      |77          |
++-----------+------------+
+|E1101      |73          |
++-----------+------------+
+|W0201      |54          |
++-----------+------------+
+|W0612      |53          |
++-----------+------------+
+|W0611      |46          |
++-----------+------------+
+|W0614      |41          |
++-----------+------------+
+|W0613      |36          |
++-----------+------------+
+|R0903      |28          |
++-----------+------------+
+|C0322      |26          |
++-----------+------------+
+|R0801      |24          |
++-----------+------------+
+|W0105      |23          |
++-----------+------------+
+|W0622      |17          |
++-----------+------------+
+|W0401      |15          |
++-----------+------------+
+|W0603      |11          |
++-----------+------------+
+|R0201      |11          |
++-----------+------------+
+|W0301      |10          |
++-----------+------------+
+|W0141      |9           |
++-----------+------------+
+|W0110      |8           |
++-----------+------------+
+|W0102      |5           |
++-----------+------------+
+|W0621      |4           |
++-----------+------------+
+|W0403      |4           |
++-----------+------------+
+|W0107      |4           |
++-----------+------------+
+|W0108      |3           |
++-----------+------------+
+|W0212      |2           |
++-----------+------------+
+|C0323      |2           |
++-----------+------------+
+|C0202      |2           |
++-----------+------------+
+|W0703      |1           |
++-----------+------------+
+|W0602      |1           |
++-----------+------------+
+|W0312      |1           |
++-----------+------------+
+|W0101      |1           |
++-----------+------------+
+|R0924      |1           |
++-----------+------------+
+|R0911      |1           |
++-----------+------------+
+|E0601      |1           |
++-----------+------------+
+|E0101      |1           |
++-----------+------------+
+
+
+
+Global evaluation
+-----------------
+Your code has been rated at 7.21/10 (previous run: 7.21/10)
+
+Statistics by type
+------------------
+
++---------+-------+-----------+-----------+------------+---------+
+|type     |number |old number |difference |%documented |%badname |
++=========+=======+===========+===========+============+=========+
+|module   |71     |71         |=          |7.04        |4.23     |
++---------+-------+-----------+-----------+------------+---------+
+|class    |59     |59         |=          |76.27       |8.47     |
++---------+-------+-----------+-----------+------------+---------+
+|method   |269    |269        |=          |79.93       |14.50    |
++---------+-------+-----------+-----------+------------+---------+
+|function |92     |92         |=          |48.91       |29.35    |
++---------+-------+-----------+-----------+------------+---------+
+
+
+
+External dependencies
+---------------------
+::
+
+    Image (pi3d.pi3d.shape.Building,pi3d.pi3d.Texture,pi3d.pi3d.util.Ttffont,pi3d.pi3d.util.Defocus,pi3d.pi3d.util.Clashtest,pi3d.pi3d.util.Font,pi3d.pi3d.shape.ElevationMap,pi3d.pi3d.util.Screenshot)
+    ImageDraw (pi3d.pi3d.shape.Building)
+    PIL
+      \-ImageDraw (pi3d.pi3d.util.Ttffont,pi3d.pi3d.util.Font)
+      \-ImageFont (pi3d.pi3d.util.Ttffont)
+      \-ImageOps (pi3d.pi3d.shape.Building,pi3d.pi3d.shape.ElevationMap)
+    numpy (pi3d.pi3d.util.Utility)
+      \-arcsin (pi3d.pi3d.shape.ElevationMap)
+      \-arctan2 (pi3d.pi3d.Camera,pi3d.pi3d.shape.ElevationMap)
+      \-array (pi3d.pi3d.Shape,pi3d.pi3d.Camera,pi3d.pi3d.shape.ElevationMap)
+      \-copy (pi3d.pi3d.Camera)
+      \-cos (pi3d.pi3d.util.Utility,pi3d.pi3d.Camera)
+      \-cross (pi3d.pi3d.shape.ElevationMap)
+      \-degrees (pi3d.pi3d.Camera,pi3d.pi3d.shape.ElevationMap)
+      \-dot (pi3d.pi3d.Shape,pi3d.pi3d.util.Utility,pi3d.pi3d.Camera,pi3d.pi3d.shape.ElevationMap)
+      \-linalg
+      | \-norm (pi3d.pi3d.Camera)
+      \-multiply (pi3d.pi3d.shape.ElevationMap)
+      \-radians (pi3d.pi3d.Camera)
+      \-ravel (pi3d.pi3d.Shape)
+      \-sin (pi3d.pi3d.util.Utility,pi3d.pi3d.Camera)
+      \-sqrt (pi3d.pi3d.util.Utility,pi3d.pi3d.Camera,pi3d.pi3d.shape.ElevationMap)
+      \-subtract (pi3d.pi3d.util.Utility,pi3d.pi3d.shape.ElevationMap)
+      \-tan (pi3d.pi3d.util.Utility,pi3d.pi3d.Camera)
+    pi3d
+      \-Display (pi3d.pi3d.util.Loadable,pi3d.pi3d)
+      \-Texture (pi3d.pi3d.shape.Plane,pi3d.pi3d.shape.MergeShape,pi3d.pi3d.shape.Model)
+      \-pi3d
+        \-event
+          \-EventStream
+          | \-EventStream (pi3d.pi3d.event.EventHandler)
+          \-ioctl (pi3d.pi3d.event.EventStream,pi3d.pi3d.event.AbsAxisScaling)
+
+
+
+Raw metrics
+-----------
+
++----------+-------+------+---------+-----------+
+|type      |number |%     |previous |difference |
++==========+=======+======+=========+===========+
+|code      |5893   |69.19 |5893     |=          |
++----------+-------+------+---------+-----------+
+|docstring |1966   |23.08 |1973     |-7.00      |
++----------+-------+------+---------+-----------+
+|comment   |229    |2.69  |230      |-1.00      |
++----------+-------+------+---------+-----------+
+|empty     |429    |5.04  |430      |-1.00      |
++----------+-------+------+---------+-----------+
+
+
+
+Duplication
+-----------
+
++-------------------------+------+---------+-----------+
+|                         |now   |previous |difference |
++=========================+======+=========+===========+
+|nb duplicated lines      |299   |299      |=          |
++-------------------------+------+---------+-----------+
+|percent duplicated lines |3.264 |3.263    |+0.00      |
++-------------------------+------+---------+-----------+
+
+
+
+
+Compilation exited abnormally with code 30 at Mon Mar 18 15:13:35
