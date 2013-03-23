@@ -1,10 +1,8 @@
 import re, os
 from pi3d import *
-import ctypes
 from random import randint
 
 from pi3d.Texture import Texture
-from pi3d.Shape import Shape
 from pi3d.Buffer import Buffer
 
 #########################################################################################
@@ -85,12 +83,12 @@ def loadFileEGG(model, fileName):
       try: j = bReg.next().start()
       except: return i+1
       c = l[j]
-      if c=="<": # add entry to array at this level
+      if c == "<": # add entry to array at this level
         if len(x[3]) == 0: x[2] = l[i:j].strip() # text after "{" and before "<Tabxyz>"
         i = j+1 # save marker for start of descriptor
-        x[3].append(["","","",[]])
+        x[3].append(["", "", "", []])
 
-      elif c=="{":
+      elif c == "{":
         xn = x[3][len(x[3])-1]
         tx = l[i-1:j].strip().split()
         xn[0] = tx[0] #x[0] & x[1] is the "<Tabxyz>" & "123" prior to "{"
@@ -107,15 +105,15 @@ def loadFileEGG(model, fileName):
     offsetVList = {}
     structPList = []
     offset = 0
-    numv = 0
-    numi = 0
+    #numv = 0
+    #numi = 0
     for x in gp:
       if len(x) == 0: continue
       if ("<Group>" in x[0]): 
         if len(x[1]) > 0: 
           nextnp = np+x[1]
         else: 
-          nextnp = np+str(randint(10000,99999))
+          nextnp = np+str(randint(10000, 99999))
         groupDrill(x[3], nextnp)
       else:
         #build vertex, polygon, normal, triangles, UVs etc etc
@@ -158,9 +156,9 @@ def loadFileEGG(model, fileName):
             vref = []
             for n in p[2].strip().split():
               vref.append(int(n))
-              numv += 1
-              numi += 3
-            numi -= 6 # number of corners of triangle = (n-2)*3 where n is the number of corners of face
+              #numv += 1
+              #numi += 3
+            #numi -= 6 # number of corners of triangle = (n-2)*3 where n is the number of corners of face
             vpKey = p[3][0][2].strip() # ought to do a for r in p[3]; if "Ref in...
         # add to list
         #while (len(structPList) < (p+1)): structPList.append("")
@@ -169,14 +167,14 @@ def loadFileEGG(model, fileName):
 
     # now go through the polygons in order of vertexPool+id, trying to ensure that the polygon arrays in each group are built in the order of vertexPool names
     # only cope with one material and one texture per group
-    numv -= 1
-    numi -= 1
+    #numv -= 1
+    #numi -= 1
     g_vertices = []
     g_normals = []
     g_tex_coords = []
     g_indices = []
     nv = 0 # vertex counter in this material
-    ni = 0 # triangle vertex count in this material
+    #ni = 0 # triangle vertex count in this material
 
     gMRef = ""
     gTRef = ""
@@ -213,7 +211,7 @@ def loadFileEGG(model, fileName):
           g_tex_coords.append([0.0, 0.0])
         nv += 1
       n = nv - startV - 1
-      for j in range(1,n):
+      for j in range(1, n):
         g_indices.append((startV, startV + j + 1, startV + j))
     
     ilen = len(g_vertices)
@@ -244,8 +242,8 @@ def loadFileEGG(model, fileName):
         else: model.buf[model.vGroup[np]].material = (0.0, 0.0, 0.0, 0.0)
     ####### end of groupDrill function #####################
 
-  bReg = re.finditer("[{}<]",l)
-  xx = ["","","",[]]
+  bReg = re.finditer("[{}<]", l)
+  xx = ["", "", "", []]
   pRec(xx, bReg, l, 0)
   l = None #in case it's running out of memory?
   f.close()
@@ -257,7 +255,7 @@ def loadFileEGG(model, fileName):
       model.textureList[x[1]]["filename"] = x[2].strip("\"")
       if VERBOSE:
         print filePath, model.textureList[x[1]]["filename"]
-      model.textureList[x[1]]["texID"] = Texture(os.path.join(filePath, model.textureList[x[1]]["filename"]),False,True) # load from file
+      model.textureList[x[1]]["texID"] = Texture(os.path.join(filePath, model.textureList[x[1]]["filename"]), False, True) # load from file
     if "<CoordinateSystem>" in x[0]:
       model.coordinateSystem = x[2].lower()
     if "<Material>" in x[0]:

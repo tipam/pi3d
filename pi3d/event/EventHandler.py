@@ -1,7 +1,7 @@
 import threading
 
 from pi3d.event.Constants import *
-from EventStream import EventStream
+from pi3d.event.EventStream import EventStream
 
 class EventHandler(object):
   """
@@ -72,7 +72,7 @@ class EventHandler(object):
       if event.eventType == EV_SYN:
         if self.synHandler:
           self.synHandler(event.stream.deviceType, event.stream.deviceIndex, event.eventCode, event.eventValue)
-          ret= None
+          ret = None
       elif event.eventType == EV_KEY:
         if event.stream.grabbed == False and event.eventValue != 0:
           ret = None
@@ -81,30 +81,30 @@ class EventHandler(object):
           self.keyHandler(event.stream.deviceType, event.stream.deviceIndex, event.eventCode, event.eventValue)
         ret = None
       elif event.eventType == EV_REL:
-          if event.eventCode == REL_X:
-            self.relx[event.stream.deviceIndex] += event.eventValue
-            if self.relHandler:
-              self.relHandler(event.stream.deviceType, event.stream.deviceIndex, event.eventValue, 0,0,0)
-            ret = None
-          elif event.eventCode == REL_Y:
-            self.rely[event.stream.deviceIndex] += event.eventValue
-            if self.relHandler:
-              self.relHandler(event.stream.deviceType, event.stream.deviceIndex, 0, event.eventValue, 0,0)
-            ret = None
-          elif event.eventCode == REL_WHEEL:
-            self.relv[event.stream.deviceIndex] += event.eventValue
-            if self.relHandler:
-              self.relHandler(event.stream.deviceType, event.stream.deviceIndex, 0,0, event.eventValue, 0)
-            ret = None
-          elif event.eventCode == REL_HWHEEL:
-            self.relh[event.stream.deviceIndex] += event.eventValue
-            if self.relHandler:
-              self.relHandler(event.stream.deviceType, event.stream.deviceIndex, 0,0,0, event.eventValue)
-          elif event.eventCode == REL_DIAL:
-            self.relh[event.stream.deviceIndex] += event.eventValue
-            if self.relHandler:
-              self.relHandler(event.stream.deviceType, event.stream.deviceIndex, 0,0,0, event.eventValue)
-            ret = None
+        if event.eventCode == REL_X:
+          self.relx[event.stream.deviceIndex] += event.eventValue
+          if self.relHandler:
+            self.relHandler(event.stream.deviceType, event.stream.deviceIndex, event.eventValue, 0, 0, 0)
+          ret = None
+        elif event.eventCode == REL_Y:
+          self.rely[event.stream.deviceIndex] += event.eventValue
+          if self.relHandler:
+            self.relHandler(event.stream.deviceType, event.stream.deviceIndex, 0, event.eventValue, 0, 0)
+          ret = None
+        elif event.eventCode == REL_WHEEL:
+          self.relv[event.stream.deviceIndex] += event.eventValue
+          if self.relHandler:
+            self.relHandler(event.stream.deviceType, event.stream.deviceIndex, 0, 0, event.eventValue, 0)
+          ret = None
+        elif event.eventCode == REL_HWHEEL:
+          self.relh[event.stream.deviceIndex] += event.eventValue
+          if self.relHandler:
+            self.relHandler(event.stream.deviceType, event.stream.deviceIndex, 0, 0, 0, event.eventValue)
+        elif event.eventCode == REL_DIAL:
+          self.relh[event.stream.deviceIndex] += event.eventValue
+          if self.relHandler:
+            self.relHandler(event.stream.deviceType, event.stream.deviceIndex, 0 ,0, 0, event.eventValue)
+          ret = None
       elif event.eventType == EV_ABS:
         if event.eventCode == ABS_X:
           Handled = True
@@ -183,7 +183,7 @@ class EventHandler(object):
     This emulates a key-up but does not generate any events.
     """
     try:
-      self.buttons[buttonCode]=0
+      self.buttons[buttonCode] = 0
     except KeyError:
       pass
 

@@ -1,11 +1,4 @@
-import os
-import re
-import struct
-import sys
-import threading
-
 from pi3d.event import EventHandler
-from pi3d.event import Format
 from pi3d.event import Keys
 from pi3d.event.FindDevices import find_devices
 from pi3d.event.Constants import *
@@ -58,7 +51,7 @@ class InputEvents(object):
     self.streams = [ ]
     if wantKeyboard:
       keyboards =  find_devices("kbd")
-      self.streams += map(lambda x: EventStream(x, "keyboard"),keyboards)
+      self.streams += map(lambda x: EventStream(x, "keyboard"), keyboards)
     else:
       keyboards = [ ]
     print "keyboards =", keyboards
@@ -87,7 +80,7 @@ class InputEvents(object):
       if self.handler.event(event) and self.unhandledHandler:
         self.unhandledHandler(event)
 
-  def key_state(self,key):
+  def key_state(self, key):
     """
     Returns the state of the given key.
 
@@ -119,7 +112,7 @@ class InputEvents(object):
     """
     return self.handler.key_state(key_to_code(key))
 
-  def clear_key(self,key):
+  def clear_key(self, key):
     """
     Clears the state of the given key.
 
@@ -149,7 +142,7 @@ class InputEvents(object):
     """
     return (self.handler.absx[index], self.handler.absy[index], self.handler.absz[index])
 
-  def get_joystickR(self,index=0):
+  def get_joystickR(self, index=0):
     """
     Returns the x,y coordinates for a right gamepad analogue stick.
 
@@ -160,7 +153,8 @@ class InputEvents(object):
 
     All values are -1.0 to +1.0 with 0.0 being centred.
     """
-    return (self.handler.absz2[index], self.handler.absz[index])
+    #return (self.handler.absz2[index], self.handler.absz[index])
+    return (self.handler.absx2[index], self.handler.absz2[index])
 
   def get_joystickB3d(self, index=0):
     """

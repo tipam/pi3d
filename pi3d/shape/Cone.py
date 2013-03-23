@@ -1,5 +1,4 @@
 from pi3d.constants import *
-from pi3d.Buffer import Buffer
 from pi3d.Shape import Shape
 
 class Cone(Shape):

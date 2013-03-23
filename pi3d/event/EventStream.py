@@ -1,5 +1,4 @@
 import fcntl
-import ioctl
 import os
 import select
 
@@ -7,6 +6,7 @@ from echomesh.util import Log
 
 from pi3d.event.Constants import *
 
+from pi3d.event import ioctl
 from pi3d.event import AbsAxisScaling
 from pi3d.event import EventStruct
 from pi3d.event import Format
@@ -44,9 +44,9 @@ class EventStream(object):
   axisHat3Y = 13
   axisThrottle = 14
   axisRudder = 15
-  axisWheel=16
+  axisWheel = 16
   axisGas = 17
-  axisBrake=18
+  axisBrake = 18
   axisPressure = 19
   axisDistance = 20
   axisTiltX = 21
@@ -168,7 +168,7 @@ class EventStream(object):
 
     selectlist = map(lambda x: x.filehandle, streams)
 
-    ready = select.select(selectlist,[ ], [ ], 0)[0]
+    ready = select.select(selectlist, [ ], [ ], 0)[0]
     if not ready: return
     while ready:
       for fd in ready:
@@ -188,7 +188,7 @@ class EventStream(object):
           event = EventStruct.EventStruct(stream)
           event.decode(s)
           yield event
-      ready = select.select(selectlist,[ ], [ ], 0)[0]
+      ready = select.select(selectlist, [ ], [ ], 0)[0]
 
   def __enter__(self):
     return self

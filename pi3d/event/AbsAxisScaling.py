@@ -1,7 +1,7 @@
 import array
 import fcntl
-import ioctl
 import struct
+from pi3d.event import ioctl
 
 def EVIOCGABS(axis):
   return ioctl._IOR(ord('E'), 0x40 + axis, "ffffff")	# get abs value/limits
@@ -15,12 +15,12 @@ class AbsAxisScaling(object):
 
   There is a scale method, which scales a given value to the range -1..+1.
   """
-  def __init__(self,stream, axis):
+  def __init__(self, stream, axis):
     """
     Fetch the scale values for this stream and fill in the instance
     variables accordingly.
     """
-    s = array.array("f",[1,2,3,4,5,6])
+    s = array.array("f", [1, 2, 3, 4, 5, 6])
     try:
       x = fcntl.ioctl(stream.filehandle, EVIOCGABS(axis), s)
     except IOError:
