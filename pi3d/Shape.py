@@ -1,7 +1,6 @@
 import ctypes
 
-from itertools import chain
-from numpy import array, dot, ravel
+from numpy import array, dot
 from math import radians, pi, sin, cos
 
 from pi3d.constants import *
@@ -506,7 +505,7 @@ class Shape(Loadable):
     self.unif[5] = v
     self.MFlg = True
 
-  def rotateIncX(self,v):
+  def rotateIncX(self, v):
     """Arguments:
 
       *v*
@@ -519,7 +518,7 @@ class Shape(Loadable):
     self.rox[2, 1] = -s
     self.MFlg = True
 
-  def rotateIncY(self,v):
+  def rotateIncY(self, v):
     """Arguments:
 
       *v*
@@ -532,7 +531,7 @@ class Shape(Loadable):
     self.roy[2, 0] = s
     self.MFlg = True
 
-  def rotateIncZ(self,v):
+  def rotateIncZ(self, v):
     """Arguments:
 
       *v*
@@ -577,14 +576,12 @@ class Shape(Loadable):
 
     s = len(path)
     rl = int(self.sides * loops)
-    ssize = rl * 6 * (s - 1)
 
     pn = 0
     pp = 0
     tcx = 1.0 / self.sides
     pr = (pi / self.sides) * 2.0
     rdiv = rise / rl
-    ss = 0
 
     # Find largest and smallest y of the path used for stretching the texture
     miny = path[0][1]

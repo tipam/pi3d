@@ -1,6 +1,5 @@
 from ctypes import c_float
 
-import math
 import time
 import threading
 import traceback
@@ -295,8 +294,8 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
       #LOGGER.error("Can't compute default window size when using tk")
       #raise Exception
       # ... just force full screen - TK will automatically fit itself into the screen
-      w=1920
-      h=1180
+      w = 1920
+      h = 1180
     tkwin = TkWin.TkWin(window_parent, window_title, w, h)
     tkwin.update()
     if x is None:
@@ -311,13 +310,13 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
 
   display = Display(tkwin)
   if (w or 0) <= 0:
-     w = display.max_width - 2 * x
-     if w <= 0:
-       w = display.max_width
+    w = display.max_width - 2 * x
+    if w <= 0:
+      w = display.max_width
   if (h or 0) <= 0:
-     h = display.max_height - 2 * y
-     if h <= 0:
-       h = display.max_height
+    h = display.max_height - 2 * y
+    if h <= 0:
+      h = display.max_height
   LOGGER.debug('Display size is w=%d, h=%d', w, h)
 
   display.frames_per_second = frames_per_second

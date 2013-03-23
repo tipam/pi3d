@@ -97,7 +97,7 @@ class Texture(Loadable):
 
     if nx != self.ix or ny != self.iy or self.size > 0:
       if VERBOSE:
-        print self.self.ix, self.iy
+        print self.ix, self.iy
       if self.size > 0:
         nx, ny = self.size, self.size
       self.ix, self.iy = nx, ny
@@ -107,7 +107,7 @@ class Texture(Loadable):
       s += 'Bitmap size: %d, %d' % (self.ix, self.iy)
 
     if VERBOSE:
-      print 'Loading ...',s
+      print 'Loading ...', s
 
     if self.flip:
       self.im = self.im.transpose(Image.FLIP_TOP_BOTTOM)
@@ -140,7 +140,7 @@ class Texture(Loadable):
 
 
 class TextureCache(object):
-  def __init__(self, max_size=None):
+  def __init__(self, max_size=None): #TODO use max_size in some way
     self.clear()
 
   def clear(self):

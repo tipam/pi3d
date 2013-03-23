@@ -1,6 +1,4 @@
-import signal
 import threading
-import traceback
 
 from echomesh.util import Log
 

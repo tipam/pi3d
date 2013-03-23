@@ -78,7 +78,7 @@ class Shader(object):
     def make_shader(src, suffix, shader_type):
       src = src or self.loadShader(shfile + suffix)
       characters = ctypes.c_char_p(src)
-      shader = opengles.glCreateShader(shader_type);
+      shader = opengles.glCreateShader(shader_type)
       opengles.glShaderSource(shader, 1, ctypes.byref(characters), 0)
       opengles.glCompileShader(shader)
       self.showshaderlog(shader)
@@ -121,16 +121,16 @@ class Shader(object):
     """Makes this shader active"""
     opengles.glUseProgram(self.program)
 
-  def showshaderlog(self,shader):
+  def showshaderlog(self, shader):
     """Prints the compile log for a shader"""
-    N=1024
+    N = 1024
     log = (ctypes.c_char * N)()
     loglen = ctypes.c_int()
     opengles.glGetShaderInfoLog(shader, N, ctypes.byref(loglen),
                                 ctypes.byref(log))
     print "shader", self.shfile, log.value
 
-  def showprogramlog(self,shader):
+  def showprogramlog(self, shader):
     """Prints the compile log for a program"""
     N = 1024
     log = (ctypes.c_char * N)()

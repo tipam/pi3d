@@ -113,15 +113,15 @@ class Buffer(Loadable):
                               self.unib[3], self.unib[4], self.unib[5],
                               self.unib[6], self.unib[7], self.unib[8],
                               self.unib[9], self.unib[10], self.unib[11])
-    self.__init__(shape, pts, texcoords, faces, normals=None, smooth=True)
+    self.__init__(shape, pts, texcoords, faces, normals, smooth)
     opengles.glBufferData(GL_ARRAY_BUFFER,
                           ctypes.sizeof(self.array_buffer),
                           ctypes.byref(self.array_buffer),
-                          GL_STATIC_DRAW);
+                          GL_STATIC_DRAW)
     opengles.glBufferData(GL_ELEMENT_ARRAY_BUFFER,
                           ctypes.sizeof(self.element_array_buffer),
                           ctypes.byref(self.element_array_buffer),
-                          GL_STATIC_DRAW);
+                          GL_STATIC_DRAW)
     self.opengl_loaded = True
     self.unib = tmp_unib
 
@@ -134,16 +134,16 @@ class Buffer(Loadable):
     opengles.glBufferData(GL_ARRAY_BUFFER,
                           ctypes.sizeof(self.array_buffer),
                           ctypes.byref(self.array_buffer),
-                          GL_STATIC_DRAW);
+                          GL_STATIC_DRAW)
     opengles.glBufferData(GL_ELEMENT_ARRAY_BUFFER,
                           ctypes.sizeof(self.element_array_buffer),
                           ctypes.byref(self.element_array_buffer),
-                          GL_STATIC_DRAW);
+                          GL_STATIC_DRAW)
 
   def _select(self):
     """Makes our buffers active."""
-    opengles.glBindBuffer(GL_ARRAY_BUFFER, self.vbuf);
-    opengles.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.ebuf);
+    opengles.glBindBuffer(GL_ARRAY_BUFFER, self.vbuf)
+    opengles.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.ebuf)
 
   def set_draw_details(self, shader, textures, ntiles=0.0, shiny=0.0,
                        umult=1.0, vmult=1.0):

@@ -3,17 +3,15 @@ import ctypes
 from echomesh.util.DefaultInstance import DefaultInstance
 
 from numpy import array, dot, copy, tan, cos, sin, radians, degrees, arctan2, sqrt
-from numpy.linalg import norm
 
 from pi3d.constants import *
-from pi3d.Shape import Shape
 from pi3d.util.Utility import vec_normal, vec_cross, vec_sub, vec_dot
 
 class Camera(DefaultInstance):
   """required object for creating and drawing Shape objects. Default instance
   created if none specified in script prior to creating a Shape
   """
-  def __init__(self, at=(0,0,0), eye=(0,0,-0.1), lens=(1.0, 1000.0, 45.0, 1.6), is_3d=True):
+  def __init__(self, at=(0, 0, 0), eye=(0, 0, -0.1), lens=(1.0, 1000.0, 45.0, 1.6), is_3d=True):
     """Set up view matrix to look from eye to at including perspective
 
     Arguments:
@@ -34,7 +32,7 @@ class Camera(DefaultInstance):
     self.start_eye = eye # for reset with different lens settings
     self.eye = [eye[0], eye[1], eye[2]]
     self.lens = lens
-    self.view = _LookAtMatrix(at, eye, [0,1,0])
+    self.view = _LookAtMatrix(at, eye, [0, 1, 0])
     if is_3d:
       self.projection = _ProjectionMatrix(lens[0], lens[1], lens[2], lens[3])
     else:
@@ -58,11 +56,11 @@ class Camera(DefaultInstance):
   def reset(self, lens=None, is_3d=True):
     """Has to be called each loop if the camera position or rotation changes"""
     if lens != None:
-      view = _LookAtMatrix(self.at, self.start_eye, [0,1,0])
+      view = _LookAtMatrix(self.at, self.start_eye, [0, 1, 0])
       projection = _ProjectionMatrix(lens[0], lens[1], lens[2], lens[3])
       self.model_view = dot(view, projection)
     elif not is_3d:
-      view = _LookAtMatrix(self.at, self.start_eye, [0,1,0])
+      view = _LookAtMatrix(self.at, self.start_eye, [0, 1, 0])
       projection = _OrthographicMatrix()
       self.model_view = dot(view, projection)
     # TODO some way of resetting to original matrix
@@ -82,7 +80,7 @@ class Camera(DefaultInstance):
       return
     dx, dy, dz = target[0] - self.eye[0], target[1] - self.eye[1], target[2] - self.eye[2]
     rot = -degrees(arctan2(dx, dz))
-    horiz = sqrt(dot([dx,dz], [dx,dz]))
+    horiz = sqrt(dot([dx,dz], [dx, dz]))
     tilt = degrees(arctan2(dy, horiz))
     self.rotate(tilt, rot, 0)
     return tilt, rot
@@ -170,7 +168,7 @@ class Camera(DefaultInstance):
     self.rotateX(rx)
     self.rotateY(ry)
 
-def _LookAtMatrix(at, eye, up=[0,1,0], reflect=False):
+def _LookAtMatrix(at, eye, up=[0, 1, 0], reflect=False):
   """Define a matrix looking at.
 
   Arguments:
@@ -188,8 +186,8 @@ def _LookAtMatrix(at, eye, up=[0,1,0], reflect=False):
   # If reflect, then reflect in plane -20.0 (water depth)
   if reflect:
     depth = -20.0 # Shallower to avoid edge effects
-    eye = [eye[0],-eye[1],eye[2]]
-    at = [at[0],-at[1],at[2]]
+    eye = [eye[0], -eye[1], eye[2]]
+    at = [at[0], -at[1], at[2]]
   zaxis = vec_normal(vec_sub(at, eye))
   xaxis = vec_normal(vec_cross(up, zaxis))
   yaxis = vec_cross(zaxis, xaxis)
