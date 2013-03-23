@@ -3,7 +3,6 @@ import math
 import random
 
 from pi3d.constants import *
-from pi3d import Texture
 from pi3d.Buffer import Buffer
 
 from pi3d.Shape import Shape
@@ -32,10 +31,10 @@ class MergeShape(Shape):
     if VERBOSE:
       print "Creating Merge Shape ..."
 
-    self.vertices=[]
-    self.normals=[]
-    self.tex_coords=[]
-    self.indices=[]    #stores all indices for single render
+    self.vertices = []
+    self.normals = []
+    self.tex_coords = []
+    self.indices = []    #stores all indices for single render
 
     self.buf = []
     self.buf.append(Buffer(self, self.vertices, self.tex_coords, self.indices, self.normals))
@@ -127,7 +126,7 @@ class MergeShape(Shape):
       rh = random.random() * (maxscl - minscl) + minscl
       rt = random.random() * 360.0
       y = elevmap.calcHeight(x, z) + rh * 2
-      self.merge(bufr, x,y,z, 0.0, rt, 0.0, rh, rh, rh)
+      self.merge(bufr, x, y, z, 0.0, rt, 0.0, rh, rh, rh)
 
   def radialCopy(self, bufr, x=0, y=0, z=0, startRadius=2.0, endRadius=2.0,
                  startAngle=0.0, endAngle=360.0, step=12):
@@ -161,7 +160,7 @@ class MergeShape(Shape):
       print "merging ", r
       ca = math.cos(math.radians(sta))
       sa = math.sin(math.radians(sta))
-      self.merge(bufr, x + ca * rd, y ,z + sa * rd, 0, sta, 0)
+      self.merge(bufr, x + ca * rd, y, z + sa * rd, 0, sta, 0)
       sta += step
       rd += rst
 

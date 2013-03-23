@@ -1,5 +1,4 @@
-from pi3d import *
-from pi3d import Texture
+from pi3d.constants import *
 from pi3d.Buffer import Buffer
 from pi3d.Shape import Shape
 
@@ -34,12 +33,12 @@ class Plane(Shape):
     ww = w / 2.0
     hh = h / 2.0
 
-    self.verts = ((-ww, hh, 0.0), (ww, hh, 0.0), (ww, -hh, 0.0), (-ww,-hh, 0.0),
-                  (-ww, hh, 0.0), (ww, hh, 0.0), (ww, -hh, 0.0), (-ww,-hh, 0.0))
+    self.verts = ((-ww, hh, 0.0), (ww, hh, 0.0), (ww, -hh, 0.0), (-ww, -hh, 0.0),
+                  (-ww, hh, 0.0), (ww, hh, 0.0), (ww, -hh, 0.0), (-ww, -hh, 0.0))
     self.norms = ((0.0, 0.0, -1), (0.0, 0.0, -1),  (0.0, 0.0, -1), (0.0, 0.0, -1),
                   (0.0, 0.0, 1), (0.0, 0.0, 1),  (0.0, 0.0, 1), (0.0, 0.0, 1))
-    self.texcoords = ((0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0 ,1.0),
-                      (0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0 ,1.0))
+    self.texcoords = ((0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0),
+                      (0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0))
 
     self.inds = ((0, 1, 3), (1, 2, 3), (5, 4, 7), (6, 5, 7))
 

@@ -1,6 +1,6 @@
 import math
 
-from pi3d import *
+from pi3d.constants import *
 from pi3d.util import Utility
 from pi3d.Shape import Shape
 
@@ -21,7 +21,7 @@ class Sphere(Shape):
       *sides*
         number of sides for Shape._lathe() to use
     """
-    super(Sphere,self).__init__(camera, light, name, x, y, z, rx, ry, rz,
+    super(Sphere, self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                 sx, sy, sz, cx, cy, cz)
 
     if VERBOSE:

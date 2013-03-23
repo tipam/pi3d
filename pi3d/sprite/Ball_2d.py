@@ -1,4 +1,3 @@
-import math
 import ctypes
 
 from pi3d.constants import *

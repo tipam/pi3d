@@ -1,8 +1,6 @@
-from pi3d import *
-from pi3d.Texture import Texture
+from pi3d.constants import *
 from pi3d.Buffer import Buffer
 from pi3d.Shape import Shape
-from pi3d.util.Loadable import Loadable
 
 class Tetrahedron(Shape):
   """ 3d model inherits from Shape. The simplest 3D shape

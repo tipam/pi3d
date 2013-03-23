@@ -1,11 +1,8 @@
-from pi3d import *
-
-from pi3d import Texture
+from pi3d.constants import *
 
 from pi3d.loader import loaderEgg
 from pi3d.loader import loaderObj
 from pi3d.Shape import Shape
-from pi3d.util.RotateVec import rotate_vec
 
 class Model(Shape):
   """ 3d model inherits from Shape
@@ -45,7 +42,7 @@ class Model(Shape):
     """create a new Model but buf points to same array of Buffers
     so much quicker to create than reloading all the vertices etc
     """
-    newModel = Model(file_string = "__clone__",x=self.unif[0], y=self.unif[1], z=self.unif[2],
+    newModel = Model(file_string = "__clone__", x=self.unif[0], y=self.unif[1], z=self.unif[2],
                rx=self.unif[3], ry=self.unif[4], rz=self.unif[5], sx=self.unif[6], sy=self.unif[7], sz=self.unif[8],
                cx=self.unif[9], cy=self.unif[10], cz=self.unif[11])
     newModel.buf = self.buf

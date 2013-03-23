@@ -1,7 +1,4 @@
-import math
-
 from pi3d.Display import Display
-from pi3d.Texture import Texture
 from pi3d.util import Utility
 
 from pi3d.shape.Sprite import ImageSprite

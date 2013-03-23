@@ -1,4 +1,4 @@
-from pi3d import *
+from pi3d.constants import *
 from pi3d.Buffer import Buffer
 from pi3d.Shape import Shape
 
@@ -26,7 +26,7 @@ class Cuboid(Shape):
     dimension. For no distortion of the image the scale factors need to be
     proportional to the relative dimension.    
     """
-    super(Cuboid,self).__init__(camera, light, name, x, y, z, rx, ry, rz,
+    super(Cuboid, self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                 1.0, 1.0, 1.0, cx, cy, cz)
 
     if VERBOSE:
@@ -44,7 +44,7 @@ class Cuboid(Shape):
 
     #cuboid data - faces are separated out for texturing..
 
-    self.vertices = ((-ww, hh, dd), (ww, hh, dd), (ww,-hh, dd), (-ww, -hh, dd),
+    self.vertices = ((-ww, hh, dd), (ww, hh, dd), (ww, -hh, dd), (-ww, -hh, dd),
         (ww, hh, dd),  (ww, hh, -dd),  (ww, -hh, -dd), (ww, -hh, dd),
         (-ww, hh, dd), (-ww, hh, -dd), (ww, hh, -dd),  (ww, hh, dd),
         (ww, -hh, dd), (ww, -hh, -dd), (-ww, -hh, -dd),(-ww, -hh, dd),

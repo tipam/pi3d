@@ -4,7 +4,7 @@ from ctypes import c_int, c_float
 
 from pi3d.constants import *
 
-from pi3d.util.Ctypes import c_chars, c_ints
+from pi3d.util.Ctypes import c_ints
 
 class DisplayOpenGL(object):
   def __init__(self):
@@ -47,9 +47,9 @@ class DisplayOpenGL(object):
 
     self.create_surface(x, y, w, h)
 
-    opengles.glDepthRangef(c_float(-1.0),c_float(1.0))
-    opengles.glClearColor (c_float(0.3), c_float(0.3), c_float(0.7), c_float(1.0));
-    opengles.glBindFramebuffer(GL_FRAMEBUFFER,0)
+    opengles.glDepthRangef(c_float(-1.0), c_float(1.0))
+    opengles.glClearColor (c_float(0.3), c_float(0.3), c_float(0.7), c_float(1.0))
+    opengles.glBindFramebuffer(GL_FRAMEBUFFER, 0)
 
     #Setup default hints
     opengles.glEnable(GL_CULL_FACE)
@@ -82,7 +82,7 @@ class DisplayOpenGL(object):
       DISPMANX_PROTECTION_NONE,
       0, 0, 0)
 
-    nativewindow = c_ints((self.dispman_element, w, h + 1));
+    nativewindow = c_ints((self.dispman_element, w, h + 1))
     bcm.vc_dispmanx_update_submit_sync(self.dispman_update)
 
     nw_p = ctypes.pointer(nativewindow)
@@ -112,7 +112,7 @@ class DisplayOpenGL(object):
 
   def destroy(self):
     if self.active:
-      openegl.eglSwapBuffers(self.display, self.surface);
+      openegl.eglSwapBuffers(self.display, self.surface)
       openegl.eglMakeCurrent(self.display, EGL_NO_SURFACE, EGL_NO_SURFACE,
                              EGL_NO_CONTEXT)
       openegl.eglDestroySurface(self.display, self.surface)

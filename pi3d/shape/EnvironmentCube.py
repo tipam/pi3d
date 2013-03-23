@@ -46,7 +46,7 @@ class EnvironmentCube(Shape):
         HALFCROSS (default) or CROSS any other defaults to CUBE type
         and will require 6 (or 5 with nobottom) image files to render it
     """
-    super(EnvironmentCube,self).__init__(camera, light, name, x, y, z, rx, ry, rz,
+    super(EnvironmentCube, self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                 1.0, 1.0, 1.0, cx, cy, cz)
 
     self.width = size
@@ -62,7 +62,7 @@ class EnvironmentCube(Shape):
 
     #cuboid data - faces are separated out for texturing..
 
-    self.vertices = ((-ww, hh, dd), (ww, hh, dd), (ww,-hh, dd), (-ww, -hh, dd),
+    self.vertices = ((-ww, hh, dd), (ww, hh, dd), (ww, -hh, dd), (-ww, -hh, dd),
         (ww, hh, dd),  (ww, hh, -dd),  (ww, -hh, -dd), (ww, -hh, dd),
         (-ww, hh, dd), (-ww, hh, -dd), (ww, hh, -dd),  (ww, hh, dd),
         (ww, -hh, dd), (ww, -hh, -dd), (-ww, -hh, -dd),(-ww, -hh, dd),
@@ -90,31 +90,31 @@ class EnvironmentCube(Shape):
       self.buf.append(Buffer(self, self.vertices, self.tex_coords, self.indices, self.normals))
 
     elif maptype == "HALFCROSS":
-      self.tex_coords = ((0.25,0.25), (0.25,0.75), (-0.25,0.75), (-0.25,0.25), #front
-        (0.25,0.75), (0.75,0.75), (0.75,1.25), (0.25,1.25), #right
-        (0.25,0.25), (0.75,0.25), (0.75,0.75), (0.25,0.75), #top
-        (0,0), (1,0), (1,1), (0,1), #bottom
-        (0.25,-0.25), (0.75,-0.25), (0.75,0.25), (0.25,0.25), #left
-        (0.75,0.25), (0.75,0.75), (1.25,0.75), (1.25,0.25)) #back
+      self.tex_coords = ((0.25, 0.25), (0.25, 0.75), (-0.25, 0.75), (-0.25, 0.25), #front
+        (0.25, 0.75), (0.75, 0.75), (0.75, 1.25), (0.25, 1.25), #right
+        (0.25, 0.25), (0.75, 0.25), (0.75, 0.75), (0.25, 0.75), #top
+        (0, 0), (1, 0), (1, 1), (0, 1), #bottom
+        (0.25, -0.25), (0.75, -0.25), (0.75, 0.25), (0.25, 0.25), #left
+        (0.75, 0.25), (0.75, 0.75), (1.25, 0.75), (1.25, 0.25)) #back
 
       self.buf = []
       self.buf.append(Buffer(self, self.vertices, self.tex_coords, self.indices, self.normals))
 
     else:
-      self.tex_coords = ((0.002,0.002), (0.998,0.002), (0.998,0.998),(0.002,0.998),
-            (0.002,0.002), (0.998,0.002), (0.998,0.998), (0.002,0.998),
-            (0.002,0.998), (0.002,0.002), (0.998,0.002), (0.998,0.998),
-            (0.998,0.002), (0.998,0.998), (0.002,0.998), (0.002,0.002),
-            (0.998,0.998), (0.002,0.998), (0.002,0.002), (0.998,0.002),
-            (0.998,0.002), (0.002,0.002), (0.002,0.998), (0.998,0.998))
+      self.tex_coords = ((0.002, 0.002), (0.998, 0.002), (0.998, 0.998),(0.002, 0.998),
+            (0.002, 0.002), (0.998, 0.002), (0.998, 0.998), (0.002, 0.998),
+            (0.002, 0.998), (0.002, 0.002), (0.998, 0.002), (0.998, 0.998),
+            (0.998, 0.002), (0.998, 0.998), (0.002, 0.998), (0.002, 0.002),
+            (0.998, 0.998), (0.002, 0.998), (0.002, 0.002), (0.998, 0.002),
+            (0.998, 0.002), (0.002, 0.002), (0.002, 0.998), (0.998, 0.998))
 
       self.buf = []
-      self.buf.append(Buffer(self, self.vertices[0:4], self.tex_coords[0:4], ((3,0,1), (2,3,1)), self.normals[0:4])) #front
-      self.buf.append(Buffer(self, self.vertices[4:8], self.tex_coords[4:8], ((3,0,1), (2,3,1)), self.normals[4:8])) #right
-      self.buf.append(Buffer(self, self.vertices[8:12], self.tex_coords[8:12], ((3,0,1), (2,3,1)), self.normals[8:12])) #top
-      self.buf.append(Buffer(self, self.vertices[12:16], self.tex_coords[12:16], ((3,0,1), (2,3,1)), self.normals[12:16])) #bottom
-      self.buf.append(Buffer(self, self.vertices[16:20], self.tex_coords[16:20], ((3,0,1), (2,3,1)), self.normals[16:20])) #left
-      self.buf.append(Buffer(self, self.vertices[20:24], self.tex_coords[20:24], ((3,1,0), (2,1,3)), self.normals[20:24])) #back
+      self.buf.append(Buffer(self, self.vertices[0:4], self.tex_coords[0:4], ((3, 0, 1), (2, 3, 1)), self.normals[0:4])) #front
+      self.buf.append(Buffer(self, self.vertices[4:8], self.tex_coords[4:8], ((3, 0, 1), (2, 3, 1)), self.normals[4:8])) #right
+      self.buf.append(Buffer(self, self.vertices[8:12], self.tex_coords[8:12], ((3,0,1), (2, 3, 1)), self.normals[8:12])) #top
+      self.buf.append(Buffer(self, self.vertices[12:16], self.tex_coords[12:16], ((3, 0, 1), (2, 3, 1)), self.normals[12:16])) #bottom
+      self.buf.append(Buffer(self, self.vertices[16:20], self.tex_coords[16:20], ((3, 0, 1), (2, 3, 1)), self.normals[16:20])) #left
+      self.buf.append(Buffer(self, self.vertices[20:24], self.tex_coords[20:24], ((3, 1, 0), (2, 1, 3)), self.normals[20:24])) #back
 
   def set_draw_details(self, shader, textures, ntiles=0.0, shiny=0.0, umult=1.0, vmult=1.0):
     """overrides this method in Shape to cope with nobottom option"""

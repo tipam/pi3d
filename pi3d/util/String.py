@@ -58,11 +58,15 @@ class String(Shape):
         for j in verts:
           temp_verts.append((j[0]+xoff, j[1], j[2]))
         xoff += w
-        if h > maxh: maxh = h
-        for j in texc: self.texcoords.append(j)
-        for j in [(0.0,0.0,1.0), (0.0,0.0,1.0), (0.0,0.0,1.0), (0.0,0.0,1.0)]: self.norms.append(j)
+        if h > maxh:
+          maxh = h
+        for j in texc:
+          self.texcoords.append(j)
+        for j in [(0.0, 0.0, 1.0), (0.0, 0.0, 1.0), (0.0, 0.0, 1.0), (0.0, 0.0, 1.0)]:
+          self.norms.append(j)
         stv = 4 * i
-        for j in [(stv, stv + 2, stv + 1), (stv, stv + 3, stv + 2)]: self.inds.append(j)
+        for j in [(stv, stv + 2, stv + 1), (stv, stv + 3, stv + 2)]:
+          self.inds.append(j)
 
     for j in temp_verts:
       self.verts.append(((j[0] - xoff/2.0) * sx, (j[1] + maxh/2.0) * sy, j[2]))

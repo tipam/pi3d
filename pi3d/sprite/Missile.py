@@ -16,7 +16,7 @@ class Missile(object):
     self.dz = 0.0
     self.w = w
     self.h = h
-    self.countDown=0
+    self.countDown = 0
     self.picture = Plane(w, h)
 
   #initialise the launch of the missile

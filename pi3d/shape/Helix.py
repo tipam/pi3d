@@ -23,7 +23,7 @@ class Helix(Shape):
       *loops*
         Number of turns that the helix makes.
     """
-    super(Helix,self).__init__(camera, light, name, x, y, z, rx, ry, rz,
+    super(Helix, self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                 sx, sy, sz, cx, cy, cz)
 
     if VERBOSE:

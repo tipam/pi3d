@@ -1,6 +1,5 @@
 from pi3d.constants import *
 from pi3d.Buffer import Buffer
-from pi3d.util import Utility
 
 from pi3d.Shape import Shape
 
@@ -9,7 +8,7 @@ class Extrude(Shape):
   NB this shape has an array of three Buffers representing each end face
   and the sides of the prism. Each can be textured seperately for drawing.
   """
-  def __init__(self, camera=None, light=None, path=[], height=1.0, name="", x=0.0, y=0.0, z=0.0,
+  def __init__(self, camera=None, light=None, path=None, height=1.0, name="", x=0.0, y=0.0, z=0.0,
                rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0,
                cx=0.0, cy=0.0, cz=0.0):
     """uses standard constructor for Shape extra Keyword arguments:
@@ -25,15 +24,15 @@ class Extrude(Shape):
     if VERBOSE:
       print "Creating Extrude ..."
 
-    s = len(path)
+    s = len(path) if path != None else 0
     ht = height * 0.5
 
-    self.verts=[]
-    self.norms=[]
-    self.botface=[]
-    self.topface=[]
-    self.sidefaces=[]
-    self.tex_coords=[]
+    self.verts = []
+    self.norms = []
+    self.botface = []
+    self.topface = []
+    self.sidefaces = []
+    self.tex_coords = []
     self.edges = s
     self.ttype = GL_TRIANGLES
 
@@ -86,13 +85,9 @@ class Extrude(Shape):
       self.sidefaces.append((v1, v2, v3))
 
     for p in range(s):    #bottom face indices - triangle fan
-      p0 = s #middle vertex
-      p1 = 0
       self.botface.append((s, (p+1)%s, p))
 
     for p in range(s):    #top face indices - triangle fan
-      p0 = 4*s+1 #middle vertex
-      p1 = 3*s
       self.topface.append((s, p, (p+1)%s))
 
 
