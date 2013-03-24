@@ -34,37 +34,6 @@ class Clashtest(Texture):
     """ have to override this
     """
 
-  def start_check(self):
-    """ after calling this method all object.draw()s will rendered
-    to this texture and not appear on the display. If you want blurred
-    edges you will have to capture the rendering of an object and its
-    background then re-draw them using the blur() method. Large objects
-    will obviously take a while to draw and re-draw
-    """
-    opengles.glBindFramebuffer(GL_FRAMEBUFFER, self.framebuffer)
-    opengles.glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-                GL_TEXTURE_2D, self._tex.value, 0)
-    #thanks to PeterO c.o. RPi forum for pointing out missing depth attchmnt
-    opengles.glBindRenderbuffer(GL_RENDERBUFFER, self.depthbuffer)
-    opengles.glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16,
-                self.ix, self.iy)
-    opengles.glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
-                GL_RENDERBUFFER, self.depthbuffer)
-    #opengles.glClearColor(ctypes.c_float(0.0), ctypes.c_float(0.0), ctypes.c_float(0.0), ctypes.c_float(0.0))
-    opengles.glClear(GL_DEPTH_BUFFER_BIT)
-    opengles.glClear(GL_COLOR_BUFFER_BIT)
-
-    opengles.glEnable(GL_TEXTURE_2D)
-    opengles.glActiveTexture(0)
-
-    #assert opengles.glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE
-
-  def end_check(self):
-    """ stop capturing to texture and resume normal rendering to default
-    """
-    opengles.glBindTexture(GL_TEXTURE_2D, 0)
-    opengles.glBindFramebuffer(GL_FRAMEBUFFER, 0)
-
   def draw(self, shape):
     """ draw the shape using the clashtest Shader
 
