@@ -22,6 +22,9 @@ reflection maps, blurring and many others. It has various demos of built-in
 shapes, landscapes, model loading, walk-about camera and much more! See the demos
 included with this code and experiment with them ..
 
+If you are reading this document as the ReadMe in the repository then you
+can find the full version of the documentation here
+http://pi3d.github.com/html/index.html
 
 Demo's included with Pi3D
 =========================
@@ -286,7 +289,7 @@ Please note that Pi3D functions may change significantly during it's development
 Bug reports, comments, feature requests and fixes are most welcome!
 
 Please email on pi3d@googlegroups.com or contact us through the Raspberry Pi forums
-or on pi3d.github.com
+or on http://pi3d.github.com/html/index_html
 
 
 Acknowledgements
