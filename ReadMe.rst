@@ -289,7 +289,7 @@ Please note that Pi3D functions may change significantly during it's development
 Bug reports, comments, feature requests and fixes are most welcome!
 
 Please email on pi3d@googlegroups.com or contact us through the Raspberry Pi forums
-or on http://pi3d.github.com/html/index_html
+or on http://pi3d.github.com/html/index.html
 
 
 Acknowledgements
