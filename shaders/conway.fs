@@ -1,4 +1,4 @@
-precision mediump float;
+precision highp float;
 
 uniform sampler2D tex0;
 uniform vec3 unib[3];
@@ -20,10 +20,8 @@ void main(void) {
     }
   }
   vec4 texc = texture2D(tex0, (coord * pix_inv)); //current value of pixel
-  ntot -= step(0.25,texc.b); // take away this square (centre of grid)
+  ntot -= step(0.25, texc.b); // take away this square (centre of grid)
   if (ntot == 3.0) texc = vec4(0.0, 0.0, 1.0, 1.0);
   else if (ntot != 2.0) texc = vec4(smoothstep(0.0, 5.0, ntot), 1.0, 0.0, 0.0);
   gl_FragColor = texc;
 }
-
-
