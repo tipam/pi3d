@@ -102499,6 +102499,16 @@
     <Polygon> {
       <RGBA> { 1 1 1 1 }
       <TRef> { Tex25 }
+      <VertexRef> { 448 454 455 <Ref> { rims.verts } }
+    }
+    <Polygon> {
+      <RGBA> { 1 1 1 1 }
+      <TRef> { Tex25 }
+      <VertexRef> { 448 447 454 <Ref> { rims.verts } }
+    }
+    <Polygon> {
+      <RGBA> { 1 1 1 1 }
+      <TRef> { Tex25 }
       <VertexRef> { 438 437 444 <Ref> { rims.verts } }
     }
     <Polygon> {
@@ -102520,16 +102530,6 @@
       <RGBA> { 1 1 1 1 }
       <TRef> { Tex25 }
       <VertexRef> { 450 453 451 <Ref> { rims.verts } }
-    }
-    <Polygon> {
-      <RGBA> { 1 1 1 1 }
-      <TRef> { Tex25 }
-      <VertexRef> { 448 454 455 <Ref> { rims.verts } }
-    }
-    <Polygon> {
-      <RGBA> { 1 1 1 1 }
-      <TRef> { Tex25 }
-      <VertexRef> { 448 447 454 <Ref> { rims.verts } }
     }
     <Polygon> {
       <RGBA> { 1 1 1 1 }

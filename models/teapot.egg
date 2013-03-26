@@ -1,5 +1,13 @@
 <CoordinateSystem> { Y-Up }
-
+<Material> mtrl {
+  <Scalar> diffr {0.5}
+  <Scalar> diffg {0.2}
+  <Scalar> diffb {0.3}
+  <Scalar> specr {0.25}
+  <Scalar> specg {0.25}
+  <Scalar> specb {0.25}
+  <Scalar> shininess {12.5}
+}
 <Group> teapot {
   <Group> body {
     <VertexPool> body {
@@ -2601,2307 +2609,2307 @@
       }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 0 1 2 3 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 4 0 3 5 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 6 7 8 9 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 10 11 12 13 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 14 10 13 15 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 16 14 15 17 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 3 2 18 19 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 5 3 19 20 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 9 8 21 22 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 13 12 23 24 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 15 13 24 25 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 17 15 25 26 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 19 18 27 28 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 20 19 28 29 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 22 21 30 31 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 24 23 32 33 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 25 24 33 34 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 26 25 34 35 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 28 27 36 37 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 29 28 37 38 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 31 30 39 40 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 33 32 41 42 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 34 33 42 43 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 35 34 43 44 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 37 36 45 46 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 38 37 46 47 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 40 39 48 49 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 42 41 50 51 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 43 42 51 52 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 44 43 52 53 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 46 45 54 55 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 47 46 55 56 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 49 48 57 58 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 51 50 59 60 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 52 51 60 61 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 53 52 61 62 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 55 54 63 64 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 56 55 64 65 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 58 57 66 67 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 60 59 68 69 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 61 60 69 70 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 62 61 70 71 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 64 63 72 73 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 65 64 73 74 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 67 66 75 76 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 69 68 77 78 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 70 69 78 79 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 71 70 79 80 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 73 72 81 82 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 74 73 82 83 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 76 75 84 85 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 78 77 86 87 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 79 78 87 88 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 80 79 88 89 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 82 81 90 91 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 83 82 91 92 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 85 84 93 94 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 87 86 95 96 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 88 87 96 97 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 89 88 97 98 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 91 90 99 100 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 92 91 100 101 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 94 93 102 103 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 96 95 104 105 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 97 96 105 106 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 98 97 106 107 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 100 99 108 109 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 101 100 109 110 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 103 102 111 112 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 105 104 113 114 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 106 105 114 115 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 107 106 115 116 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 109 108 117 118 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 110 109 118 119 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 112 111 120 121 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 114 113 122 123 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 115 114 123 124 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 116 115 124 125 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 118 117 126 127 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 119 118 127 128 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 121 120 129 130 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 123 122 131 132 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 124 123 132 133 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 125 124 133 134 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 127 126 135 136 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 128 127 136 137 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 130 129 138 139 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 132 131 140 141 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 133 132 141 142 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 134 133 142 143 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 136 135 144 145 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 137 136 145 146 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 139 138 147 148 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 141 140 149 150 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 142 141 150 151 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 143 142 151 152 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 145 144 153 154 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 146 145 154 155 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 148 147 156 157 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 150 149 158 159 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 151 150 159 160 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 152 151 160 161 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 154 153 162 163 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 155 154 163 164 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 157 156 165 166 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 159 158 167 168 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 160 159 168 169 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 161 160 169 170 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 163 162 171 172 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 164 163 172 173 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 166 165 174 175 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 168 167 176 177 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 169 168 177 178 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 170 169 178 179 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 172 171 180 181 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 173 172 181 182 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 175 174 183 184 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 177 176 185 186 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 178 177 186 187 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 179 178 187 188 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 181 180 189 190 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 182 181 190 191 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 184 183 192 193 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 186 185 194 195 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 187 186 195 196 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 188 187 196 197 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 190 189 198 199 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 191 190 199 200 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 193 192 201 202 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 195 194 203 204 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 196 195 204 205 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 197 196 205 206 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 199 198 207 208 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 200 199 208 209 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 202 201 210 211 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 204 203 212 213 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 205 204 213 214 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 206 205 214 215 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 208 207 1 0 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 209 208 0 4 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 211 210 7 6 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 213 212 11 10 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 214 213 10 14 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 215 214 14 16 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 216 16 17 217 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 218 216 217 219 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 220 218 219 221 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 222 220 221 223 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 224 222 223 225 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 226 224 225 227 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 217 17 26 228 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 219 217 228 229 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 221 219 229 230 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 223 221 230 231 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 225 223 231 232 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 227 225 232 233 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 228 26 35 234 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 229 228 234 235 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 230 229 235 236 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 231 230 236 237 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 232 231 237 238 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 233 232 238 239 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 234 35 44 240 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 235 234 240 241 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 236 235 241 242 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 237 236 242 243 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 238 237 243 244 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 239 238 244 245 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 240 44 53 246 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 241 240 246 247 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 242 241 247 248 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 243 242 248 249 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 244 243 249 250 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 245 244 250 251 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 246 53 62 252 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 247 246 252 253 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 248 247 253 254 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 249 248 254 255 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 250 249 255 256 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 251 250 256 257 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 252 62 71 258 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 253 252 258 259 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 254 253 259 260 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 255 254 260 261 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 256 255 261 262 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 257 256 262 263 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 258 71 80 264 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 259 258 264 265 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 260 259 265 266 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 261 260 266 267 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 262 261 267 268 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 263 262 268 269 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 264 80 89 270 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 265 264 270 271 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 266 265 271 272 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 267 266 272 273 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 268 267 273 274 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 269 268 274 275 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 270 89 98 276 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 271 270 276 277 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 272 271 277 278 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 273 272 278 279 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 274 273 279 280 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 275 274 280 281 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 276 98 107 282 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 277 276 282 283 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 278 277 283 284 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 279 278 284 285 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 280 279 285 286 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 281 280 286 287 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 282 107 116 288 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 283 282 288 289 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 284 283 289 290 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 285 284 290 291 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 286 285 291 292 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 287 286 292 293 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 288 116 125 294 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 289 288 294 295 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 290 289 295 296 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 291 290 296 297 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 292 291 297 298 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 293 292 298 299 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 294 125 134 300 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 295 294 300 301 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 296 295 301 302 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 297 296 302 303 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 298 297 303 304 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 299 298 304 305 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 300 134 143 306 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 301 300 306 307 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 302 301 307 308 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 303 302 308 309 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 304 303 309 310 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 305 304 310 311 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 306 143 152 312 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 307 306 312 313 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 308 307 313 314 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 309 308 314 315 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 310 309 315 316 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 311 310 316 317 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 312 152 161 318 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 313 312 318 319 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 314 313 319 320 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 315 314 320 321 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 316 315 321 322 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 317 316 322 323 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 318 161 170 324 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 319 318 324 325 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 320 319 325 326 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 321 320 326 327 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 322 321 327 328 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 323 322 328 329 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 324 170 179 330 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 325 324 330 331 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 326 325 331 332 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 327 326 332 333 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 328 327 333 334 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 329 328 334 335 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 330 179 188 336 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 331 330 336 337 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 332 331 337 338 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 333 332 338 339 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 334 333 339 340 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 335 334 340 341 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 336 188 197 342 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 337 336 342 343 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 338 337 343 344 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 339 338 344 345 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 340 339 345 346 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 341 340 346 347 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 342 197 206 348 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 343 342 348 349 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 344 343 349 350 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 345 344 350 351 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 346 345 351 352 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 347 346 352 353 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 348 206 215 354 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 349 348 354 355 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 350 349 355 356 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 351 350 356 357 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 352 351 357 358 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 353 352 358 359 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 354 215 16 216 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 355 354 216 218 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 356 355 218 220 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 357 356 220 222 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 358 357 222 224 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 359 358 224 226 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 360 226 227 361 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 362 360 361 363 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 364 362 363 365 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 366 364 365 367 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 368 366 367 369 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 370 368 369 371 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 361 227 233 372 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 363 361 372 373 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 365 363 373 374 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 367 365 374 375 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 369 367 375 376 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 371 369 376 377 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 372 233 239 378 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 373 372 378 379 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 374 373 379 380 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 375 374 380 381 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 376 375 381 382 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 377 376 382 383 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 378 239 245 384 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 379 378 384 385 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 380 379 385 386 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 381 380 386 387 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 382 381 387 388 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 383 382 388 389 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 384 245 251 390 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 385 384 390 391 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 386 385 391 392 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 387 386 392 393 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 388 387 393 394 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 389 388 394 395 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 390 251 257 396 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 391 390 396 397 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 392 391 397 398 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 393 392 398 399 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 394 393 399 400 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 395 394 400 401 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 396 257 263 402 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 397 396 402 403 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 398 397 403 404 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 399 398 404 405 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 400 399 405 406 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 401 400 406 407 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 402 263 269 408 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 403 402 408 409 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 404 403 409 410 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 405 404 410 411 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 406 405 411 412 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 407 406 412 413 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 408 269 275 414 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 409 408 414 415 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 410 409 415 416 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 411 410 416 417 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 412 411 417 418 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 413 412 418 419 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 414 275 281 420 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 415 414 420 421 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 416 415 421 422 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 417 416 422 423 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 418 417 423 424 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 419 418 424 425 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 420 281 287 426 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 421 420 426 427 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 422 421 427 428 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 423 422 428 429 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 424 423 429 430 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 425 424 430 431 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 426 287 293 432 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 427 426 432 433 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 428 427 433 434 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 429 428 434 435 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 430 429 435 436 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 431 430 436 437 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 432 293 299 438 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 433 432 438 439 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 434 433 439 440 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 435 434 440 441 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 436 435 441 442 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 437 436 442 443 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 438 299 305 444 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 439 438 444 445 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 440 439 445 446 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 441 440 446 447 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 442 441 447 448 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 443 442 448 449 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 444 305 311 450 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 445 444 450 451 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 446 445 451 452 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 447 446 452 453 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 448 447 453 454 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 449 448 454 455 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 450 311 317 456 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 451 450 456 457 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 452 451 457 458 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 453 452 458 459 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 454 453 459 460 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 455 454 460 461 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 456 317 323 462 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 457 456 462 463 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 458 457 463 464 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 459 458 464 465 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 460 459 465 466 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 461 460 466 467 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 462 323 329 468 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 463 462 468 469 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 464 463 469 470 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 465 464 470 471 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 466 465 471 472 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 467 466 472 473 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 468 329 335 474 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 469 468 474 475 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 470 469 475 476 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 471 470 476 477 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 472 471 477 478 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 473 472 478 479 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 474 335 341 480 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 475 474 480 481 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 476 475 481 482 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 477 476 482 483 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 478 477 483 484 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 479 478 484 485 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 480 341 347 486 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 481 480 486 487 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 482 481 487 488 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 483 482 488 489 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 484 483 489 490 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 485 484 490 491 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 486 347 353 492 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 487 486 492 493 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 488 487 493 494 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 489 488 494 495 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 490 489 495 496 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 491 490 496 497 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 492 353 359 498 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 493 492 498 499 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 494 493 499 500 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 495 494 500 501 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 496 495 501 502 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 497 496 502 503 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 498 359 226 360 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 499 498 360 362 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 500 499 362 364 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 501 500 364 366 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 502 501 366 368 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 503 502 368 370 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 504 505 506 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 507 504 506 508 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 509 507 508 510 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 511 509 510 512 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 513 511 512 514 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 370 515 516 503 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 506 505 517 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 508 506 517 518 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 510 508 518 519 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 512 510 519 520 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 514 512 520 521 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 503 516 522 497 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 517 505 523 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 518 517 523 524 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 519 518 524 525 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 520 519 525 526 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 521 520 526 527 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 497 522 528 491 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 523 505 529 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 524 523 529 530 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 525 524 530 531 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 526 525 531 532 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 527 526 532 533 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 491 528 534 485 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 529 505 535 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 530 529 535 536 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 531 530 536 537 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 532 531 537 538 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 533 532 538 539 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 485 534 540 479 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 535 505 541 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 536 535 541 542 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 537 536 542 543 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 538 537 543 544 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 539 538 544 545 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 479 540 546 473 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 541 505 547 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 542 541 547 548 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 543 542 548 549 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 544 543 549 550 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 545 544 550 551 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 473 546 552 467 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 547 505 553 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 548 547 553 554 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 549 548 554 555 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 550 549 555 556 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 551 550 556 557 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 467 552 558 461 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 553 505 559 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 554 553 559 560 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 555 554 560 561 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 556 555 561 562 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 557 556 562 563 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 461 558 564 455 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 559 505 565 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 560 559 565 566 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 561 560 566 567 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 562 561 567 568 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 563 562 568 569 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 455 564 570 449 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 565 505 571 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 566 565 571 572 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 567 566 572 573 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 568 567 573 574 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 569 568 574 575 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 449 570 576 443 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 571 505 577 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 572 571 577 578 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 573 572 578 579 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 574 573 579 580 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 575 574 580 581 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 443 576 582 437 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 577 505 583 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 578 577 583 584 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 579 578 584 585 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 580 579 585 586 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 581 580 586 587 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 437 582 588 431 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 583 505 589 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 584 583 589 590 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 585 584 590 591 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 586 585 591 592 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 587 586 592 593 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 431 588 594 425 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 589 505 595 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 590 589 595 596 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 591 590 596 597 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 592 591 597 598 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 593 592 598 599 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 425 594 600 419 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 595 505 601 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 596 595 601 602 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 597 596 602 603 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 598 597 603 604 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 599 598 604 605 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 419 600 606 413 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 601 505 607 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 602 601 607 608 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 603 602 608 609 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 604 603 609 610 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 605 604 610 611 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 413 606 612 407 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 607 505 613 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 608 607 613 614 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 609 608 614 615 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 610 609 615 616 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 611 610 616 617 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 407 612 618 401 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 613 505 619 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 614 613 619 620 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 615 614 620 621 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 616 615 621 622 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 617 616 622 623 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 401 618 624 395 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 619 505 625 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 620 619 625 626 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 621 620 626 627 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 622 621 627 628 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 623 622 628 629 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 395 624 630 389 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 625 505 631 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 626 625 631 632 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 627 626 632 633 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 628 627 633 634 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 629 628 634 635 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 389 630 636 383 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 631 505 637 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 632 631 637 638 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 633 632 638 639 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 634 633 639 640 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 635 634 640 641 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 383 636 642 377 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 637 505 643 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 638 637 643 644 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 639 638 644 645 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 640 639 645 646 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 641 640 646 647 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 377 642 648 371 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 643 505 504 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 644 643 504 507 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 645 644 507 509 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 646 645 509 511 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 647 646 511 513 <Ref> { body } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 371 648 515 370 <Ref> { body } }
     }
   }
@@ -6451,1155 +6459,1155 @@
       }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 0 1 2 3 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 3 2 4 5 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 5 4 6 7 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 7 6 8 9 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 9 8 10 11 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 11 10 12 13 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 13 12 14 15 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 15 14 16 17 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 17 16 18 19 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 19 18 20 21 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 21 20 22 23 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 23 22 24 25 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 25 24 26 27 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 27 26 28 29 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 29 28 30 31 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 31 30 32 33 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 33 32 34 35 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 35 34 36 37 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 37 36 38 39 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 39 38 40 41 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 41 40 42 43 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 43 42 44 45 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 45 44 46 47 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 47 46 1 0 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 48 49 50 51 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 52 48 51 53 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 54 52 53 55 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 56 54 55 57 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 58 56 57 59 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 60 58 59 61 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 51 50 62 63 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 53 51 63 64 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 55 53 64 65 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 57 55 65 66 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 59 57 66 67 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 61 59 67 68 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 63 62 69 70 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 64 63 70 71 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 65 64 71 72 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 66 65 72 73 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 67 66 73 74 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 68 67 74 75 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 70 69 76 77 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 71 70 77 78 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 72 71 78 79 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 73 72 79 80 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 74 73 80 81 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 75 74 81 82 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 77 76 83 84 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 78 77 84 85 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 79 78 85 86 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 80 79 86 87 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 81 80 87 88 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 82 81 88 89 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 84 83 90 91 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 85 84 91 92 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 86 85 92 93 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 87 86 93 94 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 88 87 94 95 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 89 88 95 96 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 91 90 97 98 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 92 91 98 99 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 93 92 99 100 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 94 93 100 101 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 95 94 101 102 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 96 95 102 103 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 98 97 104 105 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 99 98 105 106 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 100 99 106 107 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 101 100 107 108 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 102 101 108 109 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 103 102 109 110 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 105 104 111 112 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 106 105 112 113 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 107 106 113 114 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 108 107 114 115 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 109 108 115 116 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 110 109 116 117 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 112 111 118 119 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 113 112 119 120 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 114 113 120 121 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 115 114 121 122 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 116 115 122 123 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 117 116 123 124 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 119 118 125 126 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 120 119 126 127 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 121 120 127 128 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 122 121 128 129 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 123 122 129 130 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 124 123 130 131 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 126 125 132 133 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 127 126 133 134 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 128 127 134 135 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 129 128 135 136 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 130 129 136 137 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 131 130 137 138 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 133 132 139 140 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 134 133 140 141 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 135 134 141 142 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 136 135 142 143 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 137 136 143 144 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 138 137 144 145 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 140 139 146 147 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 141 140 147 148 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 142 141 148 149 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 143 142 149 150 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 144 143 150 151 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 145 144 151 152 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 147 146 153 154 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 148 147 154 155 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 149 148 155 156 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 150 149 156 157 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 151 150 157 158 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 152 151 158 159 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 154 153 160 161 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 155 154 161 162 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 156 155 162 163 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 157 156 163 164 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 158 157 164 165 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 159 158 165 166 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 161 160 167 168 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 162 161 168 169 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 163 162 169 170 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 164 163 170 171 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 165 164 171 172 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 166 165 172 173 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 168 167 174 175 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 169 168 175 176 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 170 169 176 177 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 171 170 177 178 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 172 171 178 179 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 173 172 179 180 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 175 174 181 182 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 176 175 182 183 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 177 176 183 184 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 178 177 184 185 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 179 178 185 186 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 180 179 186 187 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 182 181 188 189 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 183 182 189 190 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 184 183 190 191 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 185 184 191 192 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 186 185 192 193 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 187 186 193 194 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 189 188 195 196 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 190 189 196 197 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 191 190 197 198 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 192 191 198 199 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 193 192 199 200 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 194 193 200 201 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 196 195 202 203 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 197 196 203 204 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 198 197 204 205 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 199 198 205 206 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 200 199 206 207 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 201 200 207 208 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 203 202 209 210 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 204 203 210 211 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 205 204 211 212 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 206 205 212 213 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 207 206 213 214 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 208 207 214 215 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 210 209 49 48 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 211 210 48 52 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 212 211 52 54 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 213 212 54 56 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 214 213 56 58 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 215 214 58 60 <Ref> { lid } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 0 1 2 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 3 4 5 6 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 7 8 9 10 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 11 7 10 12 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 13 11 12 14 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 2 1 15 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 6 5 16 17 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 10 9 18 19 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 12 10 19 20 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 14 12 20 21 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 15 1 22 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 17 16 23 24 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 19 18 25 26 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 20 19 26 27 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 21 20 27 28 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 22 1 29 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 24 23 30 31 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 26 25 32 33 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 27 26 33 34 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 28 27 34 35 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 29 1 36 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 31 30 37 38 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 33 32 39 40 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 34 33 40 41 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 35 34 41 42 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 36 1 43 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 38 37 44 45 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 40 39 46 47 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 41 40 47 48 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 42 41 48 49 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 43 1 50 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 45 44 51 52 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 47 46 53 54 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 48 47 54 55 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 49 48 55 56 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 50 1 57 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 52 51 58 59 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 54 53 60 61 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 55 54 61 62 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 56 55 62 63 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 57 1 64 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 59 58 65 66 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 61 60 67 68 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 62 61 68 69 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 63 62 69 70 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 64 1 71 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 66 65 72 73 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 68 67 74 75 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 69 68 75 76 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 70 69 76 77 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 71 1 78 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 73 72 79 80 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 75 74 81 82 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 76 75 82 83 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 77 76 83 84 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 78 1 85 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 80 79 86 87 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 82 81 88 89 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 83 82 89 90 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 84 83 90 91 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 85 1 92 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 87 86 93 94 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 89 88 95 96 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 90 89 96 97 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 91 90 97 98 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 92 1 99 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 94 93 100 101 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 96 95 102 103 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 97 96 103 104 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 98 97 104 105 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 99 1 106 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 101 100 107 108 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 103 102 109 110 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 104 103 110 111 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 105 104 111 112 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 106 1 113 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 108 107 114 115 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 110 109 116 117 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 111 110 117 118 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 112 111 118 119 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 113 1 120 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 115 114 121 122 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 117 116 123 124 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 118 117 124 125 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 119 118 125 126 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 120 1 127 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 122 121 128 129 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 124 123 130 131 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 125 124 131 132 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 126 125 132 133 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 127 1 134 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 129 128 135 136 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 131 130 137 138 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 132 131 138 139 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 133 132 139 140 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 134 1 141 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 136 135 142 143 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 138 137 144 145 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 139 138 145 146 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 140 139 146 147 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 141 1 148 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 143 142 149 150 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 145 144 151 152 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 146 145 152 153 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 147 146 153 154 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 148 1 155 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 150 149 156 157 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 152 151 158 159 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 153 152 159 160 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 154 153 160 161 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 155 1 162 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 157 156 163 164 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 159 158 165 166 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 160 159 166 167 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 161 160 167 168 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 162 1 0 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 164 163 4 3 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 166 165 8 7 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 167 166 7 11 <Ref> { lid_handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 168 167 11 13 <Ref> { lid_handle } }
     }
   }
@@ -8231,579 +8239,579 @@
       }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 0 1 2 3 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 4 0 3 5 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 6 4 5 7 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 8 6 7 9 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 10 8 9 11 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 12 10 11 13 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 3 2 14 15 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 5 3 15 16 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 7 5 16 17 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 9 7 17 18 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 11 9 18 19 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 13 11 19 20 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 15 14 21 22 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 16 15 22 23 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 17 16 23 24 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 18 17 24 25 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 19 18 25 26 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 20 19 26 27 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 22 21 28 29 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 23 22 29 30 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 24 23 30 31 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 25 24 31 32 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 26 25 32 33 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 27 26 33 34 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 29 28 35 36 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 30 29 36 37 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 31 30 37 38 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 32 31 38 39 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 33 32 39 40 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 34 33 40 41 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 36 35 42 43 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 37 36 43 44 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 38 37 44 45 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 39 38 45 46 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 40 39 46 47 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 41 40 47 48 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 43 42 49 50 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 44 43 50 51 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 45 44 51 52 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 46 45 52 53 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 47 46 53 54 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 48 47 54 55 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 50 49 56 57 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 51 50 57 58 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 52 51 58 59 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 53 52 59 60 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 54 53 60 61 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 55 54 61 62 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 57 56 63 64 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 58 57 64 65 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 59 58 65 66 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 60 59 66 67 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 61 60 67 68 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 62 61 68 69 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 64 63 70 71 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 65 64 71 72 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 66 65 72 73 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 67 66 73 74 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 68 67 74 75 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 69 68 75 76 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 71 70 77 78 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 72 71 78 79 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 73 72 79 80 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 74 73 80 81 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 75 74 81 82 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 76 75 82 83 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 78 77 1 0 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 79 78 0 4 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 80 79 4 6 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 81 80 6 8 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 82 81 8 10 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 83 82 10 12 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 84 12 13 85 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 86 84 85 87 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 88 86 87 89 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 90 88 89 91 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 92 90 91 93 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 94 92 93 95 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 85 13 20 96 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 87 85 96 97 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 89 87 97 98 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 91 89 98 99 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 93 91 99 100 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 95 93 100 101 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 96 20 27 102 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 97 96 102 103 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 98 97 103 104 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 99 98 104 105 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 100 99 105 106 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 101 100 106 107 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 102 27 34 108 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 103 102 108 109 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 104 103 109 110 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 105 104 110 111 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 106 105 111 112 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 107 106 112 113 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 108 34 41 114 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 109 108 114 115 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 110 109 115 116 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 111 110 116 117 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 112 111 117 118 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 113 112 118 119 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 114 41 48 120 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 115 114 120 121 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 116 115 121 122 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 117 116 122 123 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 118 117 123 124 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 119 118 124 125 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 120 48 55 126 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 121 120 126 127 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 122 121 127 128 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 123 122 128 129 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 124 123 129 130 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 125 124 130 131 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 126 55 62 132 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 127 126 132 133 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 128 127 133 134 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 129 128 134 135 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 130 129 135 136 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 131 130 136 137 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 132 62 69 138 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 133 132 138 139 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 134 133 139 140 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 135 134 140 141 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 136 135 141 142 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 137 136 142 143 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 138 69 76 144 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 139 138 144 145 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 140 139 145 146 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 141 140 146 147 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 142 141 147 148 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 143 142 148 149 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 144 76 83 150 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 145 144 150 151 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 146 145 151 152 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 147 146 152 153 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 148 147 153 154 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 149 148 154 155 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 150 83 12 84 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 151 150 84 86 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 152 151 86 88 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 153 152 88 90 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 154 153 90 92 <Ref> { handle } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 155 154 92 94 <Ref> { handle } }
     }
   }
@@ -9451,579 +9459,579 @@
       }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 0 1 2 3 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 4 0 3 5 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 6 4 5 7 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 8 6 7 9 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 10 8 9 11 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 12 10 11 13 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 3 2 14 15 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 5 3 15 16 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 7 5 16 17 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 9 7 17 18 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 11 9 18 19 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 13 11 19 20 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 15 14 21 22 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 16 15 22 23 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 17 16 23 24 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 18 17 24 25 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 19 18 25 26 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 20 19 26 27 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 22 21 28 29 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 23 22 29 30 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 24 23 30 31 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 25 24 31 32 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 26 25 32 33 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 27 26 33 34 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 29 28 35 36 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 30 29 36 37 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 31 30 37 38 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 32 31 38 39 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 33 32 39 40 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 34 33 40 41 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 36 35 42 43 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 37 36 43 44 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 38 37 44 45 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 39 38 45 46 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 40 39 46 47 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 41 40 47 48 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 43 42 49 50 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 44 43 50 51 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 45 44 51 52 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 46 45 52 53 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 47 46 53 54 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 48 47 54 55 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 50 49 56 57 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 51 50 57 58 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 52 51 58 59 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 53 52 59 60 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 54 53 60 61 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 55 54 61 62 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 57 56 63 64 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 58 57 64 65 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 59 58 65 66 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 60 59 66 67 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 61 60 67 68 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 62 61 68 69 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 64 63 70 71 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 65 64 71 72 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 66 65 72 73 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 67 66 73 74 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 68 67 74 75 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 69 68 75 76 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 71 70 77 78 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 72 71 78 79 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 73 72 79 80 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 74 73 80 81 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 75 74 81 82 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 76 75 82 83 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 78 77 1 0 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 79 78 0 4 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 80 79 4 6 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 81 80 6 8 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 82 81 8 10 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 83 82 10 12 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 84 12 13 85 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 86 84 85 87 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 88 86 87 89 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 90 88 89 91 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 92 93 91 94 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 95 92 94 96 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 85 13 20 97 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 87 85 97 98 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 89 87 98 99 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 91 89 99 100 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 94 91 100 101 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 96 94 101 102 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 97 20 27 103 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 98 97 103 104 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 99 98 104 105 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 100 99 105 106 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 101 100 106 107 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 102 101 107 108 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 103 27 34 109 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 104 103 109 110 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 105 104 110 111 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 106 105 111 112 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 107 106 112 113 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 108 107 113 114 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 109 34 41 115 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 110 109 115 116 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 111 110 116 117 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 112 111 117 118 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 113 112 118 119 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 114 113 119 120 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 115 41 48 121 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 116 115 121 122 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 117 116 123 124 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 118 117 125 126 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 119 118 126 127 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 120 119 127 128 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 121 48 55 129 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 122 121 129 130 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 124 123 130 131 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 126 125 131 132 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 127 126 132 133 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 128 127 133 134 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 129 55 62 135 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 130 129 135 136 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 131 130 136 137 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 132 131 137 138 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 133 132 138 139 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 134 133 139 140 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 135 62 69 141 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 136 135 141 142 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 137 136 142 143 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 138 137 143 144 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 139 138 144 145 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 140 139 145 146 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 141 69 76 147 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 142 141 147 148 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 143 142 148 149 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 144 143 149 150 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 145 144 150 151 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 146 145 151 152 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 147 76 83 153 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 148 147 153 154 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 149 148 154 155 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 150 149 155 156 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 151 150 157 158 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 152 151 158 159 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 153 83 12 84 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 154 153 84 86 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 155 154 86 88 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 156 155 88 90 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 158 157 93 92 <Ref> { spout } }
     }
     <Polygon> {
-      <RGBA> { 0.8 0.8 0.8 1 }
+      <MRef> { mtrl }
       <VertexRef> { 159 158 92 95 <Ref> { spout } }
     }
   }
