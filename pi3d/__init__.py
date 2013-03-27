@@ -42,6 +42,7 @@ from pi3d.shape.Sphere import Sphere
 from pi3d.shape.TCone import TCone
 from pi3d.shape.Tetrahedron import Tetrahedron
 from pi3d.shape.Torus import Torus
+from pi3d.shape.Triangle import Triangle
 from pi3d.shape.Tube import Tube
 
 from pi3d.sprite.Ball import Ball
