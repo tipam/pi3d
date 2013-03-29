@@ -36,7 +36,7 @@ class Shape(Loadable):
     self.unif = (ctypes.c_float * 60)(
       x, y, z, rx, ry, rz,
       sx, sy, sz, cx, cy, cz,
-      0.5, 0.5, 0.5, 5000.0, 0.8, 0.0,
+      0.5, 0.5, 0.5, 5000.0, 0.8, 1.0,
       0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
       light.lightpos[0], light.lightpos[1], light.lightpos[2],
       light.lightcol[0], light.lightcol[1], light.lightcol[2],
@@ -53,7 +53,7 @@ class Shape(Loadable):
        2  scale                                        6   8
        3  offset                                       9  11
        4  fog shade                                   12  14
-       5  fog distance and alph (only 2 used)         15  16
+       5  fog distance, fog alpha, shape alpha        15  17
        6  camera position                             18  20
        7  unused: custom data space                   21  23
        8  light0 position, direction vector           24  26
@@ -273,6 +273,15 @@ class Shape(Loadable):
     self.unif[12:15] = fogshade[0:3]
     self.unif[15] = fogdist
     self.unif[16] = fogshade[3]
+
+  def set_alpha(self, alpha=1.0):
+    """Set alpha for this Shape only
+
+    Arguments:
+      *alpha*
+        alpha value between 0.0 and 1.0 (default)
+    """
+    self.unif[17] = alpha
 
   def set_light(self, light, num=0):
     """Set the values of the lights.
