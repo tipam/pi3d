@@ -21,6 +21,7 @@ void main(void) {
   vec4 texc = texture2D(tex0, coord);
   if (texc.a < unib[0][2]) discard; // ------ to allow rendering behind the transparent parts of this object
   gl_FragColor = texc;
+  gl_FragColor.a *= unif[5][2];
 }
 
 
