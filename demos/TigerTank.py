@@ -17,8 +17,6 @@ import math, random, time, traceback
 
 import demo
 
-from echomesh.util import Log
-
 from pi3d.constants import *
 
 from pi3d import Display
@@ -33,6 +31,7 @@ from pi3d.shape import EnvironmentCube
 from pi3d.shape.Model import Model
 from pi3d.shape.Sprite import ImageSprite
 
+from pi3d.util import Log
 from pi3d.util.Screenshot import screenshot
 from pi3d.util.TkWin import TkWin
 
@@ -322,7 +321,7 @@ try:
     if win.ev == "resized":
       print("resized")
       DISPLAY.resize(win.winx, win.winy, win.width, win.height-bord)
-      CAMERA.reset((DISPLAY.near, DISPLAY.far, DISPLAY.fov, 
+      CAMERA.reset((DISPLAY.near, DISPLAY.far, DISPLAY.fov,
                   DISPLAY.width / float(DISPLAY.height)))
       win.resized = False
     if win.ev == "key":

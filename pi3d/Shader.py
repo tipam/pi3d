@@ -1,9 +1,9 @@
 import ctypes
 
-from echomesh.util import Log
 
 from pi3d.constants import *
 from pi3d.util.Ctypes import c_chars
+from pi3d.util import Log
 from pi3d.util import Loadable
 
 # This class based on Peter de Rivaz's mandlebrot example + Tim Skillman's work on pi3d2

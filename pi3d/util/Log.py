@@ -44,5 +44,5 @@ def logger(name=None):
   return log
 
 LOGGER = logger(__name__)
-LOGGER.info('Log level is %s', LOG_LEVEL_STR)
+LOGGER.debug('Log level is %s', LOG_LEVEL_STR)
 

@@ -1,6 +1,6 @@
 import threading
 
-from echomesh.util import Log
+from pi3d.util import Log
 
 LOGGER = Log.logger(__name__)
 

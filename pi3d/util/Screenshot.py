@@ -3,9 +3,8 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import ctypes
 import Image
 
-from echomesh.util import Log
-
 from pi3d.constants import *
+from pi3d.util import Log
 
 LOGGER = Log.logger(__name__)
 

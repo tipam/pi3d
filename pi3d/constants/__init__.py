@@ -40,7 +40,7 @@ def _load_library(name):
     import ctypes
     return ctypes.CDLL('lib%s.so' % name)
   except:
-    from echomesh.util import Log
+    from pi3d.util import Log
     Log.logger(__name__).error("Couldn't load library %s" % name)
 
 bcm = _load_library('bcm_host')

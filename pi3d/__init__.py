@@ -6,7 +6,6 @@ Allows the use of:
 
 to drag in most of the important classes of pi3d.
 """
-from echomesh.util import Log
 
 from pi3d.constants import *
 
@@ -47,6 +46,7 @@ from pi3d.shape.Tube import Tube
 
 from pi3d.sprite.Ball import Ball
 
+from pi3d.util import Log
 from pi3d.util import Utility
 from pi3d.util.String import String
 

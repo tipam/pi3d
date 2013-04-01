@@ -2,9 +2,8 @@ import ctypes, itertools
 
 from ctypes import c_float, c_int
 
-from echomesh.util import Log
-
 from pi3d.constants import *
+from pi3d.util import Log
 from pi3d.util import Utility
 from pi3d.util.Loadable import Loadable
 from pi3d.util.Ctypes import c_floats, c_shorts
@@ -177,7 +176,7 @@ class Buffer(Loadable):
 
   def set_material(self, mtrl):
     self.unib[3:6] = mtrl[0:3]
-    
+
   def set_offset(self, offset=(0.0, 0.0)):
     self.unib[9:11] = offset
 
