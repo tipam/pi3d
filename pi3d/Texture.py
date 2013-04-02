@@ -56,7 +56,10 @@ class Texture(Loadable):
       self.load_disk()
     else:
       self.load_opengl()
-
+  
+  def __del__(self):
+    self._unload_opengl()
+    
   def tex(self):
     """do the deferred opengl work and return texture"""
     self.load_opengl()
@@ -64,8 +67,7 @@ class Texture(Loadable):
 
   def _unload_opengl(self):
     """clear it out"""
-    texture_array = c_ints([self._tex.value])
-    opengles.glDeleteTextures(1, ctypes.addressof(texture_array))
+    opengles.glDeleteTextures(1, ctypes.byref(self._tex))
 
   def _load_disk(self):
     """overrides method of Loadable
