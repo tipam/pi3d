@@ -222,7 +222,7 @@ class Buffer(Loadable):
 
       opengles.glUniform1i(shader.unif_tex[t], t)
 
-      if texture.blend:
+      if texture.blend or self.shape.unif[17] < 1.0:
         opengles.glEnable(GL_BLEND)
         # i.e. if any of the textures set to blend then all will for this shader.
         self.unib[2] = 0.05
