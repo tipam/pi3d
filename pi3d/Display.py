@@ -1,4 +1,4 @@
-from ctypes import c_float
+from ctypes import c_float, byref
 
 import time
 import threading
@@ -50,6 +50,8 @@ class Display(object):
     self.sprites = []
     self.sprites_to_load = set()
     self.sprites_to_unload = set()
+    
+    self.textures_to_delete = []
 
     self.opengl = DisplayOpenGL()
     self.max_width, self.max_height = self.opengl.width, self.opengl.height
@@ -210,6 +212,10 @@ class Display(object):
       camera = Camera.instance()
       if camera:
         camera.was_moved = False
+        
+    for tex in self.textures_to_delete:
+      opengles.glDeleteTextures(1, byref(tex))
+    self.textures_to_delete = []
 
   def _loop_end(self):
     with self.lock:
