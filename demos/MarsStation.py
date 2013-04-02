@@ -66,7 +66,7 @@ sttnshn = Texture("textures/stars.jpg")
 x,z = 0,0
 y = mymap.calcHeight(x, z)
 
-cor_win90 = Model(file_string="models/MegaStation/corridor_win_lowpoly.egg",
+cor_win90 = Model(file_string="models/MarsStation/corridor_win_lowpoly.egg",
                 x=x, y=y, z=z, sx=0.1, sy=0.1, sz=0.1)
 cor_win90.set_shader(shader)
 # TODO seem to be able to 'stamp' the same object in different locations
@@ -74,23 +74,23 @@ cor_win90.set_shader(shader)
 cor_win00 = cor_win90.clone()
 cor_win90.rotateToY(90)
 
-corridor90 = Model(file_string="models/MegaStation/corridor_lowpoly.egg",
+corridor90 = Model(file_string="models/MarsStation/corridor_lowpoly.egg",
                  x=x, y=y, z=z, sx=0.1, sy=0.1, sz=0.1)
 corridor90.set_shader(shader)
 corridor00 = corridor90.clone()
 corridor90.rotateToY(90)
 
-cor_cross = Model(file_string="models/MegaStation/cross_room.egg",
+cor_cross = Model(file_string="models/MarsStation/cross_room.egg",
                  x=x, y=y, z=z, sx=0.1, sy=0.1, sz=0.1)
 cor_cross.set_shader(shader)
 cor_cross.set_normal_shine(sttnbmp, 32.0, sttnshn, 0.1)
 
-cor_cross_doors = Model(file_string="models/MegaStation/cross_room_doors.egg",
+cor_cross_doors = Model(file_string="models/MarsStation/cross_room_doors.egg",
                         x=x, y=y, z=z, sx=0.1, sy=0.1, sz=0.1)
 cor_cross_doors.set_shader(shader)
 cor_cross_doors.set_normal_shine(sttnbmp, 32.0, sttnshn, 0.1)
 
-cor_bend = Model(file_string="models/MegaStation/bend_lowpoly.egg",
+cor_bend = Model(file_string="models/MarsStation/bend_lowpoly.egg",
                  x=x, y=y, z=z, sx=0.1, sy=0.1, sz=0.1)
 cor_bend.set_shader(shader)
 cor_bend.set_normal_shine(sttnbmp, 32.0)
