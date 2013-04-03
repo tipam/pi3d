@@ -118,6 +118,7 @@ class EnvironmentCube(Shape):
 
   def set_draw_details(self, shader, textures, ntiles=0.0, shiny=0.0, umult=1.0, vmult=1.0):
     """overrides this method in Shape to cope with nobottom option"""
+    self.shader = shader
     if not (type(textures) is list):
       textures = [textures]
     elif len(textures) == 5:

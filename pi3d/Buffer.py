@@ -105,6 +105,8 @@ class Buffer(Loadable):
     
   def __del__(self):
     super(Buffer, self).__del__()
+    if not self.opengl_loaded:
+      return True
     from pi3d.Display import Display
     Display.INSTANCE.vbufs_to_delete.append(self.vbuf)
     Display.INSTANCE.ebufs_to_delete.append(self.ebuf)
@@ -179,7 +181,6 @@ class Buffer(Loadable):
         multiplier for tiling the texture in the v direction
     """
     self.shader = shader
-    #self.shape.shader = shader # set shader for parent shape
     self.textures = textures # array of Textures
     self.unib[0] = ntiles
     self.unib[1] = shiny

@@ -88,12 +88,12 @@ treemodel1.add(treeplane.buf[0], 0,0,0, 0,90,0)
 #Scatter them on map using Merge shape's cluster function
 mytrees1 = MergeShape(name="trees1")
 mytrees1.cluster(treemodel1.buf[0], mymap,0.0,0.0,900.0,900.0,10,"",8.0,3.0)
-mytrees1.buf[0].set_draw_details(shader, [tree2img, rockimg2], 4.0, 0.0)
+mytrees1.set_draw_details(shader, [tree2img, rockimg2], 4.0, 0.0)
 mytrees1.set_fog((0.1,0.1,0.1,1.0), 200.0)
 
 raspberry = MergeShape(name="rasp")
 raspberry.cluster(treemodel1.buf[0], mymap,-250,+250,470.0,470.0,5,"",8.0,1.0)
-raspberry.buf[0].set_draw_details(shader, [raspimg, raspimg], 1.0, 0.0)
+raspberry.set_draw_details(shader, [raspimg, raspimg], 1.0, 0.0)
 raspberry.set_fog((0.1,0.1,0.1,1.0), 200.0)
 
 """ MergeShape can be used to join a number of Model object for much greater 

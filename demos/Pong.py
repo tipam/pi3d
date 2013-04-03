@@ -68,11 +68,11 @@ radius = 1.0
 ball = Sphere(camera, light, radius,12,12,0.0,"sphere",-4,8,-7)
 # Shape.set_draw_details is a wrapper for calling the method on each item in buf
 # as is done explicitly here for no reason than to show that it can be done!
-ball.buf[0].set_draw_details(shader,[ballimg], 0.0, 0.0)
+ball.set_draw_details(shader,[ballimg], 0.0, 0.0)
 
 #monster
 monster = Plane(camera, light, 5.0, 5.0, "monster", 0,0,0, 0,0,0)
-monster.buf[0].set_draw_details(flatsh, [monstimg])
+monster.set_draw_details(flatsh, [monstimg])
 
 # Create elevation map
 mapwidth=50.0
@@ -83,7 +83,7 @@ mapheight=40.0
 mymap = ElevationMap("textures/pong.jpg", camera=camera, light=light,
                      width=mapwidth, depth=mapdepth, height=mapheight,
                      divx=32, divy=32, ntiles=4, name="sub")
-mymap.buf[0].set_draw_details(shader, [groundimg, groundimg, ballimg], 1.0, 0.0)
+mymap.set_draw_details(shader, [groundimg, groundimg, ballimg], 1.0, 0.0)
 
 #avatar camera
 avhgt = 2.0
@@ -191,7 +191,7 @@ while DISPLAY.loop_running():
       score0.set_shader(flatsh)
       radius = 0.1 + (radius - 0.1)*0.75 # ball gets smaller each time you score
       ball = Sphere(camera, light, radius,12,12,0.0,"sphere",0,0,0)
-      ball.buf[0].set_draw_details(shader,[ballimg], 0.0, 0.0)
+      ball.set_draw_details(shader,[ballimg], 0.0, 0.0)
       maxdsz += 0.01 # max speed in z direction increases too
       sx, sy, sz = 0, mapheight/3, 0
       dsx, dsy, dsz = 0.3*random.random()-0.15, 0, -0.1

@@ -56,7 +56,7 @@ bumpimg = Texture("textures/mudnormal.jpg")
 mymap = ElevationMap(mapfile='textures/mars_height.png',
                      width=mapwidth, depth=mapdepth, height=mapheight,
                      divx=64, divy=64)
-mymap.buf[0].set_draw_details(shader,[redplanet, bumpimg],128.0, 0.0)
+mymap.set_draw_details(shader,[redplanet, bumpimg],128.0, 0.0)
 mymap.set_fog((0.3, 0.15, 0.1, 0.0), 1000.0)
 
 #Load Corridors sections

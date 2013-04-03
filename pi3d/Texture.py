@@ -59,6 +59,8 @@ class Texture(Loadable):
   
   def __del__(self):
     super(Texture, self).__del__()
+    if not self.opengl_loaded:
+      return True
     from pi3d.Display import Display
     Display.INSTANCE.textures_to_delete.append(self._tex)
     Display.INSTANCE.tidy_needed = True
