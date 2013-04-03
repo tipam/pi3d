@@ -58,6 +58,7 @@ class ImageSprite(Sprite):
     super(ImageSprite, self).__init__(**kwds)
     if not isinstance(texture, Texture): # i.e. can load from file name
       texture = Texture(texture)
+    self.set_shader(shader)
     self.buf[0].set_draw_details(shader, [texture])
     self.set_2d_size() # method in Shape, default full window size
 

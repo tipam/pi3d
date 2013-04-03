@@ -58,8 +58,10 @@ class Texture(Loadable):
       self.load_opengl()
   
   def __del__(self):
+    super(Texture, self).__del__()
     from pi3d.Display import Display
     Display.INSTANCE.textures_to_delete.append(self._tex)
+    Display.INSTANCE.tidy_needed = True
     
   def tex(self):
     """do the deferred opengl work and return texture"""
