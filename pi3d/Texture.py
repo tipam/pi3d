@@ -62,8 +62,9 @@ class Texture(Loadable):
     if not self.opengl_loaded:
       return True
     from pi3d.Display import Display
-    Display.INSTANCE.textures_to_delete.append(self._tex)
-    Display.INSTANCE.tidy_needed = True
+    if Display.INSTANCE:
+      Display.INSTANCE.textures_to_delete.append(self._tex)
+      Display.INSTANCE.tidy_needed = True
     
   def tex(self):
     """do the deferred opengl work and return texture"""

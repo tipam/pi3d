@@ -108,9 +108,10 @@ class Buffer(Loadable):
     if not self.opengl_loaded:
       return True
     from pi3d.Display import Display
-    Display.INSTANCE.vbufs_to_delete.append(self.vbuf)
-    Display.INSTANCE.ebufs_to_delete.append(self.ebuf)
-    Display.INSTANCE.tidy_needed = True
+    if Display.INSTANCE:
+      Display.INSTANCE.vbufs_to_delete.append(self.vbuf)
+      Display.INSTANCE.ebufs_to_delete.append(self.ebuf)
+      Display.INSTANCE.tidy_needed = True
 
   def re_init(self, shape, pts, texcoords, faces, normals=None, smooth=True):
     """Only reset the opengl buffer variables: vertices, tex_coords, indices
