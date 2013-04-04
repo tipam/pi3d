@@ -252,6 +252,12 @@ class Shape(Loadable):
     """
     for b in self.buf:
       b.set_offset(offset)
+      
+  def offset(self):
+    """Get offset as (u, v) tuple of (first) buf uv. Doesnt check that buf array
+    exists and has at least one value and only returns offset for that value"""
+    return self.buf[0].unib[9:11]
+    
 
   def set_fog(self, fogshade, fogdist):
     """Set fog for this Shape only, it uses the shader smoothblend function from
@@ -275,6 +281,10 @@ class Shape(Loadable):
         alpha value between 0.0 and 1.0 (default)
     """
     self.unif[17] = alpha
+    
+  def alpha(self):
+    """Get value of alpha"""
+    return self.unif[17]
 
   def set_light(self, light, num=0):
     """Set the values of the lights.
