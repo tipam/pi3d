@@ -21,7 +21,7 @@ print("press ESC to escape, S to go back, any key for next slide")
 print("#########################################################")
 
 # Setup display and initialise pi3d
-DISPLAY = Display.create(background=(0.0, 0.0, 0.0, 0.0), x=100, y=100)
+DISPLAY = Display.create(background=(0.1, 0.1, 0.1, 1.0), x=100, y=100)
 shader = Shader("shaders/2d_flat")
 #############################
 slide = [None]*5
@@ -62,8 +62,7 @@ for i in range(5):
                         args=(iFiles[(i+nFiles-1)%nFiles], i, slide, sz))
   thr.daemon = True #allows the program to exit even if a Thread is still running
   thr.start()
-  if i > 3:
-    thr.join() #makes the main thread wait so the loop doesn't start too early!
+  thr.join() #makes the main thread wait so the loop doesn't start too early!
 
 # Setup sprite
 """ Canvas is just the Shape to draw the 2d onto, it needs to be bigger
@@ -71,8 +70,14 @@ than the screen, that's all. z value will be used as depth by the shader
 as it decides what to draw and what to discard """
 canvas = Canvas()
 canvas.set_shader(shader)
+canvas_bk = Canvas()
+canvas_bk.set_shader(shader)
+canvas_bk.positionZ(0.1)
 
-i = 1
+i = 0
+canvas_bk.set_texture(slide[i])
+canvas_bk.set_2d_size(w=sz[i][0], h=sz[i][1], x=sz[i][2], y=sz[i][3])
+i += 1
 canvas.set_texture(slide[i])
 canvas.set_2d_size(w=sz[i][0], h=sz[i][1], x=sz[i][2], y=sz[i][3])
 i += 1
@@ -83,7 +88,12 @@ CAMERA = Camera.instance()
 CAMERA.was_moved = False #to save a tiny bit of work each loop
 
 while DISPLAY.loop_running():
+  canvas_bk.draw()
   canvas.draw()
+  ca = canvas.alpha()
+  if ca < 1.0:
+    canvas.set_alpha(ca + 0.01)
+    canvas_bk.set_alpha(1.0)
 
   k = mykeys.read()
   if k >-1:
@@ -97,8 +107,14 @@ while DISPLAY.loop_running():
       d1, d2 = -2, -1
     #all other keys load next picture
       
+    canvas_bk.set_texture(slide[(i-1)%5])
+    canvas_bk.set_2d_size(w=sz[(i-1)%5][0], h=sz[(i-1)%5][1], x=sz[(i-1)%5][2],
+                          y=sz[(i-1)%5][3])
+    canvas_bk.set_alpha(1.0)
     canvas.set_texture(slide[i%5])
     canvas.set_2d_size(w=sz[i%5][0], h=sz[i%5][1], x=sz[i%5][2], y=sz[i%5][3])
+    canvas.set_alpha(0.0)
+
     thr = threading.Thread(target=tex_load,
                           args=(iFiles[(i+nFiles+d1)%nFiles], (i+d2)%5, slide, sz))
     thr.daemon = True
