@@ -48,7 +48,7 @@ def tex_load(fname, j, slide, sz):
     *j*
       the position in the buffer arrays (slide and sz) use
   """
-  tex = Texture(fname)
+  tex = Texture(fname, mipmap=False)
   slide[j] = tex
   xrat = DISPLAY.width/tex.ix
   yrat = DISPLAY.height/tex.iy
