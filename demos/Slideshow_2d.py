@@ -26,8 +26,10 @@ shader = Shader("shaders/2d_flat")
 #############################
 slide = [None]*5
 sz = [None]*5
-iFiles = glob.glob("textures/2*.*")
+iFiles = glob.glob("textures/*.*")
 nFiles = len(iFiles)
+queue = []
+thr = None #to use for thread
 
 def tex_load(fname, j, slide, sz):
   """ here the images are scaled to fit the Display size, if they were to be
@@ -115,9 +117,11 @@ while DISPLAY.loop_running():
     canvas.set_2d_size(w=sz[i%5][0], h=sz[i%5][1], x=sz[i%5][2], y=sz[i%5][3])
     canvas.set_alpha(0.0)
 
-    thr = threading.Thread(target=tex_load,
-                          args=(iFiles[(i+nFiles+d1)%nFiles], (i+d2)%5, slide, sz))
+    queue.append([iFiles[(i+nFiles+d1)%nFiles], (i+d2)%5])
+    i += 1
+  
+  if len(queue) > 0 and not (thr.isAlive()):
+    ix = queue.pop(0)
+    thr = threading.Thread(target=tex_load, args=(ix[0], ix[1], slide, sz))
     thr.daemon = True
     thr.start()
-    i += 1
-    
