@@ -5,7 +5,7 @@ from pi3d.constants import *
 from pi3d.util.Ctypes import c_ints
 from pi3d.util.Loadable import Loadable
 
-MAX_SIZE = 2048
+MAX_SIZE = 1024
 DEFER_TEXTURE_LOADING = True
 
 def round_up_to_power_of_2(x):
@@ -81,14 +81,21 @@ class Texture(Loadable):
     so have to override this
     """
     s = self.file_string + ' '
-    self.im = Image.open(self.file_string) # TODO only load this if needed because loading a Font
+    im = Image.open(self.file_string)
 
-    self.ix, self.iy = self.im.size
-    s += '(%s)' % self.im.mode
-    self.alpha = (self.im.mode == 'RGBA' or self.im.mode == 'LA')
+    self.ix, self.iy = im.size
+    s += '(%s)' % im.mode
+    self.alpha = (im.mode == 'RGBA' or im.mode == 'LA')
 
     # work out if sizes are not to the power of 2 or > MAX_SIZE
     # TODO: why must texture sizes be a power of 2?
+    if self.ix > MAX_SIZE or self.iy > MAX_SIZE:
+      if self.ix > self.iy:
+        im = im.resize((MAX_SIZE, int((MAX_SIZE * self.iy) / self.ix)))
+      else:
+        im = im.resize((int((MAX_SIZE * self.ix) / self.iy), MAX_SIZE))
+      self.ix, self.iy = im.size
+    """
     xx = 0
     yy = 0
     nx, ny = self.ix, self.iy
@@ -102,27 +109,30 @@ class Texture(Loadable):
       ny = 2 ** yy
     nx = min(nx, MAX_SIZE)
     ny = min(ny, MAX_SIZE)
-
+    
     if nx != self.ix or ny != self.iy or self.size > 0:
       if VERBOSE:
         print self.ix, self.iy
       if self.size > 0:
         nx, ny = self.size, self.size
       self.ix, self.iy = nx, ny
-      self.im = self.im.resize((self.ix, self.iy), Image.ANTIALIAS)
+      #im = im.resize((self.ix, self.iy), Image.ANTIALIAS)
+      im = im.resize((self.ix, self.iy))
       s += 'Resizing to: %d, %d' % (self.ix, self.iy)
     else:
       s += 'Bitmap size: %d, %d' % (self.ix, self.iy)
-
+    
     if VERBOSE:
       print 'Loading ...', s
 
     if self.flip:
-      self.im = self.im.transpose(Image.FLIP_TOP_BOTTOM)
-
+      im = im.transpose(Image.FLIP_TOP_BOTTOM)
+    """
     RGBs = 'RGBA' if self.alpha else 'RGB'
-    self.image = self.im.convert(RGBs).tostring('raw', RGBs)
+    self.image = im.convert(RGBs).tostring('raw', RGBs)
     self._tex = ctypes.c_int()
+    if "fonts/" in self.file_string:
+      self.im = im
 
   def _load_opengl(self):
     """overrides method of Loadable"""

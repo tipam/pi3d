@@ -21,12 +21,12 @@ print("press ESC to escape, S to go back, any key for next slide")
 print("#########################################################")
 
 # Setup display and initialise pi3d
-DISPLAY = Display.create(background=(0.1, 0.1, 0.1, 1.0), x=100, y=100)
+DISPLAY = Display.create(background=(0.1, 0.1, 0.1, 0.9), x=100, y=100)
 shader = Shader("shaders/2d_flat")
 #############################
 slide = [None]*5
 sz = [None]*5
-iFiles = glob.glob("textures/*.jpg")
+iFiles = glob.glob("textures/2*.*")
 nFiles = len(iFiles)
 
 def tex_load(fname, j, slide, sz):
