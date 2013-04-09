@@ -296,7 +296,7 @@ class Shape(Loadable):
         number of the light to set
     """
     #TODO (pg) need MAXLIGHTS global variable, room for two now but shader
-    # only uses 1. Also shader doesn't use light colour or ambient colour
+    # only uses 1.
     if num > 1 or num < 0:
       num = 0
     stn = 24 + num * 9

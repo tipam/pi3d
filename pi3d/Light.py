@@ -17,7 +17,9 @@ class Light(DefaultInstance):
     
     Arguments:
       *lightpos*
-        tuple (x,y,z) vector direction *from* the light
+        tuple (x,y,z) vector direction *from* the light i.e. an object at position
+        (0,0,0) would appear to be lit from a light at (-3,4,-5) (left, above and
+        nearer) if lightpos=(3,-4,5)
       *lightcol*
         tuple (r,g,b) defines shade and brightness
       *lightamb*
