@@ -28,7 +28,7 @@ from pi3d.Light import Light
 rads = 0.017453292512  # degrees to radians
 
 #Create a Tkinter window in Display
-winw,winh = 200, 600   	#64MB GPU memory setting
+winw,winh = 800, 600   	#64MB GPU memory setting
 #winw,winh = 1920,1180	#128MB GPU memory setting
 
 DISPLAY = Display.create(tk=True, window_title='ConferenceHall demo in Pi3D',
@@ -48,7 +48,7 @@ DISPLAY.swap_buffers()
 #Setup environment cube
 ectex = EnvironmentCube.loadECfiles("textures/ecubes/Miramar", "miramar_256", "png", nobottom = True)
 myecube = EnvironmentCube.EnvironmentCube(size=1800.0, maptype="FACES", nobottom=True)
-myecube.set_draw_details(flatsh,ectex)
+myecube.set_draw_details(flatsh, ectex)
 
 #Load Hall model
 hall = Model(file_string="models/ConferenceHall/conferencehall.egg", name="Hall", sx=0.1, sy=0.1, sz=0.1)

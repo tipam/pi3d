@@ -61,7 +61,7 @@ class Buffer(Loadable):
         3  u_off, v_off (only 2 used)    9  10
     ===== ============================ ==== ==
     """
-    self.shape = shape
+    #self.shape = shape
 
     if not normals:
       LOGGER.debug("Calculating normals ...")
@@ -101,6 +101,16 @@ class Buffer(Loadable):
     self.ntris = len(faces)
     points = [f[0:3] for f in faces]
     self.element_array_buffer = c_shorts(list(itertools.chain(*points)))
+    
+  def __del__(self):
+    super(Buffer, self).__del__()
+    if not self.opengl_loaded:
+      return True
+    from pi3d.Display import Display
+    if Display.INSTANCE:
+      Display.INSTANCE.vbufs_to_delete.append(self.vbuf)
+      Display.INSTANCE.ebufs_to_delete.append(self.ebuf)
+      Display.INSTANCE.tidy_needed = True
 
   def re_init(self, shape, pts, texcoords, faces, normals=None, smooth=True):
     """Only reset the opengl buffer variables: vertices, tex_coords, indices
@@ -138,6 +148,10 @@ class Buffer(Loadable):
                           ctypes.sizeof(self.element_array_buffer),
                           ctypes.byref(self.element_array_buffer),
                           GL_STATIC_DRAW)
+  
+  def _unload_opengl(self):
+    opengles.glDeleteBuffers(1, ctypes.byref(self.vbuf))
+    opengles.glDeleteBuffers(1, ctypes.byref(self.ebuf))
 
   def _select(self):
     """Makes our buffers active."""
@@ -167,7 +181,6 @@ class Buffer(Loadable):
         multiplier for tiling the texture in the v direction
     """
     self.shader = shader
-    self.shape.shader = shader # set shader for parent shape
     self.textures = textures # array of Textures
     self.unib[0] = ntiles
     self.unib[1] = shiny
@@ -180,10 +193,13 @@ class Buffer(Loadable):
   def set_offset(self, offset=(0.0, 0.0)):
     self.unib[9:11] = offset
 
-  def draw(self, shader=None, textures=None, ntl=None, shny=None, fullset=True):
+  def draw(self, shape=None, shader=None, textures=None, ntl=None, shny=None, fullset=True):
     """Draw this Buffer, called by the parent Shape.draw()
 
     Keyword arguments:
+      *shape*
+        Shape object this Buffer belongs to, has to be passed at draw to avoid
+        circular reference
       *shader*
         Shader object
       *textures*
@@ -221,7 +237,7 @@ class Buffer(Loadable):
 
       opengles.glUniform1i(shader.unif_tex[t], t)
 
-      if texture.blend or self.shape.unif[17] < 1.0:
+      if texture.blend or shape.unif[17] < 1.0:
         opengles.glEnable(GL_BLEND)
         # i.e. if any of the textures set to blend then all will for this shader.
         self.unib[2] = 0.05

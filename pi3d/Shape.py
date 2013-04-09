@@ -121,14 +121,7 @@ class Shape(Loadable):
     rendering with a different Shader/Texture. self.draw() relies on objects
     inheriting from this filling buf with at least one element.
     """
-    
-  def _unload_opengl(self):
-    """If recreating Shapes to change their shape then the old buffers must be
-    tidied up explicitly as the python garbage collector will miss this"""
-    for b in self.buf:
-      opengles.glDeleteBuffers(1, ctypes.byref(b.vbuf))
-      opengles.glDeleteBuffers(1, ctypes.byref(b.ebuf))
-
+      
   def draw(self, shader=None, txtrs=None, ntl=None, shny=None, camera=None):
     """If called without parameters, there has to have been a previous call to
     set_draw_details() for each Buffer in buf[].
@@ -169,7 +162,7 @@ class Shape(Loadable):
     for b in self.buf:
       # Shape.draw has to be passed either parameter == None or values to pass
       # on.
-      b.draw(shader, txtrs, ntl, shny)
+      b.draw(self, shader, txtrs, ntl, shny)
 
   def set_shader(self, shader):
     """Wrapper method to set just the Shader for all the Buffer objects of
@@ -259,6 +252,12 @@ class Shape(Loadable):
     """
     for b in self.buf:
       b.set_offset(offset)
+      
+  def offset(self):
+    """Get offset as (u, v) tuple of (first) buf uv. Doesnt check that buf array
+    exists and has at least one value and only returns offset for that value"""
+    return self.buf[0].unib[9:11]
+    
 
   def set_fog(self, fogshade, fogdist):
     """Set fog for this Shape only, it uses the shader smoothblend function from
@@ -282,6 +281,10 @@ class Shape(Loadable):
         alpha value between 0.0 and 1.0 (default)
     """
     self.unif[17] = alpha
+    
+  def alpha(self):
+    """Get value of alpha"""
+    return self.unif[17]
 
   def set_light(self, light, num=0):
     """Set the values of the lights.

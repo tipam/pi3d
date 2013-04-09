@@ -37,6 +37,7 @@ myextrude = pi3d.Extrude(path=((-0.5, 0.5), (0.5,0.7), (0.9,0.2),
         (0.2,0.05), (1.0,0.0), (0.5,-0.7), (-0.5, -0.5)), height=0.5, name="Extrude",
         x=4, y=2, z=10)
 # Extrude can use three different textures if they are loaded prior to draw()
+myextrude.set_shader(shader)
 myextrude.buf[0].set_draw_details(shader, [coffimg, shapebump, shapeshine], 4.0, 0.2)
 myextrude.buf[1].set_draw_details(shader, [patimg, shapebump, shapeshine], 4.0, 0.2)
 myextrude.buf[2].set_draw_details(shader, [shapeshine, shapebump, shapeshine], 4.0, 0.2)

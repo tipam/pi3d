@@ -66,7 +66,7 @@ mountimg1 = Texture("textures/mountains3_512.jpg")
 mymap = ElevationMap("textures/mountainsHgt.jpg", name="map",
                      width=mapwidth, depth=mapdepth, height=mapheight,
                      divx=32, divy=32) #testislands.jpg
-mymap.buf[0].set_draw_details(shader, [mountimg1, bumpimg, reflimg], 128.0, 0.0)
+mymap.set_draw_details(shader, [mountimg1, bumpimg, reflimg], 128.0, 0.0)
 mymap.set_fog(*FOG)
 
 #Create tree models

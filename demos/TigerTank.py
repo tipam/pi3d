@@ -85,7 +85,7 @@ mymap = ElevationMap(mapfile='textures/mountainsHgt2.png',
                      width=mapwidth, depth=mapdepth,
                      height=mapheight, divx=64, divy=64)
 
-mymap.buf[0].set_draw_details(shader, [mountimg1, bumpimg], 128.0, 0.0)
+mymap.set_draw_details(shader, [mountimg1, bumpimg], 128.0, 0.0)
 
 FOG = (0.7, 0.8, 0.9, 0.5)
 
