@@ -88,6 +88,11 @@ class Texture(Loadable):
     self.ix, self.iy = im.size
     s += '(%s)' % im.mode
     self.alpha = (im.mode == 'RGBA' or im.mode == 'LA')
+    
+    if self.mipmap:
+      resize_type = Image.BICUBIC
+    else:
+      resize_type = Image.NEAREST
 
     # work out if sizes > MAX_SIZE or coerce to golden values in WIDTHS
     if self.iy > self.ix and self.iy > MAX_SIZE: # fairly rare circumstance
@@ -99,7 +104,7 @@ class Texture(Loadable):
         break # no need to resize as already a golden size
       if self.ix > WIDTHS[i]:
         im = im.resize((WIDTHS[i-1], int((WIDTHS[i-1] * self.iy) / self.ix)),
-                        Image.NEAREST)
+                        resize_type)
         self.ix, self.iy = im.size
         break
 
