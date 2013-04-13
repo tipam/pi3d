@@ -7,6 +7,8 @@ from pi3d.util.Loadable import Loadable
 
 MAX_SIZE = 1024
 DEFER_TEXTURE_LOADING = True
+WIDTHS = [4, 8, 16, 32, 48, 64, 72, 96, 128, 144, 192, 256,
+           288, 384, 512, 576, 640, 720, 768, 800, 960, 1024]
 
 def round_up_to_power_of_2(x):
   p = 1
@@ -86,48 +88,32 @@ class Texture(Loadable):
     self.ix, self.iy = im.size
     s += '(%s)' % im.mode
     self.alpha = (im.mode == 'RGBA' or im.mode == 'LA')
-
-    # work out if sizes are not to the power of 2 or > MAX_SIZE
-    # TODO: why must texture sizes be a power of 2?
-    if self.ix > MAX_SIZE or self.iy > MAX_SIZE:
-      if self.ix > self.iy:
-        im = im.resize((MAX_SIZE, int((MAX_SIZE * self.iy) / self.ix)))
-      else:
-        im = im.resize((int((MAX_SIZE * self.ix) / self.iy), MAX_SIZE))
-      self.ix, self.iy = im.size
-    """
-    xx = 0
-    yy = 0
-    nx, ny = self.ix, self.iy
-    while (2 ** xx) < nx:
-      xx += 1
-    while (2 ** yy) < ny:
-      yy += 1
-    if (2 ** xx) > nx:
-      nx = 2 ** xx
-    if (2 ** yy) > ny:
-      ny = 2 ** yy
-    nx = min(nx, MAX_SIZE)
-    ny = min(ny, MAX_SIZE)
     
-    if nx != self.ix or ny != self.iy or self.size > 0:
-      if VERBOSE:
-        print self.ix, self.iy
-      if self.size > 0:
-        nx, ny = self.size, self.size
-      self.ix, self.iy = nx, ny
-      #im = im.resize((self.ix, self.iy), Image.ANTIALIAS)
-      im = im.resize((self.ix, self.iy))
-      s += 'Resizing to: %d, %d' % (self.ix, self.iy)
+    if self.mipmap:
+      resize_type = Image.BICUBIC
     else:
-      s += 'Bitmap size: %d, %d' % (self.ix, self.iy)
-    
+      resize_type = Image.NEAREST
+
+    # work out if sizes > MAX_SIZE or coerce to golden values in WIDTHS
+    if self.iy > self.ix and self.iy > MAX_SIZE: # fairly rare circumstance
+      im = im.resize((int((MAX_SIZE * self.ix) / self.iy), MAX_SIZE))
+      self.ix, self.iy = im.size
+    n = len(WIDTHS)
+    for i in xrange(n-1, 0, -1):
+      if self.ix == WIDTHS[i]:
+        break # no need to resize as already a golden size
+      if self.ix > WIDTHS[i]:
+        im = im.resize((WIDTHS[i-1], int((WIDTHS[i-1] * self.iy) / self.ix)),
+                        resize_type)
+        self.ix, self.iy = im.size
+        break
+
     if VERBOSE:
       print 'Loading ...', s
 
     if self.flip:
       im = im.transpose(Image.FLIP_TOP_BOTTOM)
-    """
+
     RGBs = 'RGBA' if self.alpha else 'RGB'
     self.image = im.convert(RGBs).tostring('raw', RGBs)
     self._tex = ctypes.c_int()
