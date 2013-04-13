@@ -50,6 +50,7 @@ which amounts to
 
 """
 
+import errno
 import logging
 import logging.config
 import os
@@ -66,9 +67,7 @@ import sys
 #   CRITICAL
 
 LOG_LEVEL = 'INFO'
-
 LOG_FILE = ''
-
 LOG_FORMAT = '%(asctime)s %(levelname)s: %(name)s: %(message)s'
 
 logging.basicConfig(
@@ -76,7 +75,7 @@ logging.basicConfig(
   format=LOG_FORMAT)
 
 def parent_makedirs(file):
-  path = os.path.dirname(os.path.expanduser(path))
+  path = os.path.dirname(os.path.expanduser(file))
   try:
     os.makedirs(path)
   except OSError as exc:
@@ -86,7 +85,7 @@ def parent_makedirs(file):
       raise
 
 if LOG_FILE:
-  MakeDirs.parent_makedirs(LOG_FILE)
+  parent_makedirs(LOG_FILE)
   HANDLER = logging.FileHandler(LOG_FILE)
 else:
   HANDLER = None
