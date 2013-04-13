@@ -26,7 +26,7 @@ If you are reading this document as the ReadMe in the repository then you
 can find the full version of the documentation here
 http://pi3d.github.com/html/index.html
 
-Demo's included with Pi3D
+Demos included with Pi3D
 =========================
 
 #.  **ForestWalk.py** Walk about a forest on a landscape generated from a
@@ -153,6 +153,15 @@ Setup on the Raspberry Pi
     on the terminal, type::
 
       sudo apt-get install python-imaging
+
+    [To run on Arch linux you will need to install::
+
+      pacman -S python2
+      pacman -S python-imaging
+      pacman -S python2-numpy
+
+    and possibly other things but that worked for me!]
+
 
 #.  **Install Geany to run Pi3D**
 
@@ -284,7 +293,7 @@ be found in the documentation of each of the modules.
 Documentation
 =============
 
-Please note that Pi3D functions may change significantly during it's development.
+Please note that Pi3D functions may change significantly during its development.
 
 Bug reports, comments, feature requests and fixes are most welcome!
 
