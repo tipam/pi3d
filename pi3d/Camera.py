@@ -10,7 +10,8 @@ class Camera(DefaultInstance):
   """required object for creating and drawing Shape objects. Default instance
   created if none specified in script prior to creating a Shape
   """
-  def __init__(self, at=(0, 0, 0), eye=(0, 0, -0.1), lens=(1.0, 1000.0, 45.0, 1.6), is_3d=True):
+  def __init__(self, at=(0, 0, 0), eye=(0, 0, -0.1), lens=(1.0, 1000.0, 45.0, 1.6),
+              is_3d=True, scale=1.0):
     """Set up view matrix to look from eye to at including perspective
 
     Arguments:
@@ -24,6 +25,8 @@ class Camera(DefaultInstance):
       *is_3d*
         determines whether the camera uses a perspective or orthographic
         projection matrix
+      *scale*
+        number of pixels per unit of size for orthographic camera
     """
     super(Camera, self).__init__()
 
@@ -35,7 +38,7 @@ class Camera(DefaultInstance):
     if is_3d:
       self.projection = _ProjectionMatrix(lens[0], lens[1], lens[2], lens[3])
     else:
-      self.projection = _OrthographicMatrix()
+      self.projection = _OrthographicMatrix(scale=scale)
     self.model_view = dot(self.view, self.projection)
     # Apply transform/rotation first, then shift into perspective space.
     self.mtrx = copy(self.model_view)
@@ -52,7 +55,7 @@ class Camera(DefaultInstance):
                   (Display.INSTANCE.near, Display.INSTANCE.far, Display.INSTANCE.fov,
                   Display.INSTANCE.width / float(Display.INSTANCE.height)))
 
-  def reset(self, lens=None, is_3d=True):
+  def reset(self, lens=None, is_3d=True, scale=1.0):
     """Has to be called each loop if the camera position or rotation changes"""
     if lens != None:
       view = _LookAtMatrix(self.at, self.start_eye, [0, 1, 0])
@@ -60,7 +63,7 @@ class Camera(DefaultInstance):
       self.model_view = dot(view, projection)
     elif not is_3d:
       view = _LookAtMatrix(self.at, self.start_eye, [0, 1, 0])
-      projection = _OrthographicMatrix()
+      projection = _OrthographicMatrix(scale=scale)
       self.model_view = dot(view, projection)
     # TODO some way of resetting to original matrix
     self.mtrx = copy(self.model_view)
@@ -221,13 +224,20 @@ def _ProjectionMatrix(near, far, fov, aspectRatio):
   M[3][2] = -(2 * far * near)/(far - near)
   return array(M, dtype=ctypes.c_float)
 
-def _OrthographicMatrix():
-  """Set up orthographic projection matrix"""
+def _OrthographicMatrix(scale=1.0):
+  """Set up orthographic projection matrix
+  
+  Keyword argument:
+    *scale*
+      number of pixels per unit of size
+  
+  """
   from pi3d.Display import Display
   M = [[0] * 4 for i in range(4)]
-  M[0][0] = 2.0 / Display.INSTANCE.width
-  M[1][1] = 2.0 / Display.INSTANCE.height
-  M[2][2] = 2.0 / Display.INSTANCE.width
+  M[0][0] = 2.0 * scale / Display.INSTANCE.width
+  M[1][1] = 2.0 * scale / Display.INSTANCE.height
+  #M[2][2] = 2.0 / Display.INSTANCE.width
+  M[2][2] = 2.0 / 10000.0
   M[3][2] = -1
   M[3][3] = 1
   return array(M, dtype=ctypes.c_float)
