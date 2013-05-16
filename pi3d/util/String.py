@@ -21,7 +21,7 @@ class String(Shape):
       *font*
         Font or Ttffont class object.
       *string*
-        of ASCI characters in range(32, 128)
+        of ASCI characters in range(32, 128) plus 10 = \n Line Feed
       *sx, sy*
         These change the actual vertex positions of the shape rather than being
         used as scaling factors. This is to avoid distortion when the string is
@@ -49,11 +49,23 @@ class String(Shape):
     temp_verts = []
 
     xoff = 0.0
+    yoff = 0.0
     maxh = 0.0
-    #TODO cope with \n characters to give multi line strings
+    lines = 0
+
     for i, c in enumerate(string):
       v = ord(c) - 32
-      w, h, texc, verts = font.ch[v]
+      if v == -22: # \n Line Feed
+        for j in temp_verts:
+          self.verts.append(((j[0] - xoff/2.0) * sx, (j[1] + maxh/2.0 - yoff) * sy, j[2]))
+        yoff += maxh
+        xoff = 0.0
+        maxh = 0.0
+        temp_verts = []
+        lines += 1
+        continue #don't attempt to draw this character!
+        
+      w, h, texc, verts = font.ch[v] # look up font details for this char
       if v >= 0:
         for j in verts:
           temp_verts.append((j[0]+xoff, j[1], j[2]))
@@ -64,12 +76,12 @@ class String(Shape):
           self.texcoords.append(j)
         for j in [(0.0, 0.0, 1.0), (0.0, 0.0, 1.0), (0.0, 0.0, 1.0), (0.0, 0.0, 1.0)]:
           self.norms.append(j)
-        stv = 4 * i
+        stv = 4 * (i - lines) # to take into account unprinted \n characters
         for j in [(stv, stv + 2, stv + 1), (stv, stv + 3, stv + 2)]:
           self.inds.append(j)
 
     for j in temp_verts:
-      self.verts.append(((j[0] - xoff/2.0) * sx, (j[1] + maxh/2.0) * sy, j[2]))
+      self.verts.append(((j[0] - xoff/2.0) * sx, (j[1] + maxh/2.0 - yoff) * sy, j[2]))
 
     self.buf = []
     self.buf.append(Buffer(self, self.verts, self.texcoords, self.inds, self.norms))

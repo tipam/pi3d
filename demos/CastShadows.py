@@ -1,12 +1,10 @@
 #!/usr/bin/python
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-""" First person view using ElevationMap.calcHeight function to move over
-undulating surface, MergeShape.cluster to create a forest that renders quickly,
-uv_reflect shader is used give texture and reflection to a monolith, fog is
-applied to objects so that their details become masked with distance.
-The lighting is also defined with a yellow directional tinge and an indigo tinge
-to the ambient light
+""" The basic ForestWalk but with shadows cast onto the ElevationMap using 
+the ShadowCaster class.
+Also demonstrates passing an array of objects to the MergeShape.merge()
+method which is much faster for adding large numbers of objects
 """
 
 import demo
@@ -40,7 +38,6 @@ DISPLAY.set_background(0.4,0.8,0.8,1)      # r,g,b,alpha
 #TODO doesn't cope with z direction properly
 mylight = Light(lightpos=(0.5, -1.0, 0.0), lightcol=(1.0, 1.0, 0.8), lightamb=(0.25, 0.2, 0.3))
 CAMERA = Camera.instance()
-#CAMERA = Camera(is_3d=False, eye=[-1, 1, 0], scale=8.0)
 
 #========================================
 # load shader
@@ -63,9 +60,9 @@ myecube = EnvironmentCube(size=900.0, maptype="FACES", name="cube")
 myecube.set_draw_details(flatsh, ectex)
 
 # Create elevation map
-mapwidth = 1100.0
-mapdepth = 800.0
-mapheight = 15.0 # can't cope with much elevation
+mapwidth = 1000.0
+mapdepth = 1000.0
+mapheight = 45.0 # can't cope with much elevation
 mountimg1 = Texture("textures/mountains3_512.jpg")
 mymap = ElevationMap("textures/mountainsHgt.jpg", name="map",
                      width=mapwidth, depth=mapdepth, height=mapheight,
@@ -77,27 +74,27 @@ mymap.set_fog(*FOG)
 treeplane = Plane(w=4.0, h=5.0)
 
 treemodel1 = MergeShape(name="baretree")
-treemodel1.add(treeplane.buf[0], 0,0,0)
-treemodel1.add(treeplane.buf[0], 0,0,0, 0,90,0)
+treemodel1.merge([[treeplane, 0,0,0, 0,0,0, 1,1,1],
+                [treeplane, 0,0,0, 0,90,0, 1,1,1]])
 
 treemodel2 = MergeShape(name="bushytree")
-treemodel2.add(treeplane.buf[0], 0,0,0)
-treemodel2.add(treeplane.buf[0], 0,0,0, 0,60,0)
-treemodel2.add(treeplane.buf[0], 0,0,0, 0,120,0)
+treemodel2.merge([[treeplane, 0,0,0, 0,0,0, 1,1,1],
+                [treeplane, 0,0,0, 0,60,0, 1,1,1],
+                [treeplane, 0,0,0, 0,120,0, 1,1,1]])
 
 #Scatter them on map using Merge shape's cluster function
 mytrees1 = MergeShape(name="trees1")
-mytrees1.cluster(treemodel1.buf[0], mymap, 50.0, 200.0, 400.0, 400.0, 5, "", 5.0, 20.0)
+mytrees1.cluster(treemodel1.buf[0], mymap, 50.0, 200.0, 50.0, 500.0, 50, "", 5.0, 20.0)
 mytrees1.set_draw_details(flatsh, [tree2img], 0.0, 0.0)
 mytrees1.set_fog(*TFOG)
 
 mytrees2 = MergeShape(name="trees2")
-mytrees2.cluster(treemodel2.buf[0], mymap,0.0,0.0,200.0,200.0,20,"",6.0,3.0)
+mytrees2.cluster(treemodel2.buf[0], mymap, 0.0, 0.0, 200.0, 300.0, 50,"",3.0,7.0)
 mytrees2.set_draw_details(flatsh, [tree1img], 0.0, 0.0)
 mytrees2.set_fog(*TFOG)
 
 mytrees3 = MergeShape(name="trees3")
-mytrees3.cluster(treemodel2, mymap,0.0,0.0,300.0,300.0,20,"",4.0,2.0)
+mytrees3.cluster(treemodel2, mymap,0.0, 0.0, 600.0, 100.0, 50,"", 4.0, 20.0)
 mytrees3.set_draw_details(flatsh, [hb2img], 0.0, 0.0)
 mytrees3.set_fog(*TFOG)
 

@@ -25,8 +25,8 @@ class MergeShape(Shape):
                sx=1.0, sy=1.0, sz=1.0,
                cx=0.0, cy=0.0, cz=0.0):
     """uses standard constructor for Shape"""
-    super(MergeShape, self).__init__(camera, light, name, x, y, z, rx, ry, rz, sx, sy, sz,
-                                     cx, cy, cz)
+    super(MergeShape, self).__init__(camera, light, name, x, y, z,
+                                   rx, ry, rz, sx, sy, sz, cx, cy, cz)
 
     if VERBOSE:
       print "Creating Merge Shape ..."
@@ -37,8 +37,8 @@ class MergeShape(Shape):
     self.indices = []    #stores all indices for single render
 
     self.buf = []
-    self.buf.append(Buffer(self, self.vertices, self.tex_coords, self.indices, self.normals))
-
+    self.buf.append(Buffer(self, self.vertices, self.tex_coords, self.indices,
+                  self.normals))
 
   def merge(self, bufr, x=0.0, y=0.0, z=0.0,
             rx=0.0, ry=0.0, rz=0.0,
@@ -98,11 +98,13 @@ class MergeShape(Shape):
       self.tex_coords.extend(bufr.tex_coords)
 
       ctypes.restype = ctypes.c_short  # TODO: remove this side-effect.
-      indices = [(i[0] + original_vertex_count, i[1] + original_vertex_count, i[2] + original_vertex_count) for i in bufr.indices]
+      indices = [(i[0] + original_vertex_count, i[1] + original_vertex_count,
+                  i[2] + original_vertex_count) for i in bufr.indices]
       self.indices.extend(indices)
 
     self.buf = []
-    self.buf.append(Buffer(self, self.vertices, self.tex_coords, self.indices, self.normals))
+    self.buf.append(Buffer(self, self.vertices, self.tex_coords, self.indices,
+                  self.normals))
 
   def add(self, bufr, x=0.0, y=0.0, z=0.0, rx=0.0, ry=0.0, rz=0.0,
           sx=1.0, sy=1.0, sz=1.0):
