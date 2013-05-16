@@ -217,7 +217,7 @@ class Display(object):
         camera.was_moved = False
         
     if self.tidy_needed:
-      _tidy()
+      self._tidy()
       
   def _tidy(self):
     for tex in self.textures_to_delete:
