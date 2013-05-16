@@ -72,8 +72,8 @@ next_time = time.time()+2.0
 
 #load ttf font and set the font colour to 'raspberry'
 arialFont = Ttffont("fonts/FreeMonoBoldOblique.ttf", "#dd00aa")
-mystring = String(font=arialFont, string="blurring with distance!",
-                  camera=ortho_cam, z=1.0, is_3d=False) # orthographic view
+mystring = String(font=arialFont, string="blurring\nwith\ndistance!\n\njustified\nmultiline",
+                  camera=ortho_cam, z=1.0, is_3d=False, justify="r") # orthographic view
 mystring.set_shader(flatsh)
 
 # Fetch key presses.
