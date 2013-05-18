@@ -43,10 +43,12 @@ class ShadowCaster(Texture):
       self.eye[2] = 0
       self.scaleu = self.scaleu / self.eye[1] * float(self.eye[0]**2 + self.eye[1]**2)**0.5
       self.emap.unif[50] = 1.0 #orientation flag
+      self.emap.unif[53] = -3.0 / self.emap.width * self.eye[0] / self.eye[1]
     else:
       self.eye[0] = 0
       self.scalev = self.scalev / self.eye[1] * float(self.eye[2]**2 + self.eye[1]**2)**0.5
       self.emap.unif[50] = 0.0
+      self.emap.unif[53] = -3.0 / self.emap.depth * self.eye[2] / self.eye[1]
     if self.scaleu > self.scalev:
       self.scale = 3.0 * self.scalev # multiplication factor to reduce pixeliness
     else:
@@ -85,7 +87,7 @@ class ShadowCaster(Texture):
     opengles.glEnable(GL_TEXTURE_2D)
     opengles.glActiveTexture(0)
     self.camera.reset(is_3d=False, scale=self.scale)
-    self.camera.position(location)
+    self.camera.position((location[0], 0, location[2]))
     self.location = location
 
   def end_cast(self):
@@ -114,9 +116,6 @@ class ShadowCaster(Texture):
     self.emap.unif[49] += self.scalev * self.location[2] / self.emap.depth
     self.emap.unif[51] -= self.scaleu * self.location[0] / self.emap.width
     self.emap.unif[52] += self.scalev * self.location[2] / self.emap.depth
-    
-    #self.emap.unif[48:53] = [0.0, 1.0, 1.0, 1.0, 0.0]
-
 
   def add_shadow(self, shape):
     shape.draw(shader=self.cshader, camera=self.camera)

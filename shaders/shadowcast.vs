@@ -27,6 +27,7 @@ void main(void) {
   float rflag = unif[16][2];
   float right = unif[17][0];
   float bottom = unif[17][1];
+  float offset = unif[17][2] * vertex.y;
   
   lightVector = normalize(unif[8]); 
   lightVector.z *= -1.0;
@@ -51,13 +52,12 @@ void main(void) {
 
   if (rflag > 0.5) { // ------ shadows rotated 90 degrees
     shadcoordout = vec2(texcoord[1] * (top - bottom) + bottom,
-                        texcoord[0] * (right - left) + left);
+                        texcoord[0] * (right - left) + left + offset);
   }
   else { // ------ shadows not rotated
     shadcoordout = vec2(texcoord[0] * (top - bottom) + bottom,
-                        texcoord[1] * (right - left) + left);
+                        texcoord[1] * (right - left) + left + offset);
   }
-
 
   gl_Position = modelviewmatrix[1] * vec4(vertex,1.0);
 }
