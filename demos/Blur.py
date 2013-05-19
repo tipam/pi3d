@@ -72,7 +72,8 @@ next_time = time.time()+2.0
 
 #load ttf font and set the font colour to 'raspberry'
 arialFont = Ttffont("fonts/FreeMonoBoldOblique.ttf", "#dd00aa")
-mystring = String(font=arialFont, string="blurring\nwith\ndistance!\n\njustified\nmultiline",
+mystring = String(font=arialFont, string="blurring\nwith\ndistance!\n"
+                  "---------\njustified\nmultiline\ntext\nStrings",
                   camera=ortho_cam, z=1.0, is_3d=False, justify="r") # orthographic view
 mystring.set_shader(flatsh)
 
@@ -110,6 +111,7 @@ while DISPLAY.loop_running():
     screenshot("blur1.jpg")
   elif k==27:
     mykeys.close()
+    defocus.delete_buffers()
     DISPLAY.destroy()
     break
 

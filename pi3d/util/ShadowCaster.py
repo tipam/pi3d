@@ -122,3 +122,7 @@ class ShadowCaster(Texture):
     
   def draw_shadow(self):
     self.emap.draw(shader=self.dshader)
+    
+  def delete_buffers(self):
+    opengles.glDeleteFramebuffers(1, self.framebuffer)
+    opengles.glDeleteRenderbuffers(1, self.depthbuffer)

@@ -291,39 +291,11 @@ try:
       turret += 2.0
     if turret - 2.0 > mouserot:
       turret -= 2.0
-    """
-    if inputs.key_state("BTN_LEFT"):
-      xm -= math.sin(math.radians(tankrot)) * 2
-      zm -= math.cos(math.radians(tankrot)) * 2
-      ym = (mymap.calcHeight(xm, zm) + avhgt)
-    if inputs.key_state("KEY_W"):  #key W
-      xm -= math.sin(math.radians(tankrot)) * 2
-      zm -= math.cos(math.radians(tankrot)) * 2
-      ym = (mymap.calcHeight(xm, zm) + avhgt)
-    if inputs.key_state("KEY_S"): #key S
-      xm += math.sin(math.radians(tankrot)) * 2
-      zm += math.cos(math.radians(tankrot)) * 2
-      ym = (mymap.calcHeight(xm, zm) + avhgt)
-    if inputs.key_state("KEY_A"):  #key A
-      tankrot -= 2
-    if inputs.key_state("KEY_D"): #key D
-      tankrot += 2
-    if inputs.key_state("KEY_P"): #key P
-      screenshot('TigerTank.jpg')
-
-    elif win.ev == 'resized':
-      DISPLAY.resize(win.winx, win.winy, win.width, win.height - bord)
-      win.resized = False
-      # This flag must be reset otherwise no further events will be detected
-
-    win.ev = ''  # Clear the event so it doesn't repeat.
-
-    CAMERA.was_moved = False
-    """
     try:
       win.update()
     except Exception as e:
       print("bye,bye2", e)
+      myshadows.delete_buffers()
       DISPLAY.destroy()
       try:
         win.destroy()
@@ -355,6 +327,7 @@ try:
       if win.key == "Escape":
         try:
           print("bye,bye1")
+          myshadows.delete_buffers()
           DISPLAY.destroy()
           try:
             win.destroy()
@@ -373,6 +346,7 @@ try:
 
 except Exception as e:
   print("bye,bye3", e)
+  myshadows.delete_buffers()
   DISPLAY.destroy()
   try:
     win.destroy()
