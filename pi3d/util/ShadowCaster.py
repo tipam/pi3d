@@ -32,29 +32,40 @@ class ShadowCaster(Texture):
     # keep copy of ElevationMap
     self.emap = emap
     self.emap.set_material((0.0, 0.0, 0.0)) # hide bits below ground
-    #change scale so map just fits on screen
-    self.scaleu = float(self.iy / self.emap.width)
-    self.scalev = float(self.ix / self.emap.depth)
     #TODO doesn't cope with  z light positions
     self.eye = [-500*i for i in light.lightpos] # good distance away
     if self.eye[1] <= 0: # must have +ve y
-      self.eye[1] = 1.0
+      self.eye[1] = 500.0
     if abs(self.eye[0]) > abs(self.eye[2]): #x val is bigger than z val
+      #change scale so map just fits on screen
+      if self.eye[0] < 0:
+        su, sv  = 1.0, 1.0
+      else:
+        su, sv  = -1.0, -1.0
+      self.scaleu = float(self.iy) / self.emap.width
+      self.scalev = float(self.ix)/ self.emap.depth
       self.eye[2] = 0
       self.scaleu = self.scaleu / self.eye[1] * float(self.eye[0]**2 + self.eye[1]**2)**0.5
       self.emap.unif[50] = 1.0 #orientation flag
-      self.emap.unif[53] = -3.0 / self.emap.width * self.eye[0] / self.eye[1]
+      self.emap.unif[53] = -3.0 * su / self.emap.width * self.eye[0] / float(self.eye[1]) #height adjustment
     else:
+      #change scale so map just fits on screen
+      if self.eye[2] < 0:
+        su, sv  = 1.0, -1.0
+      else:
+        su, sv  = -1.0, 1.0
+      self.scaleu = float(self.iy) / self.emap.depth
+      self.scalev = float(self.ix)/ self.emap.width
       self.eye[0] = 0
-      self.scalev = self.scalev / self.eye[1] * float(self.eye[2]**2 + self.eye[1]**2)**0.5
+      self.scaleu = self.scaleu / self.eye[1] * float(self.eye[2]**2 + self.eye[1]**2)**0.5
       self.emap.unif[50] = 0.0
-      self.emap.unif[53] = -3.0 / self.emap.depth * self.eye[2] / self.eye[1]
-    if self.scaleu > self.scalev:
+      self.emap.unif[53] = -3.0 * su / self.emap.width * self.eye[2] / float(self.eye[1])
+    if abs(self.scaleu) > abs(self.scalev):
       self.scale = 3.0 * self.scalev # multiplication factor to reduce pixeliness
     else:
       self.scale = 3.0 * self.scaleu
-    self.scaleu = self.scale / self.scaleu # reused later in end_cast
-    self.scalev = self.scale / self.scalev
+    self.scaleu = su * self.scale / self.scaleu # reused later in end_cast
+    self.scalev = sv * self.scale / self.scalev
     self.camera0 = Camera() # default instance created as normal, just in case!
     self.camera = Camera(is_3d=False, eye=self.eye, scale=self.scale)
     # load shader for drawing map with shadows
@@ -112,10 +123,12 @@ class ShadowCaster(Texture):
     self.emap.unif[51] = 1.0 - self.emap.unif[48] # right [17][0]
     self.emap.unif[52] = 1.0 - self.emap.unif[49] # bottom [17][1]
     
-    self.emap.unif[48] -= self.scaleu * self.location[0] / self.emap.width
-    self.emap.unif[49] += self.scalev * self.location[2] / self.emap.depth
-    self.emap.unif[51] -= self.scaleu * self.location[0] / self.emap.width
-    self.emap.unif[52] += self.scalev * self.location[2] / self.emap.depth
+    du = float(self.location[0] / self.emap.width)
+    dv = float(self.location[2] / self.emap.depth)
+    self.emap.unif[48] -= self.scaleu * (du if self.emap.unif[50] == 1.0 else dv)
+    self.emap.unif[49] += self.scalev * (dv if self.emap.unif[50] == 1.0 else du)
+    self.emap.unif[51] -= self.scaleu * (du if self.emap.unif[50] == 1.0 else dv)
+    self.emap.unif[52] += self.scalev * (dv if self.emap.unif[50] == 1.0 else du)
 
   def add_shadow(self, shape):
     shape.draw(shader=self.cshader, camera=self.camera)

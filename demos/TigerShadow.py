@@ -53,7 +53,7 @@ DISPLAY = Display.create(tk=True, window_title='Tiger Tank demo in Pi3D',
 #inputs = InputEvents()
 #inputs.get_mouse_movement()
 
-mylight = Light(lightpos=(1, -1, 0), lightcol =(0.8, 0.8, 0.8), lightamb=(0.30, 0.30, 0.32))
+mylight = Light(lightpos=(0, -1, 1), lightcol =(0.8, 0.8, 0.8), lightamb=(0.30, 0.30, 0.32))
 
 win = DISPLAY.tkwin
 
@@ -74,8 +74,8 @@ myecube = EnvironmentCube.EnvironmentCube(size=1800.0, maptype='FACES')
 myecube.set_draw_details(flatsh, ectex)
 
 # Create elevation map
-mapwidth = 2000.0
-mapdepth = 2000.0
+mapwidth = 1900.0
+mapdepth = 1700.0
 mapheight = 120.0
 mountimg1 = Texture('textures/mountains3_512.jpg')
 bumpimg = Texture('textures/grasstile_n.jpg')

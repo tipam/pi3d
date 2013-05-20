@@ -36,7 +36,7 @@ DISPLAY = Display.create(x=0, y=0, w=800, h=600)
 DISPLAY.set_background(0.4,0.8,0.8,1)      # r,g,b,alpha
 # yellowish directional light blueish ambient light
 #TODO doesn't cope with z direction properly
-mylight = Light(lightpos=(0.5, -1.0, 0.0), lightcol=(1.0, 1.0, 0.8), lightamb=(0.25, 0.2, 0.3))
+mylight = Light(lightpos=(-2.0, -1.0, 0.0), lightcol=(1.0, 1.0, 0.8), lightamb=(0.25, 0.2, 0.3))
 CAMERA = Camera.instance()
 
 #========================================
@@ -89,12 +89,12 @@ mytrees1.set_draw_details(flatsh, [tree2img], 0.0, 0.0)
 mytrees1.set_fog(*TFOG)
 
 mytrees2 = MergeShape(name="trees2")
-mytrees2.cluster(treemodel2.buf[0], mymap, 0.0, 0.0, 200.0, 300.0, 50,"",3.0,7.0)
+mytrees2.cluster(treemodel2.buf[0], mymap, 0.0, 0.0, 200.0, 300.0, 5,"",3.0,7.0)
 mytrees2.set_draw_details(flatsh, [tree1img], 0.0, 0.0)
 mytrees2.set_fog(*TFOG)
 
 mytrees3 = MergeShape(name="trees3")
-mytrees3.cluster(treemodel2, mymap,0.0, 0.0, 600.0, 100.0, 50,"", 4.0, 20.0)
+mytrees3.cluster(treemodel2, mymap,0.0, 0.0, 600.0, 100.0, 5,"", 4.0, 20.0)
 mytrees3.set_draw_details(flatsh, [hb2img], 0.0, 0.0)
 mytrees3.set_fog(*TFOG)
 
