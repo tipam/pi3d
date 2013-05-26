@@ -54,6 +54,8 @@ class String(Shape):
     yoff = 0.0
     maxh = 0.0
     lines = 0
+    if not isinstance(string, unicode):
+      string = string.decode('utf-8')
     nlines = string.count("\n") + 1
 
     def make_verts(): #local function to justify each line
