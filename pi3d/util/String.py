@@ -15,9 +15,9 @@ class String(Shape):
                sx=DEFAULT_FONT_SCALE, sy=DEFAULT_FONT_SCALE,
                is_3d=True, size=DEFAULT_FONT_SIZE,
                rx=0.0, ry=0.0, rz=0.0, justify="C"):
-    """Standard Shape constructor without the facility to change z scale or 
+    """Standard Shape constructor without the facility to change z scale or
     any of the offset values. Additional keyword arguments:
-    
+
       *font*
         Font or Ttffont class object.
       *string*
@@ -55,7 +55,7 @@ class String(Shape):
     maxh = 0.0
     lines = 0
     nlines = string.count("\n") + 1
-    
+
     def make_verts(): #local function to justify each line
       if justify.upper() == "C":
         cx = xoff/2.0
@@ -65,7 +65,7 @@ class String(Shape):
         cx = xoff
       for j in temp_verts:
         self.verts.append(((j[0] - cx) * sx, (j[1] + nlines * maxh / 2.0 - yoff) * sy, j[2]))
-      
+
 
     for i, c in enumerate(string):
       v = ord(c) - 32
@@ -77,9 +77,10 @@ class String(Shape):
         temp_verts = []
         lines += 1
         continue #don't attempt to draw this character!
-        
-      w, h, texc, verts = font.ch[v] # look up font details for this char
-      if v >= 0:
+
+      details = font.ch.get(v) # look up font details for this char
+      if details:
+        w, h, texc, verts = details
         for j in verts:
           temp_verts.append((j[0]+xoff, j[1], j[2]))
         xoff += w

@@ -1,7 +1,10 @@
 import ctypes
 import Image
 
-from PIL import ImageDraw, ImageFont
+try:
+  from PIL import ImageDraw, ImageFont
+except:
+  print 'Unable to import libraries from PIL'
 
 from pi3d.constants import *
 from pi3d.Texture import Texture
@@ -11,12 +14,12 @@ class Ttffont(Texture):
   the String class to write with"""
   def __init__(self, font, col="#ffffff", fontsize=48, imagesize=512):
     """Arguments:
-    
+
       *font*
         file path/name to a ttf file
-        
+
     Keyword arguments:
-    
+
       *col*
         colour in standard hex format #RRGGBB
       *fontsize*
