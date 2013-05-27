@@ -80,9 +80,8 @@ class String(Shape):
         lines += 1
         continue #don't attempt to draw this character!
 
-      details = font.ch.get(v) # look up font details for this char
-      if details:
-        w, h, texc, verts = details
+      if v >= 0 and v < len(font.ch):
+        w, h, texc, verts = font.ch[v] # look up font details for this char
         for j in verts:
           temp_verts.append((j[0]+xoff, j[1], j[2]))
         xoff += w
