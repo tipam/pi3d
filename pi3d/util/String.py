@@ -8,6 +8,8 @@ DOTS_PER_INCH = 72.0
 DEFAULT_FONT_SIZE = 0.24
 DEFAULT_FONT_SCALE = DEFAULT_FONT_SIZE / DOTS_PER_INCH
 
+_NORMALS = [[0.0, 0.0, 1.0], [0.0, 0.0, 1.0], [0.0, 0.0, 1.0], [0.0, 0.0, 1.0]]
+
 class String(Shape):
   """Shape used for writing text on screen. It is a flat, one sided rectangualar plane"""
   def __init__(self, camera=None, light=None, font=None, string=None,
@@ -60,18 +62,19 @@ class String(Shape):
 
     def make_verts(): #local function to justify each line
       if justify.upper() == "C":
-        cx = xoff/2.0
+        cx = xoff / 2.0
       elif justify.upper() == "L":
         cx = 0.0
       else:
         cx = xoff
       for j in temp_verts:
-        self.verts.append(((j[0] - cx) * sx, (j[1] + nlines * maxh / 2.0 - yoff) * sy, j[2]))
+        self.verts.append([(j[0] - cx) * sx,
+                           (j[1] + nlines * maxh / 2.0 - yoff) * sy,
+                           j[2]])
 
 
     for i, c in enumerate(string):
-      v = ord(c) - 32
-      if v == -22: # \n Line Feed
+      if c == '\n':
         make_verts()
         yoff += maxh
         xoff = 0.0
@@ -80,8 +83,10 @@ class String(Shape):
         lines += 1
         continue #don't attempt to draw this character!
 
-      if v >= 0 and v < len(font.ch):
-        w, h, texc, verts = font.ch[v] # look up font details for this char
+      v = ord(c) - 32
+
+      if v >= 0 and v < len(font.glyph_table):
+        w, h, texc, verts = font.glyph_table[v] # look up font details for this char
         for j in verts:
           temp_verts.append((j[0]+xoff, j[1], j[2]))
         xoff += w
@@ -89,11 +94,11 @@ class String(Shape):
           maxh = h
         for j in texc:
           self.texcoords.append(j)
-        for j in [(0.0, 0.0, 1.0), (0.0, 0.0, 1.0), (0.0, 0.0, 1.0), (0.0, 0.0, 1.0)]:
-          self.norms.append(j)
-        stv = 4 * (i - lines) # to take into account unprinted \n characters
-        for j in [(stv, stv + 2, stv + 1), (stv, stv + 3, stv + 2)]:
-          self.inds.append(j)
+        self.norms.extend(_NORMALS)
+
+        # Take Into account unprinted \n characters
+        stv = 4 * (i - lines)
+        self.inds.extend([[stv, stv + 2, stv + 1], [stv, stv + 3, stv + 2]])
 
     make_verts()
 

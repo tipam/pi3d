@@ -10,32 +10,48 @@ from pi3d.constants import *
 from pi3d.Texture import Texture
 
 class Ttffont(Texture):
-  """Loads a Ttf font from disk and creates a Texture and lookup table for
-  the String class to write with"""
-  def __init__(self, font, col="#ffffff", fontsize=48, imagesize=512):
-    """Arguments:
+  """A Ttffont contains a TrueType font ready to be rendered in OpenGL.
 
+  A font is just a mapping from codepoints (single Unicode characters) to glyphs
+  (graphical representations of those characters).
+
+  Ttffont packs one whole font into a single Texture using PIL.ImageFont,
+  then creates a table mapping codepoints to subrectangles of that Texture.
+
+"""
+
+  def __init__(self, font, color="#ffffff", font_size=48, image_size=512,
+               italic_adjustment=1.1):
+    """
+    Arguments:
       *font*
-        file path/name to a ttf file
+        File path/name to a TrueType font file.
 
     Keyword arguments:
+      *color*
+        Color in standard hex format #RRGGBB
 
-      *col*
-        colour in standard hex format #RRGGBB
-      *fontsize*
-        point size for drawing the letters on the internal Texture
-      *imagesize*
-        pixels square, needs to be bigger for large point size
+      *font_size*
+        Point size for drawing the letters on the internal Texture
+
+      *image_size*
+        Width and height of the Texture that backs the image.
+        You'll need to adjust this up for larger fonts.
+
+      *italic_adjustment*
+        Adjusts the bounding width to take italics into account.  The default
+        value is 1.1; you can get a tighter bounding if you set this down
+        closer to 1, but italics might get cut off at the right.
     """
     super(Ttffont, self).__init__(font)
     self.font = font
-    imgfont = ImageFont.truetype(font, fontsize)
+    imgfont = ImageFont.truetype(font, font_size)
 
-    self.im = Image.new("RGBA", (imagesize, imagesize))
+    self.im = Image.new("RGBA", (image_size, image_size))
     self.alpha = True
-    self.ix, self.iy = imagesize, imagesize
+    self.ix, self.iy = image_size, image_size
 
-    self.ch = []
+    self.glyph_table = []
 
     draw = ImageDraw.Draw(self.im)
 
@@ -45,10 +61,9 @@ class Ttffont(Texture):
     maxRowHeight = 0.0
     for i in range(32, 128):
       ch = chr(i)
-
       chwidth, chheight = imgfont.getsize(ch)
 
-      if curX + chwidth*1.1 >= imagesize:
+      if curX + chwidth * italic_adjustment >= image_size:
         curX = 0.0
         curY = curY + maxRowHeight
         maxRowHeight = 0.0
@@ -56,19 +71,28 @@ class Ttffont(Texture):
       if chheight > maxRowHeight:
         maxRowHeight = chheight
 
-      draw.text((curX, curY), ch, font = imgfont, fill = col)
+      draw.text((curX, curY), ch, font=imgfont, fill=color)
       x = (curX + 0.0) / self.ix
       y = (curY + chheight + 0.0) / self.iy
       tw = (chwidth + 0.0) / self.ix
       th = (chheight + 0.0) / self.iy
-      w = imagesize
-      h = imagesize
+      w = image_size
+      h = image_size
 
-      self.ch.append((chwidth, chheight,
-              [(x + tw, y - th), (x, y - th), (x, y), (x + tw, y)],
-              [(chwidth, 0, 0),  (0, 0, 0),  (0, -chheight, 0),  (chwidth, -chheight, 0)]))
+      rect = [[[x + tw, y - th],
+               [x, y - th],
+               [x, y],
+               [x + tw, y]],
 
-      curX = curX + chwidth*1.1 # to avoid overlapping corners of italics
+              [[chwidth, 0, 0],
+               [0, 0, 0],
+               [0, -chheight, 0],
+               [chwidth, -chheight, 0]]]]
+
+      self.glyph_table.append((chwidth, chheight, rect)
+
+      # Correct the character width for italics.
+      curX = curX + chwidth * italic_adjustment
 
     RGBs = 'RGBA' if self.alpha else 'RGB'
     self.image = self.im.convert(RGBs).tostring('raw', RGBs)
