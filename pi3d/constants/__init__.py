@@ -4,7 +4,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 pi3d.constants contains constant values, mainly integers, from OpenGL ES 2.0.
 """
 
-VERSION = '0.06'
+VERSION = '0.8'
 
 STARTUP_MESSAGE = """
 
