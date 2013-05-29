@@ -79,17 +79,14 @@ class Ttffont(Texture):
       w = image_size
       h = image_size
 
-      rect = [[[x + tw, y - th],
-               [x, y - th],
-               [x, y],
-               [x + tw, y]],
+      table_entry = [
+        chwidth,
+        chheight,
+        [[x + tw, y - th], [x, y - th], [x, y], [x + tw, y]],
+        [[chwidth, 0, 0], [0, 0, 0], [0, -chheight, 0], [chwidth, -chheight, 0]]
+        ]
 
-              [[chwidth, 0, 0],
-               [0, 0, 0],
-               [0, -chheight, 0],
-               [chwidth, -chheight, 0]]]
-
-      self.glyph_table.append([chwidth, chheight, rect])
+      self.glyph_table.append(table_entry)
 
       # Correct the character width for italics.
       curX = curX + chwidth * italic_adjustment
