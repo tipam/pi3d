@@ -39,10 +39,8 @@ from pi3d.shape.MergeShape import MergeShape
 from pi3d.shape.Sphere import Sphere
 from pi3d.shape.Sprite import Sprite
 
-USE_UNICODE = False
 
-if USE_UNICODE:
-  MESSAGE = """\
+MESSAGE = """\
 blurring
 with
 distance!
@@ -50,18 +48,9 @@ distance!
 justified
 multiline
 unicode æ ö ¼
-Strings"""
+Strings """ + unichr(255) + ' ' + unichr(256)
 
-else:
-  MESSAGE = """\
-blurring
-with
-distance!
----------
-justified
-multiline
-unicode
-Strings"""
+# character 255 should appear, character 256 should not.
 
 # Setup display and initialise pi3d
 DISPLAY = Display.create(x=10, y=10, w=900, h=600, frames_per_second=25)
