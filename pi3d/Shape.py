@@ -367,6 +367,29 @@ class Shape(Loadable):
   def z(self):
     """get value of z"""
     return self.unif[2]
+    
+  def get_bounds(self):
+    """Find the limits of vertices in three dimensions. Returns a tuple
+    (left, bottom, front, right, top, back)
+    """
+    left, bottom, front  = 10000, 10000, 10000
+    right, top, back = -10000, -10000, -10000
+    for b in self.buf:
+      for v in b.vertices:
+        if v[0] < left:
+          left = v[0]
+        if v[0] > right:
+          right = v[0]
+        if v[1] < bottom:
+          bottom = v[1]
+        if v[1] > top:
+          top = v[1]
+        if v[2] < front:
+          front = v[2]
+        if v[2] > back:
+          back = v[2]
+        
+    return (left, bottom, front, right, top, back)
 
   def scale(self, sx, sy, sz):
     """Arguments:

@@ -80,3 +80,8 @@ class Defocus(Texture):
     shape.unif[45] = 1.0/self.ix # shader unif[15]
     shape.unif[46] = 1.0/self.iy
     shape.draw(self.shader, [self], 0.0, 0.0)
+    
+  def delete_buffers(self):
+    opengles.glDeleteFramebuffers(1, self.framebuffer)
+    opengles.glDeleteRenderbuffers(1, self.depthbuffer)
+

@@ -153,6 +153,7 @@ class Display(object):
 
   def destroy(self):
     """Destroy the current Display and reset Display.INSTANCE."""
+    self._tidy()
     self.stop()
     try:
       self.opengl.destroy()
@@ -216,16 +217,19 @@ class Display(object):
         camera.was_moved = False
         
     if self.tidy_needed:
-      for tex in self.textures_to_delete:
-        opengles.glDeleteTextures(1, byref(tex))
-      self.textures_to_delete = []
-      for vbuf in self.vbufs_to_delete:
-        opengles.glDeleteBuffers(1, byref(vbuf))
-      self.vbufs_to_delete = []
-      for ebuf in self.ebufs_to_delete:
-        opengles.glDeleteBuffers(1, byref(ebuf))
-      self.ebufs_to_delete = []
-      self.tidy_needed = False
+      self._tidy()
+      
+  def _tidy(self):
+    for tex in self.textures_to_delete:
+      opengles.glDeleteTextures(1, byref(tex))
+    self.textures_to_delete = []
+    for vbuf in self.vbufs_to_delete:
+      opengles.glDeleteBuffers(1, byref(vbuf))
+    self.vbufs_to_delete = []
+    for ebuf in self.ebufs_to_delete:
+      opengles.glDeleteBuffers(1, byref(ebuf))
+    self.ebufs_to_delete = []
+    self.tidy_needed = False
 
   def _loop_end(self):
     with self.lock:

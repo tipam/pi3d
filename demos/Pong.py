@@ -222,6 +222,7 @@ while DISPLAY.loop_running():
   k = mykeys.read()
 
   if k==27: #Escape key
+    defocus.delete_buffers()
     DISPLAY.destroy()
     mykeys.close()
     mymouse.stop()

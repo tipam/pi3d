@@ -24,14 +24,13 @@ class Font(Texture):
         A hex string representing a color.
 
     """
-    f = font
-    if not f.endswith('.png'):
-      f += '.png'
+    if not font.endswith('.png'):
+      font += '.png'
     super(Font, self).__init__("fonts/%s" % f)
     self.font = font
     pixels = self.im.load()
 
-    self.ch = []
+    self.glyph_table = []
     # Extract font information from top scanline of font image;  create width,
     # height, tex_coord and vertices for each character.
     for v in range(95):
@@ -42,7 +41,7 @@ class Font(Texture):
       width_scale = width / self.ix
       height_scale = height / self.iy
 
-      self.ch.append((width, height,
+      self.glyph_table.append((width, height,
         [(x + width_scale, y - height_scale),
          (x, y - height_scale),
          (x, y),
