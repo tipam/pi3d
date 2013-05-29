@@ -4,6 +4,9 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
+vsn 0.8
+2013-05-29  Switch to a non-zero-padded version number
+
 vsn 0.08
 2013-02-08  Wholesale conversion to OpenGL ES2.0 mechanisms. As much as possible
             of the existing functionality has been maintained though some classes

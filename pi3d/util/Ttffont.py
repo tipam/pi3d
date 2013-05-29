@@ -34,6 +34,17 @@ class Ttffont(Texture):
 
       *font_size*
         Point size for drawing the letters on the internal Texture
+        
+      *codepoints*
+        Iterable list of characters. All these work::
+        
+          'ABCDEabcde '
+          [65,66,67,68,69,97,98,99,100,101,145,148,172, 32]
+          [c for c in range(65, 173)]
+          
+        If the string version is used then the program file might need to
+        have the coding defined at the top:  # -*- coding: utf-8 -*-
+
 
       *image_size*
         Width and height of the Texture that backs the image.
