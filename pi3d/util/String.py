@@ -72,7 +72,7 @@ class String(Shape):
                            (j[1] + nlines * maxh / 2.0 - yoff) * sy,
                            j[2]])
 
-
+    default = font.glyph_table.get(unichr(0), None)
     for i, c in enumerate(string):
       if c == '\n':
         make_verts()
@@ -83,22 +83,22 @@ class String(Shape):
         lines += 1
         continue #don't attempt to draw this character!
 
-      v = ord(c) - 32
+      glyph = font.glyph_table.get(c, default)
+      if not glyph:
+        continue
+      w, h, texc, verts = glyph
+      for j in verts:
+        temp_verts.append((j[0]+xoff, j[1], j[2]))
+      xoff += w
+      if h > maxh:
+        maxh = h
+      for j in texc:
+        self.texcoords.append(j)
+      self.norms.extend(_NORMALS)
 
-      if v >= 0 and v < len(font.glyph_table):
-        w, h, texc, verts = font.glyph_table[v] # look up font details for this char
-        for j in verts:
-          temp_verts.append((j[0]+xoff, j[1], j[2]))
-        xoff += w
-        if h > maxh:
-          maxh = h
-        for j in texc:
-          self.texcoords.append(j)
-        self.norms.extend(_NORMALS)
-
-        # Take Into account unprinted \n characters
-        stv = 4 * (i - lines)
-        self.inds.extend([[stv, stv + 2, stv + 1], [stv, stv + 3, stv + 2]])
+      # Take Into account unprinted \n characters
+      stv = 4 * (i - lines)
+      self.inds.extend([[stv, stv + 2, stv + 1], [stv, stv + 3, stv + 2]])
 
     make_verts()
 

@@ -30,7 +30,7 @@ class Font(Texture):
     self.font = font
     pixels = self.im.load()
 
-    self.glyph_table = []
+    self.glyph_table = {}
     # Extract font information from top scanline of font image;  create width,
     # height, tex_coord and vertices for each character.
     for v in range(95):
@@ -41,12 +41,12 @@ class Font(Texture):
       width_scale = width / self.ix
       height_scale = height / self.iy
 
-      self.glyph_table.append((width, height,
+      self.glyph_table[v] = [width, height,
         [(x + width_scale, y - height_scale),
          (x, y - height_scale),
          (x, y),
          (x + width_scale, y)],
-        [(width, 0, 0), (0, 0, 0), (0, -height, 0), (width, -height, 0)]))
+        [(width, 0, 0), (0, 0, 0), (0, -height, 0), (width, -height, 0)]]
 
     alph = self.im.split()[-1]  #keep alpha
     draw = ImageDraw.Draw(self.im)

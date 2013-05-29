@@ -1,4 +1,6 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 """ Depth of field blurring also demos MergeShape radial copying
@@ -37,6 +39,30 @@ from pi3d.shape.MergeShape import MergeShape
 from pi3d.shape.Sphere import Sphere
 from pi3d.shape.Sprite import Sprite
 
+USE_UNICODE = False
+
+if USE_UNICODE:
+  MESSAGE = """\
+blurring
+with
+distance!
+---------
+justified
+multiline
+unicode æ ö ¼
+Strings"""
+
+else:
+  MESSAGE = """\
+blurring
+with
+distance!
+---------
+justified
+multiline
+unicode
+Strings"""
+
 # Setup display and initialise pi3d
 DISPLAY = Display.create(x=10, y=10, w=900, h=600, frames_per_second=25)
 DISPLAY.set_background(0.4, 0.6, 0.8, 1.0)      # r,g,b,alpha
@@ -72,8 +98,7 @@ next_time = time.time()+2.0
 
 #load ttf font and set the font colour to 'raspberry'
 arialFont = Ttffont("fonts/FreeMonoBoldOblique.ttf", "#dd00aa")
-mystring = String(font=arialFont, string="blurring\nwith\ndistance!\n"
-                  "---------\njustified\nmultiline\ntext\nStrings",
+mystring = String(font=arialFont, string=MESSAGE,
                   camera=ortho_cam, z=1.0, is_3d=False, justify="r") # orthographic view
 mystring.set_shader(flatsh)
 
@@ -107,7 +132,7 @@ while DISPLAY.loop_running():
   tick+=1
 
   k = mykeys.read()
-  if k==112: 
+  if k==112:
     screenshot("blur1.jpg")
   elif k==27:
     mykeys.close()

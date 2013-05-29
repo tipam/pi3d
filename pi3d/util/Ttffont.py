@@ -1,3 +1,4 @@
+import itertools
 import ctypes
 import Image
 
@@ -20,8 +21,8 @@ class Ttffont(Texture):
 
 """
 
-  def __init__(self, font, color="#ffffff", font_size=48, image_size=512,
-               italic_adjustment=1.1):
+  def __init__(self, font, color="#ffffff", codepoints=None,
+               font_size=48, image_size=512, italic_adjustment=1.1):
     """
     Arguments:
       *font*
@@ -51,7 +52,9 @@ class Ttffont(Texture):
     self.alpha = True
     self.ix, self.iy = image_size, image_size
 
-    self.glyph_table = []
+    codepoints = codepoints or xrange(256)
+
+    self.glyph_table = {}
 
     draw = ImageDraw.Draw(self.im)
 
@@ -59,13 +62,20 @@ class Ttffont(Texture):
     curY = 0.0
     characters = []
     maxRowHeight = 0.0
-    for i in range(32, 128):
-      ch = chr(i)
+    for i in itertools.chain([0], codepoints):
+      try:
+        ch = unichr(i)
+      except TypeError:
+        ch = i
+      # TODO: figure out how to skip missing characters entirely.
+      # if imgfont.font.getabc(ch)[0] <= 0 and ch != zero:
+      #   print 'skipping', ch
+      #   continue
       chwidth, chheight = imgfont.getsize(ch)
 
       if curX + chwidth * italic_adjustment >= image_size:
         curX = 0.0
-        curY = curY + maxRowHeight
+        curY +=  maxRowHeight
         maxRowHeight = 0.0
 
       if chheight > maxRowHeight:
@@ -86,10 +96,10 @@ class Ttffont(Texture):
         [[chwidth, 0, 0], [0, 0, 0], [0, -chheight, 0], [chwidth, -chheight, 0]]
         ]
 
-      self.glyph_table.append(table_entry)
+      self.glyph_table[ch] = table_entry
 
       # Correct the character width for italics.
-      curX = curX + chwidth * italic_adjustment
+      curX += chwidth * italic_adjustment
 
     RGBs = 'RGBA' if self.alpha else 'RGB'
     self.image = self.im.convert(RGBs).tostring('raw', RGBs)
