@@ -22,9 +22,10 @@ class Ttffont(Texture):
 """
 
   def __init__(self, font, color="#ffffff", codepoints=None,
+               add_codepoints=None
                font_size=48, image_size=750, italic_adjustment=1.1):
     """
-    Arguments:
+ Arguments:
       *font*
         File path/name to a TrueType font file.
 
@@ -34,17 +35,29 @@ class Ttffont(Texture):
 
       *font_size*
         Point size for drawing the letters on the internal Texture
-        
+
       *codepoints*
-        Iterable list of characters. All these work::
-        
+        Iterable list of characters. All these formats will work:
+
           'ABCDEabcde '
-          [65,66,67,68,69,97,98,99,100,101,145,148,172, 32]
+          [65, 66, 67, 68, 69, 97, 98, 99, 100, 101, 145, 148, 172, 32]
           [c for c in range(65, 173)]
-          
+
+        Note that Ttffont will ONLY use the codepoints in this list - if you
+        forget to list a codepoint or character here, it won't be displayed.
+        If you just want to add a few missing codepoints, you're probably better
+        off using the *add_codepoints* parameter.
+
         If the string version is used then the program file might need to
         have the coding defined at the top:  # -*- coding: utf-8 -*-
 
+        The default is *codepoints*=range(256).
+
+      *add_codepoints*
+        If you are only wanting to add a few codepoints that are missing, you
+        should use the *add_codepoints* parameter, which just adds codepoints or
+        characters to the default list of codepoints. All the other comments for
+        the *codepoints* parameter still apply.
 
       *image_size*
         Width and height of the Texture that backs the image.
@@ -63,7 +76,9 @@ class Ttffont(Texture):
     self.alpha = True
     self.ix, self.iy = image_size, image_size
 
-    codepoints = codepoints or xrange(256)
+    codepoints = (codepoints and list(codepoints)) or range(256)
+    if add_codepoints:
+      codepoints += list(add_codepoints)
 
     self.glyph_table = {}
 
