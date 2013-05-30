@@ -22,8 +22,8 @@ class Ttffont(Texture):
 """
 
   def __init__(self, font, color="#ffffff", codepoints=None,
-               add_codepoints=None
-               font_size=48, image_size=750, italic_adjustment=1.1):
+               add_codepoints=None, font_size=48, image_size=750,
+               italic_adjustment=1.1):
     """
  Arguments:
       *font*
