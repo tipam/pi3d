@@ -24,6 +24,8 @@ from pi3d.Light import Light
 from pi3d.shape.EnvironmentCube import EnvironmentCube, loadECfiles
 from pi3d.shape.Sprite import Sprite, ImageSprite
 
+from pi3d.event.Event import InputEvents
+
 from pi3d.shape.Building import Building
 from pi3d.shape.Canvas import Canvas
 from pi3d.shape.Cone import Cone
@@ -53,4 +55,5 @@ from pi3d.util.String import String
 from pi3d.util.Defocus import Defocus
 from pi3d.util.Font import Font
 from pi3d.util.Screenshot import screenshot
+from pi3d.util.ShadowCaster import ShadowCaster
 from pi3d.util.Ttffont import Ttffont
