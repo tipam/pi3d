@@ -48,7 +48,7 @@ distance!
 justified
 multiline
 unicode æ ö ¼
-Strings """ + unichr(255) + ' ' + unichr(256)
+Strings """ + unichr(255) + ' ' + unichr(256) + ' ' + unichr(257)
 
 # character 255 should appear, character 256 should not.
 
@@ -86,7 +86,8 @@ tick=0
 next_time = time.time()+2.0
 
 #load ttf font and set the font colour to 'raspberry'
-arialFont = Ttffont("fonts/FreeMonoBoldOblique.ttf", "#dd00aa")
+arialFont = Ttffont("fonts/FreeMonoBoldOblique.ttf", "#dd00aa",
+                    add_codepoints=[256])
 mystring = String(font=arialFont, string=MESSAGE,
                   camera=ortho_cam, z=1.0, is_3d=False, justify="r") # orthographic view
 mystring.set_shader(flatsh)
