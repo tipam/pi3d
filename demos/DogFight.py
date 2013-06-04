@@ -6,7 +6,7 @@ import time, math, glob
 import demo
 import pi3d
 #display, camera, shader
-DISPLAY = pi3d.Display.create(x=50, y=50, frames_per_second=24)
+DISPLAY = pi3d.Display.create(x=50, y=50, frames_per_second=20)
 #a default camera is created automatically but we might need a 2nd 2D camera
 #for displaying the instruments etc. Also, because the landscape is large
 #we need to set the far plane to 10,000
@@ -23,25 +23,27 @@ print("""===================================
 
 SHADER = pi3d.Shader("shaders/uv_reflect") #for objects to look 3D
 FLATSH = pi3d.Shader("shaders/uv_flat") #for 'unlit' objects like the background
+#STAR = pi3d.Shader("shaders/star") #for fun
 
 GRAVITY = 9.8 #m/s**2
 LD = 10 #lift/drag ratio
 DAMPING = 0.95 #reduce roll and pitch rate each update_variables
-BOOSTER = 1.5 #extra manoevreability boost to defy 1st L.O.T.
+BOOSTER = 1.5 #extra manoevreability boost to defy 1st Low of Thermodynamics.
 #load bullet images
 BULLET_TEX = [] #list to hold Texture refs
 iFiles = glob.glob("textures/biplane/bullet??.png") 
 iFiles.sort() # order is vital to animation!
 for f in iFiles:
-  BULLET_TEX.append(pi3d.Texture(f, flip=True))
-HIT_DISTANCE = 10 #determine sucess of shoot()
+  BULLET_TEX.append(pi3d.Texture(f))
+HIT_DISTANCE = 20 #determine sucess of shoot()
 
 #define Aeroplane class
 class Aeroplane(object):
   def __init__(self, model, recalc_time):
     self.recalc_time = recalc_time #in theory use different values for enemy
     self.x, self.y, self. z = 0.0, 0.0, 0.0
-    self.v_speed, self.h_speed, self.rollrate, self.pitchrate, self.yaw = 0.0, 0.0, 0.0, 0.0, 0.0
+    self.v_speed, self.h_speed = 0.0, 0.0
+    self.rollrate, self.pitchrate, self.yaw = 0.0, 0.0, 0.0
     self.direction, self.roll, self.pitch = 0.0, 0.0, 0.0
     self.max_roll, self.max_pitch = 65, 30 #limit rotations
     self.ailerons, self.elevator = 0.0, 0.0
@@ -62,10 +64,13 @@ class Aeroplane(object):
     #create the bullets
     plane = pi3d.Plane(h=25, w=1)
     self.bullets = pi3d.MergeShape()
-    self.bullets.merge([[plane, -2.0, 0.5, 8.0, -90,0,0, 1,1,1],
-                        [plane, -2.0, 0.5, 8.0, 0,-90,90, 1,1,1],
-                        [plane, 2.0, 0.5, 8.0, -90,0,0, 1,1,1],
-                        [plane, 2.0, 0.5, 8.0, 0,-90,90, 1,1,1]])
+    #the merge method does rotations 1st Z, 2nd X, 3rd Y for some reason
+    #for multi axis rotations you need to figure it out by rotating a
+    #sheet of paper in the air in front of you (angles counter clockwise)!
+    self.bullets.merge([[plane, -2.0, 0.5, 8.0, 90,0,0, 1,1,1],
+                        [plane, -2.0, 0.5, 8.0, 0,90,90, 1,1,1],
+                        [plane, 2.0, 0.5, 8.0, 90,0,0, 1,1,1],
+                        [plane, 2.0, 0.5, 8.0, 0,90,90, 1,1,1]])
     self.num_b = len(BULLET_TEX)
     self.seq_b = self.num_b
     self.bullets.set_draw_details(FLATSH, [BULLET_TEX[0]])
@@ -93,25 +98,21 @@ class Aeroplane(object):
     #check for hit
     #components of direction vector
     diag_xz = math.cos(math.radians(self.pitch))
-    dir_x = diag_xz * math.sin(math.radians(self.direction))
-    dir_y = math.sin(math.radians(self.pitch))
-    dir_z = diag_xz * math.cos(math.radians(self.direction))
-    #convert to unit vector
-    factor = math.sqrt(dir_x**2 + dir_y**2 + dir_z**2)
-    dir_x /= factor
-    dir_y /= factor
-    dir_z /= factor
+    drn_x = diag_xz * math.sin(math.radians(self.direction))
+    drn_y = math.sin(math.radians(self.pitch))
+    drn_z = diag_xz * math.cos(math.radians(self.direction))
+    #this will already be a unit vector
     #vector from target to aeroplane
     a_x = target[0] - self.x
     a_y = target[1] - self.y
     a_z = target[2] - self.z
     #dot product
-    dot_p = dir_x * a_x + dir_y * a_y + dir_z * a_z
-    dx = a_x - dot_p * dir_x
-    dy = a_y - dot_p * dir_y
-    dz = a_z - dot_p * dir_z
-    distance = math.sqrt(a_x**2 + a_y**2 + a_z**2)
-              
+    dot_p = drn_x * a_x + drn_y * a_y + drn_z * a_z
+    dx = a_x - dot_p * drn_x
+    dy = a_y - dot_p * drn_y
+    dz = a_z - dot_p * drn_z
+    distance = math.sqrt(dx**2 + dy**2 + dz**2)
+    print("distance={0:.2f}".format(distance))
     if distance < HIT_DISTANCE:
        return True
     return False
@@ -123,7 +124,8 @@ class Aeroplane(object):
     #roll so bank is half direction, 
     self.roll = -((dir_t - self.direction + 180) % 360 - 180) / 2
     #find angle between self and target
-    pch_t = math.degrees(math.atan2((target[1] - self.y), math.sqrt((target[2] - self.z)**2 + (target[0] - self.x)**2)))
+    pch_t = math.degrees(math.atan2((target[1] - self.y),
+            math.sqrt((target[2] - self.z)**2 + (target[0] - self.x)**2)))
     self.pitch = pch_t
     return True
     
@@ -199,9 +201,12 @@ class Aeroplane(object):
     
     self.direction += math.degrees(self.yaw) * dt
     #set values of model
-    sin_d, cos_d = math.sin(math.radians(self.direction)), math.cos(math.radians(self.direction))
-    sin_r, cos_r = math.sin(math.radians(self.roll)), math.cos(math.radians(self.roll))
-    sin_p, cos_p = math.sin(math.radians(self.pitch)), math.cos(math.radians(self.pitch))
+    sin_d = math.sin(math.radians(self.direction))
+    cos_d = math.cos(math.radians(self.direction))
+    sin_r = math.sin(math.radians(self.roll))
+    cos_r = math.cos(math.radians(self.roll))
+    sin_p = math.sin(math.radians(self.pitch))
+    cos_p = math.cos(math.radians(self.pitch))
     absroll = math.degrees(math.asin(sin_r * cos_d + cos_r * sin_p * sin_d))
     abspitch = math.degrees(math.asin(sin_r * sin_d - cos_r * sin_p * cos_d))
     self.model.position(self.x, self.y, self.z)
@@ -256,8 +261,15 @@ inputs.get_mouse_movement()
 CAMERA.position((0.0, 0.0, -10.0))
 cam_rot, cam_pitch = 0, 0
 cam_toggle = True #control mode
-
+#mymap.set_shader(STAR)
+#tm = 0.0
+#dt = 0.01
+#sc = 0.0
+#ds = 0.001
 while DISPLAY.loop_running() and not inputs.key_state("KEY_ESC"):
+  #mymap.set_custom_data(48, [tm, sc, -0.5 * sc])
+  #tm += dt
+  #sc = (sc + ds) % 10.0
   inputs.do_input_events()
   mx, my, mv, mh, md = inputs.get_mouse_movement()
   if cam_toggle:
@@ -282,7 +294,7 @@ while DISPLAY.loop_running() and not inputs.key_state("KEY_ESC"):
     cam_toggle = True
     cam_rot, cam_pitch = 0, 0
   if inputs.key_state("BTN_LEFT"): #shoot
-    a.shoot([0,0,0])
+    a.shoot([b.x, b.y, b.z])
 
   a.update_variables()
   loc = a.update_position(mymap.calcHeight(a.x, a.z))
@@ -299,9 +311,9 @@ while DISPLAY.loop_running() and not inputs.key_state("KEY_ESC"):
   mymap.draw()
   myecube.position(loc[0], loc[1], loc[2])
   myecube.draw()
-  #cheap and cheerful instruments, make sure you can see terminal!
-  #print("speed={0:.2f}, rate of climb={1:.2f}, power={2:.2f}, altitude={3:.2f}".format(
-  #    a.h_speed, a.v_speed, a.power_setting, a.y))
+  #uncomment for cheap and cheerful instruments, make sure you can see terminal!
+  #print("speed={0:.2f}, rate of climb={1:.2f}, power={2:.2f},
+  #     altitude={3:.2f}".format(a.h_speed, a.v_speed, a.power_setting, a.y))
 
 
 inputs.release()
