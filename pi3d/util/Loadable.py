@@ -16,10 +16,12 @@ def is_display_thread():
 
 class Loadable(object):
   def __init__(self):
+    LOGGER.debug('__init__: %s', self)
     self.disk_loaded = False
     self.opengl_loaded = False
 
   def __del__(self):
+    LOGGER.debug('__del__: %s', self)
     try:
       if not self.unload_opengl(False):  # Why does this sometimes fail?
         Display.display.unload_opengl(self)
@@ -45,17 +47,16 @@ class Loadable(object):
     if not self.opengl_loaded:
       return True
 
-    else:
-      try:
-        if is_display_thread():
-          self._unload_opengl()
-          self.opengl_loaded = False
-          return True
-        elif report_error:
-          LOGGER.error('unload_opengl must be called on main thread for %s', self)
-          return False
-      except:
-        pass  # Throws exception if called during shutdown.
+    try:
+      if is_display_thread():
+        self._unload_opengl()
+        self.opengl_loaded = False
+        return True
+      elif report_error:
+        LOGGER.error('unload_opengl must be called on main thread for %s', self)
+        return False
+    except:
+      pass  # Throws exception if called during shutdown.
 
   def _load_disk(self):
     """Override this to load assets from disk."""

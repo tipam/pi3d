@@ -47,7 +47,7 @@ class ImageSprite(Sprite):
   """A 2D sprite containing a texture and shader. The constructor also
   calls set_2d_size so that ImageSprite objects can be used directly to draw
   on a Canvas shape (if shader=2d_flat). Additional arguments:
-  
+
     *texture*
       either a Texture object or, if not a Texture, will attempt to load
       a file using texture as a path and name to an image.
@@ -64,3 +64,6 @@ class ImageSprite(Sprite):
 
   def _load_opengl(self):
     self.buf[0].textures[0].load_opengl()
+
+  def _unload_opengl(self):
+    self.buf[0].textures[0].unload_opengl()

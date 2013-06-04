@@ -58,7 +58,7 @@ class Texture(Loadable):
       self.load_disk()
     else:
       self.load_opengl()
-  
+
   def __del__(self):
     super(Texture, self).__del__()
     if not self.opengl_loaded:
@@ -67,15 +67,11 @@ class Texture(Loadable):
     if Display.INSTANCE:
       Display.INSTANCE.textures_to_delete.append(self._tex)
       Display.INSTANCE.tidy_needed = True
-    
+
   def tex(self):
     """do the deferred opengl work and return texture"""
     self.load_opengl()
     return self._tex
-
-  def _unload_opengl(self):
-    """clear it out"""
-    opengles.glDeleteTextures(1, ctypes.byref(self._tex))
 
   def _load_disk(self):
     """overrides method of Loadable
@@ -88,7 +84,7 @@ class Texture(Loadable):
     self.ix, self.iy = im.size
     s += '(%s)' % im.mode
     self.alpha = (im.mode == 'RGBA' or im.mode == 'LA')
-    
+
     if self.mipmap:
       resize_type = Image.BICUBIC
     else:
@@ -141,6 +137,10 @@ class Texture(Loadable):
 
     opengles.glGenerateMipmap(GL_TEXTURE_2D)
     opengles.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+
+  def _unload_opengl(self):
+    """clear it out"""
+    opengles.glDeleteTextures(1, ctypes.byref(self._tex))
 
 
 class TextureCache(object):
