@@ -74,24 +74,24 @@ class Aeroplane(object):
     self.num_b = len(BULLET_TEX)
     self.seq_b = self.num_b
     self.bullets.set_draw_details(FLATSH, [BULLET_TEX[0]])
-    
+
   def set_ailerons(self, dx):
     self.ailerons = dx
     if abs(self.ailerons) > self.max_ailerons:
       self.ailerons = math.copysign(self.max_ailerons, self.ailerons)
-    
+
   def set_elevator(self, dy):
     self.elevator = dy
     if abs(self.elevator) > self.max_elevator:
       self.elevator = math.copysign(self.max_elevator, self.elevator)
-    
+
   def set_power(self, incr):
     self.power_setting += incr * self.throttle_step
     if self.power_setting < 0:
       self.power_setting = 0
     elif self.power_setting > self.max_power:
       self.power_setting = self.max_power
-      
+
   def shoot(self, target):
     #animate bullets
     self.seq_b = 0
@@ -116,7 +116,7 @@ class Aeroplane(object):
     if distance < HIT_DISTANCE:
        return True
     return False
-    
+
   def home(self, target):
     #turn towards target location, mainly for control of enemy aircraft
     dir_t = math.degrees(math.atan2((target[0] - self.x), (target[2] - self.z)))
@@ -128,7 +128,7 @@ class Aeroplane(object):
             math.sqrt((target[2] - self.z)**2 + (target[0] - self.x)**2)))
     self.pitch = pch_t
     return True
-    
+
   def update_variables(self):
     #time
     tm = time.time()
@@ -163,7 +163,7 @@ class Aeroplane(object):
     if spsq < 100: #stall!
       lift *= 0.9
       drag *= 1.3
-    
+
     cos_pitch = math.cos(math.radians(self.pitch))
     sin_pitch = math.sin(math.radians(self.pitch))
     cos_roll = math.cos(math.radians(self.roll))
@@ -183,7 +183,7 @@ class Aeroplane(object):
     turn_force = -lift * sin_roll * 1.5
     radius = self.mass * spsq / turn_force if turn_force != 0.0 else 0.0
     self.yaw = math.sqrt(spsq) / radius if radius != 0.0 else 0.0
-    
+
   def update_position(self, height):
     #time
     tm = time.time()
@@ -198,7 +198,7 @@ class Aeroplane(object):
       self.pitch = 2.5
       #self.roll = 0
     self.z += self.h_speed * math.cos(math.radians(self.direction)) * dt
-    
+
     self.direction += math.degrees(self.yaw) * dt
     #set values of model
     sin_d = math.sin(math.radians(self.direction))
@@ -221,7 +221,7 @@ class Aeroplane(object):
       self.bullets.rotateToZ(absroll)
     #set values for camera
     return (self.x - 10.0 * sin_d, self.y + 4, self.z - 10.0 * cos_d, self.direction)
-        
+
   def draw(self):
     self.model.draw()
     #draw the bullet sequence if not finished
@@ -229,7 +229,7 @@ class Aeroplane(object):
       self.bullets.buf[0].textures[0] = BULLET_TEX[self.seq_b]
       self.bullets.draw()
       self.seq_b += 1
-    
+
 #create the instances of Aeroplane
 a = Aeroplane("models/biplane.obj", 0.1)
 a.z, a.direction = 900, 180
@@ -302,12 +302,12 @@ while DISPLAY.loop_running() and not inputs.key_state("KEY_ESC"):
   CAMERA.rotate(-20 + cam_pitch, -loc[3] + cam_rot, 0)
   CAMERA.position((loc[0], loc[1], loc[2]))
   a.draw()
-  
+
   b.update_variables()
   b.home((a.x, a.y, a.z))
   b.update_position(mymap.calcHeight(b.x, b.z))
   b.draw()
-  
+
   mymap.draw()
   myecube.position(loc[0], loc[1], loc[2])
   myecube.draw()
