@@ -16,8 +16,8 @@ class Canvas(Shape):
         2d shaders there is no way to change its location as no matrix
         multiplication will happen in the vertex shader.
     """
-    super(Canvas, self).__init__(camera, light, name, x=0.0, y=0.0, z=0.0, 
-                                rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0, 
+    super(Canvas, self).__init__(camera, light, name, x=0.0, y=0.0, z=0.0,
+                                rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0,
                                 cx=0.0, cy=0.0, cz=0.0)
     self.ttype = GL_TRIANGLES
     self.verts = []
@@ -40,9 +40,12 @@ class Canvas(Shape):
 
   def set_texture(self, tex):
     self.buf[0].textures = [tex]
-  
+
   def repaint(self, t):
     self.draw()
 
   def _load_opengl(self):
     self.buf[0].textures[0].load_opengl()
+
+  def _unload_opengl(self):
+    self.buf[0].textures[0].unload_opengl()
