@@ -114,7 +114,6 @@ class DisplayOpenGL(object):
     if self.active:
       ###### brute force tidying experiment TODO find nicer way ########
       if display:
-        print("here")
         func_list = [[opengles.glIsBuffer, opengles.glDeleteBuffers,
             dict(display.vbufs_dict.items() + display.ebufs_dict.items())],
             [opengles.glIsTexture, opengles.glDeleteTextures,
