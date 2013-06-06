@@ -112,6 +112,28 @@ class DisplayOpenGL(object):
 
   def destroy(self):
     if self.active:
+      ###### brute force tidying experiment TODO find nicer way ########
+      func_list = [[opengles.glIsBuffer, opengles.glDeleteBuffers, 1],
+                  [opengles.glIsTexture, opengles.glDeleteTextures, 1],
+                  [opengles.glIsProgram, opengles.glDeleteProgram, 0],
+                  [opengles.glIsShader, opengles.glDeleteShader, 0]]
+      i_ct = (ctypes.c_int * 1)(0) #convoluted 0
+      for func in func_list:
+        max_streak = 100
+        streak_start = 0
+        print(func[0].__name__)
+        for i in xrange(10000):
+          if func[0](i) == 1: #check if i exists as a name
+            print(i)
+            i_ct[0] = i #convoluted 1
+            if func[2] > 0:
+              func[1](func[2], ctypes.byref(i_ct))
+            else:
+              func[1](ctypes.byref(i_ct))
+            streak_start = i
+          elif i > (streak_start + 100):
+            break
+      ##################################################################
       openegl.eglSwapBuffers(self.display, self.surface)
       openegl.eglMakeCurrent(self.display, EGL_NO_SURFACE, EGL_NO_SURFACE,
                              EGL_NO_CONTEXT)

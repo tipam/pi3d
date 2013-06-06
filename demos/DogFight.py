@@ -59,11 +59,11 @@ class Aeroplane(object):
     self.last_time = time.time()
     self.last_pos_time = self.last_time
     #create the actual model
-    self.model = pi3d.Model(file_string=model)
+    self.model = pi3d.Model(file_string=model, camera=CAMERA)
     self.model.set_shader(SHADER)
     #create the bullets
     plane = pi3d.Plane(h=25, w=1)
-    self.bullets = pi3d.MergeShape()
+    self.bullets = pi3d.MergeShape(camera=CAMERA)
     #the merge method does rotations 1st Z, 2nd X, 3rd Y for some reason
     #for multi axis rotations you need to figure it out by rotating a
     #sheet of paper in the air in front of you (angles counter clockwise)!
@@ -231,7 +231,7 @@ class Aeroplane(object):
       self.seq_b += 1
 
 #create the instances of Aeroplane
-a = Aeroplane("models/biplane.obj", 0.1)
+a = Aeroplane("models/biplane.obj", 0.02)
 a.z, a.direction = 900, 180
 b = Aeroplane("models/biplane.obj", 0.1)
 #b is the enemy so give it a flying start (!)
@@ -251,7 +251,7 @@ bumpimg = pi3d.Texture("textures/grasstile_n.jpg")
 reflimg = pi3d.Texture("textures/stars.jpg")
 mymap = pi3d.ElevationMap("textures/mountainsHgt.jpg", name="map",
                      width=mapwidth, depth=mapdepth, height=mapheight,
-                     divx=32, divy=32)
+                     divx=32, divy=32, camera=CAMERA)
 mymap.set_draw_details(SHADER, [mountimg1, bumpimg, reflimg], 1024.0, 0.0)
 mymap.set_fog((0.5,0.5,0.5,0.8), 4000)
 
@@ -261,15 +261,19 @@ inputs.get_mouse_movement()
 CAMERA.position((0.0, 0.0, -10.0))
 cam_rot, cam_pitch = 0, 0
 cam_toggle = True #control mode
-#mymap.set_shader(STAR)
-#tm = 0.0
-#dt = 0.01
-#sc = 0.0
-#ds = 0.001
+"""
+mymap.set_shader(STAR)
+tm = 0.0
+dt = 0.01
+sc = 0.0
+ds = 0.001
+"""
 while DISPLAY.loop_running() and not inputs.key_state("KEY_ESC"):
-  #mymap.set_custom_data(48, [tm, sc, -0.5 * sc])
-  #tm += dt
-  #sc = (sc + ds) % 10.0
+  """
+  mymap.set_custom_data(48, [tm, sc, -0.5 * sc])
+  tm += dt
+  sc = (sc + ds) % 10.0
+  """
   inputs.do_input_events()
   mx, my, mv, mh, md = inputs.get_mouse_movement()
   if cam_toggle:
@@ -299,7 +303,8 @@ while DISPLAY.loop_running() and not inputs.key_state("KEY_ESC"):
   a.update_variables()
   loc = a.update_position(mymap.calcHeight(a.x, a.z))
   CAMERA.reset()
-  CAMERA.rotate(-20 + cam_pitch, -loc[3] + cam_rot, 0)
+  #CAMERA.rotate(-20 + cam_pitch, -loc[3] + cam_rot, 0)
+  CAMERA.rotate(-20 + cam_pitch, -loc[3] + cam_rot, -a.roll)
   CAMERA.position((loc[0], loc[1], loc[2]))
   a.draw()
 

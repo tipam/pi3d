@@ -230,4 +230,5 @@ while DISPLAY.loop_running():
     else:
       crsl.next()
 
+DISPLAY.destroy()
 
