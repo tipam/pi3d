@@ -65,7 +65,7 @@ class Texture(Loadable):
       return True
     from pi3d.Display import Display
     if Display.INSTANCE:
-      Display.INSTANCE.textures_to_delete.append(self._tex)
+      Display.INSTANCE.textures_dict[str(self._tex)][1] = 1
       Display.INSTANCE.tidy_needed = True
 
   def tex(self):
@@ -119,6 +119,9 @@ class Texture(Loadable):
   def _load_opengl(self):
     """overrides method of Loadable"""
     opengles.glGenTextures(1, ctypes.byref(self._tex), 0)
+    from pi3d.Display import Display
+    if Display.INSTANCE:
+      Display.INSTANCE.textures_dict[str(self._tex)] = [self._tex, 0]
     opengles.glBindTexture(GL_TEXTURE_2D, self._tex)
     RGBv = GL_RGBA if self.alpha else GL_RGB
     opengles.glTexImage2D(GL_TEXTURE_2D, 0, RGBv, self.ix, self.iy, 0, RGBv,

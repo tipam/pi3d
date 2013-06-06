@@ -108,8 +108,8 @@ class Buffer(Loadable):
       return True
     from pi3d.Display import Display
     if Display.INSTANCE:
-      Display.INSTANCE.vbufs_to_delete.append(self.vbuf)
-      Display.INSTANCE.ebufs_to_delete.append(self.ebuf)
+      Display.INSTANCE.vbufs_dict[str(self.vbuf)][1] = 1
+      Display.INSTANCE.ebufs_dict[str(self.ebuf)][1] = 1
       Display.INSTANCE.tidy_needed = True
 
   def re_init(self, shape, pts, texcoords, faces, normals=None, smooth=True):
@@ -139,6 +139,10 @@ class Buffer(Loadable):
     opengles.glGenBuffers(1, ctypes.byref(self.vbuf))
     self.ebuf = c_int()
     opengles.glGenBuffers(1, ctypes.byref(self.ebuf))
+    from pi3d.Display import Display
+    if Display.INSTANCE:
+      Display.INSTANCE.vbufs_dict[str(self.vbuf)] = [self.vbuf, 0]
+      Display.INSTANCE.ebufs_dict[str(self.ebuf)] = [self.ebuf, 0]
     self._select()
     opengles.glBufferData(GL_ARRAY_BUFFER,
                           ctypes.sizeof(self.array_buffer),

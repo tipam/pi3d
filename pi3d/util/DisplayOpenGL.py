@@ -110,29 +110,36 @@ class DisplayOpenGL(object):
     self.create_surface(x, y, w, h)
 
 
-  def destroy(self):
+  def destroy(self, display=None):
     if self.active:
       ###### brute force tidying experiment TODO find nicer way ########
-      func_list = [[opengles.glIsBuffer, opengles.glDeleteBuffers, 1],
-                  [opengles.glIsTexture, opengles.glDeleteTextures, 1],
-                  [opengles.glIsProgram, opengles.glDeleteProgram, 0],
-                  [opengles.glIsShader, opengles.glDeleteShader, 0]]
-      i_ct = (ctypes.c_int * 1)(0) #convoluted 0
-      for func in func_list:
-        max_streak = 100
-        streak_start = 0
-        print(func[0].__name__)
-        for i in xrange(10000):
-          if func[0](i) == 1: #check if i exists as a name
-            print(i)
-            i_ct[0] = i #convoluted 1
-            if func[2] > 0:
-              func[1](func[2], ctypes.byref(i_ct))
-            else:
-              func[1](ctypes.byref(i_ct))
-            streak_start = i
-          elif i > (streak_start + 100):
-            break
+      if display:
+        print("here")
+        func_list = [[opengles.glIsBuffer, opengles.glDeleteBuffers,
+            dict(display.vbufs_dict.items() + display.ebufs_dict.items())],
+            [opengles.glIsTexture, opengles.glDeleteTextures,
+            display.textures_dict],
+            [opengles.glIsProgram, opengles.glDeleteProgram, 0],
+            [opengles.glIsShader, opengles.glDeleteShader, 0]]
+        i_ct = (ctypes.c_int * 1)(0) #convoluted 0
+        for func in func_list:
+          max_streak = 100
+          streak_start = 0
+          print(func[0].__name__)
+          if func[2]: # list to work through
+            for i in func[2]:
+              if func[0](func[2][i][0]) == 1: #check if i exists as a name
+                print(func[2][i][0])
+                func[1](1, ctypes.byref(func[2][i][0]))
+          else: # just do sequential numbers
+            for i in xrange(10000):
+              if func[0](i) == 1: #check if i exists as a name
+                print(i)
+                i_ct[0] = i #convoluted 1
+                func[1](ctypes.byref(i_ct))
+                streak_start = i
+              elif i > (streak_start + 100):
+                break
       ##################################################################
       openegl.eglSwapBuffers(self.display, self.surface)
       openegl.eglMakeCurrent(self.display, EGL_NO_SURFACE, EGL_NO_SURFACE,

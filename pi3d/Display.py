@@ -51,9 +51,9 @@ class Display(object):
     self.sprites_to_unload = set()
     
     self.tidy_needed = False
-    self.textures_to_delete = []
-    self.vbufs_to_delete = []
-    self.ebufs_to_delete = []
+    self.textures_dict = {}
+    self.vbufs_dict = {}
+    self.ebufs_dict = {}
 
     self.opengl = DisplayOpenGL()
     self.max_width, self.max_height = self.opengl.width, self.opengl.height
@@ -156,7 +156,7 @@ class Display(object):
     self._tidy()
     self.stop()
     try:
-      self.opengl.destroy()
+      self.opengl.destroy(self)
     except:
       pass
     try:
@@ -220,15 +220,18 @@ class Display(object):
       self._tidy()
       
   def _tidy(self):
-    for tex in self.textures_to_delete:
-      opengles.glDeleteTextures(1, byref(tex))
-    self.textures_to_delete = []
-    for vbuf in self.vbufs_to_delete:
-      opengles.glDeleteBuffers(1, byref(vbuf))
-    self.vbufs_to_delete = []
-    for ebuf in self.ebufs_to_delete:
-      opengles.glDeleteBuffers(1, byref(ebuf))
-    self.ebufs_to_delete = []
+    for tex in self.textures_dict:
+      if self.textures_dict[tex][1] == 1:
+        opengles.glDeleteTextures(1, byref(self.textures_dict[tex][0]))
+        del self.textures_dict[tex]
+    for vbuf in self.vbufs_dict:
+      if self.vbufs_dict[vbuf] == 1:
+        opengles.glDeleteBuffers(1, byref(self.vbufs_dict[vbuf][0]))
+        del self.vbufs_dict[vbuf]
+    for ebuf in self.ebufs_dict:
+      if self.ebufs_dict[ebuf] == 1:
+        opengles.glDeleteBuffers(1, byref(self.ebufs_dict[ebuf][0]))
+        del self.ebufs_dict[ebuf]
     self.tidy_needed = False
 
   def _loop_end(self):
