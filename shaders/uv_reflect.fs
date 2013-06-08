@@ -29,7 +29,8 @@ void main(void) {
   vec3 bump = normalize(texture2D(tex1, bumpcoordout).rgb * 2.0 - 1.0);
   bump.y *= -1.0;
 
-  float bfact = 1.0 - smoothstep(30.0, 100.0, dist); // ------ attenuate smoothly between 30 and 100 units
+  float bfact = 1.0 - smoothstep(100.0, 300.0, dist); // ------ for flying
+  //float bfact = 1.0 - smoothstep(30.0, 100.0, dist); // ------ attenuate smoothly between 30 and 100 units
 
   float ffact = smoothstep(unif[5][0]/3.0, unif[5][0], dist); // ------ smoothly increase fog between 1/3 and full fogdist
 

@@ -49,4 +49,5 @@ void main(void) {
   shinecoordout = vec2(clamp(0.5 - atan(hval, zval)/6.283185307, 0.0, 1.0), clamp(0.5 - atan(vval, zval)/6.283185307, 0.0, 1.0));
 
   gl_Position = modelviewmatrix[1] * vec4(vertex,1.0);
+  gl_PointSize = unib[2][2] / dist;
 }

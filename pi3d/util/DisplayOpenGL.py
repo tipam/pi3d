@@ -124,16 +124,13 @@ class DisplayOpenGL(object):
         for func in func_list:
           max_streak = 100
           streak_start = 0
-          print(func[0].__name__)
           if func[2]: # list to work through
             for i in func[2]:
               if func[0](func[2][i][0]) == 1: #check if i exists as a name
-                print(func[2][i][0])
                 func[1](1, ctypes.byref(func[2][i][0]))
           else: # just do sequential numbers
             for i in xrange(10000):
               if func[0](i) == 1: #check if i exists as a name
-                print(i)
                 i_ct[0] = i #convoluted 1
                 func[1](ctypes.byref(i_ct))
                 streak_start = i

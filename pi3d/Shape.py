@@ -356,6 +356,10 @@ class Shape(Loadable):
     """
     self.unif[index_from:(index_from + len(data))] = data
 
+  def set_point_size(self, point_size=0.0):
+    for b in self.buf:
+      b.unib[8] = point_size
+
   def x(self):
     """get value of x"""
     return self.unif[0]

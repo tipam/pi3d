@@ -2,7 +2,7 @@ precision mediump float;
 
 varying float dist;
 
-uniform vec3 unib[2];
+uniform vec3 unib[4];
 //uniform vec4 material ==> unib[1]
 uniform vec3 unif[16];
 //uniform vec3 fogshade ==> unif[4]

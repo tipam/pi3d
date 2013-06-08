@@ -1,12 +1,12 @@
 #!/usr/bin/python
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-import time, math, glob
+import time, math, glob, random
 
 import demo
 import pi3d
 #display, camera, shader
-DISPLAY = pi3d.Display.create(x=50, y=50, frames_per_second=20)
+DISPLAY = pi3d.Display.create(x=50, y=50, w=400, h=400, frames_per_second=20)
 #a default camera is created automatically but we might need a 2nd 2D camera
 #for displaying the instruments etc. Also, because the landscape is large
 #we need to set the far plane to 10,000
@@ -39,7 +39,8 @@ HIT_DISTANCE = 20 #determine sucess of shoot()
 
 #define Aeroplane class
 class Aeroplane(object):
-  def __init__(self, model, recalc_time):
+  def __init__(self, model, recalc_time, myid):
+    self.myid = myid
     self.recalc_time = recalc_time #in theory use different values for enemy
     self.x, self.y, self. z = 0.0, 0.0, 0.0
     self.v_speed, self.h_speed = 0.0, 0.0
@@ -230,10 +231,15 @@ class Aeroplane(object):
       self.bullets.draw()
       self.seq_b += 1
 
+def json_load():
+  #httprequest other player
+  return True
+
+myid = random.randint(1000000000, 9999999999)
 #create the instances of Aeroplane
-a = Aeroplane("models/biplane.obj", 0.02)
+a = Aeroplane("models/biplane.obj", 0.02, myid)
 a.z, a.direction = 900, 180
-b = Aeroplane("models/biplane.obj", 0.1)
+b = Aeroplane("models/biplane.obj", 0.1, myid)
 #b is the enemy so give it a flying start (!)
 b.set_power(60)
 b.x, b.y, b.z, b.h_speed = 4, 1000, -1000, 60
@@ -251,7 +257,7 @@ bumpimg = pi3d.Texture("textures/grasstile_n.jpg")
 reflimg = pi3d.Texture("textures/stars.jpg")
 mymap = pi3d.ElevationMap("textures/mountainsHgt.jpg", name="map",
                      width=mapwidth, depth=mapdepth, height=mapheight,
-                     divx=32, divy=32, camera=CAMERA)
+                     divx=64, divy=64, camera=CAMERA)
 mymap.set_draw_details(SHADER, [mountimg1, bumpimg, reflimg], 1024.0, 0.0)
 mymap.set_fog((0.5,0.5,0.5,0.8), 4000)
 
@@ -275,6 +281,7 @@ while DISPLAY.loop_running() and not inputs.key_state("KEY_ESC"):
   sc = (sc + ds) % 10.0
   """
   inputs.do_input_events()
+  #""" mouse input
   mx, my, mv, mh, md = inputs.get_mouse_movement()
   if cam_toggle:
     a.set_ailerons(-mx * 0.001)
@@ -282,22 +289,33 @@ while DISPLAY.loop_running() and not inputs.key_state("KEY_ESC"):
   else:
     cam_rot -= mx * 0.1
     cam_pitch -= my * 0.1
-  if inputs.key_state("KEY_W"): #increase throttle
+  #"""
+  """ joystick input
+  mx, my = inputs.get_joystickR()
+  if cam_toggle:
+    a.set_ailerons(-mx * 0.06)
+    a.set_elevator(my * 0.02)
+  else:
+    cam_rot -= mx * 2.0
+    cam_pitch -= my * 2.0
+  """
+  if inputs.key_state("KEY_W") or inputs.get_hat()[1] == -1: #increase throttle
     a.set_power(1)
-  if inputs.key_state("KEY_S"): #throttle back
+  if inputs.key_state("KEY_S") or inputs.get_hat()[1] == 1: #throttle back
     a.set_power(-1)
   if inputs.key_state("KEY_X"): #jump to enemy!
     a.x, a.y, a.z = b.x, b.y + 5, b.z
-  if inputs.key_state("KEY_B"): #brakes
+  
+  if inputs.key_state("KEY_B") or inputs.key_state("BTN_BASE2"): #brakes
     a.h_speed *= 0.99
-  if inputs.key_state("KEY_V"): #view mode
+  if inputs.key_state("KEY_V") or inputs.key_state("BTN_TOP2"): #view mode
     cam_toggle = False
     a.set_ailerons(0)
     a.set_elevator(0)
-  if inputs.key_state("KEY_C"): #control mode
+  if inputs.key_state("KEY_C") or inputs.key_state("BTN_BASE"): #control mode
     cam_toggle = True
     cam_rot, cam_pitch = 0, 0
-  if inputs.key_state("BTN_LEFT"): #shoot
+  if inputs.key_state("BTN_LEFT") or inputs.key_state("BTN_PINKIE"): #shoot
     a.shoot([b.x, b.y, b.z])
 
   a.update_variables()

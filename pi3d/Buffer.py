@@ -57,7 +57,7 @@ class Buffer(Loadable):
     ===== ============================ ==== ==
         0  ntile, shiny, blend           0   2
         1  material                      3   5
-        2  umult, vmult (only 2 used)    6   7
+        2  umult, vmult, point_size      6   8
         3  u_off, v_off (only 2 used)    9  10
     ===== ============================ ==== ==
     """
@@ -196,7 +196,7 @@ class Buffer(Loadable):
 
   def set_offset(self, offset=(0.0, 0.0)):
     self.unib[9:11] = offset
-
+    
   def draw(self, shape=None, shader=None, textures=None, ntl=None, shny=None, fullset=True):
     """Draw this Buffer, called by the parent Shape.draw()
 
@@ -247,4 +247,7 @@ class Buffer(Loadable):
         self.unib[2] = 0.05
 
     opengles.glUniform3fv(shader.unif_unib, 4, ctypes.byref(self.unib))
-    opengles.glDrawElements(GL_TRIANGLES, self.ntris * 3, GL_UNSIGNED_SHORT, 0)
+    if self.unib[8] == 0:
+      opengles.glDrawElements(GL_TRIANGLES, self.ntris * 3, GL_UNSIGNED_SHORT, 0)
+    else:
+      opengles.glDrawElements(GL_POINTS, self.ntris * 3, GL_UNSIGNED_SHORT, 0)
