@@ -9,10 +9,10 @@ import time
 DEFAULT_SLEEP = 0.0
 DEFAULT_ITERATIONS = 5000
 
-SLEEP = SLEEP if len(sys.argv) < 2 else float(sys.argv[1])
-ITERATIONS = ITERATIONS if len(sys.argv) < 3 else float(sys.argv[2])
+SLEEP = DEFAULT_SLEEP if len(sys.argv) < 2 else float(sys.argv[1])
+ITERATIONS = DEFAULT_ITERATIONS if len(sys.argv) < 3 else float(sys.argv[2])
 
-for i in xrange(ITERATION):
+for i in xrange(ITERATIONS):
   d = pi3d.Display.create()
   d.destroy()
   print(i)
