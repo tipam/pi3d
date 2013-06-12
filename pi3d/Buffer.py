@@ -62,6 +62,7 @@ class Buffer(Loadable):
     ===== ============================ ==== ==
     """
     #self.shape = shape
+    self.textures = []
 
     if not normals:
       LOGGER.debug("Calculating normals ...")
