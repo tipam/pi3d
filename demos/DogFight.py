@@ -1,12 +1,13 @@
 #!/usr/bin/python
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-import time, math, glob, random
+import time, math, glob, random, threading, json, httplib
 
 import demo
 import pi3d
+
 #display, camera, shader
-DISPLAY = pi3d.Display.create(x=50, y=50, w=400, h=400, frames_per_second=20)
+DISPLAY = pi3d.Display.create(x=50, y=50, w=800, h=800, frames_per_second=20)
 #a default camera is created automatically but we might need a 2nd 2D camera
 #for displaying the instruments etc. Also, because the landscape is large
 #we need to set the far plane to 10,000
@@ -18,12 +19,11 @@ print("""===================================
 == B brakes
 == mouse movement joystick
 == Left button fire!
-== X jumps to the enemy location
+== X jumps to location of 1st enemy in list
 ================================""")
 
 SHADER = pi3d.Shader("shaders/uv_reflect") #for objects to look 3D
 FLATSH = pi3d.Shader("shaders/uv_flat") #for 'unlit' objects like the background
-#STAR = pi3d.Shader("shaders/star") #for fun
 
 GRAVITY = 9.8 #m/s**2
 LD = 10 #lift/drag ratio
@@ -36,11 +36,12 @@ iFiles.sort() # order is vital to animation!
 for f in iFiles:
   BULLET_TEX.append(pi3d.Texture(f))
 HIT_DISTANCE = 20 #determine sucess of shoot()
+REQ_TIME = 3.0
 
 #define Aeroplane class
 class Aeroplane(object):
-  def __init__(self, model, recalc_time, myid):
-    self.myid = myid
+  def __init__(self, model, recalc_time, refid):
+    self.refid = refid
     self.recalc_time = recalc_time #in theory use different values for enemy
     self.x, self.y, self. z = 0.0, 0.0, 0.0
     self.v_speed, self.h_speed = 0.0, 0.0
@@ -231,18 +232,73 @@ class Aeroplane(object):
       self.bullets.draw()
       self.seq_b += 1
 
-def json_load():
-  #httprequest other player
-  return True
+def json_load(ae, others):
+  """httprequest other players. Sends own data and gets back array of all
+  other players within sight. This function runs in a background thread
+  """
+  jstring = json.dumps([ae.refid, ae.x, ae.y, ae.z,
+      ae.h_speed, ae.v_speed, ae.pitch, ae.direction, ae.roll,
+      ae.pitchrate, ae.yaw, ae.rollrate, ae.power_setting], separators=(',',':'))
+  #TODO properly url encode
+  urlstring = "/sharecalc/rpi_json.php?id={0}&dtm={1}&x={2}&z={3}&json={4}".\
+        format(ae.refid, (time.time() - ae.last_time), ae.x, ae.z, jstring)
+  others["start"] = time.time() #used for polling freqency
+  try:
+    conn = httplib.HTTPConnection("www.eldwick.org.uk", timeout=10)
+    conn.request("GET", urlstring)
+    r = conn.getresponse()
+    if r.status == 200: #good response
+      jstring = r.read()
+      if len(jstring) > 50: #error messages are shorter than this
+        olist = json.loads(jstring)
+        s_tm_now = olist[0]
+        tm_now = time.time()
+        olist = olist[1:]
+        """
+        synchronisation system: sends (time.time() - ae.last_time) which is
+        used as an offset on the server to store a server last_time which is 
+        inserted as the second term in the json string. When the list of other
+        players comes back from the server it is preceded by server time that
+        the message was returned. This is used to calculate last_time for all
+        the other avatars
+        """
+        for o in olist:
+          if not(o[0] in others):
+            others[o[0]] = Aeroplane("models/biplane.obj", 0.2, refid)
+          oa = others[o[0]]
+          oa.refif = o[0]
+          oa.last_time = tm_now - s_tm_now + o[1] # inserted by server code
+          oa.x = o[2]
+          oa.y = o[3]
+          oa.z = o[4]
+          oa.h_speed = o[5]
+          oa.v_speed = o[6]
+          oa.pitch = o[7]
+          oa.direction = o[8]
+          oa.roll = o[9]
+          oa.pitchrate = o[10]
+          oa.yaw = o[11]
+          oa.rollrate = o[12]
+          oa.power_setting = o[13]
+        #TODO tidy up inactive others; flag not to draw, delete if inactive for long enough
+        return True
+      else:
+        print(jstring)
+        return False
+    else:
+      print(r.status, r.reason)
+      return False
+  except Exception as e:
+    print(e)
 
-myid = random.randint(1000000000, 9999999999)
+refid = (open("/sys/class/net/eth0/address").read()).strip() #MAC address
 #create the instances of Aeroplane
-a = Aeroplane("models/biplane.obj", 0.02, myid)
+a = Aeroplane("models/biplane.obj", 0.02, refid)
 a.z, a.direction = 900, 180
-b = Aeroplane("models/biplane.obj", 0.1, myid)
-#b is the enemy so give it a flying start (!)
-b.set_power(60)
-b.x, b.y, b.z, b.h_speed = 4, 1000, -1000, 60
+others = {"start": 0.0} #contains a dictionary of other players keyed by refid
+thr = threading.Thread(target=json_load, args=(a, others))
+thr.daemon = True #allows the program to exit even if a Thread is still running
+thr.start()
 # Load textures for the environment cube
 ectex = pi3d.loadECfiles("textures/ecubes", "sbox")
 myecube = pi3d.EnvironmentCube(size=7000.0, maptype="FACES", camera=CAMERA)
@@ -260,26 +316,13 @@ mymap = pi3d.ElevationMap("textures/mountainsHgt.jpg", name="map",
                      divx=64, divy=64, camera=CAMERA)
 mymap.set_draw_details(SHADER, [mountimg1, bumpimg, reflimg], 1024.0, 0.0)
 mymap.set_fog((0.5,0.5,0.5,0.8), 4000)
-
 # init events
 inputs = pi3d.InputEvents()
 inputs.get_mouse_movement()
 CAMERA.position((0.0, 0.0, -10.0))
 cam_rot, cam_pitch = 0, 0
 cam_toggle = True #control mode
-"""
-mymap.set_shader(STAR)
-tm = 0.0
-dt = 0.01
-sc = 0.0
-ds = 0.001
-"""
 while DISPLAY.loop_running() and not inputs.key_state("KEY_ESC"):
-  """
-  mymap.set_custom_data(48, [tm, sc, -0.5 * sc])
-  tm += dt
-  sc = (sc + ds) % 10.0
-  """
   inputs.do_input_events()
   #""" mouse input
   mx, my, mv, mh, md = inputs.get_mouse_movement()
@@ -303,9 +346,11 @@ while DISPLAY.loop_running() and not inputs.key_state("KEY_ESC"):
     a.set_power(1)
   if inputs.key_state("KEY_S") or inputs.get_hat()[1] == 1: #throttle back
     a.set_power(-1)
-  if inputs.key_state("KEY_X"): #jump to enemy!
-    a.x, a.y, a.z = b.x, b.y + 5, b.z
-  
+  if inputs.key_state("KEY_X"): #jump to first enemy!
+    for i, b in others.iteritems():
+      if i != "start":
+        a.x, a.y, a.z = b.x, b.y + 5, b.z
+        break
   if inputs.key_state("KEY_B") or inputs.key_state("BTN_BASE2"): #brakes
     a.h_speed *= 0.99
   if inputs.key_state("KEY_V") or inputs.key_state("BTN_TOP2"): #view mode
@@ -316,28 +361,36 @@ while DISPLAY.loop_running() and not inputs.key_state("KEY_ESC"):
     cam_toggle = True
     cam_rot, cam_pitch = 0, 0
   if inputs.key_state("BTN_LEFT") or inputs.key_state("BTN_PINKIE"): #shoot
-    a.shoot([b.x, b.y, b.z])
+    #TODO determine who shooting and if hit!
+    a.shoot([a.x, a.y, a.z])
 
   a.update_variables()
   loc = a.update_position(mymap.calcHeight(a.x, a.z))
   CAMERA.reset()
-  #CAMERA.rotate(-20 + cam_pitch, -loc[3] + cam_rot, 0)
-  CAMERA.rotate(-20 + cam_pitch, -loc[3] + cam_rot, -a.roll)
+  #CAMERA.rotate(-20 + cam_pitch, -loc[3] + cam_rot, 0) #unreal view
+  CAMERA.rotate(-20 + cam_pitch, -loc[3] + cam_rot, -a.roll) #air-sick view
   CAMERA.position((loc[0], loc[1], loc[2]))
   a.draw()
 
-  b.update_variables()
-  b.home((a.x, a.y, a.z))
-  b.update_position(mymap.calcHeight(b.x, b.z))
-  b.draw()
+  for i, b in others.iteritems():
+    if i == "start":
+      continue
+    b.update_variables()
+    b.update_position(mymap.calcHeight(b.x, b.z))
+    b.draw()
+  #do httprequest if thread not already started and enough time has elapsed
+  if not (thr.isAlive()) and (a.last_pos_time > (others["start"] + REQ_TIME)):
+    thr = threading.Thread(target=json_load, args=(a, others))
+    thr.daemon = True #allows the program to exit even if a Thread is still running
+    thr.start()
 
   mymap.draw()
   myecube.position(loc[0], loc[1], loc[2])
   myecube.draw()
   #uncomment for cheap and cheerful instruments, make sure you can see terminal!
+  #TODO put up a nice set of instruments, brushed aluminum, luminous needles etc
   #print("speed={0:.2f}, rate of climb={1:.2f}, power={2:.2f},
   #     altitude={3:.2f}".format(a.h_speed, a.v_speed, a.power_setting, a.y))
-
 
 inputs.release()
 DISPLAY.destroy()
