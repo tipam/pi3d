@@ -1,7 +1,7 @@
 #!/usr/bin/python
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-import time, math, glob, random, threading, json, httplib
+import time, math, glob, random, threading, json, urllib
 
 import demo
 import pi3d
@@ -239,15 +239,14 @@ def json_load(ae, others):
   jstring = json.dumps([ae.refid, ae.x, ae.y, ae.z,
       ae.h_speed, ae.v_speed, ae.pitch, ae.direction, ae.roll,
       ae.pitchrate, ae.yaw, ae.rollrate, ae.power_setting], separators=(',',':'))
-  #TODO properly url encode
-  urlstring = "/sharecalc/rpi_json.php?id={0}&dtm={1}&x={2}&z={3}&json={4}".\
-        format(ae.refid, (time.time() - ae.last_time), ae.x, ae.z, jstring)
+  params = urllib.urlencode({"id":ae.refid, "dtm":(time.time() - ae.last_time),
+            "x":ae.x, "z":ae.z, "json":jstring})
   others["start"] = time.time() #used for polling freqency
+  urlstring = "http://www.eldwick.org.uk/sharecalc/rpi_json.php?{0}".format(params)
   try:
-    conn = httplib.HTTPConnection("www.eldwick.org.uk", timeout=10)
-    conn.request("GET", urlstring)
-    r = conn.getresponse()
-    if r.status == 200: #good response
+    r = urllib.urlopen(urlstring)
+    if r.getcode() == 200: #good response
+      print("+")
       jstring = r.read()
       if len(jstring) > 50: #error messages are shorter than this
         olist = json.loads(jstring)
@@ -260,11 +259,11 @@ def json_load(ae, others):
         inserted as the second term in the json string. When the list of other
         players comes back from the server it is preceded by server time that
         the message was returned. This is used to calculate last_time for all
-        the other avatars
+        the other avatars. TODO work out and subtract network delay too.
         """
         for o in olist:
           if not(o[0] in others):
-            others[o[0]] = Aeroplane("models/biplane.obj", 0.2, refid)
+            others[o[0]] = Aeroplane("models/biplane.obj", 0.1, refid)
           oa = others[o[0]]
           oa.refif = o[0]
           oa.last_time = tm_now - s_tm_now + o[1] # inserted by server code
@@ -286,7 +285,7 @@ def json_load(ae, others):
         print(jstring)
         return False
     else:
-      print(r.status, r.reason)
+      print(r.getcode())
       return False
   except Exception as e:
     print(e)
