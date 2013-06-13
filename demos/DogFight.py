@@ -237,10 +237,10 @@ def json_load(ae, others):
   other players within sight. This function runs in a background thread
   """
   tm_now = time.time()
-  jstring = json.dumps([ae.refid, ae.x, ae.y, ae.z,
+  jstring = json.dumps([ae.refid, ae.last_time, ae.x, ae.y, ae.z,
       ae.h_speed, ae.v_speed, ae.pitch, ae.direction, ae.roll,
       ae.pitchrate, ae.yaw, ae.rollrate, ae.power_setting], separators=(',',':'))
-  params = urllib.urlencode({"id":ae.refid, "dtm":(tm_now - ae.last_time),
+  params = urllib.urlencode({"id":ae.refid, "tm":tm_now,
             "x":ae.x, "z":ae.z, "json":jstring})
   others["start"] = tm_now #used for polling freqency
   urlstring = "http://www.eldwick.org.uk/sharecalc/rpi_json.php?{0}".format(params)
@@ -251,34 +251,35 @@ def json_load(ae, others):
       jstring = r.read()
       if len(jstring) > 50: #error messages are shorter than this
         olist = json.loads(jstring)
-        s_tm_now = olist[0]
+        s_rel_tm = olist[0]
         olist = olist[1:]
         """
-        synchronisation system: sends (time.time() - ae.last_time) which is
-        used as an offset on the server to store a server last_time which is 
-        inserted as the second term in the json string. When the list of other
-        players comes back from the server it is preceded by server time that
-        the message was returned. This is used to calculate last_time for all
-        the other avatars. TODO work out and subtract network delay too.
+        synchronisation system: sends time.time() which is used to calculate
+        an offset on the server and which is inserted as the second term 
+        in the json string. When the list of other players comes back from
+        the server it is preceded by the same offset time inserted in this json.
+        This is used to adjust the last_time for all
+        the other avatars.
         """
         for o in olist:
           if not(o[0] in others):
             others[o[0]] = Aeroplane("models/biplane.obj", 0.1, refid)
           oa = others[o[0]]
           oa.refif = o[0]
-          oa.last_time = tm_now - s_tm_now + o[1] # inserted by server code
-          oa.x = o[2]
-          oa.y = o[3]
-          oa.z = o[4]
-          oa.h_speed = o[5]
-          oa.v_speed = o[6]
-          oa.pitch = o[7]
-          oa.direction = o[8]
-          oa.roll = o[9]
-          oa.pitchrate = o[10]
-          oa.yaw = o[11]
-          oa.rollrate = o[12]
-          oa.power_setting = o[13]
+          oa.last_time = o[2] + o[1] - s_rel_tm # o[1] inserted by server code
+          oa.last_pos_time = oa.last_time
+          oa.x = o[3]
+          oa.y = o[4]
+          oa.z = o[5]
+          oa.h_speed = o[6]
+          oa.v_speed = o[7]
+          oa.pitch = o[8]
+          oa.direction = o[9]
+          oa.roll = o[10]
+          oa.pitchrate = o[11]
+          oa.yaw = o[12]
+          oa.rollrate = o[13]
+          oa.power_setting = o[14]
         #TODO tidy up inactive others; flag not to draw, delete if inactive for long enough
         return True
       else:
