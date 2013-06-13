@@ -236,12 +236,13 @@ def json_load(ae, others):
   """httprequest other players. Sends own data and gets back array of all
   other players within sight. This function runs in a background thread
   """
+  tm_now = time.time()
   jstring = json.dumps([ae.refid, ae.x, ae.y, ae.z,
       ae.h_speed, ae.v_speed, ae.pitch, ae.direction, ae.roll,
       ae.pitchrate, ae.yaw, ae.rollrate, ae.power_setting], separators=(',',':'))
-  params = urllib.urlencode({"id":ae.refid, "dtm":(time.time() - ae.last_time),
+  params = urllib.urlencode({"id":ae.refid, "dtm":(tm_now - ae.last_time),
             "x":ae.x, "z":ae.z, "json":jstring})
-  others["start"] = time.time() #used for polling freqency
+  others["start"] = tm_now #used for polling freqency
   urlstring = "http://www.eldwick.org.uk/sharecalc/rpi_json.php?{0}".format(params)
   try:
     r = urllib.urlopen(urlstring)
@@ -251,7 +252,6 @@ def json_load(ae, others):
       if len(jstring) > 50: #error messages are shorter than this
         olist = json.loads(jstring)
         s_tm_now = olist[0]
-        tm_now = time.time()
         olist = olist[1:]
         """
         synchronisation system: sends (time.time() - ae.last_time) which is
@@ -290,7 +290,13 @@ def json_load(ae, others):
   except Exception as e:
     print(e)
 
-refid = (open("/sys/class/net/eth0/address").read()).strip() #MAC address
+try:
+  refid = (open("/sys/class/net/eth0/address").read()).strip() #MAC address
+except:
+  try:
+    refid = (open("/sys/class/net/wlan0/address").read()).strip()
+  except:
+    refid = "00:00:00:00:00:00"
 #create the instances of Aeroplane
 a = Aeroplane("models/biplane.obj", 0.02, refid)
 a.z, a.direction = 900, 180
