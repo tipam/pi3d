@@ -36,7 +36,9 @@ iFiles.sort() # order is vital to animation!
 for f in iFiles:
   BULLET_TEX.append(pi3d.Texture(f))
 HIT_DISTANCE = 20 #determine sucess of shoot()
-REQ_TIME = 3.0
+REQ_TIME = 1.5
+P_FACTOR = 0.001
+I_FACTOR = 0.00001
 
 #define Aeroplane class
 class Aeroplane(object):
@@ -44,6 +46,9 @@ class Aeroplane(object):
     self.refid = refid
     self.recalc_time = recalc_time #in theory use different values for enemy
     self.x, self.y, self. z = 0.0, 0.0, 0.0
+    self.x_perr, self.y_perr, self.z_perr = 0.0, 0.0, 0.0
+    self.x_ierr, self.y_ierr, self.z_ierr = 0.0, 0.0, 0.0
+    self.d_err = 0.0
     self.v_speed, self.h_speed = 0.0, 0.0
     self.rollrate, self.pitchrate, self.yaw = 0.0, 0.0, 0.0
     self.direction, self.roll, self.pitch = 0.0, 0.0, 0.0
@@ -60,6 +65,7 @@ class Aeroplane(object):
     self.throttle_step = 20
     self.last_time = time.time()
     self.last_pos_time = self.last_time
+    self.del_time = None #difference in pi time for other aero c.f. main one
     #create the actual model
     self.model = pi3d.Model(file_string=model, camera=CAMERA)
     self.model.set_shader(SHADER)
@@ -192,16 +198,18 @@ class Aeroplane(object):
     dt = tm - self.last_pos_time
     self.last_pos_time = tm
 
-    self.x += self.h_speed * math.sin(math.radians(self.direction)) * dt
-    self.y += self.v_speed * dt
+    self.x += (self.h_speed * math.sin(math.radians(self.direction)) * dt -
+              self.x_perr * P_FACTOR - self.x_ierr * I_FACTOR)
+    self.y += self.v_speed * dt - self.y_perr * P_FACTOR - self.y_ierr * I_FACTOR
     if self.y < (height + 3):
       self.y = height + 3
       self.v_speed = 0
       self.pitch = 2.5
       #self.roll = 0
-    self.z += self.h_speed * math.cos(math.radians(self.direction)) * dt
+    self.z += (self.h_speed * math.cos(math.radians(self.direction)) * dt -
+              self.z_perr * P_FACTOR - self.z_ierr * I_FACTOR)
 
-    self.direction += math.degrees(self.yaw) * dt
+    self.direction += math.degrees(self.yaw) * dt - self.d_err * P_FACTOR
     #set values of model
     sin_d = math.sin(math.radians(self.direction))
     cos_d = math.cos(math.radians(self.direction))
@@ -251,7 +259,8 @@ def json_load(ae, others):
       jstring = r.read()
       if len(jstring) > 50: #error messages are shorter than this
         olist = json.loads(jstring)
-        s_rel_tm = olist[0]
+        #smooth time offset value
+        ae.del_time = ae.del_time * 0.9 + olist[0] * 0.1 if ae.del_time else olist[0]
         olist = olist[1:]
         """
         synchronisation system: sends time.time() which is used to calculate
@@ -266,15 +275,27 @@ def json_load(ae, others):
             others[o[0]] = Aeroplane("models/biplane.obj", 0.1, refid)
           oa = others[o[0]]
           oa.refif = o[0]
-          oa.last_time = o[2] + o[1] - s_rel_tm # o[1] inserted by server code
-          oa.last_pos_time = oa.last_time
-          oa.x = o[3]
-          oa.y = o[4]
-          oa.z = o[5]
+          #smooth time offset values
+          oa.del_time = oa.del_time * 0.9 + o[1] * 0.1 if oa.del_time else o[1]
+          oa.last_time = o[2] + oa.del_time - ae.del_time # o[1] inserted by server code
+          #oa.last_pos_time = oa.last_time
+          dt = tm_now - oa.last_time
+          #oa.last_time = tm_now
+          if oa.x == 0.0:
+            oa.x, oa.y, oa.z = o[3], o[4], o[5]
+          nx = o[3] + o[6] * math.sin(math.radians(o[9])) * dt
+          ny = o[4] + o[7] * dt
+          nz = o[5] + o[6] * math.cos(math.radians(o[9])) * dt
+          oa.x_perr, oa.y_perr, oa.z_perr = oa.x - nx, oa.y - ny, oa.z - nz
+          oa.x_ierr += oa.x_perr
+          oa.y_ierr += oa.y_perr
+          oa.z_ierr += oa.z_perr
+          oa.d_err = ((oa.direction - (o[9] + o[12] * dt) + 180) % 360 - 180) / 2
+          print(o[5], oa.z, oa.z_perr, oa.z_ierr, oa.d_err)
           oa.h_speed = o[6]
           oa.v_speed = o[7]
           oa.pitch = o[8]
-          oa.direction = o[9]
+          #oa.direction = o[9] + o[12] * dt
           oa.roll = o[10]
           oa.pitchrate = o[11]
           oa.yaw = o[12]
