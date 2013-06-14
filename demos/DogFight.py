@@ -275,6 +275,7 @@ def json_load(ae, others):
         the other avatars.
         """
         nearest = None
+        rtime = 60
         for o in olist:
           if not(o[0] in others):
             others[o[0]] = Aeroplane("models/biplane.obj", 0.1, refid)
@@ -309,8 +310,6 @@ def json_load(ae, others):
         if nearest:
           rtime = NR_TM + (max(min(nearest, FA_DIST), NR_DIST) - NR_DIST) / \
                   (FA_DIST - NR_DIST) * (FA_TM - NR_TM)
-        else:
-          rtime = 60
         #TODO tidy up inactive others; flag not to draw, delete if inactive for long enough
         return True
       else:
