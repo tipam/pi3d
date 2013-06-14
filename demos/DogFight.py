@@ -36,7 +36,11 @@ iFiles.sort() # order is vital to animation!
 for f in iFiles:
   BULLET_TEX.append(pi3d.Texture(f))
 HIT_DISTANCE = 20 #determine sucess of shoot()
-REQ_TIME = 1.5
+NR_TM = 1.0 #check much less frequently until something comes back
+FA_TM = 5.0
+NR_DIST = 250
+FA_DIST = 1500
+rtime = 60.0
 P_FACTOR = 0.001
 I_FACTOR = 0.00001
 
@@ -244,6 +248,7 @@ def json_load(ae, others):
   """httprequest other players. Sends own data and gets back array of all
   other players within sight. This function runs in a background thread
   """
+  global rtime
   tm_now = time.time()
   jstring = json.dumps([ae.refid, ae.last_time, ae.x, ae.y, ae.z,
       ae.h_speed, ae.v_speed, ae.pitch, ae.direction, ae.roll,
@@ -255,7 +260,6 @@ def json_load(ae, others):
   try:
     r = urllib.urlopen(urlstring)
     if r.getcode() == 200: #good response
-      print("+")
       jstring = r.read()
       if len(jstring) > 50: #error messages are shorter than this
         olist = json.loads(jstring)
@@ -270,6 +274,7 @@ def json_load(ae, others):
         This is used to adjust the last_time for all
         the other avatars.
         """
+        nearest = None
         for o in olist:
           if not(o[0] in others):
             others[o[0]] = Aeroplane("models/biplane.obj", 0.1, refid)
@@ -284,6 +289,9 @@ def json_load(ae, others):
           nx = o[3] + o[6] * math.sin(math.radians(o[9])) * dt
           ny = o[4] + o[7] * dt
           nz = o[5] + o[6] * math.cos(math.radians(o[9])) * dt
+          distance = math.hypot(nx - ae.x, nz - ae.z)
+          if not nearest or distance < nearest:
+            nearest = distance
           oa.x_perr, oa.y_perr, oa.z_perr = oa.x - nx, oa.y - ny, oa.z - nz
           oa.x_ierr += oa.x_perr
           oa.y_ierr += oa.y_perr
@@ -297,6 +305,12 @@ def json_load(ae, others):
           oa.yaw = o[12]
           oa.rollrate = o[13]
           oa.power_setting = o[14]
+
+        if nearest:
+          rtime = NR_TM + (max(min(nearest, FA_DIST), NR_DIST) - NR_DIST) / \
+                  (FA_DIST - NR_DIST) * (FA_TM - NR_TM)
+        else:
+          rtime = 60
         #TODO tidy up inactive others; flag not to draw, delete if inactive for long enough
         return True
       else:
@@ -402,7 +416,7 @@ while DISPLAY.loop_running() and not inputs.key_state("KEY_ESC"):
     b.update_position(mymap.calcHeight(b.x, b.z))
     b.draw()
   #do httprequest if thread not already started and enough time has elapsed
-  if not (thr.isAlive()) and (a.last_pos_time > (others["start"] + REQ_TIME)):
+  if not (thr.isAlive()) and (a.last_pos_time > (others["start"] + rtime)):
     thr = threading.Thread(target=json_load, args=(a, others))
     thr.daemon = True #allows the program to exit even if a Thread is still running
     thr.start()
