@@ -278,9 +278,7 @@ def json_load(ae, others):
           #smooth time offset values
           oa.del_time = oa.del_time * 0.9 + o[1] * 0.1 if oa.del_time else o[1]
           oa.last_time = o[2] + oa.del_time - ae.del_time # o[1] inserted by server code
-          #oa.last_pos_time = oa.last_time
           dt = tm_now - oa.last_time
-          #oa.last_time = tm_now
           if oa.x == 0.0:
             oa.x, oa.y, oa.z = o[3], o[4], o[5]
           nx = o[3] + o[6] * math.sin(math.radians(o[9])) * dt
@@ -291,11 +289,9 @@ def json_load(ae, others):
           oa.y_ierr += oa.y_perr
           oa.z_ierr += oa.z_perr
           oa.d_err = ((oa.direction - (o[9] + o[12] * dt) + 180) % 360 - 180) / 2
-          print(o[5], oa.z, oa.z_perr, oa.z_ierr, oa.d_err)
           oa.h_speed = o[6]
           oa.v_speed = o[7]
           oa.pitch = o[8]
-          #oa.direction = o[9] + o[12] * dt
           oa.roll = o[10]
           oa.pitchrate = o[11]
           oa.yaw = o[12]
