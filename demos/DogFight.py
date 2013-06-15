@@ -71,6 +71,7 @@ class Aeroplane(object):
     self.last_pos_time = self.last_time
     self.del_time = None #difference in pi time for other aero c.f. main one
     self.rtime = 60
+    self.nearest = None
     #create the actual model
     self.model = pi3d.Model(file_string=model, camera=CAMERA)
     self.model.set_shader(SHADER)
@@ -348,6 +349,7 @@ def json_load(ae, others):
           distance = math.hypot(nx - ae.x, nz - ae.z)
           if not nearest or distance < nearest:
             nearest = distance
+            ae.nearest = oa
           oa.x_perr, oa.y_perr, oa.z_perr = oa.x - nx, oa.y - ny, oa.z - nz
           oa.x_ierr += oa.x_perr
           oa.y_ierr += oa.y_perr
@@ -456,7 +458,10 @@ while DISPLAY.loop_running() and not inputs.key_state("KEY_ESC"):
     cam_rot, cam_pitch = 0, 0
   if inputs.key_state("BTN_LEFT") or inputs.key_state("BTN_PINKIE"): #shoot
     #TODO determine who shooting and if hit!
-    a.shoot([a.x, a.y, a.z])
+    tx, ty, tz = 0., 0.0, 0.0
+    if a.nearest:
+      tx, ty, tz = a.nearest.x, a.nearest.y, a.nearest.z
+    a.shoot([tx, ty, tz])
 
   a.update_variables()
   loc = a.update_position(mymap.calcHeight(a.x, a.z))
