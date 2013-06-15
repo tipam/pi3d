@@ -277,7 +277,7 @@ class Instruments(object):
     self.alt.draw()
     self.rad.draw()
     for i in self.dot_list:
-      self.dot.position(i[1] + self.rad.x, i[2] + self.rad.y, 1)
+      self.dot.position(i[1] + 128, i[2] + self.rad.y(), 1)
       self.dot.draw()
     self.ndl1.draw()
     self.ndl2.draw()
@@ -291,12 +291,12 @@ class Instruments(object):
     for i, o in others.iteritems():
       if i == "start":
         continue
-      dx = (o.x - ae.x) / 40
-      dy = (o.z - ae.z) / 40
+      dx = (o.x - ae.x) / 50
+      dy = (o.z - ae.z) / 50
       d = math.hypot(dx, dy)
-      if d > 60:
-        dx *= 60 / d
-        dy *= 60 / d
+      if d > 50:
+        dx *= 50 / d
+        dy *= 50 / d
       self.dot_list.append([o.refid, dx, dy])
     self.update_time = ae.last_pos_time
 
