@@ -12,6 +12,7 @@ DISPLAY = pi3d.Display.create(x=100, y=100, frames_per_second=20)
 #for displaying the instruments etc. Also, because the landscape is large
 #we need to set the far plane to 10,000
 CAMERA = pi3d.Camera(lens=(1.0, 10000.0, 55.0, 1.6))
+CAMERA2D = pi3d.Camera(is_3d=False)
 
 print("""===================================
 == W increase power, S reduce power
@@ -40,7 +41,6 @@ NR_TM = 1.0 #check much less frequently until something comes back
 FA_TM = 5.0
 NR_DIST = 250
 FA_DIST = 1500
-rtime = 60.0
 P_FACTOR = 0.001
 I_FACTOR = 0.00001
 
@@ -70,6 +70,7 @@ class Aeroplane(object):
     self.last_time = time.time()
     self.last_pos_time = self.last_time
     self.del_time = None #difference in pi time for other aero c.f. main one
+    self.rtime = 60
     #create the actual model
     self.model = pi3d.Model(file_string=model, camera=CAMERA)
     self.model.set_shader(SHADER)
@@ -244,11 +245,65 @@ class Aeroplane(object):
       self.bullets.draw()
       self.seq_b += 1
 
+#define Instruments class
+class Instruments(object):
+  def __init__(self):
+    wd = DISPLAY.width
+    ht = DISPLAY.height
+    asi_tex = pi3d.Texture("textures/airspeed_indicator.png")
+    alt_tex = pi3d.Texture("textures/altimeter.png")
+    rad_tex = pi3d.Texture("textures/radar.png")
+    dot_tex = pi3d.Texture("textures/radar_dot.png")
+    ndl_tex = pi3d.Texture("textures/instrument_needle.png")
+    self.asi = pi3d.ImageSprite(asi_tex, FLATSH, camera=CAMERA2D,
+          w=128, h=128, x=-128, y=-ht/2+64, z=2)
+    self.alt = pi3d.ImageSprite(alt_tex, FLATSH, camera=CAMERA2D,
+          w=128, h=128, x=0, y=-ht/2+64, z=2)
+    self.rad = pi3d.ImageSprite(rad_tex, FLATSH, camera=CAMERA2D,
+          w=128, h=128, x=128, y=-ht/2+64, z=2)
+    self.dot = pi3d.ImageSprite(dot_tex, FLATSH, camera=CAMERA2D,
+          w=16, h=16, z=1)
+    self.ndl1 = pi3d.ImageSprite(ndl_tex, FLATSH, camera=CAMERA2D,
+          w=128, h=128, x=-128, y=-ht/2+64, z=1)
+    self.ndl2 = pi3d.ImageSprite(ndl_tex, FLATSH, camera=CAMERA2D,
+          w=128, h=128, x=0, y=-ht/2+64, z=1)
+    self.ndl3 = pi3d.ImageSprite(ndl_tex, FLATSH, camera=CAMERA2D,
+          w=128, h=128, x=128, y=-ht/2+64, z=1)
+    self.dot_list = []
+    self.update_time = 0.0
+    
+  def draw(self):
+    self.asi.draw()
+    self.alt.draw()
+    self.rad.draw()
+    for i in self.dot_list:
+      self.dot.position(i[1]+128, i[2]-ht/2+64, 1)
+      self.dot.draw()
+    self.ndl1.draw()
+    self.ndl2.draw()
+    self.ndl3.draw()
+    
+  def update(self, ae, others):
+    self.ndl1.rotateToZ(-360*ae.h_speed/140)
+    self.ndl2.rotateToZ(-360*ae.y/3000)
+    self.ndl3.rotateToZ(-ae.direction)
+    self.dot_list = []
+    for i, o in others.iteritems():
+      if i == "start":
+        continue
+      dx = (o.x - ae.x) / 40
+      dy = (o.z - ae.z) / 40
+      d = math.hypot(dx, dy)
+      if d > 60:
+        dx *= 60 / d
+        dy *= 60 / d
+      self.dot_list.append([o.refid, dx, dy])
+    self.update_time = ae.last_pos_time
+
 def json_load(ae, others):
   """httprequest other players. Sends own data and gets back array of all
   other players within sight. This function runs in a background thread
   """
-  global rtime
   tm_now = time.time()
   jstring = json.dumps([ae.refid, ae.last_time, ae.x, ae.y, ae.z,
       ae.h_speed, ae.v_speed, ae.pitch, ae.direction, ae.roll,
@@ -275,7 +330,7 @@ def json_load(ae, others):
         the other avatars.
         """
         nearest = None
-        rtime = 60
+        ae.rtime = 60
         for o in olist:
           if not(o[0] in others):
             others[o[0]] = Aeroplane("models/biplane.obj", 0.1, refid)
@@ -308,7 +363,7 @@ def json_load(ae, others):
           oa.power_setting = o[14]
 
         if nearest:
-          rtime = NR_TM + (max(min(nearest, FA_DIST), NR_DIST) - NR_DIST) / \
+          ae.rtime = NR_TM + (max(min(nearest, FA_DIST), NR_DIST) - NR_DIST) / \
                   (FA_DIST - NR_DIST) * (FA_TM - NR_TM)
         #TODO tidy up inactive others; flag not to draw, delete if inactive for long enough
         return True
@@ -321,8 +376,9 @@ def json_load(ae, others):
   except Exception as e:
     print(e)
 
+#MAC address
 try:
-  refid = (open("/sys/class/net/eth0/address").read()).strip() #MAC address
+  refid = (open("/sys/class/net/eth0/address").read()).strip()
 except:
   try:
     refid = (open("/sys/class/net/wlan0/address").read()).strip()
@@ -331,6 +387,8 @@ except:
 #create the instances of Aeroplane
 a = Aeroplane("models/biplane.obj", 0.02, refid)
 a.z, a.direction = 900, 180
+#create instance of instruments
+inst = Instruments()
 others = {"start": 0.0} #contains a dictionary of other players keyed by refid
 thr = threading.Thread(target=json_load, args=(a, others))
 thr.daemon = True #allows the program to exit even if a Thread is still running
@@ -406,6 +464,7 @@ while DISPLAY.loop_running() and not inputs.key_state("KEY_ESC"):
   #CAMERA.rotate(-20 + cam_pitch, -loc[3] + cam_rot, 0) #unreal view
   CAMERA.rotate(-20 + cam_pitch, -loc[3] + cam_rot, -a.roll) #air-sick view
   CAMERA.position((loc[0], loc[1], loc[2]))
+  inst.draw()
   a.draw()
 
   for i, b in others.iteritems():
@@ -415,10 +474,13 @@ while DISPLAY.loop_running() and not inputs.key_state("KEY_ESC"):
     b.update_position(mymap.calcHeight(b.x, b.z))
     b.draw()
   #do httprequest if thread not already started and enough time has elapsed
-  if not (thr.isAlive()) and (a.last_pos_time > (others["start"] + rtime)):
+  if not (thr.isAlive()) and (a.last_pos_time > (others["start"] + a.rtime)):
     thr = threading.Thread(target=json_load, args=(a, others))
     thr.daemon = True #allows the program to exit even if a Thread is still running
     thr.start()
+    
+  if a.last_pos_time > (inst.update_time + NR_TM):
+    inst.update(a, others)
 
   mymap.draw()
   myecube.position(loc[0], loc[1], loc[2])
