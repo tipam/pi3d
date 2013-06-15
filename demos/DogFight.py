@@ -294,9 +294,9 @@ class Instruments(object):
       dx = (o.x - ae.x) / 50
       dy = (o.z - ae.z) / 50
       d = math.hypot(dx, dy)
-      if d > 50:
-        dx *= 50 / d
-        dy *= 50 / d
+      if d > 40:
+        dx *= 40 / d
+        dy *= 40 / d
       self.dot_list.append([o.refid, dx, dy])
     self.update_time = ae.last_pos_time
 
