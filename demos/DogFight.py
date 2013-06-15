@@ -277,7 +277,7 @@ class Instruments(object):
     self.alt.draw()
     self.rad.draw()
     for i in self.dot_list:
-      self.dot.position(i[1]+128, i[2]-ht/2+64, 1)
+      self.dot.position(i[1] + self.rad.x, i[2] + self.rad.y, 1)
       self.dot.draw()
     self.ndl1.draw()
     self.ndl2.draw()
