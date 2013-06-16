@@ -65,31 +65,25 @@ sttnbmp = Texture("textures/floor_nm.jpg")
 sttnshn = Texture("textures/stars.jpg")
 x,z = 0,0
 y = mymap.calcHeight(x, z)
-
-cor_win90 = Model(file_string="models/MarsStation/corridor_win_lowpoly.egg",
+#corridor with windows
+cor_win = Model(file_string="models/MarsStation/corridor_win_lowpoly.egg",
                 x=x, y=y, z=z, sx=0.1, sy=0.1, sz=0.1)
-cor_win90.set_shader(shader)
-# TODO seem to be able to 'stamp' the same object in different locations
-# but not different rotations! need to find out cause
-cor_win00 = cor_win90.clone()
-cor_win90.rotateToY(90)
-
-corridor90 = Model(file_string="models/MarsStation/corridor_lowpoly.egg",
+cor_win.set_shader(shader)
+#normal corridor
+corridor = Model(file_string="models/MarsStation/corridor_lowpoly.egg",
                  x=x, y=y, z=z, sx=0.1, sy=0.1, sz=0.1)
-corridor90.set_shader(shader)
-corridor00 = corridor90.clone()
-corridor90.rotateToY(90)
-
+corridor.set_shader(shader)
+#corridor crossing
 cor_cross = Model(file_string="models/MarsStation/cross_room.egg",
                  x=x, y=y, z=z, sx=0.1, sy=0.1, sz=0.1)
 cor_cross.set_shader(shader)
 cor_cross.set_normal_shine(sttnbmp, 32.0, sttnshn, 0.1)
-
+#corridor crossing with doors
 cor_cross_doors = Model(file_string="models/MarsStation/cross_room_doors.egg",
                         x=x, y=y, z=z, sx=0.1, sy=0.1, sz=0.1)
 cor_cross_doors.set_shader(shader)
 cor_cross_doors.set_normal_shine(sttnbmp, 32.0, sttnshn, 0.1)
-
+#corridor with 90 degree bend
 cor_bend = Model(file_string="models/MarsStation/bend_lowpoly.egg",
                  x=x, y=y, z=z, sx=0.1, sy=0.1, sz=0.1)
 cor_bend.set_shader(shader)
@@ -131,25 +125,31 @@ try:
     CAMERA.position((xm + xoff, ym + yoff +5, zm + zoff))
 
     Utility.draw_level_of_detail([xm, ym, zm], [0, mody, 0], [[opendist,cor_cross],[1000,cor_cross_doors]])
-    cor_win90.position(0, mody, spc*1.5)
-    cor_win90.draw()
-    corridor90.position(0, mody, spc*2.5)
-    corridor90.draw()
-    cor_win90.position(0, mody, spc*3.5)
-    cor_win90.draw()
+    #90 degree units
+    corridor.rotateToY(90)
+    cor_win.rotateToY(90)
+    cor_win.position(0, mody, spc*1.5)
+    cor_win.draw()
+    corridor.position(0, mody, spc*2.5)
+    corridor.draw()
+    cor_win.position(0, mody, spc*3.5)
+    cor_win.draw()
+    cor_win.position(0, mody, spc*6.5)
+    cor_win.draw()
+    #0 degree units
+    corridor.rotateToY(0)
+    cor_win.rotateToY(0)
     Utility.draw_level_of_detail([xm, ym, zm], [0, mody, spc*5],[[opendist,cor_cross],[1000,cor_cross_doors]])
-    cor_win90.position(0, mody, spc*6.5)
-    cor_win90.draw()
     Utility.draw_level_of_detail([xm, ym, zm],[0, mody, spc*8], [[opendist,cor_cross],[1000,cor_cross_doors]])
-    cor_win00.position(-spc*1.5, mody, spc*5)
-    cor_win00.draw()
+    cor_win.position(-spc*1.5, mody, spc*5)
+    cor_win.draw()
     cor_bend.position(-spc*2.5, mody, spc*5)
     cor_bend.draw()
     Utility.draw_level_of_detail([xm, ym, zm],[-spc*2.6, mody, spc*6.6],[[opendist,cor_cross],[1000,cor_cross_doors]])
-    cor_win00.position(spc*1.5, mody, spc*5)
-    cor_win00.draw()
-    corridor00.position(spc*2.5, mody, spc*5)
-    corridor00.draw()
+    cor_win.position(spc*1.5, mody, spc*5)
+    cor_win.draw()
+    corridor.position(spc*2.5, mody, spc*5)
+    corridor.draw()
     Utility.draw_level_of_detail([xm, ym, zm],[spc*4, mody, spc*5],[[opendist,cor_cross],[1000,cor_cross_doors]])
 
     mymap.draw()  #Draw the landscape

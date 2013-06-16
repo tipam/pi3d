@@ -107,6 +107,9 @@ class Aeroplane(object):
       self.power_setting = self.max_power
 
   def shoot(self, target):
+    #only shoot if animation seq. ended
+    if self.seq_b < self.num_b:
+      return False
     #animate bullets
     self.seq_b = 0
     #check for hit
