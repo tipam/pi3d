@@ -10,6 +10,8 @@ except:
 from pi3d.constants import *
 from pi3d.Texture import Texture
 
+MAX_SIZE = 1536
+
 class Ttffont(Texture):
   """A Ttffont contains a TrueType font ready to be rendered in OpenGL.
 
@@ -22,7 +24,7 @@ class Ttffont(Texture):
 """
 
   def __init__(self, font, color="#ffffff", codepoints=None,
-               add_codepoints=None, font_size=48, image_size=750,
+               add_codepoints=None, font_size=48, image_size=512,
                italic_adjustment=1.1):
     """
  Arguments:
@@ -61,7 +63,10 @@ class Ttffont(Texture):
 
       *image_size*
         Width and height of the Texture that backs the image.
-        You'll need to adjust this up for larger fonts.
+        If it doesn't fit then a larger size will be tried up to MAX_SIZE.
+        The isses are: maximum image size supported by the gpu (2048x2048?)
+        gpu memory usage and time to load by working up the size required
+        in 256 pixel steps.
 
       *italic_adjustment*
         Adjusts the bounding width to take italics into account.  The default
@@ -72,60 +77,67 @@ class Ttffont(Texture):
     self.font = font
     imgfont = ImageFont.truetype(font, font_size)
 
-    self.im = Image.new("RGBA", (image_size, image_size))
-    self.alpha = True
-    self.ix, self.iy = image_size, image_size
-
     codepoints = (codepoints and list(codepoints)) or range(256)
     if add_codepoints:
       codepoints += list(add_codepoints)
 
-    self.glyph_table = {}
+    all_fits = False
+    while image_size < MAX_SIZE and not all_fits:
+      self.im = Image.new("RGBA", (image_size, image_size))
+      self.alpha = True
+      self.ix, self.iy = image_size, image_size
 
-    draw = ImageDraw.Draw(self.im)
+      self.glyph_table = {}
 
-    curX = 0.0
-    curY = 0.0
-    characters = []
-    maxRowHeight = 0.0
-    for i in itertools.chain([0], codepoints):
-      try:
-        ch = unichr(i)
-      except TypeError:
-        ch = i
-      # TODO: figure out how to skip missing characters entirely.
-      # if imgfont.font.getabc(ch)[0] <= 0 and ch != zero:
-      #   print 'skipping', ch
-      #   continue
-      chwidth, chheight = imgfont.getsize(ch)
+      draw = ImageDraw.Draw(self.im)
 
-      if curX + chwidth * italic_adjustment >= image_size:
-        curX = 0.0
-        curY +=  maxRowHeight
-        maxRowHeight = 0.0
+      curX = 0.0
+      curY = 0.0
+      characters = []
+      maxRowHeight = 0.0
+      for i in itertools.chain([0], codepoints):
+        try:
+          ch = unichr(i)
+        except TypeError:
+          ch = i
+        # TODO: figure out how to skip missing characters entirely.
+        # if imgfont.font.getabc(ch)[0] <= 0 and ch != zero:
+        #   print 'skipping', ch
+        #   continue
+        chwidth, chheight = imgfont.getsize(ch)
 
-      if chheight > maxRowHeight:
-        maxRowHeight = chheight
+        if curX + chwidth * italic_adjustment >= image_size:
+          curX = 0.0
+          curY +=  maxRowHeight
+          if curY >= image_size: #run out of space try again with bigger img
+            all_fits = False
+            image_size += 256
+            break
+          maxRowHeight = 0.0
 
-      draw.text((curX, curY), ch, font=imgfont, fill=color)
-      x = (curX + 0.0) / self.ix
-      y = (curY + chheight + 0.0) / self.iy
-      tw = (chwidth + 0.0) / self.ix
-      th = (chheight + 0.0) / self.iy
-      w = image_size
-      h = image_size
+        if chheight > maxRowHeight:
+          maxRowHeight = chheight
 
-      table_entry = [
-        chwidth,
-        chheight,
-        [[x + tw, y - th], [x, y - th], [x, y], [x + tw, y]],
-        [[chwidth, 0, 0], [0, 0, 0], [0, -chheight, 0], [chwidth, -chheight, 0]]
-        ]
+        draw.text((curX, curY), ch, font=imgfont, fill=color)
+        x = (curX + 0.0) / self.ix
+        y = (curY + chheight + 0.0) / self.iy
+        tw = (chwidth + 0.0) / self.ix
+        th = (chheight + 0.0) / self.iy
+        w = image_size
+        h = image_size
 
-      self.glyph_table[ch] = table_entry
+        table_entry = [
+          chwidth,
+          chheight,
+          [[x + tw, y - th], [x, y - th], [x, y], [x + tw, y]],
+          [[chwidth, 0, 0], [0, 0, 0], [0, -chheight, 0], [chwidth, -chheight, 0]]
+          ]
 
-      # Correct the character width for italics.
-      curX += chwidth * italic_adjustment
+        self.glyph_table[ch] = table_entry
+
+        # Correct the character width for italics.
+        curX += chwidth * italic_adjustment
+        all_fits = True
 
     RGBs = 'RGBA' if self.alpha else 'RGB'
     self.image = self.im.convert(RGBs).tostring('raw', RGBs)
