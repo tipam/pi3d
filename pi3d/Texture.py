@@ -75,8 +75,8 @@ class Texture(Loadable):
 
   def _load_disk(self):
     """overrides method of Loadable
-    Font, Ttffont and Defocus inherit from Texture but don't do all this
-    so have to override this
+    Pngfont, Font, Defocus and ShadowCaster inherit from Texture but
+    don't do all this so have to override this
     """
     s = self.file_string + ' '
     im = Image.open(self.file_string)

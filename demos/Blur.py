@@ -7,7 +7,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 To blur something against its background both object are drawn to an offscreen
 texture. They are then drawn to the screen with a depth blur effect.
 
-The Ttffont class is also demonstrated. This generates a texture from
+The Font class is also demonstrated. This generates a texture from
 a true-type font file on the RPi system or added from an external resource
 (standard fonts are available on raspbian in /usr/share/fonts/truetype)
 
@@ -32,7 +32,7 @@ from pi3d.Light import Light
 from pi3d.Shader import Shader
 
 from pi3d.util.String import String
-from pi3d.util.Ttffont import Ttffont
+from pi3d.util.Font import Font
 from pi3d.util.Defocus import Defocus
 from pi3d.util.Screenshot import screenshot
 from pi3d.shape.MergeShape import MergeShape
@@ -86,7 +86,7 @@ tick=0
 next_time = time.time()+2.0
 
 #load ttf font and set the font colour to 'raspberry'
-arialFont = Ttffont("fonts/FreeMonoBoldOblique.ttf", "#dd00aa",
+arialFont = Font("fonts/FreeMonoBoldOblique.ttf", "#dd00aa",
                     add_codepoints=[256])
 mystring = String(font=arialFont, string=MESSAGE,
                   camera=ortho_cam, z=1.0, is_3d=False, justify="r") # orthographic view

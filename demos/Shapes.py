@@ -4,7 +4,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 """ Various standard shapes demonstrates different ways of setting draw details
 either prior to or while drawing.
 The demo also shows the way to import all the pi3d modules and using the String
-and Ttffont classes (see /usr/share/fonts/truetype/ for other fonts) The string
+and Font classes (see /usr/share/fonts/truetype/ for other fonts) The string
 is a 3d object like the others. See the Blur demo for use of an orthographic (2D)
 string object.
 """
@@ -57,7 +57,7 @@ mylathe = pi3d.Lathe(path=((0,1),(0.6,1.2),(0.8,1.4),(1.09,1.7), (1.1,1.7),
          sides=24, name="Cup", x=4, y=-1, z=10, sx=0.8, sy=0.8, sz=0.8)
 myPlane = pi3d.Plane(w=4, h=4, name="plane", z=12)
 # Load ttf font and set the font colour to 'raspberry'
-arialFont = pi3d.Ttffont("fonts/FreeMonoBoldOblique.ttf", "#dd00aa")
+arialFont = pi3d.Font("fonts/FreeMonoBoldOblique.ttf", "#dd00aa")
 mystring = pi3d.String(font=arialFont, string="Now the Raspberry Pi really does rock", z=4)
 mystring.set_shader(flatsh)
 

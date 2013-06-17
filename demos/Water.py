@@ -6,7 +6,7 @@ there is a fog applied to the water surface with an alpha of zero so that it fad
 in the distance
 TODO transparency from fog doesn't work for non-reflection map object, the shader
 probably needs to be tweaked.
-The demo also shows normal mapping for texture and the Ttffont class.
+The demo also shows normal mapping for texture and the Font class.
 
 There is also an offset applied applied to the uv texture mapping for the water.
 Although there is no texture (it uses mat_reflect shader) the offset is
@@ -31,7 +31,7 @@ from pi3d.Shader import Shader
 
 from pi3d.shape.Sphere import Sphere
 from pi3d.util.String import String
-from pi3d.util.Ttffont import Ttffont
+from pi3d.util.Font import Font
 from pi3d.shape.MergeShape import MergeShape
 from pi3d.shape.Plane import Plane
 from pi3d.util.Screenshot import screenshot
@@ -82,7 +82,7 @@ mywater.set_fog((0.4, 0.6, 0.8, 0.0),150)
 mywater.rotateToX(90.001)
 mywater.position(0.0, -2.0, 0.0)
 
-arialFont = Ttffont("fonts/FreeMonoBoldOblique.ttf", "#dd00aa")   #load ttf font and set the font colour to 'raspberry'
+arialFont = Font("fonts/FreeMonoBoldOblique.ttf", "#dd00aa")   #load ttf font and set the font colour to 'raspberry'
 mystring = String(font=arialFont, string="Now the Raspberry Pi really does rock")
 mystring.translate(0.0, 0.0, 1)
 mystring.set_shader(flatsh)

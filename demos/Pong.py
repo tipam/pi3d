@@ -3,8 +3,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 """ Demonstrates first person movment using the mouse but constrained, physics
 of bouncing off an elevation map using normal vectors. Also writing using the
-Font class which has really been superceded by the Ttffont method but shown here
-for documentation. This demo also uses the Defoucs class to blur things in the
+Font class. This demo also uses the Defoucs class to blur things in the
 distance. The monster is not blurred as it is at a constant distance and could have
 been blurred in the actual png image file using gimp or shuchlike.
 The Display.frames_per_second has been throttled to 20 as there is a big change in
@@ -94,11 +93,11 @@ lastX0 = 0.0
 lastZ0 = 0.0
 camera.position((xm, 2 + ym, -maphalf - 2.5))
 
-arialFont = Font("AR_CENA","#dd00aa")   #load AR_CENA font and set the font colour to 'raspberry'
+arialFont = Font("fonts/FreeMonoBoldOblique.ttf", "#dd00aa")
 score = [0,0]
-score0 = String(camera, light,  arialFont, str(score[0]), 0, 12, 0, 0.05, 0.05)
+score0 = String(font=arialFont, string=str(score[0]), y=12, sx=0.05, sy=0.05)
 score0.set_shader(flatsh)
-score1 = String(camera, light,  arialFont, str(score[1]), 0, 12, 0, 0.05, 0.05)
+score1 = String(font=arialFont, string=str(score[1]), y=12, sx=0.05, sy=0.05)
 score1.set_shader(flatsh)
 
 #sphere loc and speed
@@ -180,14 +179,14 @@ while DISPLAY.loop_running():
       sx, sy, sz = 0, mapheight/3, 0
       dsx, dsy, dsz = 0.3*random.random()-0.15, 0, 0.1
       score[1] += 1
-      score1 = String(camera, light,  arialFont, str(score[1]), 0, 12, 5, 0.05, 0.05)
+      score1 = String(font=arialFont, string=str(score[0]), y=12, z=5, sx=0.05, sy=0.05)
       score1.set_shader(flatsh)
   elif sz > maphalf: #monster end
     if (sx-rx)**2 + (sy-ry)**2 < 10:
       dsz = -1 * abs(dsz)
     else:
       score[0] += 1
-      score0 = String(camera, light,  arialFont, str(score[0]), 0, 12, -5, 0.05, 0.05)
+      score0 = String(font=arialFont, string=str(score[1]), y=12, z=-5, sx=0.05, sy=0.05)
       score0.set_shader(flatsh)
       radius = 0.1 + (radius - 0.1)*0.75 # ball gets smaller each time you score
       ball = Sphere(camera, light, radius,12,12,0.0,"sphere",0,0,0)

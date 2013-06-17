@@ -21,7 +21,7 @@ class String(Shape):
     any of the offset values. Additional keyword arguments:
 
       *font*
-        Font or Ttffont class object.
+        Pngfont or Font class object.
       *string*
         of ASCI characters in range(32, 128) plus 10 = \n Line Feed
       *sx, sy*
