@@ -36,7 +36,7 @@ iFiles = glob.glob("textures/biplane/bullet??.png")
 iFiles.sort() # order is vital to animation!
 for f in iFiles:
   BULLET_TEX.append(pi3d.Texture(f))
-HIT_DISTANCE = 20 #determine sucess of shoot()
+DAMAGE_FACTOR = 50 #dived by distance of shoot()
 NR_TM = 1.0 #check much less frequently until something comes back
 FA_TM = 5.0
 NR_DIST = 250
@@ -72,6 +72,8 @@ class Aeroplane(object):
     self.del_time = None #difference in pi time for other aero c.f. main one
     self.rtime = 60
     self.nearest = None
+    self.other_damage = 0.0 #done to nearest others since last json_load
+    self.damage = 0.0 #done to this aeroplane by others
     #create the actual model
     self.model = pi3d.Model(file_string=model, camera=CAMERA)
     self.model.set_shader(SHADER)
@@ -109,7 +111,7 @@ class Aeroplane(object):
   def shoot(self, target):
     #only shoot if animation seq. ended
     if self.seq_b < self.num_b:
-      return False
+      return 0.0
     #animate bullets
     self.seq_b = 0
     #check for hit
@@ -130,12 +132,10 @@ class Aeroplane(object):
     dz = a_z - dot_p * drn_z
     distance = math.sqrt(dx**2 + dy**2 + dz**2)
     print("distance={0:.2f}".format(distance))
-    if distance < HIT_DISTANCE:
-       return True
-    return False
+    return DAMAGE_FACTOR / distance if distance > 0.0 else 2.0 * DAMAGE_FACTOR
 
   def home(self, target):
-    #turn towards target location, mainly for control of enemy aircraft
+    #turn towards target location, mainly for AI control of enemy aircraft
     dir_t = math.degrees(math.atan2((target[0] - self.x), (target[2] - self.z)))
     #make sure the direction is alway a value between +/- 180 degrees
     #roll so bank is half direction, 
@@ -308,12 +308,20 @@ def json_load(ae, others):
   """httprequest other players. Sends own data and gets back array of all
   other players within sight. This function runs in a background thread
   """
+  #TODO pass nearest, nearest.hp and own hp merge in some way
   tm_now = time.time()
   jstring = json.dumps([ae.refid, ae.last_time, ae.x, ae.y, ae.z,
       ae.h_speed, ae.v_speed, ae.pitch, ae.direction, ae.roll,
-      ae.pitchrate, ae.yaw, ae.rollrate, ae.power_setting], separators=(',',':'))
-  params = urllib.urlencode({"id":ae.refid, "tm":tm_now,
-            "x":ae.x, "z":ae.z, "json":jstring})
+      ae.pitchrate, ae.yaw, ae.rollrate, ae.power_setting, ae.damage], separators=(',',':'))
+  if ae.nearest:
+    n_id = ae.nearest.refid
+    n_damage = ae.nearest.other_damage
+    ae.nearest.other_damage = 0.0
+  else:
+    n_id = ""
+    n_damage = 0.0
+  params = urllib.urlencode({"id":ae.refid, "tm":tm_now, "x":ae.x, "z":ae.z,
+          "json":jstring, "nearest":n_id, "damage":n_damage})
   others["start"] = tm_now #used for polling freqency
   urlstring = "http://www.eldwick.org.uk/sharecalc/rpi_json.php?{0}".format(params)
   try:
@@ -324,7 +332,11 @@ def json_load(ae, others):
         olist = json.loads(jstring)
         #smooth time offset value
         ae.del_time = ae.del_time * 0.9 + olist[0] * 0.1 if ae.del_time else olist[0]
-        olist = olist[1:]
+        #own damage is cumulative and not reset on server until dead!
+        ae.damage = olist[1]
+        #if ae.damage > 2.0 * DAMAGE_FACTOR: #explode return to GO etc
+        #print(ae.damage)
+        olist = olist[2:]
         """
         synchronisation system: sends time.time() which is used to calculate
         an offset on the server and which is inserted as the second term 
@@ -337,10 +349,10 @@ def json_load(ae, others):
         ae.rtime = 60
         for o in olist:
           if not(o[0] in others):
-            others[o[0]] = Aeroplane("models/biplane.obj", 0.1, refid)
-          oa = others[o[0]]
+            others[o[0]] = Aeroplane("models/biplane.obj", 0.1, o[0])
+          oa = others[o[0]] #oa is other aeroplane, ae is this one!
           oa.refif = o[0]
-          #smooth time offset values
+          #exponential smooth time offset values
           oa.del_time = oa.del_time * 0.9 + o[1] * 0.1 if oa.del_time else o[1]
           oa.last_time = o[2] + oa.del_time - ae.del_time # o[1] inserted by server code
           dt = tm_now - oa.last_time
@@ -366,6 +378,7 @@ def json_load(ae, others):
           oa.yaw = o[12]
           oa.rollrate = o[13]
           oa.power_setting = o[14]
+          oa.damage = o[15]
 
         if nearest:
           ae.rtime = NR_TM + (max(min(nearest, FA_DIST), NR_DIST) - NR_DIST) / \
@@ -460,11 +473,11 @@ while DISPLAY.loop_running() and not inputs.key_state("KEY_ESC"):
     cam_toggle = True
     cam_rot, cam_pitch = 0, 0
   if inputs.key_state("BTN_LEFT") or inputs.key_state("BTN_PINKIE"): #shoot
-    #TODO determine who shooting and if hit!
-    tx, ty, tz = 0., 0.0, 0.0
+    #target is always nearest others set during last json_load()
+    #tx, ty, tz = 0., 0.0, 0.0
     if a.nearest:
       tx, ty, tz = a.nearest.x, a.nearest.y, a.nearest.z
-    a.shoot([tx, ty, tz])
+      a.nearest.other_damage += a.shoot([tx, ty, tz])
 
   a.update_variables()
   loc = a.update_position(mymap.calcHeight(a.x, a.z))
@@ -493,10 +506,6 @@ while DISPLAY.loop_running() and not inputs.key_state("KEY_ESC"):
   mymap.draw()
   myecube.position(loc[0], loc[1], loc[2])
   myecube.draw()
-  #uncomment for cheap and cheerful instruments, make sure you can see terminal!
-  #TODO put up a nice set of instruments, brushed aluminum, luminous needles etc
-  #print("speed={0:.2f}, rate of climb={1:.2f}, power={2:.2f},
-  #     altitude={3:.2f}".format(a.h_speed, a.v_speed, a.power_setting, a.y))
 
 inputs.release()
 DISPLAY.destroy()
