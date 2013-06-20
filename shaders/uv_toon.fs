@@ -26,9 +26,6 @@ void main(void) {
   if (abs(dot(normout, inray)) > 0.1) {
     texc = texture2D(tex0, texcoordout); // ------ basic colour from texture
 
-    // ------ look up normal map value as a vector where each colour goes from -100% to +100% over its range so
-    // ------ 0xFF7F7F is pointing right and 0X007F7F is pointing left. This vector is then rotated relative to the rotation
-    // ------ of the normal at that vertex.
     vec3 bump = normalize(texture2D(tex1, bumpcoordout).rgb * 2.0 - 1.0);
     bump.y *= -1.0;
 
@@ -37,6 +34,16 @@ void main(void) {
     float intensity = clamp(dot(lightVector, normalize(vec3(0.0, 0.0, 1.0) + bump * bfact)), 0.0, 1.0); // ------ adjustment of colour according to combined normal
     if (texc.a < unib[0][2]) discard; // ------ to allow rendering behind the transparent parts of this object
     texc.rgb = (texc.rgb * unif[9]) * intensity + (texc.rgb * unif[10]); // ------ directional lightcol * intensity + ambient lightcol
+
+    float d = 5.0;
+    float r = length(texc.rgb) * 0.6;
+    float fact = 3.141 * pow(r, 2.0);
+    r *= d;
+
+    vec2 dcentre = floor(gl_FragCoord.xy / d + 0.5) * d;
+    float dist = 0.5 * distance(gl_FragCoord.xy, dcentre);
+    if (r > dist) fact = 2.0;
+    texc.rgb = (texc.rgb - 1.0 + fact) / fact;
   }
   gl_FragColor =  (1.0 - ffact) * texc + ffact * vec4(unif[4], unif[5][1]); // ------ combine using factors
   gl_FragColor = floor(gl_FragColor * 8.0 + 0.5) / 8.0;
