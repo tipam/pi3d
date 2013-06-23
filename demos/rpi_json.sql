@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jun 13, 2013 at 07:07 AM
+-- Generation Time: Jun 23, 2013 at 07:55 PM
 -- Server version: 5.1.68-cll
 -- PHP Version: 5.3.17
 
@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS `rpi_json` (
   `x` float NOT NULL,
   `z` float NOT NULL,
   `tm` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `damage` float NOT NULL,
   `json` varchar(2048) CHARACTER SET utf8 NOT NULL,
   PRIMARY KEY (`id`),
   KEY `x` (`x`,`z`),
