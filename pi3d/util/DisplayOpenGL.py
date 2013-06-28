@@ -102,9 +102,12 @@ class DisplayOpenGL(object):
     # Destroy current surface and native window
     openegl.eglSwapBuffers(self.display, self.surface)
     openegl.eglDestroySurface(self.display, self.surface)
-    bcm.vc_dispmanx_display_close(self.dispman_display)
+
+    self.dispman_update = bcm.vc_dispmanx_update_start(0)
     bcm.vc_dispmanx_element_remove(self.dispman_update,
                                    self.dispman_element)
+    bcm.vc_dispmanx_update_submit_sync(self.dispman_update)
+    bcm.vc_dispmanx_display_close(self.dispman_display)
 
     #Now recreate the native window and surface
     self.create_surface(x, y, w, h)
@@ -143,8 +146,11 @@ class DisplayOpenGL(object):
       openegl.eglDestroySurface(self.display, self.surface)
       openegl.eglDestroyContext(self.display, self.context)
       openegl.eglTerminate(self.display)
-      bcm.vc_dispmanx_display_close(self.dispman_display)
+      self.dispman_update = bcm.vc_dispmanx_update_start(0)
       bcm.vc_dispmanx_element_remove(self.dispman_update, self.dispman_element)
+      bcm.vc_dispmanx_update_submit_sync(self.dispman_update)
+      bcm.vc_dispmanx_display_close(self.dispman_display)
+
       self.active = False
 
   def swap_buffers(self):
