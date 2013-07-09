@@ -382,8 +382,8 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
     opengles.glOrthof(c_float(0), c_float(w), c_float(0), c_float(h),
                       c_float(near), c_float(far))
   """
-  opengles.glMatrixMode(GL_MODELVIEW)
-  Utility.load_identity()
+  #opengles.glMatrixMode(GL_MODELVIEW)
+  #Utility.load_identity()
 
 
   if background:

@@ -105,7 +105,7 @@ class Texture(Loadable):
         break
 
     if VERBOSE:
-      print 'Loading ...', s
+      print("Loading ...{}".format(s))
 
     if self.flip:
       im = im.transpose(Image.FLIP_TOP_BOTTOM)
