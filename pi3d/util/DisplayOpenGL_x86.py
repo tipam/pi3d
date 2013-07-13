@@ -88,13 +88,16 @@ class DisplayOpenGL(object):
 
         # special attribute values
         background_pixel = self.screen.white_pixel,
-        event_mask = (X.KeyPressMask |
-                      X.PointerMotionMask |
-                      X.ExposureMask |
-                      X.StructureNotifyMask |
-                      X.ButtonPressMask |
-                      X.ButtonReleaseMask |
-                      X.Button1MotionMask),
+        event_mask = (X.KeyPressMask), 
+        #event_mask = (X.KeyPressMask |
+        #              X.PointerMotionMask |
+        #              X.LeaveWindowMask |
+        #              X.ExposureMask |
+        #              X.StructureNotifyMask |
+        #              X.ButtonPressMask |
+        #              X.ButtonReleaseMask |
+        #              X.Button1MotionMask),
+        #event_mask = 0,
         colormap = X.CopyFromParent,
         )
 
