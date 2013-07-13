@@ -1,7 +1,7 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import ctypes
-import Image
+from PIL import Image
 
 from pi3d.constants import *
 from pi3d.util import Log

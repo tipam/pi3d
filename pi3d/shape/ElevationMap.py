@@ -1,6 +1,5 @@
 import math
-import Image
-import PIL.ImageOps
+from PIL import Image, ImageOps
 
 from numpy import cross, dot, sqrt, array, arctan2, arcsin, degrees, subtract
 
@@ -47,7 +46,7 @@ class ElevationMap(Shape):
       divy = 200
 
     im = Image.open(mapfile)
-    im = PIL.ImageOps.invert(im)
+    im = ImageOps.invert(im)
     ix, iy = im.size
     if (ix > 200 and divx == 0) or (divx > 0):
       if divx == 0:

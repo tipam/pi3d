@@ -1,6 +1,6 @@
 import itertools
 import ctypes
-import Image
+from PIL import Image
 
 try:
   from PIL import ImageDraw, ImageFont

@@ -42,7 +42,7 @@ import os.path
 
 from pi3d.constants import *
 import math, random, exceptions, sys
-import PIL.ImageOps, ImageDraw, Image
+from PIL import ImageOps, ImageDraw, Image
 
 from pi3d.shape.MergeShape import MergeShape
 from pi3d.shape.Cuboid import Cuboid

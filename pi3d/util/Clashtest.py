@@ -1,5 +1,5 @@
 import ctypes
-import Image
+from PIL import Image
 
 from pi3d import *
 from pi3d.Shader import Shader
