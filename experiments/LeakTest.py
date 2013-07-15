@@ -13,12 +13,15 @@ after = defaultdict(int)
 
 # Display scene and rotate shape
 while True:
-
-  if str_num == 17: # to give it a chance to 'bed in'
+  #
+  # do something here to create memory leakage
+  #
+  str_num += 1
+  if str_num == 17: # large nough number to give it a chance to 'bed in'
     for i in get_objects():
       before[type(i)] += 1
   if (str_num % 50) == 17: # same number as above
-    print("--------------------")
+    print "--------------------"
     for i in after:
       after[i] = 0
     for i in get_objects():
