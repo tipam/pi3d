@@ -104,7 +104,7 @@ class Buffer(Loadable):
     self.element_array_buffer = c_shorts(list(itertools.chain(*points)))
     
   def __del__(self):
-    super(Buffer, self).__del__()
+    #super(Buffer, self).__del__() #TODO supposed to always call super.__del__
     if not self.opengl_loaded:
       return True
     from pi3d.Display import Display
@@ -248,7 +248,9 @@ class Buffer(Loadable):
         self.unib[2] = 0.05
 
     opengles.glUniform3fv(shader.unif_unib, 4, ctypes.byref(self.unib))
+
     if self.unib[8] == 0:
       opengles.glDrawElements(GL_TRIANGLES, self.ntris * 3, GL_UNSIGNED_SHORT, 0)
     else:
       opengles.glDrawElements(GL_POINTS, self.ntris * 3, GL_UNSIGNED_SHORT, 0)
+
