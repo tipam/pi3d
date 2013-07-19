@@ -1,5 +1,5 @@
 import re
-from Constants import *
+from .Constants import *
 
 def test_bit(nlst, b):
   index = b / 32
@@ -45,7 +45,7 @@ class DeviceCapabilities(object):
     
     match = re.search(".*Bus=([0-9A-Fa-f]+).*Vendor=([0-9A-Fa-f]+).*Product=([0-9A-Fa-f]+).*Version=([0-9A-Fa-f]+).*", firstLine)
     if not match:
-      print "Do not understand device ID:", line
+      print("Do not understand device ID:", line)
       self.bus = 0
       self.vendor = 0
       self.product = 0
@@ -200,10 +200,10 @@ def find_devices(identifier, butNot= [ ]):
 if __name__ == "__main__":
   devs = get_devices()
   for dev in devs:
-    print str(dev)
-    print "   ABS: ", [x for x in range(64) if test_bit(dev.EV_ABSevents, x)]
-    print "   REL: ", [x for x in range(64) if test_bit(dev.EV_RELevents, x)]
-    print "   MSC: ", [x for x in range(64) if test_bit(dev.EV_MSCevents, x)]
-    print "   KEY: ", [x for x in range(512) if test_bit(dev.EV_KEYevents, x)]
-    print "   LED: ", [x for x in range(64) if test_bit(dev.EV_LEDevents, x)]
-    print
+    print(str(dev))
+    print("   ABS: {}".format([x for x in range(64) if test_bit(dev.EV_ABSevents, x)]))
+    print("   REL: {}".format([x for x in range(64) if test_bit(dev.EV_RELevents, x)]))
+    print("   MSC: {}".format([x for x in range(64) if test_bit(dev.EV_MSCevents, x)]))
+    print("   KEY: {}".format([x for x in range(512) if test_bit(dev.EV_KEYevents, x)]))
+    print("   LED: {}".format([x for x in range(64) if test_bit(dev.EV_LEDevents, x)]))
+    print()
