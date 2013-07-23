@@ -75,13 +75,13 @@ class DisplayOpenGL(object):
     root = xlib.XRootWindowOfScreen(self.screen)
     self.window = xlib.XCreateSimpleWindow(self.d, root, x, y, w, h, 1, 0, 0)
 
-    WM_DELETE_WINDOW = ctypes.c_ulong(xlib.XInternAtom(self.d, 'WM_DELETE_WINDOW', 0))
-
-    #self.window.set_wm_name('pi3d xlib window') #xlib hasn't set access to these but could be added
+    self.WM_DELETE_WINDOW = ctypes.c_ulong(xlib.XInternAtom(self.d, 'WM_DELETE_WINDOW', 0))
+    #TODO add functions to xlib for these window manager libx11 functions
+    #self.window.set_wm_name('pi3d xlib window')
     #self.window.set_wm_icon_name('pi3d')
     #self.window.set_wm_class('draw', 'XlibExample')
 
-    xlib.XSetWMProtocols(self.d, self.window, ctypes.byref(WM_DELETE_WINDOW), 1)
+    xlib.XSetWMProtocols(self.d, self.window, ctypes.byref(self.WM_DELETE_WINDOW), 1)
     #self.window.set_wm_hints(flags = Xutil.StateHint,
     #                         initial_state = Xutil.NormalState)
 
@@ -90,9 +90,8 @@ class DisplayOpenGL(object):
     #                                min_width = 20,
     #                                min_height = 20)
     
-    xlib.XSelectInput(self.d, self.window, KeyPressMask | ButtonPressMask)
+    xlib.XSelectInput(self.d, self.window, KeyPressMask)
     xlib.XMapWindow(self.d, self.window)
-    
     self.surface = openegl.eglCreateWindowSurface(self.display, self.config, self.window, 0)
 
     assert self.surface != EGL_NO_SURFACE
@@ -152,10 +151,6 @@ class DisplayOpenGL(object):
       openegl.eglDestroySurface(self.display, self.surface)
       openegl.eglDestroyContext(self.display, self.context)
       openegl.eglTerminate(self.display)
-      #self.dispman_update = bcm.vc_dispmanx_update_start(0)
-      #bcm.vc_dispmanx_element_remove(self.dispman_update, self.dispman_element)
-      #bcm.vc_dispmanx_update_submit_sync(self.dispman_update)
-      #bcm.vc_dispmanx_display_close(self.dispman_display)
 
       self.active = False
       xlib.XCloseDisplay(self.d)

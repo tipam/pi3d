@@ -1,6 +1,7 @@
 #from pi3d.Display import Display
 from Xlib import X
 
+
 KEYBOARD = [[0, ""], [0, ""], [0, ""], [0, ""], [0, ""],
             [0, ""], [0, ""], [0, ""], [0, ""], [27, "Escape"],
             [49, "1"], [50, "2"], [51, "3"], [52, "4"], [53, "5"],
@@ -28,15 +29,19 @@ KEYBOARD = [[0, ""], [0, ""], [0, ""], [0, ""], [0, ""],
             
 class Keyboard(object):
   def __init__(self, use_curses=None):
+    from pi3d.Display import Display
+    self.display = Display.INSTANCE
     self.key_num = 0
     self.key_code = ""
 
   def _update_event(self):
-    from pi3d.Display import Display
-    n = len(Display.INSTANCE.event_list)
-    for i, e in enumerate(Display.INSTANCE.event_list):
-      if e.type == X.KeyPress:
-        Display.INSTANCE.event_list.pop(i)
+    if not self.display: #Because DummyTkWin Keyboard instance created before Display!
+      from pi3d.Display import Display
+      self.display = Display.INSTANCE
+    n = len(self.display.event_list)
+    for i, e in enumerate(self.display.event_list):
+      if e.type == X.KeyPress or e.type == X.KeyRelease: #TODO not sure why KeyRelease needed!
+        self.display.event_list.pop(i)
         self.key_num = KEYBOARD[e.xkey.keycode][0]
         self.key_code = KEYBOARD[e.xkey.keycode][1]
         return True

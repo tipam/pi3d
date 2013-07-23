@@ -1,4 +1,4 @@
-from ctypes import c_float, byref
+from ctypes import c_float, byref, c_ulong
 from pyxlib.x import *
 from pyxlib import xlib
 
@@ -212,18 +212,15 @@ class Display(object):
     # TODO(rec):  check if the window was resized and resize it, removing
     # code from MegaStation to here.
     #self.event_list = []
-    if xlib.XCheckMaskEvent(self.opengl.d, KeyPressMask, self.ev):
-      self.event_list.append(self.ev)
-    """
-    n = self.opengl.d.pending_events()
+    n = xlib.XEventsQueued(self.opengl.d, xlib.QueuedAfterFlush)
     for i in range(n):
-      ev = self.opengl.d.next_event()
-      if ev.type == X.DestroyNotify or (ev.type == X.ClientMessage and
-              ev.client_type == self.opengl.WM_PROTOCOLS and
-              ev.data[0] == 32 and ev.data[1][0] == self.opengl.WM_DELETE_WINDOW):
-        self.destroy()
-      self.event_list.append(ev)
-    """
+      if xlib.XCheckMaskEvent(self.opengl.d, KeyPressMask, self.ev):
+        self.event_list.append(self.ev)
+      else:
+        xlib.XNextEvent(self.opengl.d, self.ev)
+        if self.ev.type == ClientMessage:
+          if (self.ev.xclient.data.l[0] == self.opengl.WM_DELETE_WINDOW.value):
+            self.destroy()
     self.clear()
     with self.lock:
       self.sprites_to_load, to_load = set(), self.sprites_to_load
@@ -349,6 +346,7 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
         self.key = ""
         self.winx, self.winy = 0, 0
         self.width, self.height = 1920, 1180
+        self.event_list = []
         
       def update(self):
         self.key = self.tkKeyboard.read_code()
