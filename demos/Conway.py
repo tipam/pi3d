@@ -1,3 +1,6 @@
+#!/usr/bin/python
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 """ GPU doing conways game of life. ESC to quit
 this shows how it is possible to recycle images from the renderbuffer
 and use the very fast processing speed of the GPU to do certain tasks.
