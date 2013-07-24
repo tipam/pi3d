@@ -1,5 +1,5 @@
 #from pi3d.Display import Display
-from Xlib import X
+from pyxlib import x
 
 
 KEYBOARD = [[0, ""], [0, ""], [0, ""], [0, ""], [0, ""],
@@ -40,7 +40,7 @@ class Keyboard(object):
       self.display = Display.INSTANCE
     n = len(self.display.event_list)
     for i, e in enumerate(self.display.event_list):
-      if e.type == X.KeyPress or e.type == X.KeyRelease: #TODO not sure why KeyRelease needed!
+      if e.type == x.KeyPress or e.type == x.KeyRelease: #TODO not sure why KeyRelease needed!
         self.display.event_list.pop(i)
         self.key_num = KEYBOARD[e.xkey.keycode][0]
         self.key_code = KEYBOARD[e.xkey.keycode][1]
