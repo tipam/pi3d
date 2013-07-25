@@ -75,7 +75,8 @@ class DisplayOpenGL(object):
     root = xlib.XRootWindowOfScreen(self.screen)
     self.window = xlib.XCreateSimpleWindow(self.d, root, x, y, w, h, 1, 0, 0)
 
-    self.WM_DELETE_WINDOW = ctypes.c_ulong(xlib.XInternAtom(self.d, 'WM_DELETE_WINDOW', 0))
+    s = ctypes.create_string_buffer(b'WM_DELETE_WINDOW')
+    self.WM_DELETE_WINDOW = ctypes.c_ulong(xlib.XInternAtom(self.d, s, 0))
     #TODO add functions to xlib for these window manager libx11 functions
     #self.window.set_wm_name('pi3d xlib window')
     #self.window.set_wm_icon_name('pi3d')
