@@ -174,7 +174,7 @@ class ObjectCuboid(object):
     Returns the x coordinate of the centre of this object
     """
     return self.position.y
-  
+
   def top_y(self):
       """
       Returns the y coordinate of the top of this object
@@ -461,7 +461,7 @@ class Building (object):
     print "Loading building map ...",mapfile
 
     im = Image.open(mapfile)
-    im = PIL.ImageOps.invert(im)
+    im = ImageOps.invert(im)
     ix,iy = im.size
 
     print "image size", ix, ",", iy
@@ -504,7 +504,7 @@ class Building (object):
 
           self._executeScheme(x, y, startx, starty, (colour, None), wallfunc=None, ceilingedgefunc=None, ceilingfunc=self.ceiling, rooffunc=self.roof)
 
-    self.set_draw_details(self.details) # after models created otherwise 
+    self.set_draw_details(self.details) # after models created otherwise
                                         # details lost by merging
 
   def drawAll(self):
