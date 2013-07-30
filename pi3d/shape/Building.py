@@ -459,6 +459,7 @@ class Building (object):
     self.height = height
     self.name = name
     self.ceilingthickness = 1.0
+    self.walls = []
 
     if scheme == None:
       self.scheme = Building.baseScheme
@@ -526,6 +527,12 @@ class Building (object):
     self.set_draw_details(self.details) # after models created otherwise
                                         # details lost by merging
 
+
+  def remove_walls(self):
+    for w in self.walls:
+      w.remove()
+    self.walls = []
+
   def drawAll(self):
     """
     Draws all the models that comprise the building
@@ -592,6 +599,7 @@ class Building (object):
     w = x - length/2
 
     nwall = SolidObject(name+str(wallnum), Size(length, height, 1), Position(x, y+height/2, n), 0)
+    self.walls.append(nwall)
     model = Plane(w=nwall.w()*2, h=nwall.h()*2, name=name+str(wallnum))
     mergeshape.add(model, nwall.x(), nwall.y(), nwall.z())
 
@@ -640,6 +648,7 @@ class Building (object):
     w = x - length/2
 
     swall = SolidObject(name+str(wallnum), Size(length, height, 1), Position(x, y+height/2, s), 0)
+    self.walls.append(swall)
     model = Plane(w=swall.w()*2, h=swall.h()*2, name=name+str(wallnum))
     mergeshape.add(model, swall.x(),swall.y(),swall.z(), rx=0.0,ry=0.0,rz=0.0)
 
@@ -687,6 +696,7 @@ class Building (object):
     w = x - length/2
 
     ewall = SolidObject(name+str(wallnum), Size(1, height, width), Position(e, y+height/2, z), 0)
+    self.walls.append(ewall)
     model = Plane(w=ewall.d()*2, h=ewall.h()*2, name=name+str(wallnum))
     mergeshape.add(model, ewall.x(),ewall.y(),ewall.z(), rx=0.0,ry=90.0,rz=0.0)
 
@@ -734,6 +744,7 @@ class Building (object):
     w = x - length/2
 
     wwall = SolidObject(name+str(wallnum), Size(1, height, width), Position(w, y+height/2, z), 0)
+    self.walls.append(wwall)
     model = Plane(w=wwall.d()*2, h=wwall.h()*2, name=name+str(wallnum))
     mergeshape.add(model, wwall.x(),wwall.y(),wwall.z(),rx=0.0,ry=90.0,rz=0.0)
 
@@ -800,6 +811,7 @@ class Building (object):
     global wallnum
 
     roof = SolidObject(name+str(wallnum), Size(length, 1, width), Position(x, y+height+self.ceilingthickness/2, z), 0)
+    self.walls.append(roof)
     roofmodel = Plane(w=length, h=width, name=name+str(wallnum))
     mergeshape.add(roofmodel,x,y+height+self.ceilingthickness,z,rx=90.0,ry=0.0,rz=0.0)
 
