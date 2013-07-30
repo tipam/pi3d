@@ -51,6 +51,10 @@ from pi3d.Shape import Shape
 from pi3d.Buffer import Buffer
 from pi3d.Texture import Texture
 
+from pi3d.util import Log
+
+LOGGER = Log.logger(__name__)
+
 rads = 0.017453292512 # degrees to radians
 
 class xyz(object):
@@ -234,6 +238,7 @@ class ObjectCuboid(object):
       _overlap(self.position.y-self.bulk, self.size.y+2*self.bulk, pos.y-o.bulk, o.size.y+o.bulk*2) and \
       _overlap(self.position.z-self.bulk, self.size.z+2*self.bulk, pos.z-o.bulk, o.size.z+o.bulk*2)
 
+
 class SolidObject(ObjectCuboid):
   """
   A solid object is one that the avatar can not walk through. It has a size, a position and a bulk.
@@ -255,6 +260,12 @@ class SolidObject(ObjectCuboid):
     type(self).objectlist.append(self)
     self.model = None
     self.details = None
+
+  def remove(self):
+    try:
+      type(self).objectlist.remove(self)
+    except:
+      LOGGER.error('Tried to remove %s twice.', self)
 
   def CollisionList(self,p):
     """
@@ -333,8 +344,12 @@ def corridor(x,z, emap, width=10, length=10, height=10, details=None, walls="ns"
   e = x + length/2
   w = x - length/2
 
+  solid_objects = []
+
   if "n" in walls:
+    # TODO: abstract out the mostly-duplicate code in these cases...
     nwall = SolidObject(name+str(wallnum), Size(length, height, 1), Position(x, emap.calcHeight(x, z)+height/2, n-0.5), 0)
+    solid_objects.append(nwall)
     nwallmodel = createMyCuboid(nwall.w()*2, nwall.h()*2, nwall.d()*2,
           name=name+str(wallnum),
           x=nwall.x(),y=nwall.y(),z=nwall.z(),
@@ -349,6 +364,7 @@ def corridor(x,z, emap, width=10, length=10, height=10, details=None, walls="ns"
 
   if "s" in walls:
     swall = SolidObject(name+str(wallnum), Size(length, height, 1), Position(x, emap.calcHeight(x, z)+height/2, s+0.5), 0)
+    solid_objects.append(swall)
     swallmodel = createMyCuboid(swall.w()*2, swall.h()*2, swall.d()*2,
           name=name+str(wallnum),
           x=swall.x(), y=swall.y(), z=swall.z(),
@@ -362,6 +378,7 @@ def corridor(x,z, emap, width=10, length=10, height=10, details=None, walls="ns"
 
   if "e" in walls:
     ewall = SolidObject(name+str(wallnum), Size(1, height, width), Position(e-0.5, emap.calcHeight(x, z)+height/2, z), 0)
+    solid_objects.append(ewall)
     ewallmodel = createMyCuboid(ewall.w()*2, ewall.h()*2, ewall.d()*2,
           name=name+str(wallnum),
           x=ewall.x(), y=ewall.y(), z=ewall.z(),
@@ -375,6 +392,7 @@ def corridor(x,z, emap, width=10, length=10, height=10, details=None, walls="ns"
 
   if "w" in walls:
     wwall = SolidObject(name+str(wallnum), Size(1, height, width), Position(w+0.5, emap.calcHeight(x, z)+height/2, z), 0)
+    solid_objects.append(wwall)
     wwallmodel = createMyCuboid(wwall.w()*2, wwall.h()*2, wwall.d()*2,
           name=name+str(wallnum),
           x=wwall.x(), y=wwall.y(), z=wwall.z(),
@@ -383,12 +401,11 @@ def corridor(x,z, emap, width=10, length=10, height=10, details=None, walls="ns"
       mergeshape.add(wwallmodel)
     else:
       wwall.setmodel(wwallmodel, details)
-
-
     wallnum += 1
 
   if "o" not in walls:
     ceiling = SolidObject(name+str(wallnum), Size(length, 1, width), Position(x, emap.calcHeight(x, z)+height+0.5, z), 0)
+    solid_objects.append(ceiling)
     ceilingmodel = createMyCuboid(ceiling.w()*2, ceiling.h()*2, ceiling.d()*2,
           name=name+str(wallnum),
           x=ceiling.x(), y=ceiling.y(), z=ceiling.z(),
@@ -399,6 +416,8 @@ def corridor(x,z, emap, width=10, length=10, height=10, details=None, walls="ns"
       ceiling.setmodel(ceilingmodel, details)
 
     wallnum += 1
+
+  return solid_objects
 
 
 class Building (object):
