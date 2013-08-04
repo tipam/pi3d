@@ -267,7 +267,7 @@ class SolidObject(ObjectCuboid):
     except:
       LOGGER.error('Tried to remove %s twice.', self)
 
-  def CollisionList(self,p):
+  def CollisionList(self, p):
     """
     Returns a list of the objects that would overlap with the current oject,
     if the current object was at the given position. (With the exception of the current
@@ -276,7 +276,7 @@ class SolidObject(ObjectCuboid):
     or maybe to determine when a missile should explode and what it should destroy.
     """
     if not isinstance(p, Position): raise TypeError
-    r = filter(lambda(x): x.Overlaps(self,p), type(self).objectlist)
+    r = filter(lambda x: x.Overlaps(self,p), type(self).objectlist)
     try:
         r.remove(self)
     except ValueError:

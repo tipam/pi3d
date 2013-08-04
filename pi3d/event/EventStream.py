@@ -161,7 +161,7 @@ class EventStream(object):
     If the streams parameter is not given, then all streams are selected.
     """
     #print EventStream.AllStreams
-    #print map(lambda(x):x.filehandle, EventStream.AllStreams)
+    #print map(lambda x: x.filehandle, EventStream.AllStreams)
     if streams == None:
       streams = EventStream.AllStreams
 
