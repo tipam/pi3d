@@ -1,3 +1,5 @@
+import six
+
 from pi3d.event import EventHandler
 from pi3d.event import Keys
 from pi3d.event.FindDevices import find_devices
@@ -6,7 +8,7 @@ from pi3d.event.EventStream import EventStream
 
 _KEYS = (k for k in vars(Keys) if not k.startswith('_'))
 KEY_CODE = dict((k, getattr(Keys, k)) for k in _KEYS)
-CODE_KEY = dict((v, k) for k, v in KEY_CODE.iteritems())
+CODE_KEY = dict((v, k) for k, v in six.iteritems(KEY_CODE))
 
 def key_to_code(key):
   return KEY_CODE.get(str(key), -1) if isinstance(key, basestring) else key

@@ -51,12 +51,12 @@ class Display(object):
     self.sprites = []
     self.sprites_to_load = set()
     self.sprites_to_unload = set()
-    
+
     self.tidy_needed = False
     self.textures_dict = {}
     self.vbufs_dict = {}
     self.ebufs_dict = {}
-    
+
     self.event_list = []
 
     self.opengl = DisplayOpenGL()
@@ -228,21 +228,21 @@ class Display(object):
       camera = Camera.instance()
       if camera:
         camera.was_moved = False
-        
+
     if self.tidy_needed:
       self._tidy()
-      
+
   def _tidy(self):
-    for i, tex in self.textures_dict.iteritems():
+    for i, tex in six.iteritems(self.textures_dict):
       LOGGER.debug("tex0=%s tex1=%s",tex[0], tex[1])
       if tex[1] == 1:
         opengles.glDeleteTextures(1, byref(tex[0]))
         del tex
-    for i, vbuf in self.vbufs_dict.iteritems():
+    for i, vbuf in six.iteritems(self.vbufs_dict):
       if vbuf[1] == 1:
         opengles.glDeleteBuffers(1, byref(vbuf[0]))
         del vbuf
-    for i, ebuf in self.ebufs_dict.iteritems():
+    for i, ebuf in six.iteritems(self.ebufs_dict):
       if ebuf[1] == 1:
         opengles.glDeleteBuffers(1, byref(ebuf[0]))
         del ebuf
@@ -333,14 +333,14 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
         self.key = ""
         self.winx, self.winy = 0, 0
         self.width, self.height = 1920, 1180
-        
+
       def update(self):
         self.key = self.tkKeyboard.read_code()
         if self.key == "":
           self.ev = ""
         else:
           self.ev = "key"
-        
+
     tkwin = DummyTkWin()
     """
     from pi3d.util import TkWin
@@ -358,7 +358,7 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
     if y is None:
       y = tkwin.winy
     """
-    
+
   else:
     tkwin = None
 
