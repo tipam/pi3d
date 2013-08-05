@@ -1,11 +1,14 @@
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import itertools
 import ctypes
+
 from PIL import Image
 
 try:
   from PIL import ImageDraw, ImageFont
 except:
-  print 'Unable to import libraries from PIL'
+  print('Unable to import libraries from PIL')
 
 from pi3d.constants import *
 from pi3d.Texture import Texture
@@ -102,7 +105,7 @@ class Font(Texture):
           ch = i
         # TODO: figure out how to skip missing characters entirely.
         # if imgfont.font.getabc(ch)[0] <= 0 and ch != zero:
-        #   print 'skipping', ch
+        #   print('skipping', ch)
         #   continue
         chwidth, chheight = imgfont.getsize(ch)
 

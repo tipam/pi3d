@@ -1,4 +1,7 @@
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import os
+
 from pi3d.constants import *
 from pi3d.loader.parse_mtl import parse_mtl
 from pi3d.Texture import Texture
@@ -59,7 +62,7 @@ def loadFileOBJ(model, fileName):
   # read in the file and parse into some arrays
 
   filePath = os.path.split(os.path.abspath(fileName))[0]
-  print filePath
+  print(filePath)
   f = open(fileName, 'r')
 
   vertices = []
@@ -183,8 +186,8 @@ def loadFileOBJ(model, fileName):
       if chunks[0] == "s" and len(chunks) == 2:
         smooth = chunks[1]
   if VERBOSE:
-    print "materials:  ", materials
-    print "numv: ", numv
+    print("materials:  ", materials)
+    print("numv: ", numv)
 
   for g in faces:
     numv[g] -= 1
@@ -196,7 +199,7 @@ def loadFileOBJ(model, fileName):
     g_indices = []
     i = 0 # vertex counter in this material
     if VERBOSE:
-      print "len uv=", len(vertices)
+      print("len uv=", len(vertices))
     for f in faces[g]:
       iStart = i
       for v in range(len(f['vertex'])):
@@ -219,18 +222,18 @@ def loadFileOBJ(model, fileName):
 
 
     #for i in range(len(model.vGroup[g].normals)):
-    #  print model.vGroup[g].normals[i],
+    #  print(model.vGroup[g].normals[i], end='')
     if VERBOSE:
-      print
-      print "indices=", len(model.buf[n].indices)
-      print "vertices=", len(model.buf[n].vertices)
-      print "normals=", len(model.buf[n].normals)
-      print "tex_coords=", len(model.buf[n].tex_coords)
+      print()
+      print("indices=", len(model.buf[n].indices))
+      print("vertices=", len(model.buf[n].vertices))
+      print("normals=", len(model.buf[n].normals))
+      print("tex_coords=", len(model.buf[n].tex_coords))
 
   material_lib = parse_mtl(open(os.path.join(filePath, mtllib), 'r'))
   for m in materials:
     if VERBOSE:
-      print m
+      print(m)
     if 'mapDiffuse' in material_lib[m]:
       tfileName = material_lib[m]['mapDiffuse']
       model.buf[model.vGroup[materials[m]]].texFile = tfileName

@@ -1,4 +1,7 @@
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import re, os
+
 from pi3d import *
 from random import randint
 
@@ -46,14 +49,14 @@ class polygon():
 
 def loadFileEGG(model, fileName):
   """Loads an panda3d egg file to produce Buffer object
-  as part of a Shape. 
-  
+  as part of a Shape.
+
   Arguments:
     *model*
       Model object to add to.
     *fileName*
       Path and name of egg file relative to top directory.
-      
+
   """
   model.coordinateSystem = "Y-up"
   model.materialList = {}
@@ -71,7 +74,7 @@ def loadFileEGG(model, fileName):
 
   filePath = os.path.split(os.path.abspath(fileName))[0]
   if VERBOSE:
-    print filePath
+    print(filePath)
   f = open(fileName, 'r')
   l = f.read() # whole thing as a string in memory this will only work for reasonably small files!!!
 
@@ -109,10 +112,10 @@ def loadFileEGG(model, fileName):
     #numi = 0
     for x in gp:
       if len(x) == 0: continue
-      if ("<Group>" in x[0]): 
-        if len(x[1]) > 0: 
+      if ("<Group>" in x[0]):
+        if len(x[1]) > 0:
           nextnp = np+x[1]
-        else: 
+        else:
           nextnp = np+str(randint(10000, 99999))
         groupDrill(x[3], nextnp)
       else:
@@ -213,7 +216,7 @@ def loadFileEGG(model, fileName):
       n = nv - startV - 1
       for j in range(1, n):
         g_indices.append((startV, startV + j + 1, startV + j))
-    
+
     ilen = len(g_vertices)
     if ilen > 0:
       model.buf.append(Buffer(model, g_vertices, g_tex_coords, g_indices, g_normals))
@@ -254,7 +257,7 @@ def loadFileEGG(model, fileName):
       for i in xrange(len(x[3])): model.textureList[x[1]][x[3][i][1]] = x[3][i][2]
       model.textureList[x[1]]["filename"] = x[2].strip("\"")
       if VERBOSE:
-        print filePath, model.textureList[x[1]]["filename"]
+        print(filePath, model.textureList[x[1]]["filename"])
       model.textureList[x[1]]["texID"] = Texture(os.path.join(filePath, model.textureList[x[1]]["filename"]), False, True) # load from file
     if "<CoordinateSystem>" in x[0]:
       model.coordinateSystem = x[2].lower()

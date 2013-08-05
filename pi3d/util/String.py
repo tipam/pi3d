@@ -1,3 +1,5 @@
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 from pi3d import *
 
 from pi3d.Buffer import Buffer
@@ -44,7 +46,7 @@ class String(Shape):
                                  rx, ry, rz,  1.0, 1.0, 1.0,  0.0, 0.0, 0.0)
 
     if VERBOSE:
-      print "Creating string ..."
+      print("Creating string ...")
 
     self.verts = []
     self.texcoords = []
