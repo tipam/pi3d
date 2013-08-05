@@ -2,7 +2,6 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import ctypes
 
-
 from pi3d.constants import *
 from pi3d.util.Ctypes import c_chars
 from pi3d.util import Log
@@ -150,4 +149,4 @@ class Shader(object):
       shader, N, ctypes.byref(loglen), ctypes.byref(log))
 
   def loadShader(self, sfile):
-    return open(sfile,'r').read()
+    return open(sfile, 'r').read()

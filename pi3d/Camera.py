@@ -1,3 +1,5 @@
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import ctypes
 
 from numpy import array, dot, copy, tan, cos, sin, radians, degrees, arctan2, sqrt
@@ -226,11 +228,11 @@ def _ProjectionMatrix(near, far, fov, aspectRatio):
 
 def _OrthographicMatrix(scale=1.0):
   """Set up orthographic projection matrix
-  
+
   Keyword argument:
     *scale*
       number of pixels per unit of size
-  
+
   """
   from pi3d.Display import Display
   M = [[0] * 4 for i in range(4)]

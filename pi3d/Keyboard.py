@@ -1,3 +1,5 @@
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import curses, termios, fcntl, sys, os
 
 USE_CURSES = True

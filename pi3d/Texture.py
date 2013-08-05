@@ -1,3 +1,5 @@
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import ctypes
 from PIL import Image
 
@@ -105,7 +107,7 @@ class Texture(Loadable):
         break
 
     if VERBOSE:
-      print("Loading ...{}".format(s))
+      print('Loading ...{}'.format(s))
 
     if self.flip:
       im = im.transpose(Image.FLIP_TOP_BOTTOM)
@@ -113,7 +115,7 @@ class Texture(Loadable):
     RGBs = 'RGBA' if self.alpha else 'RGB'
     self.image = im.convert(RGBs).tostring('raw', RGBs)
     self._tex = ctypes.c_int()
-    if "fonts/" in self.file_string:
+    if 'fonts/' in self.file_string:
       self.im = im
 
   def _load_opengl(self):

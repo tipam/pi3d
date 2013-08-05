@@ -1,3 +1,5 @@
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import ctypes, itertools
 
 from ctypes import c_float, c_int
@@ -65,7 +67,7 @@ class Buffer(Loadable):
     self.textures = []
 
     if not normals:
-      LOGGER.debug("Calculating normals ...")
+      LOGGER.debug('Calculating normals ...')
 
       normals = [[] for p in pts]
       # Calculate normals.
@@ -102,7 +104,7 @@ class Buffer(Loadable):
     self.ntris = len(faces)
     points = [f[0:3] for f in faces]
     self.element_array_buffer = c_shorts(list(itertools.chain(*points)))
-    
+
   def __del__(self):
     #super(Buffer, self).__del__() #TODO supposed to always call super.__del__
     if not self.opengl_loaded:
@@ -153,7 +155,7 @@ class Buffer(Loadable):
                           ctypes.sizeof(self.element_array_buffer),
                           ctypes.byref(self.element_array_buffer),
                           GL_STATIC_DRAW)
-  
+
   def _unload_opengl(self):
     opengles.glDeleteBuffers(1, ctypes.byref(self.vbuf))
     opengles.glDeleteBuffers(1, ctypes.byref(self.ebuf))
@@ -197,7 +199,7 @@ class Buffer(Loadable):
 
   def set_offset(self, offset=(0.0, 0.0)):
     self.unib[9:11] = offset
-    
+
   def draw(self, shape=None, shader=None, textures=None, ntl=None, shny=None, fullset=True):
     """Draw this Buffer, called by the parent Shape.draw()
 
@@ -237,7 +239,7 @@ class Buffer(Loadable):
     self.unib[2] = 0.6
     for t, texture in enumerate(textures):
       opengles.glActiveTexture(GL_TEXTURE0 + t)
-      assert texture.tex(), "There was an empty texture in your Buffer."
+      assert texture.tex(), 'There was an empty texture in your Buffer.'
       opengles.glBindTexture(GL_TEXTURE_2D, texture.tex())
 
       opengles.glUniform1i(shader.unif_tex[t], t)

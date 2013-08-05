@@ -1,3 +1,5 @@
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 from ctypes import c_float, byref
 
 import six
@@ -223,7 +225,7 @@ class Display(object):
   def _tidy(self):
     to_del = []
     for i, tex in six.iteritems(self.textures_dict):
-      LOGGER.debug("tex0=%s tex1=%s",tex[0], tex[1])
+      LOGGER.debug('tex0=%s tex1=%s',tex[0], tex[1])
       if tex[1] == 1:
         opengles.glDeleteTextures(1, byref(tex[0]))
         to_del.append(i)
@@ -325,7 +327,7 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
     from pi3d.util import TkWin
     if not (w and h):
       # TODO: how do we do full-screen in tk?
-      #LOGGER.error("Can't compute default window size when using tk")
+      #LOGGER.error('Can't compute default window size when using tk')
       #raise Exception
       # ... just force full screen - TK will automatically fit itself into the screen
       w = 1920
@@ -380,18 +382,18 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
     display.mouse.start()
 
   # This code now replaced by camera 'lens'
-  """opengles.glMatrixMode(GL_PROJECTION)
-  Utility.load_identity()
-  if is_3d:
-    hht = near * math.tan(math.radians(aspect / 2.0))
-    hwd = hht * w / h
-    opengles.glFrustumf(c_float(-hwd), c_float(hwd), c_float(-hht), c_float(hht),
-                        c_float(near), c_float(far))
-    opengles.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
-  else:
-    opengles.glOrthof(c_float(0), c_float(w), c_float(0), c_float(h),
-                      c_float(near), c_float(far))
-  """
+  # opengles.glMatrixMode(GL_PROJECTION)
+  # Utility.load_identity()
+  # if is_3d:
+  #   hht = near * math.tan(math.radians(aspect / 2.0))
+  #   hwd = hht * w / h
+  #   opengles.glFrustumf(c_float(-hwd), c_float(hwd), c_float(-hht), c_float(hht),
+  #                       c_float(near), c_float(far))
+  #   opengles.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
+  # else:
+  #   opengles.glOrthof(c_float(0), c_float(w), c_float(0), c_float(h),
+  #                     c_float(near), c_float(far))
+
   #opengles.glMatrixMode(GL_MODELVIEW)
   #Utility.load_identity()
 

@@ -1,3 +1,5 @@
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 #from pi3d.Display import Display
 from Xlib import X
 
@@ -25,7 +27,7 @@ KEYBOARD = [[0, ""], [0, ""], [0, ""], [0, ""], [0, ""],
             [0, "Control_R"], [0, ""], [0, ""], [0, "Alt_R"], [0, ""],
             [129, "Home"], [134, "Up"], [130, "Page_Up"], [136, "Left"], [137, "Right"],
             [132, "End"], [135, "Down"], [133, "Page_Down"], [128, "Insert"], [131, "DEL"]]
-            
+
 class Keyboard(object):
   def __init__(self, use_curses=None):
     self.key_num = 0
@@ -47,16 +49,16 @@ class Keyboard(object):
       return self.key_num
     else:
       return -1
-        
+
   def read_code(self):
     if self._update_event():
       return self.key_code
     else:
       return ""
-        
+
   def close(self):
     pass
-    
+
   def __del__(self):
     try:
       self.close()

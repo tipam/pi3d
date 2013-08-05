@@ -1,3 +1,5 @@
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 from ctypes import c_float, byref
 from Xlib import X
 
