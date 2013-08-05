@@ -2,6 +2,8 @@ import fcntl
 import os
 import select
 
+from six.moves import filter
+
 from pi3d.event.Constants import *
 
 from pi3d.event import ioctl
@@ -171,7 +173,7 @@ class EventStream(object):
     if not ready: return
     while ready:
       for fd in ready:
-        stream = filter(lambda x: x.filehandle == fd, streams)[0]
+        stream = list(filter(lambda x: x.filehandle == fd, streams))[0]
         try:
           s = os.read(fd, Format.EventSize)
         except Exception as e:

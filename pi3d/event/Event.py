@@ -11,7 +11,7 @@ KEY_CODE = dict((k, getattr(Keys, k)) for k in _KEYS)
 CODE_KEY = dict((v, k) for k, v in six.iteritems(KEY_CODE))
 
 def key_to_code(key):
-  return KEY_CODE.get(str(key), -1) if isinstance(key, basestring) else key
+  return KEY_CODE.get(str(key), -1) if isinstance(key, six.string_types) else key
 
 def code_to_key(code):
   return CODE_KEY.get(code, '')

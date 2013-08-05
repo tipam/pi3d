@@ -42,6 +42,8 @@ import os.path
 
 from pi3d.constants import *
 import math, random, sys
+from six.moves import filter
+
 from PIL import ImageOps, ImageDraw, Image
 
 from pi3d.shape.MergeShape import MergeShape
@@ -279,7 +281,7 @@ class SolidObject(ObjectCuboid):
     or maybe to determine when a missile should explode and what it should destroy.
     """
     if not isinstance(p, Position): raise TypeError
-    r = filter(lambda x: x.Overlaps(self,p), type(self).objectlist)
+    r = list(filter(lambda x: x.Overlaps(self,p), type(self).objectlist))
     try:
         r.remove(self)
     except ValueError:
