@@ -1,3 +1,5 @@
+from six.moves import xrange
+
 from ctypes import *
 from x import *
 
@@ -335,7 +337,7 @@ class Depth(Structure):
 #~ struct _XDisplay;		/* Forward declare before use for C++ */
 class _XDisplay(Structure): pass
 #_XDisplay._pack_ = 1
-	
+
 #~ typedef struct {
 	#~ XExtData *ext_data;	/* hook for extension to hang data */
 	#~ struct _XDisplay *display;/* back pointer to display structure */
@@ -378,7 +380,7 @@ class Screen(Structure):
 		('save_unders', Bool),
 		('root_input_mask', c_long),
 	]
-	
+
 #/*
 # * Format structure; describes ZFormat data the screen will understand.
 # */
@@ -395,7 +397,7 @@ class ScreenFormat(Structure):
 		('bits_per_pixel', c_int),
 		('scanline_pad', c_int),
 	]
-	
+
 #/*
 # * Data structure for setting window attributes.
 # */
@@ -434,7 +436,7 @@ class XSetWindowAttributes(Structure):
 		('colormap', Colormap),
 		('cursor', Cursor),
 	]
-	
+
 #~ typedef struct {
     #~ int x, y;			/* location of window */
     #~ int width, height;		/* width and height of window */
@@ -488,7 +490,7 @@ class XWindowAttributes(Structure):
 		('override_redirect', Bool),
 		('screen', POINTER(Screen)),
 	]
-	
+
 #/*
 # * Data structure for host setting; getting routines.
 # *
@@ -505,7 +507,7 @@ class XHostAddress(Structure):
 		('length', c_int),
 		('address', c_char_p),
 	]
-	
+
 #/*
 # * Data structure for ServerFamilyInterpreted addresses in host routines
 # */
@@ -522,7 +524,7 @@ class XServerInterpretedAddress(Structure):
 		('type', c_char_p),
 		('value', c_char_p),
 	]
-	
+
 #/*
 # * Data structure for "image" data, used by image manipulation routines.
 # */
@@ -648,7 +650,7 @@ class XSegment(Structure):
 		('x2', c_short),
 		('y2', c_short),
 	]
-	
+
 #~ typedef struct {
     #~ short x, y;
 #~ } XPoint;
@@ -657,7 +659,7 @@ class XPoint(Structure):
 		('x', c_short),
 		('y', c_short),
 	]
-	
+
 #~ typedef struct {
     #~ short x, y;
     #~ unsigned short width, height;
@@ -669,7 +671,7 @@ class XRectangle(Structure):
 		('width', c_ushort),
 		('height', c_ushort),
 	]
-	
+
 #~ typedef struct {
     #~ short x, y;
     #~ unsigned short width, height;
@@ -708,7 +710,7 @@ class XKeyboardControl(Structure):
 		('key', c_int),
 		('auto_repeat_mode', c_int),
 	]
-	
+
 #/* Data structure for XGetKeyboardControl */
 
 #~ typedef struct {
@@ -729,7 +731,7 @@ class XKeyboardState(Structure):
 		('global_auto_repeat', c_int),
 		('auto_repeats', c_char * 32),
 	]
-	
+
 #/* Data structure for XGetMotionEvents.  */
 
 #~ typedef struct {
@@ -769,7 +771,7 @@ class _XPrivate(Structure): pass
 
 #~ struct _XrmHashBucketRec;
 class _XrmHashBucketRec(Structure): pass
-	
+
 #~ typedef struct
 #~ #ifdef XLIB_ILLEGAL_ACCESS
 #~ _XDisplay
@@ -1837,7 +1839,7 @@ class XFontStruct(Structure):
 		('ascent', c_int),
 		('descent', c_int),
 	 ]
-	 
+
 #/*
 # * PolyText routines take these as arguments.
 # */
@@ -1864,7 +1866,7 @@ class XChar2b(Structure):
 		('byte1', c_ubyte),
 		('byte2', c_ubyte),
 	 ]
-	 
+
 #~ typedef struct {
     #~ XChar2b *chars;		/* two byte characters */
     #~ int nchars;			/* number of characters */
@@ -1894,7 +1896,7 @@ class XEDataObject(Union):
 		('pixmap_format', POINTER(ScreenFormat)),
 		('font', POINTER(XFontStruct)),
 	 ]
-	 
+
 #~ typedef struct {
     #~ XRectangle      max_ink_extent;
     #~ XRectangle      max_logical_extent;
@@ -2088,7 +2090,7 @@ XNBackgroundPixmap = "backgroundPixmap"
 XNFontSet = "fontSet"
 XNLineSpace = "lineSpace"
 XNCursor = "cursor"
- 
+
 XNQueryIMValuesList = "queryIMValuesList"
 XNQueryICValuesList = "queryICValuesList"
 XNVisiblePosition = "visiblePosition"
@@ -2100,7 +2102,7 @@ XNHotKey = "hotKey"
 XNHotKeyState = "hotKeyState"
 XNPreeditState = "preeditState"
 XNSeparatorofNestedList = "separatorofNestedList"
- 
+
 XBufferOverflow	= -1
 XLookupNone = 1
 XLookupChars = 2
@@ -2119,7 +2121,7 @@ class XIMCallback(Structure):
 		('client_data', XPointer),
 		('callback', XIMProc),
 	 ]
-	 
+
 #~ typedef struct {
     #~ XPointer client_data;
     #~ XICProc callback;

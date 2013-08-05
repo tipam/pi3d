@@ -1,4 +1,7 @@
 import ctypes
+
+from six.moves import xrange
+
 from PIL import Image
 
 from pi3d import *
@@ -45,8 +48,8 @@ class Clashtest(Texture):
 
   def check(self, grain=50):
     """ checks the pixels of the texture to see if there is any change from the
-    first pixel sampled; in which case returns True else returns False. 
-    
+    first pixel sampled; in which case returns True else returns False.
+
     Keyword argument:
       *grain*
         Number of locations to check over the whole image
@@ -57,5 +60,5 @@ class Clashtest(Texture):
     for i in xrange(0, len(self.img)-3, step):
       if self.img[i:(i+3)] != r0:
         return True
-        
+
     return False

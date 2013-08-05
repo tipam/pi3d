@@ -1,6 +1,7 @@
 import ctypes
 
 from ctypes import c_int, c_float
+from six.moves import xrange
 
 from pi3d.constants import *
 

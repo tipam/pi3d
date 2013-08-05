@@ -2,6 +2,8 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import math
 
+from six.moves import xrange
+
 from PIL import Image, ImageOps
 
 from numpy import cross, dot, sqrt, array, arctan2, arcsin, degrees, subtract

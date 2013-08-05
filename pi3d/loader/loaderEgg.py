@@ -4,6 +4,7 @@ import re, os
 
 from pi3d import *
 from random import randint
+from six.moves import xrange
 
 from pi3d.Texture import Texture
 from pi3d.Buffer import Buffer

@@ -8,6 +8,8 @@ import pi3d
 import sys
 import time
 
+from six.moves import xrange
+
 DEFAULT_SLEEP = 0.0
 DEFAULT_ITERATIONS = 5000
 

@@ -3,8 +3,8 @@ import ctypes
 from ctypes import c_int, c_float
 
 from pi3d.constants import *
-
 from pi3d.util.Ctypes import c_ints
+from six.moves import xrange
 
 from Xlib import X, display, Xutil
 
@@ -18,7 +18,7 @@ class DisplayOpenGL(object):
     #w = c_int()
     #h = c_int()
     #s = bcm.graphics_get_display_size(0, ctypes.byref(w), ctypes.byref(h))
-    
+
     #assert s >= 0
     # Find which screen to open the window on
     self.screen = self.d.screen()
@@ -88,7 +88,7 @@ class DisplayOpenGL(object):
 
         # special attribute values
         background_pixel = self.screen.white_pixel,
-        event_mask = (X.KeyPressMask), 
+        event_mask = (X.KeyPressMask),
         #event_mask = (X.KeyPressMask |
         #              X.PointerMotionMask |
         #              X.LeaveWindowMask |

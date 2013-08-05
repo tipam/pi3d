@@ -9,6 +9,8 @@ from pi3d.util.Ctypes import c_ints
 from pyxlib import xlib
 from pyxlib.x import *
 
+from six.moves import xrange
+
 class DisplayOpenGL(object):
   def __init__(self):
     self.d = xlib.XOpenDisplay(None)
@@ -90,7 +92,7 @@ class DisplayOpenGL(object):
     #                                         | Xutil.PMinSize),
     #                                min_width = 20,
     #                                min_height = 20)
-    
+
     xlib.XSelectInput(self.d, self.window, KeyPressMask)
     xlib.XMapWindow(self.d, self.window)
     self.surface = openegl.eglCreateWindowSurface(self.display, self.config, self.window, 0)

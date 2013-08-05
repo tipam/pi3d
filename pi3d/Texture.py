@@ -2,6 +2,9 @@
 from __future__ import print_function
 
 import ctypes
+
+from six.moves import xrange
+
 from PIL import Image
 
 from pi3d.constants import *

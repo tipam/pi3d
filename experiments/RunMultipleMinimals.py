@@ -2,6 +2,9 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import subprocess, time
+
+from six.moves import xrange
+
 for i in xrange(500):
   p = subprocess.Popen(["python", "/home/pi/pi3d/demos/Minimal.py"],
           stdin=subprocess.PIPE, stderr=subprocess.PIPE)

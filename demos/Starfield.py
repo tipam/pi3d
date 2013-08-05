@@ -6,8 +6,12 @@ no attempt to 'tile' the points to give continuous motion
 import random
 import demo
 import pi3d
+
 from pi3d.Buffer import Buffer
 from pi3d.Shape import Shape
+
+from six.moves import xrange
+
 # Setup display and initialise pi3d
 DISPLAY = pi3d.Display.create(x=50, y=50)
 DISPLAY.set_background(0,0,0,1)    	# r,g,b,alpha
@@ -55,7 +59,7 @@ while DISPLAY.loop_running():
   mystars.draw()
   mysphere.draw()
   myplane.draw()
-  
+
   k = mykeys.read()
   if k >-1:
     if k==112:
@@ -64,5 +68,5 @@ while DISPLAY.loop_running():
       mykeys.close()
       DISPLAY.stop()
       break
-  
+
 
