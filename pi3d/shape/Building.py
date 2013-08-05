@@ -41,7 +41,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import os.path
 
 from pi3d.constants import *
-import math, random, exceptions, sys
+import math, random, sys
 from PIL import ImageOps, ImageDraw, Image
 
 from pi3d.shape.MergeShape import MergeShape
