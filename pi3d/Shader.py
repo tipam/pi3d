@@ -1,5 +1,4 @@
-from __future__ import absolute_import, division, print_function
-#from __future__ import absolute_import, division, print_function, unicode_literals
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import ctypes
 
@@ -103,24 +102,24 @@ class Shader(object):
     opengles.glLinkProgram(self.program)
     self.showprogramlog(self.program)
 
-    self.attr_vertex = opengles.glGetAttribLocation(self.program, 'vertex')
-    self.attr_normal = opengles.glGetAttribLocation(self.program, 'normal')
+    self.attr_vertex = opengles.glGetAttribLocation(self.program, b'vertex')
+    self.attr_normal = opengles.glGetAttribLocation(self.program, b'normal')
 
     self.unif_modelviewmatrix = opengles.glGetUniformLocation(
-      self.program, 'modelviewmatrix')
+      self.program, b'modelviewmatrix')
     self.unif_cameraviewmatrix = opengles.glGetUniformLocation(
-      self.program, 'cameraviewmatrix')
+      self.program, b'cameraviewmatrix')
 
-    self.unif_unif = opengles.glGetUniformLocation(self.program, 'unif')
-    self.unif_unib = opengles.glGetUniformLocation(self.program, 'unib')
+    self.unif_unif = opengles.glGetUniformLocation(self.program, b'unif')
+    self.unif_unib = opengles.glGetUniformLocation(self.program, b'unib')
 
-    self.attr_texcoord = opengles.glGetAttribLocation(self.program, 'texcoord')
+    self.attr_texcoord = opengles.glGetAttribLocation(self.program, b'texcoord')
     opengles.glEnableVertexAttribArray(self.attr_texcoord)
     self.unif_tex = []
     self.texture = []
     for t in range(3):
       self.unif_tex.append(opengles.glGetUniformLocation(
-          self.program, 'tex' + str(t)))
+          self.program, b'tex%d' % t))
       """
       *NB*
         for *uv* shaders tex0=texture tex1=normal map tex2=reflection
