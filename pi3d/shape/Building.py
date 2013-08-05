@@ -1,4 +1,5 @@
-#! /usr/bin/python
+from __future__ import absolute_import, print_function, unicode_literals
+#from __future__ import absolute_import, division, print_function, unicode_literals
 
 # Silo project using pi3d module
 # =====================================
@@ -478,13 +479,13 @@ class Building (object):
 
     self.model = [MergeShape(name=name+"."+str(x)) for x in range(self.scheme["#models"])]
 
-    print "Loading building map ...",mapfile
+    print("Loading building map ...", mapfile)
 
     im = Image.open(mapfile)
     im = ImageOps.invert(im)
     ix,iy = im.size
 
-    print "image size", ix, ",", iy
+    print("image size", ix, ",", iy)
 
     startx = xpos - ix/2 * width
     starty = zpos - ix/2 * depth
@@ -498,7 +499,7 @@ class Building (object):
     pixels = im.load()
 
     for y in range(1,iy-1):
-      print ".",
+      print(".", end='')
       for x in range(1,ix-1):
           colour = pixels[x,y]
 
