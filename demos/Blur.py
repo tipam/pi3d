@@ -20,6 +20,7 @@ from the centre of the screen
 import math, random, time
 
 import demo
+import six
 
 from pi3d.constants import *
 
@@ -48,7 +49,7 @@ distance!
 justified
 multiline
 unicode æ ö ¼
-Strings """ + unichr(255) + ' ' + unichr(256) + ' ' + unichr(257)
+Strings """ + six.unichr(255) + ' ' + six.unichr(256) + ' ' + six.unichr(257)
 
 # character 255 should appear, character 256 should not.
 

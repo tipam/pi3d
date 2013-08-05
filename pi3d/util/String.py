@@ -1,5 +1,7 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+import six
+
 from pi3d import *
 
 from pi3d.Buffer import Buffer
@@ -58,7 +60,7 @@ class String(Shape):
     yoff = 0.0
     maxh = 0.0
     lines = 0
-    if not isinstance(string, unicode):
+    if not isinstance(string, six.text_type):
       string = string.decode('utf-8')
     nlines = string.count("\n") + 1
 
@@ -74,7 +76,7 @@ class String(Shape):
                            (j[1] + nlines * maxh / 2.0 - yoff) * sy,
                            j[2]])
 
-    default = font.glyph_table.get(unichr(0), None)
+    default = font.glyph_table.get(six.unichr(0), None)
     for i, c in enumerate(string):
       if c == '\n':
         make_verts()

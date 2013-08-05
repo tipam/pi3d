@@ -1,7 +1,8 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-import itertools
 import ctypes
+import itertools
+import six
 
 from PIL import Image
 
@@ -80,7 +81,7 @@ class Font(Texture):
     self.font = font
     imgfont = ImageFont.truetype(font, font_size)
 
-    codepoints = (codepoints and list(codepoints)) or range(256)
+    codepoints = (codepoints and list(codepoints)) or list(range(256))
     if add_codepoints:
       codepoints += list(add_codepoints)
 
@@ -100,7 +101,7 @@ class Font(Texture):
       maxRowHeight = 0.0
       for i in itertools.chain([0], codepoints):
         try:
-          ch = unichr(i)
+          ch = six.unichr(i)
         except TypeError:
           ch = i
         # TODO: figure out how to skip missing characters entirely.
