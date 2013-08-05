@@ -2,22 +2,23 @@
 
 # Copyright (c) 2010-2013 Benjamin Peterson
 #
-# Permission is hereby granted, free of charge, to any person obtaining a copy of
-# this software and associated documentation files (the "Software"), to deal in
-# the Software without restriction, including without limitation the rights to
-# use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-# the Software, and to permit persons to whom the Software is furnished to do so,
-# subject to the following conditions:
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
 #
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
 #
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-# FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-# COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-# IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 import operator
 import sys
@@ -27,7 +28,8 @@ __author__ = "Benjamin Peterson <benjamin@python.org>"
 __version__ = "1.3.0"
 
 
-# True if we are running on Python 3.
+# Useful for very coarse version differentiation.
+PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info[0] == 3
 
 if PY3:
@@ -61,7 +63,7 @@ else:
         else:
             # 64-bit
             MAXSIZE = int((1 << 63) - 1)
-            del X
+        del X
 
 
 def _add_doc(func, doc):
@@ -138,6 +140,7 @@ _moved_attributes = [
     MovedAttribute("filter", "itertools", "builtins", "ifilter", "filter"),
     MovedAttribute("input", "__builtin__", "builtins", "raw_input", "input"),
     MovedAttribute("map", "itertools", "builtins", "imap", "map"),
+    MovedAttribute("range", "__builtin__", "builtins", "xrange", "range"),
     MovedAttribute("reload_module", "__builtin__", "imp", "reload"),
     MovedAttribute("reduce", "__builtin__", "functools"),
     MovedAttribute("StringIO", "StringIO", "io"),
@@ -252,10 +255,15 @@ if PY3:
     def get_unbound_function(unbound):
         return unbound
 
+    create_bound_method = types.MethodType
+
     Iterator = object
 else:
     def get_unbound_function(unbound):
         return unbound.im_func
+
+    def create_bound_method(func, obj):
+        return types.MethodType(func, obj, obj.__class__)
 
     class Iterator(object):
 
@@ -297,12 +305,16 @@ if PY3:
         return s.encode("latin-1")
     def u(s):
         return s
+    unichr = chr
     if sys.version_info[1] <= 1:
         def int2byte(i):
             return bytes((i,))
     else:
         # This is about 2x faster than the implementation above on 3.2+
         int2byte = operator.methodcaller("to_bytes", 1, "big")
+    byte2int = operator.itemgetter(0)
+    indexbytes = operator.getitem
+    iterbytes = iter
     import io
     StringIO = io.StringIO
     BytesIO = io.BytesIO
@@ -311,7 +323,14 @@ else:
         return s
     def u(s):
         return unicode(s, "unicode_escape")
+    unichr = unichr
     int2byte = chr
+    def byte2int(bs):
+        return ord(bs[0])
+    def indexbytes(buf, i):
+        return ord(buf[i])
+    def iterbytes(buf):
+        return (ord(byte) for byte in buf)
     import StringIO
     StringIO = BytesIO = StringIO.StringIO
 _add_doc(b, """Byte literal""")
@@ -399,6 +418,6 @@ else:
 _add_doc(reraise, """Reraise an exception.""")
 
 
-def with_metaclass(meta, base=object):
+def with_metaclass(meta, *bases):
     """Create a base class with a metaclass."""
-    return meta("NewBase", (base,), {})
+    return meta("NewBase", bases, {})
