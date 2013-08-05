@@ -1,5 +1,4 @@
-from __future__ import absolute_import, print_function, unicode_literals
-#from __future__ import absolute_import, division, print_function, unicode_literals
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 # Silo project using pi3d module
 # =====================================
@@ -87,7 +86,7 @@ class Size(xyz):
   size is a position, whereas a position minus a position is a size.
   """
   def __init__(self, x,y=None,z=None):
-    super(Size,self).__init__(x,y,z)
+    super(Size,self).__init__(x, y, z)
 
   def __add__(self, a):
     if isinstance(a, Position):
@@ -105,8 +104,11 @@ class Size(xyz):
     else:
       raise TypeError
 
-  def __div__(self,a):
-    return Size(self.x/a, self.y/a, self.z/a)
+  def __div__(self, a):
+    return Size(self.x / a, self.y / a, self.z / a)
+
+  def __truediv__(self, a):
+    return self.__div__(a)
 
 
 class Position(xyz):
@@ -257,7 +259,7 @@ class SolidObject(ObjectCuboid):
     """
     Constructor
     """
-    super(SolidObject, self).__init__(name, s/2, p, bulk)
+    super(SolidObject, self).__init__(name, s / 2, p, bulk)
     type(self).objectlist.append(self)
     self.model = None
     self.details = None
@@ -316,7 +318,7 @@ class createMyCuboid(Cuboid):
       if d > fact:
         fact = d
       super(createMyCuboid,self).__init__(w=w, h=h, d=d, name=name, x=x+0.125, y=y, z=z-1.125,
-        rx=rx, ry=ry, rz=rz, cx=cx, cy=cy, cz=cz, tw=w/fact, th=h/fact, td=d/fact)
+        rx=rx, ry=ry, rz=rz, cx=cx, cy=cy, cz=cz, tw=w / fact, th=h / fact, td=d / fact)
 
 wallnum=0
 def corridor(x,z, emap, width=10, length=10, height=10, details=None, walls="ns", name="wall", mergeshape=None):
@@ -340,18 +342,20 @@ def corridor(x,z, emap, width=10, length=10, height=10, details=None, walls="ns"
   The objects are named with the given name argument as a prefix and a globally incrementing number as the suffix.
   """
   global wallnum
-  n = z + width/2
-  s = z - width/2
-  e = x + length/2
-  w = x - length/2
+  n = z + width / 2
+  s = z - width / 2
+  e = x + length / 2
+  w = x - length / 2
 
   solid_objects = []
 
   if "n" in walls:
     # TODO: abstract out the mostly-duplicate code in these cases...
-    nwall = SolidObject(name+str(wallnum), Size(length, height, 1), Position(x, emap.calcHeight(x, z)+height/2, n-0.5), 0)
+    nwall = SolidObject(name+str(wallnum),
+                        Size(length, height, 1),
+                        Position(x, emap.calcHeight(x, z) + height / 2, n-0.5), 0)
     solid_objects.append(nwall)
-    nwallmodel = createMyCuboid(nwall.w()*2, nwall.h()*2, nwall.d()*2,
+    nwallmodel = createMyCuboid(nwall.w() * 2, nwall.h() * 2, nwall.d() * 2,
           name=name+str(wallnum),
           x=nwall.x(),y=nwall.y(),z=nwall.z(),
           rx=0.0, ry=0.0, rz=0.0, cx=0.0, cy=0.0, cz=0.0)
@@ -364,12 +368,12 @@ def corridor(x,z, emap, width=10, length=10, height=10, details=None, walls="ns"
     wallnum += 1
 
   if "s" in walls:
-    swall = SolidObject(name+str(wallnum), Size(length, height, 1), Position(x, emap.calcHeight(x, z)+height/2, s+0.5), 0)
+    swall = SolidObject(name+str(wallnum), Size(length, height, 1), Position(x, emap.calcHeight(x, z)+height / 2, s+0.5), 0)
     solid_objects.append(swall)
     swallmodel = createMyCuboid(swall.w()*2, swall.h()*2, swall.d()*2,
-          name=name+str(wallnum),
-          x=swall.x(), y=swall.y(), z=swall.z(),
-          rx=0.0, ry=0.0, rz=0.0, cx=0.0,cy=0.0, cz=0.0)
+                                name=name+str(wallnum),
+                                x=swall.x(), y=swall.y(), z=swall.z(),
+                                rx=0.0, ry=0.0, rz=0.0, cx=0.0,cy=0.0, cz=0.0)
     if mergeshape:
       mergeshape.add(swallmodel)
     else:
@@ -378,7 +382,7 @@ def corridor(x,z, emap, width=10, length=10, height=10, details=None, walls="ns"
     wallnum += 1
 
   if "e" in walls:
-    ewall = SolidObject(name+str(wallnum), Size(1, height, width), Position(e-0.5, emap.calcHeight(x, z)+height/2, z), 0)
+    ewall = SolidObject(name+str(wallnum), Size(1, height, width), Position(e-0.5, emap.calcHeight(x, z)+height / 2, z), 0)
     solid_objects.append(ewall)
     ewallmodel = createMyCuboid(ewall.w()*2, ewall.h()*2, ewall.d()*2,
           name=name+str(wallnum),
@@ -392,7 +396,7 @@ def corridor(x,z, emap, width=10, length=10, height=10, details=None, walls="ns"
     wallnum += 1
 
   if "w" in walls:
-    wwall = SolidObject(name+str(wallnum), Size(1, height, width), Position(w+0.5, emap.calcHeight(x, z)+height/2, z), 0)
+    wwall = SolidObject(name+str(wallnum), Size(1, height, width), Position(w+0.5, emap.calcHeight(x, z)+height / 2, z), 0)
     solid_objects.append(wwall)
     wwallmodel = createMyCuboid(wwall.w()*2, wwall.h()*2, wwall.d()*2,
           name=name+str(wallnum),
@@ -487,8 +491,8 @@ class Building (object):
 
     print("image size", ix, ",", iy)
 
-    startx = xpos - ix/2 * width
-    starty = zpos - ix/2 * depth
+    startx = xpos - ix / 2 * width
+    starty = zpos - ix / 2 * depth
 
     yoff += emap.calcHeight(-xpos,-zpos)
 
@@ -594,12 +598,12 @@ class Building (object):
     The objects are named with the given name argument as a prefix and a globally incrementing number as the suffix.
     """
     global wallnum
-    n = z + width/2
-    s = z - width/2
-    e = x + length/2
-    w = x - length/2
+    n = z + width / 2
+    s = z - width / 2
+    e = x + length / 2
+    w = x - length / 2
 
-    nwall = SolidObject(name+str(wallnum), Size(length, height, 1), Position(x, y+height/2, n), 0)
+    nwall = SolidObject(name+str(wallnum), Size(length, height, 1), Position(x, y + height / 2, n), 0)
     self.walls.append(nwall)
     model = Plane(w=nwall.w()*2, h=nwall.h()*2, name=name+str(wallnum))
     mergeshape.add(model, nwall.x(), nwall.y(), nwall.z())
@@ -620,13 +624,13 @@ class Building (object):
     The objects are named with the given name argument as a prefix and a globally incrementing number as the suffix.
     """
     global wallnum
-    n = z + width/2
-    s = z - width/2
-    e = x + length/2
-    w = x - length/2
+    n = z + width / 2
+    s = z - width / 2
+    e = x + length / 2
+    w = x - length / 2
 
     model = Plane(w=length, h=self.ceilingthickness, name=name+str(wallnum))
-    mergeshape.add(model, x, y+height+self.ceilingthickness/2, n)
+    mergeshape.add(model, x, y+height+self.ceilingthickness / 2, n)
 
     wallnum += 1
 
@@ -643,12 +647,12 @@ class Building (object):
     The objects are named with the given name argument as a prefix and a globally incrementing number as the suffix.
     """
     global wallnum
-    n = z + width/2
-    s = z - width/2
-    e = x + length/2
-    w = x - length/2
+    n = z + width / 2
+    s = z - width / 2
+    e = x + length / 2
+    w = x - length / 2
 
-    swall = SolidObject(name+str(wallnum), Size(length, height, 1), Position(x, y+height/2, s), 0)
+    swall = SolidObject(name+str(wallnum), Size(length, height, 1), Position(x, y+height / 2, s), 0)
     self.walls.append(swall)
     model = Plane(w=swall.w()*2, h=swall.h()*2, name=name+str(wallnum))
     mergeshape.add(model, swall.x(),swall.y(),swall.z(), rx=0.0,ry=0.0,rz=0.0)
@@ -668,13 +672,13 @@ class Building (object):
     The objects are named with the given name argument as a prefix and a globally incrementing number as the suffix.
     """
     global wallnum
-    n = z + width/2
-    s = z - width/2
-    e = x + length/2
-    w = x - length/2
+    n = z + width / 2
+    s = z - width / 2
+    e = x + length / 2
+    w = x - length / 2
 
     model = Plane(w=length, h=self.ceilingthickness, name=name+str(wallnum))
-    mergeshape.add(model, x,y+height+self.ceilingthickness/2,s, rx=0.0,ry=0.0,rz=0.0)
+    mergeshape.add(model, x,y+height+self.ceilingthickness / 2,s, rx=0.0,ry=0.0,rz=0.0)
 
     wallnum += 1
 
@@ -691,12 +695,12 @@ class Building (object):
     The objects are named with the given name argument as a prefix and a globally incrementing number as the suffix.
     """
     global wallnum
-    n = z + width/2
-    s = z - width/2
-    e = x + length/2
-    w = x - length/2
+    n = z + width / 2
+    s = z - width / 2
+    e = x + length / 2
+    w = x - length / 2
 
-    ewall = SolidObject(name+str(wallnum), Size(1, height, width), Position(e, y+height/2, z), 0)
+    ewall = SolidObject(name+str(wallnum), Size(1, height, width), Position(e, y+height / 2, z), 0)
     self.walls.append(ewall)
     model = Plane(w=ewall.d()*2, h=ewall.h()*2, name=name+str(wallnum))
     mergeshape.add(model, ewall.x(),ewall.y(),ewall.z(), rx=0.0,ry=90.0,rz=0.0)
@@ -716,13 +720,13 @@ class Building (object):
     The objects are named with the given name argument as a prefix and a globally incrementing number as the suffix.
     """
     global wallnum
-    n = z + width/2
-    s = z - width/2
-    e = x + length/2
-    w = x - length/2
+    n = z + width / 2
+    s = z - width / 2
+    e = x + length / 2
+    w = x - length / 2
 
     model = Plane(w=width, h=self.ceilingthickness, name=name+str(wallnum))
-    mergeshape.add(model, e,y+height+self.ceilingthickness/2,z, rx=0.0,ry=90.0,rz=0.0)
+    mergeshape.add(model, e,y+height+self.ceilingthickness / 2,z, rx=0.0,ry=90.0,rz=0.0)
 
     wallnum += 1
 
@@ -739,12 +743,12 @@ class Building (object):
     The objects are named with the given name argument as a prefix and a globally incrementing number as the suffix.
     """
     global wallnum
-    n = z + width/2
-    s = z - width/2
-    e = x + length/2
-    w = x - length/2
+    n = z + width / 2
+    s = z - width / 2
+    e = x + length / 2
+    w = x - length / 2
 
-    wwall = SolidObject(name+str(wallnum), Size(1, height, width), Position(w, y+height/2, z), 0)
+    wwall = SolidObject(name+str(wallnum), Size(1, height, width), Position(w, y+height / 2, z), 0)
     self.walls.append(wwall)
     model = Plane(w=wwall.d()*2, h=wwall.h()*2, name=name+str(wallnum))
     mergeshape.add(model, wwall.x(),wwall.y(),wwall.z(),rx=0.0,ry=90.0,rz=0.0)
@@ -764,13 +768,13 @@ class Building (object):
     The objects are named with the given name argument as a prefix and a globally incrementing number as the suffix.
     """
     global wallnum
-    n = z + width/2
-    s = z - width/2
-    e = x + length/2
-    w = x - length/2
+    n = z + width / 2
+    s = z - width / 2
+    e = x + length / 2
+    w = x - length / 2
 
     model = Plane(w=width, h=self.ceilingthickness, name=name+str(wallnum))
-    mergeshape.add(model, w,y+height+self.ceilingthickness/2,z,rx=0.0,ry=90.0,rz=0.0)
+    mergeshape.add(model, w,y+height+self.ceilingthickness / 2,z,rx=0.0,ry=90.0,rz=0.0)
 
     wallnum += 1
 
@@ -787,10 +791,10 @@ class Building (object):
     The objects are named with the given name argument as a prefix and a globally incrementing number as the suffix.
     """
     global wallnum
-    n = z + width/2
-    s = z - width/2
-    e = x + length/2
-    w = x - length/2
+    n = z + width / 2
+    s = z - width / 2
+    e = x + length / 2
+    w = x - length / 2
 
     ceilingmodel = Plane(w=length, h=width, name=name+str(wallnum))
     mergeshape.add(ceilingmodel,x,y+height,z,rx=90.0,ry=0.0,rz=0.0)
@@ -811,7 +815,7 @@ class Building (object):
     """
     global wallnum
 
-    roof = SolidObject(name+str(wallnum), Size(length, 1, width), Position(x, y+height+self.ceilingthickness/2, z), 0)
+    roof = SolidObject(name+str(wallnum), Size(length, 1, width), Position(x, y+height+self.ceilingthickness / 2, z), 0)
     self.walls.append(roof)
     roofmodel = Plane(w=length, h=width, name=name+str(wallnum))
     mergeshape.add(roofmodel,x,y+height+self.ceilingthickness,z,rx=90.0,ry=0.0,rz=0.0)
