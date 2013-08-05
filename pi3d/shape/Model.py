@@ -1,3 +1,5 @@
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 from pi3d.constants import *
 
 from pi3d.loader import loaderEgg
@@ -7,7 +9,7 @@ from pi3d.Shape import Shape
 class Model(Shape):
   """ 3d model inherits from Shape
   loads vertex, normal, uv, index, texture and material data from obj or egg files
-  at the moment it doesn't fully implement the features such as animation, 
+  at the moment it doesn't fully implement the features such as animation,
   reflectivity etc
   """
   def __init__(self, camera=None, light=None, file_string=None,
@@ -15,9 +17,9 @@ class Model(Shape):
                rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0,
                cx=0.0, cy=0.0, cz=0.0):
     """uses standard constructor for Shape extra Keyword arguments:
-    
+
       *file_string*
-        path and name of obj or egg file    
+        path and name of obj or egg file
     """
     super(Model, self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                 sx, sy, sz, cx, cy, cz)
@@ -26,7 +28,7 @@ class Model(Shape):
       return
     self.exf = file_string[-3:].lower()
     if VERBOSE:
-      print "Loading ",file_string
+      print("Loading ",file_string)
 
     if self.exf == 'egg':
       self.model = loaderEgg.loadFileEGG(self, file_string)
@@ -35,7 +37,7 @@ class Model(Shape):
       self.model = loaderObj.loadFileOBJ(self, file_string)
       return self.model
     else:
-      print self.exf, "file not supported"
+      print(self.exf, "file not supported")
       return None
 
   def clone(self, camera = None, light = None):
@@ -50,7 +52,7 @@ class Model(Shape):
     newModel.shader = self.shader
     newModel.textures = self.textures
     return newModel
-  
+
   def reparentTo(self, parent):
     #TODO functionality not implemented would need to cope with Shape methods
     if self not in parent.childModel:

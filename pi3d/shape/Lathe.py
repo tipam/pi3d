@@ -1,3 +1,5 @@
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 from pi3d.constants import *
 from pi3d.Shape import Shape
 
@@ -13,7 +15,7 @@ class Lathe(Shape):
                rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0,
                cx=0.0, cy=0.0, cz=0.0):
     """uses standard constructor for Shape extra Keyword arguments:
-    
+
       *path*
         Array of coordinates rotated to form shape [(x0,y0),(x1,y1)..]
       *sides*
@@ -23,7 +25,7 @@ class Lathe(Shape):
                                 sx, sy, sz, cx, cy, cz)
 
     if VERBOSE:
-      print "Creating lathe ..."
+      print("Creating lathe ...")
 
     self.path = path if path != None else []
     self.ttype = GL_TRIANGLES

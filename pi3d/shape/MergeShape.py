@@ -1,3 +1,5 @@
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import ctypes
 import math
 import random
@@ -14,7 +16,7 @@ class MergeShape(Shape):
   the shader, each time an object is drawn, it is MUCH faster to use a MergeShape
   where several objects will always remain in the same positions relative to
   each other. i.e. trees in a forest.
-  
+
   Where the objects have multiple Buffers, each needing a different texture
   (i.e. more complex Model objects) each must be combined into a different
   MergeShape
@@ -29,7 +31,7 @@ class MergeShape(Shape):
                                    rx, ry, rz, sx, sy, sz, cx, cy, cz)
 
     if VERBOSE:
-      print "Creating Merge Shape ..."
+      print("Creating Merge Shape ...")
 
     self.vertices = []
     self.normals = []
@@ -48,7 +50,7 @@ class MergeShape(Shape):
     the MergeShape. If bufr is not a Buffer then it will be treated as if it
     is a Shape and its first Buffer object will be merged. Argument additional
     to standard Shape:
-    
+
       *bufr*
         Buffer object or Shape with a member buf[0] that is a Buffer object.
         OR an array or tuple where each element is an array or tuple with
@@ -62,8 +64,8 @@ class MergeShape(Shape):
       buflist = [[bufr, x, y, z, rx, ry, rz, sx, sy, sz]]
     else:
       buflist = bufr
-      
-    for b in buflist:  
+
+    for b in buflist:
       if not(type(b[0]) is Buffer):
         bufr = b[0].buf[0]
       else:
@@ -73,7 +75,7 @@ class MergeShape(Shape):
       assert len(bufr.vertices) == len(bufr.normals)
 
       if VERBOSE:
-        print "Merging", bufr.name
+        print("Merging", bufr.name)
 
       original_vertex_count = len(self.vertices)
 
@@ -113,7 +115,7 @@ class MergeShape(Shape):
 
   def cluster(self, bufr, elevmap, xpos, zpos, w, d, count, options, minscl, maxscl):
     """generates a random cluster on an ElevationMap.
-    
+
     Arguments:
       *bufr*
         Buffer object to merge.
@@ -141,14 +143,14 @@ class MergeShape(Shape):
       rt = random.random() * 360.0
       y = elevmap.calcHeight(x, z) + rh * 2
       blist.append([bufr, x, y, z, 0.0, rt, 0.0, rh, rh, rh])
-      
+
     #self.merge(bufr, x, y, z, 0.0, rt, 0.0, rh, rh, rh)
     self.merge(blist)
 
   def radialCopy(self, bufr, x=0, y=0, z=0, startRadius=2.0, endRadius=2.0,
                  startAngle=0.0, endAngle=360.0, step=12):
     """generates a radially copied cluster, axix is in the y direction.
-    
+
     Arguments:
       *bufr*
         Buffer object to merge.
@@ -175,13 +177,13 @@ class MergeShape(Shape):
 
     blist = []
     for r in range(int(st)):
-      print "merging ", r
+      print("merging ", r)
       ca = math.cos(math.radians(sta))
       sa = math.sin(math.radians(sta))
       sta += step
       rd += rst
       blist.append([bufr, x + ca * rd, y, z + sa * rd,
                 0, sta, 0, 1.0, 1.0, 1.0])
-      
+
     self.merge(blist)
-    print "merged all"
+    print("merged all")
