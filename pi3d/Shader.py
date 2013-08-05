@@ -1,6 +1,7 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import ctypes
+import six
 
 from pi3d.constants import *
 from pi3d.util.Ctypes import c_chars
@@ -117,8 +118,8 @@ class Shader(object):
     self.unif_tex = []
     self.texture = []
     for t in range(3):
-      self.unif_tex.append(opengles.glGetUniformLocation(
-          self.program, b'tex%d' % t))
+      s = six.b('tex%d' % t)
+      self.unif_tex.append(opengles.glGetUniformLocation(self.program, s))
       """
       *NB*
         for *uv* shaders tex0=texture tex1=normal map tex2=reflection
