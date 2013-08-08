@@ -6,6 +6,9 @@ from pi3d.constants import *
 from pi3d.loader.parse_mtl import parse_mtl
 from pi3d.Texture import Texture
 from pi3d.Buffer import Buffer
+from pi3d.util import Log
+
+LOGGER = Log.logger(__name__)
 
 #########################################################################################
 #
@@ -202,11 +205,18 @@ def loadFileOBJ(model, fileName):
       print("len uv=", len(vertices))
     for f in faces[g]:
       iStart = i
-      for v in range(len(f['vertex'])):
-        g_vertices.append(vertices[f['vertex'][v]-1])
-        g_normals.append(normals[f['normal'][v]-1])
-        if (len(f['uv']) > 0 and len(uvs[f['uv'][v]-1]) == 2):
-          g_tex_coords.append(uvs[f['uv'][v]-1])
+      length = len(f['vertex'])
+      for component in 'normal', 'uv':
+        if length > len(f[component]):
+          LOGGER.error('There were more vertices than %ss: %d > %d',
+                       component, length, len(f[component]))
+          length = len(f[component])
+
+      for v in range(length):
+        g_vertices.append(vertices[f['vertex'][v] - 1])
+        g_normals.append(normals[f['normal'][v] - 1])
+        if (len(f['uv']) > 0 and len(uvs[f['uv'][v] - 1]) == 2):
+          g_tex_coords.append(uvs[f['uv'][v] - 1])
         i += 1
       n = i - iStart - 1
       for t in range(1, n):
