@@ -151,7 +151,7 @@ try:
     corridor.position(spc*2.5, mody, spc*5)
     corridor.draw()
     Utility.draw_level_of_detail([xm, ym, zm],[spc*4, mody, spc*5],[[opendist,cor_cross],[1000,cor_cross_doors]])
-
+    
     mymap.draw()  #Draw the landscape
 
     myecube.position(xm, ym, zm)

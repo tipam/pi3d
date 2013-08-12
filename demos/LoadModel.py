@@ -32,6 +32,7 @@ shinetex = Texture("textures/stars.jpg")
 # load model_loadmodel
 mymodel = Model(file_string='models/teapot.egg', name='teapot', x=0, y=0, z=10)
 mymodel.set_shader(shader)
+
 # material is set in the file
 mymodel.set_normal_shine(bumptex, 4.0, shinetex, 0.2, is_uv = False)
 
@@ -50,7 +51,7 @@ while DISPLAY.loop_running():
       screenshot('teapot.jpg')
     elif k==27:
       mykeys.close()
-      DISPLAY.close()
+      DISPLAY.destroy()
       break
     else:
       print(k)

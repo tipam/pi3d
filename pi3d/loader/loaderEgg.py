@@ -5,6 +5,7 @@ import re, os
 from pi3d import *
 from random import randint
 from six.moves import xrange
+from six import advance_iterator
 
 from pi3d.Texture import Texture
 from pi3d.Buffer import Buffer
@@ -84,8 +85,11 @@ def loadFileEGG(model, fileName):
   # into nested arrays ['a', 'b', 'c',[['d','e','',['','','f',[]]],['g','h','',['','','i',[]]]]]
   def pRec(x, bReg, l, i):
     while 1:
-      try: j = bReg.next().start()
-      except: return i+1
+      try:
+        nxtFind = advance_iterator(bReg)
+        j = nxtFind.start()
+      except:
+        return i+1
       c = l[j]
       if c == "<": # add entry to array at this level
         if len(x[3]) == 0: x[2] = l[i:j].strip() # text after "{" and before "<Tabxyz>"
@@ -246,7 +250,7 @@ def loadFileEGG(model, fileName):
         else: model.buf[model.vGroup[np]].material = (0.0, 0.0, 0.0, 0.0)
     ####### end of groupDrill function #####################
 
-  bReg = re.finditer("[{}<]", l)
+  bReg = re.finditer('[{}<]', l)
   xx = ["", "", "", []]
   pRec(xx, bReg, l, 0)
   l = None #in case it's running out of memory?
