@@ -37,8 +37,10 @@ You see the previously loaded texture until the thread catches up.  See for exam
 'falling down barn' and, 8 slides later, 'pi3d splash screen'.  Now go back 8.
 
 """
-import random, time, glob, threading, Queue
+import random, time, glob, threading
 import demo
+
+from six.moves import queue
 
 from pi3d import Display
 from pi3d.Keyboard import Keyboard
@@ -62,7 +64,7 @@ shader = Shader("shaders/2d_flat")
 #iFiles = glob.glob("/home/pi/slidemenu/testdir/*.*")
 iFiles = glob.glob("textures/*.*")
 nFi = len(iFiles)
-fileQ = Queue.Queue() # queue for loading new texture files
+fileQ = queue.Queue() # queue for loading new texture files
 
 alpha_step = 0.025
 nSli = 8

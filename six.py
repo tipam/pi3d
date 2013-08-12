@@ -183,6 +183,10 @@ _moved_attributes = [
     MovedModule("tkinter_tksimpledialog", "tkSimpleDialog",
                 "tkinter.simpledialog"),
     MovedModule("urllib_robotparser", "robotparser", "urllib.robotparser"),
+    ####### following two added
+    MovedModule("urllib_parse", "urllib", "urllib.parse"),
+    MovedModule("urllib_request", "urllib", "urllib.request"),
+    #######
     MovedModule("winreg", "_winreg"),
 ]
 for attr in _moved_attributes:

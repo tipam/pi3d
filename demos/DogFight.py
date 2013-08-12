@@ -1,10 +1,13 @@
 #!/usr/bin/python
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-import time, math, glob, random, threading, json, urllib
+import time, math, glob, random, threading, json
 
 import demo
 import pi3d
+
+from six.moves import urllib_parse, urllib_request
+from six import iteritems
 
 #display, camera, shader
 DISPLAY = pi3d.Display.create(x=100, y=100, frames_per_second=20)
@@ -292,7 +295,7 @@ class Instruments(object):
     self.ndl2.rotateToZ(-360*ae.y/3000)
     self.ndl3.rotateToZ(-ae.direction)
     self.dot_list = []
-    for i, o in others.iteritems():
+    for i, o in iteritems(others):
       if i == "start":
         continue
       dx = (o.x - ae.x) / 50
@@ -320,14 +323,14 @@ def json_load(ae, others):
   else:
     n_id = ""
     n_damage = 0.0
-  params = urllib.urlencode({"id":ae.refid, "tm":tm_now, "x":ae.x, "z":ae.z,
+  params = urllib_parse.urlencode({"id":ae.refid, "tm":tm_now, "x":ae.x, "z":ae.z,
           "json":jstring, "nearest":n_id, "damage":n_damage})
   others["start"] = tm_now #used for polling freqency
   urlstring = "http://www.eldwick.org.uk/sharecalc/rpi_json.php?{0}".format(params)
   try:
-    r = urllib.urlopen(urlstring)
+    r = urllib_request.urlopen(urlstring)
     if r.getcode() == 200: #good response
-      jstring = r.read()
+      jstring = r.read().decode("utf-8")
       if len(jstring) > 50: #error messages are shorter than this
         olist = json.loads(jstring)
         #smooth time offset value
@@ -392,7 +395,7 @@ def json_load(ae, others):
       print(r.getcode())
       return False
   except Exception as e:
-    print(e)
+    print("exception:", e)
 
 #MAC address
 try:
@@ -459,7 +462,7 @@ while DISPLAY.loop_running() and not inputs.key_state("KEY_ESC"):
   if inputs.key_state("KEY_S") or inputs.get_hat()[1] == 1: #throttle back
     a.set_power(-1)
   if inputs.key_state("KEY_X"): #jump to first enemy!
-    for i, b in others.iteritems():
+    for i, b in iteritems(others):
       if i != "start":
         a.x, a.y, a.z = b.x, b.y + 5, b.z
         break
@@ -488,7 +491,7 @@ while DISPLAY.loop_running() and not inputs.key_state("KEY_ESC"):
   inst.draw()
   a.draw()
 
-  for i, b in others.iteritems():
+  for i, b in iteritems(others):
     if i == "start":
       continue
     b.update_variables()
