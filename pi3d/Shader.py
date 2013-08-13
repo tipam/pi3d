@@ -118,7 +118,7 @@ class Shader(object):
     self.unif_tex = []
     self.texture = []
     for t in range(3):
-      s = six.b('tex%d' % t)
+      s = six.b(b'tex{}'.format(t))
       self.unif_tex.append(opengles.glGetUniformLocation(self.program, s))
       """
       *NB*
