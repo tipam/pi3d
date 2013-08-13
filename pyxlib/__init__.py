@@ -1,2 +1,2 @@
-from x import *
-from xlib import *
+from .x import *
+from .xlib import *

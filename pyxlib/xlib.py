@@ -1,7 +1,7 @@
 from six.moves import xrange
 
 from ctypes import *
-from x import *
+from .x import *
 
 libX11 = CDLL('libX11.so.6')
 

@@ -5,6 +5,7 @@ from pyxlib import xlib
 import time
 import threading
 import traceback
+import six
 
 from pi3d.constants import *
 from pi3d.util import Log
