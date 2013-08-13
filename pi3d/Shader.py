@@ -117,9 +117,7 @@ class Shader(object):
     opengles.glEnableVertexAttribArray(self.attr_texcoord)
     self.unif_tex = []
     self.texture = []
-    for t in range(3):
-      #s = six.b('tex{}'.format(t))
-      s = 'tex{}'.format(t).encode("latin-1") if six.PY3 else b'tex{}'.format(t)
+    for s in [b'tex0', b'tex1', b'tex2']:
       self.unif_tex.append(opengles.glGetUniformLocation(self.program, s))
       """
       *NB*
