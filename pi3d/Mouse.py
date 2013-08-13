@@ -1,6 +1,7 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import threading
+import six
 
 from pi3d.util import Log
 
@@ -29,9 +30,9 @@ class _Mouse(threading.Thread):
         mouse y limit
     """
     super(_Mouse, self).__init__()
-    self.fd = open('/dev/input/' + mouse, 'r')
+    self.fd = open('/dev/input/' + mouse, 'rb')
     self.running = False
-    self.buffer = ''
+    self.buffr = '' if six.PY3 else b''
     self.lock = threading.RLock()
     self.width = width
     self.height = height
@@ -63,12 +64,12 @@ class _Mouse(threading.Thread):
       return self._dx, self._dy
 
   def _check_event(self):
-    if len(self.buffer) >= 3:
-      buttons = ord(self.buffer[0])
-      self.buffer = self.buffer[1:]
+    if len(self.buffr) >= 3:
+      buttons = ord(self.buffr[0])
+      self.buffr = self.buffr[1:]
       if buttons & _Mouse.HEADER:
-        dx, dy = map(ord, self.buffer[0:2])
-        self.buffer = self.buffer[2:]
+        dx, dy = map(ord, self.buffr[0:2])
+        self.buffr = self.buffr[2:]
         self.button = buttons & _Mouse.BUTTONS
         if buttons & _Mouse.XSIGN:
           dx -= 256
@@ -86,8 +87,10 @@ class _Mouse(threading.Thread):
 
     else:
       try:
-        self.buffer += self.fd.read(3)
-      except:
+        strn = self.fd.read(3).decode("latin-1")
+        self.buffr += strn
+      except Exception as e:
+        print("exception is: {}".format(e))
         self.stop()
         return
 
