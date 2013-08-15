@@ -6,11 +6,20 @@ import six
 import time
 import threading
 import traceback
+import platform
 
 from pi3d.constants import *
 from pi3d.util import Log
 from pi3d.util import Utility
 from pi3d.util.DisplayOpenGL import DisplayOpenGL
+from pi3d.Keyboard import Keyboard
+
+if 'x86' in platform.machine():
+  IS_x86 = True
+  from pyxlib.x import *
+  from pyxlib import xlib
+else:
+  IS_x86 = False
 
 LOGGER = Log.logger(__name__)
 
@@ -57,6 +66,10 @@ class Display(object):
     self.textures_dict = {}
     self.vbufs_dict = {}
     self.ebufs_dict = {}
+
+    if IS_x86:
+      self.event_list = []
+      self.ev = xlib.XEvent()
 
     self.opengl = DisplayOpenGL()
     self.max_width, self.max_height = self.opengl.width, self.opengl.height
@@ -207,6 +220,16 @@ class Display(object):
   def _loop_begin(self):
     # TODO(rec):  check if the window was resized and resize it, removing
     # code from MegaStation to here.
+    if IS_x86:
+      n = xlib.XEventsQueued(self.opengl.d, xlib.QueuedAfterFlush)
+      for i in range(n):
+        if xlib.XCheckMaskEvent(self.opengl.d, KeyPressMask, self.ev):
+          self.event_list.append(self.ev)
+        else:
+          xlib.XNextEvent(self.opengl.d, self.ev)
+          if self.ev.type == ClientMessage:
+            if (self.ev.xclient.data.l[0] == self.opengl.WM_DELETE_WINDOW.value):
+              self.destroy()
     self.clear()
     with self.lock:
       self.sprites_to_load, to_load = set(), self.sprites_to_load
@@ -324,20 +347,43 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
     Maximum frames per second to render (None means "free running").
   """
   if tk:
-    from pi3d.util import TkWin
-    if not (w and h):
-      # TODO: how do we do full-screen in tk?
-      #LOGGER.error('Can't compute default window size when using tk')
-      #raise Exception
-      # ... just force full screen - TK will automatically fit itself into the screen
-      w = 1920
-      h = 1180
-    tkwin = TkWin.TkWin(window_parent, window_title, w, h)
-    tkwin.update()
-    if x is None:
-      x = tkwin.winx
-    if y is None:
-      y = tkwin.winy
+    if IS_x86:
+      #just use python-xlib same as non-tk but need dummy behaviour
+      class DummyTkWin(object):
+        def __init__(self):
+          self.tkKeyboard = Keyboard()
+          self.ev = ""
+          self.key = ""
+          self.winx, self.winy = 0, 0
+          self.width, self.height = 1920, 1180
+          self.event_list = []
+
+        def update(self):
+          self.key = self.tkKeyboard.read_code()
+          if self.key == "":
+            self.ev = ""
+          else:
+            self.ev = "key"
+
+      tkwin = DummyTkWin()
+      x = x or 0
+      y = y or 0
+
+    else:
+      from pi3d.util import TkWin
+      if not (w and h):
+        # TODO: how do we do full-screen in tk?
+        #LOGGER.error('Can't compute default window size when using tk')
+        #raise Exception
+        # ... just force full screen - TK will automatically fit itself into the screen
+        w = 1920
+        h = 1180
+      tkwin = TkWin.TkWin(window_parent, window_title, w, h)
+      tkwin.update()
+      if x is None:
+        x = tkwin.winx
+      if y is None:
+        y = tkwin.winy
 
   else:
     tkwin = None

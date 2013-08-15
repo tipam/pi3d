@@ -3,6 +3,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 """
 pi3d.constants contains constant values, mainly integers, from OpenGL ES 2.0.
 """
+import platform
 
 VERSION = '0.8'
 
@@ -34,16 +35,20 @@ EGL_NO_SURFACE = 0
 DISPMANX_PROTECTION_NONE = 0
 
 # Lastly, load the libraries.
-def _load_library(name):
+def _load_library(name, version=""):
   """Try to load a shared library, report an error on failure."""
   try:
     import ctypes
-    return ctypes.CDLL('lib%s.so' % name)
+    return ctypes.CDLL("lib{}.so{}".format(name, version))
   except:
     from pi3d.util import Log
-    Log.logger(__name__).error("Couldn't load library %s" % name)
+    Log.logger(__name__).error("Couldn't load library lib{}.so{}".format(name, version))
 
-bcm = _load_library('bcm_host')
-opengles = _load_library('GLESv2')
-openegl = _load_library('EGL')
-
+#May need to use system() and linux_distribution()
+if 'x86' in platform.machine(): #i.e. x86_64
+  opengles = _load_library('GLESv2','.2')
+  openegl = _load_library('EGL', '.1')
+else: # pi armv6l
+  bcm = _load_library('bcm_host', '')
+  opengles = _load_library('GLESv2', '')
+  openegl = _load_library('EGL', '')
