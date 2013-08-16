@@ -5,7 +5,7 @@ pi3d.constants contains constant values, mainly integers, from OpenGL ES 2.0.
 """
 import platform
 
-VERSION = '0.8'
+VERSION = '1.0'
 
 STARTUP_MESSAGE = """
 
