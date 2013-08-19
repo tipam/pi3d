@@ -430,7 +430,7 @@ mymap = pi3d.ElevationMap("textures/mountainsHgt.jpg", name="map",
                      width=mapwidth, depth=mapdepth, height=mapheight,
                      divx=64, divy=64, camera=CAMERA)
 mymap.set_draw_details(SHADER, [mountimg1, bumpimg, reflimg], 1024.0, 0.0)
-mymap.set_fog((0.5,0.5,0.5,0.8), 4000)
+mymap.set_fog((0.5, 0.5, 0.5, 0.8), 4000)
 # init events
 inputs = pi3d.InputEvents()
 inputs.get_mouse_movement()
