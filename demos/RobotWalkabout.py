@@ -10,47 +10,30 @@ value
 import math
 
 import demo
-
-from pi3d import Display
-from pi3d.Keyboard import Keyboard
-from pi3d.Mouse import Mouse
-from pi3d.Texture import Texture
-
-from pi3d.Camera import Camera
-from pi3d.Shader import Shader
-
-from pi3d.shape.Cuboid import Cuboid
-from pi3d.shape.Cylinder import Cylinder
-from pi3d.shape.ElevationMap import ElevationMap
-from pi3d.shape.EnvironmentCube import EnvironmentCube
-from pi3d.shape.EnvironmentCube import loadECfiles
-from pi3d.shape.MergeShape import MergeShape
-from pi3d.shape.Sphere import Sphere
-
-from pi3d.util.Screenshot import screenshot
+import pi3d
 
 # Setup display and initialise pi3d
-DISPLAY = Display.create(x=50, y=50, w=-100, h=-100,
+DISPLAY = pi3d.Display.create(x=50, y=50, w=-100, h=-100,
                          background=(0.4, 0.8, 0.8, 1))
-shader = Shader("shaders/uv_reflect")
-flatsh = Shader("shaders/uv_flat")
+shader = pi3d.Shader("shaders/uv_reflect")
+flatsh = pi3d.Shader("shaders/uv_flat")
 #############################
 
 # Load textures
-reflcn = Texture("textures/stars.jpg")
+reflcn = pi3d.Texture("textures/stars.jpg")
 
 #load environment cube
-ectex = loadECfiles("textures/ecubes","sbox_interstellar")
-myecube = EnvironmentCube(size=900.0, maptype="FACES")
+ectex = pi3d.loadECfiles("textures/ecubes","sbox_interstellar")
+myecube = pi3d.EnvironmentCube(size=900.0, maptype="FACES")
 myecube.set_draw_details(flatsh, ectex)
 
 # Create elevation map
 mapwidth=1000.0
 mapdepth=1000.0
 mapheight=60.0
-mountimg1 = Texture("textures/mars_colour.png")
-bumpimg = Texture("textures/mudnormal.jpg")
-mymap = ElevationMap(mapfile="textures/mars_height.png",
+mountimg1 = pi3d.Texture("textures/mars_colour.png")
+bumpimg = pi3d.Texture("textures/mudnormal.jpg")
+mymap = pi3d.ElevationMap(mapfile="textures/mars_height.png",
                      width=mapwidth, depth=mapdepth, height=mapheight,
                      divx=128, divy=128)
 mymap.set_draw_details(shader,[mountimg1, bumpimg],128.0, 0.0)
@@ -58,12 +41,12 @@ mymap.set_fog((0.3,0.15,0.1,0.1), 300.0)
 
 
 #create robot
-metalimg = Texture("textures/metalhull.jpg")
-robot_head= Sphere(radius=1.0)
-robot_body = Cylinder(radius=1.0, height=2.0, sides=12)
-robot_leg = Cuboid(w=0.35, h=2.0)
+metalimg = pi3d.Texture("textures/metalhull.jpg")
+robot_head= pi3d.Sphere(radius=1.0)
+robot_body = pi3d.Cylinder(radius=1.0, height=2.0, sides=12)
+robot_leg = pi3d.Cuboid(w=0.35, h=2.0)
 
-robot = MergeShape()
+robot = pi3d.MergeShape()
 robot.add(robot_head.buf[0], 0.0, 1.6)
 robot.add(robot_body.buf[0], 0.0, 0.5)
 robot.add(robot_leg.buf[0], -1.04, 0, 0)
@@ -71,10 +54,10 @@ robot.add(robot_leg.buf[0], 1.05, 0, 0)
 robot.set_draw_details(shader, [metalimg, metalimg, reflcn], 0.0, 0.5)
 
 #create space station
-ssphere = Sphere(radius=10, slices=16, sides=16)
-scorrid = Cylinder(radius=4, height=22)
+ssphere = pi3d.Sphere(radius=10, slices=16, sides=16)
+scorrid = pi3d.Cylinder(radius=4, height=22)
 
-station = MergeShape(y=mymap.calcHeight(0, 0), rx=4, ry=4, rz=4)
+station = pi3d.MergeShape(y=mymap.calcHeight(0, 0), rx=4, ry=4, rz=4)
 station.add(ssphere.buf[0], -20, 0, 20)
 station.add(ssphere.buf[0], 20, 0, 20)
 station.add(ssphere.buf[0], 20, 0, -20)
@@ -94,14 +77,14 @@ zm = 0.0
 ym = (mymap.calcHeight(xm,zm)+avhgt)
 
 # Fetch key presses
-mykeys = Keyboard()
-mymouse = Mouse(restrict=False)
+mykeys = pi3d.Keyboard()
+mymouse = pi3d.Mouse(restrict=False)
 mymouse.start()
 
 omx, omy = mymouse.position()
 
 # Display scene and rotate cuboid
-CAMERA = Camera.instance()
+CAMERA = pi3d.Camera.instance()
 while DISPLAY.loop_running():
 
   CAMERA.reset()
@@ -153,7 +136,7 @@ while DISPLAY.loop_running():
     elif k==100:  #key D
         rot += 2
     elif k==112:  #key P
-        screenshot("walkaboutRobot.jpg")
+        pi3d.screenshot("walkaboutRobot.jpg")
     elif k==27:    #Escape key
       mykeys.close()
       mymouse.stop()
