@@ -70,10 +70,6 @@ LOG_LEVEL = 'INFO'
 LOG_FILE = ''
 LOG_FORMAT = '%(asctime)s %(levelname)s: %(name)s: %(message)s'
 
-logging.basicConfig(
-  level=getattr(logging, LOG_LEVEL),
-  format=LOG_FORMAT)
-
 def parent_makedirs(file):
   path = os.path.dirname(os.path.expanduser(file))
   try:
@@ -84,11 +80,22 @@ def parent_makedirs(file):
     else:
       raise
 
-if LOG_FILE:
-  parent_makedirs(LOG_FILE)
-  HANDLER = logging.FileHandler(LOG_FILE)
-else:
-  HANDLER = None
+def set_logs(level=None, file=None):
+  global HANDLER, LOG_LEVEL, LOG_FILE
+  LOG_LEVEL = level or LOG_LEVEL
+  LOG_FILE = file or LOG_FILE
+
+  logging.basicConfig(
+    level=getattr(logging, LOG_LEVEL),
+    format=LOG_FORMAT)
+
+  if LOG_FILE:
+    parent_makedirs(LOG_FILE)
+    HANDLER = logging.FileHandler(LOG_FILE)
+  else:
+    HANDLER = None
+
+set_logs()
 
 def logger(name=None):
   log = logging.getLogger(name or 'logging')
