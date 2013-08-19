@@ -1,5 +1,9 @@
 #!/usr/bin/python
 from __future__ import absolute_import, division, print_function, unicode_literals
+"""quite a complicated demo showing many features of pi3d as well as
+communication between players using httpRequest (see rpi_json.sql and
+rpi_json.php) json serialisation and threading.
+"""
 
 import time, math, glob, random, threading, json
 
