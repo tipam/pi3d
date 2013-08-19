@@ -12,7 +12,9 @@ and then later on you would say things like:
 
   LOGGER.debug('stuff here')
   LOGGER.info('Some information about %s', some_name)
+  LOGGER.error('Not everything was displayed, sorry!')
   LOGGER.error('You died with error code %d, message %s', error_code, msg)
+  LOGGER.critical('Your machine is about to explode.  Leave the building.')
 
 (Note that the values for the format string, like "some_name", "error_code" or
 "msg" are passed in as arguments - that's so you never even construct the
@@ -21,30 +23,21 @@ message if it isn't going to be displayed.)
 
 REDIRECTING OR FILTERING LOGGING.
 
-You can control logging by change one of the following module variables -
-which for the moment you have to do by editing this file.
+You can control logging by calling Log.set_logs().  Log.set_logs() has three
+optional parameters:
 
+  level can be one of 'DEBUG', 'INFO', 'WARNING', 'ERROR', or 'CRITICAL'.
+    Everything that's the current log level or greater is displayed -
+    for example, if your current log level is 'WARNING', then you'll display
+    all warning, error, or critical messages.
 
-LOG_LEVEL controls which level messages are logged.
+  file is the name of a file to which to redirect messages.
 
-Possible choices are DEBUG, INFO, WARNING, ERROR, CRITICAL. If the LOG_LEVEL
-is DEBUG then you see all log messages - if the LOG_LEVEL is CRITICAL then you
-see only critical messages.
-
-The default value for LOG_LEVEL is INFO, so you see everything except debug
-messages.
-
-
-LOG_FILE is empty by default.  If it's non-empty, then the log information is
-redirected to that file.  Note that the logging system will silently overwrite
-whatever's at that location, so make sure it isn't anything important...
-
-
-LOG_FORMAT controls what information is in the output messages.  The default is
+  format controls what information is in the output messages.  The default is
 
    '%(asctime)s %(levelname)s: %(name)s: %(message)s'
 
-which amounts to
+which results in
 
   time LEVEL: filename: Your Message Here.
 
@@ -80,10 +73,11 @@ def parent_makedirs(file):
     else:
       raise
 
-def set_logs(level=None, file=None):
-  global HANDLER, LOG_LEVEL, LOG_FILE
+def set_logs(level=None, file=None, format=None):
+  global HANDLER, LOG_LEVEL, LOG_FILE, LOG_FORMAT
   LOG_LEVEL = level or LOG_LEVEL
   LOG_FILE = file or LOG_FILE
+  LOG_FORMAT = format or LOG_FORMAT
 
   logging.basicConfig(
     level=getattr(logging, LOG_LEVEL),
@@ -106,4 +100,3 @@ def logger(name=None):
 
 LOGGER = logger(__name__)
 LOGGER.debug('Log level is %s', LOG_LEVEL)
-

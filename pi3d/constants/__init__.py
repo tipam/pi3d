@@ -42,7 +42,7 @@ def _load_library(name, version=""):
     return ctypes.CDLL("lib{}.so{}".format(name, version))
   except:
     from pi3d.util import Log
-    Log.logger(__name__).error("Couldn't load library lib{}.so{}".format(name, version))
+    Log.logger(__name__).error("Couldn't load library lib%s.so%s", name, version)
 
 #May need to use system() and linux_distribution()
 if 'x86' in platform.machine(): #i.e. x86_64
