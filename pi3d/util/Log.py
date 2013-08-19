@@ -45,10 +45,8 @@ which results in
 
 import errno
 import logging
-import logging.config
 import os
 import os.path
-import sys
 
 # To get debug messages, set LOG_LEVEL to be 'DEBUG'.
 #
@@ -75,7 +73,7 @@ def parent_makedirs(file):
 
 def set_logs(level=None, file=None, format=None):
   global HANDLER, LOG_LEVEL, LOG_FILE, LOG_FORMAT
-  LOG_LEVEL = level or LOG_LEVEL
+  LOG_LEVEL = (level or LOG_LEVEL).upper()
   LOG_FILE = file or LOG_FILE
   LOG_FORMAT = format or LOG_FORMAT
 
