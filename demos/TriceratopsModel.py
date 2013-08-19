@@ -6,31 +6,23 @@ TODO it would be nice to show a comparison with a low poly version of this
 with normal mapping for the details of the model.
 """
 import demo
-
-from pi3d.util import Utility
-from pi3d import Display
-from pi3d.Keyboard import Keyboard
-
-from pi3d.Shader import Shader
-
-from pi3d.shape.Model import Model
-from pi3d.util.Screenshot import screenshot
+import pi3d
 
 # Setup display and initialise pi3d
-DISPLAY = Display.create(x=50, y=50, w=-100, h=-100,
+DISPLAY = pi3d.Display.create(x=50, y=50, w=-100, h=-100,
                          background = (0.2, 0.4, 0.6, 1))
 
-shader = Shader('shaders/uv_light')
+shader = pi3d.Shader('shaders/uv_light')
 #========================================
 
 # load model_loadmodel
-mymodel = Model(file_string='models/Triceratops/Triceratops.egg',
+mymodel = pi3d.Model(file_string='models/Triceratops/Triceratops.egg',
                 name='Triceratops', x=0, y=-1, z=40,
                 sx=0.005, sy=0.005, sz=0.005)
 mymodel.set_shader(shader)
 
 # Fetch key presses
-mykeys = Keyboard()
+mykeys = pi3d.Keyboard()
 
 while 1:
   DISPLAY.clear()
@@ -42,7 +34,7 @@ while 1:
 
   k = mykeys.read()
   if k >-1:
-    if k==112: screenshot('Triceratops.jpg')
+    if k==112: pi3d.screenshot('Triceratops.jpg')
     elif k==27:
       mykeys.close()
       DISPLAY.destroy()

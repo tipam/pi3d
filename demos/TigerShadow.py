@@ -6,7 +6,7 @@ a function to draw the various parts of the tank and the ElevationMap.pitch_roll
 method to make models conform (aproximately) to the surface of an ElevationMap.
 The tank gun is raised as the mouse view point to looking up. This shows how to
 combine various rotations about different axes without the objects falling apart!
-This demo also uses a tkinter tkwindow but creates it as method of Display. Compare
+This demo also uses a tkinter tkwindow but creates it as method of pi3d.Display. Compare
 with the system used in demos/MarsStation.py
 Also look out for:
 2D shader usage. Drawing onto an ImageSprite canvas placed in front of the camera
@@ -16,73 +16,51 @@ loading and to draw a telescopic site view and a navigation map
 import math, random, time, traceback
 
 import demo
+import pi3d
 
-from pi3d.constants import *
-
-from pi3d import Display
-
-from pi3d.Camera import Camera
-from pi3d.Mouse import Mouse
-from pi3d.Texture import Texture
-from pi3d.Shader import Shader
-
-from pi3d.shape.ElevationMap import ElevationMap
-from pi3d.shape import EnvironmentCube
-from pi3d.shape.Model import Model
-from pi3d.shape.Sprite import ImageSprite
-
-from pi3d.util import Log
-from pi3d.util.Screenshot import screenshot
-from pi3d.util.TkWin import TkWin
-from pi3d.util.ShadowCaster import ShadowCaster
-
-from pi3d.Light import Light
-
-from pi3d.event.Event import InputEvents
-
-LOGGER = Log.logger(__name__)
+LOGGER = pi3d.Log.logger(__name__)
 
 # Create a Tkinter window
 winw, winh, bord = 1200, 600, 0     #64MB GPU memory setting
 # winw,winh,bord = 1920,1200,0   #128MB GPU memory setting
 
-DISPLAY = Display.create(tk=True, window_title='Tiger Tank demo in Pi3D',
+DISPLAY = pi3d.Display.create(tk=True, window_title='Tiger Tank demo in Pi3D',
                         w=winw, h=winh - bord, far=2200.0,
                         background=(0.4, 0.8, 0.8, 1), frames_per_second=16)
 
 #inputs = InputEvents()
 #inputs.get_mouse_movement()
 
-mylight = Light(lightpos=(0, -1, 1), lightcol =(0.8, 0.8, 0.8), lightamb=(0.30, 0.30, 0.32))
+mylight = pi3d.Light(lightpos=(0, -1, 1), lightcol =(0.8, 0.8, 0.8), lightamb=(0.30, 0.30, 0.32))
 
 win = DISPLAY.tkwin
 
-shader = Shader('shaders/uv_reflect')
-flatsh = Shader('shaders/uv_flat')
-shade2d = Shader('shaders/2d_flat')
+shader = pi3d.Shader('shaders/uv_reflect')
+flatsh = pi3d.Shader('shaders/uv_flat')
+shade2d = pi3d.Shader('shaders/2d_flat')
 
 #========================================
 # create splash screen and draw it
-splash = ImageSprite("textures/tiger_splash.jpg", shade2d, w=10, h=10, z=0.2)
+splash = pi3d.ImageSprite("textures/tiger_splash.jpg", shade2d, w=10, h=10, z=0.2)
 splash.draw()
 DISPLAY.swap_buffers()
 
 # create environment cube
-ectex = EnvironmentCube.loadECfiles('textures/ecubes/Miramar', 'miramar_256',
+ectex = pi3d.loadECfiles('textures/ecubes/Miramar', 'miramar_256',
                                     suffix='png')
-myecube = EnvironmentCube.EnvironmentCube(size=1800.0, maptype='FACES')
+myecube = pi3d.EnvironmentCube(size=1800.0, maptype='FACES')
 myecube.set_draw_details(flatsh, ectex)
 
 # Create elevation map
 mapwidth = 1900.0
 mapdepth = 1700.0
 mapheight = 120.0
-mountimg1 = Texture('textures/mountains3_512.jpg')
-bumpimg = Texture('textures/grasstile_n.jpg')
-tigerbmp = Texture('models/Tiger/tiger_bump.jpg')
-topbmp = Texture('models/Tiger/top_bump.jpg')
-#roadway = Texture('textures/road5.png')
-mymap = ElevationMap(mapfile='textures/mountainsHgt2.png',
+mountimg1 = pi3d.Texture('textures/mountains3_512.jpg')
+bumpimg = pi3d.Texture('textures/grasstile_n.jpg')
+tigerbmp = pi3d.Texture('models/Tiger/tiger_bump.jpg')
+topbmp = pi3d.Texture('models/Tiger/top_bump.jpg')
+#roadway = pi3d.Texture('textures/road5.png')
+mymap = pi3d.ElevationMap(mapfile='textures/mountainsHgt2.png',
                      width=mapwidth, depth=mapdepth,
                      height=mapheight, divx=64, divy=64)
 
@@ -94,7 +72,7 @@ def set_fog(shape):
   shape.set_fog(FOG, 1000.0)
 
 def make_model(filename, name, x=0, y=0, z=0, rx=0, ry=0, rz=0):
-  model = Model(file_string='models/' + filename,
+  model = pi3d.Model(file_string='models/' + filename,
                 name=name, x=x, y=y, z=z, rx=rx, ry=ry, rz=rz,
                 sx=0.1, sy=0.1, sz=0.1)
   model.set_shader(shader)
@@ -126,17 +104,17 @@ y = mymap.calcHeight(x,z)
 cottages = make_model('Cottages/cottages_low.obj', 'cottagesLo', x, y, z, ry=-5)
 
 #ShadowCaster
-myshadows = ShadowCaster(emap=mymap, light=mylight)
+myshadows = pi3d.ShadowCaster(emap=mymap, light=mylight)
 
 #cross-hairs in gun sight
-targtex = Texture("textures/target.png", blend=True)
-target = ImageSprite(targtex, shade2d, w=10, h=10, z=0.4)
+targtex = pi3d.Texture("textures/target.png", blend=True)
+target = pi3d.ImageSprite(targtex, shade2d, w=10, h=10, z=0.4)
 target.set_2d_size(targtex.ix, targtex.iy, (DISPLAY.width - targtex.ix)/2,
                   (DISPLAY.height - targtex.iy)/2)
 
 #telescopic gun sight
-sniptex = Texture("textures/snipermode.png", blend=True)
-sniper = ImageSprite(sniptex, shade2d, w=10, h=10, z=0.3)
+sniptex = pi3d.Texture("textures/snipermode.png", blend=True)
+sniper = pi3d.ImageSprite(sniptex, shade2d, w=10, h=10, z=0.3)
 scx = DISPLAY.width/sniptex.ix
 scy = DISPLAY.height/sniptex.iy
 if scy > scx:
@@ -145,12 +123,12 @@ scw, sch = sniptex.ix * scx, sniptex.iy * scx
 sniper.set_2d_size(scw, sch, (DISPLAY.width - scw)/2,(DISPLAY.height - sch)/2)
 
 #corner map and dots
-smmap = ImageSprite(mountimg1, shade2d, w=10, h=10, z=0.2)
+smmap = pi3d.ImageSprite(mountimg1, shade2d, w=10, h=10, z=0.2)
 smmap.set_2d_size(w=200, h=200, x=DISPLAY.width - 200, y=DISPLAY.height - 200)
-#dot1tex = Texture("textures/red_ball.png")
-dot1 = ImageSprite("textures/red_ball.png", shade2d, w=10, h=10, z=0.1)
+#dot1tex = pi3d.Texture("textures/red_ball.png")
+dot1 = pi3d.ImageSprite("textures/red_ball.png", shade2d, w=10, h=10, z=0.1)
 dot1.set_2d_size(w=10, h=10) # 10x10 pixels
-dot2 = ImageSprite("textures/blu_ball.png", shade2d, w=10, h=10, z=0.05)
+dot2 = pi3d.ImageSprite("textures/blu_ball.png", shade2d, w=10, h=10, z=0.05)
 dot2.set_2d_size(w=10, h=10)
 
 #player tank vars
@@ -160,7 +138,7 @@ tankroll = 0.0     #side-to-side roll of tank on ground
 tankpitch = 0.0   #too and fro pitch of tank on ground lol catface
 
 #key presses
-mymouse = Mouse(restrict = False)
+mymouse = pi3d.Mouse(restrict = False)
 mymouse.start()
 omx, omy = mymouse.position()
 
@@ -204,7 +182,7 @@ win.update()
 DISPLAY.resize(win.winx, win.winy, win.width, win.height - bord)
 
 is_running = True
-CAMERA = Camera.instance()
+CAMERA = pi3d.Camera.instance()
 
 try:
   while DISPLAY.loop_running():
@@ -323,7 +301,7 @@ try:
       if win.key == "d":
         tankrot += 2
       if win.key == "p":
-        screenshot("TigerTank.jpg")
+        pi3d.screenshot("TigerTank.jpg")
       if win.key == "Escape":
         try:
           print("bye,bye1")

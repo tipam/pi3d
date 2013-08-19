@@ -1,28 +1,30 @@
 #!/usr/bin/python
-from __future__ import absolute_import, division, print_function, unicode_literals
-"""This demo shows the use of the Canvas shape for 2D drawing. Also threading
-is used to allow the file access to be done in the background. 
 
-Schuitz screwed around with this a lot to handle an arbitrary number of 
+from __future__ import absolute_import, division, print_function, unicode_literals
+
+"""This demo shows the use of the Canvas shape for 2D drawing. Also threading
+is used to allow the file access to be done in the background.
+
+Schuitz screwed around with this a lot to handle an arbitrary number of
 textures (within reasonable limits) fading in and out on top of each
 other without breaking the UI.  I settled on 8.
 
 The method is a little involved.  There are a small number of Canvases (8)
 that get recycled.  A "Carousel" class keeps track of which canvas has focus and
-what texture file index (from the file list) it contains.  Handy % operators keep the 
-'carousel' and texture file indices wrapping around properly at the ends.  
+what texture file index (from the file list) it contains.  Handy % operators keep the
+'carousel' and texture file indices wrapping around properly at the ends.
 
-The init condition has the 0th file somewhere in the middle, with focus, 
+The init condition has the 0th file somewhere in the middle, with focus,
 to pre-buffer some images in either direction.
 
-Conceptually, when the slides are navigated left or right, a canvas slot falls off the 
-far end and tacked on the approaching end, where a thread fills in a texture from 
+Conceptually, when the slides are navigated left or right, a canvas slot falls off the
+far end and tacked on the approaching end, where a thread fills in a texture from
 the file list in the same direction.
 
 Confused yet?
 
 Everything gets straighted out with the Carousel.draw() function which knows to
-draw out the canvases far to near (thanks to opengl transparency gotchas), so it 
+draw out the canvases far to near (thanks to opengl transparency gotchas), so it
 will know which to start drawing first from the currently focused canvas.  At least the
 canvasses are always in a spatial sequential order, except for the wraparound.
 
@@ -30,7 +32,7 @@ An update() function checks the fade directions and visibility of each canvas an
 adjusts the alphas every time it is called.  Other transforms could happen in here later.
 
 In a future version I want to employ a lock to hold threads from starting until a
-screen draw activity flag has gone quiet, or some timeout happens.  
+screen draw activity flag has gone quiet, or some timeout happens.
 
 There is still some interesting behaviour when the UI overruns the thread progress.
 You see the previously loaded texture until the thread catches up.  See for example
@@ -39,27 +41,20 @@ You see the previously loaded texture until the thread catches up.  See for exam
 """
 import random, time, glob, threading
 import demo
+import pi3d
 
 from six.moves import queue
-
-from pi3d import Display
-from pi3d.Keyboard import Keyboard
-from pi3d.Texture import Texture
-from pi3d.Camera import Camera
-from pi3d.Shader import Shader
-from pi3d.shape.Canvas import Canvas
-from pi3d import Log
 
 print("#########################################################")
 print("press ESC to escape, S to go back, any key for next slide")
 print("#########################################################")
 
-LOGGER = Log.logger(__name__)
+LOGGER = pi3d.Log.logger(__name__)
 LOGGER.info("Log using this expression.")
 
 # Setup display and initialise pi3d
-DISPLAY = Display.create(background=(0.0, 0.0, 0.0, 1.0), frames_per_second=20)
-shader = Shader("shaders/2d_flat")
+DISPLAY = pi3d.Display.create(background=(0.0, 0.0, 0.0, 1.0), frames_per_second=20)
+shader = pi3d.Shader("shaders/2d_flat")
 
 #iFiles = glob.glob("/home/pi/slidemenu/testdir/*.*")
 iFiles = glob.glob("textures/*.*")
@@ -69,16 +64,16 @@ fileQ = queue.Queue() # queue for loading new texture files
 alpha_step = 0.025
 nSli = 8
 drawFlag = False
-  
+
 def tex_load():
   """ This function runs all the time in a background thread. It checks the
   fileQ for images to load that have been inserted by Carousel.next() or prev()
-  
+
   here the images are scaled to fit the Display size, if they were to be
   rendered pixel for pixel as the original then the mipmap=False argument would
   be used, which is faster, and w and h values set to the Texture size i.e.
 
-  tex = Texture(f, mipmap=False)
+  tex = pi3d.Texture(f, mipmap=False)
   ...
   wi, hi = tex.ix, tex.iy
 
@@ -91,8 +86,8 @@ def tex_load():
     fname = item[0]
     slide = item[1]
     #block until all the dawing is done TBD
-    #tex = Texture(item[0], mipmap=False) #pixelly but faster 3.3MB in 3s
-    tex = Texture(item[0], mipmap=True) #nicer but slower 3.3MB in 4.5s
+    #tex = pi3d.Texture(item[0], mipmap=False) #pixelly but faster 3.3MB in 3s
+    tex = pi3d.Texture(item[0], mipmap=True) #nicer but slower 3.3MB in 4.5s
     xrat = DISPLAY.width/tex.ix
     yrat = DISPLAY.height/tex.iy
     if yrat < xrat:
@@ -106,15 +101,15 @@ def tex_load():
     item[1].set_alpha(0)
     fileQ.task_done()
 
-  
-class Slide(Canvas):
+
+class Slide(pi3d.Canvas):
   def __init__(self):
-    Canvas.__init__(self)
+    super(Slide, self).__init__()
     self.visible = False
     self.fadeup = False
     self.active = False
 
-    
+
 class Carousel:
   def __init__(self):
     self.slides = [None]*nSli
@@ -122,8 +117,8 @@ class Carousel:
     for i in range(nSli):
       self.slides[i] = Slide()
     for i in range(nSli):
-      # never mind this, hop is just to fill in the first series of images from 
-      # inside-out: 4 3 5 2 6 1 7 0. 
+      # never mind this, hop is just to fill in the first series of images from
+      # inside-out: 4 3 5 2 6 1 7 0.
       half += (i%2)
       step = (1,-1)[i%2]
       hop = 4 + step*half
@@ -133,7 +128,7 @@ class Carousel:
       self.slides[hop].set_shader(shader)
       item = [iFiles[hop%nFi], self.slides[hop]]
       fileQ.put(item)
-        
+
     self.focus = 3 # holds the index of the focused image
     self.focus_fi = 0 # the file index of the focused image
     self.slides[self.focus].visible = True
@@ -149,7 +144,7 @@ class Carousel:
       self.slides[(self.focus-i)%nSli].positionZ(0.1*i + 0.1)
     self.slides[self.focus].fadeup = True
     self.slides[self.focus].visible = True
-    
+
     item = [iFiles[(self.focus_fi+4)%nFi], self.slides[(self.focus-4)%nSli]]
     fileQ.put(item)
 
@@ -161,10 +156,10 @@ class Carousel:
       self.slides[(self.focus-i)%nSli].positionZ(0.1*i + 0.1)
     self.slides[self.focus].fadeup = True
     self.slides[self.focus].visible = True
-    
+
     item = [iFiles[(self.focus_fi-3)%nFi], self.slides[(self.focus+5)%nSli]]
     fileQ.put(item)
-    
+
   def update(self):
     # for each slide check the fade direction, bump the alpha and clip
     for i in range(nSli):
@@ -183,8 +178,8 @@ class Carousel:
         if a <= 0:
           self.slides[i].visible = False
         self.slides[i].active = False
-              
-    
+
+
   def draw(self):
     # slides have to be drawn back to front for transparency to work.
     # the 'focused' slide by definition at z=0.1, with deeper z
@@ -205,11 +200,11 @@ t.start()
 # block the world, for now, until all the initial textures are in.
 # later on, if the UI overruns the thread, there will be no crashola since the
 # old texture should still be there.
-fileQ.join() 
+fileQ.join()
 
 # Fetch key presses
-mykeys = Keyboard()
-CAMERA = Camera.instance()
+mykeys = pi3d.Keyboard()
+CAMERA = pi3d.Camera.instance()
 CAMERA.was_moved = False #to save a tiny bit of work each loop
 
 
