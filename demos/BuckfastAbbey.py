@@ -7,30 +7,16 @@ and images
 import math, random
 
 import demo
-
-from pi3d import Display
-from pi3d.Keyboard import Keyboard
-from pi3d.Mouse import Mouse
-from pi3d.Texture import Texture
-
-from pi3d.Light import Light
-from pi3d.Camera import Camera
-from pi3d.Shader import Shader
-
-from pi3d.shape.EnvironmentCube import EnvironmentCube
-from pi3d.shape.EnvironmentCube import loadECfiles
-from pi3d.shape.Model import Model
-
-from pi3d.util.Screenshot import screenshot
+import pi3d
 
 # Setup display and initialise pi3d
-DISPLAY = Display.create(x=100, y=100)
+DISPLAY = pi3d.Display.create(x=100, y=100)
 DISPLAY.set_background(1.0,0.4,0.6,1)    	# r,g,b,alpha
-Light((5, -10, -20), (0.6, 0.6, 0.5), (0.3, 0.3, 0.4))
+pi3d.Light((5, -10, -20), (0.6, 0.6, 0.5), (0.3, 0.3, 0.4))
 
 # load shader
-shader = Shader("shaders/uv_light")
-flatsh = Shader("shaders/uv_flat")
+shader = pi3d.Shader("shaders/uv_light")
+flatsh = pi3d.Shader("shaders/uv_flat")
 
 print("==============================================================")
 print("Instructions:")
@@ -41,20 +27,22 @@ print("")
 print("Move mouse to pan view.  Click mouse to exit or press ESCAPE")
 print("==============================================================")
 
-ectex = loadECfiles("textures/ecubes","sbox")
-myecube = EnvironmentCube(size=900.0, maptype="FACES",
+ectex = pi3d.loadECfiles("textures/ecubes","sbox")
+myecube = pi3d.EnvironmentCube(size=900.0, maptype="FACES",
                           name="bfa", y=50.0)
 myecube.set_draw_details(flatsh, ectex)
 
 # load model_loadmodel
-mymodel = Model(file_string="models/Buckfast Abbey/BuckfastAbbey.egg",
-                name="Abbey",
-                rx=90, sx=0.03, sy=0.03, sz=0.03)
+mymodel = pi3d.Model(
+  file_string="models/Buckfast Abbey/BuckfastAbbey.egg",
+  name="Abbey",
+  rx=90, sx=0.03, sy=0.03, sz=0.03)
+
 mymodel.set_shader(shader)
 
 # Create keyboard and mouse event objects
-mykeys = Keyboard()
-mymouse = Mouse(restrict = False)
+mykeys = pi3d.Keyboard()
+mymouse = pi3d.Mouse(restrict = False)
 mymouse.start()
 
 #screenshot number
@@ -69,7 +57,7 @@ zm=0.0
 ym = avhgt
 
 omx, omy = mymouse.position()
-CAMERA = Camera.instance()
+CAMERA = pi3d.Camera.instance()
 
 while DISPLAY.loop_running():
   CAMERA.reset()
@@ -106,7 +94,7 @@ while DISPLAY.loop_running():
     elif k == 100:  #key D
       rot += 2
     elif k == 112:  #key P
-      screenshot("BuckfastAbbey"+str(scshots)+".jpg")
+      pi3d.screenshot("BuckfastAbbey"+str(scshots)+".jpg")
       scshots += 1
     elif k == 27:    #Escape key
       mykeys.close()

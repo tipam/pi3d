@@ -1,32 +1,17 @@
 #!/usr/bin/python
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-""" Maze showing various features: textured terrain, movement restricted by
+"""
+Maze showing various features: textured terrain, movement restricted by
 terrain, bouncing off the ElevationMap using clashTest, loading wavefront
 obj files, MergeShape using a Model with multiple Textures, first person
-view camera movement
+view camera movement.
 """
 
 import math, random
 
 import demo
-
-from pi3d import Display
-from pi3d.Keyboard import Keyboard
-from pi3d.Mouse import Mouse
-from pi3d.Texture import Texture
-from pi3d.Camera import Camera
-from pi3d.Shader import Shader
-
-from pi3d.shape.ElevationMap import ElevationMap
-from pi3d.shape.EnvironmentCube import EnvironmentCube
-from pi3d.shape.MergeShape import MergeShape
-from pi3d.shape.Plane import Plane
-from pi3d.shape.Model import Model
-from pi3d.shape.TCone import TCone
-
-from pi3d.util.RotateVec import *
-from pi3d.util.Screenshot import screenshot
+import pi3d
 
 rads = 0.017453292512 # degrees to radians
 
@@ -46,31 +31,31 @@ print("############################################################")
 print()
 
 # Setup display and initialise pi3d
-DISPLAY = Display.create(x=100, y=100, background=(0.4, 0.8, 0.8, 1))
+DISPLAY = pi3d.Display.create(x=100, y=100, background=(0.4, 0.8, 0.8, 1))
 
-shader = Shader("shaders/uv_reflect")
-flatsh = Shader("shaders/uv_flat")
+shader = pi3d.Shader("shaders/uv_reflect")
+flatsh = pi3d.Shader("shaders/uv_flat")
 #========================================
 
 # load Textures
-rockimg1 = Texture("textures/techy1.jpg")
-rockimg2 = Texture("textures/rocktile2.jpg")
-tree2img = Texture("textures/tree2.png")
-raspimg = Texture("textures/Raspi256x256.png")
-monstimg = Texture("textures/pong2.jpg")
-monsttex = Texture("textures/floor_nm.jpg")
-shineimg = Texture("textures/stars.jpg")
+rockimg1 = pi3d.Texture("textures/techy1.jpg")
+rockimg2 = pi3d.Texture("textures/rocktile2.jpg")
+tree2img = pi3d.Texture("textures/tree2.png")
+raspimg = pi3d.Texture("textures/Raspi256x256.png")
+monstimg = pi3d.Texture("textures/pong2.jpg")
+monsttex = pi3d.Texture("textures/floor_nm.jpg")
+shineimg = pi3d.Texture("textures/stars.jpg")
 
 # environment cube
-ectex = Texture("textures/ecubes/skybox_stormydays.jpg")
-myecube = EnvironmentCube(size=900.0, maptype="CROSS")
+ectex = pi3d.Texture("textures/ecubes/skybox_stormydays.jpg")
+myecube = pi3d.EnvironmentCube(size=900.0, maptype="CROSS")
 myecube.set_draw_details(flatsh, ectex)
 
 # Create elevation map
 mapwidth = 1000.0
 mapdepth = 1000.0
 mapheight = 100.0
-mymap = ElevationMap("textures/maze1.jpg",
+mymap = pi3d.ElevationMap("textures/maze1.jpg",
                      width=mapwidth, depth=mapdepth, height=mapheight,
                      divx=128, divy=128, name="sub")
 mymap.set_draw_details(shader, [rockimg1, rockimg2, shineimg], 128.0, 0.05)
@@ -79,24 +64,24 @@ mymap.set_draw_details(shader, [rockimg1, rockimg2, shineimg], 128.0, 0.05)
 mymap.set_fog((0.1,0.1,0.1,1.0), 200.0)
 
 #Create tree models
-treeplane = Plane(w=4.0, h=5.0)
+treeplane = pi3d.Plane(w=4.0, h=5.0)
 
-treemodel1 = MergeShape(name="baretree")
+treemodel1 = pi3d.MergeShape(name="baretree")
 treemodel1.add(treeplane.buf[0], 0,0,0)
 treemodel1.add(treeplane.buf[0], 0,0,0, 0,90,0)
 
 #Scatter them on map using Merge shape's cluster function
-mytrees1 = MergeShape(name="trees1")
+mytrees1 = pi3d.MergeShape(name="trees1")
 mytrees1.cluster(treemodel1.buf[0], mymap,0.0,0.0,900.0,900.0,10,"",8.0,3.0)
 mytrees1.set_draw_details(shader, [tree2img, rockimg2], 4.0, 0.0)
 mytrees1.set_fog((0.1,0.1,0.1,1.0), 200.0)
 
-raspberry = MergeShape(name="rasp")
+raspberry = pi3d.MergeShape(name="rasp")
 raspberry.cluster(treemodel1.buf[0], mymap,-250,+250,470.0,470.0,5,"",8.0,1.0)
 raspberry.set_draw_details(shader, [raspimg, raspimg], 1.0, 0.0)
 raspberry.set_fog((0.1,0.1,0.1,1.0), 200.0)
 
-""" MergeShape can be used to join a number of Model object for much greater 
+""" pi3d.MergeShape can be used to join a number of Model object for much greater
  rendering speed however, because Models can contain multiple Buffers,
  each with their own texture image it is necessary to make a merge for each
  Buffer and, later, draw each merged object using each of the textures.
@@ -105,7 +90,7 @@ raspberry.set_fog((0.1,0.1,0.1,1.0), 200.0)
  Here I manually do the same thing as cluster by first generating an array
  of random locations and y-rotations
 """
-shed = Model(file_string="models/shed1.obj",
+shed = pi3d.Model(file_string="models/shed1.obj",
              name="shed", y=3, sx=2, sy=2, sz=2)
 
 shedgp = []
@@ -122,7 +107,7 @@ for i in range(5):
   rArr.append(random.random()*45)
 
 for b in shed.buf:
-  thisAbbGp = MergeShape(name="shed")
+  thisAbbGp = pi3d.MergeShape(name="shed")
   # i.e. different merge groups for each part requiring different texture
   for i in range(len(xArr)):
     thisAbbGp.add(b, xArr[i], yArr[i], zArr[i], 0, rArr[i], 0)
@@ -131,7 +116,7 @@ for b in shed.buf:
   shedgp[len(shedgp)-1].set_fog((0.1,0.1,0.1,1.0), 250.0)
 
 # monster
-monst = TCone()
+monst = pi3d.TCone()
 # use the uv_reflect shader but if shiny=0.0 there will be no reflection
 # the third texture is unset so there are unpredictable results if > 0
 monst.set_draw_details(shader, [monstimg, monsttex], 4.0, 0.0)
@@ -155,8 +140,8 @@ lastX0=0.0
 lastZ0=0.0
 
 # Fetch key presses
-mykeys = Keyboard()
-mymouse = Mouse(restrict = False)
+mykeys = pi3d.Keyboard()
+mymouse = pi3d.Mouse(restrict = False)
 mymouse.start()
 
 omx, omy = mymouse.position()
@@ -166,7 +151,7 @@ walk = True
 
 angle = 0
 
-CAMERA = Camera.instance()
+CAMERA = pi3d.Camera.instance()
 while DISPLAY.loop_running():
   # movement of camera
   mx, my = mymouse.position()
@@ -258,7 +243,7 @@ while DISPLAY.loop_running():
         zm -= dz
         ym += dy
     elif k==112: #key P
-      screenshot("amazing"+str(scshots)+".jpg")
+      pi3d.screenshot("amazing"+str(scshots)+".jpg")
       scshots += 1
     elif k==32 and hp > 0: #key SPACE
       walk = False

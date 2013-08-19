@@ -17,65 +17,63 @@ from pi3d.Texture import Texture
 MAX_SIZE = 1536
 
 class Font(Texture):
-  """A Font contains a TrueType font ready to be rendered in OpenGL.
+  """
+  A Font contains a TrueType font ready to be rendered in OpenGL.
 
   A font is just a mapping from codepoints (single Unicode characters) to glyphs
   (graphical representations of those characters).
 
   Font packs one whole font into a single Texture using PIL.ImageFont,
   then creates a table mapping codepoints to subrectangles of that Texture.
-
-"""
+  """
 
   def __init__(self, font, color="#ffffff", codepoints=None,
                add_codepoints=None, font_size=48, image_size=512,
                italic_adjustment=1.1):
-    """
- Arguments:
-      *font*
-        File path/name to a TrueType font file.
+    """Arguments:
+    *font*:
+      File path/name to a TrueType font file.
 
-    Keyword arguments:
-      *color*
-        Color in standard hex format #RRGGBB
+    *color*:
+      Color in standard hex format #RRGGBB
 
-      *font_size*
-        Point size for drawing the letters on the internal Texture
+    *font_size*:
+      Point size for drawing the letters on the internal Texture
 
-      *codepoints*
-        Iterable list of characters. All these formats will work:
+    *codepoints*:
+      Iterable list of characters. All these formats will work:
 
-          'ABCDEabcde '
-          [65, 66, 67, 68, 69, 97, 98, 99, 100, 101, 145, 148, 172, 32]
-          [c for c in range(65, 173)]
+        'ABCDEabcde '
+        [65, 66, 67, 68, 69, 97, 98, 99, 100, 101, 145, 148, 172, 32]
+        [c for c in range(65, 173)]
 
-        Note that Font will ONLY use the codepoints in this list - if you
-        forget to list a codepoint or character here, it won't be displayed.
-        If you just want to add a few missing codepoints, you're probably better
-        off using the *add_codepoints* parameter.
+      Note that Font will ONLY use the codepoints in this list - if you
+      forget to list a codepoint or character here, it won't be displayed.
+      If you just want to add a few missing codepoints, you're probably better
+      off using the *add_codepoints* parameter.
 
-        If the string version is used then the program file might need to
-        have the coding defined at the top:  # -*- coding: utf-8 -*-
+      If the string version is used then the program file might need to
+      have the coding defined at the top:  # -*- coding: utf-8 -*-
 
-        The default is *codepoints*=range(256).
+      The default is *codepoints*=range(256).
 
-      *add_codepoints*
-        If you are only wanting to add a few codepoints that are missing, you
-        should use the *add_codepoints* parameter, which just adds codepoints or
-        characters to the default list of codepoints. All the other comments for
-        the *codepoints* parameter still apply.
+    *add_codepoints*:
+      If you are only wanting to add a few codepoints that are missing, you
+      should use the *add_codepoints* parameter, which just adds codepoints or
+      characters to the default list of codepoints. All the other comments for
+      the *codepoints* parameter still apply.
 
-      *image_size*
-        Width and height of the Texture that backs the image.
-        If it doesn't fit then a larger size will be tried up to MAX_SIZE.
-        The isses are: maximum image size supported by the gpu (2048x2048?)
-        gpu memory usage and time to load by working up the size required
-        in 256 pixel steps.
+    *image_size*:
+      Width and height of the Texture that backs the image.
+      If it doesn't fit then a larger size will be tried up to MAX_SIZE.
+      The isses are: maximum image size supported by the gpu (2048x2048?)
+      gpu memory usage and time to load by working up the size required
+      in 256 pixel steps.
 
-      *italic_adjustment*
-        Adjusts the bounding width to take italics into account.  The default
-        value is 1.1; you can get a tighter bounding if you set this down
-        closer to 1, but italics might get cut off at the right.
+    *italic_adjustment*:
+      Adjusts the bounding width to take italics into account.  The default
+      value is 1.1; you can get a tighter bounding if you set this down
+      closer to 1, but italics might get cut off at the right.
     """
     super(Font, self).__init__(font)
     self.font = font

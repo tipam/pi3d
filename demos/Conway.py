@@ -8,7 +8,6 @@ and use the very fast processing speed of the GPU to do certain tasks.
 import ctypes
 import demo
 import pi3d
-from pi3d.constants import *
 
 WIDTH = 800
 HEIGHT = 800
@@ -28,10 +27,10 @@ mykeys = pi3d.Keyboard()
 
 while DISPLAY.loop_running():
   sprite.draw()
-  
+
   ti = (ti+1) % 2
-  pi3d.opengles.glBindTexture(GL_TEXTURE_2D, tex[ti]._tex)
-  pi3d.opengles.glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 0, 0, WIDTH, HEIGHT, 0)
+  pi3d.opengles.glBindTexture(pi3d.GL_TEXTURE_2D, tex[ti]._tex)
+  pi3d.opengles.glCopyTexImage2D(pi3d.GL_TEXTURE_2D, 0, pi3d.GL_RGB, 0, 0, WIDTH, HEIGHT, 0)
   sprite.set_draw_details(shader, [tex[ti]])
 
   if mykeys.read() == 27:

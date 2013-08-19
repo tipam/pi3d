@@ -4,7 +4,8 @@ from six.moves import xrange
 
 from PIL import Image
 
-from pi3d import *
+from pi3d.constants import *
+
 from pi3d.Shader import Shader
 from pi3d.Texture import Texture
 
@@ -54,7 +55,9 @@ class Clashtest(Texture):
       *grain*
         Number of locations to check over the whole image
     """
-    opengles.glReadPixels(0, 0, self.ix, self.iy, GL_RGB, GL_UNSIGNED_BYTE, ctypes.byref(self.img))
+    opengles.glReadPixels(0, 0, self.ix, self.iy,
+                               GL_RGB, GL_UNSIGNED_BYTE,
+                               ctypes.byref(self.img))
     r0 = self.img[0:3]
     step = 3 * int(self.ix * self.iy / 50)
     for i in xrange(0, len(self.img)-3, step):

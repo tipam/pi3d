@@ -7,9 +7,6 @@ import random
 import demo
 import pi3d
 
-from pi3d.Buffer import Buffer
-from pi3d.Shape import Shape
-
 from six.moves import xrange
 
 # Setup display and initialise pi3d
@@ -32,7 +29,7 @@ myplane.set_draw_details(flatsh, [starsimg])
 own class to generate the required distribution and shield the user from
 having to explicitly create the Buffer object and set the Shape.buf list
 """
-mystars = Shape(None, None, "stars", 0, 0, 250,
+mystars = pi3d.Shape(None, None, "stars", 0, 0, 250,
                0, 0, 0, 100, 100, 500, 0, 0, 0)
 verts, norms, texc, faces = [], [], [], []
 for i in xrange(30000):
@@ -41,7 +38,7 @@ for i in xrange(30000):
   texc.append((0,0))
 for i in xrange(10000):
   faces.append((i*3, i*3 + 1, i*3 + 2))
-mystars.buf = [Buffer(mystars, verts, texc, faces, norms)]
+mystars.buf = [pi3d.Buffer(mystars, verts, texc, faces, norms)]
 mystars.set_point_size(50)
 mystars.set_material((0.9, 0.9, 1.0))
 mystars.set_shader(matsh)

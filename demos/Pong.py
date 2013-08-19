@@ -13,25 +13,7 @@ speed depending on camera movement which effects game play.
 import math, random
 
 import demo
-
-from pi3d import Display
-from pi3d.Keyboard import Keyboard
-from pi3d.Mouse import Mouse
-from pi3d.Texture import Texture
-from pi3d.util.Font import Font
-
-from pi3d.Light import Light
-from pi3d.Camera import Camera
-from pi3d.Shader import Shader
-
-from pi3d.shape.ElevationMap import ElevationMap
-from pi3d.shape.EnvironmentCube import EnvironmentCube
-from pi3d.shape.Plane import Plane
-from pi3d.shape.Sphere import Sphere
-
-from pi3d.util.String import String
-from pi3d.util.Screenshot import screenshot
-from pi3d.util.Defocus import Defocus
+import pi3d
 
 #helpful messages
 print("############################################################")
@@ -40,37 +22,37 @@ print("############################################################")
 print()
 
 # Setup display and initialise pi3d
-DISPLAY = Display.create(x=200, y=200, frames_per_second=20)
+DISPLAY = pi3d.Display.create(x=200, y=200, frames_per_second=20)
 DISPLAY.set_background(0.4,0.8,0.8,1) # r,g,b,alpha
-camera = Camera((0, 0, 0), (0, 0, -1), (1, 1000, 30.0, DISPLAY.width/DISPLAY.height))
-light = Light((10, -10, 20))
+camera = pi3d.Camera((0, 0, 0), (0, 0, -1), (1, 1000, 30.0, DISPLAY.width/DISPLAY.height))
+light = pi3d.Light((10, -10, 20))
 # load shader
-shader = Shader("shaders/uv_reflect")
-flatsh = Shader("shaders/uv_flat")
-defocus = Defocus()
+shader = pi3d.Shader("shaders/uv_reflect")
+flatsh = pi3d.Shader("shaders/uv_flat")
+defocus = pi3d.Defocus()
 #========================================
 
 # Setting 2nd param to True renders 'True' Blending
 # (this can be changed later to 'False' with 'rockimg2.blend = False')
-groundimg = Texture("textures/stripwood.jpg")
-monstimg = Texture("textures/pong3.png")
-ballimg = Texture("textures/pong2.jpg")
+groundimg = pi3d.Texture("textures/stripwood.jpg")
+monstimg = pi3d.Texture("textures/pong3.png")
+ballimg = pi3d.Texture("textures/pong2.jpg")
 
 # environment cube
-ectex = Texture("textures/ecubes/skybox_stormydays.jpg")
-myecube = EnvironmentCube(camera, light, 900.0,"CROSS")
+ectex = pi3d.Texture("textures/ecubes/skybox_stormydays.jpg")
+myecube = pi3d.EnvironmentCube(camera, light, 900.0,"CROSS")
 myecube.set_draw_details(flatsh, [ectex])
 
 #ball
 maxdsz = 0.3
 radius = 1.0
-ball = Sphere(camera, light, radius,12,12,0.0,"sphere",-4,8,-7)
+ball = pi3d.Sphere(camera, light, radius,12,12,0.0,"sphere",-4,8,-7)
 # Shape.set_draw_details is a wrapper for calling the method on each item in buf
 # as is done explicitly here for no reason than to show that it can be done!
 ball.set_draw_details(shader,[ballimg], 0.0, 0.0)
 
 #monster
-monster = Plane(camera, light, 5.0, 5.0, "monster", 0,0,0, 0,0,0)
+monster = pi3d.Plane(camera, light, 5.0, 5.0, "monster", 0,0,0, 0,0,0)
 monster.set_draw_details(flatsh, [monstimg])
 
 # Create elevation map
@@ -79,7 +61,7 @@ mapdepth=50.0
 maphalf=22.0
 mapheight=40.0
 
-mymap = ElevationMap("textures/pong.jpg", camera=camera, light=light,
+mymap = pi3d.ElevationMap("textures/pong.jpg", camera=camera, light=light,
                      width=mapwidth, depth=mapdepth, height=mapheight,
                      divx=32, divy=32, ntiles=4, name="sub")
 mymap.set_draw_details(shader, [groundimg, groundimg, ballimg], 1.0, 0.0)
@@ -93,11 +75,11 @@ lastX0 = 0.0
 lastZ0 = 0.0
 camera.position((xm, 2 + ym, -maphalf - 2.5))
 
-arialFont = Font("fonts/FreeMonoBoldOblique.ttf", "#dd00aa")
+arialFont = pi3d.Font("fonts/FreeMonoBoldOblique.ttf", "#dd00aa")
 score = [0,0]
-score0 = String(font=arialFont, string=str(score[0]), y=12, sx=0.05, sy=0.05)
+score0 = pi3d.String(font=arialFont, string=str(score[0]), y=12, sx=0.05, sy=0.05)
 score0.set_shader(flatsh)
-score1 = String(font=arialFont, string=str(score[1]), y=12, sx=0.05, sy=0.05)
+score1 = pi3d.String(font=arialFont, string=str(score[1]), y=12, sx=0.05, sy=0.05)
 score1.set_shader(flatsh)
 
 #sphere loc and speed
@@ -110,8 +92,8 @@ drx, dry, drz = 0, 0, 0
 max_speed = 0.2
 
 # Fetch key presses
-mykeys = Keyboard()
-mymouse = Mouse(restrict=False)
+mykeys = pi3d.Keyboard()
+mymouse = pi3d.Mouse(restrict=False)
 mymouse.start()
 
 omx, omy = mymouse.position()
@@ -179,17 +161,17 @@ while DISPLAY.loop_running():
       sx, sy, sz = 0, mapheight/3, 0
       dsx, dsy, dsz = 0.3*random.random()-0.15, 0, 0.1
       score[1] += 1
-      score1 = String(font=arialFont, string=str(score[0]), y=12, z=5, sx=0.05, sy=0.05)
+      score1 = pi3d.String(font=arialFont, string=str(score[0]), y=12, z=5, sx=0.05, sy=0.05)
       score1.set_shader(flatsh)
   elif sz > maphalf: #monster end
     if (sx-rx)**2 + (sy-ry)**2 < 10:
       dsz = -1 * abs(dsz)
     else:
       score[0] += 1
-      score0 = String(font=arialFont, string=str(score[1]), y=12, z=-5, sx=0.05, sy=0.05)
+      score0 = pi3d.String(font=arialFont, string=str(score[1]), y=12, z=-5, sx=0.05, sy=0.05)
       score0.set_shader(flatsh)
       radius = 0.1 + (radius - 0.1)*0.75 # ball gets smaller each time you score
-      ball = Sphere(camera, light, radius,12,12,0.0,"sphere",0,0,0)
+      ball = pi3d.Sphere(camera, light, radius,12,12,0.0,"sphere",0,0,0)
       ball.set_draw_details(shader,[ballimg], 0.0, 0.0)
       maxdsz += 0.01 # max speed in z direction increases too
       sx, sy, sz = 0, mapheight/3, 0
@@ -227,7 +209,7 @@ while DISPLAY.loop_running():
     mymouse.stop()
     break
   elif k==112:  #key P
-    screenshot("pong.jpg")
+    pi3d.screenshot("pong.jpg")
 
 # attempt to tidy up!
 quit()
