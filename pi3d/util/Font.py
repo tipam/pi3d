@@ -24,8 +24,7 @@ class Font(Texture):
   (graphical representations of those characters).
 
   Font packs one whole font into a single Texture using PIL.ImageFont,
-  then creates a table mapping codepoints to subrectangles of that Texture.
-  """
+  then creates a table mapping codepoints to subrectangles of that Texture."""
 
   def __init__(self, font, color="#ffffff", codepoints=None,
                add_codepoints=None, font_size=48, image_size=512,
