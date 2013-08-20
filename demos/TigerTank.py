@@ -25,7 +25,7 @@ winw, winh, bord = 1200, 600, 0     #64MB GPU memory setting
 # winw,winh,bord = 1920,1200,0   #128MB GPU memory setting
 
 DISPLAY = pi3d.Display.create(tk=True, window_title='Tiger Tank demo in Pi3D',
-                        w=winw, h=winh - bord, far=2200.0,
+                        w=winw, h=winh - bord, far=3000.0,
                         background=(0.4, 0.8, 0.8, 1), frames_per_second=16)
 
 #inputs = InputEvents()
@@ -66,7 +66,7 @@ mymap = pi3d.ElevationMap(mapfile='textures/mountainsHgt2.png',
 
 mymap.set_draw_details(shader, [mountimg1, bumpimg], 128.0, 0.0)
 
-FOG = (0.7, 0.8, 0.9, 0.5)
+FOG = (0.5, 0.5, 0.5, 0.8)
 
 def set_fog(shape):
   shape.set_fog(FOG, 1000.0)
@@ -204,10 +204,10 @@ try:
     zoff = -sf * math.cos(math.radians(mouserot))
 
     if tilt > -5 and smode == False: # zoom in
-      CAMERA.reset(lens=(1, 1000, 12.5, DISPLAY.width / DISPLAY.height))
+      CAMERA.reset(lens=(1, 3000, 12.5, DISPLAY.width / DISPLAY.height))
       smode = True
     elif tilt <= -5 and smode == True: # zoom out
-      CAMERA.reset(lens=(1, 1000, 45, DISPLAY.width / DISPLAY.height))
+      CAMERA.reset(lens=(1, 3000, 45, DISPLAY.width / DISPLAY.height))
       smode = False
 
     #adjust CAMERA position in and out so we can see our tank

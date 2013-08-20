@@ -1,5 +1,9 @@
 #!/usr/bin/python
 from __future__ import absolute_import, division, print_function, unicode_literals
+"""quite a complicated demo showing many features of pi3d as well as
+communication between players using httpRequest (see rpi_json.sql and
+rpi_json.php) json serialisation and threading.
+"""
 
 import time, math, glob, random, threading, json
 
@@ -430,7 +434,7 @@ mymap = pi3d.ElevationMap("textures/mountainsHgt.jpg", name="map",
                      width=mapwidth, depth=mapdepth, height=mapheight,
                      divx=64, divy=64, camera=CAMERA)
 mymap.set_draw_details(SHADER, [mountimg1, bumpimg, reflimg], 1024.0, 0.0)
-mymap.set_fog((0.5,0.5,0.5,0.8), 4000)
+mymap.set_fog((0.5, 0.5, 0.5, 0.8), 4000)
 # init events
 inputs = pi3d.InputEvents()
 inputs.get_mouse_movement()

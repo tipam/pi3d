@@ -1,3 +1,6 @@
+-- script to set up MySQL table for pi3d demos/DogFight.py see also
+-- rpi_json.php for script to run on server
+--
 -- phpMyAdmin SQL Dump
 -- version 3.5.5
 -- http://www.phpmyadmin.net

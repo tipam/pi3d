@@ -1,4 +1,11 @@
 <?php
+/************************************************************************
+ * script to run on server to store and serve information serialised in
+ * json format for the pi3d demos/DogFight.py example
+ * This file has been renamed to DogFight_rpi_json.php for clarity
+ * when copied to the server it must have the same name used in the url
+ * used in DogFight.py c. line 333
+ * *********************************************************************/
 $FAR = 5000;
 $opts['hn'] = 'localhost';
 $opts['un'] = 'your_db_username';

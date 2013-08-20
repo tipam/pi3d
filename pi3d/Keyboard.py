@@ -2,11 +2,10 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import curses, termios, fcntl, sys, os, platform
 
-if 'x86' in platform.machine():
-  IS_x86 = True
+from pi3d.constants import *
+
+if not ON_PI:
   from pyxlib import x
-else:
-  IS_x86 = False
 
 USE_CURSES = True
 
@@ -150,7 +149,7 @@ class x11Keyboard(object):
       pass
 
 def Keyboard(use_curses=USE_CURSES):
-  if IS_x86:
+  if not ON_PI:
     return x11Keyboard()
   else:
     return CursesKeyboard() if use_curses else SysKeyboard()
