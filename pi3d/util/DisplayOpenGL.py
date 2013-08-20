@@ -8,16 +8,13 @@ from pi3d.constants import *
 
 from pi3d.util.Ctypes import c_ints
 
-if 'x86' in platform.machine():
-  IS_x86 = True
+if not ON_PI:
   from pyxlib import xlib
   from pyxlib.x import *
-else:
-  IS_x86 = False
 
 class DisplayOpenGL(object):
   def __init__(self):
-    if IS_x86:
+    if not ON_PI:
       self.d = xlib.XOpenDisplay(None)
       self.screen = xlib.XDefaultScreenOfDisplay(self.d)
       self.width, self.height = xlib.XWidthOfScreen(self.screen), xlib.XHeightOfScreen(self.screen)
@@ -86,7 +83,7 @@ class DisplayOpenGL(object):
     dst_rect = c_ints((x, y, w, h))
     src_rect = c_ints((x, y, w << 16, h << 16))
 
-    if IS_x86:
+    if not ON_PI:
       self.width, self.height = w, h
 
       # Set some WM info
@@ -142,7 +139,7 @@ class DisplayOpenGL(object):
   def resize(self, x=0, y=0, w=0, h=0):
     # Destroy current surface and native window
     openegl.eglSwapBuffers(self.display, self.surface)
-    if not IS_x86:
+    if ON_PI:
       openegl.eglDestroySurface(self.display, self.surface)
 
       self.dispman_update = bcm.vc_dispmanx_update_start(0)
@@ -188,14 +185,14 @@ class DisplayOpenGL(object):
       openegl.eglDestroySurface(self.display, self.surface)
       openegl.eglDestroyContext(self.display, self.context)
       openegl.eglTerminate(self.display)
-      if not IS_x86:
+      if ON_PI:
         self.dispman_update = bcm.vc_dispmanx_update_start(0)
         bcm.vc_dispmanx_element_remove(self.dispman_update, self.dispman_element)
         bcm.vc_dispmanx_update_submit_sync(self.dispman_update)
         bcm.vc_dispmanx_display_close(self.dispman_display)
 
       self.active = False
-      if IS_x86:
+      if not ON_PI:
         xlib.XCloseDisplay(self.d)
 
   def swap_buffers(self):
