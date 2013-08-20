@@ -1,3 +1,5 @@
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 from pi3d.constants import *
 from pi3d.Buffer import Buffer
 from pi3d.Shape import Shape
@@ -10,17 +12,17 @@ class Plane(Shape):
                sx=1.0, sy=1.0, sz=1.0,
                cx=0.0, cy=0.0, cz=0.0):
     """uses standard constructor for Shape extra Keyword arguments:
-    
+
       *w*
         width
       *h*
         height
-    """  
+    """
     super(Plane, self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                 sx, sy, sz, cx, cy, cz)
 
     if VERBOSE:
-      print "Creating plane ..."
+      print("Creating plane ...")
 
     self.width = w
     self.height = h

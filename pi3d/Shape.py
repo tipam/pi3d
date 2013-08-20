@@ -1,3 +1,5 @@
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import ctypes
 
 from numpy import array, dot
@@ -36,7 +38,7 @@ class Shape(Loadable):
     self.unif = (ctypes.c_float * 60)(
       x, y, z, rx, ry, rz,
       sx, sy, sz, cx, cy, cz,
-      0.5, 0.5, 0.5, 5000.0, 0.8, 0.0,
+      0.5, 0.5, 0.5, 5000.0, 0.8, 1.0,
       0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
       light.lightpos[0], light.lightpos[1], light.lightpos[2],
       light.lightcol[0], light.lightcol[1], light.lightcol[2],
@@ -53,7 +55,7 @@ class Shape(Loadable):
        2  scale                                        6   8
        3  offset                                       9  11
        4  fog shade                                   12  14
-       5  fog distance and alph (only 2 used)         15  16
+       5  fog distance, fog alpha, shape alpha        15  17
        6  camera position                             18  20
        7  unused: custom data space                   21  23
        8  light0 position, direction vector           24  26
@@ -121,13 +123,6 @@ class Shape(Loadable):
     rendering with a different Shader/Texture. self.draw() relies on objects
     inheriting from this filling buf with at least one element.
     """
-    
-  def _unload_opengl(self):
-    """If recreating Shapes to change their shape then the old buffers must be
-    tidied up explicitly as the python garbage collector will miss this"""
-    for b in self.buf:
-      opengles.glDeleteBuffers(1, ctypes.byref(b.vbuf))
-      opengles.glDeleteBuffers(1, ctypes.byref(b.ebuf))
 
   def draw(self, shader=None, txtrs=None, ntl=None, shny=None, camera=None):
     """If called without parameters, there has to have been a previous call to
@@ -169,7 +164,7 @@ class Shape(Loadable):
     for b in self.buf:
       # Shape.draw has to be passed either parameter == None or values to pass
       # on.
-      b.draw(shader, txtrs, ntl, shny)
+      b.draw(self, shader, txtrs, ntl, shny)
 
   def set_shader(self, shader):
     """Wrapper method to set just the Shader for all the Buffer objects of
@@ -182,7 +177,7 @@ class Shape(Loadable):
         Shader to use
 
     """
-    
+
     self.shader = shader
     for b in self.buf:
       b.shader = shader
@@ -260,6 +255,12 @@ class Shape(Loadable):
     for b in self.buf:
       b.set_offset(offset)
 
+  def offset(self):
+    """Get offset as (u, v) tuple of (first) buf uv. Doesnt check that buf array
+    exists and has at least one value and only returns offset for that value"""
+    return self.buf[0].unib[9:11]
+
+
   def set_fog(self, fogshade, fogdist):
     """Set fog for this Shape only, it uses the shader smoothblend function from
     1/3 fogdist to fogdist.
@@ -274,6 +275,19 @@ class Shape(Loadable):
     self.unif[15] = fogdist
     self.unif[16] = fogshade[3]
 
+  def set_alpha(self, alpha=1.0):
+    """Set alpha for this Shape only
+
+    Arguments:
+      *alpha*
+        alpha value between 0.0 and 1.0 (default)
+    """
+    self.unif[17] = alpha
+
+  def alpha(self):
+    """Get value of alpha"""
+    return self.unif[17]
+
   def set_light(self, light, num=0):
     """Set the values of the lights.
 
@@ -284,7 +298,7 @@ class Shape(Loadable):
         number of the light to set
     """
     #TODO (pg) need MAXLIGHTS global variable, room for two now but shader
-    # only uses 1. Also shader doesn't use light colour or ambient colour
+    # only uses 1.
     if num > 1 or num < 0:
       num = 0
     stn = 24 + num * 9
@@ -344,6 +358,10 @@ class Shape(Loadable):
     """
     self.unif[index_from:(index_from + len(data))] = data
 
+  def set_point_size(self, point_size=0.0):
+    for b in self.buf:
+      b.unib[8] = point_size
+
   def x(self):
     """get value of x"""
     return self.unif[0]
@@ -355,6 +373,29 @@ class Shape(Loadable):
   def z(self):
     """get value of z"""
     return self.unif[2]
+
+  def get_bounds(self):
+    """Find the limits of vertices in three dimensions. Returns a tuple
+    (left, bottom, front, right, top, back)
+    """
+    left, bottom, front  = 10000, 10000, 10000
+    right, top, back = -10000, -10000, -10000
+    for b in self.buf:
+      for v in b.vertices:
+        if v[0] < left:
+          left = v[0]
+        if v[0] > right:
+          right = v[0]
+        if v[1] < bottom:
+          bottom = v[1]
+        if v[1] > top:
+          top = v[1]
+        if v[2] < front:
+          front = v[2]
+        if v[2] > back:
+          back = v[2]
+
+    return (left, bottom, front, right, top, back)
 
   def scale(self, sx, sy, sz):
     """Arguments:

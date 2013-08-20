@@ -11,7 +11,7 @@ uniform vec3 unif[20];    // hpe
 // ---------------------------------------------------------------------------------
 // original source found at: http://www.iquilezles.org/apps/shadertoy/
 // Twist shaders was desgined by: http://www.iquilezles.org/apps/shadertoy/?p=Twist"
-// Documentation and extention to Pi3D Peter Heﬂ (01/2013)
+// Documentation and extention to Pi3D Peter Hess (01/2013)
 
 void main(void) {
 

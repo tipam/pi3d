@@ -1,7 +1,7 @@
 precision mediump float;
 
 uniform sampler2D tex0;
-uniform vec3 unib[3];
+uniform vec3 unib[4];
 //uniform float blend ====> unib[0][2]
 uniform vec3 unif[16];
 //uniform vec2 (x, y) =========> unif[14]
@@ -21,6 +21,7 @@ void main(void) {
   vec4 texc = texture2D(tex0, coord);
   if (texc.a < unib[0][2]) discard; // ------ to allow rendering behind the transparent parts of this object
   gl_FragColor = texc;
+  gl_FragColor.a *= unif[5][2];
 }
 
 

@@ -15,8 +15,10 @@ whilst giving access to the power of the Raspberry Pi GPU. It enables both
 3D and 2D rendering and aims to provide a host of exciting commands to load
 in textured/animated models, create fractal landscapes, shaders and much more.
 
-This is the fourth release of the pi3d module which now uses the OpenGLES2.0
-functionality of the Raspberry Pi directly. This makes it generally *faster*
+v1.0 is the fifth release of the pi3d module which now adds support for
+running on platforms other than the raspberry pi (X on linux) and runs with
+python 3 as well as 2 The OpenGLES2.0 functionality of the Raspberry Pi
+is used directly or via mesa on 'big' machines. This makes it generally *faster*
 and opens up the world of *shaders* that allow effects such as normal and 
 reflection maps, blurring and many others. It has various demos of built-in
 shapes, landscapes, model loading, walk-about camera and much more! See the demos
@@ -26,7 +28,7 @@ If you are reading this document as the ReadMe in the repository then you
 can find the full version of the documentation here
 http://pi3d.github.com/html/index.html
 
-Demo's included with Pi3D
+Demos included with Pi3D
 =========================
 
 #.  **ForestWalk.py** Walk about a forest on a landscape generated from a
@@ -129,13 +131,21 @@ Total zipped download from github c. 24 MB
     /usr/share/fonts/truetype for others, or look online. 1.0 MB
 #.  **demos** Source code of the demos included 96 kB
 #.  **screenshots** Example screenshots of the demos included 860 kB
-#.  **documentation** Where this documentation lives 5.7 MB
+#.  **pyxlib** Library to enable use on general linux machines 209 kB
 #.  **ChangeLog.txt** Latest changes of Pi3D
 #.  **ReadMe.rst** This file
 
 
 Setup on the Raspberry Pi
 =========================
+
+#.  **Download and unzip**
+
+    The latest code can be obtained from https://github.com/tipam/pi3d/
+    where there is a ``Download ZIP`` link, or you can install git then
+    clone using ``git clone https://github.com/tipam/pi3d.git`` this git
+    method will give you the option to update the code by running, from
+    the pi3d directory ``git pull origin master``
 
 #.  **Memory Split setup**
 
@@ -149,10 +159,63 @@ Setup on the Raspberry Pi
 #.  **Install Python Imaging**
 
     Before trying any of the demos or Pi3D, you must download the Python Imaging
-    Library as this is needed for importing any graphics used by Pi3. To install
-    on the terminal, type::
+    Library as this is needed for importing any graphics used by Pi3. The original
+    Imaging library is no longer really maintained and doesn't run on python_3.
+    The better equivalent replacement is Pillow however a couple of issues
+    relating to text vertical alignment will not be corrected unti the Oct2013
+    issue. To install Pillow you need to::
+
+      sudo apt-get install python-dev python-setuptools libjpeg-dev zlib1g-dev libpng12-dev libfreetype6-dev
+      sudo apt-get install python-pip
+      sudo pip install Pillow
+      ...
+
+    If you miss any of the dependent libraries and need to add them later
+    you will have to ``pip uninstall`` then re ``pip install``
+
+    For python_3 support the first above will provide all the required
+    libraries used by either version of Pillow but you will need to::
+
+      sudo apt-get install python3-pip
+      sudo pip-3.2 install Pillow
+
+    If you do not intend to run python_3 and need nicely aligned text
+    strings over the short term you can install the old PIL:  on the
+    terminal, type::
 
       sudo apt-get install python-imaging
+
+    If you later switch to Pillow you will need to sudo remove python-imaging
+    first
+
+    [To run on Arch linux you will need to install::
+
+      pacman -S python2
+      pacman -S python-imaging
+      pacman -S python2-numpy
+
+    this worked for me. Presumably you would need the pacman equivalent of
+    all the installations outlined above for Pillow and python_3]
+
+Setup on alternative Linux platforms
+====================================
+
+#.  The machine will need to have a gpu that runs OpenGL2+ and obviously
+    it will need to have python installed. If the Linux is running in vmware
+    you will need to 'enable 3d acceleration'. You need to install libraries
+    that emulate OpenGLES behaviour for the gpu::
+
+      sudo apt-get install mesa-utils-extra
+
+    This should install libEGL.so.1 and libGLESv2.so.2 if these change
+    (which I suppose they could in time) then the references will need to
+    be altered in pi3d/constants/__init__.py
+
+    The installation of PIL or Pillow should be the same as above but you
+    are more likely to need to manually install python-numpy or python3-numpy
+
+Editing scripts and running
+===========================
 
 #.  **Install Geany to run Pi3D**
 
@@ -170,7 +233,8 @@ Setup on the Raspberry Pi
 
 #.  **Load and run**
 
-    Load any of the demos into Geany and run (using the cogs icon). As a minimum,
+    Either run from the terminal ``python3 ~/pi3d/demos/Minimal.py`` or
+    load any of the demos into Geany and run (using the cogs icon). As a minimum,
     scripts need these elements in order to use the pi3d library::
 
       import pi3d
@@ -190,7 +254,11 @@ A Very Brief Explanation
 The whole idea of Pi3d is that you don't have to get involved in too many of
 the nuts and bolts of how the OpenGL graphics processor works however it might
 help to get an overview of the layout of Pi3d. More detailed explanations can
-be found in the documentation of each of the modules.
+be found in the documentation of each of the modules. Read `FAQ`_ before
+you try anything ambitious or if anything goes wrong, obviously. There is a
+`3D Graphics Explanation`_ where I try to explain in some more detail what
+is going on.
+
 
   **Display** The `Display`_ class is the core and is used to hold screen dimension information,
   to initiate the graphics functionality and for 'central' information, such as timing,
@@ -279,12 +347,14 @@ be found in the documentation of each of the modules.
 .. _Texture: pi3d.html#pi3d.Texture.Texture
 .. _Light: pi3d.html#pi3d.Light.Light
 .. _`All objects to be drawn by Pi3d`: pi3d.shape.html#module-pi3d.shape.Cone
+.. _`FAQ`: FAQ.html
+.. _`3D Graphics Explanation`: GPUexplain.html
 
 
 Documentation
 =============
 
-Please note that Pi3D functions may change significantly during it's development.
+Please note that Pi3D functions may change significantly during its development.
 
 Bug reports, comments, feature requests and fixes are most welcome!
 
@@ -304,5 +374,4 @@ David Wallin and others who have contributed to Pi3D - keep up the good work!
 
 
 **PLEASE READ LICENSING AND COPYRIGHT NOTICES ESPECIALLY IF USING FOR COMMERCIAL PURPOSES**
-
 

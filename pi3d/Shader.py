@@ -1,9 +1,11 @@
-import ctypes
+from __future__ import absolute_import, division, print_function, unicode_literals
 
-from echomesh.util import Log
+import ctypes
+import six
 
 from pi3d.constants import *
 from pi3d.util.Ctypes import c_chars
+from pi3d.util import Log
 from pi3d.util import Loadable
 
 # This class based on Peter de Rivaz's mandlebrot example + Tim Skillman's work on pi3d2
@@ -32,6 +34,7 @@ class Shader(object):
     of the object. The **2d_flat** shader is a special case of a textured shader
     which maps pixels in an image to pixels on the screen with an optional
     scaling and offset.
+
   * Material - generally defined using the **mat** prefix, where a material
     shade (rgb) has to be set for the object to be rendered
 
@@ -40,8 +43,10 @@ class Shader(object):
 
   * flat - no lighting is used, the shade rendered is the rgb value of the
     texture or material
+
   * light - Light direction, shade and ambient shade are used give a 3D effect
     to the surface
+
   * bump - a normal map texture needs to be loaded as well and this will be
     used to give much finer 3D effect to the surface than can be defined by
     the resolution of the vertices. The effect of the normal map drops with
@@ -49,6 +54,7 @@ class Shader(object):
     distance. The shader is passed a variable to use for tiling the normal
     map which may be different from the tiling of the general texture. If
     set to 0.0 then no normal mapping will occur.
+
   * reflect - in addition to a normal map an image needs to be supplied to
     act as a reflection. The shader is passed a value from 0.0 to 1.0 to
     determine the strength of the reflection.
@@ -62,8 +68,10 @@ class Shader(object):
     Arguments:
       *shfile*
         Pathname without vs or fs ending i.e. "shaders/uv_light"
+
       *vshader_source*
         String with the code for the vertex shader.
+
       *vshader_source*
         String with the code for the fragment shader.
     """
@@ -77,7 +85,7 @@ class Shader(object):
 
     def make_shader(src, suffix, shader_type):
       src = src or self.loadShader(shfile + suffix)
-      characters = ctypes.c_char_p(src)
+      characters = ctypes.c_char_p(src.encode())
       shader = opengles.glCreateShader(shader_type)
       opengles.glShaderSource(shader, 1, ctypes.byref(characters), 0)
       opengles.glCompileShader(shader)
@@ -94,21 +102,23 @@ class Shader(object):
     opengles.glLinkProgram(self.program)
     self.showprogramlog(self.program)
 
-    self.attr_vertex = opengles.glGetAttribLocation(self.program, "vertex")
-    self.attr_normal = opengles.glGetAttribLocation(self.program, "normal")
+    self.attr_vertex = opengles.glGetAttribLocation(self.program, b'vertex')
+    self.attr_normal = opengles.glGetAttribLocation(self.program, b'normal')
 
-    self.unif_modelviewmatrix = opengles.glGetUniformLocation(self.program, "modelviewmatrix")
-    self.unif_cameraviewmatrix = opengles.glGetUniformLocation(self.program, "cameraviewmatrix")
+    self.unif_modelviewmatrix = opengles.glGetUniformLocation(
+      self.program, b'modelviewmatrix')
+    self.unif_cameraviewmatrix = opengles.glGetUniformLocation(
+      self.program, b'cameraviewmatrix')
 
-    self.unif_unif = opengles.glGetUniformLocation(self.program, "unif")
-    self.unif_unib = opengles.glGetUniformLocation(self.program, "unib")
+    self.unif_unif = opengles.glGetUniformLocation(self.program, b'unif')
+    self.unif_unib = opengles.glGetUniformLocation(self.program, b'unib')
 
-    self.attr_texcoord = opengles.glGetAttribLocation(self.program, "texcoord")
+    self.attr_texcoord = opengles.glGetAttribLocation(self.program, b'texcoord')
     opengles.glEnableVertexAttribArray(self.attr_texcoord)
     self.unif_tex = []
     self.texture = []
-    for t in range(3):
-      self.unif_tex.append(opengles.glGetUniformLocation(self.program, "tex"+str(t)))
+    for s in [b'tex0', b'tex1', b'tex2']:
+      self.unif_tex.append(opengles.glGetUniformLocation(self.program, s))
       """
       *NB*
         for *uv* shaders tex0=texture tex1=normal map tex2=reflection
@@ -126,18 +136,17 @@ class Shader(object):
     N = 1024
     log = (ctypes.c_char * N)()
     loglen = ctypes.c_int()
-    opengles.glGetShaderInfoLog(shader, N, ctypes.byref(loglen),
-                                ctypes.byref(log))
-    print "shader", self.shfile, log.value
+    opengles.glGetShaderInfoLog(
+      shader, N, ctypes.byref(loglen), ctypes.byref(log))
+    print('shader {}, {}'.format(self.shfile, log.value))
 
   def showprogramlog(self, shader):
     """Prints the compile log for a program"""
     N = 1024
     log = (ctypes.c_char * N)()
     loglen = ctypes.c_int()
-    opengles.glGetProgramInfoLog(shader, N, ctypes.byref(loglen),
-                                 ctypes.byref(log))
-    print "program", self.shfile, log.value
+    opengles.glGetProgramInfoLog(
+      shader, N, ctypes.byref(loglen), ctypes.byref(log))
 
   def loadShader(self, sfile):
-    return open(sfile,'r').read()
+    return open(sfile, 'r').read()

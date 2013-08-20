@@ -1,4 +1,6 @@
-from echomesh.util.DefaultInstance import DefaultInstance
+from __future__ import absolute_import, division, print_function, unicode_literals
+
+from pi3d.util.DefaultInstance import DefaultInstance
 
 class Light(DefaultInstance):
   """ Holds information about lighting to be used in shaders """
@@ -9,15 +11,17 @@ class Light(DefaultInstance):
     """ set light values. These are set in Shape.unif as part of the Shape
     constructor. They can be changed using Shape.set_light()
     The pixel shade is calculated as::
-    
+
       (lightcol * texture) * dot(lightpos, -normal) + (lightamb * texture)
-    
+
     where * means component multiplying if between two vectors and dot() is
     the dot product of two vectors.
-    
+
     Arguments:
       *lightpos*
-        tuple (x,y,z) vector direction *from* the light
+        tuple (x,y,z) vector direction *from* the light i.e. an object at position
+        (0,0,0) would appear to be lit from a light at (-3,4,-5) (left, above and
+        nearer) if lightpos=(3,-4,5)
       *lightcol*
         tuple (r,g,b) defines shade and brightness
       *lightamb*

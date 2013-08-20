@@ -1,14 +1,22 @@
-from ctypes import c_float
+from __future__ import absolute_import, division, print_function, unicode_literals
 
+from ctypes import c_float, byref
+
+import six
 import time
 import threading
 import traceback
-
-from echomesh.util import Log
+import platform
 
 from pi3d.constants import *
+from pi3d.util import Log
 from pi3d.util import Utility
 from pi3d.util.DisplayOpenGL import DisplayOpenGL
+from pi3d.Keyboard import Keyboard
+
+if not ON_PI:
+  from pyxlib.x import *
+  from pyxlib import xlib
 
 LOGGER = Log.logger(__name__)
 
@@ -50,6 +58,15 @@ class Display(object):
     self.sprites = []
     self.sprites_to_load = set()
     self.sprites_to_unload = set()
+
+    self.tidy_needed = False
+    self.textures_dict = {}
+    self.vbufs_dict = {}
+    self.ebufs_dict = {}
+
+    if not ON_PI:
+      self.event_list = []
+      self.ev = xlib.XEvent()
 
     self.opengl = DisplayOpenGL()
     self.max_width, self.max_height = self.opengl.width, self.opengl.height
@@ -149,9 +166,10 @@ class Display(object):
 
   def destroy(self):
     """Destroy the current Display and reset Display.INSTANCE."""
+    self._tidy()
     self.stop()
     try:
-      self.opengl.destroy()
+      self.opengl.destroy(self)
     except:
       pass
     try:
@@ -199,6 +217,16 @@ class Display(object):
   def _loop_begin(self):
     # TODO(rec):  check if the window was resized and resize it, removing
     # code from MegaStation to here.
+    if not ON_PI:
+      n = xlib.XEventsQueued(self.opengl.d, xlib.QueuedAfterFlush)
+      for i in range(n):
+        if xlib.XCheckMaskEvent(self.opengl.d, KeyPressMask, self.ev):
+          self.event_list.append(self.ev)
+        else:
+          xlib.XNextEvent(self.opengl.d, self.ev)
+          if self.ev.type == ClientMessage:
+            if (self.ev.xclient.data.l[0] == self.opengl.WM_DELETE_WINDOW.value):
+              self.destroy()
     self.clear()
     with self.lock:
       self.sprites_to_load, to_load = set(), self.sprites_to_load
@@ -210,6 +238,34 @@ class Display(object):
       camera = Camera.instance()
       if camera:
         camera.was_moved = False
+
+    if self.tidy_needed:
+      self._tidy()
+
+  def _tidy(self):
+    to_del = []
+    for i, tex in six.iteritems(self.textures_dict):
+      LOGGER.debug('tex0=%s tex1=%s',tex[0], tex[1])
+      if tex[1] == 1:
+        opengles.glDeleteTextures(1, byref(tex[0]))
+        to_del.append(i)
+    for i in to_del:
+      del self.textures_dict[i]
+    to_del = []
+    for i, vbuf in six.iteritems(self.vbufs_dict):
+      if vbuf[1] == 1:
+        opengles.glDeleteBuffers(1, byref(vbuf[0]))
+        to_del.append(i)
+    for i in to_del:
+      del self.vbufs_dict[i]
+    to_del = []
+    for i, ebuf in six.iteritems(self.ebufs_dict):
+      if ebuf[1] == 1:
+        opengles.glDeleteBuffers(1, byref(ebuf[0]))
+        to_del.append(i)
+    for i in to_del:
+      del self.ebufs_dict[i]
+    self.tidy_needed = False
 
   def _loop_end(self):
     with self.lock:
@@ -288,20 +344,43 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
     Maximum frames per second to render (None means "free running").
   """
   if tk:
-    from pi3d.util import TkWin
-    if not (w and h):
-      # TODO: how do we do full-screen in tk?
-      #LOGGER.error("Can't compute default window size when using tk")
-      #raise Exception
-      # ... just force full screen - TK will automatically fit itself into the screen
-      w = 1920
-      h = 1180
-    tkwin = TkWin.TkWin(window_parent, window_title, w, h)
-    tkwin.update()
-    if x is None:
-      x = tkwin.winx
-    if y is None:
-      y = tkwin.winy
+    if not ON_PI:
+      #just use python-xlib same as non-tk but need dummy behaviour
+      class DummyTkWin(object):
+        def __init__(self):
+          self.tkKeyboard = Keyboard()
+          self.ev = ""
+          self.key = ""
+          self.winx, self.winy = 0, 0
+          self.width, self.height = 1920, 1180
+          self.event_list = []
+
+        def update(self):
+          self.key = self.tkKeyboard.read_code()
+          if self.key == "":
+            self.ev = ""
+          else:
+            self.ev = "key"
+
+      tkwin = DummyTkWin()
+      x = x or 0
+      y = y or 0
+
+    else:
+      from pi3d.util import TkWin
+      if not (w and h):
+        # TODO: how do we do full-screen in tk?
+        #LOGGER.error('Can't compute default window size when using tk')
+        #raise Exception
+        # ... just force full screen - TK will automatically fit itself into the screen
+        w = 1920
+        h = 1180
+      tkwin = TkWin.TkWin(window_parent, window_title, w, h)
+      tkwin.update()
+      if x is None:
+        x = tkwin.winx
+      if y is None:
+        y = tkwin.winy
 
   else:
     tkwin = None
@@ -346,20 +425,20 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
     display.mouse.start()
 
   # This code now replaced by camera 'lens'
-  """opengles.glMatrixMode(GL_PROJECTION)
-  Utility.load_identity()
-  if is_3d:
-    hht = near * math.tan(math.radians(aspect / 2.0))
-    hwd = hht * w / h
-    opengles.glFrustumf(c_float(-hwd), c_float(hwd), c_float(-hht), c_float(hht),
-                        c_float(near), c_float(far))
-    opengles.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
-  else:
-    opengles.glOrthof(c_float(0), c_float(w), c_float(0), c_float(h),
-                      c_float(near), c_float(far))
-  """
-  opengles.glMatrixMode(GL_MODELVIEW)
-  Utility.load_identity()
+  # opengles.glMatrixMode(GL_PROJECTION)
+  # Utility.load_identity()
+  # if is_3d:
+  #   hht = near * math.tan(math.radians(aspect / 2.0))
+  #   hwd = hht * w / h
+  #   opengles.glFrustumf(c_float(-hwd), c_float(hwd), c_float(-hht), c_float(hht),
+  #                       c_float(near), c_float(far))
+  #   opengles.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
+  # else:
+  #   opengles.glOrthof(c_float(0), c_float(w), c_float(0), c_float(h),
+  #                     c_float(near), c_float(far))
+
+  #opengles.glMatrixMode(GL_MODELVIEW)
+  #Utility.load_identity()
 
 
   if background:

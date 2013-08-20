@@ -1,3 +1,5 @@
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 from math import pi
 
 from pi3d.constants import *
@@ -11,7 +13,7 @@ class Disk(Shape):
                rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0,
                cx=0.0, cy=0.0, cz=0.0):
     """uses standard constructor for Shape extra Keyword arguments:
-    
+
       *radius*
         Radius of disk.
       *sides*
@@ -21,7 +23,7 @@ class Disk(Shape):
                                cx, cy, cz)
 
     if VERBOSE:
-      print "Creating disk ..."
+      print("Creating disk ...")
 
     self.verts = []
     self.norms = []

@@ -3,8 +3,9 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 """
 pi3d.constants contains constant values, mainly integers, from OpenGL ES 2.0.
 """
+import subprocess
 
-VERSION = '0.06'
+VERSION = '1.0'
 
 STARTUP_MESSAGE = """
 
@@ -33,17 +34,36 @@ EGL_NO_DISPLAY = 0
 EGL_NO_SURFACE = 0
 DISPMANX_PROTECTION_NONE = 0
 
+# Is this running on a raspberry pi?
+ON_PI = False
+
+# run command and return
+def _run_command(command): 
+  p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+  return iter(p.stdout.readline, b'')
+ 
+command = ['ldconfig', '-p']
+
+for line in _run_command(command):
+  if b"libbcm_host.so" in line:
+    ON_PI = True
+    break
+
 # Lastly, load the libraries.
-def _load_library(name):
+def _load_library(name, version=""):
   """Try to load a shared library, report an error on failure."""
   try:
     import ctypes
-    return ctypes.CDLL('lib%s.so' % name)
+    return ctypes.CDLL("lib{}.so{}".format(name, version))
   except:
-    from echomesh.util import Log
-    Log.logger(__name__).error("Couldn't load library %s" % name)
+    from pi3d.util import Log
+    Log.logger(__name__).error("Couldn't load library lib%s.so%s", name, version)
 
-bcm = _load_library('bcm_host')
-opengles = _load_library('GLESv2')
-openegl = _load_library('EGL')
-
+#May need to use system() and linux_distribution()
+if ON_PI: # libbcm_host.so found in shared libraries
+  bcm = _load_library('bcm_host', '')
+  opengles = _load_library('GLESv2', '')
+  openegl = _load_library('EGL', '')
+else: # try and run using libx11 and mesa
+  opengles = _load_library('GLESv2','.2')
+  openegl = _load_library('EGL', '.1')

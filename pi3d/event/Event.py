@@ -1,3 +1,5 @@
+import six
+
 from pi3d.event import EventHandler
 from pi3d.event import Keys
 from pi3d.event.FindDevices import find_devices
@@ -6,45 +8,56 @@ from pi3d.event.EventStream import EventStream
 
 _KEYS = (k for k in vars(Keys) if not k.startswith('_'))
 KEY_CODE = dict((k, getattr(Keys, k)) for k in _KEYS)
-CODE_KEY = dict((v, k) for k, v in KEY_CODE.iteritems())
+CODE_KEY = dict((v, k) for k, v in six.iteritems(KEY_CODE))
 
 def key_to_code(key):
-  return KEY_CODE.get(str(key), -1) if isinstance(key, basestring) else key
+  return KEY_CODE.get(str(key), -1) if isinstance(key, six.string_types) else key
 
 def code_to_key(code):
   return CODE_KEY.get(code, '')
 
 class InputEvents(object):
-  """
-  Encapsulates the entire InputEvents subsystem.
+  """Encapsulates the entire InputEvents subsystem.
 
   This is generally all you need to import. For efficiency reasons you may
   want to make use of CodeOf[ ], but everything else is hidden behind this class.
 
-  On instanciation, we open all devices that are keyboards, mice or joysticks.
+  On instantiation, we open all devices that are keyboards, mice or joysticks.
   That means we might have two of one sort of another, and that might be a problem,
   but it would be rather rare.
 
-  There are several ABS (joystick, touch) events that we do not handle. In
-  particular:  THROTTLE, RUDDER, WHEEL, GAS, BRAKE, HAT1, HAT2, HAT3, PRESSURE,
+  There are several ABS (joystick, touch) events that we do not handle, specifically
+  THROTTLE, RUDDER, WHEEL, GAS, BRAKE, HAT1, HAT2, HAT3, PRESSURE,
   DISTANCE, TILT, TOOL_WIDTH. Implementing these is left as an exercise
   for the interested reader. Similarly, we make no attempt to handle multi-touch.
 
   Handlers can be supplied, in which case they are called for each event, but
   it isn't necessary; API exists for all the events.
+
   The handler signatures are:
-    def mouse_handler_func(sourceType, SourceIndex, x, y, v, h):
-    def joystick_handler_func(sourceType, SourceIndex, x1, y1, z1, x2, y2, z2, hatx, haty):
-    def key_handler_func(sourceType, SourceIndex, key, value):
-    def syn_handler_func(sourceType, SourceIndex, code, value):
-    def unhandled_handler_func(event):
-  Where "sourceType" is the device type string (keyboard, mouse, joystick),
-  sourceIndex is an incrementing number for each device of that type, starting
-  at zero, and event is an EventStruct object. Key is the key code, not it's
-  ASCII value or anything  simple. Use key_to_code() to convert from the name of a
-  key to its code, and code_to_key() to convert a code to a name. The keys are
-  listed in pi3d.event.Constants.py or /usr/include/linux/input.h Note that the key
-  names refer to a US keyboard.
+
+    def mouse_handler_func(sourceType, SourceIndex, x, y, v, h)
+    def joystick_handler_func(sourceType, SourceIndex, x1, y1, z1, x2, y2, z2, hatx, haty)
+    def key_handler_func(sourceType, SourceIndex, key, value)
+    def syn_handler_func(sourceType, SourceIndex, code, value)
+    def unhandled_handler_func(event)
+
+  where:
+    sourceType:
+      the device type string (keyboard, mouse, joystick),
+
+    sourceIndex:
+      an incrementing number for each device of that type, starting at zero,
+      and event is an EventStruct object.
+
+    key:
+      the key code, not its ASCII value or anything simple.
+
+  Use key_to_code() to convert from the name of a key to its code,
+  and code_to_key() to convert a code to a name.
+
+  The keys are listed in pi3d.event.Constants.py or /usr/include/linux/input.h
+  Note that the key names refer to a US keyboard.
   """
   def __init__(self, keyboardHandler=None, mouseHandler=None, joystickHandler=None, synHandler=None, unhandledHandler=None, wantKeyboard=True, wantMouse=True, wantJoystick=True):
     self.unhandledHandler = unhandledHandler
@@ -54,16 +67,16 @@ class InputEvents(object):
       self.streams += map(lambda x: EventStream(x, "keyboard"), keyboards)
     else:
       keyboards = [ ]
-    print "keyboards =", keyboards
+    print("keyboards =", keyboards)
     if wantMouse:
       mice = find_devices("mouse", butNot=keyboards)
-      print "mice = ", mice
+      print("mice = ", mice)
       self.streams += map(lambda x: EventStream(x, "mouse"), mice)
     else:
       mice = [ ]
     if wantJoystick:
       joysticks = find_devices("js", butNot=keyboards+mice)
-      print "joysticks =", joysticks
+      print("joysticks =", joysticks)
       js_streams = map(lambda x: EventStream(x, "joystick"), joysticks)
       self.streams += js_streams
     for x in self.streams:

@@ -6,6 +6,7 @@ attribute vec2 texcoord;
 
 uniform mat4 modelviewmatrix[2]; // 0 model movement in real coords, 1 in camera coords
 uniform vec3 unif[16];
+uniform vec3 unib[4];
 
 varying vec3 lightVector;
 varying float dist;
@@ -32,4 +33,5 @@ void main(void) {
   dist = length(inray);
   
   gl_Position = modelviewmatrix[1] * vec4(vertex,1.0);
+  gl_PointSize = unib[2][2] / dist;
 }

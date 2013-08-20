@@ -6,12 +6,12 @@ Allows the use of:
 
 to drag in most of the important classes of pi3d.
 """
-from echomesh.util import Log
 
 from pi3d.constants import *
 
 from pi3d import Display
 
+from pi3d.Buffer import Buffer
 from pi3d.Camera import Camera
 from pi3d.Keyboard import Keyboard
 from pi3d.Mouse import Mouse
@@ -25,7 +25,13 @@ from pi3d.Light import Light
 from pi3d.shape.EnvironmentCube import EnvironmentCube, loadECfiles
 from pi3d.shape.Sprite import Sprite, ImageSprite
 
+from pi3d.event.Event import InputEvents
+
 from pi3d.shape.Building import Building
+from pi3d.shape.Building import corridor
+from pi3d.shape.Building import Size
+from pi3d.shape.Building import Position
+from pi3d.shape.Building import SolidObject
 from pi3d.shape.Canvas import Canvas
 from pi3d.shape.Cone import Cone
 from pi3d.shape.Cuboid import Cuboid
@@ -47,10 +53,13 @@ from pi3d.shape.Tube import Tube
 
 from pi3d.sprite.Ball import Ball
 
+from pi3d.util import Log
 from pi3d.util import Utility
+from pi3d.util.Clashtest import Clashtest
 from pi3d.util.String import String
 
 from pi3d.util.Defocus import Defocus
-from pi3d.util.Font import Font
+from pi3d.util.Pngfont import Pngfont
 from pi3d.util.Screenshot import screenshot
-from pi3d.util.Ttffont import Ttffont
+from pi3d.util.ShadowCaster import ShadowCaster
+from pi3d.util.Font import Font

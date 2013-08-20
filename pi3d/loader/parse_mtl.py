@@ -1,6 +1,6 @@
 from collections import namedtuple
 
-from echomesh.util import Log
+from pi3d.util import Log
 
 RAISE_EXCEPTION_ON_ERROR = True
 LOGGER = Log.logger(__name__)

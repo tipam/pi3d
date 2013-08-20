@@ -18,6 +18,7 @@ MAX_BALL_SIZE = 100
 MAX_BALL_VELOCITY = 10.0
 
 KEYBOARD = pi3d.Keyboard()
+LOGGER = pi3d.Log.logger(__name__)
 
 BACKGROUND_COLOR = (1.0, 1.0, 1.0, 0.0)
 DISPLAY = pi3d.Display.create(background=BACKGROUND_COLOR)
@@ -26,7 +27,7 @@ ZPLANE = 1000
 fov = 2.0 * math.degrees(math.atan(HEIGHT/2.0/ZPLANE))
 
 CAMERA = pi3d.Camera((0, 0, 0), (0, 0, -1.0),
-                (1, 1100, fov, 
+                (1, 1100, fov,
                  WIDTH / float(HEIGHT)))
 SHADER = pi3d.Shader('shaders/uv_flat')
 
@@ -48,6 +49,8 @@ def random_ball():
 
 SPRITES = [random_ball() for b in range(MAX_BALLS)]
 DISPLAY.add_sprites(*SPRITES)
+
+LOGGER.info('Starting CollisionBalls')
 
 while DISPLAY.loop_running():
   for i, ball1 in enumerate(SPRITES):

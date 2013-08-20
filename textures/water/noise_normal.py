@@ -6,7 +6,7 @@ and wrap at the end of the sequence. The pixel value are interpreted as
 heights and colour values then calculated to represent a normal map.
 """
 # values used by the noise function
-perm = range(256)
+perm = list(range(256))
 random.seed(1)
 random.shuffle(perm)
 perm += perm

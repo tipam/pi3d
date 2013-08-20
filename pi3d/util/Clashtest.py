@@ -1,7 +1,11 @@
 import ctypes
-import Image
 
-from pi3d import *
+from six.moves import xrange
+
+from PIL import Image
+
+from pi3d.constants import *
+
 from pi3d.Shader import Shader
 from pi3d.Texture import Texture
 
@@ -45,17 +49,19 @@ class Clashtest(Texture):
 
   def check(self, grain=50):
     """ checks the pixels of the texture to see if there is any change from the
-    first pixel sampled; in which case returns True else returns False. 
-    
+    first pixel sampled; in which case returns True else returns False.
+
     Keyword argument:
       *grain*
         Number of locations to check over the whole image
     """
-    opengles.glReadPixels(0, 0, self.ix, self.iy, GL_RGB, GL_UNSIGNED_BYTE, ctypes.byref(self.img))
+    opengles.glReadPixels(0, 0, self.ix, self.iy,
+                               GL_RGB, GL_UNSIGNED_BYTE,
+                               ctypes.byref(self.img))
     r0 = self.img[0:3]
     step = 3 * int(self.ix * self.iy / 50)
     for i in xrange(0, len(self.img)-3, step):
       if self.img[i:(i+3)] != r0:
         return True
-        
+
     return False

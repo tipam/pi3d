@@ -1,42 +1,35 @@
 #!/usr/bin/python
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-""" Model loaded from panda3d egg file. Diffuse colours picked up from file,
+""" pi3d.Model loaded from panda3d egg file. Diffuse colours picked up from file,
 would be overridden if texture file defined. Althou normal mapping is defined
 it cannot be used (and has no effect) because there are no u-v coordinates
 defined in this egg file
 """
 import demo
 
-from pi3d import Display
-from pi3d.Keyboard import Keyboard
-from pi3d.Texture import Texture
-
-from pi3d.Shader import Shader
-from pi3d.Light import Light
-
-from pi3d.shape.Model import Model
-from pi3d.util.Screenshot import screenshot
+import pi3d
 
 # Setup display and initialise pi3d
-DISPLAY = Display.create(x=100, y=100, background=(0.2, 0.4, 0.6, 1))
+DISPLAY = pi3d.Display.create(x=100, y=100, background=(0.2, 0.4, 0.6, 1))
 
-Light((1, 1, 1))
+pi3d.Light((1, 1, 1))
 
-shader = Shader("shaders/mat_reflect")
+shader = pi3d.Shader("shaders/mat_reflect")
 #========================================
 # load bump and reflection textures
-bumptex = Texture("textures/floor_nm.jpg")
-shinetex = Texture("textures/stars.jpg")
+bumptex = pi3d.Texture("textures/floor_nm.jpg")
+shinetex = pi3d.Texture("textures/stars.jpg")
 
 # load model_loadmodel
-mymodel = Model(file_string='models/teapot.egg', name='teapot', x=0, y=0, z=10)
+mymodel = pi3d.Model(file_string='models/teapot.egg', name='teapot', x=0, y=0, z=10)
 mymodel.set_shader(shader)
+
 # material is set in the file
 mymodel.set_normal_shine(bumptex, 4.0, shinetex, 0.2, is_uv = False)
 
 # Fetch key presses
-mykeys = Keyboard()
+mykeys = pi3d.Keyboard()
 
 while DISPLAY.loop_running():
   mymodel.draw()
@@ -47,10 +40,10 @@ while DISPLAY.loop_running():
   k = mykeys.read()
   if k >-1:
     if k == 112:
-      screenshot('teapot.jpg')
+      pi3d.screenshot('teapot.jpg')
     elif k==27:
       mykeys.close()
-      DISPLAY.close()
+      DISPLAY.destroy()
       break
     else:
       print(k)

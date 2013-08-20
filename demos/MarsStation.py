@@ -13,10 +13,7 @@ the distant one has the doors and windows closed, the near one open
 import math, random, time
 
 import demo
-from pi3d import *
-
-from pi3d.util.TkWin import TkWin
-#from pi3d.event.Event import InputEvents
+import pi3d
 
 rads = 0.017453292512  # degrees to radians
 
@@ -25,7 +22,7 @@ rads = 0.017453292512  # degrees to radians
 winw,winh,bord = 1200,600,0 #64MB GPU memory setting
 #winw,winh,bord = 1920,1080,0 #128MB GPU memory setting
 
-DISPLAY = Display.create(tk=True, window_title='Mars Station demo in Pi3D',
+DISPLAY = pi3d.Display.create(tk=True, window_title='Mars Station demo in Pi3D',
                         w=winw, h=winh - bord, far=2200.0,
                         background=(0.4, 0.8, 0.8, 1), frames_per_second=20)
 
@@ -33,64 +30,58 @@ DISPLAY = Display.create(tk=True, window_title='Mars Station demo in Pi3D',
 
 win = DISPLAY.tkwin
 
-shader = Shader("shaders/uv_reflect")
-flatsh = Shader("shaders/uv_flat")
-shade2d = Shader('shaders/2d_flat')
+shader = pi3d.Shader("shaders/uv_reflect")
+flatsh = pi3d.Shader("shaders/uv_flat")
+shade2d = pi3d.Shader('shaders/2d_flat')
 
 #========================================
 # create splash screen and draw it
-splash = ImageSprite("textures/pi3d_splash.jpg", shade2d, w=10, h=10, z=0.2)
+splash = pi3d.ImageSprite("textures/pi3d_splash.jpg", shade2d, w=10, h=10, z=0.2)
 splash.draw()
 DISPLAY.swap_buffers()
 #############################
-ectex = loadECfiles("textures/ecubes/RedPlanet", "redplanet_256", "png", True)
-myecube = EnvironmentCube(size=1800.0, maptype="FACES")
+ectex = pi3d.loadECfiles("textures/ecubes/RedPlanet", "redplanet_256", "png", True)
+myecube = pi3d.EnvironmentCube(size=1800.0, maptype="FACES")
 myecube.set_draw_details(flatsh,ectex)
 
 # Create elevation map
 mapwidth=2000.0
 mapdepth=2000.0
 mapheight=100.0
-redplanet = Texture("textures/mars_colour.png")
-bumpimg = Texture("textures/mudnormal.jpg")
-mymap = ElevationMap(mapfile='textures/mars_height.png',
+redplanet = pi3d.Texture("textures/mars_colour.png")
+bumpimg = pi3d.Texture("textures/mudnormal.jpg")
+mymap = pi3d.ElevationMap(mapfile='textures/mars_height.png',
                      width=mapwidth, depth=mapdepth, height=mapheight,
                      divx=64, divy=64)
-mymap.buf[0].set_draw_details(shader,[redplanet, bumpimg],128.0, 0.0)
+mymap.set_draw_details(shader,[redplanet, bumpimg],128.0, 0.0)
 mymap.set_fog((0.3, 0.15, 0.1, 0.0), 1000.0)
 
 #Load Corridors sections
 
-sttnbmp = Texture("textures/floor_nm.jpg")
-sttnshn = Texture("textures/stars.jpg")
+sttnbmp = pi3d.Texture("textures/floor_nm.jpg")
+sttnshn = pi3d.Texture("textures/stars.jpg")
 x,z = 0,0
 y = mymap.calcHeight(x, z)
-
-cor_win90 = Model(file_string="models/MarsStation/corridor_win_lowpoly.egg",
+#corridor with windows
+cor_win = pi3d.Model(file_string="models/MarsStation/corridor_win_lowpoly.egg",
                 x=x, y=y, z=z, sx=0.1, sy=0.1, sz=0.1)
-cor_win90.set_shader(shader)
-# TODO seem to be able to 'stamp' the same object in different locations
-# but not different rotations! need to find out cause
-cor_win00 = cor_win90.clone()
-cor_win90.rotateToY(90)
-
-corridor90 = Model(file_string="models/MarsStation/corridor_lowpoly.egg",
+cor_win.set_shader(shader)
+#normal corridor
+corridor = pi3d.Model(file_string="models/MarsStation/corridor_lowpoly.egg",
                  x=x, y=y, z=z, sx=0.1, sy=0.1, sz=0.1)
-corridor90.set_shader(shader)
-corridor00 = corridor90.clone()
-corridor90.rotateToY(90)
-
-cor_cross = Model(file_string="models/MarsStation/cross_room.egg",
+corridor.set_shader(shader)
+#corridor crossing
+cor_cross = pi3d.Model(file_string="models/MarsStation/cross_room.egg",
                  x=x, y=y, z=z, sx=0.1, sy=0.1, sz=0.1)
 cor_cross.set_shader(shader)
 cor_cross.set_normal_shine(sttnbmp, 32.0, sttnshn, 0.1)
-
-cor_cross_doors = Model(file_string="models/MarsStation/cross_room_doors.egg",
+#corridor crossing with doors
+cor_cross_doors = pi3d.Model(file_string="models/MarsStation/cross_room_doors.egg",
                         x=x, y=y, z=z, sx=0.1, sy=0.1, sz=0.1)
 cor_cross_doors.set_shader(shader)
 cor_cross_doors.set_normal_shine(sttnbmp, 32.0, sttnshn, 0.1)
-
-cor_bend = Model(file_string="models/MarsStation/bend_lowpoly.egg",
+#corridor with 90 degree bend
+cor_bend = pi3d.Model(file_string="models/MarsStation/bend_lowpoly.egg",
                  x=x, y=y, z=z, sx=0.1, sy=0.1, sz=0.1)
 cor_bend.set_shader(shader)
 cor_bend.set_normal_shine(sttnbmp, 32.0)
@@ -108,7 +99,7 @@ mody = ym + 3.0
 opendist = 80
 
 #key presses
-mymouse = Mouse(restrict = False)
+mymouse = pi3d.Mouse(restrict = False)
 mymouse.start()
 omx, omy = mymouse.position()
 
@@ -116,7 +107,7 @@ omx, omy = mymouse.position()
 win.update()
 DISPLAY.resize(win.winx, win.winy, win.width, win.height - bord)
 
-CAMERA = Camera.instance()
+CAMERA = pi3d.Camera.instance()
 #inputs.get_mouse_movement()
 
 try:
@@ -130,27 +121,33 @@ try:
     CAMERA.rotate(tilt, mouserot, 0)
     CAMERA.position((xm + xoff, ym + yoff +5, zm + zoff))
 
-    Utility.draw_level_of_detail([xm, ym, zm], [0, mody, 0], [[opendist,cor_cross],[1000,cor_cross_doors]])
-    cor_win90.position(0, mody, spc*1.5)
-    cor_win90.draw()
-    corridor90.position(0, mody, spc*2.5)
-    corridor90.draw()
-    cor_win90.position(0, mody, spc*3.5)
-    cor_win90.draw()
-    Utility.draw_level_of_detail([xm, ym, zm], [0, mody, spc*5],[[opendist,cor_cross],[1000,cor_cross_doors]])
-    cor_win90.position(0, mody, spc*6.5)
-    cor_win90.draw()
-    Utility.draw_level_of_detail([xm, ym, zm],[0, mody, spc*8], [[opendist,cor_cross],[1000,cor_cross_doors]])
-    cor_win00.position(-spc*1.5, mody, spc*5)
-    cor_win00.draw()
+    pi3d.Utility.draw_level_of_detail([xm, ym, zm], [0, mody, 0], [[opendist,cor_cross],[1000,cor_cross_doors]])
+    #90 degree units
+    corridor.rotateToY(90)
+    cor_win.rotateToY(90)
+    cor_win.position(0, mody, spc*1.5)
+    cor_win.draw()
+    corridor.position(0, mody, spc*2.5)
+    corridor.draw()
+    cor_win.position(0, mody, spc*3.5)
+    cor_win.draw()
+    cor_win.position(0, mody, spc*6.5)
+    cor_win.draw()
+    #0 degree units
+    corridor.rotateToY(0)
+    cor_win.rotateToY(0)
+    pi3d.Utility.draw_level_of_detail([xm, ym, zm], [0, mody, spc*5],[[opendist,cor_cross],[1000,cor_cross_doors]])
+    pi3d.Utility.draw_level_of_detail([xm, ym, zm],[0, mody, spc*8], [[opendist,cor_cross],[1000,cor_cross_doors]])
+    cor_win.position(-spc*1.5, mody, spc*5)
+    cor_win.draw()
     cor_bend.position(-spc*2.5, mody, spc*5)
     cor_bend.draw()
-    Utility.draw_level_of_detail([xm, ym, zm],[-spc*2.6, mody, spc*6.6],[[opendist,cor_cross],[1000,cor_cross_doors]])
-    cor_win00.position(spc*1.5, mody, spc*5)
-    cor_win00.draw()
-    corridor00.position(spc*2.5, mody, spc*5)
-    corridor00.draw()
-    Utility.draw_level_of_detail([xm, ym, zm],[spc*4, mody, spc*5],[[opendist,cor_cross],[1000,cor_cross_doors]])
+    pi3d.Utility.draw_level_of_detail([xm, ym, zm],[-spc*2.6, mody, spc*6.6],[[opendist,cor_cross],[1000,cor_cross_doors]])
+    cor_win.position(spc*1.5, mody, spc*5)
+    cor_win.draw()
+    corridor.position(spc*2.5, mody, spc*5)
+    corridor.draw()
+    pi3d.Utility.draw_level_of_detail([xm, ym, zm],[spc*4, mody, spc*5],[[opendist,cor_cross],[1000,cor_cross_doors]])
 
     mymap.draw()  #Draw the landscape
 
@@ -176,7 +173,7 @@ try:
     if win.ev == "resized":
       print("resized")
       DISPLAY.resize(win.winx, win.winy, win.width, win.height-bord)
-      CAMERA.reset((DISPLAY.near, DISPLAY.far, DISPLAY.fov, 
+      CAMERA.reset((DISPLAY.near, DISPLAY.far, DISPLAY.fov,
                   DISPLAY.width / float(DISPLAY.height)))
       win.resized = False
     if win.ev == "key":
@@ -191,7 +188,7 @@ try:
       if win.key == "d":
         mouserot += 2
       if win.key == "p":
-        screenshot("MarsStation.jpg")
+        pi3d.screenshot("MarsStation.jpg")
       if win.key == "Escape":
         try:
           print("bye,bye1")

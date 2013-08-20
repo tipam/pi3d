@@ -1,12 +1,20 @@
+#from __future__ import absolute_import, division, print_function, unicode_literals
+from __future__ import print_function
+
 import ctypes
-import Image
+
+from six.moves import xrange
+
+from PIL import Image
 
 from pi3d.constants import *
 from pi3d.util.Ctypes import c_ints
 from pi3d.util.Loadable import Loadable
 
-MAX_SIZE = 2048
+MAX_SIZE = 1024
 DEFER_TEXTURE_LOADING = True
+WIDTHS = [4, 8, 16, 32, 48, 64, 72, 96, 128, 144, 192, 256,
+           288, 384, 512, 576, 640, 720, 768, 800, 960, 1024]
 
 def round_up_to_power_of_2(x):
   p = 1
@@ -57,68 +65,69 @@ class Texture(Loadable):
     else:
       self.load_opengl()
 
+  def __del__(self):
+    super(Texture, self).__del__()
+    if not self.opengl_loaded:
+      return True
+    from pi3d.Display import Display
+    if Display.INSTANCE:
+      Display.INSTANCE.textures_dict[str(self._tex)][1] = 1
+      Display.INSTANCE.tidy_needed = True
+
   def tex(self):
     """do the deferred opengl work and return texture"""
     self.load_opengl()
     return self._tex
 
-  def _unload_opengl(self):
-    """clear it out"""
-    texture_array = c_ints([self._tex.value])
-    opengles.glDeleteTextures(1, ctypes.addressof(texture_array))
-
   def _load_disk(self):
     """overrides method of Loadable
-    Font, Ttffont and Defocus inherit from Texture but don't do all this
-    so have to override this
+    Pngfont, Font, Defocus and ShadowCaster inherit from Texture but
+    don't do all this so have to override this
     """
     s = self.file_string + ' '
-    self.im = Image.open(self.file_string) # TODO only load this if needed because loading a Font
+    im = Image.open(self.file_string)
 
-    self.ix, self.iy = self.im.size
-    s += '(%s)' % self.im.mode
-    self.alpha = (self.im.mode == 'RGBA' or self.im.mode == 'LA')
+    self.ix, self.iy = im.size
+    s += '(%s)' % im.mode
+    self.alpha = (im.mode == 'RGBA' or im.mode == 'LA')
 
-    # work out if sizes are not to the power of 2 or > MAX_SIZE
-    # TODO: why must texture sizes be a power of 2?
-    xx = 0
-    yy = 0
-    nx, ny = self.ix, self.iy
-    while (2 ** xx) < nx:
-      xx += 1
-    while (2 ** yy) < ny:
-      yy += 1
-    if (2 ** xx) > nx:
-      nx = 2 ** xx
-    if (2 ** yy) > ny:
-      ny = 2 ** yy
-    nx = min(nx, MAX_SIZE)
-    ny = min(ny, MAX_SIZE)
-
-    if nx != self.ix or ny != self.iy or self.size > 0:
-      if VERBOSE:
-        print self.ix, self.iy
-      if self.size > 0:
-        nx, ny = self.size, self.size
-      self.ix, self.iy = nx, ny
-      self.im = self.im.resize((self.ix, self.iy), Image.ANTIALIAS)
-      s += 'Resizing to: %d, %d' % (self.ix, self.iy)
+    if self.mipmap:
+      resize_type = Image.BICUBIC
     else:
-      s += 'Bitmap size: %d, %d' % (self.ix, self.iy)
+      resize_type = Image.NEAREST
+
+    # work out if sizes > MAX_SIZE or coerce to golden values in WIDTHS
+    if self.iy > self.ix and self.iy > MAX_SIZE: # fairly rare circumstance
+      im = im.resize((int((MAX_SIZE * self.ix) / self.iy), MAX_SIZE))
+      self.ix, self.iy = im.size
+    n = len(WIDTHS)
+    for i in xrange(n-1, 0, -1):
+      if self.ix == WIDTHS[i]:
+        break # no need to resize as already a golden size
+      if self.ix > WIDTHS[i]:
+        im = im.resize((WIDTHS[i-1], int((WIDTHS[i-1] * self.iy) / self.ix)),
+                        resize_type)
+        self.ix, self.iy = im.size
+        break
 
     if VERBOSE:
-      print 'Loading ...', s
+      print('Loading ...{}'.format(s))
 
     if self.flip:
-      self.im = self.im.transpose(Image.FLIP_TOP_BOTTOM)
+      im = im.transpose(Image.FLIP_TOP_BOTTOM)
 
     RGBs = 'RGBA' if self.alpha else 'RGB'
-    self.image = self.im.convert(RGBs).tostring('raw', RGBs)
+    self.image = im.convert(RGBs).tostring('raw', RGBs)
     self._tex = ctypes.c_int()
+    if 'fonts/' in self.file_string:
+      self.im = im
 
   def _load_opengl(self):
     """overrides method of Loadable"""
     opengles.glGenTextures(1, ctypes.byref(self._tex), 0)
+    from pi3d.Display import Display
+    if Display.INSTANCE:
+      Display.INSTANCE.textures_dict[str(self._tex)] = [self._tex, 0]
     opengles.glBindTexture(GL_TEXTURE_2D, self._tex)
     RGBv = GL_RGBA if self.alpha else GL_RGB
     opengles.glTexImage2D(GL_TEXTURE_2D, 0, RGBv, self.ix, self.iy, 0, RGBv,
@@ -137,6 +146,10 @@ class Texture(Loadable):
 
     opengles.glGenerateMipmap(GL_TEXTURE_2D)
     opengles.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+
+  def _unload_opengl(self):
+    """clear it out"""
+    opengles.glDeleteTextures(1, ctypes.byref(self._tex))
 
 
 class TextureCache(object):

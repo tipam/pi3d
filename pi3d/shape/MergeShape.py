@@ -1,3 +1,5 @@
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import ctypes
 import math
 import random
@@ -14,7 +16,7 @@ class MergeShape(Shape):
   the shader, each time an object is drawn, it is MUCH faster to use a MergeShape
   where several objects will always remain in the same positions relative to
   each other. i.e. trees in a forest.
-  
+
   Where the objects have multiple Buffers, each needing a different texture
   (i.e. more complex Model objects) each must be combined into a different
   MergeShape
@@ -25,11 +27,11 @@ class MergeShape(Shape):
                sx=1.0, sy=1.0, sz=1.0,
                cx=0.0, cy=0.0, cz=0.0):
     """uses standard constructor for Shape"""
-    super(MergeShape, self).__init__(camera, light, name, x, y, z, rx, ry, rz, sx, sy, sz,
-                                     cx, cy, cz)
+    super(MergeShape, self).__init__(camera, light, name, x, y, z,
+                                   rx, ry, rz, sx, sy, sz, cx, cy, cz)
 
     if VERBOSE:
-      print "Creating Merge Shape ..."
+      print("Creating Merge Shape ...")
 
     self.vertices = []
     self.normals = []
@@ -37,70 +39,83 @@ class MergeShape(Shape):
     self.indices = []    #stores all indices for single render
 
     self.buf = []
-    self.buf.append(Buffer(self, self.vertices, self.tex_coords, self.indices, self.normals))
+    self.buf.append(Buffer(self, self.vertices, self.tex_coords, self.indices,
+                  self.normals))
 
-
-  def merge(self, bufr, x, y, z,
+  def merge(self, bufr, x=0.0, y=0.0, z=0.0,
             rx=0.0, ry=0.0, rz=0.0,
-            sx=1.0, sy=1.0, sz=1.0,
-            cx=0.0, cy=0.0, cz=0.0):
+            sx=1.0, sy=1.0, sz=1.0):
     """merge the vertices, normals etc from this Buffer with those already there
     the position, rotation, scale, offset are set according to the origin of
     the MergeShape. If bufr is not a Buffer then it will be treated as if it
     is a Shape and its first Buffer object will be merged. Argument additional
     to standard Shape:
-    
+
       *bufr*
         Buffer object or Shape with a member buf[0] that is a Buffer object.
+        OR an array or tuple where each element is an array or tuple with
+        the required arguments i.e. [[bufr1, x1, y1, z1, rx1, ry1....],
+        [bufr2, x2, y2...],[bufr3, x3, y3...]] this latter is a more efficient
+        way of building a MergeShape from lots of elements. If multiple
+        Buffers are passed in this way then the subsequent arguments (x,y,z etc)
+        will be ignored.
     """
-    if not(type(bufr) is Buffer):
-      bufr = bufr.buf[0]
+    if not isinstance(bufr, list) and not isinstance(bufr, tuple):
+      buflist = [[bufr, x, y, z, rx, ry, rz, sx, sy, sz]]
+    else:
+      buflist = bufr
 
-    #assert shape.ttype == GL_TRIANGLES # this is always true of Buffer objects
-    assert len(bufr.vertices) == len(bufr.normals)
+    for b in buflist:
+      if not(type(b[0]) is Buffer):
+        bufr = b[0].buf[0]
+      else:
+        bufr = b[0]
 
-    if VERBOSE:
-      print "Merging", bufr.name
+      #assert shape.ttype == GL_TRIANGLES # this is always true of Buffer objects
+      assert len(bufr.vertices) == len(bufr.normals)
 
-    vertices = []
-    normals = []
-    original_vertex_count = len(self.vertices)
+      if VERBOSE:
+        print("Merging", bufr.name)
 
-    for v in range(0, len(bufr.vertices)):
-      def rotate_slice(array):
-        vec = array[v]
-        if rz:
-          vec = rotate_vec_z(rz, vec)
-        if rx:
-          vec = rotate_vec_x(rx, vec)
-        if ry:
-          vec = rotate_vec_y(ry, vec)
-        return vec
+      original_vertex_count = len(self.vertices)
 
-      # Scale, offset and store vertices
-      vx, vy, vz = rotate_slice(bufr.vertices)
-      self.vertices.append((vx * sx + x, vy * sy + y, vz * sz + z))
+      for v in range(0, len(bufr.vertices)):
+        def rotate_slice(array):
+          vec = array[v]
+          if b[6]:
+            vec = rotate_vec_z(b[6], vec)
+          if b[4]:
+            vec = rotate_vec_x(b[4], vec)
+          if b[5]:
+            vec = rotate_vec_y(b[5], vec)
+          return vec
 
-      # Rotate normals
-      self.normals.append(rotate_slice(bufr.normals))
+        # Scale, offset and store vertices
+        vx, vy, vz = rotate_slice(bufr.vertices)
+        self.vertices.append((vx * b[7] + b[1], vy * b[8] + b[2], vz * b[9] + b[3]))
 
-    self.tex_coords.extend(bufr.tex_coords)
+        # Rotate normals
+        self.normals.append(rotate_slice(bufr.normals))
 
-    ctypes.restype = ctypes.c_short  # TODO: remove this side-effect.
-    indices = [(i[0] + original_vertex_count, i[1] + original_vertex_count, i[2] + original_vertex_count) for i in bufr.indices]
-    self.indices.extend(indices)
+      self.tex_coords.extend(bufr.tex_coords)
+
+      ctypes.restype = ctypes.c_short  # TODO: remove this side-effect.
+      indices = [(i[0] + original_vertex_count, i[1] + original_vertex_count,
+                  i[2] + original_vertex_count) for i in bufr.indices]
+      self.indices.extend(indices)
 
     self.buf = []
-    self.buf.append(Buffer(self, self.vertices, self.tex_coords, self.indices, self.normals))
+    self.buf.append(Buffer(self, self.vertices, self.tex_coords, self.indices,
+                  self.normals))
 
   def add(self, bufr, x=0.0, y=0.0, z=0.0, rx=0.0, ry=0.0, rz=0.0,
-          sx=1.0, sy=1.0, sz=1.0, cx=0.0, cy=0.0, cz=0.0):
+          sx=1.0, sy=1.0, sz=1.0):
     """wrapper to alias merge method"""
-    self.merge(bufr, x, y, z, rx, ry, rz, sx, sy, sz, cx, cy, cz)
+    self.merge(bufr, x, y, z, rx, ry, rz, sx, sy, sz)
 
   def cluster(self, bufr, elevmap, xpos, zpos, w, d, count, options, minscl, maxscl):
     """generates a random cluster on an ElevationMap.
-    
+
     Arguments:
       *bufr*
         Buffer object to merge.
@@ -120,18 +135,22 @@ class MergeShape(Shape):
         The maximum scale value for random selection.
     """
     #create a cluster of shapes on an elevation map
+    blist = []
     for v in range(count):
       x = xpos + random.random() * w - w * 0.5
       z = zpos + random.random() * d - d * 0.5
       rh = random.random() * (maxscl - minscl) + minscl
       rt = random.random() * 360.0
       y = elevmap.calcHeight(x, z) + rh * 2
-      self.merge(bufr, x, y, z, 0.0, rt, 0.0, rh, rh, rh)
+      blist.append([bufr, x, y, z, 0.0, rt, 0.0, rh, rh, rh])
+
+    #self.merge(bufr, x, y, z, 0.0, rt, 0.0, rh, rh, rh)
+    self.merge(blist)
 
   def radialCopy(self, bufr, x=0, y=0, z=0, startRadius=2.0, endRadius=2.0,
                  startAngle=0.0, endAngle=360.0, step=12):
     """generates a radially copied cluster, axix is in the y direction.
-    
+
     Arguments:
       *bufr*
         Buffer object to merge.
@@ -156,12 +175,15 @@ class MergeShape(Shape):
     rd = startRadius
     sta = startAngle
 
+    blist = []
     for r in range(int(st)):
-      print "merging ", r
+      print("merging ", r)
       ca = math.cos(math.radians(sta))
       sa = math.sin(math.radians(sta))
-      self.merge(bufr, x + ca * rd, y, z + sa * rd, 0, sta, 0)
       sta += step
       rd += rst
+      blist.append([bufr, x + ca * rd, y, z + sa * rd,
+                0, sta, 0, 1.0, 1.0, 1.0])
 
-    print "merged all"
+    self.merge(blist)
+    print("merged all")

@@ -1,6 +1,10 @@
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import math
-import Image
-import PIL.ImageOps
+
+from six.moves import xrange
+
+from PIL import Image, ImageOps
 
 from numpy import cross, dot, sqrt, array, arctan2, arcsin, degrees, subtract
 
@@ -19,11 +23,11 @@ class ElevationMap(Shape):
                x=0.0, y=0.0, z=0.0, rx=0.0, ry=0.0, rz=0.0,
                sx=1.0, sy=1.0, sz=1.0, cx=0.0, cy=0.0, cz=0.0, smooth=True, cubic=False):
     """uses standard constructor for Shape
-    
+
     Arguments:
       *mapfile*
         Greyscale image path/file, string.
-    
+
     Keyword arguments:
       *width, depth, height*
         Of the map in world units.
@@ -39,15 +43,15 @@ class ElevationMap(Shape):
     super(ElevationMap, self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                        sx, sy, sz, cx, cy, cz)
     if VERBOSE:
-      print "Loading height map ...", mapfile
+      print("Loading height map ...", mapfile)
 
     if divx > 200 or divy > 200:
-      print "... Map size can't be bigger than 200x200 divisions"
+      print("... Map size can't be bigger than 200x200 divisions")
       divx = 200
       divy = 200
 
     im = Image.open(mapfile)
-    im = PIL.ImageOps.invert(im)
+    im = ImageOps.invert(im)
     ix, iy = im.size
     if (ix > 200 and divx == 0) or (divx > 0):
       if divx == 0:
@@ -69,7 +73,7 @@ class ElevationMap(Shape):
     self.ttype = GL_TRIANGLE_STRIP
 
     if VERBOSE:
-      print "Creating Elevation Map ...", ix, iy
+      print("Creating Elevation Map ...", ix, iy)
 
     wh = width * 0.5
     hh = depth * 0.5
@@ -156,7 +160,7 @@ class ElevationMap(Shape):
 
   def calcHeight(self, px, pz):
     """accurately return the hight of the map at the point specified
-    
+
     Arguments:
       *px, pz*
         Location of the point in world coordinates to calculate height.
@@ -201,7 +205,7 @@ class ElevationMap(Shape):
   def clashTest(self, px, py, pz, rad):
     """Works out if an object at a given location and radius will overlap
     with the map surface. Returns four values:
-    
+
     * boolean whether there is a clash
     * x, y, z components of the normal vector
     * the amount of overlap at the x,z location
@@ -289,9 +293,9 @@ class ElevationMap(Shape):
   def pitch_roll(self, px, pz):
     """works out the pitch (rx) and roll (rz) to apply to an object
     on the surface of the map at this point
-    
+
     * returns a tuple (pitch, roll) in degrees
-    
+
     Arguments:
       *px*
         x location

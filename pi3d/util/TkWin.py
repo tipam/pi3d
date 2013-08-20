@@ -1,8 +1,9 @@
 import os
 
-from Tkinter import Tk
+from pi3d import *
+from six.moves import tkinter
 
-class TkWin(Tk):
+class TkWin(tkinter.Tk):
   """
   *TkWin* encapsulates a Tk window and keeps track of the mouse and keyboard.
 
@@ -22,7 +23,7 @@ class TkWin(Tk):
     if not display:
       os.environ['DISPLAY'] = ':0'
 
-    Tk.__init__(self, parent)
+    tkinter.Tk.__init__(self, parent)
 
     def mouseclick_callback(event):
       if not self.resized:
@@ -63,13 +64,13 @@ class TkWin(Tk):
         self.key = event.keysym
         self.char = event.char
 
-    Tk.bind(self, '<Button-1>', mouseclick_callback)
-    Tk.bind(self, '<B1-Motion>', drag_callback)
-    Tk.bind(self, '<Motion>', mousemove_callback)
-    Tk.bind(self, '<MouseWheel>', mousewheel_callback)
-    Tk.bind(self, '<Configure>', resize_callback)
-    Tk.bind_all(self, '<Key>', key_callback)
-    Tk.geometry(self, str(width) + 'x' + str(height))
+    tkinter.Tk.bind(self, '<Button-1>', mouseclick_callback)
+    tkinter.Tk.bind(self, '<B1-Motion>', drag_callback)
+    tkinter.Tk.bind(self, '<Motion>', mousemove_callback)
+    tkinter.Tk.bind(self, '<MouseWheel>', mousewheel_callback)
+    tkinter.Tk.bind(self, '<Configure>', resize_callback)
+    tkinter.Tk.bind_all(self, '<Key>', key_callback)
+    tkinter.Tk.geometry(self, str(width) + 'x' + str(height))
 
     self.title(title)
     self.ev = ''

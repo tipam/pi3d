@@ -1,22 +1,33 @@
 import ctypes
+import platform
 
 from ctypes import c_int, c_float
+from six.moves import xrange
 
 from pi3d.constants import *
 
 from pi3d.util.Ctypes import c_ints
 
+if not ON_PI:
+  from pyxlib import xlib
+  from pyxlib.x import *
+
 class DisplayOpenGL(object):
   def __init__(self):
-    b = bcm.bcm_host_init()
-    assert b >= 0
+    if not ON_PI:
+      self.d = xlib.XOpenDisplay(None)
+      self.screen = xlib.XDefaultScreenOfDisplay(self.d)
+      self.width, self.height = xlib.XWidthOfScreen(self.screen), xlib.XHeightOfScreen(self.screen)
+    else:
+      b = bcm.bcm_host_init()
+      assert b >= 0
 
-    # Get the width and height of the screen
-    w = c_int()
-    h = c_int()
-    s = bcm.graphics_get_display_size(0, ctypes.byref(w), ctypes.byref(h))
-    assert s >= 0
-    self.width, self.height = w.value, h.value
+      # Get the width and height of the screen
+      w = c_int()
+      h = c_int()
+      s = bcm.graphics_get_display_size(0, ctypes.byref(w), ctypes.byref(h))
+      assert s >= 0
+      self.width, self.height = w.value, h.value
 
   def create_display(self, x=0, y=0, w=0, h=0, depth=24):
     self.display = openegl.eglGetDisplay(EGL_DEFAULT_DISPLAY)
@@ -72,23 +83,50 @@ class DisplayOpenGL(object):
     dst_rect = c_ints((x, y, w, h))
     src_rect = c_ints((x, y, w << 16, h << 16))
 
-    self.dispman_display = bcm.vc_dispmanx_display_open(0) #LCD setting
-    self.dispman_update = bcm.vc_dispmanx_update_start(0)
-    self.dispman_element = bcm.vc_dispmanx_element_add(
-      self.dispman_update,
-      self.dispman_display,
-      0, ctypes.byref(dst_rect),
-      0, ctypes.byref(src_rect),
-      DISPMANX_PROTECTION_NONE,
-      0, 0, 0)
+    if not ON_PI:
+      self.width, self.height = w, h
 
-    nativewindow = c_ints((self.dispman_element, w, h + 1))
-    bcm.vc_dispmanx_update_submit_sync(self.dispman_update)
+      # Set some WM info
+      root = xlib.XRootWindowOfScreen(self.screen)
+      self.window = xlib.XCreateSimpleWindow(self.d, root, x, y, w, h, 1, 0, 0)
 
-    nw_p = ctypes.pointer(nativewindow)
-    self.nw_p = nw_p
+      s = ctypes.create_string_buffer(b'WM_DELETE_WINDOW')
+      self.WM_DELETE_WINDOW = ctypes.c_ulong(xlib.XInternAtom(self.d, s, 0))
+      #TODO add functions to xlib for these window manager libx11 functions
+      #self.window.set_wm_name('pi3d xlib window')
+      #self.window.set_wm_icon_name('pi3d')
+      #self.window.set_wm_class('draw', 'XlibExample')
 
-    self.surface = openegl.eglCreateWindowSurface(self.display, self.config, self.nw_p, 0)
+      xlib.XSetWMProtocols(self.d, self.window, ctypes.byref(self.WM_DELETE_WINDOW), 1)
+      #self.window.set_wm_hints(flags = Xutil.StateHint,
+      #                         initial_state = Xutil.NormalState)
+
+      #self.window.set_wm_normal_hints(flags = (Xutil.PPosition | Xutil.PSize
+      #                                         | Xutil.PMinSize),
+      #                                min_width = 20,
+      #                                min_height = 20)
+
+      xlib.XSelectInput(self.d, self.window, KeyPressMask)
+      xlib.XMapWindow(self.d, self.window)
+      self.surface = openegl.eglCreateWindowSurface(self.display, self.config, self.window, 0)
+    else:
+      self.dispman_display = bcm.vc_dispmanx_display_open(0) #LCD setting
+      self.dispman_update = bcm.vc_dispmanx_update_start(0)
+      self.dispman_element = bcm.vc_dispmanx_element_add(
+        self.dispman_update,
+        self.dispman_display,
+        0, ctypes.byref(dst_rect),
+        0, ctypes.byref(src_rect),
+        DISPMANX_PROTECTION_NONE,
+        0, 0, 0)
+
+      nativewindow = c_ints((self.dispman_element, w, h + 1))
+      bcm.vc_dispmanx_update_submit_sync(self.dispman_update)
+
+      nw_p = ctypes.pointer(nativewindow)
+      self.nw_p = nw_p
+
+      self.surface = openegl.eglCreateWindowSurface(self.display, self.config, self.nw_p, 0)
     assert self.surface != EGL_NO_SURFACE
 
     r = openegl.eglMakeCurrent(self.display, self.surface, self.surface,
@@ -101,26 +139,61 @@ class DisplayOpenGL(object):
   def resize(self, x=0, y=0, w=0, h=0):
     # Destroy current surface and native window
     openegl.eglSwapBuffers(self.display, self.surface)
-    openegl.eglDestroySurface(self.display, self.surface)
-    bcm.vc_dispmanx_display_close(self.dispman_display)
-    bcm.vc_dispmanx_element_remove(self.dispman_update,
-                                   self.dispman_element)
+    if ON_PI:
+      openegl.eglDestroySurface(self.display, self.surface)
 
-    #Now recreate the native window and surface
-    self.create_surface(x, y, w, h)
+      self.dispman_update = bcm.vc_dispmanx_update_start(0)
+      bcm.vc_dispmanx_element_remove(self.dispman_update,
+                                     self.dispman_element)
+      bcm.vc_dispmanx_update_submit_sync(self.dispman_update)
+      bcm.vc_dispmanx_display_close(self.dispman_display)
+
+      #Now recreate the native window and surface
+      self.create_surface(x, y, w, h)
 
 
-  def destroy(self):
+  def destroy(self, display=None):
     if self.active:
+      ###### brute force tidying experiment TODO find nicer way ########
+      if display:
+        func_list = [[opengles.glIsBuffer, opengles.glDeleteBuffers,
+            dict(display.vbufs_dict.items() + display.ebufs_dict.items())],
+            [opengles.glIsTexture, opengles.glDeleteTextures,
+            display.textures_dict],
+            [opengles.glIsProgram, opengles.glDeleteProgram, 0],
+            [opengles.glIsShader, opengles.glDeleteShader, 0]]
+        i_ct = (ctypes.c_int * 1)(0) #convoluted 0
+        for func in func_list:
+          max_streak = 100
+          streak_start = 0
+          if func[2]: # list to work through
+            for i in func[2]:
+              if func[0](func[2][i][0]) == 1: #check if i exists as a name
+                func[1](1, ctypes.byref(func[2][i][0]))
+          else: # just do sequential numbers
+            for i in xrange(10000):
+              if func[0](i) == 1: #check if i exists as a name
+                i_ct[0] = i #convoluted 1
+                func[1](ctypes.byref(i_ct))
+                streak_start = i
+              elif i > (streak_start + 100):
+                break
+      ##################################################################
       openegl.eglSwapBuffers(self.display, self.surface)
       openegl.eglMakeCurrent(self.display, EGL_NO_SURFACE, EGL_NO_SURFACE,
                              EGL_NO_CONTEXT)
       openegl.eglDestroySurface(self.display, self.surface)
       openegl.eglDestroyContext(self.display, self.context)
       openegl.eglTerminate(self.display)
-      bcm.vc_dispmanx_display_close(self.dispman_display)
-      bcm.vc_dispmanx_element_remove(self.dispman_update, self.dispman_element)
+      if ON_PI:
+        self.dispman_update = bcm.vc_dispmanx_update_start(0)
+        bcm.vc_dispmanx_element_remove(self.dispman_update, self.dispman_element)
+        bcm.vc_dispmanx_update_submit_sync(self.dispman_update)
+        bcm.vc_dispmanx_display_close(self.dispman_display)
+
       self.active = False
+      if not ON_PI:
+        xlib.XCloseDisplay(self.d)
 
   def swap_buffers(self):
     #opengles.glFlush()

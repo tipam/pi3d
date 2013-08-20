@@ -4,10 +4,21 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
-vsn 0.8
+v1.0
+2013-08-16  Support for other linux platforms using xlib and mesa. Runs under
+            python3 using six. Memory leaks fixed. Unicode, multiline and justified
+            String. DogFight demo using multiplayer networking (urllib to
+            MySQL php server) Point rendering option added. Shadow casting
+            onto ElevationMap. MergeShape takes array of Shapes so much
+            quicker for assemblies of large numbers of objects. Slideshow
+            demo loads resources in background thread. Fixed z position
+            bug in 2d_flat/Canvas system. Added alpha value as a uniform
+            variable to allow shaders to fade objects.
+
+v0.8
 2013-05-29  Switch to a non-zero-padded version number
 
-vsn 0.08
+v0.08
 2013-02-08  Wholesale conversion to OpenGL ES2.0 mechanisms. As much as possible
             of the existing functionality has been maintained though some classes
             have not yet been implemented: [collisionMap, Missile] some are done
@@ -19,7 +30,7 @@ vsn 0.08
 2012-12-08  class and clashtest shader detect bumping into things.
 
 
-vsn 0.07
+v0.07
 2012-12-08  Added splash screen to TK window (also user defineable)
 2012-12-07  LoaderEgg draw needed to disableClientState(GL_COLOR_ARRAY) as
             this affected the scene afterwards
@@ -33,7 +44,7 @@ vsn 0.07
 2012-12-06  Separated perspective and orthographic code into setPerspective and
             setOrthographic functions so that a scene can interchange between them
 
-vsn 0.06
+v0.06
 2012-11-29  Added Pi3D.DrawString2D which now renders text to a 2D orthographic view
 2012-11-29  Added Pi3D.CollisionMap for checking collisions against objects.
             Includes a collideLine method to see if a line of fire will hit an object
@@ -52,7 +63,7 @@ vsn 0.06
 2012-11-17  Adopted Paddy Gaunt's fixes and additions to Pi3D module including
             LoadModel (Obj format) and ClashTest
 
-vsn 0.05
+v0.05
 2012-07-20  Add textures class so that textures can be deleted correctly
 2012-07-20  Fixed a couple of bugs with latest release of Raspbian Wheezy
 2012-07-12  Amended mergeShape to include shape's existing parameters

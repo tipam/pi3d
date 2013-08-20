@@ -4,7 +4,7 @@ varying vec3 normout;
 varying vec3 lightVector;
 varying float dist;
 
-uniform vec3 unib[2];
+uniform vec3 unib[4];
 //uniform vec4 material ==> unib[1]
 uniform vec3 unif[16];
 //uniform vec3 fogshade ==> unif[4]
@@ -23,6 +23,7 @@ void main(void) {
   texc.rgb = (texc.rgb * unif[9]) * intensity + (texc.rgb * unif[10]); // ------ directional lightcol * intensity + ambient lightcol
 
   gl_FragColor =  (1.0 - ffact) * texc + ffact * vec4(unif[4], unif[5][1]); // ------ combine using factors
+  gl_FragColor.a *= unif[5][2];
 }
 
 

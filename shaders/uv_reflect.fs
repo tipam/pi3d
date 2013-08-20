@@ -29,7 +29,8 @@ void main(void) {
   vec3 bump = normalize(texture2D(tex1, bumpcoordout).rgb * 2.0 - 1.0);
   bump.y *= -1.0;
 
-  float bfact = 1.0 - smoothstep(30.0, 100.0, dist); // ------ attenuate smoothly between 30 and 100 units
+  float bfact = 1.0 - smoothstep(100.0, 300.0, dist); // ------ for flying
+  //float bfact = 1.0 - smoothstep(30.0, 100.0, dist); // ------ attenuate smoothly between 30 and 100 units
 
   float ffact = smoothstep(unif[5][0]/3.0, unif[5][0], dist); // ------ smoothly increase fog between 1/3 and full fogdist
 
@@ -43,6 +44,7 @@ void main(void) {
   float shinefact = clamp(unib[0][1]*length(shinec)/length(texc), 0.0, unib[0][1]);// ------ reduce the reflection where the ground texture is lighter than it
 
   gl_FragColor = (1.0 - ffact) * ((1.0 - shinefact) * texc + shinefact * shinec) + ffact * vec4(unif[4], unif[5][1]); // ------ combine using factors
+  gl_FragColor.a *= unif[5][2];
 }
 
 

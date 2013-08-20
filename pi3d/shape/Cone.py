@@ -1,3 +1,5 @@
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 from pi3d.constants import *
 from pi3d.Shape import Shape
 
@@ -7,7 +9,7 @@ class Cone(Shape):
                x=0.0, y=0.0, z=0.0, rx=0.0, ry=0.0, rz=0.0,
                sx=1.0, sy=1.0, sz=1.0, cx=0.0, cy=0.0, cz=0.0):
     """uses standard constructor for Shape extra Keyword arguments:
-    
+
       *radius*
         radius at bottom
       *height*
@@ -19,7 +21,7 @@ class Cone(Shape):
                                sx, sy, sz, cx, cy, cz)
 
     if VERBOSE:
-      print "Creating Cone ..."
+      print("Creating Cone ...")
 
     path = []
     path.append((0, height * .5))

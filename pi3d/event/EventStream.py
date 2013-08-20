@@ -2,7 +2,7 @@ import fcntl
 import os
 import select
 
-from echomesh.util import Log
+from six.moves import filter
 
 from pi3d.event.Constants import *
 
@@ -10,6 +10,7 @@ from pi3d.event import ioctl
 from pi3d.event import AbsAxisScaling
 from pi3d.event import EventStruct
 from pi3d.event import Format
+from pi3d.util import Log
 
 LOGGER = Log.logger(__name__)
 
@@ -162,7 +163,7 @@ class EventStream(object):
     If the streams parameter is not given, then all streams are selected.
     """
     #print EventStream.AllStreams
-    #print map(lambda(x):x.filehandle, EventStream.AllStreams)
+    #print map(lambda x: x.filehandle, EventStream.AllStreams)
     if streams == None:
       streams = EventStream.AllStreams
 
@@ -172,7 +173,7 @@ class EventStream(object):
     if not ready: return
     while ready:
       for fd in ready:
-        stream = filter(lambda x: x.filehandle == fd, streams)[0]
+        stream = list(filter(lambda x: x.filehandle == fd, streams))[0]
         try:
           s = os.read(fd, Format.EventSize)
         except Exception as e:

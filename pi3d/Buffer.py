@@ -1,10 +1,11 @@
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import ctypes, itertools
 
 from ctypes import c_float, c_int
 
-from echomesh.util import Log
-
 from pi3d.constants import *
+from pi3d.util import Log
 from pi3d.util import Utility
 from pi3d.util.Loadable import Loadable
 from pi3d.util.Ctypes import c_floats, c_shorts
@@ -58,14 +59,15 @@ class Buffer(Loadable):
     ===== ============================ ==== ==
         0  ntile, shiny, blend           0   2
         1  material                      3   5
-        2  umult, vmult (only 2 used)    6   7
+        2  umult, vmult, point_size      6   8
         3  u_off, v_off (only 2 used)    9  10
     ===== ============================ ==== ==
     """
-    self.shape = shape
+    #self.shape = shape
+    self.textures = []
 
     if not normals:
-      LOGGER.debug("Calculating normals ...")
+      LOGGER.debug('Calculating normals ...')
 
       normals = [[] for p in pts]
       # Calculate normals.
@@ -103,6 +105,16 @@ class Buffer(Loadable):
     points = [f[0:3] for f in faces]
     self.element_array_buffer = c_shorts(list(itertools.chain(*points)))
 
+  def __del__(self):
+    #super(Buffer, self).__del__() #TODO supposed to always call super.__del__
+    if not self.opengl_loaded:
+      return True
+    from pi3d.Display import Display
+    if Display.INSTANCE:
+      Display.INSTANCE.vbufs_dict[str(self.vbuf)][1] = 1
+      Display.INSTANCE.ebufs_dict[str(self.ebuf)][1] = 1
+      Display.INSTANCE.tidy_needed = True
+
   def re_init(self, shape, pts, texcoords, faces, normals=None, smooth=True):
     """Only reset the opengl buffer variables: vertices, tex_coords, indices
     normals (which is generated if not supplied) **NB this method will
@@ -130,6 +142,10 @@ class Buffer(Loadable):
     opengles.glGenBuffers(1, ctypes.byref(self.vbuf))
     self.ebuf = c_int()
     opengles.glGenBuffers(1, ctypes.byref(self.ebuf))
+    from pi3d.Display import Display
+    if Display.INSTANCE:
+      Display.INSTANCE.vbufs_dict[str(self.vbuf)] = [self.vbuf, 0]
+      Display.INSTANCE.ebufs_dict[str(self.ebuf)] = [self.ebuf, 0]
     self._select()
     opengles.glBufferData(GL_ARRAY_BUFFER,
                           ctypes.sizeof(self.array_buffer),
@@ -139,6 +155,10 @@ class Buffer(Loadable):
                           ctypes.sizeof(self.element_array_buffer),
                           ctypes.byref(self.element_array_buffer),
                           GL_STATIC_DRAW)
+
+  def _unload_opengl(self):
+    opengles.glDeleteBuffers(1, ctypes.byref(self.vbuf))
+    opengles.glDeleteBuffers(1, ctypes.byref(self.ebuf))
 
   def _select(self):
     """Makes our buffers active."""
@@ -168,7 +188,6 @@ class Buffer(Loadable):
         multiplier for tiling the texture in the v direction
     """
     self.shader = shader
-    self.shape.shader = shader # set shader for parent shape
     self.textures = textures # array of Textures
     self.unib[0] = ntiles
     self.unib[1] = shiny
@@ -177,14 +196,17 @@ class Buffer(Loadable):
 
   def set_material(self, mtrl):
     self.unib[3:6] = mtrl[0:3]
-    
+
   def set_offset(self, offset=(0.0, 0.0)):
     self.unib[9:11] = offset
 
-  def draw(self, shader=None, textures=None, ntl=None, shny=None, fullset=True):
+  def draw(self, shape=None, shader=None, textures=None, ntl=None, shny=None, fullset=True):
     """Draw this Buffer, called by the parent Shape.draw()
 
     Keyword arguments:
+      *shape*
+        Shape object this Buffer belongs to, has to be passed at draw to avoid
+        circular reference
       *shader*
         Shader object
       *textures*
@@ -217,15 +239,20 @@ class Buffer(Loadable):
     self.unib[2] = 0.6
     for t, texture in enumerate(textures):
       opengles.glActiveTexture(GL_TEXTURE0 + t)
-      assert texture.tex(), "There was an empty texture in your Buffer."
+      assert texture.tex(), 'There was an empty texture in your Buffer.'
       opengles.glBindTexture(GL_TEXTURE_2D, texture.tex())
 
       opengles.glUniform1i(shader.unif_tex[t], t)
 
-      if texture.blend:
+      if texture.blend or shape.unif[17] < 1.0:
         opengles.glEnable(GL_BLEND)
         # i.e. if any of the textures set to blend then all will for this shader.
         self.unib[2] = 0.05
 
     opengles.glUniform3fv(shader.unif_unib, 4, ctypes.byref(self.unib))
-    opengles.glDrawElements(GL_TRIANGLES, self.ntris * 3, GL_UNSIGNED_SHORT, 0)
+
+    if self.unib[8] == 0:
+      opengles.glDrawElements(GL_TRIANGLES, self.ntris * 3, GL_UNSIGNED_SHORT, 0)
+    else:
+      opengles.glDrawElements(GL_POINTS, self.ntris * 3, GL_UNSIGNED_SHORT, 0)
+

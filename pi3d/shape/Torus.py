@@ -1,3 +1,5 @@
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import math
 
 from pi3d.constants import *
@@ -10,21 +12,21 @@ class Torus(Shape):
                x=0.0, y=0.0, z=0.0, rx=0.0, ry=0.0, rz=0.0,
                sx=1.0, sy=1.0, sz=1.0, cx=0.0, cy=0.0, cz=0.0):
     """uses standard constructor for Shape extra Keyword arguments:
-    
+
       *radius*
         Major radius of torus
       *thickness*
         Minor radius, section through one side of torus
       *ringrots*
         Sides around minor radius circle
-      *sides* 
+      *sides*
         Number of sides for Shape._lathe() to use
     """
     super(Torus,self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                sx, sy, sz, cx, cy, cz)
 
     if VERBOSE:
-      print "Creating Torus ..."
+      print("Creating Torus ...")
 
     path = []
     st = (math.pi * 2)/ringrots
