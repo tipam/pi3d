@@ -2,10 +2,8 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import errno
 import logging
-import logging.config
 import os
 import os.path
-import sys
 
 # To get debug messages, set LOG_LEVEL to be 'DEBUG'.
 #
@@ -52,7 +50,7 @@ def set_logs(level=None, file=None, format=None):
         `time LEVEL: filename: Your Message Here.`"""
 
   global HANDLER, LOG_LEVEL, LOG_FILE, LOG_FORMAT
-  LOG_LEVEL = level or LOG_LEVEL
+  LOG_LEVEL = (level or LOG_LEVEL).upper()
   LOG_FILE = file or LOG_FILE
   LOG_FORMAT = format or LOG_FORMAT
 
