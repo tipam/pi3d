@@ -1,48 +1,5 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-"""
-
-TYPICAL USAGE.
-
-At the top of your file, you have
-
-  LOGGER = Log.logger(__name__)
-
-and then later on you would say things like:
-
-  LOGGER.debug('stuff here')
-  LOGGER.info('Some information about %s', some_name)
-  LOGGER.error('Not everything was displayed, sorry!')
-  LOGGER.error('You died with error code %d, message %s', error_code, msg)
-  LOGGER.critical('Your machine is about to explode.  Leave the building.')
-
-(Note that the values for the format string, like "some_name", "error_code" or
-"msg" are passed in as arguments - that's so you never even construct the
-message if it isn't going to be displayed.)
-
-
-REDIRECTING OR FILTERING LOGGING.
-
-You can control logging by calling Log.set_logs().  Log.set_logs() has three
-optional parameters:
-
-  level can be one of 'DEBUG', 'INFO', 'WARNING', 'ERROR', or 'CRITICAL'.
-    Everything that's the current log level or greater is displayed -
-    for example, if your current log level is 'WARNING', then you'll display
-    all warning, error, or critical messages.
-
-  file is the name of a file to which to redirect messages.
-
-  format controls what information is in the output messages.  The default is
-
-   '%(asctime)s %(levelname)s: %(name)s: %(message)s'
-
-which results in
-
-  time LEVEL: filename: Your Message Here.
-
-"""
-
 import errno
 import logging
 import logging.config
@@ -74,6 +31,26 @@ def parent_makedirs(file):
       raise
 
 def set_logs(level=None, file=None, format=None):
+  """
+
+  You can redirect, filter or reformat your logging by calling Log.set_logs().
+  Log.set_logs() has three optional parameters:
+
+    level:
+      can be one of 'DEBUG', 'INFO', 'WARNING', 'ERROR', or 'CRITICAL'.
+      Everything that's the current log level or greater is displayed -
+      for example, if your current log level is 'WARNING', then you'll display
+      all warning, error, or critical messages.
+
+    file:
+       is the name of a file to which to redirect messages.
+
+    format:
+       controls what information is in the output messages.  The default is
+         `'%(asctime)s %(levelname)s: %(name)s: %(message)s'`
+       which results in output looking like this:
+        `time LEVEL: filename: Your Message Here.`"""
+
   global HANDLER, LOG_LEVEL, LOG_FILE, LOG_FORMAT
   LOG_LEVEL = level or LOG_LEVEL
   LOG_FILE = file or LOG_FILE
@@ -92,6 +69,26 @@ def set_logs(level=None, file=None, format=None):
 set_logs()
 
 def logger(name=None):
+  """
+  The typical usage of the Log module has a single LOGGER per Python file.
+
+  At the top of the file is typically:
+
+    LOGGER = Log.logger(__name__)
+
+  and then later on you can do things like:
+
+    * LOGGER.debug('stuff here')
+    * LOGGER.info('Some information about %s', some_name)
+    * LOGGER.error('Not everything was displayed, sorry!')
+    * LOGGER.error('You died with error code %d, message %s', error_code, msg)
+    * LOGGER.critical('Your machine is about to explode.  Leave the building.')
+
+  (Note that the values for the format string, like "some_name", "error_code" or
+  "msg" are passed in as arguments - that's so you never even construct the
+  message if it isn't going to be displayed.)
+  """
+
   log = logging.getLogger(name or 'logging')
   if HANDLER and HANDLER not in log.handlers:
     log.addHandler(HANDLER)
