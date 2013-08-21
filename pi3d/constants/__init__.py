@@ -95,7 +95,7 @@ def _detect_platform_and_load_libraries():
   if not loader:
     raise Exception("Couldn't understand platform %s" % platform_name)
 
-  plat, bcm_name, gles_name, egl_name = _linux()
+  plat, bcm_name, gles_name, egl_name = loader()
   bcm = _load_library(bcm_name)
   opengles = _load_library(gles_name)
   openegl = _load_library(egl_name)
