@@ -40,31 +40,30 @@ PLATFORM_OSX = 1
 PLATFORM_WINDOWS = 2
 PLATFORM_LINUX = 3
 
-PLATFORM = PLATFORM_LINUX
-
 # Lastly, load the libraries.
 def _load_library(name):
   """Try to load a shared library, report an error on failure."""
-  try:
-    import ctypes
-    return ctypes.CDLL(name)
-  except:
-    from pi3d.util import Log
-    Log.logger(__name__).error("Couldn't load library %s", name)
+  if name:
+    try:
+      import ctypes
+      return ctypes.CDLL(name)
+    except:
+      from pi3d.util import Log
+      Log.logger(__name__).error("Couldn't load library %s", name)
 
-def _detect_platform_and_load_libraries():
+
+def _linux(platform):
   gles_name = ''
   egl_name = ''
-  platform = PLATFORM_LINUX
 
   # run command and return
   def _run_command(command):
     p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     return iter(p.stdout.readline, b'')
 
-  command = ['ldconfig', '-p']
+  COMMAND = ['ldconfig', '-p']
 
-  for line in _run_command(command):
+  for line in _run_command(COMMAND):
     if b'libbcm_host.so' in line:
       platform = PLATFORM_PI
     elif b'libGLESv2.so' in line:
@@ -72,11 +71,17 @@ def _detect_platform_and_load_libraries():
     elif b'libEGL.so' in line:
       egl_name = line.split()[0]
 
-  bcm = None
+  bcm_name = None
   #May need to use system() and linux_distribution()
-  if platform == PLATFORM_PI: # libbcm_host.so found in shared libraries
-    bcm = _load_library('libbcm_host.so')
+  bcm_name = platform == PLATFORM_PI and 'libbcm_host.so'
 
+  opengles = _load_library(gles_name)
+  openegl = _load_library(egl_name)
+  return platform, bcm_name, gles_name, egl_name
+
+def _detect_platform_and_load_libraries():
+  platform, bcm_name, gles_name, egl_name = _linux(PLATFORM_LINUX)
+  bcm = _load_library(bcm_name)
   opengles = _load_library(gles_name)
   openegl = _load_library(egl_name)
   return platform, bcm, opengles, openegl
