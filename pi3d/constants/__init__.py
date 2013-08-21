@@ -42,24 +42,6 @@ PLATFORM_LINUX = 3
 
 PLATFORM = PLATFORM_LINUX
 
-GLES_name = ''
-EGL_name = ''
-
-# run command and return
-def _run_command(command):
-  p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-  return iter(p.stdout.readline, b'')
-
-command = ['ldconfig', '-p']
-
-for line in _run_command(command):
-  if b'libbcm_host.so' in line:
-    PLATFORM = PLATFORM_PI
-  elif b'libGLESv2.so' in line:
-    GLES_name = line.split()[0]
-  elif b'libEGL.so' in line:
-    EGL_name = line.split()[0]
-
 # Lastly, load the libraries.
 def _load_library(name):
   """Try to load a shared library, report an error on failure."""
@@ -70,9 +52,33 @@ def _load_library(name):
     from pi3d.util import Log
     Log.logger(__name__).error("Couldn't load library %s", name)
 
-#May need to use system() and linux_distribution()
-if PLATFORM == PLATFORM_PI: # libbcm_host.so found in shared libraries
-  bcm = _load_library('libbcm_host.so')
+def _detect_platform_and_load_libraries():
+  gles_name = ''
+  egl_name = ''
+  platform = PLATFORM_LINUX
 
-opengles = _load_library(GLES_name)
-openegl = _load_library(EGL_name)
+  # run command and return
+  def _run_command(command):
+    p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    return iter(p.stdout.readline, b'')
+
+  command = ['ldconfig', '-p']
+
+  for line in _run_command(command):
+    if b'libbcm_host.so' in line:
+      platform = PLATFORM_PI
+    elif b'libGLESv2.so' in line:
+      gles_name = line.split()[0]
+    elif b'libEGL.so' in line:
+      egl_name = line.split()[0]
+
+  bcm = None
+  #May need to use system() and linux_distribution()
+  if platform == PLATFORM_PI: # libbcm_host.so found in shared libraries
+    bcm = _load_library('libbcm_host.so')
+
+  opengles = _load_library(gles_name)
+  openegl = _load_library(egl_name)
+  return platform, bcm, opengles, openegl
+
+PLATFORM, bcm, opengles, openegl = _detect_platform_and_load_libraries()
