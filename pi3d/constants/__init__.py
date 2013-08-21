@@ -36,6 +36,8 @@ DISPMANX_PROTECTION_NONE = 0
 
 # Is this running on a raspberry pi?
 ON_PI = False
+GLES_name = ''
+EGL_name = ''
 
 # run command and return
 def _run_command(command): 
@@ -45,25 +47,26 @@ def _run_command(command):
 command = ['ldconfig', '-p']
 
 for line in _run_command(command):
-  if b"libbcm_host.so" in line:
+  if b'libbcm_host.so' in line:
     ON_PI = True
-    break
+  elif b'libGLESv2.so' in line:
+    GLES_name = line.split()[0]
+  elif b'libEGL.so' in line:
+    EGL_name = line.split()[0]
 
 # Lastly, load the libraries.
-def _load_library(name, version=""):
+def _load_library(name):
   """Try to load a shared library, report an error on failure."""
   try:
     import ctypes
-    return ctypes.CDLL("lib{}.so{}".format(name, version))
+    return ctypes.CDLL(name)
   except:
     from pi3d.util import Log
-    Log.logger(__name__).error("Couldn't load library lib%s.so%s", name, version)
+    Log.logger(__name__).error("Couldn't load library %s", name)
 
 #May need to use system() and linux_distribution()
 if ON_PI: # libbcm_host.so found in shared libraries
-  bcm = _load_library('bcm_host', '')
-  opengles = _load_library('GLESv2', '')
-  openegl = _load_library('EGL', '')
-else: # try and run using libx11 and mesa
-  opengles = _load_library('GLESv2','.2')
-  openegl = _load_library('EGL', '.1')
+  bcm = _load_library('libbcm_host.so')
+
+opengles = _load_library(GLES_name)
+openegl = _load_library(EGL_name)
