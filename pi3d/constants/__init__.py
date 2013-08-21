@@ -35,15 +35,22 @@ EGL_NO_SURFACE = 0
 DISPMANX_PROTECTION_NONE = 0
 
 # Is this running on a raspberry pi?
+PLATFORM_PI = 0
+PLATFORM_OSX = 1
+PLATFORM_WINDOWS = 2
+PLATFORM_LINUX = 3
+
+PLATFORM = PLATFORM_LINUX
+
 ON_PI = False
 GLES_name = ''
 EGL_name = ''
 
 # run command and return
-def _run_command(command): 
+def _run_command(command):
   p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
   return iter(p.stdout.readline, b'')
- 
+
 command = ['ldconfig', '-p']
 
 for line in _run_command(command):
@@ -65,7 +72,7 @@ def _load_library(name):
     Log.logger(__name__).error("Couldn't load library %s", name)
 
 #May need to use system() and linux_distribution()
-if ON_PI: # libbcm_host.so found in shared libraries
+if PLATFORM == PLATFORM_PI: # libbcm_host.so found in shared libraries
   bcm = _load_library('libbcm_host.so')
 
 opengles = _load_library(GLES_name)

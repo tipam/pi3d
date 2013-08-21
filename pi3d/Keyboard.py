@@ -4,7 +4,7 @@ import curses, termios, fcntl, sys, os, platform
 
 from pi3d.constants import *
 
-if not ON_PI:
+if PLATFORM != PLATFORM_PI:
   from pyxlib import x
 
 USE_CURSES = True
@@ -149,7 +149,7 @@ class x11Keyboard(object):
       pass
 
 def Keyboard(use_curses=USE_CURSES):
-  if not ON_PI:
+  if PLATFORM != PLATFORM_PI:
     return x11Keyboard()
   else:
     return CursesKeyboard() if use_curses else SysKeyboard()

@@ -14,7 +14,7 @@ from pi3d.util import Utility
 from pi3d.util.DisplayOpenGL import DisplayOpenGL
 from pi3d.Keyboard import Keyboard
 
-if not ON_PI:
+if PLATFORM != PLATFORM_PI:
   from pyxlib.x import *
   from pyxlib import xlib
 
@@ -64,7 +64,7 @@ class Display(object):
     self.vbufs_dict = {}
     self.ebufs_dict = {}
 
-    if not ON_PI:
+    if PLATFORM != PLATFORM_PI:
       self.event_list = []
       self.ev = xlib.XEvent()
 
@@ -217,7 +217,7 @@ class Display(object):
   def _loop_begin(self):
     # TODO(rec):  check if the window was resized and resize it, removing
     # code from MegaStation to here.
-    if not ON_PI:
+    if PLATFORM != PLATFORM_PI:
       n = xlib.XEventsQueued(self.opengl.d, xlib.QueuedAfterFlush)
       for i in range(n):
         if xlib.XCheckMaskEvent(self.opengl.d, KeyPressMask, self.ev):
@@ -344,7 +344,7 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
     Maximum frames per second to render (None means "free running").
   """
   if tk:
-    if not ON_PI:
+    if PLATFORM != PLATFORM_PI:
       #just use python-xlib same as non-tk but need dummy behaviour
       class DummyTkWin(object):
         def __init__(self):
