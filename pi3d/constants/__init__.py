@@ -51,8 +51,8 @@ def _load_library(name):
       from pi3d.util import Log
       Log.logger(__name__).error("Couldn't load library %s", name)
 
-
-def _linux(platform):
+def _linux():
+  platform = PLATFORM_LINUX
   gles_name = ''
   egl_name = ''
 
@@ -79,11 +79,26 @@ def _linux(platform):
   openegl = _load_library(egl_name)
   return platform, bcm_name, gles_name, egl_name
 
+def _darwin():
+  pass
+
+_PLATFORMS = {
+  'linux': _linux,
+  'darwin': _darwin
+  }
+
 def _detect_platform_and_load_libraries():
-  platform, bcm_name, gles_name, egl_name = _linux(PLATFORM_LINUX)
+  import platform
+
+  platform_name = platform.system().lower()
+  loader = _PLATFORMS.get(platform_name, None)
+  if not loader:
+    raise Exception("Couldn't understand platform %s" % platform_name)
+
+  plat, bcm_name, gles_name, egl_name = _linux()
   bcm = _load_library(bcm_name)
   opengles = _load_library(gles_name)
   openegl = _load_library(egl_name)
-  return platform, bcm, opengles, openegl
+  return plat, bcm, opengles, openegl
 
 PLATFORM, bcm, opengles, openegl = _detect_platform_and_load_libraries()
