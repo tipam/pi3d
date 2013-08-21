@@ -42,7 +42,6 @@ PLATFORM_LINUX = 3
 
 PLATFORM = PLATFORM_LINUX
 
-ON_PI = False
 GLES_name = ''
 EGL_name = ''
 
@@ -55,7 +54,7 @@ command = ['ldconfig', '-p']
 
 for line in _run_command(command):
   if b'libbcm_host.so' in line:
-    ON_PI = True
+    PLATFORM = PLATFORM_PI
   elif b'libGLESv2.so' in line:
     GLES_name = line.split()[0]
   elif b'libEGL.so' in line:
