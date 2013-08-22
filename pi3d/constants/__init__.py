@@ -3,6 +3,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 """
 pi3d.constants contains constant values, mainly integers, from OpenGL ES 2.0.
 """
+import subprocess
 
 VERSION = '1.0'
 
@@ -52,15 +53,30 @@ def _load_library(name):
 
 def _linux():
   platform = PLATFORM_LINUX
+  gles_name = ''
+  egl_name = ''
 
-  from ctypes.util import find_library
+  # run command and return
+  def _run_command(command):
+    p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    return iter(p.stdout.readline, b'')
 
-  bcm_name = find_library('bcm_host')
-  if bcm_name:
-    PLATFORM = PLATFORM_PI
-  gles_name = find_library('GLESv2')
-  egl_name = find_library('EGL')
-  print(bcm_name, gles_name, egl_name)
+  COMMAND = ['ldconfig', '-p']
+
+  for line in _run_command(COMMAND):
+    if b'libbcm_host.so' in line:
+      platform = PLATFORM_PI
+    elif b'libGLESv2.so' in line:
+      gles_name = line.split()[0]
+    elif b'libEGL.so' in line:
+      egl_name = line.split()[0]
+
+  bcm_name = None
+  #May need to use system() and linux_distribution()
+  bcm_name = platform == PLATFORM_PI and 'libbcm_host.so'
+
+  opengles = _load_library(gles_name)
+  openegl = _load_library(egl_name)
   return platform, bcm_name, gles_name, egl_name
 
 def _darwin():
@@ -75,16 +91,14 @@ def _detect_platform_and_load_libraries():
   import platform
 
   platform_name = platform.system().lower()
-  print(platform_name)
   loader = _PLATFORMS.get(platform_name, None)
   if not loader:
     raise Exception("Couldn't understand platform %s" % platform_name)
 
-  plat, bcm_name, gles_name, egl_name = _linux()
+  plat, bcm_name, gles_name, egl_name = loader()
   bcm = _load_library(bcm_name)
   opengles = _load_library(gles_name)
   openegl = _load_library(egl_name)
   return plat, bcm, opengles, openegl
 
 PLATFORM, bcm, opengles, openegl = _detect_platform_and_load_libraries()
-print(PLATFORM, bcm, opengles, openegl)
