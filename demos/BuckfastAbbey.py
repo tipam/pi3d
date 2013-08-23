@@ -49,11 +49,11 @@ mymouse.start()
 scshots = 1
 
 #avatar camera
-rot=0.0
-tilt=0.0
+rot = 220.0
+tilt = 10.0
 avhgt = 2.0
-xm=0.0
-zm=0.0
+xm = 0.0
+zm = 0.0
 ym = avhgt
 
 omx, omy = mymouse.position()
