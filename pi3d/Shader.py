@@ -2,6 +2,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import ctypes
 import six
+import sys, os
 
 from pi3d.constants import *
 from pi3d.util.Ctypes import c_chars
@@ -149,4 +150,10 @@ class Shader(object):
       shader, N, ctypes.byref(loglen), ctypes.byref(log))
 
   def loadShader(self, sfile):
-    return open(sfile, 'r').read()
+    for p in sys.path:
+      if os.path.isfile(p + '/' + sfile):
+        return open(p + '/' + sfile, 'r').read()
+      elif os.path.isfile(p + '/shaders/' + sfile):
+        return open(p + '/shaders/' + sfile, 'r').read()
+      elif os.path.isfile(p + '/pi3d/shaders/' + sfile):
+        return open(p + '/pi3d/shaders/' + sfile, 'r').read()

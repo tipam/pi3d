@@ -1,6 +1,7 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import math
+import sys
 
 from six.moves import xrange
 
@@ -42,6 +43,7 @@ class ElevationMap(Shape):
     """
     super(ElevationMap, self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                        sx, sy, sz, cx, cy, cz)
+    mapfile = sys.path[0] + '/' + mapfile
     if VERBOSE:
       print("Loading height map ...", mapfile)
 

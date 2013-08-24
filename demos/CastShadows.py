@@ -22,8 +22,8 @@ CAMERA = pi3d.Camera.instance()
 
 #========================================
 # load shader
-shader = pi3d.Shader("shaders/uv_reflect")
-flatsh = pi3d.Shader("shaders/uv_flat")
+shader = pi3d.Shader("uv_reflect")
+flatsh = pi3d.Shader("uv_flat")
 
 tree2img = pi3d.Texture("textures/tree2.png")
 tree1img = pi3d.Texture("textures/tree1.png")

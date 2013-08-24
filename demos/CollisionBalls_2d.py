@@ -27,7 +27,7 @@ BACKGROUND_COLOR = (1.0, 1.0, 1.0, 0.0)
 DISPLAY = pi3d.Display.create(background=BACKGROUND_COLOR)
 WIDTH, HEIGHT = DISPLAY.width, DISPLAY.height
 
-SHADER = pi3d.Shader('shaders/2d_flat')
+SHADER = pi3d.Shader('2d_flat')
 CANVAS = pi3d.Canvas()
 CANVAS.set_shader(SHADER)
 

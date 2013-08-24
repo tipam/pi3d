@@ -29,7 +29,7 @@ class Clashtest(Texture):
     opengles.glGenRenderbuffers(1, self.depthbuffer)
 
     # load clashtest shader
-    self.shader = Shader("shaders/clashtest")
+    self.shader = Shader("clashtest")
 
     size = self.ix * self.iy * 3
     self.img = (ctypes.c_char * size)()

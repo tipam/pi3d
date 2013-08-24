@@ -12,7 +12,7 @@ import pi3d
 DISPLAY = pi3d.Display.create(x=50, y=50, w=-100, h=-100,
                          background = (0.2, 0.4, 0.6, 1))
 
-shader = pi3d.Shader('shaders/uv_light')
+shader = pi3d.Shader('uv_light')
 #========================================
 
 # load model_loadmodel

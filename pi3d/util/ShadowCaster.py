@@ -27,8 +27,8 @@ class ShadowCaster(Texture):
     opengles.glGenRenderbuffers(1, self.depthbuffer)
 
     # load shader for casting shadows and camera
-    self.cshader = Shader("shaders/uv_flat")
-    self.mshader = Shader("shaders/mat_flat")
+    self.cshader = Shader("uv_flat")
+    self.mshader = Shader("mat_flat")
     # keep copy of ElevationMap
     self.emap = emap
     self.emap.set_material((0.0, 0.0, 0.0)) # hide bits below ground
@@ -69,7 +69,7 @@ class ShadowCaster(Texture):
     self.camera0 = Camera() # default instance created as normal, just in case!
     self.camera = Camera(is_3d=False, eye=self.eye, scale=self.scale)
     # load shader for drawing map with shadows
-    self.dshader = Shader("shaders/shadowcast")
+    self.dshader = Shader("shadowcast")
 
   def _load_disk(self):
     """ have to override this

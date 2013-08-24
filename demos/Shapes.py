@@ -15,8 +15,8 @@ import pi3d
 # Load diplay, nearly full screen
 DISPLAY = pi3d.Display.create(x=20, y=20)
 # Load shaders
-shader = pi3d.Shader("shaders/uv_reflect")
-flatsh = pi3d.Shader("shaders/uv_flat")
+shader = pi3d.Shader("uv_reflect")
+flatsh = pi3d.Shader("uv_flat")
 ##########################################
 # Load textures
 patimg = pi3d.Texture("textures/PATRN.PNG")

@@ -26,7 +26,7 @@ class Defocus(Texture):
     opengles.glGenRenderbuffers(1, self.depthbuffer)
 
     # load blur shader
-    self.shader = Shader("shaders/defocus")
+    self.shader = Shader("defocus")
 
   def _load_disk(self):
     """ have to override this

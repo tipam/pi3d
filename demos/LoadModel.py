@@ -15,7 +15,7 @@ DISPLAY = pi3d.Display.create(x=100, y=100, background=(0.2, 0.4, 0.6, 1))
 
 pi3d.Light((1, 1, 1))
 
-shader = pi3d.Shader("shaders/mat_reflect")
+shader = pi3d.Shader("mat_reflect")
 #========================================
 # load bump and reflection textures
 bumptex = pi3d.Texture("textures/floor_nm.jpg")

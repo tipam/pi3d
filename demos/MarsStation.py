@@ -30,9 +30,9 @@ DISPLAY = pi3d.Display.create(tk=True, window_title='Mars Station demo in Pi3D',
 
 win = DISPLAY.tkwin
 
-shader = pi3d.Shader("shaders/uv_reflect")
-flatsh = pi3d.Shader("shaders/uv_flat")
-shade2d = pi3d.Shader('shaders/2d_flat')
+shader = pi3d.Shader("uv_reflect")
+flatsh = pi3d.Shader("uv_flat")
+shade2d = pi3d.Shader('2d_flat')
 
 #========================================
 # create splash screen and draw it
