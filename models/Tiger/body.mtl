@@ -1,0 +1,30 @@
+# Max2Mtl Version 4.0 Mar 10th, 2001
+#
+newmtl Material__63
+Ka  0.6 0.6 0.6
+Kd  0.6 0.6 0.6
+Ks  0.9 0.9 0.9
+d  1.0
+Ns  0.0
+illum 2
+map_Kd wheel.png
+#
+newmtl 07_-_Default
+Ka  0.6 0.6 0.6
+Kd  0.6 0.6 0.6
+Ks  0.9 0.9 0.9
+d  1.0
+Ns  0.0
+illum 2
+map_Kd trackbit.png
+#
+newmtl Material__64
+Ka  0.6 0.6 0.6
+Kd  0.6 0.6 0.6
+Ks  0.9 0.9 0.9
+d  1.0
+Ns  2.0
+illum 2
+map_Kd tigertop.jpg
+#
+# EOF
