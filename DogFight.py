@@ -4,7 +4,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 communication between players using httpRequest (see rpi_json.sql and
 rpi_json.php) json serialisation and threading.
 """
-
+import sys
 import time, math, glob, random, threading, json
 
 import demo
@@ -30,8 +30,8 @@ print("""===================================
 == X jumps to location of 1st enemy in list
 ================================""")
 
-SHADER = pi3d.Shader("shaders/uv_reflect") #for objects to look 3D
-FLATSH = pi3d.Shader("shaders/uv_flat") #for 'unlit' objects like the background
+SHADER = pi3d.Shader("uv_reflect") #for objects to look 3D
+FLATSH = pi3d.Shader("uv_flat") #for 'unlit' objects like the background
 
 GRAVITY = 9.8 #m/s**2
 LD = 10 #lift/drag ratio
@@ -39,7 +39,7 @@ DAMPING = 0.95 #reduce roll and pitch rate each update_variables
 BOOSTER = 1.5 #extra manoevreability boost to defy 1st Low of Thermodynamics.
 #load bullet images
 BULLET_TEX = [] #list to hold Texture refs
-iFiles = glob.glob("textures/biplane/bullet??.png") 
+iFiles = glob.glob(sys.path[0] + "/textures/biplane/bullet??.png") 
 iFiles.sort() # order is vital to animation!
 for f in iFiles:
   BULLET_TEX.append(pi3d.Texture(f))

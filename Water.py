@@ -33,9 +33,9 @@ DISPLAY.set_background(0.4, 0.6, 0.8, 0.5)      # r,g,b,alpha
 #setup textures, light position and initial model position
 pi3d.Light((5, -5, 8))
 #create shaders
-shader = pi3d.Shader("shaders/uv_reflect")
-matsh = pi3d.Shader("shaders/mat_reflect")
-flatsh = pi3d.Shader("shaders/uv_flat")
+shader = pi3d.Shader("uv_reflect")
+matsh = pi3d.Shader("mat_reflect")
+flatsh = pi3d.Shader("uv_flat")
 
 #Create textures
 shapeimg = pi3d.Texture("textures/straw1.jpg")

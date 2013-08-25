@@ -12,9 +12,9 @@ from six.moves import xrange
 # Setup display and initialise pi3d
 DISPLAY = pi3d.Display.create(x=50, y=50)
 DISPLAY.set_background(0,0,0,1)    	# r,g,b,alpha
-shader = pi3d.Shader("shaders/uv_reflect")
-flatsh = pi3d.Shader("shaders/uv_flat")
-matsh = pi3d.Shader("shaders/mat_flat")
+shader = pi3d.Shader("uv_reflect")
+flatsh = pi3d.Shader("uv_flat")
+matsh = pi3d.Shader("mat_flat")
 
 earthimg = pi3d.Texture("textures/world_map.jpg")
 starsimg = pi3d.Texture("textures/stars.jpg")

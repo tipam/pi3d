@@ -31,7 +31,7 @@ scnx = DISPLAY.width
 scny = DISPLAY.height
 
 DISPLAY.set_background(0,0.7,1,1)
-shader = pi3d.Shader("shaders/uv_flat")
+shader = pi3d.Shader("uv_flat")
 #############################
 
 cloudTex = []

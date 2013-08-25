@@ -20,8 +20,8 @@ DISPLAY = pi3d.Display.create(tk=True, window_title='ConferenceHall demo in Pi3D
 win = DISPLAY.tkwin
 
 #Setup shaders
-flatsh = pi3d.Shader("shaders/uv_flat")
-shade2d = pi3d.Shader('shaders/2d_flat')
+flatsh = pi3d.Shader("uv_flat")
+shade2d = pi3d.Shader('2d_flat')
 
 # create splash screen and draw it
 splash = pi3d.ImageSprite("textures/pi3d_splash.jpg", shade2d, w=10, h=10, z=0.2)

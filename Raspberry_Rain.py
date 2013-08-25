@@ -16,7 +16,7 @@ BACKGROUND = (0.0, 0.0, 0.0, 0.0)
 
 # Setup display and initialise pi3d and a shader.
 DISPLAY = pi3d.Display.create(background=BACKGROUND)
-SHADER = pi3d.Shader('shaders/uv_flat')
+SHADER = pi3d.Shader('uv_flat')
 
 TEXTURE = pi3d.Texture('textures/Raspi256x256.png')
 BERRY_COUNT = 15

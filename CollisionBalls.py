@@ -29,7 +29,7 @@ fov = 2.0 * math.degrees(math.atan(HEIGHT/2.0/ZPLANE))
 CAMERA = pi3d.Camera((0, 0, 0), (0, 0, -1.0),
                 (1, 1100, fov,
                  WIDTH / float(HEIGHT)))
-SHADER = pi3d.Shader('shaders/uv_flat')
+SHADER = pi3d.Shader('uv_flat')
 
 TEXTURE_NAMES = ['textures/red_ball.png',
                  'textures/grn_ball.png',
