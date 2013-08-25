@@ -65,7 +65,8 @@ def loadFileOBJ(model, fileName):
 
   # read in the file and parse into some arrays
 
-  fileName = sys.path[0] + '/' + fileName
+  if fileName[0] != '/':
+    fileName = sys.path[0] + '/' + fileName
   filePath = os.path.split(os.path.abspath(fileName))[0]
   print(filePath)
   f = open(fileName, 'r')

@@ -75,7 +75,8 @@ def loadFileEGG(model, fileName):
 
   # read in the file and parse into some arrays
 
-  fileName = sys.path[0] + '/' + fileName
+  if fileName[0] != '/':
+    fileName = sys.path[0] + '/' + fileName
   filePath = os.path.split(os.path.abspath(fileName))[0]
   if VERBOSE:
     print(filePath)

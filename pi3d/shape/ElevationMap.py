@@ -43,7 +43,8 @@ class ElevationMap(Shape):
     """
     super(ElevationMap, self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                        sx, sy, sz, cx, cy, cz)
-    mapfile = sys.path[0] + '/' + mapfile
+    if mapfile[0] != '/':
+      mapfile = sys.path[0] + '/' + mapfile
     if VERBOSE:
       print("Loading height map ...", mapfile)
 
