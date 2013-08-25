@@ -5,7 +5,7 @@ import demo
 import pi3d
 
 DISPLAY = pi3d.Display.create(x=50, y=50)
-shader = pi3d.Shader("star")
+shader = pi3d.Shader("shaders/star")
 tex = pi3d.Texture("textures/PATRN.PNG")
 box = pi3d.Cuboid(x=0, y=0, z=2.2)
 box.set_draw_details(shader,[tex])

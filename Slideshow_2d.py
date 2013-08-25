@@ -54,7 +54,7 @@ LOGGER.info("Log using this expression.")
 
 # Setup display and initialise pi3d
 DISPLAY = pi3d.Display.create(background=(0.0, 0.0, 0.0, 1.0), frames_per_second=20)
-shader = pi3d.Shader("2d_flat")
+shader = pi3d.Shader("shaders/2d_flat")
 
 #iFiles = glob.glob("/home/pi/slidemenu/testdir/*.*")
 iFiles = glob.glob("textures/*.*")

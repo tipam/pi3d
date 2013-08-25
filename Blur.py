@@ -46,8 +46,8 @@ ortho_cam = pi3d.Camera(is_3d=False) # 2d orthographic view camera
 #setup textures, light position and initial model position
 pi3d.Light((0, 5, 0))
 #create shaders
-shader = pi3d.Shader("uv_reflect")
-flatsh = pi3d.Shader("uv_flat")
+shader = pi3d.Shader("shaders/uv_reflect")
+flatsh = pi3d.Shader("shaders/uv_flat")
 defocus = pi3d.Defocus()
 
 #Create textures

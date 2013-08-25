@@ -33,8 +33,8 @@ print()
 # Setup display and initialise pi3d
 DISPLAY = pi3d.Display.create(x=100, y=100, background=(0.4, 0.8, 0.8, 1))
 
-shader = pi3d.Shader("uv_reflect")
-flatsh = pi3d.Shader("uv_flat")
+shader = pi3d.Shader("shaders/uv_reflect")
+flatsh = pi3d.Shader("shaders/uv_flat")
 #========================================
 
 # load Textures

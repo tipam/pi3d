@@ -10,7 +10,7 @@ import demo
 import pi3d
 
 DISPLAY = pi3d.Display.create(x=250, y=250, frames_per_second=16)
-shader = pi3d.Shader("uv_reflect")
+shader = pi3d.Shader("shaders/uv_reflect")
 tex = pi3d.Texture("textures/metalhull.jpg")
 bump = pi3d.Texture("textures/rocktile2.jpg")
 shine = pi3d.Texture("textures/stars2.jpg")

@@ -1,3 +1,8 @@
+import os
 import sys
-sys.path.append('/home/pi/pi3d')
 
+from os.path import dirname
+
+root = dirname(dirname(__file__))
+sys.path.append(root)
+os.chdir(root)

@@ -15,8 +15,8 @@ DISPLAY.set_background(1.0,0.4,0.6,1)    	# r,g,b,alpha
 pi3d.Light((5, -10, -20), (0.6, 0.6, 0.5), (0.3, 0.3, 0.4))
 
 # load shader
-shader = pi3d.Shader("uv_light")
-flatsh = pi3d.Shader("uv_flat")
+shader = pi3d.Shader("shaders/uv_light")
+flatsh = pi3d.Shader("shaders/uv_flat")
 
 print("==============================================================")
 print("Instructions:")
@@ -49,11 +49,11 @@ mymouse.start()
 scshots = 1
 
 #avatar camera
-rot = 220.0
-tilt = 10.0
+rot=0.0
+tilt=0.0
 avhgt = 2.0
-xm = 0.0
-zm = 0.0
+xm=0.0
+zm=0.0
 ym = avhgt
 
 omx, omy = mymouse.position()

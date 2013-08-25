@@ -35,9 +35,9 @@ mylight = pi3d.Light(lightpos=(0, -1, 1), lightcol =(0.8, 0.8, 0.8), lightamb=(0
 
 win = DISPLAY.tkwin
 
-shader = pi3d.Shader('uv_reflect')
-flatsh = pi3d.Shader('uv_flat')
-shade2d = pi3d.Shader('2d_flat')
+shader = pi3d.Shader('shaders/uv_reflect')
+flatsh = pi3d.Shader('shaders/uv_flat')
+shade2d = pi3d.Shader('shaders/2d_flat')
 
 #========================================
 # create splash screen and draw it
