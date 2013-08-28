@@ -13,7 +13,7 @@ WIDTH = 800
 HEIGHT = 800
 DISPLAY = pi3d.Display.create(w=WIDTH, h=HEIGHT)
 CAMERA = pi3d.Camera(is_3d=False)
-shader = pi3d.Shader("shaders/conway")
+shader = pi3d.Shader("conway")
 
 tex = []
 tex.append(pi3d.Texture("textures/Roof.png", mipmap=False))

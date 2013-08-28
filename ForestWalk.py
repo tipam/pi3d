@@ -23,8 +23,8 @@ pi3d.Light(lightpos=(1, -1, -3), lightcol =(1.0, 1.0, 0.8), lightamb=(0.25, 0.2,
 #========================================
 
 # load shader
-shader = pi3d.Shader("shaders/uv_reflect")
-flatsh = pi3d.Shader("shaders/uv_flat")
+shader = pi3d.Shader("uv_reflect")
+flatsh = pi3d.Shader("uv_flat")
 
 tree2img = pi3d.Texture("textures/tree2.png")
 tree1img = pi3d.Texture("textures/tree1.png")
