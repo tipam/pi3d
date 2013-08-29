@@ -1,8 +1,6 @@
+
 Introduction to Pi3D
 ====================
-
-.. image:: images/rpilogoshad128.png
-   :align: left 
 
 **Pi3D written by Tim Skillman, Paddy Gaunt, Tom Ritchford Copyright (c) 2013**
 
@@ -28,124 +26,43 @@ If you are reading this document as the ReadMe in the repository then you
 can find the full version of the documentation here
 http://pi3d.github.com/html/index.html
 
-Demos included with Pi3D
-=========================
+Demos for Pi3D are now stored at https://github.com/pi3d/pi3d_demos
+===================================================================
+N.B. the 'master' branch on the above github repo has a slightly different
+format for the path to the shaders from the one used for this package and used
+in the demos 'develop' branch. The only difference is::
 
-#.  **ForestWalk.py** Walk about a forest on a landscape generated from a
-    bitmap
-      .. image:: images/forestwalk_sml.png
-         :align: right
+    myshader = pi3d.Shader('shaders/uv_flat')
 
-#.  **Triceratops.py** Large model loading with several
-    bitmaps
-      .. image:: images/triceratops_sml.png
+should be::
 
-#.  **BuckfastAbbey.py** Explore a model of the beautiful Buckfast Abbey in 
-    Buckfastleigh, Devon, England
-      .. image:: images/buckfast_sml.png
-         :align: right
+    myshader = pi3d.Shader('uv_flat')
 
-#.  **Earth.py** Demonstrates semi-transparent clouds and hierarchical
-    rotations
-      .. image:: images/earth_sml.png
+this will use the default shaders 'bundled' with the package. The old format
+will be interpreted as 'look in a subdirectory of the directory where the demo
+is being run from.' This is probably what you would do if you rolled your own
+special shaders for your own project.
 
-#.  **Clouds3D.py** Blended sprites in
-    perspective view
-      .. image:: images/clouds3d_sml.png
-         :align: right
+Download, Extract and install
+=============================
 
-#.  **Raspberry_Rain.py** Raining Raspberries,  full-screen, over the
-    desktop
-      .. image:: images/raspberryrain_sml.png
+    Download and extract the package then in a terminal::
 
-#.  **RobotWalkabout.py** Another off-planet example of a basic avatar robot
-    drifting about
-      .. image:: images/walkabout_sml.png
-         :align: right
+      sudo python setup.py install
 
-#.  **EnvironmentCube.py** New environment cubes to try out in texture/ecubes -
-    some high quality ones!
-      .. image:: images/envcube_sml.png
-
-#.  **Shapes.py** Demos available shapes and text
-    in a 3D context
-      .. image:: images/shapes_sml.png
-         :align: right
-
-#.  **MarsStation.py** Navigate around an abandoned Mars base-station with
-    open/shut doors. Implements a new Level-Of-Detail (LOD) feature and TKwindow
-    interface
-      .. image:: images/marsstation_sml.png
-
-#.  **Amazing.py** Can you find yourself around the
-    amazing maze?
-      .. image:: images/amazing_sml.png
-         :align: right
-
-#.  **TigerTank.py** Ever played World Of Tanks (WOT)? This tank emulates
-    how a WOT tank works. Uses realistic modelling in a TKwindow
-      .. image:: images/tigertank_sml.png
-
-#.  **Pong.py**  A snazzy 3D version of landscape pinball and pong
-    against a Raspberry!
-      .. image:: images/pong_sml.png
-         :align: right
-
-#.  **Blur.py** Simulates giving the camera a focal distance and blurs
-    nearer and further objects
-      .. image:: images/blur_sml.png
-
-#.  **LoadModelObj.py** Loads a model from obj file (quicker) and applies
-    a normal map and relfection map
-      .. image:: images/teapot_sml.png
-         :align: right
-
-#.  **Silo.py** Uses the Building class to create a claustrophobic maze
-    set in the desert.
-      .. image:: images/silo_sml.png
-
-#.  **Water.py** A series of wave normal maps are used to animate a surface
-    and produce a realistic moving reflection.
-      .. image:: images/water_sml.png
-        :align: right
-     
-#.  **ClashWalk.py** The graphics processor calculates where the camera can
-    or cannot go depending on what is drawn in front of it. Potentially useful
-    for first person navigation
-
-#.  **CollisionBalls.py** More bouncing balls across the screen -
-    this time  bouncing off each other on the desktop
-
-
-Files and folders in this repository
-====================================
-
-Total zipped download from github c. 24 MB
-
-#.  **pi3d** The main pi3d module files 540 kB
-#.  **shaders** Shader files used by the pi3d module 33 kB
-#.  **echomesh** Utility functions 14kB
-#.  **textures** Various textures to play with 13 MB
-#.  **models** Demo obj and egg models 26 MB
-#.  **fonts** ttf and Bitmap fonts that can be using for drawing text see in
-    /usr/share/fonts/truetype for others, or look online. 1.0 MB
-#.  **demos** Source code of the demos included 96 kB
-#.  **screenshots** Example screenshots of the demos included 860 kB
-#.  **pyxlib** Library to enable use on general linux machines 209 kB
-#.  **ChangeLog.txt** Latest changes of Pi3D
-#.  **ReadMe.rst** This file
-
-
-Setup on the Raspberry Pi
-=========================
-
-#.  **Download and unzip**
-
+    (or you may need to use python3) this will put the package into the
+    relevant location on your device (for instance
+    /usr/local/lib/python2.7/dist-packages/) allowing it to be imported
+    by your applications.
+    
     The latest code can be obtained from https://github.com/tipam/pi3d/
     where there is a ``Download ZIP`` link, or you can install git then
     clone using ``git clone https://github.com/tipam/pi3d.git`` this git
     method will give you the option to update the code by running, from
     the pi3d directory ``git pull origin master``
+
+Setup on the Raspberry Pi
+=========================
 
 #.  **Memory Split setup**
 
@@ -239,7 +156,7 @@ Editing scripts and running
 
       import pi3d
       DISPLAY = pi3d.Display.create(w=128, h=128)
-      shader = pi3d.Shader("shaders/2d_flat")
+      shader = pi3d.Shader("2d_flat")
       sprite = pi3d.ImageSprite("textures/PATRN.PNG", shader)
       while DISPLAY.loop_running():
         sprite.draw()
@@ -254,52 +171,52 @@ A Very Brief Explanation
 The whole idea of Pi3d is that you don't have to get involved in too many of
 the nuts and bolts of how the OpenGL graphics processor works however it might
 help to get an overview of the layout of Pi3d. More detailed explanations can
-be found in the documentation of each of the modules. Read `FAQ`_ before
+be found in the documentation of each of the modules. Read http://pi3d.github.io/html/FAQ.html before
 you try anything ambitious or if anything goes wrong, obviously. There is a
-`3D Graphics Explanation`_ where I try to explain in some more detail what
+http://pi3d.github.io/html/GPUexplain.html where I try to explain in some more detail what
 is going on.
 
 
-  **Display** The `Display`_ class is the core and is used to hold screen dimension information,
+  **Display** The `Display` class is the core and is used to hold screen dimension information,
   to initiate the graphics functionality and for 'central' information, such as timing,
-  for the animation. There needs to be an instance of `Display`_ in existence
+  for the animation. There needs to be an instance of `Display` in existence
   before some of the other objects are created so it's a good idea to create one
   first job.
   
-  **Shape** `All objects to be drawn by Pi3d`_ inherit from the `Shape`_ class which holds
+  **Shape** `All objects to be drawn by Pi3d` inherit from the `Shape` class which holds
   details of position, rotation, scale as well as specific data needed for
-  drawing the shape. Each `Shape`_ contains an array of `Buffer`_ objects; normally
+  drawing the shape. Each `Shape` contains an array of `Buffer` objects; normally
   only containing one but there could be more in complicated models created
   with external 3D applications. 
   
-  **Buffer** The `Buffer`_ objects contain the arrays of values representing vertices,
+  **Buffer** The `Buffer` objects contain the arrays of values representing vertices,
   normals, faces and texture coordinates in a form that can be quickly read by
-  the graphics processor. Each Buffer_ object within a `Shape`_ can be textured
-  using a different image or shade (RGB) value and, if needed, a different `Shader`_
+  the graphics processor. Each Buffer object within a `Shape` can be textured
+  using a different image or shade (RGB) value and, if needed, a different `Shader`
   
-  **Shader** The `Shader`_ class is used to compile *very fast* programs that are run on
+  **Shader** The `Shader` class is used to compile *very fast* programs that are run on
   the graphics processor. They have two parts: *Vertex Shaders* that do calculation
-  for each of the vertices of the `Buffer`_ and *Fragment Shaders* applied to
+  for each of the vertices of the `Buffer` and *Fragment Shaders* applied to
   each pixel. In Pi3d we have kept the shaders out of the main python files
   and divided them using the two extensions .vs and .fs The shader language
   is C like, very clever indeed, but rather hard to fathom out.
   
-  **Camera** In order to draw a `Shape`_ on the `Display`_ the `Shader`_ needs to be passed the
-  vertex information in the Buffers and needs know how the `Shape`_ has been moved.
-  But it also needs to know how the `Camera`_ has moved. The `Camera`_ class generally
-  has just one instance and if you do not create one explicitly then `Display`_ will
-  generate a default one when you first try to draw something. The `Camera`_
+  **Camera** In order to draw a `Shape` on the `Display` the `Shader` needs to be passed the
+  vertex information in the Buffers and needs know how the `Shape` has been moved.
+  But it also needs to know how the `Camera` has moved. The `Camera` class generally
+  has just one instance and if you do not create one explicitly then `Display` will
+  generate a default one when you first try to draw something. The `Camera`
   has position and rotation information similar to Shapes but also information
   to create the view, such as how wide-angle or telephoto the lens is.
   
-  **Texture** The `Texture`_ objects are used to load images from file into a form that
-  can be passed to the `Shader`_ to draw onto a surface. They can also be applied as
+  **Texture** The `Texture` objects are used to load images from file into a form that
+  can be passed to the `Shader` to draw onto a surface. They can also be applied as
   normal maps to give much finer local detail or as reflection maps - a much
   faster way to make surfaces look shiny than ray tracing.
   
   **Light** To produce a 3D appearance most of the Shaders use directional lighting and
-  if you draw a `Shape`_ without creating a `Light`_ a default instance will be
-  created by the `Display`_. The `Light`_ has properties defining the direction,
+  if you draw a `Shape` without creating a `Light` a default instance will be
+  created by the `Display`. The `Light` has properties defining the direction,
   the colour (and strength i.e. RGB values) and ambient colour (and strength).
 
   When you look through the demos you will see one or two things that may
@@ -339,20 +256,10 @@ is going on.
   ``from pi3d import *`` this saves having to use the ``pi3d.`` prefix but
   is **much harder to debug** if there is a name conflict.
   
-.. _Display: pi3d.html#pi3d.Display.Display
-.. _Shape: pi3d.html#pi3d.Shape.Shape
-.. _Buffer: pi3d.html#pi3d.Buffer.Buffer
-.. _Shader: pi3d.html#pi3d.Shader.Shader
-.. _Camera: pi3d.html#pi3d.Camera.Camera
-.. _Texture: pi3d.html#pi3d.Texture.Texture
-.. _Light: pi3d.html#pi3d.Light.Light
-.. _`All objects to be drawn by Pi3d`: pi3d.shape.html#module-pi3d.shape.Cone
-.. _`FAQ`: FAQ.html
-.. _`3D Graphics Explanation`: GPUexplain.html
-
-
 Documentation
 =============
+
+see http://pi3d.github.io/html/index.html
 
 Please note that Pi3D functions may change significantly during its development.
 
@@ -374,4 +281,3 @@ David Wallin and others who have contributed to Pi3D - keep up the good work!
 
 
 **PLEASE READ LICENSING AND COPYRIGHT NOTICES ESPECIALLY IF USING FOR COMMERCIAL PURPOSES**
-
