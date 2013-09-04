@@ -421,7 +421,7 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
 
   if mouse:
     from pi3d.Mouse import Mouse
-    display.mouse = Mouse(width=w, height=h)
+    display.mouse = Mouse(width=w, height=h, restrict=False)
     display.mouse.start()
 
   # This code now replaced by camera 'lens'
