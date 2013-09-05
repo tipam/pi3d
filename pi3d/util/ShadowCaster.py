@@ -3,29 +3,16 @@ from PIL import Image
 
 from pi3d.constants import *
 from pi3d.Shader import Shader
-from pi3d.Texture import Texture
+from pi3d.util.OffScreenTexture import OffScreenTexture
 from pi3d.Camera import Camera
 
-class ShadowCaster(Texture):
+class ShadowCaster(OffScreenTexture):
   """For creating a depth-of-field blurring effect on selected objects"""
   def __init__(self, emap, light):
     """ calls Texture.__init__ but doesn't need to set file name as
     texture generated from the framebuffer
     """
     super(ShadowCaster, self).__init__("shadow_caster")
-    from pi3d.Display import Display
-    self.ix, self.iy = Display.INSTANCE.width, Display.INSTANCE.height
-    self.im = Image.new("RGBA",(self.ix, self.iy))
-    self.image = self.im.convert("RGBA").tostring('raw', "RGBA")
-    self.alpha = True
-    self.blend = False
-
-    self._tex = ctypes.c_int()
-    self.framebuffer = (ctypes.c_int * 1)()
-    opengles.glGenFramebuffers(1, self.framebuffer)
-    self.depthbuffer = (ctypes.c_int * 1)()
-    opengles.glGenRenderbuffers(1, self.depthbuffer)
-
     # load shader for casting shadows and camera
     self.cshader = Shader("uv_flat")
     self.mshader = Shader("mat_flat")
@@ -71,17 +58,13 @@ class ShadowCaster(Texture):
     # load shader for drawing map with shadows
     self.dshader = Shader("shadowcast")
 
-  def _load_disk(self):
-    """ have to override this
-    """
-
   def start_cast(self, location=(0.0, 0.0,  0.0)):
     """ after calling this method all object.draw()s will rendered
     to this texture and not appear on the display. If you want blurred
     edges you will have to capture the rendering of an object and its
     background then re-draw them using the blur() method. Large objects
     will obviously take a while to draw and re-draw
-    """
+    
     opengles.glBindFramebuffer(GL_FRAMEBUFFER, self.framebuffer)
     opengles.glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                 GL_TEXTURE_2D, self._tex.value, 0)
@@ -91,12 +74,14 @@ class ShadowCaster(Texture):
                 self.ix, self.iy)
     opengles.glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
                 GL_RENDERBUFFER, self.depthbuffer)
-    opengles.glClearColor(ctypes.c_float(0.0), ctypes.c_float(0.0), 
-                        ctypes.c_float(0.0), ctypes.c_float(1.0))
     opengles.glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT)
 
     opengles.glEnable(GL_TEXTURE_2D)
     opengles.glActiveTexture(0)
+    """
+    opengles.glClearColor(ctypes.c_float(0.0), ctypes.c_float(0.0), 
+                        ctypes.c_float(0.0), ctypes.c_float(1.0))
+    super(ShadowCaster, self)._start()
     self.camera.reset(is_3d=False, scale=self.scale)
     self.camera.position((location[0], 0, location[2]))
     self.location = location
@@ -106,8 +91,7 @@ class ShadowCaster(Texture):
     """
     #draw the actual map
     self.emap.draw(shader=self.mshader, camera=self.camera)
-    opengles.glBindTexture(GL_TEXTURE_2D, 0)
-    opengles.glBindFramebuffer(GL_FRAMEBUFFER, 0)
+    super(ShadowCaster, self)._end()
     # set third texture to this ShadowCaster texture
     texs = self.emap.buf[0].textures
     if len(texs) == 2:
@@ -135,7 +119,3 @@ class ShadowCaster(Texture):
     
   def draw_shadow(self):
     self.emap.draw(shader=self.dshader)
-    
-  def delete_buffers(self):
-    opengles.glDeleteFramebuffers(1, self.framebuffer)
-    opengles.glDeleteRenderbuffers(1, self.depthbuffer)
