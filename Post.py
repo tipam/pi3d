@@ -13,8 +13,10 @@ import math, random, time
 import demo
 import pi3d
 
+print("shapes change with mouse movement!")
 # Setup display and initialise pi3d
-DISPLAY = pi3d.Display.create(x=10, y=10, w=800, h=800, frames_per_second=40)
+DISPLAY = pi3d.Display.create(x=100, y=100, w=800, h=800, frames_per_second=40,
+          mouse=True)
 DISPLAY.set_background(0.4, 0.6, 0.8, 1.0)      # r,g,b,alpha
 
 persp_cam = pi3d.Camera.instance() # default instance camera perspecive view
@@ -68,7 +70,9 @@ while DISPLAY.loop_running():
   x = (x + dx) % 5.0
   post.draw({48:(2.0 + x)})
 
-  myshape.rotateIncY(0.247)
+  mx, my = DISPLAY.mouse.position()
+  myshape.scale(1.0 + mx/1000.0, 1.0 + my/1000.0, 1.0 + mx/1000.0)
+  myshape.rotateIncY(0.6471)
   myshape.rotateIncX(0.0613)
 
   k = mykeys.read()
