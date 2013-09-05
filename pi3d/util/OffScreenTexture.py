@@ -5,7 +5,9 @@ from pi3d.constants import *
 from pi3d.Texture import Texture
 
 class OffScreenTexture(Texture):
-  """For creating a depth-of-field blurring effect on selected objects"""
+  """For creating special effect after rendering to texture rather than
+  onto the display. Used by Defocus, ShadowCaster, Clashtest etc
+  """
   def __init__(self, name):
     """ calls Texture.__init__ but doesn't need to set file name as
     texture generated from the framebuffer

@@ -63,3 +63,4 @@ from pi3d.util.Pngfont import Pngfont
 from pi3d.util.Screenshot import screenshot
 from pi3d.util.ShadowCaster import ShadowCaster
 from pi3d.util.Font import Font
+from pi3d.util.PostProcess import PostProcess

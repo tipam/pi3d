@@ -64,20 +64,6 @@ class ShadowCaster(OffScreenTexture):
     edges you will have to capture the rendering of an object and its
     background then re-draw them using the blur() method. Large objects
     will obviously take a while to draw and re-draw
-    
-    opengles.glBindFramebuffer(GL_FRAMEBUFFER, self.framebuffer)
-    opengles.glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-                GL_TEXTURE_2D, self._tex.value, 0)
-    #thanks to PeterO c.o. RPi forum for pointing out missing depth attchmnt
-    opengles.glBindRenderbuffer(GL_RENDERBUFFER, self.depthbuffer)
-    opengles.glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16,
-                self.ix, self.iy)
-    opengles.glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
-                GL_RENDERBUFFER, self.depthbuffer)
-    opengles.glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT)
-
-    opengles.glEnable(GL_TEXTURE_2D)
-    opengles.glActiveTexture(0)
     """
     opengles.glClearColor(ctypes.c_float(0.0), ctypes.c_float(0.0), 
                         ctypes.c_float(0.0), ctypes.c_float(1.0))
