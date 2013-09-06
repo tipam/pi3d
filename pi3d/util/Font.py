@@ -2,12 +2,11 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import ctypes
 import itertools
+import os.path
 import six
 
-from PIL import Image
-
 try:
-  from PIL import ImageDraw, ImageFont
+  from PIL import Image, ImageDraw, ImageFont
 except:
   print('Unable to import libraries from PIL')
 
@@ -59,8 +58,8 @@ class Font(Texture):
     *add_codepoints*:
       If you are only wanting to add a few codepoints that are missing, you
       should use the *add_codepoints* parameter, which just adds codepoints or
-      characters to the default list of codepoints. All the other comments for
-      the *codepoints* parameter still apply.
+      characters to the default list of codepoints (range(256). All the other
+      comments for the *codepoints* parameter still apply.
 
     *image_size*:
       Width and height of the Texture that backs the image.
@@ -76,7 +75,15 @@ class Font(Texture):
     """
     super(Font, self).__init__(font)
     self.font = font
-    imgfont = ImageFont.truetype(font, font_size)
+    try:
+      imgfont = ImageFont.truetype(font, font_size)
+    except IOError:
+      abspath = os.path.abspath(font)
+      msg = "Couldn't find font file '%s'" % font
+      if font != abspath:
+        msg = "%s - absolute path is '%s'" % (msg, abspath)
+
+      raise Exception(msg)
 
     codepoints = (codepoints and list(codepoints)) or list(range(256))
     if add_codepoints:

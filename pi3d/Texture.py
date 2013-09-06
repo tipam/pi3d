@@ -2,6 +2,7 @@
 from __future__ import print_function
 
 import ctypes
+import sys
 
 from six.moves import xrange
 
@@ -54,7 +55,10 @@ class Texture(Loadable):
         TODO possibly reset in Buffer.draw() each time a texture is loaded?
     """
     super(Texture, self).__init__()
-    self.file_string = file_string
+    if file_string[0] == '/': #absolute address
+      self.file_string = file_string
+    else:
+      self.file_string = sys.path[0] + '/' + file_string
     self.blend = blend
     self.flip = flip
     self.size = size

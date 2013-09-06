@@ -68,7 +68,7 @@ class xyz(object):
     Constructor
     Can be initialised either with one of these or by with three things that can be cast to floats.
     """
-    if isinstance(z, xyz):
+    if isinstance(x, xyz):
       self.x = x.x
       self.y = x.y
       self.x = x.z
@@ -144,7 +144,7 @@ class Position(xyz):
     self.y = p.y
     self.z = p.z
 
-def _overlap(x1,w1, x2, w2):
+def _overlap(x1, w1, x2, w2):
   """
   A utility function for testing for overlap on a single axis. Returns true
   if a line w1 above and below point x1 overlaps a line w2 above and below point x2.
@@ -485,6 +485,8 @@ class Building (object):
 
     self.model = [MergeShape(name=name+"."+str(x)) for x in range(self.scheme["#models"])]
 
+    if mapfile[0] != '/':
+      mapfile = sys.path[0] + '/' + mapfile
     print("Loading building map ...", mapfile)
 
     im = Image.open(mapfile)

@@ -1,5 +1,6 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+import sys
 import os
 
 from pi3d.constants import *
@@ -54,7 +55,7 @@ def loadFileOBJ(model, fileName):
     *model*
       Model object to add to.
     *fileName*
-      Path and name of obj file relative to top directory.
+      Path and name of obj file relative to program file.
   """
   model.coordinateSystem = "Y-up"
   model.parent = None
@@ -64,6 +65,8 @@ def loadFileOBJ(model, fileName):
 
   # read in the file and parse into some arrays
 
+  if fileName[0] != '/':
+    fileName = sys.path[0] + '/' + fileName
   filePath = os.path.split(os.path.abspath(fileName))[0]
   print(filePath)
   f = open(fileName, 'r')
@@ -247,7 +250,7 @@ def loadFileOBJ(model, fileName):
     if 'mapDiffuse' in material_lib[m]:
       tfileName = material_lib[m]['mapDiffuse']
       model.buf[model.vGroup[materials[m]]].texFile = tfileName
-      model.buf[model.vGroup[materials[m]]].textures = [Texture(os.path.join(filePath, tfileName), False, True)] # load from file
+      model.buf[model.vGroup[materials[m]]].textures = [Texture(filePath + '/' + tfileName, False, True)] # load from file
     else:
       model.buf[model.vGroup[materials[m]]].texFile = None
       model.buf[model.vGroup[materials[m]]].textures = []

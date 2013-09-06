@@ -8,13 +8,13 @@ from pi3d.constants import *
 
 from pi3d.util.Ctypes import c_ints
 
-if not ON_PI:
+if PLATFORM != PLATFORM_PI:
   from pyxlib import xlib
   from pyxlib.x import *
 
 class DisplayOpenGL(object):
   def __init__(self):
-    if not ON_PI:
+    if PLATFORM != PLATFORM_PI:
       self.d = xlib.XOpenDisplay(None)
       self.screen = xlib.XDefaultScreenOfDisplay(self.d)
       self.width, self.height = xlib.XWidthOfScreen(self.screen), xlib.XHeightOfScreen(self.screen)
@@ -64,7 +64,6 @@ class DisplayOpenGL(object):
 
     #Setup default hints
     opengles.glEnable(GL_CULL_FACE)
-    opengles.glEnable(GL_NORMALIZE)
     opengles.glEnable(GL_DEPTH_TEST)
     opengles.glCullFace(GL_FRONT)
     opengles.glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST)
@@ -83,7 +82,7 @@ class DisplayOpenGL(object):
     dst_rect = c_ints((x, y, w, h))
     src_rect = c_ints((x, y, w << 16, h << 16))
 
-    if not ON_PI:
+    if PLATFORM != PLATFORM_PI:
       self.width, self.height = w, h
 
       # Set some WM info
@@ -139,7 +138,7 @@ class DisplayOpenGL(object):
   def resize(self, x=0, y=0, w=0, h=0):
     # Destroy current surface and native window
     openegl.eglSwapBuffers(self.display, self.surface)
-    if ON_PI:
+    if PLATFORM == PLATFORM_PI:
       openegl.eglDestroySurface(self.display, self.surface)
 
       self.dispman_update = bcm.vc_dispmanx_update_start(0)
@@ -185,14 +184,14 @@ class DisplayOpenGL(object):
       openegl.eglDestroySurface(self.display, self.surface)
       openegl.eglDestroyContext(self.display, self.context)
       openegl.eglTerminate(self.display)
-      if ON_PI:
+      if PLATFORM == PLATFORM_PI:
         self.dispman_update = bcm.vc_dispmanx_update_start(0)
         bcm.vc_dispmanx_element_remove(self.dispman_update, self.dispman_element)
         bcm.vc_dispmanx_update_submit_sync(self.dispman_update)
         bcm.vc_dispmanx_display_close(self.dispman_display)
 
       self.active = False
-      if not ON_PI:
+      if PLATFORM != PLATFORM_PI:
         xlib.XCloseDisplay(self.d)
 
   def swap_buffers(self):

@@ -1,5 +1,6 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+import sys
 import re, os
 
 from pi3d import *
@@ -57,7 +58,7 @@ def loadFileEGG(model, fileName):
     *model*
       Model object to add to.
     *fileName*
-      Path and name of egg file relative to top directory.
+      Path and name of egg file relative to program file.
 
   """
   model.coordinateSystem = "Y-up"
@@ -74,6 +75,8 @@ def loadFileEGG(model, fileName):
 
   # read in the file and parse into some arrays
 
+  if fileName[0] != '/':
+    fileName = sys.path[0] + '/' + fileName
   filePath = os.path.split(os.path.abspath(fileName))[0]
   if VERBOSE:
     print(filePath)

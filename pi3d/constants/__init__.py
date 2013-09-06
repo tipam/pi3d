@@ -3,7 +3,6 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 """
 pi3d.constants contains constant values, mainly integers, from OpenGL ES 2.0.
 """
-import subprocess
 
 VERSION = '1.0'
 
@@ -35,35 +34,55 @@ EGL_NO_SURFACE = 0
 DISPMANX_PROTECTION_NONE = 0
 
 # Is this running on a raspberry pi?
-ON_PI = False
-
-# run command and return
-def _run_command(command): 
-  p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-  return iter(p.stdout.readline, b'')
- 
-command = ['ldconfig', '-p']
-
-for line in _run_command(command):
-  if b"libbcm_host.so" in line:
-    ON_PI = True
-    break
+PLATFORM_PI = 0
+PLATFORM_OSX = 1
+PLATFORM_WINDOWS = 2
+PLATFORM_LINUX = 3
 
 # Lastly, load the libraries.
-def _load_library(name, version=""):
+def _load_library(name):
   """Try to load a shared library, report an error on failure."""
-  try:
-    import ctypes
-    return ctypes.CDLL("lib{}.so{}".format(name, version))
-  except:
-    from pi3d.util import Log
-    Log.logger(__name__).error("Couldn't load library lib%s.so%s", name, version)
+  if name:
+    try:
+      import ctypes
+      return ctypes.CDLL(name)
+    except:
+      from pi3d.util import Log
+      Log.logger(__name__).error("Couldn't load library %s", name)
 
-#May need to use system() and linux_distribution()
-if ON_PI: # libbcm_host.so found in shared libraries
-  bcm = _load_library('bcm_host', '')
-  opengles = _load_library('GLESv2', '')
-  openegl = _load_library('EGL', '')
-else: # try and run using libx11 and mesa
-  opengles = _load_library('GLESv2','.2')
-  openegl = _load_library('EGL', '.1')
+def _linux():
+  platform = PLATFORM_LINUX
+  
+  from ctypes.util import find_library
+  
+  bcm_name = find_library('bcm_host')
+  if bcm_name:
+    platform = PLATFORM_PI
+  gles_name = find_library('GLESv2')
+  egl_name = find_library('EGL')
+
+  return platform, bcm_name, gles_name, egl_name
+
+def _darwin():
+  pass
+
+_PLATFORMS = {
+  'linux': _linux,
+  'darwin': _darwin
+  }
+
+def _detect_platform_and_load_libraries():
+  import platform
+
+  platform_name = platform.system().lower()
+  loader = _PLATFORMS.get(platform_name, None)
+  if not loader:
+    raise Exception("Couldn't understand platform %s" % platform_name)
+
+  plat, bcm_name, gles_name, egl_name = loader()
+  bcm = _load_library(bcm_name)
+  opengles = _load_library(gles_name)
+  openegl = _load_library(egl_name)
+  return plat, bcm, opengles, openegl
+
+PLATFORM, bcm, opengles, openegl = _detect_platform_and_load_libraries()
