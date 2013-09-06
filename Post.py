@@ -26,7 +26,7 @@ pi3d.Light((0, 5, 0))
 #create shaders
 shader = pi3d.Shader("star")
 flatsh = pi3d.Shader("uv_flat")
-post = pi3d.PostProcess("/home/pi/pi3d_demos/post_base1")
+post = pi3d.PostProcess()
 
 #Create textures
 shapeimg = pi3d.Texture("textures/straw1.jpg")
