@@ -4,6 +4,17 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
+v1.2
+2013-09-06  PostProcess added to allow effect shaders to be applied to
+            a rendered scene. OffScreenTexture system streamlined to take
+            out duplicated code and now works on X11 systems.
+
+v1.1
+2013-08-25  Split demos into their own repository and make pi3d structure
+            more in line with other packages. Put package on pypi to allow
+            installation using 'python setup.py install' or, ideally,
+            'pip install pi3d'
+
 v1.0
 2013-08-16  Support for other linux platforms using xlib and mesa. Runs under
             python3 using six. Memory leaks fixed. Unicode, multiline and justified

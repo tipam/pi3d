@@ -15,7 +15,7 @@ whilst giving access to the power of the Raspberry Pi GPU. It enables both
 3D and 2D rendering and aims to provide a host of exciting commands to load
 in textured/animated models, create fractal landscapes, shaders and much more.
 
-v1.0 is the fifth release of the pi3d module which now adds support for
+v1.2 is the sixth release of the pi3d module which now adds support for
 running on platforms other than the raspberry pi (X on linux) and runs with
 python 3 as well as 2 The OpenGLES2.0 functionality of the Raspberry Pi
 is used directly or via mesa on 'big' machines. This makes it generally *faster*
@@ -28,8 +28,24 @@ If you are reading this document as the ReadMe in the repository then you
 can find the full version of the documentation here
 http://pi3d.github.com/html/index.html
 
-Demos included with Pi3D
-=========================
+Demos for Pi3D are now stored at https://github.com/pi3d/pi3d_demos
+===================================================================
+N.B. Shaders are now integrated into programs differently. The syntax used
+to be::
+
+    myshader = pi3d.Shader('shaders/uv_flat')
+
+and is now::
+
+    myshader = pi3d.Shader('uv_flat')
+
+this will use the default shaders 'bundled' with the package. The old format
+will be interpreted as 'look in a subdirectory of the directory where the demo
+is being run from.' This is probably what you would do if you rolled your own
+special shaders for your own project.
+
+Demos on github.com/pi3d/pi3d_demos include
+===========================================
 
 #.  **ForestWalk.py** Walk about a forest on a landscape generated from a
     bitmap
@@ -139,7 +155,22 @@ Total zipped download from github c. 24 MB
 Setup on the Raspberry Pi
 =========================
 
-#.  **Download and unzip**
+#.  **Download, Extract and install**
+
+    If you have pip installed you should be able to open a terminal and
+    type::
+
+      sudo pip install pi3d
+    
+    Otherwise you can download from https://pypi.python.org/pypi/pi3d
+    and extract the package then in a terminal::
+
+      sudo python setup.py install
+
+    (or you may need to use python3) this will put the package into the
+    relevant location on your device (for instance
+    /usr/local/lib/python2.7/dist-packages/) allowing it to be imported
+    by your applications.
 
     The latest code can be obtained from https://github.com/tipam/pi3d/
     where there is a ``Download ZIP`` link, or you can install git then
