@@ -9,7 +9,7 @@ from pi3d.util.OffScreenTexture import OffScreenTexture
 
 class PostProcess(OffScreenTexture):
   """For creating a depth-of-field blurring effect on selected objects"""
-  def __init__(self, shader="post_base"):
+  def __init__(self, shader="post_base", mipmap=True):
     """ calls Texture.__init__ but doesn't need to set file name as
     texture generated from the framebuffer
     """
@@ -18,9 +18,9 @@ class PostProcess(OffScreenTexture):
     self.shader = Shader(shader)
     self.camera = Camera(is_3d=False)
     self.sprite = Sprite(z=20.0, w=self.ix, h=self.iy)
-    self.mipmap = False
     self.alpha = False
     self.blend = True
+    self.mipmap = mipmap
 
   def start_capture(self):
     """ after calling this method all object.draw()s will rendered
