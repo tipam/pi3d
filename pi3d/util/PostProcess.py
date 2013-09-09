@@ -19,6 +19,8 @@ class PostProcess(OffScreenTexture):
     self.camera = Camera(is_3d=False)
     self.sprite = Sprite(z=20.0, w=self.ix, h=self.iy)
     self.mipmap = False
+    self.alpha = False
+    self.blend = True
 
   def start_capture(self):
     """ after calling this method all object.draw()s will rendered
