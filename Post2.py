@@ -90,7 +90,9 @@ while DISPLAY.loop_running():
   if k==112:
     pi3d.screenshot("post.jpg")
   elif k==27:
-    p.stdin.write('QUIT')
+    p.stdin.write('QUIT\n')
     mykeys.close()
     DISPLAY.destroy()
     break
+
+p.stdin.write('QUIT\n')
