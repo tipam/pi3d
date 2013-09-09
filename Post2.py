@@ -54,7 +54,7 @@ x = 0.0
 dx = 0.001
 
 p = Popen(['mpg321', '-R', '-F', 'testPlayer'], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
-p.stdin.write('LOAD 05Kids.mp3\n')
+p.stdin.write(b'LOAD 05Kids.mp3\n')
 rgb = {48:0.0, 49:0.0, 50:0.0}
 
 # Display scene and rotate shape
@@ -90,7 +90,6 @@ while DISPLAY.loop_running():
   if k==112:
     pi3d.screenshot("post.jpg")
   elif k==27:
-    p.stdin.write('QUIT\n')
     mykeys.close()
     DISPLAY.destroy()
     break
