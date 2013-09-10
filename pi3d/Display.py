@@ -138,9 +138,9 @@ class Display(object):
   def resize(self, x=0, y=0, w=0, h=0):
     """Reshape the window with the given coordinates."""
     if w <= 0:
-      w = display.max_width
+      w = self.max_width
     if h <= 0:
-      h = display.max_height
+      h = self.max_height
     self.width = w
     self.height = h
 
@@ -423,23 +423,6 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
     from pi3d.Mouse import Mouse
     display.mouse = Mouse(width=w, height=h, restrict=False)
     display.mouse.start()
-
-  # This code now replaced by camera 'lens'
-  # opengles.glMatrixMode(GL_PROJECTION)
-  # Utility.load_identity()
-  # if is_3d:
-  #   hht = near * math.tan(math.radians(aspect / 2.0))
-  #   hwd = hht * w / h
-  #   opengles.glFrustumf(c_float(-hwd), c_float(hwd), c_float(-hht), c_float(hht),
-  #                       c_float(near), c_float(far))
-  #   opengles.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
-  # else:
-  #   opengles.glOrthof(c_float(0), c_float(w), c_float(0), c_float(h),
-  #                     c_float(near), c_float(far))
-
-  #opengles.glMatrixMode(GL_MODELVIEW)
-  #Utility.load_identity()
-
 
   if background:
     display.set_background(*background)

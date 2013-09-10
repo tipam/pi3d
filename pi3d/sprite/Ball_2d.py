@@ -1,9 +1,9 @@
 import ctypes
+from numpy import dot
 
 from pi3d.constants import *
 
 from pi3d.Display import Display
-from pi3d.util import Utility
 
 class Ball_2d(object):
   """ This class is used to take some of the functionality of the CollisionBalls
@@ -36,7 +36,7 @@ class Ball_2d(object):
     dx = (self.x + self.vx) - (otherball.x + otherball.vx)
     dy = (self.y + self.vy) - (otherball.y + otherball.vy)
     rd = self.radius + otherball.radius
-    return Utility.sqsum(dx, dy) <= (rd * rd)
+    return dot(dx, dy) <= (rd * rd)
 
   def bounce_collision(self, otherball):
     """work out resultant velocities using 17th.C phsyics"""
@@ -45,9 +45,8 @@ class Ball_2d(object):
     dy = self.y - otherball.y
     rd = self.radius + otherball.radius
     # check sign of a.b to see if converging
-    dotP = Utility.dotproduct(dx, dy, 0,
-                              (self.vx - otherball.vx),
-                              (self.vy - otherball.vy), 0)
+    dotP = dot([dx, dy, 0],
+               [self.vx - otherball.vx, self.vy - otherball.vy, 0])
     if dx * dx + dy * dy <= rd * rd and dotP < 0:
       R = otherball.mass / self.mass #ratio of masses
       """Glancing angle for equating angular momentum before and after collision.
