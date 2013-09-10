@@ -32,13 +32,10 @@ class Model(Shape):
 
     if self.exf == 'egg':
       self.model = loaderEgg.loadFileEGG(self, file_string)
-      return self.model
     elif self.exf == 'obj':
       self.model = loaderObj.loadFileOBJ(self, file_string)
-      return self.model
     else:
       print(self.exf, "file not supported")
-      return None
 
   def clone(self, camera = None, light = None):
     """create a new Model but buf points to same array of Buffers
