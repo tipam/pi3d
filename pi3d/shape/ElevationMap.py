@@ -258,8 +258,8 @@ class ElevationMap(Shape):
           minLoc = (i, j)
         #now find the distance between the point and the plane perpendicular
         #to the normal at this vertex
-        pDist = Utility.dotproduct((px - vertp[0]), (py - vertp[1]), (pz - vertp[2]),
-                                  -normp[0], -normp[1], -normp[2])
+        pDist = dot([px - vertp[0], py - vertp[1], pz - vertp[2]],
+                    [-normp[0], -normp[1], -normp[2]])
         #and the position where the normal from point crosses the plane
         xIsect = px - normp[0]*pDist
         zIsect = pz - normp[2]*pDist
@@ -341,7 +341,6 @@ def intersect_triangle(v1, v2, v3, pos):
       tuple (x,y,z) defining the x,z of the vertical line intersecting triangle
   """
   #calc normal from two edge vectors v2-v1 and v3-v1
-  #nVec = Utility.crossproduct(v2[0]-v1[0], v2[1]-v1[1], v2[2]-v1[2], v3[0]-v1[0],  v3[1]-v1[1], v3[2]-v1[2])
   nVec = cross(subtract(v2, v1), subtract(v3, v1))
   #equation of plane: Ax + By + Cz = kVal where A,B,C are components of normal. x,y,z for point v1 to find kVal
   kVal = dot(nVec,v1)

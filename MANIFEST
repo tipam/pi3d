@@ -52,6 +52,8 @@ pi3d/shaders/mat_light.fs
 pi3d/shaders/mat_light.vs
 pi3d/shaders/mat_reflect.fs
 pi3d/shaders/mat_reflect.vs
+pi3d/shaders/post_base.fs
+pi3d/shaders/post_base.vs
 pi3d/shaders/shadowcast.fs
 pi3d/shaders/shadowcast.vs
 pi3d/shaders/star.fs
@@ -100,7 +102,9 @@ pi3d/util/DisplayOpenGL.py
 pi3d/util/Font.py
 pi3d/util/Loadable.py
 pi3d/util/Log.py
+pi3d/util/OffScreenTexture.py
 pi3d/util/Pngfont.py
+pi3d/util/PostProcess.py
 pi3d/util/RotateVec.py
 pi3d/util/Screenshot.py
 pi3d/util/ShadowCaster.py
