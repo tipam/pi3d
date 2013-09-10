@@ -8,10 +8,20 @@ from pi3d.shape.Sprite import Sprite
 from pi3d.util.OffScreenTexture import OffScreenTexture
 
 class PostProcess(OffScreenTexture):
-  """For creating a depth-of-field blurring effect on selected objects"""
+  """For creating a an offscreen texture that can be redrawn using shaders
+  as required by the developer"""
   def __init__(self, shader="post_base", mipmap=True):
     """ calls Texture.__init__ but doesn't need to set file name as
-    texture generated from the framebuffer
+    texture generated from the framebuffer. Keyword Arguments:
+
+      *shader*
+        to use when drawing sprite, defaults to post_base, a simple
+        3x3 convolution that does basic edge detection. Can be copied to
+        project directory and modified as required.
+
+      *mipmap*
+        can be set to False for marginal increase in speed
+      
     """
     super(PostProcess, self).__init__("postprocess")
     # load shader
