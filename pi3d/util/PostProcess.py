@@ -26,8 +26,10 @@ class PostProcess(OffScreenTexture):
     super(PostProcess, self).__init__("postprocess")
     # load shader
     self.shader = Shader(shader)
+    dummycam = Camera.instance() # in case this is prior to one being created 
     self.camera = Camera(is_3d=False)
     self.sprite = Sprite(z=20.0, w=self.ix, h=self.iy)
+    self.sprite.set_2d_size(w=self.ix, h=self.iy)
     self.alpha = False
     self.blend = True
     self.mipmap = mipmap
