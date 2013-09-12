@@ -18,6 +18,8 @@ void main(void){
   // use radial vec = -dy, dx
   d = d * Amount / 5.0 + vec2(-d.y, d.x) * BlurR / 5.0;
   for (float i=0.0; i<1.0; i+=0.125){
-    gl_FragColor += texture2D(tex0, uv + d * pow(2.0, i)) * 0.125;
+    //attempt to stop 'wrapping'
+    vec2 duv = clamp(uv + d * pow(2.0, i), vec2(0.0, -1.0), vec2(1.0, 0.0));
+    gl_FragColor += texture2D(tex0, duv) * 0.125;
   }
 }
