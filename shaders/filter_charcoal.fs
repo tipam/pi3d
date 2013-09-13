@@ -5,6 +5,7 @@ precision mediump float;
 varying vec2 uv;
 varying vec2 d;
 uniform sampler2D tex0;
+uniform vec3 unif[20];
 
 void main(void){
   vec4 c1 = texture2D(tex0, uv);
@@ -15,4 +16,5 @@ void main(void){
   f = clamp(f, 0.0, 1.0);
   c1.rgb = vec3(1.0, 1.0, 1.0) * (1.0 - f);
   gl_FragColor = c1;
+  gl_FragColor.a *= unif[5][2];
 }
