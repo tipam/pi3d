@@ -57,7 +57,7 @@ void main( void ) {
     texture2D(tex0, uv.xy + dir * (3.0/3.0 - 0.5)).xyz);
   float lumaB = dot(rgbB, luma);
   
-  gl_FragColor= vec4(lumaB, lumaB, lumaB, 1.0);
+  gl_FragColor= vec4(lumaB, lumaB, lumaB, unif[5][2]);
 
   if ((lumaB < lumaMin) || (lumaB > lumaMax)){
     gl_FragColor.xyz = rgbA;
