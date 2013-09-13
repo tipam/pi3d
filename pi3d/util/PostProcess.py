@@ -10,7 +10,7 @@ from pi3d.util.OffScreenTexture import OffScreenTexture
 class PostProcess(OffScreenTexture):
   """For creating a an offscreen texture that can be redrawn using shaders
   as required by the developer"""
-  def __init__(self, shader="post_base", mipmap=True):
+  def __init__(self, shader="post_base", mipmap=False):
     """ calls Texture.__init__ but doesn't need to set file name as
     texture generated from the framebuffer. Keyword Arguments:
 
@@ -20,7 +20,7 @@ class PostProcess(OffScreenTexture):
         project directory and modified as required.
 
       *mipmap*
-        can be set to False for marginal increase in speed
+        can be set to True with slight cost to speed, or use fxaa shader
       
     """
     super(PostProcess, self).__init__("postprocess")
