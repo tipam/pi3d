@@ -71,12 +71,13 @@ class Texture(Loadable):
 
   def __del__(self):
     super(Texture, self).__del__()
-    if not self.opengl_loaded:
-      return True
-    from pi3d.Display import Display
-    if Display.INSTANCE:
-      Display.INSTANCE.textures_dict[str(self._tex)][1] = 1
-      Display.INSTANCE.tidy_needed = True
+    try:
+      from pi3d.Display import Display
+      if Display.INSTANCE:
+        Display.INSTANCE.textures_dict[str(self._tex)][1] = 1
+        Display.INSTANCE.tidy_needed = True
+    except:
+      print("couldn't set to delete") #TODO debug messages here
 
   def tex(self):
     """do the deferred opengl work and return texture"""
