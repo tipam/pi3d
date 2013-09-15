@@ -6,16 +6,16 @@ varying vec2 uv;
 varying vec2 d;
 uniform sampler2D tex0;
 uniform vec3 unif[20];
-//color1 unif[16]
-//color2 unif[17]
-//color3 unif[18]
+//color1 unif[16] in python 48,49,50 = 1.0, 0.5, 0.0 say
+//color2 unif[17] in python 51,52,53 = 0.0, 1.0, 0.5 say
+//color3 unif[18] in python 54,55,56 = 0.5, 0.0, 1.0 say
 
 void main(void){
-  vec4 c1 = texture2D(tex0, uv);
+  vec4 c1 = texture2D(tex0, uv);     //from sampler
   
-  vec3 pixcol = vec3(length(c1.rgb));
+  vec3 pixcol = vec3(length(c1.rgb));//each componet equal to brightness
   vec3 tc = vec3 (1.0, 0.0, 0.0);
-  vec3 colors[3];
+  vec3 colors[3]; 
   colors[0] = unif[16];
   colors[1] = unif[17];
   colors[2] = unif[18];

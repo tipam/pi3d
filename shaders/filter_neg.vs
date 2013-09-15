@@ -8,11 +8,11 @@ uniform vec3 unib[4];
 //uniform vec2 umult, vmult => unib[2]
 //uniform vec2 u_off, v_off => unib[3]
 
-varying vec2 texcoordout;
+varying vec2 uv;
 varying float dist;
 
 void main(void) {
-  texcoordout = texcoord * unib[2].xy + unib[3].xy;
-  texcoordout.y = -texcoordout.y;
+  uv = texcoord * unib[2].xy + unib[3].xy;
+  uv.y = -uv.y;
   gl_Position = modelviewmatrix[1] * vec4(vertex,1.0);
 }

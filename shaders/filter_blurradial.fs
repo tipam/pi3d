@@ -6,10 +6,13 @@ varying vec2 uv;
 uniform sampler2D tex0;
 uniform sampler2D tex1;
 uniform vec3 unif[20];
+// centre position unif[16][0],[1] in python unif 48,49
+// radial amount unif[17][0] in python unif 51
+// rotation amount unif[17][1] in python unif 52
 
-vec2 BlurXY = vec2 (-0.4, -0.0); //blur center position
-float Amount = 0.3; //blur radial amount
-float BlurR = 0.1; //blur rotation amount
+vec2 BlurXY = vec2 (unif[16]); //blur center position
+float Amount = unif[17][0]; //blur radial amount
+float BlurR = unif[17][1]; //blur rotation amount
 
 void main(void){
   gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);

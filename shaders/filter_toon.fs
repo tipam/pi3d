@@ -6,6 +6,7 @@ varying vec2 uv;
 varying vec2 d;
 uniform sampler2D tex0;
 uniform vec3 unif[20];
+// outline color unif[16] in python unif 48,49,50
 
 void main(void){
   vec4 c1 = texture2D(tex0, uv);
@@ -21,7 +22,7 @@ void main(void){
   float dist = 0.5 * distance(gl_FragCoord.xy, dcentre);
   if (r > dist) fact = 2.0;
   c1.rgb = (c1.rgb - 1.0 + fact) / fact;
-  gl_FragColor = c1 *  (1.0 - f) + vec4(unif[16], 1.0) * f;
+  gl_FragColor = mix(c1, vec4(unif[16], 1.0), f);
   gl_FragColor = floor(gl_FragColor * 5.0 + 0.5) / 5.0;
   gl_FragColor.a *= unif[5][2];
 }
