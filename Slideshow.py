@@ -2,8 +2,8 @@
 
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-"""This demo shows the use of the Canvas shape for 2D drawing. Also threading
-is used to allow the file access to be done in the background.
+"""This demo shows the use of the Orthographic Camerae for 2D drawing. Also
+threading is used to allow the file access to be done in the background.
 
 Schuitz screwed around with this a lot to handle an arbitrary number of
 textures (within reasonable limits) fading in and out on top of each
@@ -53,8 +53,10 @@ LOGGER = pi3d.Log.logger(__name__)
 LOGGER.info("Log using this expression.")
 
 # Setup display and initialise pi3d
-DISPLAY = pi3d.Display.create(w=1024, h=766, background=(0.0, 0.0, 0.0, 1.0), frames_per_second=20)
-shader = pi3d.Shader("2d_flat")
+DISPLAY = pi3d.Display.create(background=(0.0, 0.0, 0.0, 1.0), frames_per_second=20)
+shader = pi3d.Shader("uv_flat")
+
+CAMERA = pi3d.Camera(is_3d=False)
 
 #iFiles = glob.glob("/home/pi/slidemenu/testdir/*.*")
 iFiles = glob.glob("textures/*.*")
@@ -86,25 +88,22 @@ def tex_load():
     fname = item[0]
     slide = item[1]
     #block until all the dawing is done TBD
-    #tex = pi3d.Texture(item[0], blend=True, mipmap=False) #pixelly but faster 3.3MB in 3s
+    #tex = pi3d.Texture(item[0], mipmap=False) #pixelly but faster 3.3MB in 3s
     tex = pi3d.Texture(item[0], blend=True, mipmap=True) #nicer but slower 3.3MB in 4.5s
     xrat = DISPLAY.width/tex.ix
     yrat = DISPLAY.height/tex.iy
     if yrat < xrat:
       xrat = yrat
     wi, hi = tex.ix * xrat, tex.iy * xrat
-    #wi, hi = tex.ix, tex.iy
-    xi = (DISPLAY.width - wi)/2
-    yi = (DISPLAY.height - hi)/2
-    item[1].set_texture(tex)
-    item[1].set_2d_size(w=wi, h=hi, x=xi, y=yi)
-    item[1].set_alpha(0)
+    slide.set_draw_details(shader,[tex])
+    slide.scale(wi, hi, 1.0)
+    slide.set_alpha(0)
     fileQ.task_done()
 
 
-class Slide(pi3d.Canvas):
+class Slide(pi3d.Sprite):
   def __init__(self):
-    super(Slide, self).__init__()
+    super(Slide, self).__init__(w=1.0, h=1.0)
     self.visible = False
     self.fadeup = False
     self.active = False
@@ -123,9 +122,7 @@ class Carousel:
       step = (1,-1)[i%2]
       hop = 4 + step*half
 
-      #self.slides[hop] = Slide()
       self.slides[hop].positionZ(0.8-(hop/10))
-      self.slides[hop].set_shader(shader)
       item = [iFiles[hop%nFi], self.slides[hop]]
       fileQ.put(item)
 
