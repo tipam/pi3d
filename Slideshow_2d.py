@@ -53,7 +53,7 @@ LOGGER = pi3d.Log.logger(__name__)
 LOGGER.info("Log using this expression.")
 
 # Setup display and initialise pi3d
-DISPLAY = pi3d.Display.create(background=(0.0, 0.0, 0.0, 1.0), frames_per_second=20)
+DISPLAY = pi3d.Display.create(w=1024, h=766, background=(0.0, 0.0, 0.0, 1.0), frames_per_second=20)
 shader = pi3d.Shader("2d_flat")
 
 #iFiles = glob.glob("/home/pi/slidemenu/testdir/*.*")
@@ -92,12 +92,12 @@ def tex_load():
     yrat = DISPLAY.height/tex.iy
     if yrat < xrat:
       xrat = yrat
-    wi, hi = tex.ix * xrat -60 , tex.iy * xrat -60
+    wi, hi = tex.ix * xrat, tex.iy * xrat
     #wi, hi = tex.ix, tex.iy
     xi = (DISPLAY.width - wi)/2
     yi = (DISPLAY.height - hi)/2
     item[1].set_texture(tex)
-    item[1].set_2d_size(w=wi, h=hi, x=xi, y=30)
+    item[1].set_2d_size(w=wi, h=hi, x=xi, y=yi)
     item[1].set_alpha(0)
     fileQ.task_done()
 
