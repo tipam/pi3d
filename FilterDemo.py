@@ -100,12 +100,15 @@ ym = mymap.calcHeight(xm, zm) + avhgt
 mykeys = pi3d.Keyboard()
 
 CAMERA = pi3d.Camera.instance()
+CAM2D = pi3d.Camera(is_3d=False)
+
+font = pi3d.Font("fonts/FreeMonoBoldOblique.ttf", "#dddd80")
 
 filter_list =   [ ["shaders/filter_noise", [10.0, 100.0, 0.25], [0.01]],
                   ["shaders/filter_crystalog", [10.0, 100.0, 0.25], [0.0005]],
                   ["shaders/filter_patterns", [1.0, 0.3],[0.01, 0.001]],
                   ["shaders/filter_displace", [14.0],[0.05]],
-                  ["shaders/filter_space_dist", [21.0],[0.15]],
+                  ["shaders/filter_space_dist", [2.0],[0.01]],
                   ["shaders/filter_color_dist", [21.0, 3.0, 7.0],[0.002, -0.002]],
                   ["shaders/filter_lens", [-0.2, -0.2, 0.3]],
                   ["post_base", [2.5, 0.0, 0.0]],
@@ -128,6 +131,9 @@ while DISPLAY.loop_running():
     i_filter = (i_filter + 1) % n_filter
     post = pi3d.PostProcess(filter_list[i_filter][0])
     post.sprite.set_custom_data(48, filter_list[i_filter][1])
+    string = pi3d.String(font=font, string=filter_list[i_filter][0],
+              camera=CAM2D, is_3d=False, x=0, y=-280, z=0.5)
+    string.set_shader(flatsh)
   if len(filter_list[i_filter]) > 2:
     for i, delta in enumerate(filter_list[i_filter][2]):
       post.sprite.set_custom_data(48 + i, [filter_list[i_filter][1][i] + rot * delta])
@@ -149,6 +155,7 @@ while DISPLAY.loop_running():
   post.end_capture()##>>>>>>>>>>>>>>
 
   post.draw()
+  string.draw()
   #pi3d.screenshot("tempdemopics/shdem{:0>5}.jpg".format(frame))
   frame += 1
 
