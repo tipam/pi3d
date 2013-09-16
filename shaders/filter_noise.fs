@@ -50,12 +50,13 @@ float smoothNoise(vec2 p) {
 float movingNoise(vec2 p) {
   float total =   smoothNoise(p - t) +
                   smoothNoise(p*2.0 + t) * 0.5 +
-                  smoothNoise(p*4.0 - t) * 0.25 +
-                  smoothNoise(p*8.0 + t) * 0.125;
-  //+ smoothNoise(p*16.0 - t) * 0.0625;
+                  smoothNoise(p*4.0 - t) * 0.25;
+  //                smoothNoise(p*8.0 + t) * 0.125;
+  //                smoothNoise(p*16.0 - t) * 0.0625;
   //total *= 0.516129032; // i.e. 1.0 / (1.0 + 0.5 + 0.25 + 0.125 + 0.0625)
   // reduce or increase the number octaves to change effect and speed
-  total *= 0.5333333;
+  //total *= 0.533333333;
+  total *= 0.571428571;
   return total;
 }
 

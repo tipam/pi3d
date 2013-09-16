@@ -4,11 +4,21 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 """ Same as ForestWalk demo but with moving Camera and application of a
 series of PostProcess filters
 """
+from collections import defaultdict
+from gc import get_objects
 
 import math,random
 
 import demo
 import pi3d
+
+LOGGER = pi3d.Log.logger(__name__)
+LOGGER.info("\n\nAs yet there is no system for freeing gpu memory taken by shader\n"\
+            "programs. On the pi after loading a total of 16 (2 base + 14 demo)\n"\
+            "shaders, the screen will go black. Normally you wouldn't keep\n"\
+            "loading lots of shaders in this way. Comment out some of the lines\n"\
+            "where filter_list is defined\n\n")
+            
 
 # Setup display and initialise pi3d
 DISPLAY = pi3d.Display.create(w=800, h=600)
@@ -104,9 +114,9 @@ CAM2D = pi3d.Camera(is_3d=False)
 
 font = pi3d.Font("fonts/FreeMonoBoldOblique.ttf", "#dddd80")
 
-filter_list =   [ ["shaders/filter_noise", [10.0, 100.0, 0.25], [0.01]],
+filter_list =   [ #["shaders/filter_noise", [15.0, 100.0, 0.25], [0.01]], #slow on the raspberry pi
                   ["shaders/filter_crystalog", [10.0, 100.0, 0.25], [0.0005]],
-                  ["shaders/filter_patterns", [1.0, 0.3],[0.01, 0.001]],
+                  #["shaders/filter_patterns", [1.0, 0.3],[0.01, 0.001]],
                   ["shaders/filter_displace", [14.0],[0.05]],
                   ["shaders/filter_space_dist", [2.0],[0.01]],
                   ["shaders/filter_color_dist", [21.0, 3.0, 7.0],[0.002, -0.002]],
@@ -120,12 +130,13 @@ filter_list =   [ ["shaders/filter_noise", [10.0, 100.0, 0.25], [0.01]],
                   ["shaders/filter_hatch", [0.1, 0.0, 0.0]],
                   ["shaders/filter_blurradial", [0.0, 0.0, 0.0, 0.0, 0.3]],
                   ["shaders/filter_sepia", [0.0, 0.0, 0.0]]]
+
 n_filter = len(filter_list)
 i_filter = -1 # as incremented prior to loading
 cx, cz = 70.0, 190.0
 c_rad = 80.0
 frame = 0
-# Display scene and rotate cuboid
+
 while DISPLAY.loop_running():
   if rot % 360.0 == 0.0: #NB this has to happen first loop!
     i_filter = (i_filter + 1) % n_filter
@@ -171,7 +182,5 @@ while DISPLAY.loop_running():
       mykeys.close()
       DISPLAY.stop()
       break
-    else:
-      print(k)
 
   CAMERA.was_moved = False
