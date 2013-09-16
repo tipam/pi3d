@@ -17,7 +17,7 @@ LOGGER.info("\n\nAs yet there is no system for freeing gpu memory taken by shade
             "programs. On the pi after loading a total of 16 (2 base + 14 demo)\n"\
             "shaders, the screen will go black. Normally you wouldn't keep\n"\
             "loading lots of shaders in this way. Comment out some of the lines\n"\
-            "where filter_list is defined\n\n")
+            "where filter_list is defined\nTODO - free shader memory?\n")
             
 
 # Setup display and initialise pi3d
