@@ -20,7 +20,7 @@ void main(void){
   float wd = texture2D(tex1,uv).x;
   vec2 d = (uv - piv); // from centre to this pixel
   // use radial vec = -dy, dx
-  d = d * Amount / 5.0 + vec2(-d.y, d.x) * BlurR / 5.0;
+  d = d * Amount * (1.0 + wd) + vec2(-d.y, d.x) * BlurR * (1.0 + wd);
   for (float i=0.0; i<1.0; i+=0.0625){
     //attempt to stop 'wrapping'
     vec2 duv = clamp(uv + d * pow(2.0, i), vec2(0.0, -1.0), vec2(1.0, 0.0));
