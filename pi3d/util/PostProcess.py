@@ -4,13 +4,13 @@ from PIL import Image
 from pi3d.constants import *
 from pi3d.Shader import Shader
 from pi3d.Camera import Camera
-from pi3d.shape.Sprite import Sprite
+from pi3d.shape.LodSprite import LodSprite
 from pi3d.util.OffScreenTexture import OffScreenTexture
 
 class PostProcess(OffScreenTexture):
   """For creating a an offscreen texture that can be redrawn using shaders
   as required by the developer"""
-  def __init__(self, shader="post_base", mipmap=False, add_tex=None):
+  def __init__(self, shader="post_base", mipmap=False, add_tex=None, divide=1):
     """ calls Texture.__init__ but doesn't need to set file name as
     texture generated from the framebuffer. Keyword Arguments:
 
@@ -32,7 +32,7 @@ class PostProcess(OffScreenTexture):
     self.shader = Shader(shader)
     dummycam = Camera.instance() # in case this is prior to one being created 
     self.camera = Camera(is_3d=False)
-    self.sprite = Sprite(z=20.0, w=self.ix, h=self.iy)
+    self.sprite = LodSprite(z=20.0, w=self.ix, h=self.iy, n=divide)
     self.sprite.set_2d_size(w=self.ix, h=self.iy)
     self.alpha = False
     self.blend = True

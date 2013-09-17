@@ -12,10 +12,10 @@ from pi3d.constants import *
 from pi3d.util.Ctypes import c_ints
 from pi3d.util.Loadable import Loadable
 
-MAX_SIZE = 1024
+MAX_SIZE = 1920
 DEFER_TEXTURE_LOADING = True
 WIDTHS = [4, 8, 16, 32, 48, 64, 72, 96, 128, 144, 192, 256,
-           288, 384, 512, 576, 640, 720, 768, 800, 960, 1024]
+           288, 384, 512, 576, 640, 720, 768, 800, 960, 1024, 1080, 1920]
 
 def round_up_to_power_of_2(x):
   p = 1
