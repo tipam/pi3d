@@ -17,7 +17,7 @@ float limit = unif[16][2];
 float r[10];
 
 float noise(vec2 p) {
-  return fract(sin(p.x + p.y*2.0) * 2.0);
+  return fract(sin(p.x + p.y * 10000.0) * 10000.0);
 }
 
 float smoothNoise(vec2 p) {

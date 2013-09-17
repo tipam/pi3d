@@ -141,7 +141,7 @@ while DISPLAY.loop_running():
                   360.0 / (time.time() - st_time)))
     i_filter = (i_filter + 1) % n_filter
     texetc = [reflimg] if (i_filter < 2) else None
-    post = pi3d.PostProcess(filter_list[i_filter][0], add_tex=texetc)
+    post = pi3d.PostProcess(filter_list[i_filter][0], add_tex=texetc, divide=24, mipmap=False)
     post.sprite.set_custom_data(48, filter_list[i_filter][1])
     string = pi3d.String(font=font, string=filter_list[i_filter][0],
               camera=CAM2D, is_3d=False, x=0, y=-220, z=0.5)

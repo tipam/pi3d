@@ -53,13 +53,13 @@ LOGGER = pi3d.Log.logger(__name__)
 LOGGER.info("Log using this expression.")
 
 # Setup display and initialise pi3d
-DISPLAY = pi3d.Display.create(background=(0.0, 0.0, 0.0, 1.0), frames_per_second=20)
+DISPLAY = pi3d.Display.create(w=1920, h=1080, background=(0.0, 0.0, 0.0, 1.0), frames_per_second=20)
 shader = pi3d.Shader("uv_flat")
 
 CAMERA = pi3d.Camera(is_3d=False)
 
 #iFiles = glob.glob("/home/pi/slidemenu/testdir/*.*")
-iFiles = glob.glob("textures/*.*")
+iFiles = glob.glob("textures/land*.*")
 nFi = len(iFiles)
 fileQ = queue.Queue() # queue for loading new texture files
 
