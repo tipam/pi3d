@@ -59,7 +59,7 @@ shader = pi3d.Shader("uv_flat")
 CAMERA = pi3d.Camera(is_3d=False)
 
 #iFiles = glob.glob("/home/pi/slidemenu/testdir/*.*")
-iFiles = glob.glob("textures/land*.*")
+iFiles = glob.glob("textures/*.*")
 nFi = len(iFiles)
 fileQ = queue.Queue() # queue for loading new texture files
 
