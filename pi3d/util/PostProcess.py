@@ -10,7 +10,7 @@ from pi3d.util.OffScreenTexture import OffScreenTexture
 class PostProcess(OffScreenTexture):
   """For creating a an offscreen texture that can be redrawn using shaders
   as required by the developer"""
-  def __init__(self, shader="post_base", mipmap=False):
+  def __init__(self, shader="post_base", mipmap=False, add_tex=None):
     """ calls Texture.__init__ but doesn't need to set file name as
     texture generated from the framebuffer. Keyword Arguments:
 
@@ -21,7 +21,11 @@ class PostProcess(OffScreenTexture):
 
       *mipmap*
         can be set to True with slight cost to speed, or use fxaa shader
-      
+
+      *add_tex*
+        list of textures. If additional textures can be used by the shader
+        then they can be added here.
+     
     """
     super(PostProcess, self).__init__("postprocess")
     # load shader
@@ -33,6 +37,9 @@ class PostProcess(OffScreenTexture):
     self.alpha = False
     self.blend = True
     self.mipmap = mipmap
+    self.tex_list = [self] # TODO check if this self reference causes graphics memory leaks
+    if add_tex:
+      self.tex_list.extend(add_tex)
 
   def start_capture(self):
     """ after calling this method all object.draw()s will rendered
@@ -59,5 +66,5 @@ class PostProcess(OffScreenTexture):
     if unif_vals:
       for i in unif_vals:
         self.sprite.unif[i] = unif_vals[i]
-    self.sprite.draw(self.shader, [self], 0.0, 0.0, self.camera)
+    self.sprite.draw(self.shader, self.tex_list, 0.0, 0.0, self.camera)
 
