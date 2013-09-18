@@ -129,7 +129,7 @@ class Texture(Loadable):
 
   def _load_opengl(self):
     """overrides method of Loadable"""
-    opengles.glGenTextures(1, ctypes.byref(self._tex), 0)
+    opengles.glGenTextures(4, ctypes.byref(self._tex), 0)
     from pi3d.Display import Display
     if Display.INSTANCE:
       Display.INSTANCE.textures_dict[str(self._tex)] = [self._tex, 0]
@@ -138,19 +138,24 @@ class Texture(Loadable):
     opengles.glTexImage2D(GL_TEXTURE_2D, 0, RGBv, self.ix, self.iy, 0, RGBv,
                           GL_UNSIGNED_BYTE,
                           ctypes.string_at(self.image, len(self.image)))
-    if self.mipmap:
-      opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-                               ctypes.c_float(GL_LINEAR_MIPMAP_NEAREST))
-      opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
-                               ctypes.c_float(GL_LINEAR_MIPMAP_NEAREST))
-    else:
-      opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-                               ctypes.c_float(GL_NEAREST))
-      opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
-                               ctypes.c_float(GL_NEAREST))
-
+    opengles.glEnable(GL_TEXTURE_2D)
     opengles.glGenerateMipmap(GL_TEXTURE_2D)
     opengles.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+    if self.mipmap:
+      opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+                               GL_LINEAR_MIPMAP_NEAREST)
+      opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+                               GL_LINEAR)
+    else:
+      opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+                               GL_NEAREST)
+      opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+                               GL_NEAREST)
+    opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,
+                             GL_MIRRORED_REPEAT)
+    opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,
+                             GL_MIRRORED_REPEAT)
+
 
   def _unload_opengl(self):
     """clear it out"""
