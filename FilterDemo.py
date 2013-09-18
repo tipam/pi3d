@@ -8,7 +8,7 @@ import math, random, time
 
 import demo
 import pi3d
-#pi3d.Log.set_logs(file="/home/annon/pi3d_demos/templog.txt")
+#pi3d.Log.set_logs(file="/home/pi/pi3d_demos/templog.txt")
 LOGGER = pi3d.Log.logger(__name__)
 LOGGER.info("\n\nAs yet there is no system for freeing gpu memory taken by shader\n"\
             "programs. On the pi after loading a total of 16 (2 base + 14 demo)\n"\
