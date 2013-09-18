@@ -16,7 +16,7 @@ float radius = unif[16][2];
 float mag_inv = 0.95; // 1.0/magnification
 
 void main(void) {
-  vec2 c = vec2(centre.x + 0.5, centre.y - 0.5);
+  vec2 c = vec2(centre.x + 0.5, centre.y + 0.5);
   vec2 offset = uv - c;
   float x = length(offset) / radius;
   float y = clamp(mag_inv * x + (1.0 - mag_inv) * pow(x, 2.0), 0.0, 1.0);

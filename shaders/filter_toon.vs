@@ -18,7 +18,7 @@ varying vec2 d;
 
 void main(void) {
   uv = texcoord * unib[2].xy + unib[3].xy;
-  uv.y = -uv.y; // flip vertically
+  uv.y = 1.0 - uv.y; // flip vertically
   d = vec2(width / unif[15][0], width / unif[15][1]);
   gl_Position = modelviewmatrix[1] * vec4(vertex,1.0);
 }
