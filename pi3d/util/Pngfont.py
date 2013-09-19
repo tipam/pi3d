@@ -9,7 +9,7 @@ from pi3d.Texture import Texture
 # TODO TEXTURES NEED CLEANING UP
 
 class Pngfont(Texture):
-  def __init__(self, font, color="#ffffff"):
+  def __init__(self, font, color=(255,255,255,255)):
     """
 
     A method of writing in pi3d using 'hand designed' fonts, where the top

@@ -4,6 +4,14 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
+v1.3
+2013-19-06  Memory leak with Textures reappeared and fixed. Bug in Pillow
+            looks like it will not be fixed for 2.2.0 so added a hack to
+            Font. LodSprite allows segmentation of a simple plane for
+            texture sampling in the vertex shader. Additional Textures can
+            be passed to PostProcess __init__ for use by filter shaders.
+            Additional filters added to pi3d_demos
+            
 v1.2
 2013-09-06  PostProcess added to allow effect shaders to be applied to
             a rendered scene. OffScreenTexture system streamlined to take
