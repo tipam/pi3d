@@ -3,7 +3,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 """ First person view using ElevationMap.calcHeight function to move over
 undulating surface, MergeShape.cluster to create a forest that renders quickly,
-uv_reflect shader is used give texture and reflection to a monolith, fog is
+uv_reflect shader is used give texture and reflection to a monument, fog is
 applied to objects so that their details become masked with distance.
 The lighting is also defined with a yellow directional tinge and an indigo tinge
 to the ambient light
@@ -80,12 +80,14 @@ mytrees3.cluster(treemodel2, mymap,0.0,0.0,300.0,300.0,20,"",4.0,2.0)
 mytrees3.set_draw_details(flatsh, [hb2img], 0.0, 0.0)
 mytrees3.set_fog(*TFOG)
 
-#Create monolith
-monolith = pi3d.Sphere(radius=8.0, slices=12, sides=48,
-                  sy=10.0, name="monolith")
-monolith.translate(100.0, -mymap.calcHeight(100.0, 350) + 10.0, 350.0)
-monolith.set_draw_details(shader, [rockimg, bumpimg, reflimg], 32.0, 0.3)
-monolith.set_fog(*FOG)
+#Create monument
+monument = pi3d.Model(file_string="models/pi3d.obj", name="monument")
+monument.set_shader(shader)
+monument.set_normal_shine(bumpimg, 16.0, reflimg, 0.5)
+monument.set_fog(*FOG)
+monument.translate(100.0, -mymap.calcHeight(100.0, 230) + 5.8, 230.0)
+monument.scale(20.0, 20.0, 20.0)
+monument.rotateToY(65)
 
 #screenshot number
 scshots = 1
@@ -115,7 +117,7 @@ while DISPLAY.loop_running():
 
   # for opaque objects it is more efficient to draw from near to far as the
   # shader will not calculate pixels already concealed by something nearer
-  monolith.draw()
+  monument.draw()
   mytrees1.draw()
   mytrees2.draw()
   mytrees3.draw()

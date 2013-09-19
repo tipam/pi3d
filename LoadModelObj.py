@@ -22,9 +22,9 @@ mykeys = pi3d.Keyboard()
 
 while DISPLAY.loop_running():
   mymodel.draw()
-  mymodel.rotateIncY(2.0)
-  mymodel.rotateIncZ(0.1)
-  mymodel.rotateIncX(0.3)
+  mymodel.rotateIncY(0.41)
+  mymodel.rotateIncZ(0.12)
+  mymodel.rotateIncX(0.23)
 
   k = mykeys.read()
   if k >-1:
