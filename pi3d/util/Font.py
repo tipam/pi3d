@@ -13,7 +13,7 @@ except:
 from pi3d.constants import *
 from pi3d.Texture import Texture
 
-MAX_SIZE = 1536
+MAX_SIZE = 1920
 
 class Font(Texture):
   """
@@ -25,7 +25,7 @@ class Font(Texture):
   Font packs one whole font into a single Texture using PIL.ImageFont,
   then creates a table mapping codepoints to subrectangles of that Texture."""
 
-  def __init__(self, font, color="#ffffff", codepoints=None,
+  def __init__(self, font, color=(255,255,255,255), codepoints=None,
                add_codepoints=None, font_size=48, image_size=512,
                italic_adjustment=1.1):
     """Arguments:
@@ -103,6 +103,9 @@ class Font(Texture):
       curY = 0.0
       characters = []
       maxRowHeight = 0.0
+      pipew, pipeh = imgfont.getsize('|') # TODO this is a horrible hack
+      #to cope with a bug in Pillow where ascender depends on char height!
+      
       for i in itertools.chain([0], codepoints):
         try:
           ch = six.unichr(i)
@@ -112,7 +115,8 @@ class Font(Texture):
         # if imgfont.font.getabc(ch)[0] <= 0 and ch != zero:
         #   print('skipping', ch)
         #   continue
-        chwidth, chheight = imgfont.getsize(ch)
+        chstr = '|' + ch # TODO horrible hack
+        chwidth, chheight = imgfont.getsize(chstr)
 
         if curX + chwidth * italic_adjustment >= image_size:
           curX = 0.0
@@ -126,19 +130,19 @@ class Font(Texture):
         if chheight > maxRowHeight:
           maxRowHeight = chheight
 
-        draw.text((curX, curY), ch, font=imgfont, fill=color)
-        x = (curX + 0.0) / self.ix
+        draw.text((curX, curY), chstr, font=imgfont, fill=color)
+        x = (curX + pipew + 0.0) / self.ix
         y = (curY + chheight + 0.0) / self.iy
-        tw = (chwidth + 0.0) / self.ix
+        tw = (chwidth - pipew + 0.0) / self.ix
         th = (chheight + 0.0) / self.iy
         w = image_size
         h = image_size
 
         table_entry = [
-          chwidth,
+          chwidth - pipew,
           chheight,
           [[x + tw, y - th], [x, y - th], [x, y], [x + tw, y]],
-          [[chwidth, 0, 0], [0, 0, 0], [0, -chheight, 0], [chwidth, -chheight, 0]]
+          [[chwidth, 0, 0], [pipew, 0, 0], [pipew, -chheight, 0], [chwidth, -chheight, 0]]
           ]
 
         self.glyph_table[ch] = table_entry

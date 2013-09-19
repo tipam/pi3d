@@ -585,17 +585,6 @@ class Shape(Loadable):
     self.roz[1, 0] = -s
     self.MFlg = True
 
-  def _add_vertex(self, vert, norm, texc):
-    """add vertex,normal and tex_coords ..."""
-    self.verts.append(vert)
-    self.norms.append(norm)
-    self.texcoords.append(texc)
-
-
-  def _add_tri(self, indx):
-    """add triangle refs."""
-    self.inds.append(indx)
-
   def _lathe(self, path, sides=12, rise=0.0, loops=1.0):
     """Returns a Buffer object by rotating the points defined in path.
 

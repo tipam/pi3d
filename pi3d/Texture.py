@@ -12,10 +12,10 @@ from pi3d.constants import *
 from pi3d.util.Ctypes import c_ints
 from pi3d.util.Loadable import Loadable
 
-MAX_SIZE = 1024
+MAX_SIZE = 1920
 DEFER_TEXTURE_LOADING = True
 WIDTHS = [4, 8, 16, 32, 48, 64, 72, 96, 128, 144, 192, 256,
-           288, 384, 512, 576, 640, 720, 768, 800, 960, 1024]
+           288, 384, 512, 576, 640, 720, 768, 800, 960, 1024, 1080, 1920]
 
 def round_up_to_power_of_2(x):
   p = 1
@@ -71,12 +71,13 @@ class Texture(Loadable):
 
   def __del__(self):
     super(Texture, self).__del__()
-    if not self.opengl_loaded:
-      return True
-    from pi3d.Display import Display
-    if Display.INSTANCE:
-      Display.INSTANCE.textures_dict[str(self._tex)][1] = 1
-      Display.INSTANCE.tidy_needed = True
+    try:
+      from pi3d.Display import Display
+      if Display.INSTANCE:
+        Display.INSTANCE.textures_dict[str(self._tex)][1] = 1
+        Display.INSTANCE.tidy_needed = True
+    except:
+      print("couldn't set to delete") #TODO debug messages here
 
   def tex(self):
     """do the deferred opengl work and return texture"""
@@ -128,7 +129,7 @@ class Texture(Loadable):
 
   def _load_opengl(self):
     """overrides method of Loadable"""
-    opengles.glGenTextures(1, ctypes.byref(self._tex), 0)
+    opengles.glGenTextures(4, ctypes.byref(self._tex), 0)
     from pi3d.Display import Display
     if Display.INSTANCE:
       Display.INSTANCE.textures_dict[str(self._tex)] = [self._tex, 0]
@@ -137,19 +138,24 @@ class Texture(Loadable):
     opengles.glTexImage2D(GL_TEXTURE_2D, 0, RGBv, self.ix, self.iy, 0, RGBv,
                           GL_UNSIGNED_BYTE,
                           ctypes.string_at(self.image, len(self.image)))
-    if self.mipmap:
-      opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-                               ctypes.c_float(GL_LINEAR_MIPMAP_NEAREST))
-      opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
-                               ctypes.c_float(GL_LINEAR_MIPMAP_NEAREST))
-    else:
-      opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-                               ctypes.c_float(GL_NEAREST))
-      opengles.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
-                               ctypes.c_float(GL_NEAREST))
-
+    opengles.glEnable(GL_TEXTURE_2D)
     opengles.glGenerateMipmap(GL_TEXTURE_2D)
     opengles.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+    if self.mipmap:
+      opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+                               GL_LINEAR_MIPMAP_NEAREST)
+      opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+                               GL_LINEAR)
+    else:
+      opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+                               GL_NEAREST)
+      opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+                               GL_NEAREST)
+    opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,
+                             GL_MIRRORED_REPEAT)
+    opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,
+                             GL_MIRRORED_REPEAT)
+
 
   def _unload_opengl(self):
     """clear it out"""
