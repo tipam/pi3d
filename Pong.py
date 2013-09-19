@@ -75,7 +75,7 @@ lastX0 = 0.0
 lastZ0 = 0.0
 camera.position((xm, 2 + ym, -maphalf - 2.5))
 
-arialFont = pi3d.Font("fonts/FreeMonoBoldOblique.ttf", "#dd00aa")
+arialFont = pi3d.Font("fonts/FreeMonoBoldOblique.ttf", (221,0,170,255))
 score = [0,0]
 score0 = pi3d.String(font=arialFont, string=str(score[0]), y=12, sx=0.05, sy=0.05)
 score0.set_shader(flatsh)

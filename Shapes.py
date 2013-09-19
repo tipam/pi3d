@@ -57,7 +57,7 @@ mylathe = pi3d.Lathe(path=((0,1),(0.6,1.2),(0.8,1.4),(1.09,1.7), (1.1,1.7),
          sides=24, name="Cup", x=4, y=-1, z=10, sx=0.8, sy=0.8, sz=0.8)
 myPlane = pi3d.Plane(w=4, h=4, name="plane", z=12)
 # Load ttf font and set the font colour to 'raspberry'
-arialFont = pi3d.Font("fonts/FreeMonoBoldOblique.ttf", "#dd00aa")
+arialFont = pi3d.Font("fonts/FreeMonoBoldOblique.ttf", (221,0,170,255))
 mystring = pi3d.String(font=arialFont, string="Now the Raspberry Pi really does rock", z=4)
 mystring.set_shader(flatsh)
 
