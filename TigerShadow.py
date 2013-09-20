@@ -145,7 +145,7 @@ omx, omy = mymouse.position()
 #position vars
 mouserot = 0.0
 tilt = 0.0
-avhgt = 0.85
+avhgt = 0.2
 xm, oxm = 0.0, -1.0
 zm, ozm = -200.0, -1.0
 ym = mymap.calcHeight(xm, zm) + avhgt

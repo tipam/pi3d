@@ -67,7 +67,7 @@ mywater.set_fog((0.4, 0.6, 0.8, 0.0),150)
 mywater.rotateToX(90.001)
 mywater.position(0.0, -2.0, 0.0)
 
-arialFont = pi3d.Font("fonts/FreeMonoBoldOblique.ttf", "#dd00aa")   #load ttf font and set the font colour to 'raspberry'
+arialFont = pi3d.Font("fonts/FreeMonoBoldOblique.ttf", (221,0,170,255))   #load ttf font and set the font colour to 'raspberry'
 mystring = pi3d.String(font=arialFont, string="Now the Raspberry Pi really does rock")
 mystring.translate(0.0, 0.0, 1)
 mystring.set_shader(flatsh)

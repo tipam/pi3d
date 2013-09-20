@@ -70,7 +70,7 @@ tick=0
 next_time = time.time()+2.0
 
 #load ttf font and set the font colour to 'raspberry'
-arialFont = pi3d.Font("fonts/FreeMonoBoldOblique.ttf", "#dd00aa",
+arialFont = pi3d.Font("fonts/FreeMonoBoldOblique.ttf",  (221,0,170,255),
                     add_codepoints=[256])
 mystring = pi3d.String(font=arialFont, string=MESSAGE,
                   camera=ortho_cam, z=1.0, is_3d=False, justify="r") # orthographic view
