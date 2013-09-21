@@ -49,80 +49,80 @@ Demos on github.com/pi3d/pi3d_demos include
 
 #.  **ForestWalk.py** Walk about a forest on a landscape generated from a
     bitmap
-      .. image:: images/forestwalk_sml.png
+      .. image:: images/forestwalk_sml.jpg
          :align: right
 
 #.  **Triceratops.py** Large model loading with several
     bitmaps
-      .. image:: images/triceratops_sml.png
+      .. image:: images/triceratops_sml.jpg
 
 #.  **BuckfastAbbey.py** Explore a model of the beautiful Buckfast Abbey in 
     Buckfastleigh, Devon, England
-      .. image:: images/buckfast_sml.png
+      .. image:: images/buckfast_sml.jpg
          :align: right
 
 #.  **Earth.py** Demonstrates semi-transparent clouds and hierarchical
     rotations
-      .. image:: images/earth_sml.png
+      .. image:: images/earth_sml.jpg
 
 #.  **Clouds3D.py** Blended sprites in
     perspective view
-      .. image:: images/clouds3d_sml.png
+      .. image:: images/clouds3d_sml.jpg
          :align: right
 
 #.  **Raspberry_Rain.py** Raining Raspberries,  full-screen, over the
     desktop
-      .. image:: images/raspberryrain_sml.png
+      .. image:: images/raspberryrain_sml.jpg
 
 #.  **RobotWalkabout.py** Another off-planet example of a basic avatar robot
     drifting about
-      .. image:: images/walkabout_sml.png
+      .. image:: images/walkabout_sml.jpg
          :align: right
 
 #.  **EnvironmentCube.py** New environment cubes to try out in texture/ecubes -
     some high quality ones!
-      .. image:: images/envcube_sml.png
+      .. image:: images/envcube_sml.jpg
 
 #.  **Shapes.py** Demos available shapes and text
     in a 3D context
-      .. image:: images/shapes_sml.png
+      .. image:: images/shapes_sml.jpg
          :align: right
 
 #.  **MarsStation.py** Navigate around an abandoned Mars base-station with
     open/shut doors. Implements a new Level-Of-Detail (LOD) feature and TKwindow
     interface
-      .. image:: images/marsstation_sml.png
+      .. image:: images/marsstation_sml.jpg
 
 #.  **Amazing.py** Can you find yourself around the
     amazing maze?
-      .. image:: images/amazing_sml.png
+      .. image:: images/amazing_sml.jpg
          :align: right
 
 #.  **TigerTank.py** Ever played World Of Tanks (WOT)? This tank emulates
     how a WOT tank works. Uses realistic modelling in a TKwindow
-      .. image:: images/tigertank_sml.png
+      .. image:: images/tigertank_sml.jpg
 
 #.  **Pong.py**  A snazzy 3D version of landscape pinball and pong
     against a Raspberry!
-      .. image:: images/pong_sml.png
+      .. image:: images/pong_sml.jpg
          :align: right
 
 #.  **Blur.py** Simulates giving the camera a focal distance and blurs
     nearer and further objects
-      .. image:: images/blur_sml.png
+      .. image:: images/blur_sml.jpg
 
 #.  **LoadModelObj.py** Loads a model from obj file (quicker) and applies
     a normal map and relfection map
-      .. image:: images/teapot_sml.png
+      .. image:: images/teapot_sml.jpg
          :align: right
 
 #.  **Silo.py** Uses the Building class to create a claustrophobic maze
     set in the desert.
-      .. image:: images/silo_sml.png
+      .. image:: images/silo_sml.jpg
 
 #.  **Water.py** A series of wave normal maps are used to animate a surface
     and produce a realistic moving reflection.
-      .. image:: images/water_sml.png
+      .. image:: images/water_sml.jpg
         :align: right
      
 #.  **ClashWalk.py** The graphics processor calculates where the camera can
