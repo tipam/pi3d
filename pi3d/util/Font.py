@@ -85,6 +85,11 @@ class Font(Texture):
 
       raise Exception(msg)
 
+    pipew, pipeh = imgfont.getsize('|') # TODO this is a horrible hack
+    #to cope with a bug in Pillow where ascender depends on char height!
+    ascent, descent = imgfont.getmetrics()
+    self.height = ascent + descent
+
     codepoints = (codepoints and list(codepoints)) or list(range(256))
     if add_codepoints:
       codepoints += list(add_codepoints)
@@ -102,9 +107,6 @@ class Font(Texture):
       curX = 0.0
       curY = 0.0
       characters = []
-      maxRowHeight = 0.0
-      pipew, pipeh = imgfont.getsize('|') # TODO this is a horrible hack
-      #to cope with a bug in Pillow where ascender depends on char height!
       
       for i in itertools.chain([0], codepoints):
         try:
@@ -120,21 +122,17 @@ class Font(Texture):
 
         if curX + chwidth * italic_adjustment >= image_size:
           curX = 0.0
-          curY +=  maxRowHeight
+          curY += self.height
           if curY >= image_size: #run out of space try again with bigger img
             all_fits = False
             image_size += 256
             break
-          maxRowHeight = 0.0
-
-        if chheight > maxRowHeight:
-          maxRowHeight = chheight
 
         draw.text((curX, curY), chstr, font=imgfont, fill=color)
         x = (curX + pipew + 0.0) / self.ix
-        y = (curY + chheight + 0.0) / self.iy
+        y = (curY + self.height + 0.0) / self.iy
         tw = (chwidth - pipew + 0.0) / self.ix
-        th = (chheight + 0.0) / self.iy
+        th = (self.height + 0.0) / self.iy
         w = image_size
         h = image_size
 
@@ -142,7 +140,7 @@ class Font(Texture):
           chwidth - pipew,
           chheight,
           [[x + tw, y - th], [x, y - th], [x, y], [x + tw, y]],
-          [[chwidth, 0, 0], [pipew, 0, 0], [pipew, -chheight, 0], [chwidth, -chheight, 0]]
+          [[chwidth, 0, 0], [pipew, 0, 0], [pipew, -self.height, 0], [chwidth, -self.height, 0]]
           ]
 
         self.glyph_table[ch] = table_entry

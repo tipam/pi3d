@@ -11,7 +11,7 @@ from pi3d.util import Utility
 DOTS_PER_INCH = 72.0
 DEFAULT_FONT_SIZE = 0.24
 DEFAULT_FONT_SCALE = DEFAULT_FONT_SIZE / DOTS_PER_INCH
-GAP = 1.2
+GAP = 1.0
 
 _NORMALS = [[0.0, 0.0, 1.0], [0.0, 0.0, 1.0], [0.0, 0.0, 1.0], [0.0, 0.0, 1.0]]
 
@@ -81,7 +81,7 @@ class String(Shape):
     for i, c in enumerate(string):
       if c == '\n':
         make_verts()
-        yoff += maxh * GAP
+        yoff += font.height * GAP
         xoff = 0.0
         maxh = 0.0
         temp_verts = []
