@@ -59,7 +59,6 @@ class String(Shape):
 
     xoff = 0.0
     yoff = 0.0
-    maxh = 0.0
     lines = 0
     if not isinstance(string, six.text_type):
       string = string.decode('utf-8')
@@ -74,7 +73,7 @@ class String(Shape):
         cx = xoff
       for j in temp_verts:
         self.verts.append([(j[0] - cx) * sx,
-                           (j[1] + nlines * maxh / 2.0 - yoff) * sy,
+                           (j[1] + nlines * font.height * GAP / 2.0 - yoff) * sy,
                            j[2]])
 
     default = font.glyph_table.get(six.unichr(0), None)
@@ -83,7 +82,6 @@ class String(Shape):
         make_verts()
         yoff += font.height * GAP
         xoff = 0.0
-        maxh = 0.0
         temp_verts = []
         lines += 1
         continue #don't attempt to draw this character!
@@ -95,8 +93,6 @@ class String(Shape):
       for j in verts:
         temp_verts.append((j[0]+xoff, j[1], j[2]))
       xoff += w
-      if h > maxh:
-        maxh = h
       for j in texc:
         self.texcoords.append(j)
       self.norms.extend(_NORMALS)
