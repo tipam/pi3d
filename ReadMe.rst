@@ -204,8 +204,9 @@ Setup on the Raspberry Pi
     If you miss any of the dependent libraries and need to add them later
     you will have to ``pip uninstall`` then re ``pip install``
 
-    For python_3 support the first above will provide all the required
-    libraries used by either version of Pillow but you will need to::
+    For python_3 support the first above will provide the required graphics
+    libraries used by Pillow but you will need to swap to ``python3-dev``
+    and ``python3-setuptools`` also pip is different::
 
       sudo apt-get install python3-pip
       sudo pip-3.2 install Pillow
