@@ -38,6 +38,10 @@ class _Mouse(threading.Thread):
     self.height = height
     self.restrict = restrict
 
+    #create a pointer to this so Display.destroy can stop the thread
+    from pi3d.Display import Display
+    Display.INSTANCE.external_mouse = self
+
     self.reset()
 
   def reset(self):

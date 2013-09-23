@@ -193,7 +193,7 @@ Setup on the Raspberry Pi
     Library as this is needed for importing any graphics used by Pi3. The original
     Imaging library is no longer really maintained and doesn't run on python_3.
     The better equivalent replacement is Pillow however a couple of issues
-    relating to text vertical alignment will not be corrected unti the Oct2013
+    relating to text vertical alignment will not be corrected until the Oct2013
     issue. To install Pillow you need to::
 
       sudo apt-get install python-dev python-setuptools libjpeg-dev zlib1g-dev libpng12-dev libfreetype6-dev

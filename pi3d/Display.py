@@ -63,6 +63,7 @@ class Display(object):
     self.textures_dict = {}
     self.vbufs_dict = {}
     self.ebufs_dict = {}
+    self.external_mouse = None
 
     if PLATFORM != PLATFORM_PI:
       self.event_list = []
@@ -172,6 +173,11 @@ class Display(object):
       self.opengl.destroy(self)
     except:
       pass
+    if self.external_mouse:
+      try:
+        self.external_mouse.stop()
+      except:
+        pass_
     try:
       self.mouse.stop()
     except:
