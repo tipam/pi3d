@@ -39,7 +39,7 @@ class Camera(DefaultInstance):
       from pi3d.Display import Display
       lens = (Display.INSTANCE.near, Display.INSTANCE.far, Display.INSTANCE.fov,
                   Display.INSTANCE.width / float(Display.INSTANCE.height))
-      self.lens = lens
+    self.lens = lens
     self.view = _LookAtMatrix(at, eye, [0, 1, 0])
     if is_3d:
       self.projection = _ProjectionMatrix(lens[0], lens[1], lens[2], lens[3])
