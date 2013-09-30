@@ -12,7 +12,7 @@ class Camera(DefaultInstance):
   """required object for creating and drawing Shape objects. Default instance
   created if none specified in script prior to creating a Shape
   """
-  def __init__(self, at=(0, 0, 0), eye=(0, 0, -0.1), lens=(1.0, 1000.0, 45.0, 1.6),
+  def __init__(self, at=(0, 0, 0), eye=(0, 0, -0.1), lens=None,
               is_3d=True, scale=1.0):
     """Set up view matrix to look from eye to at including perspective
 
@@ -35,7 +35,11 @@ class Camera(DefaultInstance):
     self.at = at
     self.start_eye = eye # for reset with different lens settings
     self.eye = [eye[0], eye[1], eye[2]]
-    self.lens = lens
+    if lens == None:
+      from pi3d.Display import Display
+      lens = (Display.INSTANCE.near, Display.INSTANCE.far, Display.INSTANCE.fov,
+                  Display.INSTANCE.width / float(Display.INSTANCE.height))
+      self.lens = lens
     self.view = _LookAtMatrix(at, eye, [0, 1, 0])
     if is_3d:
       self.projection = _ProjectionMatrix(lens[0], lens[1], lens[2], lens[3])
