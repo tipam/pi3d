@@ -21,7 +21,7 @@ SIZE = 100.0
 BLOCK_SIZE = 4.0
 
 # Setup display and initialise pi3d
-DISPLAY = pi3d.Display.create(x=200, y=200, frames_per_second=10)
+DISPLAY = pi3d.Display.create(x=100, y=100, frames_per_second=10)
 DISPLAY.set_background(0.4,0.8,0.8,1)      # r,g,b,alpha
 #========================================
 CAMERA = pi3d.Camera()
@@ -30,7 +30,7 @@ LIGHT = pi3d.Light(lightamb=(0.6, 0.6, 0.8))
 shader = pi3d.Shader("uv_light")
 flatsh = pi3d.Shader("uv_flat")
 foodTex = pi3d.Texture("textures/Raspi256x256.png")
-partTex = pi3d.Texture("textures/stripwood.jpg")
+partTex = pi3d.Texture("textures/world_map256x256.jpg")
 
 ectex = pi3d.loadECfiles("textures/ecubes","skybox_hall")
 myecube = pi3d.EnvironmentCube(size=2.0 * SIZE, maptype="FACES", name="cube")
@@ -158,6 +158,8 @@ class Snake:
 
   def draw(self):
     for part in self.parts:
+      part.shape.rotateIncY(5.31)
+      part.shape.rotateIncZ(0.47)
       part.shape.draw()
 
 # Fetch key presses
@@ -187,20 +189,20 @@ while DISPLAY.loop_running():
   if k >-1:
     if (k == 27): #esc
       break
-    elif (k == 137): # rgt
+    elif (k == 261): # rgt (other keyboard 137)
       CAMERA.direction = TURN_RIGHT[CAMERA.direction]
       rot_target = rot_target - 90
       snake.change_direction(CAMERA.direction)
-    elif (k == 136): # lft
+    elif (k == 260): # lft (other keyboard 136)
       CAMERA.direction = TURN_LEFT[CAMERA.direction]
       rot_target = rot_target + 90
       snake.change_direction(CAMERA.direction)
-    elif (k == 134): # up
+    elif (k == 259): # up (other keyboard 134)
       if snake.direction == DOWN or snake.direction == UP:
         snake.change_direction(CAMERA.direction)
       else:
         snake.change_direction(UP)
-    elif (k == 135): # dwn
+    elif (k == 258): # dwn (other keyboard 135)
       if snake.direction == DOWN or snake.direction == UP:
         snake.change_direction(CAMERA.direction)
       else:
@@ -213,5 +215,4 @@ while DISPLAY.loop_running():
 
 mykeys.close()
 DISPLAY.stop()
- 
 
