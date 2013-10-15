@@ -76,7 +76,7 @@ class Planet(pi3d.Sphere):
       self.t_t.append((0, 0))
       if (self.t_len % 3) == 0:
         self.t_f.append((self.t_len - 3, self.t_len - 2, self.t_len - 1))
-      if self.t_len == 1200: 
+      if (self.t_len % 300) == 0: 
         # make new trace_shape
         if not(self.trace_shape):
           self.trace_shape = pi3d.Shape(None, None, "trace", 0, 0, 0,
@@ -88,8 +88,12 @@ class Planet(pi3d.Sphere):
         self.trace_shape.set_point_size(5)
         self.trace_shape.set_material((0.9, 0.9, 1.0))
         self.trace_shape.set_shader(self.track_shader)
-        self.t_v, self.t_n, self.t_t, self.t_f = [], [], [], []
-        self.t_len = 0
+        if (self.t_len > 2400):
+          self.t_v = self.t_v[-2400:]
+          self.t_n = self.t_n[-2400:]
+          self.t_t = self.t_t[-2400:]
+          self.t_f = self.t_f[:800]
+          self.t_len = 2400
       if self.trace_shape:
         self.trace_shape.draw()
     
@@ -97,33 +101,37 @@ class Planet(pi3d.Sphere):
 G = 0.0000001
 DT = 0.01
 
-# Setup display and initialise pi3d
+# Setup display and initialise pi3d ------
 DISPLAY = pi3d.Display.create(x=50, y=50, frames_per_second=20)
 DISPLAY.set_background(0,0,0,1)    	# r,g,b,alpha
-# Camera
+# Camera ---------------------------------
 CAMERA = pi3d.Camera()
-# Shaders
+# Shaders --------------------------------
 shader = pi3d.Shader("uv_light")
 flatsh = pi3d.Shader("uv_flat")
 tracksh = pi3d.Shader("mat_flat")
-# Textures
-cloudimg = pi3d.Texture("textures/earth_clouds.png",True)
+# Textures -------------------------------
+cloudimg = pi3d.Texture("textures/earth_clo uds.png",True)
 sunimg = pi3d.Texture("textures/sun.jpg")
 sunshellimg = pi3d.Texture("textures/sun_shell.png", True)
 earthimg = pi3d.Texture("textures/world_map.jpg")
 moonimg = pi3d.Texture("textures/moon.jpg")
-# EnvironmentCube
+# EnvironmentCube ------------------------
 ectex = [pi3d.Texture('textures/ecubes/skybox_grimmnight.jpg')]
 myecube = pi3d.EnvironmentCube(size=900.0, maptype='CROSS')
 myecube.set_draw_details(flatsh, ectex)
-# Planets
-sun = Planet([sunimg, sunshellimg], shader, 1.0, 8000000, pos=[0.0, 0.0, 0.0])
+# Planets --------------------------------
+sun = Planet([sunimg, sunshellimg], shader, 1.0, 8000000, pos=[0.0, 0.0, 0.0],
+            vel=[-0.01, 0.0, 0.0]) #to keep total momentum of system zero!
 earth = Planet([earthimg, cloudimg], shader, 0.125, 80000000, pos=[0.0, -1.0, -9.0], 
             vel=[0.5, 0.1, 0.0], track_shader=tracksh)
-moon = Planet([moonimg], shader, 0.025, 80000000, pos=[0.0, -1.0, -9.7], 
+moon = Planet([moonimg], shader, 0.025, 80000000, pos=[0.0, -1.0, -9.6], 
             vel=[0.72, 0.144, 0.0], track_shader=tracksh)
-# Fetch key presses
+jupiter = Planet([moonimg, sunshellimg], shader, 0.2, 8000000,  pos=[0.0, 0.0, 14.0],
+            vel=[-0.2, 0.2, 0.0], track_shader=tracksh)
+# Fetch key presses ----------------------
 mykeys = pi3d.Keyboard()
+# Camera variables -----------------------
 rot = 0
 tilt = 0
 rottilt = True
@@ -138,12 +146,14 @@ while DISPLAY.loop_running():
                      -camRad * cos(radians(rot)) * cos(radians(tilt))))
     rottilt = False
   for i in xrange(5): # make time interval for physics fifth of frame time
-    sun.pull([earth, moon])
-    earth.pull([sun, moon])
-    moon.pull([sun, earth])
+    sun.pull([earth, moon, jupiter])
+    earth.pull([sun, moon, jupiter])
+    moon.pull([sun, earth, jupiter])
+    jupiter.pull([sun, earth, moon])
   sun.position_and_draw()
   earth.position_and_draw()
   moon.position_and_draw()
+  jupiter.position_and_draw()
   myecube.draw()
 
   k = mykeys.read()
@@ -160,9 +170,9 @@ while DISPLAY.loop_running():
     elif k==100:  #key D right
       rot += 2
     elif k==61:   #key += in
-      camRad -= 0.1
+      camRad -= 0.5
     elif k==45:   #key _- out
-      camRad += 0.1
+      camRad += 0.5
     elif k==27:
       mykeys.close()
       DISPLAY.destroy()
