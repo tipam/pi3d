@@ -148,7 +148,6 @@ while DISPLAY.loop_running():
 
   k = mykeys.read()
   if k >-1:
-    print(k)
     rottilt = True
     if k==112:
       pi3d.screenshot("orbit.jpg")
@@ -160,9 +159,9 @@ while DISPLAY.loop_running():
       rot -= 2
     elif k==100:  #key D right
       rot += 2
-    elif k==39:   #key ' in
+    elif k==61:   #key += in
       camRad -= 0.1
-    elif k==47:   #key / out
+    elif k==45:   #key _- out
       camRad += 0.1
     elif k==27:
       mykeys.close()
