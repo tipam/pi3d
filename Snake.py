@@ -81,10 +81,9 @@ class Part:
       d_sum += abs(self.direction[i] + direction[i])
     if d_sum == 0: #going back on self
       return
- 
     self.direction = direction
  
-  def move(self):
+  def check(self):
     if self.shape.x() >= SIZE - BLOCK_SIZE / 2.0 and self.direction == EAST:
       return False
     if self.shape.x() <= -SIZE + BLOCK_SIZE / 2.0 and self.direction == WEST:
@@ -97,12 +96,12 @@ class Part:
       return False
     if self.shape.z() <= -SIZE + BLOCK_SIZE / 2.0 and self.direction == SOUTH:
       return False
+    return True
  
+  def move(self):
     self.shape.translate(self.direction[0] * self.speed,
                            self.direction[1] * self.speed,
                            self.direction[2] * self.speed)
- 
-    return True
  
 class Snake:
   def __init__(self, x=0, y=0, z=0):
@@ -111,7 +110,7 @@ class Snake:
     self.length = 1
     self.parts = []
     self.parts.append(self.head)
-    self.extend_flag = False
+    self.extend_flag = 0
  
   def change_direction(self, direction):
     self.direction = direction
@@ -121,7 +120,7 @@ class Snake:
     old_direction = None
     new_part = None
  
-    if self.extend_flag:
+    if self.extend_flag > 0:
       last_part = self.parts[-1]
       new_part = Part(last_part.shape.x(), last_part.shape.y(),
               last_part.shape.z(), last_part.direction)
@@ -129,13 +128,13 @@ class Snake:
     for each in self.parts:
       old_direction = each.direction
       each.change_direction(new_direction)
- 
-      if not each.move():
-        return False
- 
+      each.move()
       new_direction = old_direction
  
-    if self.extend_flag:
+    if not self.head.check():
+      return False
+
+    if self.extend_flag > 0:
       self.extend(new_part)
  
     for each in self.parts[1:]:
@@ -147,14 +146,14 @@ class Snake:
     if pi3d.Utility.distance([food.shape.x(), food.shape.y(), food.shape.z()],
           [self.head.shape.x(), self.head.shape.y(), self.head.shape.z()]) < BLOCK_SIZE:
       food.spawn()
-      self.extend_flag = True
+      self.extend_flag = 2
  
     return True
  
   def extend(self, part):
     self.parts.append(part)
     self.length += 1
-    self.extend_flag = False
+    self.extend_flag -= 1
 
   def draw(self):
     for part in self.parts:
@@ -213,6 +212,7 @@ while DISPLAY.loop_running():
   if not snake.move(food):
     break
 
+print("you grew to a length of {} Earths".format(snake.length))
 mykeys.close()
 DISPLAY.stop()
 
