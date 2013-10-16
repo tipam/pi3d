@@ -49,7 +49,7 @@ mysprite.position(0.0, 0.0, 15.0)
 mysprite.set_draw_details(flatsh, [tex_list[0]])
 
 # Fetch key presses.
-#mykeys = pi3d.Keyboard()
+mykeys = pi3d.Keyboard()
 pic_next = 5.0
 pic_dt = 5.0
 tm = 0.0
@@ -124,7 +124,7 @@ while DISPLAY.loop_running():
     t.start()
 
 
-  k = 1#mykeys.read()
+  k = mykeys.read()
   if k==112:
     pi3d.screenshot("post.jpg")
   elif k==27:
