@@ -45,6 +45,7 @@ from pi3d.shape.LodSprite import LodSprite
 from pi3d.shape.MergeShape import MergeShape
 from pi3d.shape.Model import Model
 from pi3d.shape.Plane import Plane
+from pi3d.shape.Points import Points
 from pi3d.shape.Sphere import Sphere
 from pi3d.shape.TCone import TCone
 from pi3d.shape.Tetrahedron import Tetrahedron
