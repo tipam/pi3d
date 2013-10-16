@@ -65,15 +65,15 @@ class Planet(pi3d.Sphere):
     self.position(self.pos[0], self.pos[1], self.pos[2])
     self.rotateIncY(self.rotation)
     self.draw()
-    if self.shell:
+    if self.shell != None:
       self.shell.position(self.pos[0], self.pos[1], self.pos[2])
       self.shell.rotateIncY(self.shell.rotation)
       self.shell.draw()
-    if self.track_shader:
+    if self.track_shader != None:
       self.t_len += 1
       self.t_v.append(tuple(self.pos))
-      self.t_n.append((0, 0, 0))
-      self.t_t.append((0, 0))
+      #self.t_n.append((0, 0, 0))  # uncomment if old version of pi3d (or download latest)
+      #self.t_t.append((0, 0))
       if (self.t_len % 3) == 0:
         self.t_f.append((self.t_len - 3, self.t_len - 2, self.t_len - 1))
       if (self.t_len % 300) == 0: 
@@ -82,7 +82,6 @@ class Planet(pi3d.Sphere):
           self.trace_shape = pi3d.Shape(None, None, "trace", 0, 0, 0,
                          0, 0, 0, 1.0, 1.0, 1.0, 0, 0, 0)
           
-        #print(self.t_v, self.t_t, self.t_f, self.t_n)
         self.trace_shape.buf = [pi3d.Buffer(self.trace_shape, self.t_v,
                           self.t_t, self.t_f, self.t_n, smooth=False)]
         self.trace_shape.set_point_size(5)
@@ -90,8 +89,8 @@ class Planet(pi3d.Sphere):
         self.trace_shape.set_shader(self.track_shader)
         if (self.t_len > 2400):
           self.t_v = self.t_v[-2400:]
-          self.t_n = self.t_n[-2400:]
-          self.t_t = self.t_t[-2400:]
+          #self.t_n = self.t_n[-2400:] # uncomment if old version of pi3d (or download latest)
+          #self.t_t = self.t_t[-2400:]
           self.t_f = self.t_f[:800]
           self.t_len = 2400
       if self.trace_shape:
@@ -111,7 +110,7 @@ shader = pi3d.Shader("uv_light")
 flatsh = pi3d.Shader("uv_flat")
 tracksh = pi3d.Shader("mat_flat")
 # Textures -------------------------------
-cloudimg = pi3d.Texture("textures/earth_clo uds.png",True)
+cloudimg = pi3d.Texture("textures/earth_clouds.png",True)
 sunimg = pi3d.Texture("textures/sun.jpg")
 sunshellimg = pi3d.Texture("textures/sun_shell.png", True)
 earthimg = pi3d.Texture("textures/world_map.jpg")
@@ -128,7 +127,7 @@ earth = Planet([earthimg, cloudimg], shader, 0.125, 80000000, pos=[0.0, -1.0, -9
 moon = Planet([moonimg], shader, 0.025, 80000000, pos=[0.0, -1.0, -9.6], 
             vel=[0.72, 0.144, 0.0], track_shader=tracksh)
 jupiter = Planet([moonimg, sunshellimg], shader, 0.2, 8000000,  pos=[0.0, 0.0, 14.0],
-            vel=[-0.2, 0.2, 0.0], track_shader=tracksh)
+            vel=[-0.2, 0.3, 0.0], track_shader=tracksh)
 # Fetch key presses ----------------------
 mykeys = pi3d.Keyboard()
 # Camera variables -----------------------

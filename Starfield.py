@@ -34,8 +34,8 @@ mystars = pi3d.Shape(None, None, "stars", 0, 0, 250,
 verts, norms, texc, faces = [], [], [], []
 for i in xrange(30000):
   verts.append((random.random() - 0.5, random.random() - 0.5, random.random() - 0.5))
-  norms.append((0,0,0))
-  texc.append((0,0))
+  #norms.append((0,0,0)) # uncomment if old version of pi3d (or download latest)
+  #texc.append((0,0))
 for i in xrange(10000):
   faces.append((i*3, i*3 + 1, i*3 + 2))
 mystars.buf = [pi3d.Buffer(mystars, verts, texc, faces, norms)]
