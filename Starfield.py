@@ -29,18 +29,12 @@ myplane.set_draw_details(flatsh, [starsimg])
 own class to generate the required distribution and shield the user from
 having to explicitly create the Buffer object and set the Shape.buf list
 """
-mystars = pi3d.Shape(None, None, "stars", 0, 0, 250,
-               0, 0, 0, 100, 100, 500, 0, 0, 0)
-verts, norms, texc, faces = [], [], [], []
+verts = []
 for i in xrange(30000):
   verts.append((random.random() - 0.5, random.random() - 0.5, random.random() - 0.5))
-  #norms.append((0,0,0)) # uncomment if old version of pi3d (or download latest)
-  #texc.append((0,0))
-for i in xrange(10000):
-  faces.append((i*3, i*3 + 1, i*3 + 2))
-mystars.buf = [pi3d.Buffer(mystars, verts, texc, faces, norms)]
-mystars.set_point_size(50)
-mystars.set_material((0.9, 0.9, 1.0))
+# NB the Points class was only added in pi3d v.1.4 2013/10/17
+mystars = pi3d.Points(vertices=verts, material=(0.9, 0.9, 1.0), point_size=50,
+                      sx=100, sy=100, sz=500)
 mystars.set_shader(matsh)
 
 # Fetch key presses

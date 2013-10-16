@@ -72,26 +72,13 @@ class Planet(pi3d.Sphere):
     if self.track_shader != None:
       self.t_len += 1
       self.t_v.append(tuple(self.pos))
-      #self.t_n.append((0, 0, 0))  # uncomment if old version of pi3d (or download latest)
-      #self.t_t.append((0, 0))
-      if (self.t_len % 3) == 0:
-        self.t_f.append((self.t_len - 3, self.t_len - 2, self.t_len - 1))
-      if (self.t_len % 300) == 0: 
-        # make new trace_shape
-        if not(self.trace_shape):
-          self.trace_shape = pi3d.Shape(None, None, "trace", 0, 0, 0,
-                         0, 0, 0, 1.0, 1.0, 1.0, 0, 0, 0)
-          
-        self.trace_shape.buf = [pi3d.Buffer(self.trace_shape, self.t_v,
-                          self.t_t, self.t_f, self.t_n, smooth=False)]
-        self.trace_shape.set_point_size(5)
-        self.trace_shape.set_material((0.9, 0.9, 1.0))
+      if (self.t_len % 300) == 0:
+        # NB the Points class was only added in pi3d v.1.4 2013/10/17
+        self.trace_shape = pi3d.Points(vertices=self.t_v, material=(1.0,0.0,1.0),
+                                      point_size=5)
         self.trace_shape.set_shader(self.track_shader)
         if (self.t_len > 2400):
           self.t_v = self.t_v[-2400:]
-          #self.t_n = self.t_n[-2400:] # uncomment if old version of pi3d (or download latest)
-          #self.t_t = self.t_t[-2400:]
-          self.t_f = self.t_f[:800]
           self.t_len = 2400
       if self.trace_shape:
         self.trace_shape.draw()
