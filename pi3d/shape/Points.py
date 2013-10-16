@@ -13,7 +13,7 @@ class Points(Shape):
 
       *vertices*
         array of tuples [(x0,y0,z0),(x1,y1,z1)..]
-      *shade*
+      *material*
         tuple (r,g,b)
       *point_size*
         set to 1 if absent or set to a value less than 1
