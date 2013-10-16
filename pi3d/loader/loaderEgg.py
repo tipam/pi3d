@@ -227,6 +227,8 @@ def loadFileEGG(model, fileName):
 
     ilen = len(g_vertices)
     if ilen > 0:
+      if len(g_normals) != len(g_vertices):
+        g_normals = None # force Buffer.__init__() to generate normals
       model.buf.append(Buffer(model, g_vertices, g_tex_coords, g_indices, g_normals))
       n = len(model.buf) - 1
       model.vGroup[np] = n

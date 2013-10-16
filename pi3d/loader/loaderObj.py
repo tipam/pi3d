@@ -209,22 +209,25 @@ def loadFileOBJ(model, fileName):
     for f in faces[g]:
       iStart = i
       length = len(f['vertex'])
-      for component in 'normal', 'uv':
-        if length > len(f[component]):
-          LOGGER.error('There were more vertices than %ss: %d > %d',
-                       component, length, len(f[component]))
-          length = len(f[component])
+      length_n = len(f['normal'])
+      #for component in 'normal', 'uv':
+      #  if length > len(f[component]):
+      #    LOGGER.error('There were more vertices than %ss: %d > %d',
+      #                 component, length, len(f[component]))
+      #    length = len(f[component])
 
       for v in range(length):
         g_vertices.append(vertices[f['vertex'][v] - 1])
-        g_normals.append(normals[f['normal'][v] - 1])
+        if length_n == length: #only use normals if there is one for each vertex
+          g_normals.append(normals[f['normal'][v] - 1])
         if (len(f['uv']) > 0 and len(uvs[f['uv'][v] - 1]) == 2):
           g_tex_coords.append(uvs[f['uv'][v] - 1])
         i += 1
       n = i - iStart - 1
       for t in range(1, n):
         g_indices.append((iStart, iStart + t + 1, iStart + t))
-
+    if len(g_normals) != len(g_vertices):
+      g_normals = None # force Buffer.__init__() to generate normals
     model.buf.append(Buffer(model, g_vertices, g_tex_coords, g_indices, g_normals))
     n = len(model.buf) - 1
     model.vGroup[g] = n

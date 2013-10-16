@@ -66,7 +66,7 @@ class Buffer(Loadable):
     #self.shape = shape
     self.textures = []
 
-    if not normals:
+    if normals == None: #i.e. normals will only be generated if explictly None
       LOGGER.debug('Calculating normals ...')
 
       normals = [[] for p in pts]
@@ -98,8 +98,19 @@ class Buffer(Loadable):
     self.material = (0.5, 0.5, 0.5, 1.0)
 
     # Pack points,normals and texcoords into tuples and convert to ctype floats.
-    points = [p + n + t for p, n, t in zip(pts, normals, texcoords)]
-    self.array_buffer = c_floats(list(itertools.chain(*points)))
+    n_verts = len(pts)
+    if len(texcoords) != n_verts:
+      if len(normals) != n_verts:
+        self.N_BYTES = 12 # only use pts
+        self.array_buffer = c_floats(list(itertools.chain(*pts)))
+      else:
+        self.N_BYTES = 24 # use pts and normals
+        points = [p + n for p, n in zip(pts, normals)]
+        self.array_buffer = c_floats(list(itertools.chain(*points)))
+    else:
+      self.N_BYTES = 32 # use all three NB doesn't check that normals are there
+      points = [p + n + t for p, n, t in zip(pts, normals, texcoords)]
+      self.array_buffer = c_floats(list(itertools.chain(*points)))
 
     self.ntris = len(faces)
     points = [f[0:3] for f in faces]
@@ -227,12 +238,14 @@ class Buffer(Loadable):
       self.unib[1] = shny
     self._select()
 
-    opengles.glVertexAttribPointer(shader.attr_vertex, 3, GL_FLOAT, 0, 32, 0)
-    opengles.glVertexAttribPointer(shader.attr_normal, 3, GL_FLOAT, 0, 32, 12)
-    opengles.glVertexAttribPointer(shader.attr_texcoord, 2, GL_FLOAT, 0, 32, 24)
-    opengles.glEnableVertexAttribArray(shader.attr_normal)
+    opengles.glVertexAttribPointer(shader.attr_vertex, 3, GL_FLOAT, 0, self.N_BYTES, 0)
     opengles.glEnableVertexAttribArray(shader.attr_vertex)
-    opengles.glEnableVertexAttribArray(shader.attr_texcoord)
+    if self.N_BYTES > 12:
+      opengles.glVertexAttribPointer(shader.attr_normal, 3, GL_FLOAT, 0, self.N_BYTES, 12)
+      opengles.glEnableVertexAttribArray(shader.attr_normal)
+      if self.N_BYTES > 24:
+        opengles.glVertexAttribPointer(shader.attr_texcoord, 2, GL_FLOAT, 0, self.N_BYTES, 24)
+        opengles.glEnableVertexAttribArray(shader.attr_texcoord)
 
     opengles.glDisable(GL_BLEND)
 
