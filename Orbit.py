@@ -131,7 +131,7 @@ while DISPLAY.loop_running():
                      camRad * sin(radians(tilt)), 
                      -camRad * cos(radians(rot)) * cos(radians(tilt))))
     rottilt = False
-  for i in xrange(5): # make time interval for physics fifth of frame time
+  for i in range(5): # make time interval for physics fifth of frame time
     sun.pull([earth, moon, jupiter])
     earth.pull([sun, moon, jupiter])
     moon.pull([sun, earth, jupiter])
