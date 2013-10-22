@@ -12,7 +12,7 @@ import numpy as np
 import demo
 import pi3d
 
-MAX_BALLS = 50
+MAX_BALLS = 30
 MIN_BALL_SIZE = 5
 MAX_BALL_SIZE = 100
 MAX_BALL_VELOCITY = 10.0
@@ -44,8 +44,7 @@ def random_ball():
 
 SPRITES = [random_ball() for b in range(MAX_BALLS)]
 
-VERT = np.array([[s.radius for s in SPRITES] for i in SPRITES])
-HORIZ = np.array([[s.radius for i in SPRITES] for s in SPRITES])
+RADII = np.array([[s.radius + i.radius for s in SPRITES] for i in SPRITES])
 
 DISPLAY.add_sprites(*SPRITES)
 
@@ -56,7 +55,7 @@ while DISPLAY.loop_running():
   b = np.copy(a)
   d0 = np.subtract.outer(a[:,0], b[:,0])
   d1 = np.subtract.outer(a[:,1], b[:,1])
-  d3 = np.hypot(d0, d1) - VERT - HORIZ
+  d3 = np.hypot(d0, d1) - RADII
   
   for i in range(0, MAX_BALLS):
     for j in range(i + 1, MAX_BALLS):
