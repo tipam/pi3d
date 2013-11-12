@@ -162,18 +162,14 @@ class EventStream(object):
 
     If the streams parameter is not given, then all streams are selected.
     """
-    #print EventStream.AllStreams
-    #print map(lambda x: x.filehandle, EventStream.AllStreams)
     if streams == None:
       streams = EventStream.AllStreams
 
-    selectlist = map(lambda x: x.filehandle, streams)
-
+    selectlist = [x.filehandle for x in streams]
     ready = select.select(selectlist, [ ], [ ], 0)[0]
     if not ready: return
     while ready:
       for fd in ready:
-        stream = list(filter(lambda x: x.filehandle == fd, streams))[0]
         try:
           s = os.read(fd, Format.EventSize)
         except Exception as e:
@@ -186,6 +182,10 @@ class EventStream(object):
             failed.add(fd)
           continue
         if s:
+          for x in streams:
+            if x.filehandle == fd:
+              stream = x
+              break
           event = EventStruct.EventStruct(stream)
           event.decode(s)
           yield event
