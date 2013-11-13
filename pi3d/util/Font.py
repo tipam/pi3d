@@ -122,7 +122,7 @@ class Font(Texture):
 
         if curX + chwidth * italic_adjustment >= image_size:
           curX = 0.0
-          curY += self.height
+          curY += self.height + 1.0 #leave 1 pixel gap
           if curY >= image_size: #run out of space try again with bigger img
             all_fits = False
             image_size += 256
