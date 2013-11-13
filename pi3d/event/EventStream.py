@@ -152,8 +152,10 @@ class EventStream(object):
     if streams == None:
       streams = EventStream.AllStreams
 
-    reqdStreams = filter(lambda x: x.deviceType == deviceType and (deviceIndex == None or x.deviceIndex == deviceIndex), streams)
-    map(lambda x: x.grab(grab), reqdStreams)
+    for x in streams:
+      if x.deviceType == deviceType and (deviceIndex == None or
+                                        x.deviceIndex == deviceIndex):
+        x.grab(grab)
 
   @classmethod
   def allNext(cls, streams=None):
