@@ -1,17 +1,24 @@
 import copy
-import math
-import numpy
 import bisect
 
 from ctypes import c_float
-from numpy import sqrt, sin, cos, tan, subtract, dot
+from numpy import subtract, dot, sqrt as npsqrt
+from math import sqrt, sin, cos, tan, radians, pi, acos
 
 from pi3d.constants import *
 from pi3d.util.Ctypes import c_bytes
 
+def normalize_v3(arr):
+    ''' Normalize a numpy array of 3 component vectors shape=(n,3) '''
+    lens = npsqrt( arr[:,0]**2 + arr[:,1]**2 + arr[:,2]**2 )
+    arr[:,0] /= lens
+    arr[:,1] /= lens
+    arr[:,2] /= lens                
+    return arr
+
 def magnitude(*args):
   """Return the magnitude (root mean square) of the vector."""
-  return numpy.sqrt(numpy.dot(args, args))
+  return sqrt(dot(args, args))
 
 def distance(v1, v2):
   """Return the distance between two points."""
@@ -28,7 +35,7 @@ def from_polar(direction=0.0, magnitude=1.0):
   *magnitude*
     Vector length.
   """
-  return from_polar_rad(math.radians(direction), magnitude)
+  return from_polar_rad(radians(direction), magnitude)
 
 def from_polar_rad(direction=0.0, magnitude=1.0):
   """
@@ -41,7 +48,7 @@ def from_polar_rad(direction=0.0, magnitude=1.0):
   *magnitude*
     Vector length.
   """
-  return magnitude * numpy.cos(direction), magnitude * numpy.sin(direction)
+  return magnitude * cos(direction), magnitude * sin(direction)
 
 
 def vec_sub(x, y):
@@ -119,14 +126,14 @@ def angle_vecs(x1, y1, x2, y2, x3, y3):
     l = 0.0001
   aa = ((a * c) + (b * d)) / l
   if aa == -1.0:  # TODO: comparison between floats.
-    return math.pi
+    return pi
   if aa == 0.0:   # TODO: comparison between floats.
     return 0.0
   dist = (a * y3 - b * x3 + x1 * b - y1 * a) / sqab
-  angle = math.acos(aa)
+  angle = acos(aa)
 
   if dist > 0.0:
-    return math.pi * 2 - angle
+    return pi * 2 - angle
   else:
     return angle
 
@@ -166,9 +173,9 @@ def angle_between(x1, y1, x2, y2, x3, y3):
 
   aa = (a * c + b * d) / l
   if aa == -1.0:
-    return math.pi
+    return pi
   if aa == 0.0:
-    return math.pi / 2
+    return pi / 2
     # TODO: this was originally 0!  But if two vectors have a dot product
     # of zero, they are surely at right angles?
 
@@ -176,7 +183,7 @@ def angle_between(x1, y1, x2, y2, x3, y3):
   angle = acos(aa)
 
   if dist > 0.0:
-    return math.pi / 2.0 - angle
+    return pi / 2.0 - angle
   else:
     return angle
 
@@ -267,7 +274,7 @@ def rotateX(matrix, angle):
     *angle*
       Angle of rotation around the x axis.
   #""
-  angle = math.radians(angle)
+  angle = radians(angle)
   c = cos(angle)
   s = sin(angle)
   return mat_mult([[1, 0, 0, 0],
@@ -286,9 +293,9 @@ def rotateY(matrix, angle):
   #  *angle*
   #    Angle of rotation around the y axis.
   #""
-  angle = math.radians(angle)
-  c = numpy.cos(angle)
-  s = numpy.sin(angle)
+  angle = radians(angle)
+  c = cos(angle)
+  s = sin(angle)
   return mat_mult([[c, 0, -s, 0],
                    [0, 1, 0, 0],
                    [s, 0, c, 0],
@@ -305,9 +312,9 @@ def rotateZ(matrix, angle):
   #  *angle*
   #    Angle of rotation around the z axis.
   
-  angle = math.radians(angle)
-  c = numpy.cos(angle)
-  s = numpy.sin(angle)
+  angle = radians(angle)
+  c = cos(angle)
+  s = sin(angle)
   return mat_mult([[c, s, 0, 0],
                    [-s, c, 0, 0],
                    [0, 0, 1, 0],
@@ -367,9 +374,9 @@ def rect_triangles():
 def sqsum(*args):
   ""Return the sum of the squares of its arguments.
 
-  DEPRECATED:  use numpy.dot(x, x).
+  DEPRECATED:  use dot(x, x).
   ""
-  return numpy.dot(args, args)
+  return dot(args, args)
 
 def load_identity():
   opengles.glLoadIdentity()

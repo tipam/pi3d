@@ -27,7 +27,7 @@ class Font(Texture):
 
   def __init__(self, font, color=(255,255,255,255), codepoints=None,
                add_codepoints=None, font_size=48, image_size=512,
-               italic_adjustment=1.1):
+               italic_adjustment=1.1, background_color=None):
     """Arguments:
     *font*:
       File path/name to a TrueType font file.
@@ -96,7 +96,7 @@ class Font(Texture):
 
     all_fits = False
     while image_size < MAX_SIZE and not all_fits:
-      self.im = Image.new("RGBA", (image_size, image_size))
+      self.im = Image.new("RGBA", (image_size, image_size), background_color)
       self.alpha = True
       self.ix, self.iy = image_size, image_size
 
@@ -122,7 +122,7 @@ class Font(Texture):
 
         if curX + chwidth * italic_adjustment >= image_size:
           curX = 0.0
-          curY += self.height
+          curY += self.height + 1.0 #leave 1 pixel gap
           if curY >= image_size: #run out of space try again with bigger img
             all_fits = False
             image_size += 256

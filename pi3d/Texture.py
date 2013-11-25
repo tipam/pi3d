@@ -27,7 +27,14 @@ class Texture(Loadable):
   """loads an image file from disk and converts it into an array that
   can be used by shaders. It inherits from Loadable in order that the
   file access work can happen in another thread. and the conversion
-  to opengl format can happen just in time when tex() is first called
+  to opengl format can happen just in time when tex() is first called.
+
+  NB images loaded as textures can cause distortion effects unless they
+  are certain sizes (below). **If the image width is a value not in this
+  list then it will be rescaled with a resulting loss of clarity**
+
+  Allowed widths 4, 8, 16, 32, 48, 64, 72, 96, 128, 144, 192, 256, 288,
+  384, 512, 576, 640, 720, 768, 800, 960, 1024, 1080, 1920
   """
   def __init__(self, file_string, blend=False, flip=False, size=0,
                defer=DEFER_TEXTURE_LOADING, mipmap=True):

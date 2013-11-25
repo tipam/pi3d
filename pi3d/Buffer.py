@@ -1,6 +1,7 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import ctypes, itertools
+import numpy as np
 
 from ctypes import c_float, c_int
 
@@ -65,31 +66,26 @@ class Buffer(Loadable):
     """
     #self.shape = shape
     self.textures = []
+    pts = np.array(pts)
+    texcoords = np.array(texcoords)
+    faces = np.array(faces)
 
     if normals == None: #i.e. normals will only be generated if explictly None
       LOGGER.debug('Calculating normals ...')
 
-      normals = [[] for p in pts]
-      # Calculate normals.
-      for f in faces:
-        a, b, c = f[0:3]
+      normals = np.zeros(pts.shape, dtype=pts.dtype) #empty array rights size
 
-        ab = Utility.vec_sub(pts[a], pts[b])
-        bc = Utility.vec_sub(pts[a], pts[c])
-        n = tuple(Utility.vec_normal(Utility.vec_cross(ab, bc)))
-        for x in f[0:3]:
-          normals[x].append(n)
-
-      for i, n in enumerate(normals):
-        if n:
-          if smooth:
-            norms = [sum(v[k] for v in n) for k in range(3)]
-          else:  # This should be slightly faster for large shapes
-            norms = [n[0][k] for k in range(3)]
-          normals[i] = tuple(Utility.vec_normal(norms))
-        else:
-          normals[i] = 0, 0, 0.01
-
+      fv = pts[faces] #expand faces with x,y,z values for each vertex
+      #cross product of two edges of triangles
+      fn = np.cross(fv[:][:][:,1] - fv[:][:][:,0], fv[:][:][:,2] - fv[:][:][:,0])
+      fn = Utility.normalize_v3(fn)
+      normals[faces[:,0]] += fn #add up all normal vectors for a vertex
+      normals[faces[:,1]] += fn
+      normals[faces[:,2]] += fn
+      Utility.normalize_v3(normals)
+    else:
+      normals = np.array(normals)
+      
     # keep a copy for speeding up the collision testing of ElevationMap
     self.vertices = pts
     self.normals = normals
@@ -102,19 +98,18 @@ class Buffer(Loadable):
     if len(texcoords) != n_verts:
       if len(normals) != n_verts:
         self.N_BYTES = 12 # only use pts
-        self.array_buffer = c_floats(list(itertools.chain(*pts)))
+        self.array_buffer = c_floats(pts.reshape(-1))
       else:
         self.N_BYTES = 24 # use pts and normals
-        points = [p + n for p, n in zip(pts, normals)]
-        self.array_buffer = c_floats(list(itertools.chain(*points)))
+        self.array_buffer = c_floats(np.concatenate((pts, normals),
+                            axis=1).reshape(-1))
     else:
       self.N_BYTES = 32 # use all three NB doesn't check that normals are there
-      points = [p + n + t for p, n, t in zip(pts, normals, texcoords)]
-      self.array_buffer = c_floats(list(itertools.chain(*points)))
+      self.array_buffer = c_floats(np.concatenate((pts, normals, texcoords),
+                          axis=1).reshape(-1))
 
     self.ntris = len(faces)
-    points = [f[0:3] for f in faces]
-    self.element_array_buffer = c_shorts(list(itertools.chain(*points)))
+    self.element_array_buffer = c_shorts(faces.reshape(-1))
 
   def __del__(self):
     #super(Buffer, self).__del__() #TODO supposed to always call super.__del__
@@ -207,6 +202,9 @@ class Buffer(Loadable):
 
   def set_material(self, mtrl):
     self.unib[3:6] = mtrl[0:3]
+
+  def set_textures(self, textures):
+    self.textures = textures
 
   def set_offset(self, offset=(0.0, 0.0)):
     self.unib[9:11] = offset

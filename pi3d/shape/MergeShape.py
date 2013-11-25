@@ -8,7 +8,7 @@ from pi3d.constants import *
 from pi3d.Buffer import Buffer
 
 from pi3d.Shape import Shape
-from pi3d.util.RotateVec import rotate_vec_x, rotate_vec_y, rotate_vec_z
+from pi3d.util.RotateVec import rotate_vec
 
 class MergeShape(Shape):
   """ 3d model inherits from Shape. As there is quite a time penalty for
@@ -39,8 +39,7 @@ class MergeShape(Shape):
     self.indices = []    #stores all indices for single render
 
     self.buf = []
-    self.buf.append(Buffer(self, self.vertices, self.tex_coords, self.indices,
-                  self.normals))
+    self.buf.append(Buffer(self, self.vertices, self.tex_coords, self.indices, self.normals))
 
   def merge(self, bufr, x=0.0, y=0.0, z=0.0,
             rx=0.0, ry=0.0, rz=0.0,
@@ -80,22 +79,12 @@ class MergeShape(Shape):
       original_vertex_count = len(self.vertices)
 
       for v in range(0, len(bufr.vertices)):
-        def rotate_slice(array):
-          vec = array[v]
-          if b[6]:
-            vec = rotate_vec_z(b[6], vec)
-          if b[4]:
-            vec = rotate_vec_x(b[4], vec)
-          if b[5]:
-            vec = rotate_vec_y(b[5], vec)
-          return vec
-
         # Scale, offset and store vertices
-        vx, vy, vz = rotate_slice(bufr.vertices)
+        vx, vy, vz = rotate_vec(b[4], b[5], b[6], bufr.vertices[v])
         self.vertices.append((vx * b[7] + b[1], vy * b[8] + b[2], vz * b[9] + b[3]))
 
         # Rotate normals
-        self.normals.append(rotate_slice(bufr.normals))
+        self.normals.append(rotate_vec(b[4], b[5], b[6], bufr.normals[v]))
 
       self.tex_coords.extend(bufr.tex_coords)
 
@@ -105,8 +94,7 @@ class MergeShape(Shape):
       self.indices.extend(indices)
 
     self.buf = []
-    self.buf.append(Buffer(self, self.vertices, self.tex_coords, self.indices,
-                  self.normals))
+    self.buf.append(Buffer(self, self.vertices, self.tex_coords, self.indices, self.normals))
 
   def add(self, bufr, x=0.0, y=0.0, z=0.0, rx=0.0, ry=0.0, rz=0.0,
           sx=1.0, sy=1.0, sz=1.0):

@@ -64,6 +64,6 @@ class EventStruct(object):
         A binary structure packed into a string.
     """
     (tsec, tfrac,  self.eventType, self.eventCode,
-     self.eventValue) = struct.unpack(Format.Event,s)
+     self.eventValue) = struct.unpack(Format.Event, s)
 
     self.time = tsec + tfrac / 1000000.0

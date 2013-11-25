@@ -64,21 +64,23 @@ class InputEvents(object):
     self.streams = [ ]
     if wantKeyboard:
       keyboards =  find_devices("kbd")
-      self.streams += map(lambda x: EventStream(x, "keyboard"), keyboards)
+      for x in keyboards:
+        self.streams.append(EventStream(x, "keyboard"))
     else:
       keyboards = [ ]
     print("keyboards =", keyboards)
     if wantMouse:
       mice = find_devices("mouse", butNot=keyboards)
+      for x in mice:
+        self.streams.append(EventStream(x, "mouse"))
       print("mice = ", mice)
-      self.streams += map(lambda x: EventStream(x, "mouse"), mice)
     else:
       mice = [ ]
     if wantJoystick:
       joysticks = find_devices("js", butNot=keyboards+mice)
+      for x in joysticks:
+        self.streams.append(EventStream(x, "joystick"))
       print("joysticks =", joysticks)
-      js_streams = map(lambda x: EventStream(x, "joystick"), joysticks)
-      self.streams += js_streams
     for x in self.streams:
       x.acquire_abs_info()
 
