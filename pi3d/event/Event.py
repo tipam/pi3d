@@ -135,6 +135,9 @@ class InputEvents(object):
     """
     return self.handler.clear_key(key_to_code(key))
 
+  def get_keys(self):
+    return [code_to_key(k) for k in self.handler.get_keys()]
+
   def get_joystick(self, index=0):
     """
     Returns the x,y coordinates for a joystick or left gamepad analogue stick.

@@ -187,3 +187,20 @@ class EventHandler(object):
     except KeyError:
       pass
 
+  def get_keys(self):
+    """
+    Returns the first of whichever keys have been pressed.
+
+    Key names can be converted to key codes using codeOf[str].
+    This emulates a key-up but does not generate any events.
+    """
+    k_list = []
+    try:
+      for k in self.buttons:
+        if self.buttons[k] != 0:
+          k_list.append(k)
+      return k_list
+    except KeyError:
+      pass
+    return k_list
+
