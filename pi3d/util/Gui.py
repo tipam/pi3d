@@ -60,9 +60,12 @@ class Gui(object):
     if tm < self.next_tm:
       return
     self.next_tm = tm + DT
-    for w in self.widgets:
-      if w.visible and w.checkkey(k):
-        self.focus = w
+    if type(self.focus) is TextBox:
+      self.focus._click(k)
+    else:
+      for w in self.widgets:
+        if w.visible and w.checkkey(k):
+          self.focus = w
 
 class Widget(object):
   def __init__(self, gui, shapes, x, y, callback=None, label=None,
@@ -148,7 +151,7 @@ class Widget(object):
     if self.toggle:
       self.clicked = not self.clicked
     if self.callback:
-      self.callback()
+      self.callback(args)
 
 class Button(Widget):
   def __init__(self, gui, imgs, x, y, callback=None, label=None,
@@ -346,4 +349,66 @@ class Menu(object):
     self.visible = True
     for i in self.menuitems:
       i.visible = True
-    
+
+class TextBox(Widget):
+  def __init__(self, gui, txt, x, y, callback=None, label=None,
+               label_pos='left', shortcut=None):
+    self.gui = gui
+    self.txt = txt
+    self.x = x
+    self.y = y
+    self.callback = callback
+    self.label = label
+    self.label_pos = label_pos
+    self.shortcut = shortcut
+    self.cursor = len(txt)
+    self.recreate()
+
+  def recreate(self):
+    self.c_lookup = [] #mapping between clicked char and char in string
+    for i, l in enumerate(self.txt):
+      if l != '\n':
+        self.c_lookup.append(i)
+    textbox = pi3d.String(font=self.gui.font, string=self.txt, is_3d=False,
+                              camera=self.gui.camera, justify='L')
+    textbox.set_shader(self.gui.shader)
+    super(TextBox, self).__init__(self.gui, [textbox], self.x, self.y,
+                        callback=self.callback, label=self.label,
+                        label_pos=self.label_pos, shortcut=self.shortcut)
+
+  def _get_charindex(self, x, y):
+    """Find the x,y location of each letter's bottom left and top right
+    vertices to return a character index of the click x,y
+    """
+    verts = self.shapes[0].buf[0].vertices
+    x = x - self.x + verts[2][0]
+    y = y - self.y + verts[0][1]
+    nv = len(verts)
+    for i in xrange(0, nv, 4):
+      vtr = verts[i] # top right
+      vbl = verts[i + 2] # bottom left
+      if x >= vbl[0] and x < vtr[0] and y >= vbl[1] and y < vtr[1]:
+        i = int(i / 4)
+        c_i = self.c_lookup[i]
+        if c_i == (len(self.txt) - 1) or self.c_lookup[i + 1] > c_i + 1:
+          if (vtr[0] - x) < (x - vbl[0]):
+            c_i += 1
+        return c_i
+    return len(self.txt)
+
+  def _click(self, *args):
+    if len(args) == 2: #mouse click
+      x, y = args
+      self.cursor = self._get_charindex(x, y)
+    else: #keyboard input
+      k = args[0]
+      if k == '\t': #backspace use tab char
+        self.txt = self.txt[:(self.cursor - 1)] + self.txt[self.cursor:]
+        self.cursor -= 1
+      elif k == '\r': #delete use car ret char
+        self.txt = self.txt[:self.cursor] + self.txt[(self.cursor + 1):]
+      else:
+        self.txt = self.txt[:self.cursor] + k + self.txt[(self.cursor):]
+        self.cursor += 1
+      self.recreate()
+    super(TextBox, self)._click()
