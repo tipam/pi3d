@@ -96,11 +96,11 @@ class Widget(object):
     self.shortcut = shortcut
     self.label_pos = label_pos
     if label:
-      self.label = pi3d.String(font=gui.font, string=label, is_3d=False,
+      self.labelobj = pi3d.String(font=gui.font, string=label, is_3d=False,
                               camera=gui.camera, justify='L')
-      self.label.set_shader(gui.shader)
+      self.labelobj.set_shader(gui.shader)
     else:
-      self.label = None
+      self.labelobj = None
     self.relocate(x, y)
     gui.widgets.append(self)
     self.visible = True
@@ -110,19 +110,19 @@ class Widget(object):
     self.bounds = [x, y - b[4] + b[1], x + b[3] - b[0], y]
     for s in self.shapes:
       s.position(x - b[0], y - b[4], 1.0)
-    if self.label:
-      b = self.label.get_bounds()
+    if self.labelobj:
+      b = self.labelobj.get_bounds()
       if self.label_pos == 'above':
-        self.label.position((x + self.bounds[2] - b[3] - b[0]) / 2.0,
+        self.labelobj.position((x + self.bounds[2] - b[3] - b[0]) / 2.0,
                               y - b[1], 1.0)
       elif self.label_pos == 'below':
-        self.label.position((x + self.bounds[2] - b[3] - b[0]) / 2.0,
+        self.labelobj.position((x + self.bounds[2] - b[3] - b[0]) / 2.0,
                               self.bounds[1] - b[4], 1.0)
       elif self.label_pos == 'right':
-        self.label.position(self.bounds[2] + b[0] - 5.0,
+        self.labelobj.position(self.bounds[2] + b[0] - 5.0,
                   (y + self.bounds[1] - b[1] - b[4]) / 2.0, 1.0)
       else:
-        self.label.position(x - b[3] - 5.0,
+        self.labelobj.position(x - b[3] - 5.0,
                   (y + self.bounds[1] - b[1] - b[4]) / 2.0, 1.0)      
 
   def draw(self):
@@ -132,8 +132,8 @@ class Widget(object):
       self.shapes[0].draw()
     for s in self.shapes[2:]:
       s.draw()
-    if self.label:
-      self.label.draw()
+    if self.labelobj:
+      self.labelobj.draw()
 
   def check(self, x, y):
     if x > self.bounds[0] and x < self.bounds[2] and y > self.bounds[1] and y < self.bounds[3]:
@@ -231,11 +231,11 @@ class Scrollbar(Widget):
     self.shapes[3].translateX((width + end_w) / 2.0)
     self.bounds[0] -= end_w
     self.bounds[2] += end_w
-    if label:
+    if self.labelobj:
       if label_pos == 'left':
-        self.label.translateX(-end_w)
+        self.labelobj.translateX(-end_w)
       elif label_pos == 'right':
-        self.label.translateX(end_w)
+        self.labelobj.translateX(end_w)
         
   def _click(self, *args):
     thumb_x = self.t_stop[0] + self.thumbpos
@@ -372,6 +372,7 @@ class TextBox(Widget):
     textbox = pi3d.String(font=self.gui.font, string=self.txt, is_3d=False,
                               camera=self.gui.camera, justify='L')
     textbox.set_shader(self.gui.shader)
+    print(self.label)
     super(TextBox, self).__init__(self.gui, [textbox], self.x, self.y,
                         callback=self.callback, label=self.label,
                         label_pos=self.label_pos, shortcut=self.shortcut)
@@ -395,6 +396,13 @@ class TextBox(Widget):
             c_i += 1
         return c_i
     return len(self.txt)
+
+  def checkkey(self, k):
+    """have to use a slightly different version without the _click() call
+    """
+    if k == self.shortcut:
+      return True
+    return False
 
   def _click(self, *args):
     if len(args) == 2: #mouse click
