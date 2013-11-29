@@ -43,7 +43,8 @@ menu2 = pi3d.Menu(parent_item=mi1, menuitems=[mi11, mi12], horiz=False, position
 menu3 = pi3d.Menu(parent_item=mi11, menuitems=[mi111, mi112], horiz=False, position='right')
 menu4 = pi3d.Menu(parent_item=mi12, menuitems=[mi121, mi122], horiz=False, position='right')
 
-textbox = pi3d.TextBox(gui, "this is\na textbox\nover lines", 100, 100, callback=cb)
+textbox = pi3d.TextBox(gui, "type here", 100, 100, callback=cb, label='TextBox (KEY t to edit)',
+                        shortcut='t')
 
 mx, my = 0, 0
 inputs = pi3d.InputEvents()
