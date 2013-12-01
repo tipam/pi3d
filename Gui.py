@@ -4,6 +4,9 @@ import math, random, time, traceback, os
 import sys
 import demo
 import pi3d
+# use tab for backspace and carriage return for delete
+CHARS = {'KEY_SPACE':' ', 'KEY_BACKSPACE':'\t', 'KEY_DELETE':'\r',
+        'KEY_ENTER':'\n', 'KEY_COMMA':',', 'KEY_DOT':'.'}
 
 def cbx(*args):
   if radio.clicked:
@@ -120,14 +123,8 @@ while DISPLAY.loop_running() and not inputs.key_state("KEY_ESC"):
         sh = True 
       if len(k) == 5:
         this_key = k[4]
-      elif k == 'KEY_SPACE':
-        this_key = ' '
-      elif k == 'KEY_BACKSPACE':
-        this_key = '\t' # use tab for backspace
-      elif k == 'KEY_DELETE':
-        this_key = '\r' # use car ret for delete
-      elif k == 'KEY_ENTER':
-        this_key = '\n'
+      elif k in CHARS:
+        this_key = CHARS[k]
     if this_key:
       if not sh:
         this_key = this_key.lower()
