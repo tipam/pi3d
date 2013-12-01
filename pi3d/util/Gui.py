@@ -379,7 +379,6 @@ class TextBox(Widget):
     textbox = pi3d.String(font=self.gui.font, string=self.txt, is_3d=False,
                               camera=self.gui.camera, justify='L', z=1.0)
     textbox.set_shader(self.gui.shader)
-    print(self.label)
     super(TextBox, self).__init__(self.gui, [textbox], self.x, self.y,
                         callback=self.callback, label=self.label,
                         label_pos=self.label_pos, shortcut=self.shortcut)
