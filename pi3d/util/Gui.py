@@ -54,6 +54,7 @@ class Gui(object):
     for w in self.widgets:
       if w.visible and w.check(x, y):
         self.focus = w
+        break
 
   def checkkey(self, k):
     tm = time.time()
@@ -66,6 +67,7 @@ class Gui(object):
       for w in self.widgets:
         if w.visible and w.checkkey(k):
           self.focus = w
+          break
 
 class Widget(object):
   def __init__(self, gui, shapes, x, y, callback=None, label=None,
@@ -102,7 +104,8 @@ class Widget(object):
     else:
       self.labelobj = None
     self.relocate(x, y)
-    gui.widgets.append(self)
+    if not (self in gui.widgets): #because TextBox re-runs Widget.__init__
+      gui.widgets.append(self)
     self.visible = True
 
   def relocate(self, x, y):
@@ -385,7 +388,7 @@ class TextBox(Widget):
     x = x - self.x + verts[2][0]
     y = y - self.y + verts[0][1]
     nv = len(verts)
-    for i in xrange(0, nv, 4):
+    for i in range(0, nv, 4):
       vtr = verts[i] # top right
       vbl = verts[i + 2] # bottom left
       if x >= vbl[0] and x < vtr[0] and y >= vbl[1] and y < vtr[1]:
