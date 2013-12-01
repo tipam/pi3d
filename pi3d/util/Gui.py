@@ -365,6 +365,10 @@ class TextBox(Widget):
     self.label_pos = label_pos
     self.shortcut = shortcut
     self.cursor = len(txt)
+    tex = pi3d.Texture(gui.icon_path + 'tool_stop.gif', blend=True, mipmap=False)
+    self.cursor_shape = pi3d.Sprite(camera=gui.camera, w=tex.ix/10.0,
+                          h=tex.iy, z=1.1)
+    self.cursor_shape.set_draw_details(gui.shader, [tex])
     self.recreate()
 
   def recreate(self):
@@ -373,7 +377,7 @@ class TextBox(Widget):
       if l != '\n':
         self.c_lookup.append(i)
     textbox = pi3d.String(font=self.gui.font, string=self.txt, is_3d=False,
-                              camera=self.gui.camera, justify='L')
+                              camera=self.gui.camera, justify='L', z=1.0)
     textbox.set_shader(self.gui.shader)
     print(self.label)
     super(TextBox, self).__init__(self.gui, [textbox], self.x, self.y,
@@ -400,6 +404,17 @@ class TextBox(Widget):
         return c_i
     return len(self.txt)
 
+  def _get_cursor_loc(self, i):
+    verts = self.shapes[0].buf[0].vertices
+    maxi = int(len(verts) / 4 - 1)
+    if i > maxi:
+      x = self.x - verts[2][0] + verts[maxi * 4][0]
+      y = self.y - verts[0][1] + (verts[maxi * 4][1] + verts[maxi * 4 + 2][1]) / 2.0
+    else:
+      x = self.x - verts[2][0] + verts[i * 4 + 2][0]
+      y = self.y - verts[0][1] + (verts[i * 4][1] + verts[i * 4 + 2][1]) / 2.0
+    return x, y
+
   def checkkey(self, k):
     """have to use a slightly different version without the _click() call
     """
@@ -423,3 +438,10 @@ class TextBox(Widget):
         self.cursor += 1
       self.recreate()
     super(TextBox, self)._click()
+
+  def draw(self):
+    if self.gui.focus == self:
+      x, y = self._get_cursor_loc(self.cursor)
+      self.cursor_shape.position(x, y, 1.1)
+      self.cursor_shape.draw()
+    super(TextBox, self).draw()
