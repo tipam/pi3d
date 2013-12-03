@@ -98,15 +98,15 @@ class Buffer(Loadable):
     if len(texcoords) != n_verts:
       if len(normals) != n_verts:
         self.N_BYTES = 12 # only use pts
-        self.array_buffer = c_floats(pts.reshape(-1))
+        self.array_buffer = c_floats(pts.reshape(-1).tolist())
       else:
         self.N_BYTES = 24 # use pts and normals
         self.array_buffer = c_floats(np.concatenate((pts, normals),
-                            axis=1).reshape(-1))
+                            axis=1).reshape(-1).tolist())
     else:
       self.N_BYTES = 32 # use all three NB doesn't check that normals are there
       self.array_buffer = c_floats(np.concatenate((pts, normals, texcoords),
-                          axis=1).reshape(-1))
+                          axis=1).reshape(-1).tolist())
 
     self.ntris = len(faces)
     self.element_array_buffer = c_shorts(faces.reshape(-1))
