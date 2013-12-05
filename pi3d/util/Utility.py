@@ -2,7 +2,7 @@ import copy
 import bisect
 
 from ctypes import c_float
-from numpy import subtract, dot, sqrt as npsqrt
+from numpy import subtract, dot, divide, sqrt as npsqrt
 from math import sqrt, sin, cos, tan, radians, pi, acos
 
 from pi3d.constants import *
@@ -11,10 +11,7 @@ from pi3d.util.Ctypes import c_bytes
 def normalize_v3(arr):
     ''' Normalize a numpy array of 3 component vectors shape=(n,3) '''
     lens = npsqrt( arr[:,0]**2 + arr[:,1]**2 + arr[:,2]**2 )
-    arr[:,0] /= lens
-    arr[:,1] /= lens
-    arr[:,2] /= lens                
-    return arr
+    return divide(arr.T, lens).T
 
 def magnitude(*args):
   """Return the magnitude (root mean square) of the vector."""
