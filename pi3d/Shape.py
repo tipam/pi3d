@@ -9,6 +9,7 @@ from pi3d.constants import *
 from pi3d.Buffer import Buffer
 from pi3d.Light import Light
 from pi3d.util import Utility
+from pi3d.util.Ctypes import c_floats
 
 from pi3d.util.Loadable import Loadable
 
@@ -146,7 +147,9 @@ class Shape(Loadable):
                 dot(self.rox,
                     dot(self.roz, self.tr1)))))
       self.M[0:16] = self.MRaw.ravel()
+      #self.M[0:16] = c_floats(self.MRaw.reshape(-1).tolist()) #pypy version
       self.M[16:32] = dot(self.MRaw, camera.mtrx).ravel()
+      #self.M[16:32] = c_floats(dot(self.MRaw, camera.mtrx).reshape(-1).tolist()) #pypy
       self.MFlg = False
 
     elif camera.was_moved:

@@ -54,15 +54,20 @@ class Gui(object):
     for w in self.widgets:
       if w.visible and w.check(x, y):
         self.focus = w
+        break
 
   def checkkey(self, k):
     tm = time.time()
     if tm < self.next_tm:
       return
     self.next_tm = tm + DT
-    for w in self.widgets:
-      if w.visible and w.checkkey(k):
-        self.focus = w
+    if type(self.focus) is TextBox:
+      self.focus._click(k)
+    else:
+      for w in self.widgets:
+        if w.visible and w.checkkey(k):
+          self.focus = w
+          break
 
 class Widget(object):
   def __init__(self, gui, shapes, x, y, callback=None, label=None,
@@ -93,13 +98,14 @@ class Widget(object):
     self.shortcut = shortcut
     self.label_pos = label_pos
     if label:
-      self.label = pi3d.String(font=gui.font, string=label, is_3d=False,
+      self.labelobj = pi3d.String(font=gui.font, string=label, is_3d=False,
                               camera=gui.camera, justify='L')
-      self.label.set_shader(gui.shader)
+      self.labelobj.set_shader(gui.shader)
     else:
-      self.label = None
+      self.labelobj = None
     self.relocate(x, y)
-    gui.widgets.append(self)
+    if not (self in gui.widgets): #because TextBox re-runs Widget.__init__
+      gui.widgets.append(self)
     self.visible = True
 
   def relocate(self, x, y):
@@ -107,19 +113,19 @@ class Widget(object):
     self.bounds = [x, y - b[4] + b[1], x + b[3] - b[0], y]
     for s in self.shapes:
       s.position(x - b[0], y - b[4], 1.0)
-    if self.label:
-      b = self.label.get_bounds()
+    if self.labelobj:
+      b = self.labelobj.get_bounds()
       if self.label_pos == 'above':
-        self.label.position((x + self.bounds[2] - b[3] - b[0]) / 2.0,
+        self.labelobj.position((x + self.bounds[2] - b[3] - b[0]) / 2.0,
                               y - b[1], 1.0)
       elif self.label_pos == 'below':
-        self.label.position((x + self.bounds[2] - b[3] - b[0]) / 2.0,
+        self.labelobj.position((x + self.bounds[2] - b[3] - b[0]) / 2.0,
                               self.bounds[1] - b[4], 1.0)
       elif self.label_pos == 'right':
-        self.label.position(self.bounds[2] + b[0] - 5.0,
+        self.labelobj.position(self.bounds[2] + b[0] - 5.0,
                   (y + self.bounds[1] - b[1] - b[4]) / 2.0, 1.0)
       else:
-        self.label.position(x - b[3] - 5.0,
+        self.labelobj.position(x - b[3] - 5.0,
                   (y + self.bounds[1] - b[1] - b[4]) / 2.0, 1.0)      
 
   def draw(self):
@@ -129,8 +135,8 @@ class Widget(object):
       self.shapes[0].draw()
     for s in self.shapes[2:]:
       s.draw()
-    if self.label:
-      self.label.draw()
+    if self.labelobj:
+      self.labelobj.draw()
 
   def check(self, x, y):
     if x > self.bounds[0] and x < self.bounds[2] and y > self.bounds[1] and y < self.bounds[3]:
@@ -148,7 +154,7 @@ class Widget(object):
     if self.toggle:
       self.clicked = not self.clicked
     if self.callback:
-      self.callback()
+      self.callback(args)
 
 class Button(Widget):
   def __init__(self, gui, imgs, x, y, callback=None, label=None,
@@ -228,11 +234,11 @@ class Scrollbar(Widget):
     self.shapes[3].translateX((width + end_w) / 2.0)
     self.bounds[0] -= end_w
     self.bounds[2] += end_w
-    if label:
+    if self.labelobj:
       if label_pos == 'left':
-        self.label.translateX(-end_w)
+        self.labelobj.translateX(-end_w)
       elif label_pos == 'right':
-        self.label.translateX(end_w)
+        self.labelobj.translateX(end_w)
         
   def _click(self, *args):
     thumb_x = self.t_stop[0] + self.thumbpos
@@ -346,4 +352,95 @@ class Menu(object):
     self.visible = True
     for i in self.menuitems:
       i.visible = True
-    
+
+class TextBox(Widget):
+  def __init__(self, gui, txt, x, y, callback=None, label=None,
+               label_pos='left', shortcut=None):
+    self.gui = gui
+    self.txt = txt
+    self.x = x
+    self.y = y
+    self.callback = callback
+    self.label = label
+    self.label_pos = label_pos
+    self.shortcut = shortcut
+    self.cursor = len(txt)
+    tex = pi3d.Texture(gui.icon_path + 'tool_stop.gif', blend=True, mipmap=False)
+    self.cursor_shape = pi3d.Sprite(camera=gui.camera, w=tex.ix/10.0,
+                          h=tex.iy, z=1.1)
+    self.cursor_shape.set_draw_details(gui.shader, [tex])
+    self.recreate()
+
+  def recreate(self):
+    self.c_lookup = [] #mapping between clicked char and char in string
+    for i, l in enumerate(self.txt):
+      if l != '\n':
+        self.c_lookup.append(i)
+    textbox = pi3d.String(font=self.gui.font, string=self.txt, is_3d=False,
+                              camera=self.gui.camera, justify='L', z=1.0)
+    textbox.set_shader(self.gui.shader)
+    super(TextBox, self).__init__(self.gui, [textbox], self.x, self.y,
+                        callback=self.callback, label=self.label,
+                        label_pos=self.label_pos, shortcut=self.shortcut)
+
+  def _get_charindex(self, x, y):
+    """Find the x,y location of each letter's bottom left and top right
+    vertices to return a character index of the click x,y
+    """
+    verts = self.shapes[0].buf[0].vertices
+    x = x - self.x + verts[2][0]
+    y = y - self.y + verts[0][1]
+    nv = len(verts)
+    for i in range(0, nv, 4):
+      vtr = verts[i] # top right
+      vbl = verts[i + 2] # bottom left
+      if x >= vbl[0] and x < vtr[0] and y >= vbl[1] and y < vtr[1]:
+        i = int(i / 4)
+        c_i = self.c_lookup[i]
+        if c_i == (len(self.txt) - 1) or self.c_lookup[i + 1] > c_i + 1:
+          if (vtr[0] - x) < (x - vbl[0]):
+            c_i += 1
+        return c_i
+    return len(self.txt)
+
+  def _get_cursor_loc(self, i):
+    verts = self.shapes[0].buf[0].vertices
+    maxi = int(len(verts) / 4 - 1)
+    if i > maxi:
+      x = self.x - verts[2][0] + verts[maxi * 4][0]
+      y = self.y - verts[0][1] + (verts[maxi * 4][1] + verts[maxi * 4 + 2][1]) / 2.0
+    else:
+      x = self.x - verts[2][0] + verts[i * 4 + 2][0]
+      y = self.y - verts[0][1] + (verts[i * 4][1] + verts[i * 4 + 2][1]) / 2.0
+    return x, y
+
+  def checkkey(self, k):
+    """have to use a slightly different version without the _click() call
+    """
+    if k == self.shortcut:
+      return True
+    return False
+
+  def _click(self, *args):
+    if len(args) == 2: #mouse click
+      x, y = args
+      self.cursor = self._get_charindex(x, y)
+    else: #keyboard input
+      k = args[0]
+      if k == '\t': #backspace use tab char
+        self.txt = self.txt[:(self.cursor - 1)] + self.txt[self.cursor:]
+        self.cursor -= 1
+      elif k == '\r': #delete use car ret char
+        self.txt = self.txt[:self.cursor] + self.txt[(self.cursor + 1):]
+      else:
+        self.txt = self.txt[:self.cursor] + k + self.txt[(self.cursor):]
+        self.cursor += 1
+      self.recreate()
+    super(TextBox, self)._click()
+
+  def draw(self):
+    if self.gui.focus == self:
+      x, y = self._get_cursor_loc(self.cursor)
+      self.cursor_shape.position(x, y, 1.1)
+      self.cursor_shape.draw()
+    super(TextBox, self).draw()

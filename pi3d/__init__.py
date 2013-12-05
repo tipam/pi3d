@@ -73,3 +73,4 @@ from pi3d.util.Gui import Radio
 from pi3d.util.Gui import Scrollbar
 from pi3d.util.Gui import MenuItem
 from pi3d.util.Gui import Menu
+from pi3d.util.Gui import TextBox

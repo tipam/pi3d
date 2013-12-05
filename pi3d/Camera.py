@@ -47,7 +47,7 @@ class Camera(DefaultInstance):
       self.projection = _OrthographicMatrix(scale=scale)
     self.model_view = dot(self.view, self.projection)
     # Apply transform/rotation first, then shift into perspective space.
-    self.mtrx = copy(self.model_view)
+    self.mtrx = array(self.model_view, copy=True)
     # self.L_reflect = _LookAtMatrix(at,eye,[0,1,0],reflect=True)
     self.rtn = [0.0, 0.0, 0.0]
 
@@ -204,7 +204,7 @@ def _LookAtMatrix(at, eye, up=[0, 1, 0], reflect=False):
   zaxis.append(-vec_dot(zaxis, eye))
   z = [0, 0, 0, 1.0]
   return array([[xaxis[a], yaxis[a], zaxis[a], z[a]] for a in range(4)],
-               dtype=ctypes.c_float)
+               dtype=float)
 
 def _ProjectionMatrix(near, far, fov, aspectRatio):
   """Set up perspective projection matrix
@@ -228,7 +228,7 @@ def _ProjectionMatrix(near, far, fov, aspectRatio):
   M[2][2] = (far + near) / (far - near)
   M[2][3] = 1
   M[3][2] = -(2 * far * near)/(far - near)
-  return array(M, dtype=ctypes.c_float)
+  return array(M, dtype=float)
 
 def _OrthographicMatrix(scale=1.0):
   """Set up orthographic projection matrix
@@ -246,5 +246,5 @@ def _OrthographicMatrix(scale=1.0):
   M[2][2] = 2.0 / 10000.0
   M[3][2] = -1
   M[3][3] = 1
-  return array(M, dtype=ctypes.c_float)
+  return array(M, dtype=float)
 
