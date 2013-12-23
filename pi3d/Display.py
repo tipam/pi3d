@@ -250,7 +250,8 @@ class Display(object):
 
   def _tidy(self):
     to_del = []
-    for i, tex in six.iteritems(self.textures_dict):
+    for i in self.textures_dict:
+      tex = self.textures_dict[i]
       LOGGER.debug('tex0=%s tex1=%s',tex[0], tex[1])
       if tex[1] == 1:
         opengles.glDeleteTextures(1, byref(tex[0]))
@@ -258,14 +259,16 @@ class Display(object):
     for i in to_del:
       del self.textures_dict[i]
     to_del = []
-    for i, vbuf in six.iteritems(self.vbufs_dict):
+    for i in self.vbufs_dict:
+      vbuf = self.vbufs_dict[i]
       if vbuf[1] == 1:
         opengles.glDeleteBuffers(1, byref(vbuf[0]))
         to_del.append(i)
     for i in to_del:
       del self.vbufs_dict[i]
     to_del = []
-    for i, ebuf in six.iteritems(self.ebufs_dict):
+    for i in self.ebufs_dict:
+      ebuf = self.ebufs_dict[i]
       if ebuf[1] == 1:
         opengles.glDeleteBuffers(1, byref(ebuf[0]))
         to_del.append(i)
