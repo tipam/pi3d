@@ -26,7 +26,7 @@ class AbsAxisScaling(object):
     except IOError:
       self.value = self.minimum = self.maximum = self.fuzz = self.flat = self.resolution = 1
     else:
-      self.value, self.minimum, self.maximum, self.fuzz, self.flat, self.resolution = struct.unpack("llllll", s)
+      self.value, self.minimum, self.maximum, self.fuzz, self.flat, self.resolution = struct.unpack("ffffff", s)
 
   def __str__(self):
     return "Value {0} Min {1}, Max {2}, Fuzz {3}, Flat {4}, Res {5}".format(self.value, self.minimum, self.maximum, self.fuzz, self.flat, self.resolution)

@@ -8,7 +8,9 @@ from pi3d.event.EventStream import EventStream
 
 _KEYS = (k for k in vars(Keys) if not k.startswith('_'))
 KEY_CODE = dict((k, getattr(Keys, k)) for k in _KEYS)
-CODE_KEY = dict((v, k) for k, v in six.iteritems(KEY_CODE))
+CODE_KEY = {}
+for v in KEY_CODE:
+  CODE_KEY[v] = KEY_CODE[v]
 
 def key_to_code(key):
   return KEY_CODE.get(str(key), -1) if isinstance(key, six.string_types) else key
