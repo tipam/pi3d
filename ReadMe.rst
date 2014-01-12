@@ -265,14 +265,14 @@ Editing scripts and running
 
 #.  **Load and run**
 
-    Either run from the terminal ``python3 ~/pi3d/demos/Minimal.py`` or
+    Either run from the terminal ``python3 ~/pi3d_demos/Minimal.py`` or
     load any of the demos into Geany and run (using the cogs icon). As a minimum,
     scripts need these elements in order to use the pi3d library::
 
       import pi3d
       DISPLAY = pi3d.Display.create(w=128, h=128)
-      shader = pi3d.Shader("shaders/2d_flat")
-      sprite = pi3d.ImageSprite("textures/PATRN.PNG", shader)
+      shader = pi3d.Shader("uv_flat")
+      sprite = pi3d.ImageSprite("textures/PATRN.PNG", shader, w=10.0, h=10.0) # path relative to program dir
       while DISPLAY.loop_running():
         sprite.draw()
 
@@ -346,8 +346,8 @@ is going on.
   
     import demo
 
-  Allows the demo files to be put in a subdirectory but still run. If you write
-  a program in the top directory then you will need to take this out::
+  Allows the demo files to be put in a subdirectory but still run. If you install
+  pi3d using pip or ``python setup.py install`` then you can take this out::
   
     import pi3d
 
@@ -365,9 +365,7 @@ is going on.
     from pi3d.shape.Sprite import Sprite
 
   If you import the whole lot using ``import pi3d`` then you need to prefix classes
-  and functions with ``pi3d.`` And you are loading a large number of variable names
-  which might cause a conflict, isn't as explicit and is less tidy (in the non-
-  superficial sense)! A third way to import the modules would be to use
+  and functions with ``pi3d.`` A third way to import the modules would be to use
   ``from pi3d import *`` this saves having to use the ``pi3d.`` prefix but
   is **much harder to debug** if there is a name conflict.
   
