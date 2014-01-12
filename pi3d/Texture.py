@@ -117,7 +117,7 @@ class Texture(Loadable):
       if self.ix == WIDTHS[i]:
         break # no need to resize as already a golden size
       if self.ix > WIDTHS[i]:
-        im = im.resize((WIDTHS[i-1], int((WIDTHS[i-1] * self.iy) / self.ix)),
+        im = im.resize((WIDTHS[i], int((WIDTHS[i] * self.iy) / self.ix)),
                         resize_type)
         self.ix, self.iy = im.size
         break
