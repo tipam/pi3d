@@ -10,7 +10,8 @@ from pi3d.util.OffScreenTexture import OffScreenTexture
 class PostProcess(OffScreenTexture):
   """For creating a an offscreen texture that can be redrawn using shaders
   as required by the developer"""
-  def __init__(self, shader="post_base", mipmap=False, add_tex=None, divide=1):
+  def __init__(self, shader="post_base", mipmap=False, add_tex=None,
+              scale=1.0, camera=None, divide=1):
     """ calls Texture.__init__ but doesn't need to set file name as
     texture generated from the framebuffer. Keyword Arguments:
 
@@ -25,15 +26,37 @@ class PostProcess(OffScreenTexture):
       *add_tex*
         list of textures. If additional textures can be used by the shader
         then they can be added here.
+        
+      *scale*
+        will only render this proportion of the full screen which will
+        then be mapped to the full uv of the Sprite. The camera object
+        passed (below) will need to have the same scale set to avoid
+        perspective distortion
+        
+      *camera*
+        the camera to use for rendering to the offscreen texture
+        
+      *divide*
+        allow the sprite to be created with intermediate vertices to allow
+        interesting vertex shader effects
      
     """
     super(PostProcess, self).__init__("postprocess")
+    self.scale = scale
     # load shader
     self.shader = Shader(shader)
-    dummycam = Camera.instance() # in case this is prior to one being created 
+    if camera == None:
+      self.viewcam = Camera.instance() # in case this is prior to one being created
+    else:
+      self.viewcam = camera
     self.camera = Camera(is_3d=False)
     self.sprite = LodSprite(z=20.0, w=self.ix, h=self.iy, n=divide)
     self.sprite.set_2d_size(w=self.ix, h=self.iy)
+    for b in self.sprite.buf:
+      b.unib[6] = self.scale # ufact
+      b.unib[7] = self.scale # vfact
+      b.unib[9] = (1.0 - self.scale) * 0.5 # uoffset
+      b.unib[10] = (1.0 - self.scale) * 0.5 # voffset
     self.alpha = False
     self.blend = True
     self.mipmap = mipmap
@@ -47,11 +70,20 @@ class PostProcess(OffScreenTexture):
     will obviously take a while to draw and re-draw
     """
     super(PostProcess, self)._start()
+    from pi3d.Display import Display
+    xx = Display.INSTANCE.width / 2.0 * (1.0 - self.scale)
+    yy = Display.INSTANCE.height / 2.0 * (1.0 - self.scale)
+    ww = Display.INSTANCE.width * self.scale
+    hh = Display.INSTANCE.height * self.scale
+    opengles.glEnable(GL_SCISSOR_TEST)
+    opengles.glScissor(ctypes.c_int(int(xx)), ctypes.c_int(int(yy)),
+                  ctypes.c_int(int(ww)), ctypes.c_int(int(hh)))
 
   def end_capture(self):
     """ stop capturing to texture and resume normal rendering to default
     """
     super(PostProcess, self)._end()
+    opengles.glDisable(GL_SCISSOR_TEST)
 
   def draw(self, unif_vals=None):
     """ draw the shape using the saved texture

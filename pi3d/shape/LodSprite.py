@@ -4,7 +4,9 @@ from pi3d.Buffer import Buffer
 from pi3d.Shape import Shape
 
 class LodSprite(Shape):
-  """ 3d model inherits from Shape, differs from Plane in being single sided"""
+  """ 3d model inherits from Shape, differs from Plane in being single sided
+  Also has the ability to divide into more triangle (than 2) to allow some
+  post processing in the vertex shader"""
   def __init__(self, camera=None, light=None, w=1.0, h=1.0, name="",
                x=0.0, y=0.0, z=20.0,
                rx=0.0, ry=0.0, rz=0.0,
@@ -16,6 +18,8 @@ class LodSprite(Shape):
         Width.
       *h*
         Height.
+      *n*
+        How many cells to divide the plane into
     """
     super(LodSprite, self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                  sx, sy, sz, cx, cy, cz)

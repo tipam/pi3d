@@ -28,7 +28,8 @@ class Camera(DefaultInstance):
         determines whether the camera uses a perspective or orthographic
         projection matrix
       *scale*
-        number of pixels per unit of size for orthographic camera
+        number of pixels per unit of size for orthographic camera or divisor
+        for fov if perspective
     """
     super(Camera, self).__init__()
 
@@ -37,12 +38,12 @@ class Camera(DefaultInstance):
     self.eye = [eye[0], eye[1], eye[2]]
     if lens == None:
       from pi3d.Display import Display
-      lens = (Display.INSTANCE.near, Display.INSTANCE.far, Display.INSTANCE.fov,
-                  Display.INSTANCE.width / float(Display.INSTANCE.height))
+      lens = [Display.INSTANCE.near, Display.INSTANCE.far, Display.INSTANCE.fov,
+                  Display.INSTANCE.width / float(Display.INSTANCE.height)]
     self.lens = lens
     self.view = _LookAtMatrix(at, eye, [0, 1, 0])
     if is_3d:
-      self.projection = _ProjectionMatrix(lens[0], lens[1], lens[2], lens[3])
+      self.projection = _ProjectionMatrix(lens[0], lens[1], lens[2] / scale, lens[3])
     else:
       self.projection = _OrthographicMatrix(scale=scale)
     self.model_view = dot(self.view, self.projection)
@@ -58,14 +59,14 @@ class Camera(DefaultInstance):
     from pi3d.Display import Display
 
     return Camera((0, 0, 0), (0, 0, -0.1),
-                  (Display.INSTANCE.near, Display.INSTANCE.far, Display.INSTANCE.fov,
-                  Display.INSTANCE.width / float(Display.INSTANCE.height)))
+                  [Display.INSTANCE.near, Display.INSTANCE.far, Display.INSTANCE.fov,
+                  Display.INSTANCE.width / float(Display.INSTANCE.height)])
 
   def reset(self, lens=None, is_3d=True, scale=1.0):
     """Has to be called each loop if the camera position or rotation changes"""
     if lens != None:
       view = _LookAtMatrix(self.at, self.start_eye, [0, 1, 0])
-      projection = _ProjectionMatrix(lens[0], lens[1], lens[2], lens[3])
+      projection = _ProjectionMatrix(lens[0], lens[1], lens[2] / scale, lens[3])
       self.model_view = dot(view, projection)
     elif not is_3d:
       view = _LookAtMatrix(self.at, self.start_eye, [0, 1, 0])
