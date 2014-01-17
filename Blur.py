@@ -20,9 +20,11 @@ from the centre of the screen
 import math, random, time
 
 import demo
-import six
 
 import pi3d
+import sys
+if sys.version_info[0] == 3:
+  unichr = chr
 
 MESSAGE = """\
 blurring
@@ -32,7 +34,7 @@ distance!
 justified
 multiline
 unicode æ ö ¼
-Strings """ + six.unichr(255) + ' ' + six.unichr(256) + ' ' + six.unichr(257)
+Strings """ + unichr(255) + ' ' + unichr(256) + ' ' + unichr(257)
 
 # character 255 should appear, character 256 should not.
 

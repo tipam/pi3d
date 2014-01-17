@@ -10,8 +10,13 @@ import time, math, glob, random, threading, json
 import demo
 import pi3d
 
-from six.moves import urllib_parse, urllib_request
-from six import iteritems
+if sys.version_info[0] == 3:
+  from urllib import request as urllib_request
+  from urllib import parse as urllib_parse
+else:
+  import urllib
+  urllib_request = urllib
+  urllib_parse = urllib
 
 #display, camera, shader
 DISPLAY = pi3d.Display.create(x=100, y=100, frames_per_second=20)
@@ -299,9 +304,10 @@ class Instruments(object):
     self.ndl2.rotateToZ(-360*ae.y/3000)
     self.ndl3.rotateToZ(-ae.direction)
     self.dot_list = []
-    for i, o in iteritems(others):
+    for i in others:
       if i == "start":
         continue
+      o = others[i]
       dx = (o.x - ae.x) / 50
       dy = (o.z - ae.z) / 50
       d = math.hypot(dx, dy)
@@ -466,8 +472,9 @@ while DISPLAY.loop_running() and not inputs.key_state("KEY_ESC"):
   if inputs.key_state("KEY_S") or inputs.get_hat()[1] == 1: #throttle back
     a.set_power(-1)
   if inputs.key_state("KEY_X"): #jump to first enemy!
-    for i, b in iteritems(others):
+    for i in others:
       if i != "start":
+        b = others[i]
         a.x, a.y, a.z = b.x, b.y + 5, b.z
         break
   if inputs.key_state("KEY_B") or inputs.key_state("BTN_BASE2"): #brakes
@@ -495,9 +502,10 @@ while DISPLAY.loop_running() and not inputs.key_state("KEY_ESC"):
   inst.draw()
   a.draw()
 
-  for i, b in iteritems(others):
+  for i in others:
     if i == "start":
       continue
+    b = others[i]
     b.update_variables()
     b.update_position(mymap.calcHeight(b.x, b.z))
     b.draw()
