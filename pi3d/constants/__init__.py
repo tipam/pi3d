@@ -10,9 +10,9 @@ STARTUP_MESSAGE = """
 
   Pi3D module - version %(version)s
 
-  Copyright (c) Tim Skillman, 2012-2013
-  Copyright (c) Patrick Gaunt, 2012-2013
-  Copyright (c) Tom Ritchford, 2012-2013
+  Copyright (c) Tim Skillman, 2012-2014
+  Copyright (c) Patrick Gaunt, 2012-2014
+  Copyright (c) Tom Ritchford, 2012-2014
 
   Updates available from www.github.com/tipam/pi3d
 """ % {'version': VERSION}
@@ -31,6 +31,7 @@ EGL_DEFAULT_DISPLAY = 0
 EGL_NO_CONTEXT = 0
 EGL_NO_DISPLAY = 0
 EGL_NO_SURFACE = 0
+EGL_FALSE = 0
 DISPMANX_PROTECTION_NONE = 0
 
 # Is this running on a raspberry pi?
