@@ -32,7 +32,7 @@ v1.3
             texture sampling in the vertex shader. Additional Textures can
             be passed to PostProcess __init__ for use by filter shaders.
             Additional filters added to pi3d_demos
-            
+
 v1.2
 2013-09-06  PostProcess added to allow effect shaders to be applied to
             a rendered scene. OffScreenTexture system streamlined to take
@@ -68,7 +68,6 @@ v0.08
             file loading can be done on sub threads, TTF fonts can be used events
             can handle all types of input such as joystick, gamepad etc, Building
 2012-12-08  class and clashtest shader detect bumping into things.
-
 
 v0.07
 2012-12-08  Added splash screen to TK window (also user defineable)
