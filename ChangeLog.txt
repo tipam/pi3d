@@ -4,8 +4,29 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
+v1.7
+2014-01-20  Minor fixes.
+
+v1.6
+2013-12-05  Simple GUI functionality. Minimal fixes. pi3d.util.Gui added
+
+v1.5
+2013-11-25  Bug fixes. InputEvents now works with python3. Buffer uses numpy
+            to calculate normals which would be much faster if this were
+            ever required for a large array of vertices.
+
+v1.4
+2013-10-16  Minor improvements and bug fixes. Camera init uses dimensions
+            from Display (as the default instance Camera did) rather than
+            guessing! Buffer now copes with intentionally missing normals
+            and texture coordinates as would often be the case for drawing
+            points or drawing a Model using self colour (and no texture OR
+            bump mapping) Pillow has now been correctly fixed but the
+            horrible fixes to get round the previous version will be left
+            in for a while.
+            
 v1.3
-2013-19-06  Memory leak with Textures reappeared and fixed. Bug in Pillow
+2013-09-19  Memory leak with Textures reappeared and fixed. Bug in Pillow
             looks like it will not be fixed for 2.2.0 so added a hack to
             Font. LodSprite allows segmentation of a simple plane for
             texture sampling in the vertex shader. Additional Textures can
