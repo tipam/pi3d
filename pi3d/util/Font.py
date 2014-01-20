@@ -3,7 +3,9 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import ctypes
 import itertools
 import os.path
-import six
+import sys
+if sys.version_info[0] == 3:
+  unichr = chr
 
 try:
   from PIL import Image, ImageDraw, ImageFont
@@ -110,7 +112,7 @@ class Font(Texture):
       
       for i in itertools.chain([0], codepoints):
         try:
-          ch = six.unichr(i)
+          ch = unichr(i)
         except TypeError:
           ch = i
         # TODO: figure out how to skip missing characters entirely.

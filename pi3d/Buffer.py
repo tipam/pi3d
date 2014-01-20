@@ -66,14 +66,14 @@ class Buffer(Loadable):
     """
     #self.shape = shape
     self.textures = []
-    pts = np.array(pts)
-    texcoords = np.array(texcoords)
+    pts = np.array(pts, dtype=float)
+    texcoords = np.array(texcoords, dtype=float)
     faces = np.array(faces)
 
     if normals == None: #i.e. normals will only be generated if explictly None
       LOGGER.debug('Calculating normals ...')
 
-      normals = np.zeros(pts.shape, dtype=pts.dtype) #empty array rights size
+      normals = np.zeros(pts.shape, dtype=float) #empty array rights size
 
       fv = pts[faces] #expand faces with x,y,z values for each vertex
       #cross product of two edges of triangles
