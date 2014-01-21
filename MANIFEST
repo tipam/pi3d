@@ -9,10 +9,8 @@ pi3d/Display.py
 pi3d/Keyboard.py
 pi3d/Light.py
 pi3d/Mouse.py
-pi3d/Mouse_wip.py
 pi3d/Shader.py
 pi3d/Shape.py
-pi3d/Shape_wip.py
 pi3d/Texture.py
 pi3d/__init__.py
 pi3d/constants/__init__.py
@@ -95,8 +93,8 @@ pi3d/shape/Triangle.py
 pi3d/shape/Tube.py
 pi3d/shape/__init__.py
 pi3d/sprite/Ball.py
-pi3d/sprite/Ball_2d.py
 pi3d/sprite/Missile.py
+pi3d/sprite/ScissorBall.py
 pi3d/sprite/__init__.py
 pi3d/util/Clashtest.py
 pi3d/util/Ctypes.py
