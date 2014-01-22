@@ -1,0 +1,289 @@
+
+Introduction to Pi3D
+====================
+
+**Pi3D written by Tim Skillman, Paddy Gaunt, Tom Ritchford Copyright (c) 2013**
+
+There's plenty of 3D code flying around at the moment for the Raspberry Pi,
+but much of it is rather complicated to understand and most of it can sit
+under the bonnet!
+
+pi3d is a Python module that aims to greatly simplify writing 3D in Python
+whilst giving access to the power of the Raspberry Pi GPU. It enables both
+3D and 2D rendering and aims to provide a host of exciting commands to load
+in textured/animated models, create fractal landscapes, shaders and much more.
+
+v1.3 release of the pi3d module adds support for
+running on platforms other than the raspberry pi (X on linux) and runs with
+python 3 as well as 2 The OpenGLES2.0 functionality of the Raspberry Pi
+is used directly or via mesa on 'big' machines. This makes it generally *faster*
+and opens up the world of *shaders* that allow effects such as normal and 
+reflection maps, blurring and many others. It has various demos of built-in
+shapes, landscapes, model loading, walk-about camera and much more! See the demos
+included with this code and experiment with them ..
+
+If you are reading this document as the ReadMe in the repository then you
+can find the full version of the documentation here
+http://pi3d.github.com/html/index.html
+
+Demos for Pi3D are now stored at https://github.com/pi3d/pi3d_demos
+===================================================================
+N.B. Shaders are now integrated into programs differently. The syntax used
+to be::
+
+    myshader = pi3d.Shader('shaders/uv_flat')
+
+and is now::
+
+    myshader = pi3d.Shader('uv_flat')
+
+this will use the default shaders 'bundled' with the package. The old format
+will be interpreted as 'look in a subdirectory of the directory where the demo
+is being run from.' This is probably what you would do if you rolled your own
+special shaders for your own project.
+
+Download, Extract and install
+=============================
+
+    If you have pip installed you should be able to open a terminal and
+    type::
+
+      sudo pip install pi3d
+    
+    Otherwise you can download from https://pypi.python.org/pypi/pi3d
+    and extract the package then in a terminal::
+
+      sudo python setup.py install
+
+    (or you may need to use python3) this will put the package into the
+    relevant location on your device (for instance
+    /usr/local/lib/python2.7/dist-packages/) allowing it to be imported
+    by your applications.
+    
+    The latest code can be obtained from https://github.com/tipam/pi3d/
+    where there is a ``Download ZIP`` link, or you can install git then
+    clone using ``git clone https://github.com/tipam/pi3d.git`` this git
+    method will give you the option to update the code by running, from
+    the pi3d directory ``git pull origin master``
+
+Setup on the Raspberry Pi
+=========================
+
+#.  **Memory Split setup**
+
+    Although most demos work on 64MB of memory, you are strongly advised to have
+    a 128MB of graphics memory split, especially for full-screen 3D graphics.
+    In the latest Raspbian build you need to either run ``sudo raspi-config``
+    or edit the config.txt file (in the boot directory) and set the variable
+    ``gpu_mem=128`` for 128MB of graphics memory.
+
+
+#.  **Install Python Imaging**
+
+    Before trying any of the demos or Pi3D, you must download the Python Imaging
+    Library as this is needed for importing any graphics used by Pi3. The original
+    Imaging library is no longer really maintained and doesn't run on python_3.
+    The better equivalent replacement is Pillow however a couple of issues
+    relating to text vertical alignment will not be corrected unti the Oct2013
+    issue. To install Pillow you need to::
+
+      sudo apt-get install python-dev python-setuptools libjpeg-dev zlib1g-dev libpng12-dev libfreetype6-dev
+      sudo apt-get install python-pip
+      sudo pip install Pillow
+      ...
+
+    If you miss any of the dependent libraries and need to add them later
+    you will have to ``pip uninstall`` then re ``pip install``
+
+    For python_3 support the first above will provide the required graphics
+    libraries used by Pillow but you will need to swap to ``python3-dev``
+    and ``python3-setuptools`` also pip is different::
+
+      sudo apt-get install python3-pip
+      sudo pip-3.2 install Pillow
+
+    If you do not intend to run python_3 and need nicely aligned text
+    strings over the short term you can install the old PIL:  on the
+    terminal, type::
+
+      sudo apt-get install python-imaging
+
+    If you later switch to Pillow you will need to sudo remove python-imaging
+    first
+
+    [To run on Arch linux you will need to install::
+
+      pacman -S python2
+      pacman -S python-imaging
+      pacman -S python2-numpy
+
+    this worked for me. Presumably you would need the pacman equivalent of
+    all the installations outlined above for Pillow and python_3]
+
+Setup on alternative Linux platforms
+====================================
+
+#.  The machine will need to have a gpu that runs OpenGL2+ and obviously
+    it will need to have python installed. If the Linux is running in vmware
+    you will need to 'enable 3d acceleration'. You need to install libraries
+    that emulate OpenGLES behaviour for the gpu::
+
+      sudo apt-get install mesa-utils-extra
+
+    This should install libEGL.so.1 and libGLESv2.so.2 if these change
+    (which I suppose they could in time) then the references will need to
+    be altered in pi3d/constants/__init__.py
+
+    The installation of PIL or Pillow should be the same as above but you
+    are more likely to need to manually install python-numpy or python3-numpy
+
+Editing scripts and running
+===========================
+
+#.  **Install Geany to run Pi3D**
+
+    Although you can use any editor and run the scripts in a terminal using python,
+    Geany is by far the easiest and most compatible application to use for creating
+    and running Python scripts. Download and install it with::
+
+      sudo apt-get install geany xterm
+
+#.  **Optionally, install tk.**
+
+    Some of the demos require the tk graphics toolkit.  To download and install it::
+
+      sudo apt-get install tk
+
+#.  **Load and run**
+
+    Either run from the terminal ``python3 ~/pi3d/demos/Minimal.py`` or
+    load any of the demos into Geany and run (using the cogs icon). As a minimum,
+    scripts need these elements in order to use the pi3d library::
+
+      import pi3d
+      DISPLAY = pi3d.Display.create(w=128, h=128)
+      shader = pi3d.Shader("2d_flat")
+      sprite = pi3d.ImageSprite("textures/PATRN.PNG", shader)
+      while DISPLAY.loop_running():
+        sprite.draw()
+
+    But.. a real application will need other code to actually do something, for
+    instance to get user input in order to stop the program!
+
+
+A Very Brief Explanation
+========================
+
+The whole idea of Pi3d is that you don't have to get involved in too many of
+the nuts and bolts of how the OpenGL graphics processor works however it might
+help to get an overview of the layout of Pi3d. More detailed explanations can
+be found in the documentation of each of the modules. Read http://pi3d.github.io/html/FAQ.html before
+you try anything ambitious or if anything goes wrong, obviously. There is a
+http://pi3d.github.io/html/GPUexplain.html where I try to explain in some more detail what
+is going on.
+
+
+  **Display** The `Display` class is the core and is used to hold screen dimension information,
+  to initiate the graphics functionality and for 'central' information, such as timing,
+  for the animation. There needs to be an instance of `Display` in existence
+  before some of the other objects are created so it's a good idea to create one
+  first job.
+  
+  **Shape** `All objects to be drawn by Pi3d` inherit from the `Shape` class which holds
+  details of position, rotation, scale as well as specific data needed for
+  drawing the shape. Each `Shape` contains an array of `Buffer` objects; normally
+  only containing one but there could be more in complicated models created
+  with external 3D applications. 
+  
+  **Buffer** The `Buffer` objects contain the arrays of values representing vertices,
+  normals, faces and texture coordinates in a form that can be quickly read by
+  the graphics processor. Each Buffer object within a `Shape` can be textured
+  using a different image or shade (RGB) value and, if needed, a different `Shader`
+  
+  **Shader** The `Shader` class is used to compile *very fast* programs that are run on
+  the graphics processor. They have two parts: *Vertex Shaders* that do calculation
+  for each of the vertices of the `Buffer` and *Fragment Shaders* applied to
+  each pixel. In Pi3d we have kept the shaders out of the main python files
+  and divided them using the two extensions .vs and .fs The shader language
+  is C like, very clever indeed, but rather hard to fathom out.
+  
+  **Camera** In order to draw a `Shape` on the `Display` the `Shader` needs to be passed the
+  vertex information in the Buffers and needs know how the `Shape` has been moved.
+  But it also needs to know how the `Camera` has moved. The `Camera` class generally
+  has just one instance and if you do not create one explicitly then `Display` will
+  generate a default one when you first try to draw something. The `Camera`
+  has position and rotation information similar to Shapes but also information
+  to create the view, such as how wide-angle or telephoto the lens is.
+  
+  **Texture** The `Texture` objects are used to load images from file into a form that
+  can be passed to the `Shader` to draw onto a surface. They can also be applied as
+  normal maps to give much finer local detail or as reflection maps - a much
+  faster way to make surfaces look shiny than ray tracing.
+  
+  **Light** To produce a 3D appearance most of the Shaders use directional lighting and
+  if you draw a `Shape` without creating a `Light` a default instance will be
+  created by the `Display`. The `Light` has properties defining the direction,
+  the colour (and strength i.e. RGB values) and ambient colour (and strength).
+
+  When you look through the demos you will see one or two things that may
+  not be immediately obvious. All the demos start with::
+  
+    #!/usr/bin/python
+    from __future__ import absolute_import, division, print_function, unicode_literals
+
+  Although these lines can often be left out, the first tells any process running the file
+  as a script that it's python and the second is basically to help the transition
+  of this code to run using python 3::
+  
+    import demo
+
+  Allows the demo files to be put in a subdirectory but still run. If you write
+  a program in the top directory then you will need to take this out::
+  
+    import pi3d
+
+  Is an alternative to importing just what you need i.e.::
+  
+    from pi3d.constants import *
+    from pi3d import Display
+    from pi3d.Texture import Texture
+    from pi3d.Keyboard import Keyboard
+    from pi3d.Light import Light
+    from pi3d.Shader import Shader
+    from pi3d.util.String import String
+    ...
+    from pi3d.shape.Sphere import Sphere
+    from pi3d.shape.Sprite import Sprite
+
+  If you import the whole lot using ``import pi3d`` then you need to prefix classes
+  and functions with ``pi3d.`` And you are loading a large number of variable names
+  which might cause a conflict, isn't as explicit and is less tidy (in the non-
+  superficial sense)! A third way to import the modules would be to use
+  ``from pi3d import *`` this saves having to use the ``pi3d.`` prefix but
+  is **much harder to debug** if there is a name conflict.
+  
+Documentation
+=============
+
+see http://pi3d.github.io/html/index.html
+
+Please note that Pi3D functions may change significantly during its development.
+
+Bug reports, comments, feature requests and fixes are most welcome!
+
+Please email on pi3d@googlegroups.com or contact us through the Raspberry Pi forums
+or on http://pi3d.github.com/html/index.html
+
+
+Acknowledgements
+================
+
+Pi3D started with code based on Peter de Rivaz 'pyopengles'
+(https://github.com/peterderivaz/pyopengles) with some tweaking from Jon Macey's
+code (jonmacey.blogspot.co.uk/2012/06/).
+
+Many Thanks, especially to Peter de Rivaz, Jon Macey, Richar Urwin, Peter Hess,
+David Wallin and others who have contributed to Pi3D - keep up the good work!
+
+
+**PLEASE READ LICENSING AND COPYRIGHT NOTICES ESPECIALLY IF USING FOR COMMERCIAL PURPOSES**

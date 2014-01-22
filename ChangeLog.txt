@@ -1,0 +1,101 @@
+Pi3D Change Log
+===============
+Tim Skillman, Patrick Gaunt, Tom Ritchford
+
+Date        Amends
+
+v1.3
+2013-19-06  Memory leak with Textures reappeared and fixed. Bug in Pillow
+            looks like it will not be fixed for 2.2.0 so added a hack to
+            Font. LodSprite allows segmentation of a simple plane for
+            texture sampling in the vertex shader. Additional Textures can
+            be passed to PostProcess __init__ for use by filter shaders.
+            Additional filters added to pi3d_demos
+            
+v1.2
+2013-09-06  PostProcess added to allow effect shaders to be applied to
+            a rendered scene. OffScreenTexture system streamlined to take
+            out duplicated code and now works on X11 systems.
+
+v1.1
+2013-08-25  Split demos into their own repository and make pi3d structure
+            more in line with other packages. Put package on pypi to allow
+            installation using 'python setup.py install' or, ideally,
+            'pip install pi3d'
+
+v1.0
+2013-08-16  Support for other linux platforms using xlib and mesa. Runs under
+            python3 using six. Memory leaks fixed. Unicode, multiline and justified
+            String. DogFight demo using multiplayer networking (urllib to
+            MySQL php server) Point rendering option added. Shadow casting
+            onto ElevationMap. MergeShape takes array of Shapes so much
+            quicker for assemblies of large numbers of objects. Slideshow
+            demo loads resources in background thread. Fixed z position
+            bug in 2d_flat/Canvas system. Added alpha value as a uniform
+            variable to allow shaders to fade objects.
+
+v0.8
+2013-05-29  Switch to a non-zero-padded version number
+
+v0.08
+2013-02-08  Wholesale conversion to OpenGL ES2.0 mechanisms. As much as possible
+            of the existing functionality has been maintained though some classes
+            have not yet been implemented: [collisionMap, Missile] some are done
+            differently: [Draw, DrawString2D] The structure of the module has been
+            broken into a directory structure with smaller files generally containing
+            one class. Shaders implemented, Display class does more loop control,
+            file loading can be done on sub threads, TTF fonts can be used events
+            can handle all types of input such as joystick, gamepad etc, Building
+2012-12-08  class and clashtest shader detect bumping into things.
+
+
+v0.07
+2012-12-08  Added splash screen to TK window (also user defineable)
+2012-12-07  LoaderEgg draw needed to disableClientState(GL_COLOR_ARRAY) as
+            this affected the scene afterwards
+2012-12-07  Added pi3d.FPS class that returns a Frames Per Second (FPS) count
+2012-12-06  Found a problem with matrix stacking - a push would increase the
+            stack but a pop would not reduce it (i.e. constantly increasing)
+            Introduced a fixed stack method with a default of 20 deep pushes
+            (or user defined, e.g. mtrx=pi3d.matrix(50) for fifty pushes)
+            This should also speed things up a little as stack is pre-allocated
+            upon intialisation.
+2012-12-06  Separated perspective and orthographic code into setPerspective and
+            setOrthographic functions so that a scene can interchange between them
+
+v0.06
+2012-11-29  Added Pi3D.DrawString2D which now renders text to a 2D orthographic view
+2012-11-29  Added Pi3D.CollisionMap for checking collisions against objects.
+            Includes a collideLine method to see if a line of fire will hit an object
+2012-11-28  Pi3D.LodDraw3 and LodDraw3xyz added to enable Level Of Detail rendering
+            for near, far and further models (or none at all) 
+2012-11-27  Loading textures checks for duplicates and uses preloaded textures
+            rather than loads them again
+2012-11-26  Drawing models (LoadModel) can use offset,rotation,scale and centre
+            values added to their draw call (skips a matrix calculation)
+2012-11-18  Modified loadECfiles to support other image types and an option not to
+            render the bottom image
+2012-11-17  Added Pi3D.tkwin class for creating and handling TKinter window and events.
+            Much improved keyboard and mouse handling
+2012-11-17  Modified Pi3D display class to resize the viewport and destroy correctly.
+            Includes a seperate method to create_surface
+2012-11-17  Adopted Paddy Gaunt's fixes and additions to Pi3D module including
+            LoadModel (Obj format) and ClashTest
+
+v0.05
+2012-07-20  Add textures class so that textures can be deleted correctly
+2012-07-20  Fixed a couple of bugs with latest release of Raspbian Wheezy
+2012-07-12  Amended mergeShape to include shape's existing parameters
+            (x,y,z,rotations, scale)
+2012-07-12  Added Paddy's fog effect
+2012-07-12  ForestWalk2.py - I broke it Paddy! - left tiled texture in
+2012-07-12  Modified ForestWalk.py to include new FACES type environment cube
+2012-07-12  Added loadECfiles def in Pi3D to help load faces textures for
+            environment cube (FACES type)
+2012-07-12  Made robotWalkabout.py that demostrates avatar viewing with an
+            offset camera
+2012-07-12  Swapped height and depth parameters in pi3d.createCuboid - was
+            confusing with x,y,z ordering
+2012-07-12  Updated clouds3d.py with Paddy's improved z-sorted version
+2012-07-12  Added more environment cubes (FACES, HALFCROSS, CROSS) and added
+            Github Wiki page
