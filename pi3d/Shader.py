@@ -117,9 +117,10 @@ class Shader(object):
     self.attr_texcoord = opengles.glGetAttribLocation(self.program, b'texcoord')
     opengles.glEnableVertexAttribArray(self.attr_texcoord)
     self.unif_tex = []
-    self.texture = []
+    self.textures = []
     for s in [b'tex0', b'tex1', b'tex2']:
       self.unif_tex.append(opengles.glGetUniformLocation(self.program, s))
+      self.textures.append(None)
       """
       *NB*
         for *uv* shaders tex0=texture tex1=normal map tex2=reflection

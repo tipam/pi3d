@@ -249,16 +249,18 @@ class Buffer(Loadable):
 
     self.unib[2] = 0.6
     for t, texture in enumerate(textures):
-      opengles.glActiveTexture(GL_TEXTURE0 + t)
-      assert texture.tex(), 'There was an empty texture in your Buffer.'
-      opengles.glBindTexture(GL_TEXTURE_2D, texture.tex())
+        #if shader.textures[t] != texture: # very slight speed increase for sprites
+        opengles.glActiveTexture(GL_TEXTURE0 + t)
+        assert texture.tex(), 'There was an empty texture in your Buffer.'
+        opengles.glBindTexture(GL_TEXTURE_2D, texture.tex())
 
-      opengles.glUniform1i(shader.unif_tex[t], t)
+        opengles.glUniform1i(shader.unif_tex[t], t)
+        #shader.textures[t] = texture # to enable skip loading subsequently
 
-      if texture.blend or shape.unif[17] < 1.0:
-        opengles.glEnable(GL_BLEND)
-        # i.e. if any of the textures set to blend then all will for this shader.
-        self.unib[2] = 0.05
+        if texture.blend or shape.unif[17] < 1.0:
+          opengles.glEnable(GL_BLEND)
+          # i.e. if any of the textures set to blend then all will for this shader.
+          self.unib[2] = 0.05
 
     opengles.glUniform3fv(shader.unif_unib, 4, ctypes.byref(self.unib))
 
