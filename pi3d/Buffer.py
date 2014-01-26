@@ -79,10 +79,10 @@ class Buffer(Loadable):
       #cross product of two edges of triangles
       fn = np.cross(fv[:][:][:,1] - fv[:][:][:,0], fv[:][:][:,2] - fv[:][:][:,0])
       fn = Utility.normalize_v3(fn)
-      normals[faces[:,0]] = normals[faces[:,0]] + fn #add up all normal vectors for a vertex
-      normals[faces[:,1]] = normals[faces[:,1]] + fn
-      normals[faces[:,2]] = normals[faces[:,2]] + fn
-      Utility.normalize_v3(normals)
+      normals[faces[:,0]] += fn #add up all normal vectors for a vertex
+      normals[faces[:,1]] += fn
+      normals[faces[:,2]] += fn
+      normals = Utility.normalize_v3(normals)
     else:
       normals = np.array(normals)
       
@@ -110,16 +110,16 @@ class Buffer(Loadable):
 
     self.ntris = len(faces)
     self.element_array_buffer = c_shorts(faces.reshape(-1))
+    from pi3d.Display import Display
+    self.disp = Display.INSTANCE # rely on there always being one!
 
   def __del__(self):
     #super(Buffer, self).__del__() #TODO supposed to always call super.__del__
     if not self.opengl_loaded:
       return True
-    from pi3d.Display import Display
-    if Display.INSTANCE:
-      Display.INSTANCE.vbufs_dict[str(self.vbuf)][1] = 1
-      Display.INSTANCE.ebufs_dict[str(self.ebuf)][1] = 1
-      Display.INSTANCE.tidy_needed = True
+    self.disp.vbufs_dict[str(self.vbuf)][1] = 1
+    self.disp.ebufs_dict[str(self.ebuf)][1] = 1
+    self.disp.tidy_needed = True
 
   def re_init(self, shape, pts, texcoords, faces, normals=None, smooth=True):
     """Only reset the opengl buffer variables: vertices, tex_coords, indices
@@ -148,10 +148,8 @@ class Buffer(Loadable):
     opengles.glGenBuffers(1, ctypes.byref(self.vbuf))
     self.ebuf = c_int()
     opengles.glGenBuffers(1, ctypes.byref(self.ebuf))
-    from pi3d.Display import Display
-    if Display.INSTANCE:
-      Display.INSTANCE.vbufs_dict[str(self.vbuf)] = [self.vbuf, 0]
-      Display.INSTANCE.ebufs_dict[str(self.ebuf)] = [self.ebuf, 0]
+    self.disp.vbufs_dict[str(self.vbuf)] = [self.vbuf, 0]
+    self.disp.ebufs_dict[str(self.ebuf)] = [self.ebuf, 0]
     self._select()
     opengles.glBufferData(GL_ARRAY_BUFFER,
                           ctypes.sizeof(self.array_buffer),
@@ -249,18 +247,20 @@ class Buffer(Loadable):
 
     self.unib[2] = 0.6
     for t, texture in enumerate(textures):
-        #if shader.textures[t] != texture: # very slight speed increase for sprites
+      if (self.disp.last_textures[t] != texture or
+            self.disp.last_shader != shader): # very slight speed increase for sprites
         opengles.glActiveTexture(GL_TEXTURE0 + t)
         assert texture.tex(), 'There was an empty texture in your Buffer.'
         opengles.glBindTexture(GL_TEXTURE_2D, texture.tex())
-
         opengles.glUniform1i(shader.unif_tex[t], t)
-        #shader.textures[t] = texture # to enable skip loading subsequently
+        self.disp.last_textures[t] = texture
 
-        if texture.blend or shape.unif[17] < 1.0:
-          opengles.glEnable(GL_BLEND)
-          # i.e. if any of the textures set to blend then all will for this shader.
-          self.unib[2] = 0.05
+      if texture.blend or shape.unif[17] < 1.0:
+        opengles.glEnable(GL_BLEND)
+        # i.e. if any of the textures set to blend then all will for this shader.
+        self.unib[2] = 0.05
+
+    self.disp.last_shader = shader
 
     opengles.glUniform3fv(shader.unif_unib, 4, ctypes.byref(self.unib))
 
