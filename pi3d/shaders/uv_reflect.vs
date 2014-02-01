@@ -15,7 +15,8 @@ uniform vec3 unif[16];
 
 varying vec2 texcoordout;
 varying vec2 bumpcoordout;
-varying vec2 shinecoordout;
+varying vec3 inray;
+varying vec3 normout;
 varying float dist;
 varying vec3 lightVector;
 
@@ -24,7 +25,7 @@ void main(void) {
   
   lightVector = normalize(unif[8]);
   lightVector.z *= -1.0;
-  vec3 normout = normalize(vec3(modelviewmatrix[0] * vec4(normal, 0.0)));   
+  normout = normalize(vec3(modelviewmatrix[0] * vec4(normal, 0.0)));   
   vec3 bnorm = vec3(0.0, 0.0, 1.0); // ----- normal to original bump map sheet
   float c = dot(bnorm, normout); // ----- cosine
   float t = 1.0 - c;
@@ -38,17 +39,9 @@ void main(void) {
     0.0, 0.0, 0.0, 1.0) * vec4(lightVector, 0.0)); // ----- vector mult for rotation about axis
   bumpcoordout = (texcoord * unib[2].xy + unib[3].xy) * vec2(1.0, -1.0) * unib[0][0];
 
-  vec3 inray = vec3(relPosn - vec4(unif[6], 0.0)); // ----- vector from the camera to this vertex
+  inray = vec3(relPosn - vec4(unif[6], 0.0)); // ----- vector from the camera to this vertex
   dist = length(inray);
   inray = normalize(inray);
-  vec3 refl = reflect(inray, normout); // ----- reflection direction from this vertex
-  vec3 horiz = cross(inray, vec3(0.0, 1.0, 0.0)); // ----- a 'horizontal' unit vector normal to the inray
-  vec3 vert = cross(inray, vec3(1.0, 0.0, 0.0)); // ----- a 'vertical' unit vector normal to the inray
-  float hval = dot(refl, horiz); // ----- component of the reflected ray along horizonal
-  float vval = dot(refl, vert); // -----  componet of reflected ray along vertical
-  float zval = dot(refl, -1.0 * inray); // ----- component of reflected ray in direction back to camera
-  // ----- now work out the horizonal and vertical angles relative to inray and map them to range 0 to 1
-  shinecoordout = vec2(clamp(0.5 - atan(hval, zval)/6.2831853, 0.05, 0.95), clamp(0.5 - atan(vval, zval)/6.2831853, 0.05, 0.95));
 
   texcoordout = texcoord * unib[2].xy + unib[3].xy;
 

@@ -2,7 +2,8 @@ precision mediump float;
 
 varying vec2 texcoordout;
 varying vec2 bumpcoordout;
-varying vec2 shinecoordout;
+varying vec3 inray;
+varying vec3 normout;
 varying vec3 lightVector;
 varying float dist;
 
@@ -38,9 +39,16 @@ void main(void) {
   if (texc.a < unib[0][2]) discard; // ------ to allow rendering behind the transparent parts of this object
   texc.rgb = (texc.rgb * unif[9]) * intensity + (texc.rgb * unif[10]); // ------ directional lightcol * intensity + ambient lightcol
 
+  vec3 refl = reflect(inray, normout + 0.2 * bfact * bump); // ----- reflection direction from this vertex
+  vec3 horiz = cross(inray, vec3(0.0, 1.0, 0.0)); // ----- a 'horizontal' unit vector normal to the inray
+  vec3 vert = cross(inray, vec3(1.0, 0.0, 0.0)); // ----- a 'vertical' unit vector normal to the inray
+  float hval = dot(refl, horiz); // ----- component of the reflected ray along horizonal
+  float vval = dot(refl, vert); // -----  componet of reflected ray along vertical
+  float zval = dot(refl, -1.0 * inray); // ----- component of reflected ray in direction back to camera
+  // ----- now work out the horizonal and vertical angles relative to inray and map them to range 0 to 1
+  vec2 shinecoord = vec2(0.5 - atan(hval , zval)/6.283185307, 0.5 - atan(vval , zval)/6.283185307); // ------ potentially need to clamp with bump included in normal
   vec4 shinec = vec4(0.0, 0.0, 0.0, 0.0);
-  vec2 bumpshinecoord = shinecoordout + 0.2 * bfact * vec2(bump);
-  shinec = texture2D(tex2, bumpshinecoord); // ------ get the reflection for this pixel
+  shinec = texture2D(tex2, shinecoord); // ------ get the reflection for this pixel
   float shinefact = clamp(unib[0][1]*length(shinec)/length(texc), 0.0, unib[0][1]);// ------ reduce the reflection where the ground texture is lighter than it
 
   gl_FragColor = (1.0 - ffact) * ((1.0 - shinefact) * texc + shinefact * shinec) + ffact * vec4(unif[4], unif[5][1]); // ------ combine using factors
