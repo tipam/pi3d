@@ -24,4 +24,5 @@ void main(void) {
   if (ntot == 3.0) texc = vec4(0.0, 0.0, 1.0, 1.0);
   else if (ntot != 2.0) texc = vec4(smoothstep(0.0, 5.0, ntot), 1.0, 0.0, 0.0);
   gl_FragColor = texc;
+  gl_FragColor.a = 1.0;
 }

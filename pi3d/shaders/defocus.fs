@@ -23,6 +23,7 @@ void main(void) {
     }
   }
   gl_FragColor = texc * 0.04;
+  gl_FragColor.a = 1.0;
 }
 
 
