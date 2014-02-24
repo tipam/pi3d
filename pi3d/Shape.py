@@ -376,6 +376,10 @@ class Shape(Loadable):
     for b in self.buf:
       b.unib[8] = point_size
 
+  def add_child(child):
+    """puts a Shape into the children list"""
+    self.children.append(child)
+
   def x(self):
     """get value of x"""
     return self.unif[0]
