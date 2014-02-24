@@ -124,8 +124,10 @@ class Shape(Loadable):
     rendering with a different Shader/Texture. self.draw() relies on objects
     inheriting from this filling buf with at least one element.
     """
+    
+    self.children = []
 
-  def draw(self, shader=None, txtrs=None, ntl=None, shny=None, camera=None):
+  def draw(self, shader=None, txtrs=None, ntl=None, shny=None, camera=None, mlist=[]):
     """If called without parameters, there has to have been a previous call to
     set_draw_details() for each Buffer in buf[].
     NB there is no facility for setting umult and vmult with draw: they must be
@@ -139,13 +141,22 @@ class Shape(Loadable):
     shader = shader or self.shader
     shader.use()
 
-    if self.MFlg == True:
+    if self.MFlg == True or len(mlist):
       # Calculate rotation and translation matrix for this model using numpy.
       self.MRaw = dot(self.tr2,
         dot(self.scl,
             dot(self.roy,
                 dot(self.rox,
                     dot(self.roz, self.tr1)))))
+      # child drawing addition #############
+      newmlist = [m for m in mlist]
+      newmlist.append(self.MRaw)
+      if len(self.children) > 0:
+        for c in self.children:
+          c.draw(shader, txtrs, ntl, shny, camera, newmlist)
+      for m in mlist[-1::-1]:
+        self.MRaw = dot(self.MRaw, m)
+      ######################################
       self.M[0:16] = self.MRaw.ravel()
       #self.M[0:16] = c_floats(self.MRaw.reshape(-1).tolist()) #pypy version
       self.M[16:32] = dot(self.MRaw, camera.mtrx).ravel()
