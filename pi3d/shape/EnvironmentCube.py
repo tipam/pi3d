@@ -100,6 +100,17 @@ class EnvironmentCube(Shape):
       self.buf = []
       self.buf.append(Buffer(self, self.vertices, self.tex_coords, self.indices, self.normals))
 
+    elif maptype == "BLENDER":
+      self.tex_coords = ((0.999, 0.502), (0.668, 0.502), (0.668, 0.999), (0.999, 0.999), #front
+        (0.333, 0.001), (0.001, 0.001), (0.001, 0.499), (0.333, 0.499), #right
+        (0.666, 0.999), (0.666, 0.502), (0.335, 0.502), (0.335, 0.999), #top
+        (0.001, 0.502), (0.001, 0.999), (0.332, 0.999), (0.332, 0.502), #bottom
+        (0.668, 0.499), (0.999, 0.499), (0.999, 0.001), (0.668, 0.001), #left
+        (0.335, 0.001), (0.666, 0.001), (0.666, 0.499), (0.335, 0.499)) #back
+
+      self.buf = []
+      self.buf.append(Buffer(self, self.vertices, self.tex_coords, self.indices, self.normals))
+
     else:
       self.tex_coords = ((0.002, 0.002), (0.998, 0.002), (0.998, 0.998),(0.002, 0.998),
             (0.002, 0.002), (0.998, 0.002), (0.998, 0.998), (0.002, 0.998),
