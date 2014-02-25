@@ -373,10 +373,11 @@ class Shape(Loadable):
     self.unif[index_from:(index_from + len(data))] = data
 
   def set_point_size(self, point_size=0.0):
+    """if this is > 0.0  the vertices will be drawn as points"""
     for b in self.buf:
       b.unib[8] = point_size
 
-  def add_child(child):
+  def add_child(self, child):
     """puts a Shape into the children list"""
     self.children.append(child)
 
