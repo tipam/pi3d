@@ -97,7 +97,7 @@ def loadFileOBJ(model, fileName):
 
       # Vertices as (x,y,z) coordinates
       # v 0.123 0.234 0.345
-      if chunks[0] == "v" and len(chunks) == 4:
+      if chunks[0] == "v" and len(chunks) >= 4:
         x = float(chunks[1])
         y = float(chunks[2])
         z = -float(chunks[3]) # z direction away in gl es 2.0 shaders
@@ -105,7 +105,7 @@ def loadFileOBJ(model, fileName):
 
       # Normals in (x, y, z) form; normals might not be unit
       # vn 0.707 0.000 0.707
-      if chunks[0] == "vn" and len(chunks) == 4:
+      if chunks[0] == "vn" and len(chunks) >= 4:
         x = float(chunks[1])
         y = float(chunks[2])
         z = -float(chunks[3]) # z direction away in gl es 2.0 shaders
@@ -246,23 +246,24 @@ def loadFileOBJ(model, fileName):
       print("normals=", len(model.buf[n].normals))
       print("tex_coords=", len(model.buf[n].tex_coords))
 
-  material_lib = parse_mtl(open(os.path.join(filePath, mtllib), 'r'))
-  for m in materials:
-    if VERBOSE:
-      print(m)
-    if 'mapDiffuse' in material_lib[m]:
-      tfileName = material_lib[m]['mapDiffuse']
-      model.buf[model.vGroup[materials[m]]].texFile = tfileName
-      model.buf[model.vGroup[materials[m]]].textures = [Texture(filePath + '/' + tfileName, False, True)] # load from file
-    else:
-      model.buf[model.vGroup[materials[m]]].texFile = None
-      model.buf[model.vGroup[materials[m]]].textures = []
-      if 'colorDiffuse' in material_lib[m]:#TODO don't create this array if texture being used though not exclusive.
-      #TODO check this works with appropriate mtl file
-        redVal = material_lib[m]['colorDiffuse'][0]
-        grnVal = material_lib[m]['colorDiffuse'][1]
-        bluVal = material_lib[m]['colorDiffuse'][2]
-        model.buf[model.vGroup[materials[m]]].material = (redVal, grnVal, bluVal, 1.0)
-        model.buf[model.vGroup[materials[m]]].unib[3:6] = [redVal, grnVal, bluVal]
-
-
+  try:
+    material_lib = parse_mtl(open(os.path.join(filePath, mtllib), 'r'))
+    for m in materials:
+      if VERBOSE:
+        print(m)
+      if 'mapDiffuse' in material_lib[m]:
+        tfileName = material_lib[m]['mapDiffuse']
+        model.buf[model.vGroup[materials[m]]].texFile = tfileName
+        model.buf[model.vGroup[materials[m]]].textures = [Texture(filePath + '/' + tfileName, False, True)] # load from file
+      else:
+        model.buf[model.vGroup[materials[m]]].texFile = None
+        model.buf[model.vGroup[materials[m]]].textures = []
+        if 'colorDiffuse' in material_lib[m]:#TODO don't create this array if texture being used though not exclusive.
+        #TODO check this works with appropriate mtl file
+          redVal = material_lib[m]['colorDiffuse'][0]
+          grnVal = material_lib[m]['colorDiffuse'][1]
+          bluVal = material_lib[m]['colorDiffuse'][2]
+          model.buf[model.vGroup[materials[m]]].material = (redVal, grnVal, bluVal, 1.0)
+          model.buf[model.vGroup[materials[m]]].unib[3:6] = [redVal, grnVal, bluVal]
+  except:
+    print('no material specified')
