@@ -191,10 +191,11 @@ def loadFileOBJ(model, fileName):
       # Smooth shading
       if chunks[0] == "s" and len(chunks) == 2:
         smooth = chunks[1]
+        
   if VERBOSE:
     print("materials:  ", materials)
     print("numv: ", numv)
-
+    
   for g in faces:
     numv[g] -= 1
     numi[g] -= 1
@@ -236,9 +237,6 @@ def loadFileOBJ(model, fileName):
     model.buf[n].material = (0.0, 0.0, 0.0, 0.0)
     model.buf[n].ttype = GL_TRIANGLES
 
-
-    #for i in range(len(model.vGroup[g].normals)):
-    #  print(model.vGroup[g].normals[i], end='')
     if VERBOSE:
       print()
       print("indices=", len(model.buf[n].indices))
@@ -254,7 +252,7 @@ def loadFileOBJ(model, fileName):
       if 'mapDiffuse' in material_lib[m]:
         tfileName = material_lib[m]['mapDiffuse']
         model.buf[model.vGroup[materials[m]]].texFile = tfileName
-        model.buf[model.vGroup[materials[m]]].textures = [Texture(filePath + '/' + tfileName, False, True)] # load from file
+        model.buf[model.vGroup[materials[m]]].textures = [Texture(filePath + '/' + tfileName, blend=False, flip=True)] # load from file
       else:
         model.buf[model.vGroup[materials[m]]].texFile = None
         model.buf[model.vGroup[materials[m]]].textures = []

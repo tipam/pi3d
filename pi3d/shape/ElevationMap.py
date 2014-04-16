@@ -43,18 +43,20 @@ class ElevationMap(Shape):
     """
     super(ElevationMap, self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                        sx, sy, sz, cx, cy, cz)
-    if mapfile[0] != '/':
-      mapfile = sys.path[0] + '/' + mapfile
-    if VERBOSE:
-      print("Loading height map ...", mapfile)
-
     if divx > 200 or divy > 200:
       print("... Map size can't be bigger than 200x200 divisions")
       divx = 200
       divy = 200
+    if isinstance(mapfile, basestring):
+      if mapfile[0] != '/':
+        mapfile = sys.path[0] + '/' + mapfile
+      if VERBOSE:
+        print("Loading height map ...", mapfile)
 
-    im = Image.open(mapfile)
-    im = ImageOps.invert(im)
+      im = Image.open(mapfile)
+      im = ImageOps.invert(im)
+    else:
+      im = mapfile #allow image files to be passed as mapfile
     ix, iy = im.size
     if (ix > 200 and divx == 0) or (divx > 0):
       if divx == 0:

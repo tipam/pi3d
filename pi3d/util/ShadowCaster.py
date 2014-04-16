@@ -20,7 +20,7 @@ class ShadowCaster(OffScreenTexture):
     self.emap = emap
     self.emap.set_material((0.0, 0.0, 0.0)) # hide bits below ground
     #TODO doesn't cope with  z light positions
-    self.eye = [-500*i for i in light.lightpos] # good distance away
+    self.eye = [-500.0 * i for i in light.lightpos] # good distance away
     if self.eye[1] <= 0: # must have +ve y
       self.eye[1] = 500.0
     if abs(self.eye[0]) > abs(self.eye[2]): #x val is bigger than z val
@@ -32,9 +32,9 @@ class ShadowCaster(OffScreenTexture):
       self.scaleu = float(self.iy) / self.emap.width
       self.scalev = float(self.ix)/ self.emap.depth
       self.eye[2] = 0
-      self.scaleu = self.scaleu / self.eye[1] * float(self.eye[0]**2 + self.eye[1]**2)**0.5
+      self.scaleu = self.scaleu / self.eye[1] * (self.eye[0]**2 + self.eye[1]**2)**0.5
       self.emap.unif[50] = 1.0 #orientation flag
-      self.emap.unif[53] = -3.0 * su / self.emap.width * self.eye[0] / float(self.eye[1]) #height adjustment
+      self.emap.unif[53] = -3.0 * su / self.emap.width * self.eye[0] / self.eye[1] #height adjustment
     else:
       #change scale so map just fits on screen
       if self.eye[2] < 0:
@@ -44,9 +44,9 @@ class ShadowCaster(OffScreenTexture):
       self.scaleu = float(self.iy) / self.emap.depth
       self.scalev = float(self.ix)/ self.emap.width
       self.eye[0] = 0
-      self.scaleu = self.scaleu / self.eye[1] * float(self.eye[2]**2 + self.eye[1]**2)**0.5
+      self.scaleu = self.scaleu / self.eye[1] * (self.eye[2]**2 + self.eye[1]**2)**0.5
       self.emap.unif[50] = 0.0
-      self.emap.unif[53] = -3.0 * su / self.emap.width * self.eye[2] / float(self.eye[1])
+      self.emap.unif[53] = -3.0 * su / self.emap.width * self.eye[2] / self.eye[1]
     if abs(self.scaleu) > abs(self.scalev):
       self.scale = 3.0 * self.scalev # multiplication factor to reduce pixeliness
     else:
