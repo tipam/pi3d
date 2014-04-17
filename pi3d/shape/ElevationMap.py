@@ -47,7 +47,7 @@ class ElevationMap(Shape):
       print("... Map size can't be bigger than 200x200 divisions")
       divx = 200
       divy = 200
-    if isinstance(mapfile, basestring):
+    if issubclass(type(mapfile), type("")): #HORRIBLE. Only way to cope with python2v3
       if mapfile[0] != '/':
         mapfile = sys.path[0] + '/' + mapfile
       if VERBOSE:
