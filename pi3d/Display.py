@@ -63,6 +63,8 @@ class Display(object):
     self.textures_dict = {}
     self.vbufs_dict = {}
     self.ebufs_dict = {}
+    self.last_shader = None
+    self.last_textures = [None, None, None] # if more than 3 used this will break in Buffer.draw()
     self.external_mouse = None
 
     if PLATFORM != PLATFORM_PI:

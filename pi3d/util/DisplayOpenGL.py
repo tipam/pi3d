@@ -108,6 +108,7 @@ class DisplayOpenGL(object):
       xlib.XSelectInput(self.d, self.window, KeyPressMask)
       xlib.XMapWindow(self.d, self.window)
       self.surface = openegl.eglCreateWindowSurface(self.display, self.config, self.window, 0)
+
     else:
       self.dispman_display = bcm.vc_dispmanx_display_open(0) #LCD setting
       self.dispman_update = bcm.vc_dispmanx_update_start(0)

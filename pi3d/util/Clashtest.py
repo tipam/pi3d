@@ -18,8 +18,11 @@ class Clashtest(OffScreenTexture):
     # load clashtest shader
     self.shader = Shader("clashtest")
 
-    size = self.ix * self.iy * 3
-    self.img = (ctypes.c_char * size)()
+    self.img = (ctypes.c_char * (self.ix * 3))()
+    self.step = 3 * int(self.ix / 50)
+    self.img_sz = len(self.img)-3
+    self.s_flg = False
+    self.y0 = int(self.iy / 2)
 
   def draw(self, shape):
     """ draw the shape using the clashtest Shader
@@ -28,6 +31,11 @@ class Clashtest(OffScreenTexture):
       *shape*
         Shape object that will be drawn
     """
+    if not self.s_flg:
+      opengles.glEnable(GL_SCISSOR_TEST)
+      opengles.glScissor(ctypes.c_int(int(0)), ctypes.c_int(self.y0),
+                    ctypes.c_int(self.ix), ctypes.c_int(1))
+      self.s_flg = True
     shape.draw(shader=self.shader)
 
   def check(self, grain=50):
@@ -38,12 +46,13 @@ class Clashtest(OffScreenTexture):
       *grain*
         Number of locations to check over the whole image
     """
-    opengles.glReadPixels(0, 0, self.ix, self.iy,
+    opengles.glDisable(GL_SCISSOR_TEST)
+    self.s_flg = False
+    opengles.glReadPixels(0, self.y0, self.ix, 1,
                                GL_RGB, GL_UNSIGNED_BYTE,
                                ctypes.byref(self.img))
     r0 = self.img[0:3]
-    step = 3 * int(self.ix * self.iy / 50)
-    for i in xrange(0, len(self.img)-3, step):
+    for i in xrange(0, self.img_sz, self.step):
       if self.img[i:(i+3)] != r0:
         return True
 

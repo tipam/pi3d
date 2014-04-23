@@ -406,6 +406,8 @@ class TextBox(Widget):
   def _get_cursor_loc(self, i):
     verts = self.shapes[0].buf[0].vertices
     maxi = int(len(verts) / 4 - 1)
+    if maxi < 0:
+      return self.x, self.y
     if i > maxi:
       x = self.x - verts[2][0] + verts[maxi * 4][0]
       y = self.y - verts[0][1] + (verts[maxi * 4][1] + verts[maxi * 4 + 2][1]) / 2.0
