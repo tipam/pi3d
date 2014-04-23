@@ -11,7 +11,7 @@ class Sphere(Shape):
   def __init__(self, camera=None, light=None,
                radius=1, slices=12, sides=12, hemi=0.0, name="",
                x=0.0, y=0.0, z=0.0, rx=0.0, ry=0.0, rz=0.0,
-               sx=1.0, sy=1.0, sz=1.0, cx=0.0, cy=0.0, cz=0.0):
+               sx=1.0, sy=1.0, sz=1.0, cx=0.0, cy=0.0, cz=0.0, invert=False):
     """uses standard constructor for Shape extra Keyword arguments:
 
       *radius*
@@ -22,6 +22,8 @@ class Sphere(Shape):
         if set to 0.5 it will only construct the top half of sphere
       *sides*
         number of sides for Shape._lathe() to use
+      *invert*
+        normals will face inwards, Texture will need flip=True
     """
     super(Sphere, self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                 sx, sy, sz, cx, cy, cz)
@@ -30,10 +32,16 @@ class Sphere(Shape):
       print("Creating sphere ...")
 
     path = []
-    st = (math.pi * (1.0 - hemi)) / slices
+    #extra points added at poles to reduce distortion (mainly normals)
+    st = ((math.pi - 0.002) * (1.0 - hemi)) / slices
+    path.append((0.0, radius))
     for r in range(slices + 1):
-      x, y = Utility.from_polar_rad(r * st, radius)
-      path.append((y, x))  # TODO: why is the reversal here?
+      x, y = Utility.from_polar_rad(r * st + 0.001, radius)
+      path.append((y, x))
+    x, y = Utility.from_polar_rad(r * st + 0.002, radius)
+    path.append((y, x))
+    if invert:
+      path.reverse()
 
     self.radius = radius
     self.slices = slices
