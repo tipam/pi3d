@@ -15,7 +15,7 @@ whilst giving access to the power of the Raspberry Pi GPU. It enables both
 3D and 2D rendering and aims to provide a host of exciting commands to load
 in textured/animated models, create fractal landscapes, shaders and much more.
 
-v1.7 release of the Pi3D module adds support for
+v1.8 release of the Pi3D module adds support for
 running on platforms other than the raspberry pi (X on linux) and runs with
 python 3 as well as 2 The OpenGLES2.0 functionality of the Raspberry Pi
 is used directly or via mesa on 'big' machines. This makes it generally *faster*
