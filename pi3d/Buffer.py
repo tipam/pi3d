@@ -279,15 +279,19 @@ class Buffer(Loadable):
       'normals': self.normals,
       'tex_coords': self.tex_coords,
       'indices': self.indices,
-      'material': self.material
+      'material': self.material,
+      'textures': self.textures
       }
   
   def __setstate__(self, state):
     unib_tuple = tuple(state['unib'].tolist())
-    self.unif = (ctypes.c_float * 12)(*unib_tuple)
+    self.unib = (ctypes.c_float * 12)(*unib_tuple)
     self.vertices = state['vertices']
     self.normals = state['normals']
     self.tex_coords = state['tex_coords']
     self.indices = state['indices']
     self.material = state['material']
+    self.textures = state['textures']
+    self.opengl_loaded = False
+    self.disk_loaded = True
     self.__pack_data()

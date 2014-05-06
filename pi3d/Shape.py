@@ -694,7 +694,9 @@ class Shape(Loadable):
       'unif': array(self.unif),
       'childModel': self.childModel,
       'children': self.children,
-      'name': self.name
+      'name': self.name,
+      'buf': self.buf,
+      'textures': self.textures
       }
   
   def __setstate__(self, state):
@@ -703,6 +705,10 @@ class Shape(Loadable):
     self.childModel = state['childModel']
     self.name = state['name']
     self.children = state['children']
+    self.buf = state['buf']
+    self.textures = state['textures']
+    self.opengl_loaded = False
+    self.disk_loaded = True
     self.__init_matrices()
 
 
