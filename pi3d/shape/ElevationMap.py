@@ -49,16 +49,19 @@ class ElevationMap(Shape):
       divy = 200
     print(type(mapfile), type(""))
     
-    if '' + mapfile == mapfile: #HORRIBLE. Only way to cope with python2v3
-      if mapfile[0] != '/':
-        mapfile = sys.path[0] + '/' + mapfile
-      if VERBOSE:
-        print("Loading height map ...", mapfile)
+    try:
+      if '' + mapfile == mapfile: #HORRIBLE. Only way to cope with python2v3
+        if mapfile[0] != '/':
+          mapfile = sys.path[0] + '/' + mapfile
+        if VERBOSE:
+          print("Loading height map ...", mapfile)
 
-      im = Image.open(mapfile)
-      im = ImageOps.invert(im)
-    else:
-      im = mapfile #allow image files to be passed as mapfile
+        im = Image.open(mapfile)
+        im = ImageOps.invert(im)
+      else:
+        im = mapfile #allow image files to be passed as mapfile
+    except:
+      im = mapfile
     ix, iy = im.size
     if (ix > 200 and divx == 0) or (divx > 0):
       if divx == 0:
