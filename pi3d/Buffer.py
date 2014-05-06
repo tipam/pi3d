@@ -92,24 +92,26 @@ class Buffer(Loadable):
     self.tex_coords = texcoords
     self.indices = faces
     self.material = (0.5, 0.5, 0.5, 1.0)
+    self.__pack_data()
 
+  def __pack_data(self):
     # Pack points,normals and texcoords into tuples and convert to ctype floats.
-    n_verts = len(pts)
-    if len(texcoords) != n_verts:
-      if len(normals) != n_verts:
+    n_verts = len(self.vertices)
+    if len(self.tex_coords) != n_verts:
+      if len(self.normals) != n_verts:
         self.N_BYTES = 12 # only use pts
-        self.array_buffer = c_floats(pts.reshape(-1).tolist())
+        self.array_buffer = c_floats(self.vertices.reshape(-1).tolist())
       else:
         self.N_BYTES = 24 # use pts and normals
-        self.array_buffer = c_floats(np.concatenate((pts, normals),
+        self.array_buffer = c_floats(np.concatenate((self.vertices, self.normals),
                             axis=1).reshape(-1).tolist())
     else:
       self.N_BYTES = 32 # use all three NB doesn't check that normals are there
-      self.array_buffer = c_floats(np.concatenate((pts, normals, texcoords),
+      self.array_buffer = c_floats(np.concatenate((self.vertices, self.normals, self.tex_coords),
                           axis=1).reshape(-1).tolist())
 
-    self.ntris = len(faces)
-    self.element_array_buffer = c_shorts(faces.reshape(-1))
+    self.ntris = len(self.indices)
+    self.element_array_buffer = c_shorts(self.indices.reshape(-1))
     from pi3d.Display import Display
     self.disp = Display.INSTANCE # rely on there always being one!
 
@@ -269,3 +271,23 @@ class Buffer(Loadable):
     else:
       opengles.glDrawElements(GL_POINTS, self.ntris * 3, GL_UNSIGNED_SHORT, 0)
 
+  # Implement pickle/unpickle support
+  def __getstate__(self):
+    return {
+      'unib': np.array(self.unib),
+      'vertices': self.vertices,
+      'normals': self.normals,
+      'tex_coords': self.tex_coords,
+      'indices': self.indices,
+      'material': self.material
+      }
+  
+  def __setstate__(self, state):
+    unib_tuple = tuple(state['unib'].tolist())
+    self.unif = (ctypes.c_float * 12)(*unib_tuple)
+    self.vertices = state['vertices']
+    self.normals = state['normals']
+    self.tex_coords = state['tex_coords']
+    self.indices = state['indices']
+    self.material = state['material']
+    self.__pack_data()
