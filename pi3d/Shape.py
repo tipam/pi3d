@@ -2,7 +2,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import ctypes
 
-from numpy import array, dot
+from numpy import array, dot, savez, load
 from math import radians, pi, sin, cos
 
 from pi3d.constants import *
@@ -72,7 +72,23 @@ class Shape(Loadable):
       18  custom data space                           54  56
       19  custom data space                           57  59
     ===== ========================================== ==== ==
+    """
+    self.shader = None
+    self.textures = []
 
+    self.buf = []
+    """self.buf contains a buffer for each part of this shape that needs
+    rendering with a different Shader/Texture. self.draw() relies on objects
+    inheriting from this filling buf with at least one element.
+    """
+    
+    self.children = []
+    self._camera = camera
+    
+    self.__init_matrices()
+
+  def __init_matrices(self):
+    """
     Shape holds matrices that are updated each time it is moved or rotated
     this saves time recalculating them each frame as the Shape is drawn
     """
@@ -115,17 +131,6 @@ class Shape(Loadable):
                             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
                             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
 
-    self._camera = camera
-    self.shader = None
-    self.textures = []
-
-    self.buf = []
-    """self.buf contains a buffer for each part of this shape that needs
-    rendering with a different Shader/Texture. self.draw() relies on objects
-    inheriting from this filling buf with at least one element.
-    """
-    
-    self.children = []
 
   def draw(self, shader=None, txtrs=None, ntl=None, shny=None, camera=None, mlist=[]):
     """If called without parameters, there has to have been a previous call to
@@ -683,3 +688,27 @@ class Shape(Loadable):
       opy = py
 
     return Buffer(self, verts, tex_coords, idx, norms)
+  
+  def __getstate__(self):
+    return {
+      'unif': array(self.unif),
+      'childModel': self.childModel,
+      'children': self.children,
+      'name': self.name,
+      'buf': self.buf,
+      'textures': self.textures
+      }
+  
+  def __setstate__(self, state):
+    unif_tuple = tuple(state['unif'].tolist())
+    self.unif = (ctypes.c_float * 60)(*unif_tuple)
+    self.childModel = state['childModel']
+    self.name = state['name']
+    self.children = state['children']
+    self.buf = state['buf']
+    self.textures = state['textures']
+    self.opengl_loaded = False
+    self.disk_loaded = True
+    self.__init_matrices()
+
+
