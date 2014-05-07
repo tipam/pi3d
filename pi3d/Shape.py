@@ -691,7 +691,7 @@ class Shape(Loadable):
   
   def __getstate__(self):
     return {
-      'unif': array(self.unif),
+      'unif': list(self.unif),
       'childModel': self.childModel,
       'children': self.children,
       'name': self.name,
@@ -700,7 +700,7 @@ class Shape(Loadable):
       }
   
   def __setstate__(self, state):
-    unif_tuple = tuple(state['unif'].tolist())
+    unif_tuple = tuple(state['unif'])
     self.unif = (ctypes.c_float * 60)(*unif_tuple)
     self.childModel = state['childModel']
     self.name = state['name']
@@ -709,6 +709,7 @@ class Shape(Loadable):
     self.textures = state['textures']
     self.opengl_loaded = False
     self.disk_loaded = True
+    self._camera = None
     self.__init_matrices()
 
 
