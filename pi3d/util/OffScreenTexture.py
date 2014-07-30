@@ -19,6 +19,7 @@ class OffScreenTexture(Texture):
     self.image = self.im.convert("RGBA").tostring('raw', "RGBA")
     self.alpha = True
     self.blend = False
+    self.mipmap = False
 
     self._tex = ctypes.c_int()
     self.framebuffer = (ctypes.c_int * 1)()

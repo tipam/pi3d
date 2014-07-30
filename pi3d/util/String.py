@@ -112,3 +112,38 @@ class String(Shape):
     self.buf.append(Buffer(self, self.verts, self.texcoords, self.inds, self.norms))
     self.buf[0].textures = [font]
     self.buf[0].unib[1] = -1.0
+    
+    self.string = string #for later use in quick_change() method
+    self.maxlen = len(string)
+    self.font = font
+  
+  def quick_change(self, new_string):
+    """Method for quickly changing some characters within a previously
+    generated String. i.e. for changing digits in a readout etc.
+    
+    NB: 1. if you use a variable width font there will be some distortion
+    as characters are stretched or squashed to the original character's
+    dimensions. 2. there is no account made of new line characters (TODO)
+    3. you must make the original string long enough to fit any additional
+    characters you add to new_string 4. you must make sure the Font as
+    used for the String.__init__ contains all the glyphs you may need for
+    subsequent changes.
+    """
+    import ctypes
+    if new_string != self.string:
+      trunc_string = new_string[:self.maxlen] #chop to length
+      for i, c in enumerate(trunc_string):
+        if c != self.string[i]:
+          stride = 8
+          offset = 6
+          texc = self.font.glyph_table[c][2]
+          for j, tc in enumerate(texc): #patch values directly into array_buffer
+            for k in [0, 1]:
+              self.buf[0].array_buffer[(i * 4 + j) * stride + offset + k] = tc[k]
+          uvmod = True
+      self.buf[0]._select() #then just call glBufferData
+      opengles.glBufferData(GL_ARRAY_BUFFER,
+                        ctypes.sizeof(self.buf[0].array_buffer),
+                        ctypes.byref(self.buf[0].array_buffer),
+                        GL_STATIC_DRAW)
+      self.string = new_string
