@@ -131,6 +131,7 @@ class String(Shape):
     """
     import ctypes
     if new_string != self.string:
+      new_string = new_string + ' ' * (len(self.string) - len(new_string))
       trunc_string = new_string[:self.maxlen] #chop to length
       for i, c in enumerate(trunc_string):
         if c != self.string[i]:

@@ -161,13 +161,18 @@ Setup on the Raspberry Pi
     type::
 
       sudo pip install pi3d
-    
-    Otherwise you can download from https://pypi.python.org/pypi/pi3d
-    and extract the package then in a terminal::
+        or for python3
+      sudo pip3 install pi3d
+        
+    (or pip-3.2 or whatever see below*) Otherwise you can download from
+    https://pypi.python.org/pypi/pi3d and extract the package then in a
+    terminal::
 
       sudo python setup.py install
+        or for python3
+      sudo python3 setup.py install
 
-    (or you may need to use python3) this will put the package into the
+    This will put the package into the
     relevant location on your device (for instance
     /usr/local/lib/python2.7/dist-packages/) allowing it to be imported
     by your applications.
@@ -193,7 +198,8 @@ Setup on the Raspberry Pi
     Imaging Library as this is needed for importing any graphics used by
     Pi3D. The original Imaging library is no longer really maintained and
     doesn't run on python_3. The better equivalent replacement is Pillow.
-    To install Pillow you can get it from the raspbian jessie repository.
+    In the near future Pillow will be the default imaging library but at the 
+    time of writing you have to use the raspbian jessie repository.
     This is the 'trial' version of raspbian and to install packages from
     there you need to add an additional line to /etc/apt/sources.list::
 
@@ -222,10 +228,11 @@ Setup on the Raspberry Pi
     and ``python3-setuptools`` also pip is different::
 
       sudo apt-get install python3-pip
-      sudo pip-3.2 install Pillow
+      sudo pip3 install Pillow
 
-    If you do not intend to run python_3 you can install the old PIL: in the
-    terminal, type::
+    (*used to be ``pip-3.2``, google for the latest botch!) If you do not
+    intend to run python_3 you can install the old PIL: in the terminal,
+    type::
 
       sudo apt-get install python-imaging
 
@@ -414,7 +421,8 @@ Pi3D started with code based on Peter de Rivaz 'pyopengles'
 code (jonmacey.blogspot.co.uk/2012/06/).
 
 Many Thanks, especially to Peter de Rivaz, Jon Macey, Richar Urwin, Peter Hess,
-David Wallin and others who have contributed to Pi3D - keep up the good work!
+David Wallin, Avishay Orpaz (avishorp) and others who have contributed to Pi3D
+- keep up the good work!
 
 
 **PLEASE READ LICENSING AND COPYRIGHT NOTICES ESPECIALLY IF USING FOR COMMERCIAL PURPOSES**
