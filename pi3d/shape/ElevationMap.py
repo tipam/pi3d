@@ -47,16 +47,21 @@ class ElevationMap(Shape):
       print("... Map size can't be bigger than 200x200 divisions")
       divx = 200
       divy = 200
-    if issubclass(type(mapfile), type("")): #HORRIBLE. Only way to cope with python2v3
-      if mapfile[0] != '/':
-        mapfile = sys.path[0] + '/' + mapfile
-      if VERBOSE:
-        print("Loading height map ...", mapfile)
+    print(type(mapfile), type(""))
+    
+    try:
+      if '' + mapfile == mapfile: #HORRIBLE. Only way to cope with python2v3
+        if mapfile[0] != '/':
+          mapfile = sys.path[0] + '/' + mapfile
+        if VERBOSE:
+          print("Loading height map ...", mapfile)
 
-      im = Image.open(mapfile)
-      im = ImageOps.invert(im)
-    else:
-      im = mapfile #allow image files to be passed as mapfile
+        im = Image.open(mapfile)
+        im = ImageOps.invert(im)
+      else:
+        im = mapfile #allow image files to be passed as mapfile
+    except:
+      im = mapfile
     ix, iy = im.size
     if (ix > 200 and divx == 0) or (divx > 0):
       if divx == 0:

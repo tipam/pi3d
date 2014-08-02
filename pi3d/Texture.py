@@ -71,6 +71,7 @@ class Texture(Loadable):
     self.size = size
     self.mipmap = mipmap
     self.byte_size = 0
+    self._loaded = False
     if defer:
       self.load_disk()
     else:
@@ -96,6 +97,11 @@ class Texture(Loadable):
     Pngfont, Font, Defocus and ShadowCaster inherit from Texture but
     don't do all this so have to override this
     """
+    
+    # If already loaded, abort
+    if self._loaded:
+      return
+
     s = self.file_string + ' '
     im = Image.open(self.file_string)
 
@@ -133,6 +139,8 @@ class Texture(Loadable):
     self._tex = ctypes.c_int()
     if 'fonts/' in self.file_string:
       self.im = im
+      
+    self._loaded = True
 
   def _load_opengl(self):
     """overrides method of Loadable"""
@@ -168,6 +176,28 @@ class Texture(Loadable):
     """clear it out"""
     opengles.glDeleteTextures(1, ctypes.byref(self._tex))
 
+    
+  # Implement pickle/unpickle support
+  def __getstate__(self):
+    # Make sure the image is actually loaded
+    if not self._loaded:
+      self._load_disk()
+      
+    return {
+      'blend': self.blend,
+      'flip': self.flip,
+      'size': self.size,
+      'mipmap': self.mipmap,
+      'file_string': self.file_string,
+      'ix': self.ix,
+      'iy': self.iy,
+      'alpha': self.alpha,
+      'image': self.image,
+      '_tex': self._tex,
+      '_loaded': self._loaded,
+      'opengl_loaded': False,
+      'disk_loaded': self.disk_loaded
+      }
 
 class TextureCache(object):
   def __init__(self, max_size=None): #TODO use max_size in some way
