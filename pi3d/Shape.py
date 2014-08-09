@@ -83,6 +83,7 @@ class Shape(Loadable):
     """
     
     self.children = []
+    self.childModel = [] #to allow pickling of Shape objects!
     self._camera = camera
     
     self.__init_matrices()

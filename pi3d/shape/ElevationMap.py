@@ -27,14 +27,21 @@ class ElevationMap(Shape):
 
     Arguments:
       *mapfile*
-        Greyscale image path/file, string.
+        Greyscale image path/file, string. If multiple bytes per pixel
+        only the first one will be used for elevation. jpg files will
+        create slight errors that will cause mis-matching of edges for
+        tiled maps (i.e. use png for these) NB also see divx, divy below
+        i.e. div=64x64 requires image 65x65 pixels 
 
     Keyword arguments:
       *width, depth, height*
         Of the map in world units.
       *divx, divy*
         Number of divisions into which the map will be divided.
-        to create vertices
+        to create vertices (vertices += 1) NB if you want to create a map
+        with 64x64 divisions there will be 65x65 vertices in each direction so
+        the mapfile (above) needs to 65x65 pixels in order to specify
+        elevations precisely and avoid resizing errors.
       *ntiles*
         Number of repeats for tiling the texture image.
       *smooth*
@@ -43,8 +50,10 @@ class ElevationMap(Shape):
     """
     super(ElevationMap, self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                        sx, sy, sz, cx, cy, cz)
+    divx += 1 # one more vertex in each direction than number of divisions
+    divy += 1
     if divx > 200 or divy > 200:
-      print("... Map size can't be bigger than 200x200 divisions")
+      print("... Map size can't be bigger than 199x199 divisions")
       divx = 200
       divy = 200
     print(type(mapfile), type(""))
@@ -57,20 +66,17 @@ class ElevationMap(Shape):
           print("Loading height map ...", mapfile)
 
         im = Image.open(mapfile)
-        im = ImageOps.invert(im)
       else:
         im = mapfile #allow image files to be passed as mapfile
     except:
       im = mapfile
     ix, iy = im.size
-    if (ix > 200 and divx == 0) or (divx > 0):
+    if (ix > 200 and divx == 0) or (ix != divx and iy != divy):
       if divx == 0:
         divx = 200
         divy = 200
       im = im.resize((divx, divy), Image.ANTIALIAS)
       ix, iy = im.size
-    if not im.mode == "P":
-      im = im.convert('P', palette=Image.ADAPTIVE)
 
     im = im.transpose(Image.FLIP_TOP_BOTTOM)
     im = im.transpose(Image.FLIP_LEFT_RIGHT)
@@ -87,11 +93,11 @@ class ElevationMap(Shape):
 
     wh = width * 0.5
     hh = depth * 0.5
-    ws = width / ix
-    hs = depth / iy
+    ws = width / (ix - 1.0)
+    hs = depth / (iy - 1.0)
     ht = height / 255.0
-    tx = 1.0*ntiles / ix
-    ty = 1.0*ntiles / iy
+    tx = 1.0 * ntiles / ix
+    ty = 1.0 * ntiles / iy
 
     verts = []
     norms = []
@@ -100,7 +106,9 @@ class ElevationMap(Shape):
 
     for y in xrange(0, iy):
       for x in xrange(0, ix):
-        hgt = (self.pixels[x, y])*ht
+        pxl = self.pixels[x, y]
+        hgt = pxl[0] if type(pxl) is tuple else pxl
+        hgt *= ht
         this_x = -wh + x*ws
         this_z = -hh + y*hs
         if cubic:
@@ -159,8 +167,8 @@ class ElevationMap(Shape):
 
     wh = self.width * 0.5
     hh = self.depth * 0.5
-    ws = self.width / self.ix
-    hs = self.depth / self.iy
+    ws = self.width / (self.ix - 1.0)
+    hs = self.depth / (self.iy - 1.0)
     ht = self.height / 255.0
 
     if px > -wh and px < wh and pz > -hh and pz < hh:
@@ -181,20 +189,24 @@ class ElevationMap(Shape):
 
     wh = self.width * 0.5
     hh = self.depth * 0.5
-    ws = self.width / self.ix
-    hs = self.depth / self.iy
+    ws = self.width / (self.ix - 1.0)
+    hs = self.depth / (self.iy - 1.0)
     ht = self.height / 255.0
     #round off to nearest integer
     px = (wh + px) / ws
     pz = (hh + pz) / hs
     x = math.floor(px)
     z = math.floor(pz)
-    if x < 0: x = 0
-    if x > (self.ix-2): x = self.ix-2
-    if z < 0: z = 0
-    if z > (self.iy-2): z = self.iy-2
+    if x < 0:
+       x = 0
+    if x > (self.ix - 2):
+      x = self.ix - 2
+    if z < 0:
+      z = 0
+    if z > (self.iy - 2):
+      z = self.iy - 2
     # use actual vertex location rather than recreate it from pixel*ht
-    p0 = int(z*self.ix + x) #offset 1 to get y values
+    p0 = int(z * self.ix + x) #offset 1 to get y values
     p1 = p0 + 1
     p2 = p0 + self.ix
     p3 = p0 + self.ix + 1
@@ -335,6 +347,22 @@ class ElevationMap(Shape):
     forwd = forwd / sqrt(forwd.dot(forwd))
     return (degrees(arcsin(-forwd[1])), degrees(arctan2(sidev[1], normp[1])))
 
+  def __getstate__(self): # to allow pickling
+    state = super(ElevationMap, self).__getstate__()
+    state['width'] = self.width
+    state['height'] = self.height
+    state['depth'] = self.depth
+    state['ix'] = self.ix
+    state['iy'] = self.iy
+    return state
+  
+  def __setstate__(self, state):
+    super(ElevationMap, self).__setstate__(state)
+    self.width = state['width']
+    self.height = state['height']
+    self.depth = state['depth']
+    self.ix = state['ix']
+    self.iy = state['iy']
 
 def intersect_triangle(v1, v2, v3, pos):
   """calculates the y intersection of a point on a triangle and returns the y
