@@ -4,6 +4,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import pi3d
 import pickle
 import time
+from six.moves import queue
 from threading import Thread
 
 #========================================
@@ -34,11 +35,16 @@ class SceneryItem(object):
     
 class TextureItem(object):
   def __init__(self, status=0):
+    '''very simple class to hold texture items in Scene.texture_list
+    '''
     self.texture = None
     self.status = status
     
 class Scene(object):
   def __init__(self, path, msize=1000.0, nx=5, nz=5):
+    '''class for managing scenery objects in the background of a 1st
+    person navigation game.
+    '''
     self.scenery_list = {}
     self.texture_list = {}
     self.draw_list = []
@@ -47,6 +53,10 @@ class Scene(object):
     self.msize = msize
     self.nx = nx
     self.nz = nz
+    thr = Thread(target=load_scenery)
+    thr.daemon = True
+    thr.start()
+
     
   def do_pickle(self, fog=((0.3, 0.3, 0.4, 0.95), 500.0)): #run once to save pkl files
     for key in self.scenery_list:
@@ -119,12 +129,11 @@ class Scene(object):
         
         if abs(dx) < 1000.0 and abs(dz) < 1000.0:
           if s_item.status == 0:
-            thr = Thread(target=load_scenery, args=('{}/{}.pkl'.format(self.path, key), s_item, self.texture_list, 
-                          self.draw_list, offsetx, offsetz))
-            thr.daemon = True
-            thr.start()
+            item = (key, self.path, s_item, self.texture_list, self.draw_list, 
+                  offsetx, offsetz)
+            jobQ.put(item)
             if key == cmap_id: #should only happen at start where need map for calcHeight
-              thr.join()
+              jobQ.join()
           elif s_item.status == 2:
             s_item.shape.position(s_item.x + offsetx, s_item.y, s_item.z + offsetz)
             s_item.last_drawn = time.time()
@@ -142,29 +151,42 @@ class Scene(object):
         s_item.status = 0
         s_item.shape = None
 
+jobQ = queue.Queue() #TODO ideally avoid using a global!
+
 ###################### function run in thread by check_scenery
-def load_scenery(pickle_name, s_item, texture_list, draw_list, offsetx, offsetz):
-  with open(pickle_name, 'rb') as f:
-    s_item.shape = pickle.load(f)
-  t_list = []
-  for t in s_item.textures:
-    if t in texture_list:
-      i = 0
-      while i < 10 and texture_list[t].status == 1:
-        time.sleep(1.0)
-        i += 1
+def load_scenery():
+  while True:
+    item = jobQ.get() #blocks for next available job
+    pickle_name = item[0]
+    pickle_path = item[1]
+    s_item = item[2]
+    texture_list = item[3]
+    draw_list = item[4]
+    offsetx = item[5]
+    offsetz = item[6]
+
+    with open('{}/{}.pkl'.format(pickle_path, pickle_name), 'rb') as f:
+      s_item.shape = pickle.load(f)
+    t_list = []
+    for t in s_item.textures:
+      if t in texture_list:
+        i = 0
+        while i < 10 and texture_list[t].status == 1:
+          time.sleep(1.0)
+          i += 1
+      else:
+        texture_list[t] = TextureItem(status=1)
+        texture_list[t].texture = pi3d.Texture('{}/{}.png'.format(pickle_path, t), 
+                                    flip=s_item.texture_flip, mipmap=s_item.texture_mipmap)
+        texture_list[t].status = 2
+      t_list.append(texture_list[t].texture)
+    if len(s_item.textures) > 0:
+      s_item.shape.set_draw_details(s_item.shader, t_list, s_item.bump, s_item.shine)
     else:
-      texture_list[t] = TextureItem(status=1)
-      texture_list[t].texture = pi3d.Texture('scenery/{}.png'.format(t), 
-                                  flip=s_item.texture_flip, mipmap=s_item.texture_mipmap)
-      texture_list[t].status = 2
-    t_list.append(texture_list[t].texture)
-  if len(s_item.textures) > 0:
-    s_item.shape.set_draw_details(s_item.shader, t_list, s_item.bump, s_item.shine)
-  else:
-    s_item.shape.set_shader(s_item.shader)
-  s_item.status = 2
-  s_item.shape.position(s_item.x + offsetx, s_item.y, s_item.z + offsetz)
-  s_item.last_drawn = time.time()
-  draw_list.append(s_item)
+      s_item.shape.set_shader(s_item.shader)
+    s_item.status = 2
+    s_item.shape.position(s_item.x + offsetx, s_item.y, s_item.z + offsetz)
+    s_item.last_drawn = time.time()
+    draw_list.append(s_item)
+    jobQ.task_done()
 
