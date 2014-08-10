@@ -4,8 +4,8 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import pi3d
 import pickle
 import time
-from six.moves import queue
-from threading import Thread
+import os
+from multiprocessing import Process, Queue
 
 #========================================
 class SceneryItem(object):
@@ -53,9 +53,11 @@ class Scene(object):
     self.msize = msize
     self.nx = nx
     self.nz = nz
-    thr = Thread(target=load_scenery)
+    os.nice(+3) #reduce priority prior to spawning process
+    thr = Process(target=load_scenery)
     thr.daemon = True
     thr.start()
+    os.nice(0) #bump priority up for this process
 
     
   def do_pickle(self, fog=((0.3, 0.3, 0.4, 0.95), 500.0)): #run once to save pkl files
@@ -96,51 +98,62 @@ class Scene(object):
     return self.scenery_list[key].last_drawn
 
   def check_scenery(self, xm, zm):
-      xsize = self.msize * self.nx
-      zsize = self.msize * self.nz
-      if xm > xsize:
-        xm -= xsize
-      if xm < 0.0:
-        xm += xsize
-      if zm > zsize:
-        zm -= zsize
-      if zm < 0.0:
-        zm += zsize
-      cmap_id = 'map{}{}'.format(int(xm / self.msize), int(zm / self.msize))
-      self.draw_list = []
-      for key in self.scenery_list:
-        s_item = self.scenery_list[key]
-        
-        dx = s_item.x - xm
-        offsetx = 0.0
-        if dx > xsize / 2.0:
-          offsetx = -xsize
-        if dx < -xsize / 2.0:
-          offsetx = xsize
-        dx += offsetx
-        
-        dz = s_item.z - zm
-        offsetz = 0.0
-        if dz > zsize / 2.0:
-          offsetz = -zsize
-        if dz < -zsize / 2.0:
-          offsetz = zsize
-        dz += offsetz
-        
-        if abs(dx) < 1000.0 and abs(dz) < 1000.0:
-          if s_item.status == 0:
-            item = (key, self.path, s_item, self.texture_list, self.draw_list, 
-                  offsetx, offsetz)
-            jobQ.put(item)
-            if key == cmap_id: #should only happen at start where need map for calcHeight
-              jobQ.join()
-          elif s_item.status == 2:
-            s_item.shape.position(s_item.x + offsetx, s_item.y, s_item.z + offsetz)
-            s_item.last_drawn = time.time()
-            self.draw_list.append(s_item)
-      self.draw_list = sorted(self.draw_list, key=self.key_draw_list)
-      cmap = self.scenery_list[cmap_id].shape
-      return xm, zm, cmap
+    if not QUP.empty():
+      key, s_item, t_list = QUP.get()
+      if len(s_item.textures) > 0:
+        s_item.shape.set_draw_details(s_item.shader, t_list, s_item.bump, s_item.shine)
+      else:
+        s_item.shape.set_shader(s_item.shader)
+      s_item.status = 2
+      s_item.last_drawn = time.time()
+      self.draw_list.append(s_item)
+      self.scenery_list[key] = s_item     
+    xsize = self.msize * self.nx
+    zsize = self.msize * self.nz
+    if xm > xsize:
+      xm -= xsize
+    if xm < 0.0:
+      xm += xsize
+    if zm > zsize:
+      zm -= zsize
+    if zm < 0.0:
+      zm += zsize
+    cmap_id = 'map{}{}'.format(int(xm / self.msize), int(zm / self.msize))
+    self.draw_list = []
+    for key in self.scenery_list:
+      s_item = self.scenery_list[key]
+      
+      dx = s_item.x - xm
+      offsetx = 0.0
+      if dx > xsize / 2.0:
+        offsetx = -xsize
+      if dx < -xsize / 2.0:
+        offsetx = xsize
+      dx += offsetx
+      
+      dz = s_item.z - zm
+      offsetz = 0.0
+      if dz > zsize / 2.0:
+        offsetz = -zsize
+      if dz < -zsize / 2.0:
+        offsetz = zsize
+      dz += offsetz
+      
+      if abs(dx) < 1000.0 and abs(dz) < 1000.0:
+        if s_item.status == 0:
+          s_item.status = 1
+          item = (key, self.path, s_item, self.texture_list, self.draw_list, 
+                offsetx, offsetz)
+          QDOWN.put(item)
+          #if key == cmap_id: #should only happen at start where need map for calcHeight
+          #  QDOWN.join()
+        elif s_item.status == 2:
+          s_item.shape.position(s_item.x + offsetx, s_item.y, s_item.z + offsetz)
+          s_item.last_drawn = time.time()
+          self.draw_list.append(s_item)
+    self.draw_list = sorted(self.draw_list, key=self.key_draw_list)
+    cmap = self.scenery_list[cmap_id].shape
+    return xm, zm, cmap
 
   #################### clear out unused scenery TODO clear unused textures too
   def clear_scenery(self, threshold):
@@ -151,42 +164,39 @@ class Scene(object):
         s_item.status = 0
         s_item.shape = None
 
-jobQ = queue.Queue() #TODO ideally avoid using a global!
+QUP = Queue()
+QDOWN = Queue()
 
-###################### function run in thread by check_scenery
+###################### function run in thread
 def load_scenery():
   while True:
-    item = jobQ.get() #blocks for next available job
-    pickle_name = item[0]
-    pickle_path = item[1]
-    s_item = item[2]
-    texture_list = item[3]
-    draw_list = item[4]
-    offsetx = item[5]
-    offsetz = item[6]
+    if not QDOWN.empty():
+      item = QDOWN.get() #blocks for next available job
+      key = item[0]
+      pickle_path = item[1]
+      s_item = item[2]
+      texture_list = item[3]
+      draw_list = item[4]
+      offsetx = item[5]
+      offsetz = item[6]
 
-    with open('{}/{}.pkl'.format(pickle_path, pickle_name), 'rb') as f:
-      s_item.shape = pickle.load(f)
-    t_list = []
-    for t in s_item.textures:
-      if t in texture_list:
-        i = 0
-        while i < 10 and texture_list[t].status == 1:
-          time.sleep(1.0)
-          i += 1
-      else:
-        texture_list[t] = TextureItem(status=1)
-        texture_list[t].texture = pi3d.Texture('{}/{}.png'.format(pickle_path, t), 
-                                    flip=s_item.texture_flip, mipmap=s_item.texture_mipmap)
-        texture_list[t].status = 2
-      t_list.append(texture_list[t].texture)
-    if len(s_item.textures) > 0:
-      s_item.shape.set_draw_details(s_item.shader, t_list, s_item.bump, s_item.shine)
-    else:
-      s_item.shape.set_shader(s_item.shader)
-    s_item.status = 2
-    s_item.shape.position(s_item.x + offsetx, s_item.y, s_item.z + offsetz)
-    s_item.last_drawn = time.time()
-    draw_list.append(s_item)
-    jobQ.task_done()
+      with open('{}/{}.pkl'.format(pickle_path, key), 'rb') as f:
+        s_item.shape = pickle.load(f)
+      t_list = []
+      for t in s_item.textures:
+        if t in texture_list:
+          i = 0
+          while i < 10 and texture_list[t].status == 1:
+            time.sleep(1.0)
+            i += 1
+        else:
+          texture_list[t] = TextureItem(status=1)
+          texture_list[t].texture = pi3d.Texture('{}/{}.png'.format(pickle_path, t), 
+                                      flip=s_item.texture_flip, mipmap=s_item.texture_mipmap)
+          texture_list[t].status = 2
+        t_list.append(texture_list[t].texture)
+      s_item.shape.position(s_item.x + offsetx, s_item.y, s_item.z + offsetz)
+      item = (key, s_item, t_list)
+      QUP.put(item)
+    time.sleep(0.05)
 
