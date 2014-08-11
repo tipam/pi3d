@@ -53,7 +53,7 @@ class Scene(object):
     self.msize = msize
     self.nx = nx
     self.nz = nz
-    os.nice(+3) #reduce priority prior to spawning process
+    os.nice(+0) #reduce priority prior to spawning process
     thr = Process(target=load_scenery)
     thr.daemon = True
     thr.start()
@@ -170,33 +170,31 @@ QDOWN = Queue()
 ###################### function run in thread
 def load_scenery():
   while True:
-    if not QDOWN.empty():
-      item = QDOWN.get() #blocks for next available job
-      key = item[0]
-      pickle_path = item[1]
-      s_item = item[2]
-      texture_list = item[3]
-      draw_list = item[4]
-      offsetx = item[5]
-      offsetz = item[6]
+    item = QDOWN.get() #blocks for next available job
+    key = item[0]
+    pickle_path = item[1]
+    s_item = item[2]
+    texture_list = item[3]
+    draw_list = item[4]
+    offsetx = item[5]
+    offsetz = item[6]
 
-      with open('{}/{}.pkl'.format(pickle_path, key), 'rb') as f:
-        s_item.shape = pickle.load(f)
-      t_list = []
-      for t in s_item.textures:
-        if t in texture_list:
-          i = 0
-          while i < 10 and texture_list[t].status == 1:
-            time.sleep(1.0)
-            i += 1
-        else:
-          texture_list[t] = TextureItem(status=1)
-          texture_list[t].texture = pi3d.Texture('{}/{}.png'.format(pickle_path, t), 
-                                      flip=s_item.texture_flip, mipmap=s_item.texture_mipmap)
-          texture_list[t].status = 2
-        t_list.append(texture_list[t].texture)
-      s_item.shape.position(s_item.x + offsetx, s_item.y, s_item.z + offsetz)
-      item = (key, s_item, t_list)
-      QUP.put(item)
-    time.sleep(0.05)
+    with open('{}/{}.pkl'.format(pickle_path, key), 'rb') as f:
+      s_item.shape = pickle.load(f)
+    t_list = []
+    for t in s_item.textures:
+      if t in texture_list:
+        i = 0
+        while i < 10 and texture_list[t].status == 1:
+          time.sleep(1.0)
+          i += 1
+      else:
+        texture_list[t] = TextureItem(status=1)
+        texture_list[t].texture = pi3d.Texture('{}/{}.png'.format(pickle_path, t), 
+                                    flip=s_item.texture_flip, mipmap=s_item.texture_mipmap)
+        texture_list[t].status = 2
+      t_list.append(texture_list[t].texture)
+    s_item.shape.position(s_item.x + offsetx, s_item.y, s_item.z + offsetz)
+    item = (key, s_item, t_list)
+    QUP.put(item)
 

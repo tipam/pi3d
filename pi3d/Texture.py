@@ -85,7 +85,7 @@ class Texture(Loadable):
         Display.INSTANCE.textures_dict[str(self._tex)][1] = 1
         Display.INSTANCE.tidy_needed = True
     except:
-      print("couldn't set to delete") #TODO debug messages here
+      pass #many reasonable reasons why this might fail
 
   def tex(self):
     """do the deferred opengl work and return texture"""
