@@ -7,6 +7,10 @@ import time
 import os
 from multiprocessing import Process, Queue
 
+pi3d.Log.set_logs(file="/home/jill/pi3d_demos/templog.txt")
+LOGGER = pi3d.Log.logger(__name__)
+LOGGER.info("hello1")
+
 #========================================
 class SceneryItem(object):
   def __init__(self, x, y, z, textures, shader, bump=0.0, shine=0.0, 
@@ -99,6 +103,9 @@ class Scene(object):
 
   def check_scenery(self, xm, zm):
     if not QUP.empty():
+
+      LOGGER.info('start upload {}'.format(time.time()))
+
       key, s_item, t_list = QUP.get()
       if len(s_item.textures) > 0:
         s_item.shape.set_draw_details(s_item.shader, t_list, s_item.bump, s_item.shine)
@@ -108,6 +115,9 @@ class Scene(object):
       s_item.last_drawn = time.time()
       self.draw_list.append(s_item)
       self.scenery_list[key] = s_item     
+
+      LOGGER.info('end   upload  {}'.format(time.time()))
+
     xsize = self.msize * self.nx
     zsize = self.msize * self.nz
     if xm > xsize:
@@ -179,22 +189,30 @@ def load_scenery():
     offsetx = item[5]
     offsetz = item[6]
 
+    LOGGER.info('start pkl_load {}'.format(time.time()))
+
     with open('{}/{}.pkl'.format(pickle_path, key), 'rb') as f:
       s_item.shape = pickle.load(f)
+
+    LOGGER.info('end   pkl_load {}'.format(time.time()))
+
     t_list = []
     for t in s_item.textures:
-      if t in texture_list:
-        i = 0
-        while i < 10 and texture_list[t].status == 1:
-          time.sleep(1.0)
-          i += 1
-      else:
+
+      LOGGER.info('start tx_load {}'.format(time.time()))
+
+      if not t in texture_list:
         texture_list[t] = TextureItem(status=1)
         texture_list[t].texture = pi3d.Texture('{}/{}.png'.format(pickle_path, t), 
                                     flip=s_item.texture_flip, mipmap=s_item.texture_mipmap)
-        texture_list[t].status = 2
       t_list.append(texture_list[t].texture)
+
+      LOGGER.info('end   tx_load {}'.format(time.time()))
+
     s_item.shape.position(s_item.x + offsetx, s_item.y, s_item.z + offsetz)
     item = (key, s_item, t_list)
     QUP.put(item)
+
+    LOGGER.info('end subprocess {}'.format(time.time()))
+
 
