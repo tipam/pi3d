@@ -4,8 +4,8 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import pi3d
 import pickle
 import time
-import os
-from multiprocessing import Process, Queue
+from threading import Thread
+from six.moves import queue
 
 pi3d.Log.set_logs(file="/home/jill/pi3d_demos/templog.txt")
 LOGGER = pi3d.Log.logger(__name__)
@@ -18,6 +18,16 @@ class SceneryItem(object):
         put_on=None, height=300.0, model_details=None, alpha=1.0):
     '''class representing objects used in the Scene.scenery_list dictionary
     There is enough information to allow objects to be created and pickled.
+    
+    At the moment the SceneryItems are either ElevationMaps which are
+    specified by defining put_on == None. The key to this dictionary record
+    is the stem of the name used as the map texture to define the elevation
+    i.e. 'map00' will look for 'map00.png' which should be 65x65 pixels
+    as the ElevationMap uses 64 divisions.
+    
+    or, if put_on is not None it will be assumed to be the key to an
+    ElevationMap record in Scene.scenery_list and will be loaded as as a
+    pi3d.Model using 'name.obj'
     '''
     self.x = x
     self.y = y
@@ -57,14 +67,16 @@ class Scene(object):
     self.msize = msize
     self.nx = nx
     self.nz = nz
-    os.nice(+0) #reduce priority prior to spawning process
-    thr = Process(target=load_scenery)
+    thr = Thread(target=load_scenery)
     thr.daemon = True
     thr.start()
-    os.nice(0) #bump priority up for this process
 
     
-  def do_pickle(self, fog=((0.3, 0.3, 0.4, 0.95), 500.0)): #run once to save pkl files
+  def do_pickle(self, fog=((0.3, 0.3, 0.4, 0.95), 500.0)):
+    '''run once to save pkl files from ElevationMaps and Models combined
+    as MergeShapes as defined in the SceneryItem objects listed in
+    scenery_list
+    '''
     for key in self.scenery_list:
       s_item = self.scenery_list[key]
       if s_item.put_on == None: #this is a map - do all these first pass
@@ -95,29 +107,17 @@ class Scene(object):
       s_item = self.scenery_list[key]
       s_item.shape = None
 
-  def key_draw_list(self, s_item):
+  def _key_draw_list(self, s_item):
+    '''function used by sorted to make drawing follow priority order
+    '''
     return s_item.priority
     
-  def key_age_list(self, key):
+  def _key_age_list(self, key):
+    '''function used by sorted to clear oldest unused items from draw_list
+    '''
     return self.scenery_list[key].last_drawn
 
   def check_scenery(self, xm, zm):
-    if not QUP.empty():
-
-      LOGGER.info('start upload {}'.format(time.time()))
-
-      key, s_item, t_list = QUP.get()
-      if len(s_item.textures) > 0:
-        s_item.shape.set_draw_details(s_item.shader, t_list, s_item.bump, s_item.shine)
-      else:
-        s_item.shape.set_shader(s_item.shader)
-      s_item.status = 2
-      s_item.last_drawn = time.time()
-      self.draw_list.append(s_item)
-      self.scenery_list[key] = s_item     
-
-      LOGGER.info('end   upload  {}'.format(time.time()))
-
     xsize = self.msize * self.nx
     zsize = self.msize * self.nz
     if xm > xsize:
@@ -149,7 +149,7 @@ class Scene(object):
         offsetz = zsize
       dz += offsetz
       
-      if abs(dx) < 1000.0 and abs(dz) < 1000.0:
+      if abs(dx) < (self.msize * 0.75) and abs(dz) < (self.msize * 0.75):
         if s_item.status == 0:
           s_item.status = 1
           item = (key, self.path, s_item, self.texture_list, self.draw_list, 
@@ -161,21 +161,20 @@ class Scene(object):
           s_item.shape.position(s_item.x + offsetx, s_item.y, s_item.z + offsetz)
           s_item.last_drawn = time.time()
           self.draw_list.append(s_item)
-    self.draw_list = sorted(self.draw_list, key=self.key_draw_list)
+    self.draw_list = sorted(self.draw_list, key=self._key_draw_list)
     cmap = self.scenery_list[cmap_id].shape
     return xm, zm, cmap
 
   #################### clear out unused scenery TODO clear unused textures too
   def clear_scenery(self, threshold):
-    clear_list = sorted(self.scenery_list, key=self.key_age_list, reverse=True)[:-30]
+    clear_list = sorted(self.scenery_list, key=self._key_age_list, reverse=True)[:-30]
     for key in clear_list:
       s_item = self.scenery_list[key]
       if s_item.last_drawn < threshold:
         s_item.status = 0
         s_item.shape = None
 
-QUP = Queue()
-QDOWN = Queue()
+QDOWN = queue.Queue()
 
 ###################### function run in thread
 def load_scenery():
@@ -210,8 +209,13 @@ def load_scenery():
       LOGGER.info('end   tx_load {}'.format(time.time()))
 
     s_item.shape.position(s_item.x + offsetx, s_item.y, s_item.z + offsetz)
-    item = (key, s_item, t_list)
-    QUP.put(item)
+    if len(s_item.textures) > 0:
+      s_item.shape.set_draw_details(s_item.shader, t_list, s_item.bump, s_item.shine)
+    else:
+      s_item.shape.set_shader(s_item.shader)
+    s_item.status = 2
+    s_item.last_drawn = time.time()
+    draw_list.append(s_item)
 
     LOGGER.info('end subprocess {}'.format(time.time()))
 
