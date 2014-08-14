@@ -7,23 +7,24 @@ import time
 from threading import Thread
 from six.moves import queue
 
-pi3d.Log.set_logs(file="/home/jill/pi3d_demos/templog.txt")
-LOGGER = pi3d.Log.logger(__name__)
-LOGGER.info("hello1")
+#pi3d.Log.set_logs(file="/home/jill/pi3d_demos/templog.txt")
+#LOGGER = pi3d.Log.logger(__name__)
+#LOGGER.info("hello1")
 
 #========================================
 class SceneryItem(object):
   def __init__(self, x, y, z, textures, shader, bump=0.0, shine=0.0, 
         status=0, texture_flip=False, texture_mipmap=True, priority=0, 
-        put_on=None, height=300.0, model_details=None, alpha=1.0):
+        put_on=None, height=300.0, threshold=750.0,
+        model_details=None, alpha=1.0):
     '''class representing objects used in the Scene.scenery_list dictionary
     There is enough information to allow objects to be created and pickled.
     
     At the moment the SceneryItems are either ElevationMaps which are
     specified by defining put_on == None. The key to this dictionary record
     is the stem of the name used as the map texture to define the elevation
-    i.e. 'map00' will look for 'map00.png' which should be 65x65 pixels
-    as the ElevationMap uses 64 divisions.
+    i.e. 'map00' will look for 'map00.png' which should be 33x33 pixels
+    as the ElevationMap uses 32 divisions.
     
     or, if put_on is not None it will be assumed to be the key to an
     ElevationMap record in Scene.scenery_list and will be loaded as as a
@@ -42,6 +43,7 @@ class SceneryItem(object):
     self.priority = priority
     self.put_on = put_on
     self.height = height
+    self.threshold = threshold
     self.model_details = model_details
     self.alpha = alpha
     self.shape = None
@@ -72,7 +74,7 @@ class Scene(object):
     thr.start()
 
     
-  def do_pickle(self, fog=((0.3, 0.3, 0.4, 0.95), 500.0)):
+  def do_pickle(self, fog=((0.3, 0.3, 0.4, 0.95), 450.0)):
     '''run once to save pkl files from ElevationMaps and Models combined
     as MergeShapes as defined in the SceneryItem objects listed in
     scenery_list
@@ -82,7 +84,7 @@ class Scene(object):
       if s_item.put_on == None: #this is a map - do all these first pass
         mymap = pi3d.ElevationMap(mapfile='{}/{}.png'.format(self.path, key), name=key,
                            width=(self.msize + 0.001), depth=(self.msize + 0.001), height=s_item.height, 
-                           x=s_item.x, y=s_item.y, z=s_item.z, divx=64, divy=64)
+                           x=s_item.x, y=s_item.y, z=s_item.z, divx=32, divy=32)
         mymap.set_fog(*fog)
         mymap.set_alpha(s_item.alpha)
         with open('{}/{}.pkl'.format(self.path, key), 'wb') as f:
@@ -118,6 +120,12 @@ class Scene(object):
     return self.scenery_list[key].last_drawn
 
   def check_scenery(self, xm, zm):
+    '''checks the scenery_list for anything that needs to be loaded
+    using a background thread. It wraps the x and z values as they go
+    over the edge of the end tiles and returns a tuple of their values
+    plus the key to the current elevation map to be used for ground
+    following (defined as 'mapXY' where X and Y are the coordinates)
+    '''
     xsize = self.msize * self.nx
     zsize = self.msize * self.nz
     if xm > xsize:
@@ -149,7 +157,7 @@ class Scene(object):
         offsetz = zsize
       dz += offsetz
       
-      if abs(dx) < (self.msize * 0.75) and abs(dz) < (self.msize * 0.75):
+      if abs(dx) < s_item.threshold and abs(dz) < s_item.threshold:
         if s_item.status == 0:
           s_item.status = 1
           item = (key, self.path, s_item, self.texture_list, self.draw_list, 
@@ -188,17 +196,17 @@ def load_scenery():
     offsetx = item[5]
     offsetz = item[6]
 
-    LOGGER.info('start pkl_load {}'.format(time.time()))
+    #LOGGER.info('start pkl_load {}'.format(time.time()))
 
     with open('{}/{}.pkl'.format(pickle_path, key), 'rb') as f:
       s_item.shape = pickle.load(f)
 
-    LOGGER.info('end   pkl_load {}'.format(time.time()))
+    #LOGGER.info('end   pkl_load {}'.format(time.time()))
 
     t_list = []
     for t in s_item.textures:
 
-      LOGGER.info('start tx_load {}'.format(time.time()))
+      #LOGGER.info('start tx_load {}'.format(time.time()))
 
       if not t in texture_list:
         texture_list[t] = TextureItem(status=1)
@@ -206,7 +214,7 @@ def load_scenery():
                                     flip=s_item.texture_flip, mipmap=s_item.texture_mipmap)
       t_list.append(texture_list[t].texture)
 
-      LOGGER.info('end   tx_load {}'.format(time.time()))
+      #LOGGER.info('end   tx_load {}'.format(time.time()))
 
     s_item.shape.position(s_item.x + offsetx, s_item.y, s_item.z + offsetz)
     if len(s_item.textures) > 0:
@@ -217,6 +225,6 @@ def load_scenery():
     s_item.last_drawn = time.time()
     draw_list.append(s_item)
 
-    LOGGER.info('end subprocess {}'.format(time.time()))
+    #LOGGER.info('end subprocess {}'.format(time.time()))
 
 
