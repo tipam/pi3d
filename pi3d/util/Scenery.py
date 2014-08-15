@@ -7,7 +7,7 @@ import time
 from threading import Thread
 from six.moves import queue
 
-#pi3d.Log.set_logs(file="/home/jill/pi3d_demos/templog.txt")
+#pi3d.Log.set_logs(file="/home/pi/pi3d_demos/templog.txt")
 #LOGGER = pi3d.Log.logger(__name__)
 #LOGGER.info("hello1")
 
@@ -44,6 +44,7 @@ class SceneryItem(object):
     self.put_on = put_on
     self.height = height
     self.threshold = threshold
+    self.threshold_sq = threshold * threshold
     self.model_details = model_details
     self.alpha = alpha
     self.shape = None
@@ -157,7 +158,7 @@ class Scene(object):
         offsetz = zsize
       dz += offsetz
       
-      if abs(dx) < s_item.threshold and abs(dz) < s_item.threshold:
+      if (dx * dx + dz * dz) < s_item.threshold_sq:
         if s_item.status == 0:
           s_item.status = 1
           item = (key, self.path, s_item, self.texture_list, self.draw_list, 
