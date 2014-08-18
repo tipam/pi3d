@@ -56,7 +56,7 @@ class ElevationMap(Shape):
       print("... Map size can't be bigger than 199x199 divisions")
       divx = 200
       divy = 200
-    print(type(mapfile), type(""))
+    #print(type(mapfile), type(""))
     
     try:
       if '' + mapfile == mapfile: #HORRIBLE. Only way to cope with python2v3
