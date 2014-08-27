@@ -83,6 +83,7 @@ class Scene(object):
     for key in self.scenery_list:
       s_item = self.scenery_list[key]
       if s_item.put_on == None: #this is a map - do all these first pass
+        print('pickling {}'.format(key))
         mymap = pi3d.ElevationMap(mapfile='{}/{}.png'.format(self.path, key), name=key,
                            width=(self.msize + 0.001), depth=(self.msize + 0.001), height=s_item.height, 
                            x=s_item.x, y=s_item.y, z=s_item.z, divx=32, divy=32)
@@ -94,6 +95,7 @@ class Scene(object):
     for key in self.scenery_list:
       s_item = self.scenery_list[key]
       if s_item.put_on != None: #model so need to put on map
+        print('pickling {}'.format(key))
         md = s_item.model_details
         if not md['model'] in self.models:
           self.models[md['model']] = pi3d.Model(file_string='{}/{}.obj'.format(self.path, md['model']))

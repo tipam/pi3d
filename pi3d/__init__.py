@@ -60,6 +60,7 @@ from pi3d.util import Log
 from pi3d.util import Utility
 from pi3d.util.Clashtest import Clashtest
 from pi3d.util.String import String
+from pi3d.util.FixedString import FixedString
 
 from pi3d.util.Defocus import Defocus
 from pi3d.util.Font import Font
