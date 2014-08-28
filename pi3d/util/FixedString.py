@@ -1,6 +1,5 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-
 import ctypes
 import itertools
 import os.path
@@ -17,8 +16,6 @@ from pi3d.constants import *
 from pi3d.Texture import *
 from pi3d.shape.Sprite import Sprite
 
-MAX_SIZE = 1920
-
 class FixedString(Texture):
   """
   A texture containing a simple string drawn using ImageDraw.
@@ -28,9 +25,10 @@ class FixedString(Texture):
   rather than two triangles for each letter."""
 
   def __init__(self, font, string, color=(255,255,255,255),
-               font_size=24, image_size=256, margin=5.0, justify='C',
+               font_size=24, margin=5.0, justify='C',
                background_color=None, shader=None):
     """Arguments:
+    
     *font*:
       File path/name to a TrueType font file.
 
@@ -39,27 +37,25 @@ class FixedString(Texture):
       
     *color*:
       Color in format #RRGGBB, (255,0,0,255) etc (as accepted by PIL.ImageDraw)
+      default (255, 255, 255, 255) i.e. white 100% alpha
 
     *font_size*:
-      Point size for drawing the letters on the internal Texture
+      Point size for drawing the letters on the internal Texture. default 24
 
-    *image_size*:
-      Width and height of the Texture that backs the image.
-      If it doesn't fit then a larger size will be tried up to MAX_SIZE.
-      The isses are: maximum image size supported by the gpu (2048x2048?)
-      gpu memory usage and time to load by working up the size required
-      in 256 pixel steps.
-      
     *margin*:
       Offsets from the top left corner for the text and space on right
-      and bottom.
+      and bottom. default 5.0
+      
+    *justify*:
+      L(eft), C(entre), R(ight) default C
 
     *background_color*:
-      filled background
+      filled background in ImageDraw format as above. default None i.e.
+      transparent. 
       
     *shader*:
       can be passed to init otherwise needs to be set in set_shader or
-      draw
+      draw. default None
     """
     super(FixedString, self).__init__(font)
     self.font = font
@@ -105,8 +101,7 @@ class FixedString(Texture):
         xoff = maxwid - line_len
       draw.text((xoff, margin + i * height), line, font=imgfont, fill=color)
 
-    RGBs = 'RGBA'
-    self.image = self.im.convert(RGBs).tostring('raw', RGBs)
+    self.image = self.im.convert('RGBA').tostring('raw', 'RGBA')
     self._tex = ctypes.c_int()
     
     bmedge = nlines * height + 2.0 * margin
@@ -120,9 +115,11 @@ class FixedString(Texture):
     buf.unib[7] = float(bmedge / texture_hgt)
     
   def set_shader(self, shader):
+    ''' wrapper for Shape.set_shader'''
     self.sprite.set_shader(shader)
     
   def draw(self, shader=None, txtrs=None, ntl=None, shny=None, camera=None, mlist=[]):
+    '''wrapper for Shape.draw()'''
     self.sprite.draw(shader, txtrs, ntl, shny, camera, mlist)
 
   def _load_disk(self):
