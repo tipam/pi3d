@@ -24,9 +24,9 @@ class FixedString(Texture):
   Sprite shape for drawing so the gpu has to only draw two triangles
   rather than two triangles for each letter."""
 
-  def __init__(self, font, string, color=(255,255,255,255),
+  def __init__(self, font, string, camera=None, color=(255,255,255,255),
                font_size=24, margin=5.0, justify='C',
-               background_color=None, shader=None):
+               background_color=None, shader=None, f_type=''):
     """Arguments:
     
     *font*:
@@ -34,6 +34,9 @@ class FixedString(Texture):
 
     *string*:
       String to write.
+      
+    *camera*:
+      Camera object passed on to constructor of sprite
       
     *color*:
       Color in format #RRGGBB, (255,0,0,255) etc (as accepted by PIL.ImageDraw)
@@ -56,6 +59,10 @@ class FixedString(Texture):
     *shader*:
       can be passed to init otherwise needs to be set in set_shader or
       draw. default None
+      
+    *f_type*:
+      filter type. BUMP will generate a normal map, EMBOSS, CONTOUR, BLUR
+      and SMOOTH do what they sound like they will do.
     """
     super(FixedString, self).__init__(font)
     self.font = font
@@ -69,6 +76,7 @@ class FixedString(Texture):
       raise Exception(msg)
 
     justify = justify.upper()
+    f_type = f_type.upper()
     ascent, descent = imgfont.getmetrics()
     height = ascent + descent
     lines = string.split('\n')
@@ -101,11 +109,26 @@ class FixedString(Texture):
         xoff = maxwid - line_len
       draw.text((xoff, margin + i * height), line, font=imgfont, fill=color)
 
+    if f_type == '':
+      pass
+    elif f_type == 'BUMP':
+      self.im = self.make_bump_map()
+    else:
+      from PIL import ImageFilter
+      if f_type == 'EMBOSS':
+        self.im = self.im.filter(ImageFilter.EMBOSS)
+      elif f_type == 'CONTOUR':
+        self.im = self.im.filter(ImageFilter.CONTOUR)
+      elif f_type == 'BLUR':
+        self.im = self.im.filter(ImageFilter.BLUR)
+      elif f_type == 'SMOOTH':
+        self.im = self.im.filter(ImageFilter.SMOOTH_MORE)
+        
     self.image = self.im.convert('RGBA').tostring('raw', 'RGBA')
     self._tex = ctypes.c_int()
     
     bmedge = nlines * height + 2.0 * margin
-    self.sprite = Sprite(w=maxwid, h=bmedge)
+    self.sprite = Sprite(camera=camera, w=maxwid, h=bmedge)
     buf = self.sprite.buf[0] #convenience alias
     buf.textures = [self]
     if shader != None:
@@ -121,6 +144,29 @@ class FixedString(Texture):
   def draw(self, shader=None, txtrs=None, ntl=None, shny=None, camera=None, mlist=[]):
     '''wrapper for Shape.draw()'''
     self.sprite.draw(shader, txtrs, ntl, shny, camera, mlist)
+    
+  def make_bump_map(self):
+    import numpy as np
+    a = np.array(self.im, dtype=np.uint8)
+    a = np.average(a, axis=2, weights=[1.0, 1.0, 1.0, 0.0]).astype(int)
+    b = [[0.01,0.025, 0.05,0.025, 0.01],
+          [0.025,0.05, 0.065,0.05, 0.025],
+          [0.05,0.065, 0.1,0.065, 0.05],
+          [0.025,0.05, 0.065,0.05, 0.025],
+          [0.01,0.025, 0.05,0.025, 0.01]]
+    c = np.zeros(a.shape, dtype=np.uint8)
+    steps = [i - 2 for i in range(5)]
+    for i, istep in enumerate(steps):
+      for j, jstep in enumerate(steps):
+        c += np.roll(np.roll(a, istep, 0), jstep, 1) * b[i][j]
+    cx = np.roll(c, 1, 0)
+    cy = np.roll(c, 1, 1)
+    d = np.zeros((a.shape[0], a.shape[1], 4), dtype=np.uint8)
+    d[:, :, 0] = ((cy - c) + 127).astype(int)
+    d[:, :, 1] = ((cx - c) + 127).astype(int)
+    d[:, :, 2] = (np.clip((65025 - (127 - d[:, :, 0]) ** 2 - (127 - d[:, :, 1]) ** 2) ** 0.5, 0, 255)).astype(int)
+    d[:, :, 3] = 255
+    return Image.fromarray(d)
 
   def _load_disk(self):
     """
