@@ -3,7 +3,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import ctypes, itertools
 import numpy as np
 
-from ctypes import c_float, c_int
+from ctypes import c_float, c_int, c_short
 
 from pi3d.constants import *
 from pi3d.util import Log
@@ -66,14 +66,14 @@ class Buffer(Loadable):
     """
     #self.shape = shape
     self.textures = []
-    pts = np.array(pts, dtype=float)
-    texcoords = np.array(texcoords, dtype=float)
-    faces = np.array(faces)
+    pts = np.array(pts, dtype=c_float)
+    texcoords = np.array(texcoords, dtype=c_float)
+    faces = np.array(faces, dtype=c_short)
 
     if normals == None: #i.e. normals will only be generated if explictly None
       LOGGER.debug('Calculating normals ...')
 
-      normals = np.zeros(pts.shape, dtype=float) #empty array rights size
+      normals = np.zeros(pts.shape, dtype=c_float) #empty array rights size
 
       fv = pts[faces] #expand faces with x,y,z values for each vertex
       #cross product of two edges of triangles
