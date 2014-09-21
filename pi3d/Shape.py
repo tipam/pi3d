@@ -1,7 +1,6 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import ctypes
-from ctypes import c_float, c_int, c_short
 
 from numpy import array, dot, savez, load
 from math import radians, pi, sin, cos
@@ -37,7 +36,7 @@ class Shape(Loadable):
     self.name = name
     light = light or Light.instance()
     # uniform variables all in one array (for Shape and one for Buffer)
-    self.unif = (c_float * 60)(
+    self.unif = (ctypes.c_float * 60)(
       x, y, z, rx, ry, rz,
       sx, sy, sz, cx, cy, cz,
       0.5, 0.5, 0.5, 5000.0, 0.8, 1.0,
@@ -66,8 +65,8 @@ class Shape(Loadable):
       11  light1 position, direction vector           33  35
       12  light1 strength per shade                   36  38
       13  light1 ambient values                       39  41
-      14  defocus dist, amount (only 2 used)          42  43
-      15  defocus frame width, height (only 2 used)   45  46
+      14  defocus dist, amount (only 2 used)          42  43 # also 2D x, y
+      15  defocus frame width, height (only 2 used)   45  46 # also 2D w, h, tot_ht
       16  custom data space                           48  50
       17  custom data space                           51  53
       18  custom data space                           54  56
@@ -84,7 +83,6 @@ class Shape(Loadable):
     """
     
     self.children = []
-    self.childModel = [] #to allow pickling of Shape objects!
     self._camera = camera
     
     self.__init_matrices()
@@ -97,39 +95,38 @@ class Shape(Loadable):
     self.tr1 = array([[1.0, 0.0, 0.0, 0.0],
                       [0.0, 1.0, 0.0, 0.0],
                       [0.0, 0.0, 1.0, 0.0],
-                      [self.unif[0] - self.unif[9], self.unif[1] - self.unif[10], self.unif[2] - self.unif[11], 1.0]],
-                      dtype=c_float)
+                      [self.unif[0] - self.unif[9], self.unif[1] - self.unif[10], self.unif[2] - self.unif[11], 1.0]])
     """translate to position - offset"""
     s, c = sin(radians(self.unif[3])), cos(radians(self.unif[3]))
     self.rox = array([[1.0, 0.0, 0.0, 0.0],
                       [0.0, c, s, 0.0],
                       [0.0, -s, c, 0.0],
-                      [0.0, 0.0, 0.0, 1.0]], dtype=c_float)
+                      [0.0, 0.0, 0.0, 1.0]])
     """rotate about x axis"""
     s, c = sin(radians(self.unif[4])), cos(radians(self.unif[4]))
     self.roy = array([[c, 0.0, -s, 0.0],
                       [0.0, 1.0, 0.0, 0.0],
                       [s, 0.0, c, 0.0],
-                      [0.0, 0.0, 0.0, 1.0]], dtype=c_float)
+                      [0.0, 0.0, 0.0, 1.0]])
     """rotate about y axis"""
     s, c = sin(radians(self.unif[5])), cos(radians(self.unif[5]))
     self.roz = array([[c, s, 0.0, 0.0],
                       [-s, c, 0.0, 0.0],
                       [0.0, 0.0, 1.0, 0.0],
-                      [0.0, 0.0, 0.0, 1.0]], dtype=c_float)
+                      [0.0, 0.0, 0.0, 1.0]])
     """rotate about z axis"""
     self.scl = array([[self.unif[6], 0.0, 0.0, 0.0],
                       [0.0, self.unif[7], 0.0, 0.0],
                       [0.0, 0.0, self.unif[8], 0.0],
-                      [0.0, 0.0, 0.0, 1.0]], dtype=c_float)
+                      [0.0, 0.0, 0.0, 1.0]])
     """scale"""
     self.tr2 = array([[1.0, 0.0, 0.0, 0.0],
                       [0.0, 1.0, 0.0, 0.0],
                       [0.0, 0.0, 1.0, 0.0],
-                      [self.unif[9], self.unif[10], self.unif[11], 1.0]], dtype=c_float)
+                      [self.unif[9], self.unif[10], self.unif[11], 1.0]])
     """translate to offset"""
     self.MFlg = True
-    self.M = (c_float * 32)(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+    self.M = (ctypes.c_float * 32)(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
                             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
                             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
                             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
@@ -265,6 +262,16 @@ class Shape(Loadable):
     """
     for b in self.buf:
       b.set_material(material)
+
+  def set_textures(self, textures):
+    """Wrapper for setting textures in each Buffer object.
+
+    Arguments:
+      *textures*
+        list of Texture objects
+    """
+    for b in self.buf:
+      b.set_textures(textures)
 
   def set_offset(self, offset):
     """Wrapper for setting uv texture offset in each Buffer object.
@@ -704,7 +711,7 @@ class Shape(Loadable):
   
   def __setstate__(self, state):
     unif_tuple = tuple(state['unif'])
-    self.unif = (c_float * 60)(*unif_tuple)
+    self.unif = (ctypes.c_float * 60)(*unif_tuple)
     self.childModel = state['childModel']
     self.name = state['name']
     self.children = state['children']
