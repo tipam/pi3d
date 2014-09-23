@@ -8,7 +8,7 @@ class TkWin(tkinter.Tk):
   *TkWin* encapsulates a Tk window and keeps track of the mouse and keyboard.
 
   """
-  def __init__(self, parent, title, width, height):
+  def __init__(self, parent, title, width, height, bg='#000000'):
     """
     Arguments:
 
@@ -71,6 +71,7 @@ class TkWin(tkinter.Tk):
     tkinter.Tk.bind(self, '<Configure>', resize_callback)
     tkinter.Tk.bind_all(self, '<Key>', key_callback)
     tkinter.Tk.geometry(self, str(width) + 'x' + str(height))
+    tkinter.Tk.configure(self, bg=bg)
 
     self.title(title)
     self.ev = ''
