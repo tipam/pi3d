@@ -392,7 +392,6 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
       else:
         bg = '#000000'
       tkwin = TkWin.TkWin(window_parent, window_title, w, h, bg)
-      tkwin = TkWin.TkWin(window_parent, window_title, w, h)
       tkwin.update()
       w = tkwin.winfo_width()
       h = tkwin.winfo_height()
