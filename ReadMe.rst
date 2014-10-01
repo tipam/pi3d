@@ -213,7 +213,9 @@ Setup on the Raspberry Pi
          or
       sudo apt-get install python3-pil
 
-    alternatively you need to::
+    NB after installing pillow it's a good idea to take the jessie line out
+    again otherwise your next apt-get update will load a host of development
+    applications and possible break something! Alternatively you need to::
 
       sudo apt-get install python-dev python-setuptools libjpeg-dev zlib1g-dev libpng12-dev libfreetype6-dev
       sudo apt-get install python-pip
@@ -286,8 +288,14 @@ Editing scripts and running
 
 #.  **Load and run**
 
-    Either run from the terminal ``python3 ~/pi3d_demos/Minimal.py`` or
-    load any of the demos into Geany and run (using the cogs icon). As a minimum,
+    NB to get all the demos from github and run, in 
+    a terminal::
+    
+      $ git clone https://github.com/pi3d/pi3d_demos.git
+      $ cd ~/pi3d_demos
+      $ python3 Minimal.py
+      
+    or load any of the demos into Geany and run (using the cogs icon). As a minimum,
     scripts need these elements in order to use the Pi3D library::
 
       import pi3d
@@ -421,8 +429,8 @@ Pi3D started with code based on Peter de Rivaz 'pyopengles'
 code (jonmacey.blogspot.co.uk/2012/06/).
 
 Many Thanks, especially to Peter de Rivaz, Jon Macey, Richar Urwin, Peter Hess,
-David Wallin, Avishay Orpaz (avishorp) and others who have contributed to Pi3D
-- keep up the good work!
+David Wallin, Avishay Orpaz (avishorp), Guenter Kreidl and others who have 
+contributed to Pi3D - keep up the good work!
 
 
 **PLEASE READ LICENSING AND COPYRIGHT NOTICES ESPECIALLY IF USING FOR COMMERCIAL PURPOSES**
