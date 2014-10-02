@@ -97,34 +97,51 @@ class Shape(Loadable):
                       [0.0, 0.0, 1.0, 0.0],
                       [self.unif[0] - self.unif[9], self.unif[1] - self.unif[10], self.unif[2] - self.unif[11], 1.0]])
     """translate to position - offset"""
+
     s, c = sin(radians(self.unif[3])), cos(radians(self.unif[3]))
     self.rox = array([[1.0, 0.0, 0.0, 0.0],
                       [0.0, c, s, 0.0],
                       [0.0, -s, c, 0.0],
                       [0.0, 0.0, 0.0, 1.0]])
+    self.roxflg = True if self.unif[3] != 0.0 else False
     """rotate about x axis"""
+
     s, c = sin(radians(self.unif[4])), cos(radians(self.unif[4]))
     self.roy = array([[c, 0.0, -s, 0.0],
                       [0.0, 1.0, 0.0, 0.0],
                       [s, 0.0, c, 0.0],
                       [0.0, 0.0, 0.0, 1.0]])
+    self.royflg = True if self.unif[4] != 0.0 else False
     """rotate about y axis"""
+
     s, c = sin(radians(self.unif[5])), cos(radians(self.unif[5]))
     self.roz = array([[c, s, 0.0, 0.0],
                       [-s, c, 0.0, 0.0],
                       [0.0, 0.0, 1.0, 0.0],
                       [0.0, 0.0, 0.0, 1.0]])
+    self.rozflg = True if self.unif[5] != 0.0 else False
     """rotate about z axis"""
+
     self.scl = array([[self.unif[6], 0.0, 0.0, 0.0],
                       [0.0, self.unif[7], 0.0, 0.0],
                       [0.0, 0.0, self.unif[8], 0.0],
                       [0.0, 0.0, 0.0, 1.0]])
+    if self.unif[6] != 1.0 or self.unif[7] != 1.0 or self.unif[8] != 1.0:
+      self.sclflg = True 
+    else:
+      self.sclflg = False
     """scale"""
+
     self.tr2 = array([[1.0, 0.0, 0.0, 0.0],
                       [0.0, 1.0, 0.0, 0.0],
                       [0.0, 0.0, 1.0, 0.0],
                       [self.unif[9], self.unif[10], self.unif[11], 1.0]])
+    if self.unif[9] != 0.0 or self.unif[10] != 0.0 or self.unif[11] != 0.0:
+      self.tr2flg = True 
+    else:
+      self.tr2flg = False
     """translate to offset"""
+
     self.MFlg = True
     self.M = (ctypes.c_float * 32)(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
                             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -146,13 +163,27 @@ class Shape(Loadable):
     shader = shader or self.shader
     shader.use()
 
-    if self.MFlg == True or len(mlist):
+    if self.MFlg or len(mlist):
+      '''
       # Calculate rotation and translation matrix for this model using numpy.
       self.MRaw = dot(self.tr2,
         dot(self.scl,
             dot(self.roy,
                 dot(self.rox,
                     dot(self.roz, self.tr1)))))
+      '''
+      self.MRaw = self.tr1
+      if self.rozflg:
+        self.MRaw = np.dot(self.roz, self.MRaw)
+      if self.roxflg:
+        self.MRaw = np.dot(self.rox, self.MRaw)
+      if self.royflg:
+        self.MRaw = np.dot(self.roy, self.MRaw)
+      if self.sclflg:
+        self.MRaw = np.dot(self.scl, self.MRaw)
+      if self.tr2flg:
+        self.MRaw = np.dot(self.tr2, self.MRaw)
+
       # child drawing addition #############
       newmlist = [m for m in mlist]
       newmlist.append(self.MRaw)
@@ -446,6 +477,7 @@ class Shape(Loadable):
     self.scl[2, 2] = sz
     self.unif[6:9] = sx, sy, sz
     self.MFlg = True
+    self.sclflg = True
 
   def position(self, x, y, z):
     """Arguments:
@@ -553,6 +585,7 @@ class Shape(Loadable):
     self.rox[2, 1] = -s
     self.unif[3] = v
     self.MFlg = True
+    self.roxflg = True
 
   def rotateToY(self, v):
     """Arguments:
@@ -566,6 +599,7 @@ class Shape(Loadable):
     self.roy[2, 0] = s
     self.unif[4] = v
     self.MFlg = True
+    self.royflg = True
 
   def rotateToZ(self, v):
     """Arguments:
@@ -579,6 +613,7 @@ class Shape(Loadable):
     self.roz[1, 0] = -s
     self.unif[5] = v
     self.MFlg = True
+    self.rozflg = True
 
   def rotateIncX(self, v):
     """Arguments:
@@ -592,6 +627,7 @@ class Shape(Loadable):
     self.rox[1, 2] = s
     self.rox[2, 1] = -s
     self.MFlg = True
+    self.roxflg = True
 
   def rotateIncY(self, v):
     """Arguments:
@@ -605,6 +641,7 @@ class Shape(Loadable):
     self.roy[0, 2] = -s
     self.roy[2, 0] = s
     self.MFlg = True
+    self.royflg = True
 
   def rotateIncZ(self, v):
     """Arguments:
@@ -618,6 +655,7 @@ class Shape(Loadable):
     self.roz[0, 1] = s
     self.roz[1, 0] = -s
     self.MFlg = True
+    self.rozflg = True
 
   def _lathe(self, path, sides=12, rise=0.0, loops=1.0):
     """Returns a Buffer object by rotating the points defined in path.
