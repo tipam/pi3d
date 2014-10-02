@@ -21,12 +21,13 @@ class Loadable(object):
     self.opengl_loaded = False
 
   def __del__(self):
-    LOGGER.debug('__del__: %s', self)
     try:
       if not self.unload_opengl(False):  # Why does this sometimes fail?
         Display.display.unload_opengl(self)
+      LOGGER.debug('__del__: %s', self)
     except:
       # Many legit reasons why this might fail, particularly during shutdown.
+      # LOGGER may have been tidied away by shutdown
       pass
 
   def load_disk(self):

@@ -174,15 +174,15 @@ class Shape(Loadable):
       '''
       self.MRaw = self.tr1
       if self.rozflg:
-        self.MRaw = np.dot(self.roz, self.MRaw)
+        self.MRaw = dot(self.roz, self.MRaw)
       if self.roxflg:
-        self.MRaw = np.dot(self.rox, self.MRaw)
+        self.MRaw = dot(self.rox, self.MRaw)
       if self.royflg:
-        self.MRaw = np.dot(self.roy, self.MRaw)
+        self.MRaw = dot(self.roy, self.MRaw)
       if self.sclflg:
-        self.MRaw = np.dot(self.scl, self.MRaw)
+        self.MRaw = dot(self.scl, self.MRaw)
       if self.tr2flg:
-        self.MRaw = np.dot(self.tr2, self.MRaw)
+        self.MRaw = dot(self.tr2, self.MRaw)
 
       # child drawing addition #############
       newmlist = [m for m in mlist]
