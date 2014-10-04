@@ -40,6 +40,7 @@ class MergeShape(Shape):
 
     self.buf = []
     self.buf.append(Buffer(self, self.vertices, self.tex_coords, self.indices, self.normals))
+    self.childModel = None #unused but asked for by pickle
 
   def merge(self, bufr, x=0.0, y=0.0, z=0.0,
             rx=0.0, ry=0.0, rz=0.0,

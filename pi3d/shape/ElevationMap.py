@@ -192,11 +192,9 @@ class ElevationMap(Shape):
     ws = self.width / (self.ix - 1.0)
     hs = self.depth / (self.iy - 1.0)
     ht = self.height / 255.0
-    #round off to nearest integer
-    px = (wh + px) / ws
-    pz = (hh + pz) / hs
-    x = math.floor(px)
-    z = math.floor(pz)
+    #x, y integer index to vertices grid
+    x = math.floor((wh + px) / ws)
+    z = math.floor((hh + pz) / hs)
     if x < 0:
        x = 0
     if x > (self.ix - 2):
@@ -210,17 +208,17 @@ class ElevationMap(Shape):
     p1 = p0 + 1
     p2 = p0 + self.ix
     p3 = p0 + self.ix + 1
+    v0 = self.buf[0].vertices[p0]
+    v1 = self.buf[0].vertices[p1]
+    v2 = self.buf[0].vertices[p2]
+    v3 = self.buf[0].vertices[p3]
 
-    if pz > (z + 1 - px + x): #i.e. this point is in the triangle on the
+    if pz > (v0[2] + hs / ws * (px - v0[0])):
     #opposite side of the diagonal so swap base corners
-      x0, y0, z0 = x + 1, self.buf[0].vertices[p3][1], z + 1
+      v_swap = v2
     else:
-      x0, y0, z0 = x, self.buf[0].vertices[p0][1], z
-    return self.unif[1] + intersect_triangle((x0, y0, z0),
-                            (x + 1, self.buf[0].vertices[p1][1], z),
-                            (x, self.buf[0].vertices[p2][1], z + 1),
-                            (px, 0, pz))
-
+      v_swap = v1
+    return self.unif[1] + intersect_triangle(v_swap, v0, v3, (px, 0, pz))
 
   # TODO these functions will be scrambled by any scaling, rotation or offset,
   #either print warning or stop these operations applying
@@ -348,6 +346,7 @@ class ElevationMap(Shape):
     return (degrees(arcsin(-forwd[1])), degrees(arctan2(sidev[1], normp[1])))
 
   def __getstate__(self): # to allow pickling
+    self.childModel = None
     state = super(ElevationMap, self).__getstate__()
     state['width'] = self.width
     state['height'] = self.height
