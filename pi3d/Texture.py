@@ -37,7 +37,7 @@ class Texture(Loadable):
   384, 512, 576, 640, 720, 768, 800, 960, 1024, 1080, 1920
   """
   def __init__(self, file_string, blend=False, flip=False, size=0,
-               defer=DEFER_TEXTURE_LOADING, mipmap=True):
+               defer=DEFER_TEXTURE_LOADING, mipmap=True, m_repeat=False):
     """
     Arguments:
       *file_string*
@@ -60,6 +60,9 @@ class Texture(Loadable):
         THE TIME THAT THE TEXTURE IS LOADED IT WILL BE SET BY THE LAST
         TEXTURE TO BE LOADED PRIOR TO DRAWING**
         TODO possibly reset in Buffer.draw() each time a texture is loaded?
+      *m_repeat*
+        if the texture is repeated (see umult and vmult in Shape.set_draw_details)
+        then this can be used to make a non-seamless texture tile
     """
     super(Texture, self).__init__()
     if file_string[0] == '/': #absolute address
@@ -70,6 +73,7 @@ class Texture(Loadable):
     self.flip = flip
     self.size = size
     self.mipmap = mipmap
+    self.m_repeat = GL_MIRRORED_REPEAT if m_repeat else GL_REPEAT
     self.byte_size = 0
     self._loaded = False
     if defer:
@@ -167,9 +171,9 @@ class Texture(Loadable):
       opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
                                GL_NEAREST)
     opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,
-                             GL_MIRRORED_REPEAT)
+                             self.m_repeat)
     opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,
-                             GL_MIRRORED_REPEAT)
+                             self.m_repeat)
 
 
   def _unload_opengl(self):
