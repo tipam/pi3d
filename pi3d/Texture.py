@@ -139,7 +139,9 @@ class Texture(Loadable):
       im = im.transpose(Image.FLIP_TOP_BOTTOM)
 
     RGBs = 'RGBA' if self.alpha else 'RGB'
-    self.image = im.convert(RGBs).tostring('raw', RGBs)
+    if im.mode != RGBs:
+      im = im.convert(RGBs)
+    self.image = im.tobytes('raw', RGBs)
     self._tex = ctypes.c_int()
     if 'fonts/' in self.file_string:
       self.im = im
