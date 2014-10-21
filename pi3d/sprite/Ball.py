@@ -39,42 +39,46 @@ class Ball(ImageSprite):
   def bounce_collision(self, otherball):
     """work out resultant velocities using 17th.C phsyics"""
     # relative positions
-    dx = self.unif[0] - otherball.unif[0]
-    dy = self.unif[1] - otherball.unif[1]
     rd = self.radius + otherball.radius
+    dx = self.unif[0] - otherball.unif[0]
+    if abs(dx) > rd:
+      return
+    dy = self.unif[1] - otherball.unif[1]
+    if dx * dx + dy * dy > rd * rd:
+      return
     # check sign of a.b to see if converging
-    dotP = dot([dx, dy, 0.0],
-               [self.vx - otherball.vx, self.vy - otherball.vy, 0.0])
-    if dx * dx + dy * dy <= rd * rd and dotP < 0:
-      R = otherball.mass / self.mass #ratio of masses
-      """Glancing angle for equating angular momentum before and after collision.
-      Three more simultaneous equations for x and y components of momentum and
-      kinetic energy give:
-      """
-      if dy:
-        D = dx / dy
-        delta2y = 2 * (D * self.vx + self.vy -
-                       D * otherball.vx - otherball.vy) / (
-          (1 + D * D) * (R + 1))
-        delta2x = D * delta2y
-        delta1y = -1 * R * delta2y
-        delta1x = -1 * R * D * delta2y
-      elif dx:
-        # Same code as above with x and y reversed.
-        D = dy / dx
-        delta2x = 2 * (D * self.vy + self.vx -
-                       D * otherball.vy - otherball.vx) / (
-          (1 + D * D) * (R + 1))
-        delta2y = D * delta2x
-        delta1x = -1 * R * delta2x
-        delta1y = -1 * R * D * delta2x
-      else:
-        delta1x = delta1y = delta2x = delta2y = 0
+    dotP = dx * (self.vx - otherball.vx) + dy * (self.vy - otherball.vy)
+    if dotP >= 0:
+      return
+    R = otherball.mass / self.mass #ratio of masses
+    """Glancing angle for equating angular momentum before and after collision.
+    Three more simultaneous equations for x and y components of momentum and
+    kinetic energy give:
+    """
+    if dy:
+      D = dx / dy
+      delta2y = 2 * (D * self.vx + self.vy -
+                     D * otherball.vx - otherball.vy) / (
+        (1 + D * D) * (R + 1))
+      delta2x = D * delta2y
+      delta1y = -1 * R * delta2y
+      delta1x = -1 * R * D * delta2y
+    elif dx:
+      # Same code as above with x and y reversed.
+      D = dy / dx
+      delta2x = 2 * (D * self.vy + self.vx -
+                     D * otherball.vy - otherball.vx) / (
+        (1 + D * D) * (R + 1))
+      delta2y = D * delta2x
+      delta1x = -1 * R * delta2x
+      delta1y = -1 * R * D * delta2x
+    else:
+      delta1x = delta1y = delta2x = delta2y = 0
 
-      self.vx += delta1x
-      self.vy += delta1y
-      otherball.vx += delta2x
-      otherball.vy += delta2y
+    self.vx += delta1x
+    self.vy += delta1y
+    otherball.vx += delta2x
+    otherball.vy += delta2y
 
   def bounce_wall(self, width, height):
     left, right, top, bottom = -width/2.0, width/2.0, height/2.0, -height/2.0

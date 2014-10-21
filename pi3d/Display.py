@@ -386,8 +386,15 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
         # ... just force full screen - TK will automatically fit itself into the screen
         w = 1920
         h = 1180
-      tkwin = TkWin.TkWin(window_parent, window_title, w, h)
+      if background:
+        bg_i = [int(i * 255) for i in background]
+        bg = '#{:02X}{:02X}{:02X}'.format(bg_i[0], bg_i[1], bg_i[2])
+      else:
+        bg = '#000000'
+      tkwin = TkWin.TkWin(window_parent, window_title, w, h, bg)
       tkwin.update()
+      w = tkwin.winfo_width()
+      h = tkwin.winfo_height()
       if x is None:
         x = tkwin.winx
       if y is None:

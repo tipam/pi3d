@@ -37,7 +37,7 @@ class Texture(Loadable):
   384, 512, 576, 640, 720, 768, 800, 960, 1024, 1080, 1920
   """
   def __init__(self, file_string, blend=False, flip=False, size=0,
-               defer=DEFER_TEXTURE_LOADING, mipmap=True):
+               defer=DEFER_TEXTURE_LOADING, mipmap=True, m_repeat=False):
     """
     Arguments:
       *file_string*
@@ -60,6 +60,9 @@ class Texture(Loadable):
         THE TIME THAT THE TEXTURE IS LOADED IT WILL BE SET BY THE LAST
         TEXTURE TO BE LOADED PRIOR TO DRAWING**
         TODO possibly reset in Buffer.draw() each time a texture is loaded?
+      *m_repeat*
+        if the texture is repeated (see umult and vmult in Shape.set_draw_details)
+        then this can be used to make a non-seamless texture tile
     """
     super(Texture, self).__init__()
     if file_string[0] == '/': #absolute address
@@ -70,6 +73,7 @@ class Texture(Loadable):
     self.flip = flip
     self.size = size
     self.mipmap = mipmap
+    self.m_repeat = GL_MIRRORED_REPEAT if m_repeat else GL_REPEAT
     self.byte_size = 0
     self._loaded = False
     if defer:
@@ -85,7 +89,7 @@ class Texture(Loadable):
         Display.INSTANCE.textures_dict[str(self._tex)][1] = 1
         Display.INSTANCE.tidy_needed = True
     except:
-      print("couldn't set to delete") #TODO debug messages here
+      pass #many reasonable reasons why this might fail
 
   def tex(self):
     """do the deferred opengl work and return texture"""
@@ -135,7 +139,9 @@ class Texture(Loadable):
       im = im.transpose(Image.FLIP_TOP_BOTTOM)
 
     RGBs = 'RGBA' if self.alpha else 'RGB'
-    self.image = im.convert(RGBs).tostring('raw', RGBs)
+    if im.mode != RGBs:
+      im = im.convert(RGBs)
+    self.image = im.tobytes('raw', RGBs)
     self._tex = ctypes.c_int()
     if 'fonts/' in self.file_string:
       self.im = im
@@ -153,6 +159,7 @@ class Texture(Loadable):
     opengles.glTexImage2D(GL_TEXTURE_2D, 0, RGBv, self.ix, self.iy, 0, RGBv,
                           GL_UNSIGNED_BYTE,
                           ctypes.string_at(self.image, len(self.image)))
+
     opengles.glEnable(GL_TEXTURE_2D)
     opengles.glGenerateMipmap(GL_TEXTURE_2D)
     opengles.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
@@ -167,9 +174,9 @@ class Texture(Loadable):
       opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
                                GL_NEAREST)
     opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,
-                             GL_MIRRORED_REPEAT)
+                             self.m_repeat)
     opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,
-                             GL_MIRRORED_REPEAT)
+                             self.m_repeat)
 
 
   def _unload_opengl(self):

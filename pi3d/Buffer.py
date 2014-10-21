@@ -3,7 +3,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import ctypes, itertools
 import numpy as np
 
-from ctypes import c_float, c_int
+from ctypes import c_float, c_int, c_short
 
 from pi3d.constants import *
 from pi3d.util import Log
@@ -68,7 +68,7 @@ class Buffer(Loadable):
     self.textures = []
     pts = np.array(pts, dtype=float)
     texcoords = np.array(texcoords, dtype=float)
-    faces = np.array(faces)
+    faces = np.array(faces, dtype=int)
 
     if normals == None: #i.e. normals will only be generated if explictly None
       LOGGER.debug('Calculating normals ...')

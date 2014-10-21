@@ -2,7 +2,8 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import ctypes
 
-from numpy import array, dot, copy, tan, cos, sin, radians, degrees, arctan2, sqrt
+from numpy import array, dot, copy
+from math import tan, cos, sin, radians, degrees, atan2, sqrt
 
 from pi3d.constants import *
 from pi3d.util.Utility import vec_normal, vec_cross, vec_sub, vec_dot
@@ -88,9 +89,9 @@ class Camera(DefaultInstance):
     if target[0] == self.eye[0] and target[1] == self.eye[1] and target[2] == self.eye[2]:
       return
     dx, dy, dz = target[0] - self.eye[0], target[1] - self.eye[1], target[2] - self.eye[2]
-    rot = -degrees(arctan2(dx, dz))
+    rot = -degrees(atan2(dx, dz))
     horiz = sqrt(dot([dx,dz], [dx, dz]))
-    tilt = degrees(arctan2(dy, horiz))
+    tilt = degrees(atan2(dy, horiz))
     self.rotate(tilt, rot, 0)
     return tilt, rot
 

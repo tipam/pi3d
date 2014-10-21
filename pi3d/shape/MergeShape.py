@@ -40,6 +40,7 @@ class MergeShape(Shape):
 
     self.buf = []
     self.buf.append(Buffer(self, self.vertices, self.tex_coords, self.indices, self.normals))
+    self.childModel = None #unused but asked for by pickle
 
   def merge(self, bufr, x=0.0, y=0.0, z=0.0,
             rx=0.0, ry=0.0, rz=0.0,
@@ -110,7 +111,8 @@ class MergeShape(Shape):
       *elevmap*
         ElevationMap object to merge onto.
       *xpos, zpos*
-        x and z location of centre of cluster.
+        x and z location of centre of cluster. These are locations RELATIVE
+        to the origin of the MergeShape
       *w, d*
         x and z direction size of the cluster.
       *count*
@@ -129,10 +131,8 @@ class MergeShape(Shape):
       z = zpos + random.random() * d - d * 0.5
       rh = random.random() * (maxscl - minscl) + minscl
       rt = random.random() * 360.0
-      y = elevmap.calcHeight(x, z) + rh * 2
+      y = elevmap.calcHeight(self.unif[0] + x, self.unif[2] + z) + rh * 2
       blist.append([bufr, x, y, z, 0.0, rt, 0.0, rh, rh, rh])
-
-    #self.merge(bufr, x, y, z, 0.0, rt, 0.0, rh, rh, rh)
     self.merge(blist)
 
   def radialCopy(self, bufr, x=0, y=0, z=0, startRadius=2.0, endRadius=2.0,

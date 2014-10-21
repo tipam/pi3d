@@ -68,12 +68,12 @@ class Cuboid(Shape):
     th = th / 2.0
     td = td / 2.0
 
-    self.tex_coords = ((0.5-tw, 0.5-th),        (0.5+tw, 0.5-th),        (0.5+tw, 0.5+th),        (0.5-tw, 0.5+th), #tw x th
-        (0.5-td, 0.5-th),        (0.5+td, 0.5-th),        (0.5+td, 0.5+th),        (0.5-td, 0.5+th), # td x th
-        (0.5+tw, 0.5-th),        (0.5-tw, 0.5-th),        (0.5-tw, 0.5+th),        (0.5+tw, 0.5+th), # tw x th
-        (0.5-tw, 0.5-td),        (0.5+tw, 0.5-td),        (0.5+tw, 0.5+td),        (0.5-tw, 0.5+td), # tw x td
-        (0.5+td, 0.5+th),        (0.5-td, 0.5+th),        (0.5-td, 0.5-th),        (0.5+td, 0.5-th), # td x th
-        (0.5+tw, 0.5-th),        (0.5-tw, 0.5-th),        (0.5-tw, 0.5+th),        (0.5+tw, 0.5+th)) # tw x th
+    self.tex_coords = ((0.5+tw, 0.5-th),        (0.5-tw, 0.5-th),        (0.5-tw, 0.5+th),        (0.5+tw, 0.5+th), #tw x th
+        (0.5+td, 0.5-th),        (0.5-td, 0.5-th),        (0.5-td, 0.5+th),        (0.5+td, 0.5+th), # td x th
+        (0.5-tw, 0.5-th),        (0.5+tw, 0.5-th),        (0.5+tw, 0.5+th),        (0.5-tw, 0.5+th), # tw x th
+        (0.5+tw, 0.5+td),        (0.5-tw, 0.5+td),        (0.5-tw, 0.5-td),        (0.5+tw, 0.5-td), # tw x td
+        (0.5-td, 0.5+th),        (0.5+td, 0.5+th),        (0.5+td, 0.5-th),        (0.5-td, 0.5-th), # td x th
+        (0.5-tw, 0.5-th),        (0.5+tw, 0.5-th),        (0.5+tw, 0.5+th),        (0.5-tw, 0.5+th)) # tw x th
 
     self.buf = []
     self.buf.append(Buffer(self, self.vertices, self.tex_coords, self.indices, self.normals))
