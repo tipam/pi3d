@@ -4,7 +4,7 @@ a terminal cd to the pi3d directory with this file in:
 
   $ python setup.py sdist
 
-this will create the directory 'dist' containing pi3d-1.0.tar.gz this can
+this will create the directory 'dist' containing pi3d-1.10.tar.gz this can
 then be extracted somewhere and in that directory run (probably sudo):
 
   $ python setup.py install
@@ -23,7 +23,7 @@ from distutils.core import setup
 from os import listdir
 
 setup(name='pi3d',
-      version='1.9',
+      version='1.10',
       description='pi3d OpenGLES2 3D graphics library',
       author='Tim Skillman, Paddy Gaunt, Tom Ritchford',
       author_email='http://pi3d.github.com/html/index.html',
