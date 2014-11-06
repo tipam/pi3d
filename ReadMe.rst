@@ -157,6 +157,9 @@ Setup on the Raspberry Pi
 
 #.  **Download, Extract and install**
 
+    There are various possibilities depending on the machine, what's already
+    installed and whether you want to work with some of the latest additions.
+
     If you have pip installed you should be able to open a terminal and
     type::
 
@@ -164,9 +167,11 @@ Setup on the Raspberry Pi
         or for python3
       sudo pip3 install pi3d
         
-    (or pip-3.2 or whatever see below*) Otherwise you can download from
-    https://pypi.python.org/pypi/pi3d and extract the package then in a
-    terminal::
+    (or pip-3.2 or whatever see below*) If you don't have pip installed
+    you probably should install it as described below under ``Python Imaging``
+    as it's the easiest way to install Pillow at the moment.  You can do the
+    equivalent of ``pip install`` by downloading from https://pypi.python.org/pypi/pi3d
+    and extracting the package, then in a terminal::
 
       sudo python setup.py install
         or for python3
@@ -177,10 +182,11 @@ Setup on the Raspberry Pi
     /usr/local/lib/python2.7/dist-packages/) allowing it to be imported
     by your applications.
 
-    The latest code can be obtained from https://github.com/tipam/pi3d/
-    where there is a ``Download ZIP`` link, or you can install git then
-    clone using ``git clone https://github.com/tipam/pi3d.git`` this git
-    method will give you the option to update the code by running, from
+    If you might want to use features being added in the develop branch (i.e. between
+    issues) you will need to download or clone the latest code from https://github.com/tipam/pi3d/
+    where there is a ``Download ZIP`` link, or you can install git (bundled
+    in raspbian) then clone using ``git clone https://github.com/tipam/pi3d.git``
+    this git method will give you the option to update the code by running, from
     the pi3d directory ``git pull origin master``
 
 #.  **Memory Split setup**
