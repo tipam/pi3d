@@ -158,3 +158,5 @@ class Shader(object):
         return open(p + '/shaders/' + sfile, 'r').read()
       elif os.path.isfile(p + '/pi3d/shaders/' + sfile):
         return open(p + '/pi3d/shaders/' + sfile, 'r').read()
+      elif os.path.isfile(sfile):
+        return open(sfile, 'r').read()
