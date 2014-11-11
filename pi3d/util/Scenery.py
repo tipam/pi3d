@@ -70,9 +70,9 @@ class Scene(object):
     self.msize = msize
     self.nx = nx
     self.nz = nz
-    thr = Thread(target=load_scenery)
-    thr.daemon = True
-    thr.start()
+    self.thr = Thread(target=load_scenery)
+    self.thr.daemon = True
+    self.thr.start()
 
     
   def do_pickle(self, fog=((0.3, 0.3, 0.4, 0.95), 450.0)):
@@ -191,6 +191,8 @@ QDOWN = queue.Queue()
 def load_scenery():
   while True:
     item = QDOWN.get() #blocks for next available job
+    if item[0] == 'STOP':
+      break
     key = item[0]
     pickle_path = item[1]
     s_item = item[2]
