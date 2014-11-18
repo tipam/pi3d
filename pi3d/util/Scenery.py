@@ -162,12 +162,14 @@ class Scene(object):
       
       if (dx * dx + dz * dz) < s_item.threshold_sq:
         if s_item.status == 0:
+          if not self.thr.isAlive():
+            self.thr = Thread(target=load_scenery)
+            self.thr.daemon = True
+            self.thr.start()
           s_item.status = 1
           item = (key, self.path, s_item, self.texture_list, self.draw_list, 
                 offsetx, offsetz)
           QDOWN.put(item)
-          #if key == cmap_id: #should only happen at start where need map for calcHeight
-          #  QDOWN.join()
         elif s_item.status == 2:
           s_item.shape.position(s_item.x + offsetx, s_item.y, s_item.z + offsetz)
           s_item.last_drawn = time.time()
