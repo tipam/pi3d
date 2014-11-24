@@ -41,7 +41,8 @@ class Texture(Loadable):
     """
     Arguments:
       *file_string*
-        path and name of image file relative to top dir
+        path and name of image file relative to top dir. Can now pass an
+        already created PIL.Image object instead.
       *blend*
         controls if low alpha pixels are discarded (if False) or drawn
         by the shader. If set to true then this texture needs to be
@@ -65,10 +66,19 @@ class Texture(Loadable):
         then this can be used to make a non-seamless texture tile
     """
     super(Texture, self).__init__()
-    if file_string[0] == '/': #absolute address
-      self.file_string = file_string
-    else:
-      self.file_string = sys.path[0] + '/' + file_string
+    try:
+      if '' + file_string == file_string: #HORRIBLE. Only way to cope with python2v3
+        self.is_file = True # read image from file
+        if file_string[0] == '/': #absolute address
+          self.file_string = file_string
+        else:
+          self.file_string = sys.path[0] + '/' + file_string
+      else:
+        self.file_string = file_string # file_string is a PIL Image
+        self.is_file = False
+    except:
+      self.file_string = file_string # file_string is a PIL Image
+      self.is_file = False
     self.blend = blend
     self.flip = flip
     self.size = size
@@ -106,8 +116,12 @@ class Texture(Loadable):
     if self._loaded:
       return
 
-    s = self.file_string + ' '
-    im = Image.open(self.file_string)
+    if self.is_file:
+      s = self.file_string + ' '
+      im = Image.open(self.file_string)
+    else:
+      s = 'PIL.Image '
+      im = self.file_string
 
     self.ix, self.iy = im.size
     s += '(%s)' % im.mode
@@ -141,9 +155,9 @@ class Texture(Loadable):
     RGBs = 'RGBA' if self.alpha else 'RGB'
     if im.mode != RGBs:
       im = im.convert(RGBs)
-    self.image = im.tobytes('raw', RGBs)
+    self.image = im.tostring('raw', RGBs) # TODO change to tobytes WHEN Pillow is default PIL in debian (jessie becomes current)
     self._tex = ctypes.c_int()
-    if 'fonts/' in self.file_string:
+    if self.is_file and 'fonts/' in self.file_string:
       self.im = im
       
     self._loaded = True

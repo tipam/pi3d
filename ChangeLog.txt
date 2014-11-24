@@ -4,6 +4,30 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
+v1.11
+2014-11-24  bug fix PIL.Image.tobytes() does not work with the old python-
+            imaging. Texture can be passed an Image object instead of a
+            string path to an image file.
+v1.10
+2014-10-21  scenery functionality bug fixes.a utility class has been added
+            for background loading scenery as elevation maps and mergegroups.
+            Elevationmap.calcheight fixed and provides optional return of
+            normal vector. Shaders downgraded to consistant medium precesion
+            as this is limited on some platforms.
+
+v1.9
+2014-08-02  minor fixes pypi status moved to stable. String.quick_change
+            allows change of text without creating new String object
+
+v1.8
+2014-04-23  various fixes and enhancements. uv_reflect and mat_reflect
+            shaders now map reflected image correctly. Shapes have a list
+            of children that inherit transformations (i.e. finger child
+            of hand <- forearm <- upper-arm <- body etc) Sphere has argument
+            invert that makes normals face in for use as environment. More
+            flexible loading of wavefront obj files. Large sprites can be
+            made using an array of textures.
+
 v1.7
 2014-01-20  Minor fixes.
 
