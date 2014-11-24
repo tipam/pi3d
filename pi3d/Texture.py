@@ -155,7 +155,7 @@ class Texture(Loadable):
     RGBs = 'RGBA' if self.alpha else 'RGB'
     if im.mode != RGBs:
       im = im.convert(RGBs)
-    self.image = im.tobytes('raw', RGBs)
+    self.image = im.tostring('raw', RGBs) # TODO change to tobytes WHEN Pillow is default PIL in debian (jessie becomes current)
     self._tex = ctypes.c_int()
     if self.is_file and 'fonts/' in self.file_string:
       self.im = im
