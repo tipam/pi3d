@@ -155,6 +155,27 @@ Total zipped download from github c. 24 MB
 Setup on the Raspberry Pi
 =========================
 
+#.  **Qick Start Guide, NB take the time to read the paragraphs below too**
+
+    Here's a list of commands that have definitely worked on a couple of
+    fresh rasbpian installs. Please take time to check out the paragraphs below
+    even if you use this quick start recipe... *certainly* if you want to
+    use python3 or have any non-standard aspirations or set-up. The long
+    list of dependencies (3rd apt-get line) may take a while to run as well
+    as the install Pillow. Both will create hundreds of lines of messages::
+
+      $ cd ~
+      $ sudo apt-get update
+      $ sudo apt-get upgrade
+      $ sudo apt-get install python-dev python-setuptools libjpeg-dev zlib1g-dev libpng12-dev libfreetype6-dev
+      $ sudo apt-get install python-pip
+      $ sudo pip install pi3d
+      $ sudo pip install Pillow
+      $ sudo raspi-config # set gpu_mem=128
+      $ git clone git://github.com/pi3d/pi3d_demos
+      $ cd ~/pi3d_demos
+      $ python Earth.py
+      
 #.  **Download, Extract and install**
 
     There are various possibilities depending on the machine, what's already

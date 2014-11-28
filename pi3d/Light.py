@@ -7,7 +7,7 @@ class Light(DefaultInstance):
   def __init__(self,
                lightpos=(10, -10, 20),
                lightcol=(1.0, 1.0, 1.0),
-               lightamb=(0.1, 0.1, 0.2)):
+               lightamb=(0.1, 0.1, 0.2), is_point=False):
     """ set light values. These are set in Shape.unif as part of the Shape
     constructor. They can be changed using Shape.set_light()
     The pixel shade is calculated as::
@@ -31,6 +31,7 @@ class Light(DefaultInstance):
     self.lightpos = lightpos
     self.lightcol = lightcol
     self.lightamb = lightamb
+    self.is_point = 1.0 if is_point else 0.0
 
   def position(self, lightpos):
     self.lightpos = lightpos
@@ -40,6 +41,12 @@ class Light(DefaultInstance):
 
   def ambient(self, lightamb):
     self.lightamb = lightamb
+
+  def make_point(self):
+    self.is_point = 1.0
+
+  def make_directional(self):
+    self.is_point = 0.0
 
   @staticmethod
   def _default_instance():

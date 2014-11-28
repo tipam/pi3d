@@ -8,6 +8,7 @@ from pi3d.constants import *
 from pi3d.util.Ctypes import c_chars
 from pi3d.util import Log
 from pi3d.util import Loadable
+from pi3d.util.DefaultInstance import DefaultInstance
 
 # This class based on Peter de Rivaz's mandlebrot example + Tim Skillman's work on pi3d2
 LOGGER = Log.logger(__name__)
@@ -20,7 +21,7 @@ def _opengl_log(shader, function, caption):
   function(shader, MAX_LOG_SIZE, ctypes.byref(loglen), ctypes.byref(log))
   LOGGER.info('%s: %s', caption, log.value)
 
-class Shader(object):
+class Shader(DefaultInstance):
   """This compiles and holds the shaders to be used to render the Shape Buffers
   using their draw() methods. Generally you will choose and load the Shader
   explicitly as part of the program, however some i.e. defocus are loaded
@@ -128,6 +129,10 @@ class Shader(object):
         for *mat* shaders tex0=normal map tex1=reflection
       """
     self.use()
+
+  @staticmethod
+  def _default_instance():
+    return Shader('mat_light')
 
   def use(self):
     """Makes this shader active"""

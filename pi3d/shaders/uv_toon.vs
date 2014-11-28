@@ -22,7 +22,11 @@ varying vec3 inray;
 void main(void) {
   vec4 relPosn = modelviewmatrix[0] * vec4(vertex,1.0);
   
-  lightVector = normalize(unif[8]); 
+  if (unif[7][0] == 1.0) {
+    lightVector = normalize(vec3(modelviewmatrix[0] * vec4(vertex, 1.0)) - unif[8]);
+  } else {
+    lightVector = normalize(unif[8]);
+  }
   lightVector.z *= -1.0;
   normout = normalize(vec3(modelviewmatrix[0] * vec4(normal, 0.0)));   
   vec3 bnorm = vec3(0.0, 0.0, 1.0); // ----- normal to original bump map sheet
