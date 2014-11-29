@@ -13,14 +13,18 @@ uniform vec3 unif[16];
 varying vec2 texcoordout;
 varying vec3 lightVector;
 varying float dist;
+varying float lightFactor;
 
 void main(void) {
   vec4 relPosn = modelviewmatrix[0] * vec4(vertex,1.0);
   
   if (unif[7][0] == 1.0) {
-    lightVector = normalize(vec3(modelviewmatrix[0] * vec4(vertex, 1.0)) - unif[8]);
+    lightVector = vec3(modelviewmatrix[0] * vec4(vertex, 1.0)) - unif[8];
+    lightFactor = pow(length(lightVector), -2.0);
+    lightVector = normalize(lightVector);
   } else {
     lightVector = normalize(unif[8]);
+    lightFactor = 1.0;
   }
   lightVector.z *= -1.0;
   vec3 normout = normalize(vec3(modelviewmatrix[0] * vec4(normal, 0.0)));   

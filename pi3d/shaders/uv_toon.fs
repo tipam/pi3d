@@ -6,6 +6,7 @@ varying vec3 lightVector;
 varying float dist;
 varying vec3 normout;
 varying vec3 inray;
+varying float lightFactor;
 
 uniform sampler2D tex0;
 uniform sampler2D tex1;
@@ -31,7 +32,7 @@ void main(void) {
 
     float bfact = 1.0 - smoothstep(30.0, 100.0, dist); // ------ attenuate smoothly between 30 and 100 units
 
-    float intensity = clamp(dot(lightVector, normalize(vec3(0.0, 0.0, 1.0) + bump * bfact)), 0.0, 1.0); // ------ adjustment of colour according to combined normal
+    float intensity = clamp(dot(lightVector, normalize(vec3(0.0, 0.0, 1.0) + bump * bfact)) * lightFactor, 0.0, 1.0); // ------ adjustment of colour according to combined normal
     if (texc.a < unib[0][2]) discard; // ------ to allow rendering behind the transparent parts of this object
     texc.rgb = (texc.rgb * unif[9]) * intensity + (texc.rgb * unif[10]); // ------ directional lightcol * intensity + ambient lightcol
 

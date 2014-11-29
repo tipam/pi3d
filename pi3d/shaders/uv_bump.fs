@@ -4,6 +4,7 @@ varying vec2 texcoordout;
 varying vec2 bumpcoordout;
 varying vec3 lightVector;
 varying float dist;
+varying float lightFactor;
 
 uniform sampler2D tex0;
 uniform sampler2D tex1;
@@ -31,7 +32,7 @@ void main(void) {
 
   float ffact = smoothstep(unif[5][0]/3.0, unif[5][0], dist); // ------ smoothly increase fog between 1/3 and full fogdist
 
-  float intensity = clamp(dot(lightVector, normalize(vec3(0.0, 0.0, 1.0) + bump * bfact)), 0.0, 1.0); // ------ adjustment of colour according to combined normal
+  float intensity = clamp(dot(lightVector, normalize(vec3(0.0, 0.0, 1.0) + bump * bfact)) * lightFactor, 0.0, 1.0); // ------ adjustment of colour according to combined normal
   if (texc.a < unib[0][2]) discard; // ------ to allow rendering behind the transparent parts of this object
   texc.rgb = (texc.rgb * unif[9]) * intensity + (texc.rgb * unif[10]); // ------ directional lightcol * intensity + ambient lightcol
 
