@@ -1,18 +1,4 @@
-precision mediump float;
-
-attribute vec3 vertex;
-attribute vec3 normal;
-attribute vec2 texcoord;
-
-uniform mat4 modelviewmatrix[2]; // 0 model movement in real coords, 1 in camera coords
-uniform vec3 unib[4];
-//uniform float ntiles => unib[0][0]
-//uniform vec2 umult, vmult => unib[2]
-//uniform vec2 u_off, v_off => unib[3]
-uniform vec3 unif[20];
-//uniform vec3 lightpos > unif[8]
-//uniform vec3 left, top, rflag => unif[16]
-//uniform vec3 right, bottom => unif[17]
+#include std_head_vs.inc
 
 varying vec2 texcoordout;
 varying vec2 bumpcoordout;

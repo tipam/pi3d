@@ -1,9 +1,4 @@
-precision mediump float;
-
-attribute vec3 vertex;
-
-uniform vec3 unif[16];
-//uniform vec3 (w, h, full_h) => unif[15]
+#include std_head_vs.inc
 
 varying vec2 pix_inv;
 

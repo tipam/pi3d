@@ -1,14 +1,6 @@
-precision mediump float;
+#include std_head_fs.inc
 
 varying float dist;
-
-uniform sampler2D tex0;
-uniform vec3 unif[16];
-//uniform float dist_fr => unif[14][0]
-//uniform float dist_to => unif[14][1]
-//uniform float amount ==> unif[14][2]
-//uniform float ix ======> unif[15][0]
-//uniform float iy ======> unif[15][1]
 
 void main(void) {
   vec4 texc = vec4(0.0, 0.0, 0.0, 1.0); // we don't save the alpha value of the rendering so set this here to 1.0

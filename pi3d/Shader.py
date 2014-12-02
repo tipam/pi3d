@@ -86,7 +86,7 @@ class Shader(DefaultInstance):
     self.shfile = shfile
 
     def make_shader(src, suffix, shader_type):
-      src = src or self.loadShader(shfile + suffix)
+      src = src or self._load_shader(shfile + suffix)
       characters = ctypes.c_char_p(src.encode())
       shader = opengles.glCreateShader(shader_type)
       opengles.glShaderSource(shader, 1, ctypes.byref(characters), 0)
@@ -155,13 +155,21 @@ class Shader(DefaultInstance):
     opengles.glGetProgramInfoLog(
       shader, N, ctypes.byref(loglen), ctypes.byref(log))
 
-  def loadShader(self, sfile):
+  def _load_shader(self, sfile):
     for p in sys.path:
-      if os.path.isfile(p + '/' + sfile):
-        return open(p + '/' + sfile, 'r').read()
-      elif os.path.isfile(p + '/shaders/' + sfile):
-        return open(p + '/shaders/' + sfile, 'r').read()
-      elif os.path.isfile(p + '/pi3d/shaders/' + sfile):
-        return open(p + '/pi3d/shaders/' + sfile, 'r').read()
-      elif os.path.isfile(sfile):
-        return open(sfile, 'r').read()
+      for prest in ['/', '/shaders/', '/pi3d/shaders/']:
+        if os.path.isfile(p + prest + sfile):
+          return self._include_includes(p + prest, sfile)
+    if os.path.isfile(sfile):
+      return self._include_includes('', sfile)
+
+  def _include_includes(self, path, sfile):
+    new_text = ''
+    with open(path + sfile, 'r') as f:
+      for l in f:
+        if '#include' in l:
+          inc_file = l.split()[1]
+          new_text = new_text + self._include_includes(path, inc_file)
+        else:
+          new_text = new_text + l
+    return new_text
