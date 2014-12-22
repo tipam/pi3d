@@ -77,7 +77,7 @@ class Buffer(Loadable):
 
       fv = pts[faces] #expand faces with x,y,z values for each vertex
       #cross product of two edges of triangles
-      fn = np.cross(fv[:][:][:,1] - fv[:][:][:,0], fv[:][:][:,2] - fv[:][:][:,0])
+      fn = np.cross(fv[:,1] - fv[:,0], fv[:,2] - fv[:,0])
       fn = Utility.normalize_v3(fn)
       normals[faces[:,0]] += fn #add up all normal vectors for a vertex
       normals[faces[:,1]] += fn

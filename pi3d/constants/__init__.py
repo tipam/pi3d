@@ -4,15 +4,15 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 pi3d.constants contains constant values, mainly integers, from OpenGL ES 2.0.
 """
 
-VERSION = '1.10'
+VERSION = '1.12'
 
 STARTUP_MESSAGE = """
 
   Pi3D module - version {}s
 
-  Copyright (c) Tim Skillman, 2012-2014
-  Copyright (c) Patrick Gaunt, 2012-2014
-  Copyright (c) Tom Ritchford, 2012-2014
+  Copyright (c) Tim Skillman, 2012-2015
+  Copyright (c) Patrick Gaunt, 2012-2015
+  Copyright (c) Tom Ritchford, 2012-2015
 
   Updates available from www.github.com/tipam/pi3d
 """.format(VERSION)

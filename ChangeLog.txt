@@ -4,10 +4,15 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
+v1.12
+2014-12-22  Light can be defined as originating from a point. Shaders can
+            use #include to reduce duplication of code
+            
 v1.11
 2014-11-24  bug fix PIL.Image.tobytes() does not work with the old python-
             imaging. Texture can be passed an Image object instead of a
             string path to an image file.
+            
 v1.10
 2014-10-21  scenery functionality bug fixes.a utility class has been added
             for background loading scenery as elevation maps and mergegroups.

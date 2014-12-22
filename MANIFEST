@@ -58,6 +58,14 @@ pi3d/shaders/shadowcast.fs
 pi3d/shaders/shadowcast.vs
 pi3d/shaders/star.fs
 pi3d/shaders/star.vs
+pi3d/shaders/std_bump.inc
+pi3d/shaders/std_head_fs.inc
+pi3d/shaders/std_head_vs.inc
+pi3d/shaders/std_light.inc
+pi3d/shaders/std_main_mat.inc
+pi3d/shaders/std_main_uv.inc
+pi3d/shaders/std_main_vs.inc
+pi3d/shaders/std_shine.inc
 pi3d/shaders/uv_bump.fs
 pi3d/shaders/uv_bump.vs
 pi3d/shaders/uv_flat.fs

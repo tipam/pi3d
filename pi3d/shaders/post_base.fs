@@ -1,11 +1,6 @@
-precision mediump float;
+#include std_head_fs.inc
 
 varying vec2 texcoordout;
-
-uniform sampler2D tex0;
-uniform vec3 unif[20];
-//uniform vec3 custom use ==> unif[16] to unif[19]
-//in this example unif[16][0] is used to alter the sampling distance
 
 void main(void) {
   ///////////////////////////////////////////////////////////////////

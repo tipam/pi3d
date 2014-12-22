@@ -1,8 +1,4 @@
-precision mediump float;
-
-attribute vec3 vertex;
-
-uniform mat4 modelviewmatrix[2]; // 0 model movement in real coords, 1 in camera coords
+#include std_head_vs.inc
 
 varying float dist;
 

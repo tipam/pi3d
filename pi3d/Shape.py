@@ -40,7 +40,7 @@ class Shape(Loadable):
       x, y, z, rx, ry, rz,
       sx, sy, sz, cx, cy, cz,
       0.5, 0.5, 0.5, 5000.0, 0.8, 1.0,
-      0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, light.is_point, 0.0, 0.0,
       light.lightpos[0], light.lightpos[1], light.lightpos[2],
       light.lightcol[0], light.lightcol[1], light.lightcol[2],
       light.lightamb[0], light.lightamb[1], light.lightamb[2])
@@ -58,7 +58,7 @@ class Shape(Loadable):
        4  fog shade                                   12  14
        5  fog distance, fog alpha, shape alpha        15  17
        6  camera position                             18  20
-       7  unused: custom data space                   21  23
+       7  point light if 1: light0, light1, unused    21  23
        8  light0 position, direction vector           24  26
        9  light0 strength per shade                   27  29
       10  light0 ambient values                       30  32
@@ -158,9 +158,10 @@ class Shape(Loadable):
     self.load_opengl() # really just to set the flag so _unload_opengl runs
 
     from pi3d.Camera import Camera
+    from pi3d.Shader import Shader
 
     camera = camera or self._camera or Camera.instance()
-    shader = shader or self.shader
+    shader = shader or self.shader or Shader.instance()
     shader.use()
 
     if self.MFlg or len(mlist):
@@ -365,6 +366,7 @@ class Shape(Loadable):
     self.unif[stn:(stn + 3)] = light.lightpos[0:3]
     self.unif[(stn + 3):(stn + 6)] = light.lightcol[0:3]
     self.unif[(stn + 6):(stn + 9)] = light.lightamb[0:3]
+    self.unif[21 + num] = light.is_point
 
   def set_2d_size(self, w=None, h=None, x=0, y=0):
     """saves size to be drawn and location in pixels for use by 2d shader
