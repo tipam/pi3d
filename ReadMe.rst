@@ -4,7 +4,7 @@ Introduction to Pi3D
 .. image:: images/rpilogoshad128.png
    :align: left 
 
-**Pi3D written by Tim Skillman, Paddy Gaunt, Tom Ritchford Copyright (c) 2014**
+**Pi3D written by Tim Skillman, Paddy Gaunt, Tom Ritchford Copyright (c) 2015**
 
 There's plenty of 3D code flying around at the moment for the Raspberry Pi,
 but much of it is rather complicated to understand and most of it can sit

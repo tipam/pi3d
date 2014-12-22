@@ -21,11 +21,17 @@ class Light(DefaultInstance):
       *lightpos*
         tuple (x,y,z) vector direction *from* the light i.e. an object at position
         (0,0,0) would appear to be lit from a light at (-3,4,-5) (left, above and
-        nearer) if lightpos=(3,-4,5)
+        nearer) if lightpos=(3,-4,5). *ALTERNATIVELY* if is_point is set
+        to True then this is the actual position of the light
       *lightcol*
-        tuple (r,g,b) defines shade and brightness
+        tuple (r,g,b) defines shade and brightness 0.0 to 1.0 but see below
+        for point lights
       *lightamb*
-        tuple (r,g,b) ambient lighting multiplier
+        tuple (r,g,b) ambient lighting values
+      *is_point*
+        the light behaves as a point and brightness falls off with distance.
+        This means that the r,g,b values of lightcol usually have to be set
+        higher than 1.0, objects close to the light will 'white out' 
     """
     super(Light, self).__init__()
     self.lightpos = lightpos

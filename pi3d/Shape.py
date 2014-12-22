@@ -366,6 +366,7 @@ class Shape(Loadable):
     self.unif[stn:(stn + 3)] = light.lightpos[0:3]
     self.unif[(stn + 3):(stn + 6)] = light.lightcol[0:3]
     self.unif[(stn + 6):(stn + 9)] = light.lightamb[0:3]
+    self.unif[21 + num] = light.is_point
 
   def set_2d_size(self, w=None, h=None, x=0, y=0):
     """saves size to be drawn and location in pixels for use by 2d shader
