@@ -84,6 +84,8 @@ def _detect_platform_and_load_libraries():
   bcm = _load_library(bcm_name)
   opengles = _load_library(gles_name)
   openegl = _load_library(egl_name)
+  print(plat, bcm_name, gles_name, egl_name)
   return plat, bcm, opengles, openegl
 
 PLATFORM, bcm, opengles, openegl = _detect_platform_and_load_libraries()
+
