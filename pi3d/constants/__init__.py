@@ -26,7 +26,6 @@ from pi3d.constants.egl import *
 from pi3d.constants.gl2 import *
 from pi3d.constants.gl2ext import *
 from pi3d.constants.gl import *
-from pi3d.constants.opengles import OpenGLESKivy, OpenGLESNormal
 
 # Define some extra constants that the automatic extraction misses.
 EGL_DEFAULT_DISPLAY = 0
