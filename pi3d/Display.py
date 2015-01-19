@@ -12,7 +12,6 @@ from pi3d.constants import *
 from pi3d.util import Log
 from pi3d.util import Utility
 from pi3d.util.DisplayOpenGL import DisplayOpenGL
-from pi3d.Keyboard import Keyboard
 
 if PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
   from pyxlib.x import *
@@ -357,6 +356,7 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
   if tk:
     if PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
       #just use python-xlib same as non-tk but need dummy behaviour
+      from pi3d.Keyboard import Keyboard
       class DummyTkWin(object):
         def __init__(self):
           self.tkKeyboard = Keyboard()
