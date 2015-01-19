@@ -19,12 +19,14 @@ STARTUP_MESSAGE = """
 
 VERBOSE = False
 # TODO: get rid of verbose in favor of logging.
+KIVYDEBUG = False
 
 # Pick up our constants extracted from the header files with prepare_constants.py
 from pi3d.constants.egl import *
 from pi3d.constants.gl2 import *
 from pi3d.constants.gl2ext import *
 from pi3d.constants.gl import *
+from pi3d.constants.opengles import OpenGLESKivy, OpenGLESNormal
 
 # Define some extra constants that the automatic extraction misses.
 EGL_DEFAULT_DISPLAY = 0
@@ -39,6 +41,7 @@ PLATFORM_PI = 0
 PLATFORM_OSX = 1
 PLATFORM_WINDOWS = 2
 PLATFORM_LINUX = 3
+PLATFORM_ANDROID = 4
 
 # Lastly, load the libraries.
 def _load_library(name):
@@ -55,14 +58,24 @@ def _linux():
   platform = PLATFORM_LINUX
   
   from ctypes.util import find_library
+  from os import environ
   
   bcm_name = find_library('bcm_host')
   if bcm_name:
     platform = PLATFORM_PI
-  gles_name = find_library('GLESv2')
-  egl_name = find_library('EGL')
+    bcm = _load_library(bcm_name)
+  else:
+    bcm = None
 
-  return platform, bcm_name, gles_name, egl_name
+  if environ.get('ANDROID_APP_PATH'):
+    platform = PLATFORM_ANDROID
+    openegl = _load_library('/system/lib/libEGL.so')
+    opengles = _load_library('/system/lib/libGLESv2.so')
+  else:
+    openegl = _load_library(find_library('EGL'))
+    opengles = _load_library(find_library('GLESv2'))
+  
+  return platform, bcm, openegl, opengles # opengles now determined by platform
 
 def _darwin():
   pass
@@ -80,12 +93,7 @@ def _detect_platform_and_load_libraries():
   if not loader:
     raise Exception("Couldn't understand platform %s" % platform_name)
 
-  plat, bcm_name, gles_name, egl_name = loader()
-  bcm = _load_library(bcm_name)
-  opengles = _load_library(gles_name)
-  openegl = _load_library(egl_name)
-  print(plat, bcm_name, gles_name, egl_name)
-  return plat, bcm, opengles, openegl
+  return loader()
 
-PLATFORM, bcm, opengles, openegl = _detect_platform_and_load_libraries()
-
+PLATFORM, bcm, openegl, opengles = _detect_platform_and_load_libraries()
+#PLATFORM = PLATFORM_ANDROID

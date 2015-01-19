@@ -8,17 +8,15 @@ from pi3d.constants import *
 
 from pi3d.util.Ctypes import c_ints
 
-if PLATFORM != PLATFORM_PI:
+if PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
   from pyxlib import xlib
   from pyxlib.x import *
 
 class DisplayOpenGL(object):
   def __init__(self):
-    if PLATFORM != PLATFORM_PI:
-      self.d = xlib.XOpenDisplay(None)
-      self.screen = xlib.XDefaultScreenOfDisplay(self.d)
-      self.width, self.height = xlib.XWidthOfScreen(self.screen), xlib.XHeightOfScreen(self.screen)
-    else:
+    if PLATFORM == PLATFORM_ANDROID:
+      self.width, self.height = 100, 100 # put in some non-zero place-holders
+    elif PLATFORM == PLATFORM_PI:
       b = bcm.bcm_host_init()
       assert b >= 0
 
@@ -28,6 +26,10 @@ class DisplayOpenGL(object):
       s = bcm.graphics_get_display_size(0, ctypes.byref(w), ctypes.byref(h))
       assert s >= 0
       self.width, self.height = w.value, h.value
+    else: # use libX11
+      self.d = xlib.XOpenDisplay(None)
+      self.screen = xlib.XDefaultScreenOfDisplay(self.d)
+      self.width, self.height = xlib.XWidthOfScreen(self.screen), xlib.XHeightOfScreen(self.screen)
 
   def create_display(self, x=0, y=0, w=0, h=0, depth=24):
     self.display = openegl.eglGetDisplay(EGL_DEFAULT_DISPLAY)
@@ -82,7 +84,34 @@ class DisplayOpenGL(object):
     dst_rect = c_ints((x, y, w, h))
     src_rect = c_ints((x, y, w << 16, h << 16))
 
-    if PLATFORM != PLATFORM_PI:
+    if PLATFORM == PLATFORM_ANDROID:
+      self.surface = openegl.eglGetCurrentSurface(EGL_DRAW)
+      # Get the width and height of the screen
+      w = c_int()
+      h = c_int()
+      openegl.eglQuerySurface(self.display, self.surface, EGL_WIDTH, ctypes.byref(w))
+      openegl.eglQuerySurface(self.display, self.surface, EGL_HEIGHT, ctypes.byref(h))
+      self.width, self.height = w.value, h.value
+    elif PLATFORM == PLATFORM_PI:
+      self.dispman_display = bcm.vc_dispmanx_display_open(0) #LCD setting
+      self.dispman_update = bcm.vc_dispmanx_update_start(0)
+      self.dispman_element = bcm.vc_dispmanx_element_add(
+        self.dispman_update,
+        self.dispman_display,
+        0, ctypes.byref(dst_rect),
+        0, ctypes.byref(src_rect),
+        DISPMANX_PROTECTION_NONE,
+        0, 0, 0)
+
+      nativewindow = c_ints((self.dispman_element, w, h + 1))
+      bcm.vc_dispmanx_update_submit_sync(self.dispman_update)
+
+      nw_p = ctypes.pointer(nativewindow)
+      self.nw_p = nw_p
+
+      self.surface = openegl.eglCreateWindowSurface(self.display, self.config, self.nw_p, 0)
+
+    else:
       self.width, self.height = w, h
 
       # Set some WM info
@@ -109,26 +138,7 @@ class DisplayOpenGL(object):
       xlib.XMapWindow(self.d, self.window)
       self.surface = openegl.eglCreateWindowSurface(self.display, self.config, self.window, 0)
 
-    else:
-      self.dispman_display = bcm.vc_dispmanx_display_open(0) #LCD setting
-      self.dispman_update = bcm.vc_dispmanx_update_start(0)
-      self.dispman_element = bcm.vc_dispmanx_element_add(
-        self.dispman_update,
-        self.dispman_display,
-        0, ctypes.byref(dst_rect),
-        0, ctypes.byref(src_rect),
-        DISPMANX_PROTECTION_NONE,
-        0, 0, 0)
-
-      nativewindow = c_ints((self.dispman_element, w, h + 1))
-      bcm.vc_dispmanx_update_submit_sync(self.dispman_update)
-
-      nw_p = ctypes.pointer(nativewindow)
-      self.nw_p = nw_p
-
-      self.surface = openegl.eglCreateWindowSurface(self.display, self.config, self.nw_p, 0)
     assert self.surface != EGL_NO_SURFACE
-
     r = openegl.eglMakeCurrent(self.display, self.surface, self.surface,
                                self.context)
     assert r
@@ -150,6 +160,8 @@ class DisplayOpenGL(object):
 
       #Now recreate the native window and surface
       self.create_surface(x, y, w, h)
+    elif PLATFORM == PLATFORM_ANDROID:
+      pass #TODO something here
 
 
   def destroy(self, display=None):
@@ -192,7 +204,7 @@ class DisplayOpenGL(object):
         bcm.vc_dispmanx_display_close(self.dispman_display)
 
       self.active = False
-      if PLATFORM != PLATFORM_PI:
+      if PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
         xlib.XCloseDisplay(self.d)
 
   def swap_buffers(self):

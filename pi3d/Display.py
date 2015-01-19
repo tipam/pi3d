@@ -14,7 +14,7 @@ from pi3d.util import Utility
 from pi3d.util.DisplayOpenGL import DisplayOpenGL
 from pi3d.Keyboard import Keyboard
 
-if PLATFORM != PLATFORM_PI:
+if PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
   from pyxlib.x import *
   from pyxlib import xlib
 
@@ -67,7 +67,7 @@ class Display(object):
     self.last_textures = [None, None, None] # if more than 3 used this will break in Buffer.draw()
     self.external_mouse = None
 
-    if PLATFORM != PLATFORM_PI:
+    if PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
       self.event_list = []
       self.ev = xlib.XEvent()
 
@@ -225,7 +225,7 @@ class Display(object):
   def _loop_begin(self):
     # TODO(rec):  check if the window was resized and resize it, removing
     # code from MegaStation to here.
-    if PLATFORM != PLATFORM_PI:
+    if PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
       n = xlib.XEventsQueued(self.opengl.d, xlib.QueuedAfterFlush)
       for i in range(n):
         if xlib.XCheckMaskEvent(self.opengl.d, KeyPressMask, self.ev):
@@ -355,7 +355,7 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
     Maximum frames per second to render (None means "free running").
   """
   if tk:
-    if PLATFORM != PLATFORM_PI:
+    if PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
       #just use python-xlib same as non-tk but need dummy behaviour
       class DummyTkWin(object):
         def __init__(self):
