@@ -2,7 +2,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 from pi3d.constants import *
 
-if PLATFORM != PLATFORM_PI:
+if PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
   from pyxlib import x
 
 USE_CURSES = True
