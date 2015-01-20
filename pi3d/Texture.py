@@ -73,7 +73,7 @@ class Texture(Loadable):
           self.file_string = file_string
         else:
           for p in sys.path:
-            if os.path.isfile(p + '/' + file_string): # this could theoretically get different files wit same name
+            if os.path.isfile(p + '/' + file_string): # this could theoretically get different files with same name
               self.file_string = p + '/' + file_string
               break
       else:
