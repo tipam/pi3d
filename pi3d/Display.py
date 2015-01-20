@@ -91,7 +91,7 @@ class Display(object):
           
       class Pi3dApp(App):
         def set_loop(self, loop_function):
-          self.loop_function = loop_functioin
+          self.loop_function = loop_function
           self.screen = self.build()
         def build(self):
           screen = Pi3dScreen()
