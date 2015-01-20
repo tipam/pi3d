@@ -32,19 +32,21 @@ HEIGHT = 0
 
 if PLATFORM == PLATFORM_ANDROID:
   from kivy.app import App
-  from kivy.uix.widget import Widget
+  from kivy.uix.floatlayout import FloatLayout
   from kivy.clock import Clock
 
-  class Pi3dScreen(Widget):
-    moved = False
-    tapped = False
-    touch = None
+  class Pi3dScreen(FloatLayout):
+    def __init__(self, *args, **kwargs):
+      super(Pi3dScreen, self).__init__()
+      self.moved = False
+      self.tapped = False
+      self.touch = None
     def update(self, dt):
       pass
     def on_touch_move(self, touch):
       self.moved = True
       self.touch = touch
-      print('moved')
+      print('moved', self)
     def on_touch_up(self, touch):
       if touch.is_double_tap:
         self.tapped = True
