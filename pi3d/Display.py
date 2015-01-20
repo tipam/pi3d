@@ -59,7 +59,7 @@ if PLATFORM == PLATFORM_ANDROID:
     def build(self):
       self.screen = Pi3dScreen()
       Clock.schedule_interval(self.loop_function, 1.0 / 60.0)
-      return screen
+      return self.screen
 
 class Display(object):
   """This is the central control object of the pi3d system and an instance
