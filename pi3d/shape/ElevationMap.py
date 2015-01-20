@@ -63,7 +63,7 @@ class ElevationMap(Shape):
       if '' + mapfile == mapfile: #HORRIBLE. Only way to cope with python2v3
         if mapfile[0] != '/':
           for p in sys.path:
-            if os.path.isfile(p + '/' + file_string): # this could theoretically get different files with same name
+            if os.path.isfile(p + '/' + mapfile): # this could theoretically get different files with same name
               mapfile = p + '/' + mapfile
               break
         if VERBOSE:
