@@ -30,6 +30,36 @@ DEFAULT_FAR = 1000.0
 WIDTH = 0
 HEIGHT = 0
 
+if PLATFORM == PLATFORM_ANDROID:
+  from kivy.app import App
+  from kivy.uix.widget import Widget
+  from kivy.clock import Clock
+
+  class Pi3dScreen(Widget):
+    def update(self, dt):
+      pass
+    def on_touch_move(self, touch):
+      self.moved = True
+      self.touch = touch
+      print('moved')
+    def on_touch_up(self, touch):
+      if touch.is_double_tap:
+        self.tapped = True
+        self.touch = touch
+        print('doubletap')
+      
+  class Pi3dApp(App):
+    def set_loop(self, loop_function):
+      self.loop_function = loop_function
+      self.screen = self.build()
+      self.screen.moved = False
+      self.screen.tapped = False
+      self.screen.touch = None
+    def build(self):
+      screen = Pi3dScreen()
+      Clock.schedule_interval(self.loop_function, 1.0 / 60.0)
+      return screen
+
 class Display(object):
   """This is the central control object of the pi3d system and an instance
   must be created before some of the other class methods are called.
@@ -77,27 +107,7 @@ class Display(object):
     self.lock = threading.RLock()
 
     if PLATFORM == PLATFORM_ANDROID:
-      self.width, self.height = 480, 320
-      from kivy.app import App
-      from kivy.uix.widget import Widget
-      from kivy.clock import Clock
-
-      class Pi3dScreen(Widget):
-        def update(self, dt):
-          pass
-        def on_touch_move(self, touch):
-          self.moved = True
-          self.touch = touch
-          
-      class Pi3dApp(App):
-        def set_loop(self, loop_function):
-          self.loop_function = loop_function
-          self.screen = self.build()
-        def build(self):
-          screen = Pi3dScreen()
-          Clock.schedule_interval(self.loop_function, 1.0 / 60.0)
-          return screen
-          
+      self.width, self.height = 320, 480
       self.android = Pi3dApp()
 
     LOGGER.debug(STARTUP_MESSAGE)
