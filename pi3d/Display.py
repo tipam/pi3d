@@ -56,9 +56,8 @@ if PLATFORM == PLATFORM_ANDROID:
   class Pi3dApp(App):
     def set_loop(self, loop_function):
       self.loop_function = loop_function
-      self.screen = self.build()
     def build(self):
-      screen = Pi3dScreen()
+      self.screen = Pi3dScreen()
       Clock.schedule_interval(self.loop_function, 1.0 / 60.0)
       return screen
 
@@ -109,7 +108,7 @@ class Display(object):
     self.lock = threading.RLock()
 
     if PLATFORM == PLATFORM_ANDROID:
-      self.width, self.height = 320, 480
+      #self.width, self.height = 480, 320
       self.android = Pi3dApp()
 
     LOGGER.debug(STARTUP_MESSAGE)
