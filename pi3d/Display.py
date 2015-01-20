@@ -36,6 +36,9 @@ if PLATFORM == PLATFORM_ANDROID:
   from kivy.clock import Clock
 
   class Pi3dScreen(Widget):
+    moved = False
+    tapped = False
+    touch = None
     def update(self, dt):
       pass
     def on_touch_move(self, touch):
@@ -52,9 +55,6 @@ if PLATFORM == PLATFORM_ANDROID:
     def set_loop(self, loop_function):
       self.loop_function = loop_function
       self.screen = self.build()
-      self.screen.moved = False
-      self.screen.tapped = False
-      self.screen.touch = None
     def build(self):
       screen = Pi3dScreen()
       Clock.schedule_interval(self.loop_function, 1.0 / 60.0)
