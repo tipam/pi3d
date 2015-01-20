@@ -76,6 +76,30 @@ class Display(object):
     self.is_running = True
     self.lock = threading.RLock()
 
+    if PLATFORM == PLATFORM_ANDROID:
+      self.width, self.height = 480, 320
+      from kivy.app import App
+      from kivy.uix.widget import Widget
+      from kivy.clock import Clock
+
+      class Pi3dScreen(Widget):
+        def update(self, dt):
+          pass
+        def on_touch_move(self, touch):
+          self.moved = True
+          self.touch = touch
+          
+      class Pi3dApp(App):
+        def set_loop(self, loop_function):
+          self.loop_function = loop_functioin
+          self.screen = self.build()
+        def build(self):
+          screen = Pi3dScreen()
+          Clock.schedule_interval(self.loop_function, 1.0 / 60.0)
+          return screen
+          
+      self.android = Pi3dApp()
+
     LOGGER.debug(STARTUP_MESSAGE)
 
   def loop_running(self):

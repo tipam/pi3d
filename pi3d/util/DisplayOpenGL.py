@@ -15,7 +15,7 @@ if PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
 class DisplayOpenGL(object):
   def __init__(self):
     if PLATFORM == PLATFORM_ANDROID:
-      self.width, self.height = 100, 100 # put in some non-zero place-holders
+      self.width, self.height = 320, 480 # put in some non-zero place-holders
     elif PLATFORM == PLATFORM_PI:
       b = bcm.bcm_host_init()
       assert b >= 0
@@ -86,12 +86,12 @@ class DisplayOpenGL(object):
 
     if PLATFORM == PLATFORM_ANDROID:
       self.surface = openegl.eglGetCurrentSurface(EGL_DRAW)
-      # Get the width and height of the screen
-      w = c_int()
-      h = c_int()
-      openegl.eglQuerySurface(self.display, self.surface, EGL_WIDTH, ctypes.byref(w))
-      openegl.eglQuerySurface(self.display, self.surface, EGL_HEIGHT, ctypes.byref(h))
-      self.width, self.height = w.value, h.value
+      # Get the width and height of the screen - TODO, this system returns 100x100
+      #w = c_int()
+      #h = c_int()
+      #openegl.eglQuerySurface(self.display, self.surface, EGL_WIDTH, ctypes.byref(w))
+      #openegl.eglQuerySurface(self.display, self.surface, EGL_HEIGHT, ctypes.byref(h))
+      #self.width, self.height = w.value, h.value
     elif PLATFORM == PLATFORM_PI:
       self.dispman_display = bcm.vc_dispmanx_display_open(0) #LCD setting
       self.dispman_update = bcm.vc_dispmanx_update_start(0)
