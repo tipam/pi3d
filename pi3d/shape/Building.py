@@ -486,7 +486,11 @@ class Building (object):
     self.model = [MergeShape(name=name+"."+str(x)) for x in range(self.scheme["#models"])]
 
     if mapfile[0] != '/':
-      mapfile = sys.path[0] + '/' + mapfile
+      import os
+      for p in sys.path:
+        if os.path.isfile(p + '/' + mapfile): # this could theoretically get different files with same name
+          mapfile = p + '/' + mapfile
+          break
     print("Loading building map ...", mapfile)
 
     im = Image.open(mapfile)

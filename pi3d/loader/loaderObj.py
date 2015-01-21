@@ -66,7 +66,11 @@ def loadFileOBJ(model, fileName):
   # read in the file and parse into some arrays
 
   if fileName[0] != '/':
-    fileName = sys.path[0] + '/' + fileName
+    import os
+    for p in sys.path:
+      if os.path.isfile(p + '/' + fileName): # this could theoretically get different files with same name
+        fileName = p + '/' + fileName
+        break
   filePath = os.path.split(os.path.abspath(fileName))[0]
   print(filePath)
   f = open(fileName, 'r')

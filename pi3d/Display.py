@@ -59,6 +59,7 @@ if PLATFORM == PLATFORM_ANDROID:
     def build(self):
       self.screen = Pi3dScreen()
       Clock.schedule_interval(self.loop_function, 1.0 / 60.0)
+      opengles.glEnable(GL_DEPTH_TEST) # disabled by kivy!
       return self.screen
 
 class Display(object):
