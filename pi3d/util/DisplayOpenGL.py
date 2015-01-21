@@ -62,7 +62,7 @@ class DisplayOpenGL(object):
 
     self.create_surface(x, y, w, h)
 
-    opengles.glDepthRangef(c_float(-1.0), c_float(1.0))
+    opengles.glDepthRangef(c_float(0.0), c_float(1.0))
     opengles.glClearColor (c_float(0.3), c_float(0.3), c_float(0.7), c_float(1.0))
     opengles.glBindFramebuffer(GL_FRAMEBUFFER, 0)
 

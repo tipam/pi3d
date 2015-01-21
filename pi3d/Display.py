@@ -31,6 +31,8 @@ WIDTH = 0
 HEIGHT = 0
 
 if PLATFORM == PLATFORM_ANDROID:
+  DEFAULT_DEPTH = 16
+
   from kivy.app import App
   from kivy.uix.floatlayout import FloatLayout
   from kivy.clock import Clock
