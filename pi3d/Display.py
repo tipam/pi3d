@@ -34,13 +34,19 @@ if PLATFORM == PLATFORM_ANDROID:
   from kivy.app import App
   from kivy.uix.floatlayout import FloatLayout
   from kivy.clock import Clock
-
+  from kivy.graphics import *
+  from kivy.graphics.opengl import *
+  
   class Pi3dScreen(FloatLayout):
     def __init__(self, *args, **kwargs):
       super(Pi3dScreen, self).__init__()
       self.moved = False
       self.tapped = False
       self.touch = None
+      with self.canvas:
+        self.fbo = Fbo(with_depthbuffer = True)
+      with self.fbo:
+        self.cb = Callback(self.setup_gl_context)
     def update(self, dt):
       pass
     def on_touch_move(self, touch):
@@ -52,6 +58,9 @@ if PLATFORM == PLATFORM_ANDROID:
         self.tapped = True
         self.touch = touch
         print('doubletap')
+    def setup_gl_context(self, *args):
+      glEnable(GL_DEPTH_TEST)
+
       
   class Pi3dApp(App):
     def set_loop(self, loop_function):
