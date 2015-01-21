@@ -266,6 +266,8 @@ class Buffer(Loadable):
 
     opengles.glUniform3fv(shader.unif_unib, 4, ctypes.byref(self.unib))
 
+    opengles.glEnable(GL_DEPTH_TEST) # TODO find somewhere more efficient to do this
+
     if self.unib[8] == 0:
       opengles.glDrawElements(GL_TRIANGLES, self.ntris * 3, GL_UNSIGNED_SHORT, 0)
     else:
