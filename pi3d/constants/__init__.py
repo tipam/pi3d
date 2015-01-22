@@ -68,11 +68,11 @@ def _linux():
 
   if environ.get('ANDROID_APP_PATH'):
     platform = PLATFORM_ANDROID
-    openegl = _load_library('/system/lib/libEGL.so')
     opengles = _load_library('/system/lib/libGLESv2.so')
+    openegl = _load_library('/system/lib/libEGL.so')
   else:
-    openegl = _load_library(find_library('EGL'))
-    opengles = _load_library(find_library('GLESv2'))
+    opengles = _load_library(find_library('GLESv2')) # has to happen first
+    openegl = _load_library(find_library('EGL')) # otherwise missing symbol on pi loading egl
   
   return platform, bcm, openegl, opengles # opengles now determined by platform
 

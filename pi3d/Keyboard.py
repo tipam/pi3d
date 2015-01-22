@@ -23,6 +23,7 @@ class CursesKeyboard(object):
     return self.key.getch()
 
   def close(self):
+    import curses
     curses.nocbreak()
     self.key.keypad(0)
     curses.echo()
