@@ -111,16 +111,14 @@ class Display(object):
     if PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
       self.event_list = []
       self.ev = xlib.XEvent()
+    elif PLATFORM == PLATFORM_ANDROID:
+      self.android = Pi3dApp()
 
     self.opengl = DisplayOpenGL()
     self.max_width, self.max_height = self.opengl.width, self.opengl.height
     self.first_time = True
     self.is_running = True
     self.lock = threading.RLock()
-
-    if PLATFORM == PLATFORM_ANDROID:
-      #self.width, self.height = 480, 320
-      self.android = Pi3dApp()
 
     LOGGER.debug(STARTUP_MESSAGE)
 
