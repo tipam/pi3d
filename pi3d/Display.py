@@ -29,7 +29,7 @@ DEFAULT_NEAR = 1.0
 DEFAULT_FAR = 1000.0
 WIDTH = 0
 HEIGHT = 0
-
+'''
 if PLATFORM == PLATFORM_ANDROID:
   DEFAULT_DEPTH = 16
 
@@ -45,10 +45,6 @@ if PLATFORM == PLATFORM_ANDROID:
       self.moved = False
       self.tapped = False
       self.touch = None
-      with self.canvas:
-        self.fbo = Fbo(with_depthbuffer = True)
-      with self.fbo:
-        self.cb = Callback(self.setup_gl_context)
     def update(self, dt):
       pass
     def on_touch_move(self, touch):
@@ -60,9 +56,6 @@ if PLATFORM == PLATFORM_ANDROID:
         self.tapped = True
         self.touch = touch
         print('doubletap')
-    def setup_gl_context(self, *args):
-      glEnable(GL_DEPTH_TEST)
-
       
   class Pi3dApp(App):
     def set_loop(self, loop_function):
@@ -71,7 +64,7 @@ if PLATFORM == PLATFORM_ANDROID:
       self.screen = Pi3dScreen()
       Clock.schedule_interval(self.loop_function, 1.0 / 60.0)
       return self.screen
-
+'''
 class Display(object):
   """This is the central control object of the pi3d system and an instance
   must be created before some of the other class methods are called.
@@ -112,7 +105,8 @@ class Display(object):
       self.event_list = []
       self.ev = xlib.XEvent()
     elif PLATFORM == PLATFORM_ANDROID:
-      self.android = Pi3dApp()
+      #self.android = Pi3dApp()
+      pass
 
     self.opengl = DisplayOpenGL()
     self.max_width, self.max_height = self.opengl.width, self.opengl.height
