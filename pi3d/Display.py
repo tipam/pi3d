@@ -31,31 +31,39 @@ WIDTH = 0
 HEIGHT = 0
 
 if PLATFORM == PLATFORM_ANDROID:
-  DEFAULT_DEPTH = 16
-
   from kivy.app import App
   from kivy.uix.floatlayout import FloatLayout
   from kivy.clock import Clock
-  from kivy.graphics import *
-  from kivy.graphics.opengl import *
   
   class Pi3dScreen(FloatLayout):
     def __init__(self, *args, **kwargs):
       super(Pi3dScreen, self).__init__()
+      self.TAP_TM = 0.25
+      self.TAP_GAP = 1.0
       self.moved = False
       self.tapped = False
+      self.double_tapped = False
+      self.last_down = 0.0
+      self.last_last_down = 0.0
       self.touch = None
     def update(self, dt):
       pass
+    def on_touch_down(self, touch):
+      self.last_last_down = self.last_down
+      self.last_down = time.time()
     def on_touch_move(self, touch):
       self.moved = True
       self.touch = touch
-      print('moved', self)
     def on_touch_up(self, touch):
-      if touch.is_double_tap:
-        self.tapped = True
+      tm_now = time.time()
+      if (tm_now - self.last_down) < self.TAP_TM: #this was a tap
+        if (tm_now - self.last_last_down) < self.TAP_GAP : #and near enough to be double
+          self.double_tapped = True
+          self.tapped = False
+        else:
+          self.tapped = True
+          self.double_tapped = False
         self.touch = touch
-        print('doubletap')
       
   class Pi3dApp(App):
     def set_loop(self, loop_function):
@@ -451,6 +459,7 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
     h = display.max_height - 2 * y
     if h <= 0:
       h = display.max_height
+
   LOGGER.debug('Display size is w=%d, h=%d', w, h)
 
   display.frames_per_second = frames_per_second
@@ -472,6 +481,11 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
   display.bottom = y + h
 
   display.opengl.create_display(x, y, w, h, depth)
+  if PLATFORM == PLATFORM_ANDROID:
+    display.width = display.right = display.max_width = display.opengl.width #not available until after create_display
+    display.height = display.bottom = display.max_height = display.opengl.height
+    display.top = display.bottom = 0
+    
   display.mouse = None
 
   if mouse:

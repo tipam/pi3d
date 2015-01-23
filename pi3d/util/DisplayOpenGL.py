@@ -1,5 +1,6 @@
 import ctypes
 import platform
+import time
 
 from ctypes import c_int, c_float
 from six.moves import xrange
@@ -14,10 +15,9 @@ if PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
 
 class DisplayOpenGL(object):
   def __init__(self):
-    self.reset_depth = False # TODO find some better way
+    #self.reset_depth = False # TODO find some better way
     if PLATFORM == PLATFORM_ANDROID:
       self.width, self.height = 320, 480 # put in some non-zero place-holders
-      self.reset_depth = True
     elif PLATFORM == PLATFORM_PI:
       b = bcm.bcm_host_init()
       assert b >= 0
@@ -91,11 +91,12 @@ class DisplayOpenGL(object):
     if PLATFORM == PLATFORM_ANDROID:
       self.surface = openegl.eglGetCurrentSurface(EGL_DRAW)
       # Get the width and height of the screen - TODO, this system returns 100x100
-      #w = c_int()
-      #h = c_int()
-      #openegl.eglQuerySurface(self.display, self.surface, EGL_WIDTH, ctypes.byref(w))
-      #openegl.eglQuerySurface(self.display, self.surface, EGL_HEIGHT, ctypes.byref(h))
-      #self.width, self.height = w.value, h.value
+      time.sleep(0.2) #give it a chance to find out the dimensions
+      w = c_int()
+      h = c_int()
+      openegl.eglQuerySurface(self.display, self.surface, EGL_WIDTH, ctypes.byref(w))
+      openegl.eglQuerySurface(self.display, self.surface, EGL_HEIGHT, ctypes.byref(h))
+      self.width, self.height = w.value, h.value
     elif PLATFORM == PLATFORM_PI:
       self.dispman_display = bcm.vc_dispmanx_display_open(0) #LCD setting
       self.dispman_update = bcm.vc_dispmanx_update_start(0)
@@ -215,8 +216,8 @@ class DisplayOpenGL(object):
     #opengles.glFlush()
     #opengles.glFinish()
     #clear_matrices
-    if self.reset_depth:
-      opengles.glEnable(GL_DEPTH_TEST) # disabled by kivy! TODO find somewhere better for this
-      self.reset_depth = False
+    #if self.reset_depth:
+    #  opengles.glEnable(GL_DEPTH_TEST) # disabled by kivy! TODO find somewhere better for this
+    #  self.reset_depth = False
     openegl.eglSwapBuffers(self.display, self.surface)
 
