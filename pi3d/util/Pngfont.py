@@ -26,8 +26,8 @@ class Pngfont(Texture):
     """
     if not font.endswith('.png'):
       font += '.png'
-    super(Pngfont, self).__init__("fonts/%s" % font)
-    self.font = font
+    super(Pngfont, self).__init__(font)
+    #self.font = font
     pixels = self.im.load()
 
     self.glyph_table = {}
@@ -41,12 +41,14 @@ class Pngfont(Texture):
       width_scale = width / self.ix
       height_scale = height / self.iy
 
-      self.glyph_table[v] = [width, height,
+      self.glyph_table[unichr(v + 32)] = [width, height,
         [(x + width_scale, y - height_scale),
          (x, y - height_scale),
          (x, y),
          (x + width_scale, y)],
         [(width, 0, 0), (0, 0, 0), (0, -height, 0), (width, -height, 0)]]
+
+    self.height = height
 
     alph = self.im.split()[-1]  #keep alpha
     draw = ImageDraw.Draw(self.im)
