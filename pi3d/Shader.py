@@ -146,7 +146,7 @@ class Shader(DefaultInstance):
     opengles.glGetShaderInfoLog(
       shader, N, ctypes.byref(loglen), ctypes.byref(log))
     if len(log.value) > 0:
-      print('shader({}) {}, {}\n\n{}'.format(shader, self.shfile, log.value, src))
+      print('shader({}) {}, {}'.format(shader, self.shfile, log.value))
 
   def showprogramlog(self, shader):
     """Prints the compile log for a program"""
