@@ -66,11 +66,12 @@ if PLATFORM == PLATFORM_ANDROID:
         self.touch = touch
       
   class Pi3dApp(App):
+    frames_per_second = 60.0
     def set_loop(self, loop_function):
       self.loop_function = loop_function
     def build(self):
       self.screen = Pi3dScreen()
-      Clock.schedule_interval(self.loop_function, 1.0 / 60.0)
+      Clock.schedule_interval(self.loop_function, 1.0 / self.frames_per_second)
       return self.screen
 
 class Display(object):
@@ -485,6 +486,8 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
     display.width = display.right = display.max_width = display.opengl.width #not available until after create_display
     display.height = display.bottom = display.max_height = display.opengl.height
     display.top = display.bottom = 0
+    display.android.frames_per_second = frames_per_second
+    display.frames_per_second = None #to avoid clash between two systems!
     
   display.mouse = None
 
