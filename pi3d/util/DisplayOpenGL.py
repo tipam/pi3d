@@ -33,7 +33,7 @@ class DisplayOpenGL(object):
       self.screen = xlib.XDefaultScreenOfDisplay(self.d)
       self.width, self.height = xlib.XWidthOfScreen(self.screen), xlib.XHeightOfScreen(self.screen)
 
-  def create_display(self, x=0, y=0, w=0, h=0, depth=24):
+  def create_display(self, x=0, y=0, w=0, h=0, depth=24, samples=4):
     self.display = openegl.eglGetDisplay(EGL_DEFAULT_DISPLAY)
     assert self.display != EGL_NO_DISPLAY
 
@@ -46,6 +46,7 @@ class DisplayOpenGL(object):
                              EGL_DEPTH_SIZE, depth,
                              EGL_ALPHA_SIZE, 8,
                              EGL_BUFFER_SIZE, 32,
+                             EGL_SAMPLES, samples, 
                              EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
                              EGL_NONE))
     numconfig = c_int()
