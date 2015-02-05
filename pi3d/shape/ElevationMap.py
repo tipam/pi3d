@@ -1,7 +1,7 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import math
-import sys
+import sys, os
 
 from six.moves import xrange
 
@@ -62,7 +62,10 @@ class ElevationMap(Shape):
     try:
       if '' + mapfile == mapfile: #HORRIBLE. Only way to cope with python2v3
         if mapfile[0] != '/':
-          mapfile = sys.path[0] + '/' + mapfile
+          for p in sys.path:
+            if os.path.isfile(p + '/' + mapfile): # this could theoretically get different files with same name
+              mapfile = p + '/' + mapfile
+              break
         if VERBOSE:
           print("Loading height map ...", mapfile)
 

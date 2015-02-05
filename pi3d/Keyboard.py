@@ -1,10 +1,8 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-import curses, termios, fcntl, sys, os, platform
-
 from pi3d.constants import *
 
-if PLATFORM != PLATFORM_PI:
+if PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
   from pyxlib import x
 
 USE_CURSES = True
@@ -14,6 +12,7 @@ terminal window or session.
 """
 class CursesKeyboard(object):
   def __init__(self):
+    import curses
     self.key = curses.initscr()
     curses.cbreak()
     curses.noecho()
@@ -24,6 +23,7 @@ class CursesKeyboard(object):
     return self.key.getch()
 
   def close(self):
+    import curses
     curses.nocbreak()
     self.key.keypad(0)
     curses.echo()
@@ -42,6 +42,7 @@ From http://stackoverflow.com/a/6599441/43839
 """
 class SysKeyboard(object):
   def __init__(self):
+    import termios, fcntl, sys, os
     self.fd = sys.stdin.fileno()
     # save old state
     self.flags_save = fcntl.fcntl(self.fd, fcntl.F_GETFL)
@@ -148,8 +149,29 @@ class x11Keyboard(object):
     except:
       pass
 
+"""Android keyboard - TODO all of this
+"""
+class AndroidKeyboard(object):
+  def __init__(self):
+    pass
+
+  def read(self):
+    return -1
+
+  def close(self):
+    pass
+
+  def __del__(self):
+    try:
+      self.close()
+    except:
+      pass
+
+
 def Keyboard(use_curses=USE_CURSES):
-  if PLATFORM != PLATFORM_PI:
+  if PLATFORM == PLATFORM_ANDROID:
+    return AndroidKeyboard()
+  elif PLATFORM != PLATFORM_PI:
     return x11Keyboard()
   else:
     return CursesKeyboard() if use_curses else SysKeyboard()

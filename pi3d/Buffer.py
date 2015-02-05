@@ -257,14 +257,21 @@ class Buffer(Loadable):
         opengles.glUniform1i(shader.unif_tex[t], t)
         self.disp.last_textures[t] = texture
 
-      if texture.blend or shape.unif[17] < 1.0 or shape.unif[16] < 1.0:
-        opengles.glEnable(GL_BLEND)
+      if texture.blend:
         # i.e. if any of the textures set to blend then all will for this shader.
+        self.unib[2] = 0.05
+
+    if self.unib[2] != 0.6 or shape.unif[17] < 1.0 or shape.unif[16] < 1.0:
+      #use unib[2] as flag to indicate if any Textures to be blended
+      #needs to be done outside for..textures so materials can be transparent
+        opengles.glEnable(GL_BLEND)
         self.unib[2] = 0.05
 
     self.disp.last_shader = shader
 
     opengles.glUniform3fv(shader.unif_unib, 4, ctypes.byref(self.unib))
+
+    opengles.glEnable(GL_DEPTH_TEST) # TODO find somewhere more efficient to do this
 
     if self.unib[8] == 0:
       opengles.glDrawElements(GL_TRIANGLES, self.ntris * 3, GL_UNSIGNED_SHORT, 0)

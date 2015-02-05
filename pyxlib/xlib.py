@@ -1,9 +1,11 @@
 from six.moves import xrange
 
 from ctypes import *
+from ctypes.util import find_library
 from .x import *
 
-libX11 = CDLL('libX11.so.6')
+x11_name = find_library('X11')
+libX11 = CDLL(x11_name) # was explicitly 'libX11.so.6'
 
 #/*
 # *  Xlib.h - Header definition and support file for the C subroutine

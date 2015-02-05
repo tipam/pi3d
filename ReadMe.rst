@@ -1,24 +1,24 @@
-Introduction to Pi3D
+Introduction to pi3d
 ====================
 
 .. image:: images/rpilogoshad128.png
    :align: left 
 
-**Pi3D written by Tim Skillman, Paddy Gaunt, Tom Ritchford Copyright (c) 2015**
+**pi3d written by Tim Skillman, Paddy Gaunt, Tom Ritchford Copyright (c) 2015**
 
 There's plenty of 3D code flying around at the moment for the Raspberry Pi,
 but much of it is rather complicated to understand and most of it can sit
 under the bonnet!
 
-Pi3D is a Python module that aims to greatly simplify writing 3D in Python
+pi3d is a Python module that aims to greatly simplify writing 3D in Python
 whilst giving access to the power of the Raspberry Pi GPU. It enables both
 3D and 2D rendering and aims to provide a host of exciting commands to load
 in textured/animated models, create fractal landscapes, shaders and much more.
 
-v1.11 release of the Pi3D module adds support for
-running on platforms other than the raspberry pi (X on linux) and runs with
-python 3 as well as 2 The OpenGLES2.0 functionality of the Raspberry Pi
-is used directly or via mesa on 'big' machines. This makes it generally *faster*
+The pi3d module runs on platforms other than the Raspberry Pi (X on linux
+and Android using python-for-android) and runs with python 3 as well as 2.
+The OpenGLES2.0 functionality of the Raspberry Pi or Android is used directly
+or via mesa on 'big' machines. This makes it generally *faster*
 and opens up the world of *shaders* that allow effects such as normal and 
 reflection maps, blurring and many others. It has various demos of built-in
 shapes, landscapes, model loading, walk-about camera and much more! See the demos
@@ -28,7 +28,7 @@ If you are reading this document as the ReadMe in the repository then you
 can find the full version of the documentation here
 http://pi3d.github.com/html/index.html
 
-Demos for Pi3D are now stored at https://github.com/pi3d/pi3d_demos
+Demos for pi3d are now stored at https://github.com/pi3d/pi3d_demos
 ===================================================================
 N.B. Shaders are now integrated into programs differently. The syntax used
 to be::
@@ -148,7 +148,7 @@ Total zipped download from github c. 24 MB
 #.  **demos** Source code of the demos included 96 kB
 #.  **screenshots** Example screenshots of the demos included 860 kB
 #.  **pyxlib** Library to enable use on general linux machines 209 kB
-#.  **ChangeLog.txt** Latest changes of Pi3D
+#.  **ChangeLog.txt** Latest changes of pi3d
 #.  **ReadMe.rst** This file
 
 
@@ -184,19 +184,19 @@ Setup on the Raspberry Pi
     If you have pip installed you should be able to open a terminal and
     type::
 
-      sudo pip install pi3d
+      $ sudo pip install pi3d
         or for python3
-      sudo pip3 install pi3d
+      $ sudo pip-3.2 install pi3d
         
-    (or pip-3.2 or whatever see below*) If you don't have pip installed
+    (or pip3 or whatever see below*) If you don't have pip installed
     you probably should install it as described below under ``Python Imaging``
     as it's the easiest way to install Pillow at the moment.  You can do the
     equivalent of ``pip install`` by downloading from https://pypi.python.org/pypi/pi3d
     and extracting the package, then in a terminal::
 
-      sudo python setup.py install
+      $ sudo python setup.py install
         or for python3
-      sudo python3 setup.py install
+      $ sudo python3 setup.py install
 
     This will put the package into the
     relevant location on your device (for instance
@@ -221,63 +221,51 @@ Setup on the Raspberry Pi
 
 #.  **Install Python Imaging**
 
-    Before trying any of the demos or Pi3D, you must download the Python
+    Before trying any of the demos or pi3d, you need the Python
     Imaging Library as this is needed for importing any graphics used by
-    Pi3D. The original Imaging library is no longer really maintained and
+    pi3d (though see the minimal example below, which doesn't!). The
+    original Imaging library is no longer really maintained and
     doesn't run on python_3. The better equivalent replacement is Pillow.
     In the near future Pillow will be the default imaging library but at the 
-    time of writing you have to use the raspbian jessie repository.
-    This is the 'trial' version of raspbian and to install packages from
-    there you need to add an additional line to /etc/apt/sources.list::
+    time of writing you need to::
 
-      deb http://mirrordirector.raspbian.org/raspbian/ jessie main contrib non-free rpi
-
-    (i.e. the same as the existing line but with jessie for wheezy) then
-    run::
-    
-      sudo apt-get update
-      sudo apt-get install python-pil
-         or
-      sudo apt-get install python3-pil
-
-    NB after installing pillow it's a good idea to take the jessie line out
-    again otherwise your next apt-get update will load a host of development
-    applications and possible break something! Alternatively you need to::
-
-      sudo apt-get install python-dev python-setuptools libjpeg-dev zlib1g-dev libpng12-dev libfreetype6-dev
-      sudo apt-get install python-pip
-      sudo pip install Pillow
+      $ sudo apt-get install python-dev python-setuptools libjpeg-dev zlib1g-dev libpng12-dev libfreetype6-dev
+      $ sudo apt-get install python-pip
+      $ sudo pip install Pillow
       ...
 
     If you miss any of the dependent libraries and need to add them later
     you will have to ``pip uninstall`` then re ``pip install``
 
-    For python_3 support the first above will provide the required graphics
+    For python3 support the first above will provide the required graphics
     libraries used by Pillow but you will need to swap to ``python3-dev``
     and ``python3-setuptools`` also pip is different::
 
-      sudo apt-get install python3-pip
-      sudo pip3 install Pillow
+      $ sudo apt-get install python3-pip
+      $ sudo pip-3.2 install Pillow
 
-    (*used to be ``pip-3.2``, google for the latest botch!) If you do not
-    intend to run python_3 you can install the old PIL: in the terminal,
-    type::
+    (*on ubuntu ``pip3`` could be other names, google for help or search::
+    
+      $ sudo find / -name pip*
 
-      sudo apt-get install python-imaging
+    !) If you do not intend to run python3 you can install the old PIL:
+    in the terminal type::
+
+      $ sudo apt-get install python-imaging
 
     If you later switch to Pillow you will need to sudo remove python-imaging
     first
 
     To run on Arch linux you will need to install::
 
-      pacman -S python2
-      pacman -S python2-pillow
-      pacman -S python2-numpy
+      $ pacman -S python2
+      $ pacman -S python2-pillow
+      $ pacman -S python2-numpy
 
     this worked for me. You could install python2-imaging rather than pillow
     but that's probably a retrograde step. The Arch repository doesn't seem
     to have python3-pillow or python3-pip etc. See `FAQ`_ for a description
-    of all the steps to get a quick loading stand-alone Pi3D SD card.
+    of all the steps to get a quick loading stand-alone pi3d SD card.
 
 Setup on alternative Linux platforms
 ====================================
@@ -287,7 +275,7 @@ Setup on alternative Linux platforms
     you will need to 'enable 3d acceleration'. You need to install libraries
     that emulate OpenGLES behaviour for the gpu::
 
-      sudo apt-get install mesa-utils-extra
+      $ sudo apt-get install mesa-utils-extra
 
     This should install libEGL.so.1 and libGLESv2.so.2 if these change
     (which I suppose they could in time) then the references will need to
@@ -299,13 +287,13 @@ Setup on alternative Linux platforms
 Editing scripts and running
 ===========================
 
-#.  **Install Geany to run Pi3D**
+#.  **Install Geany to run pi3d**
 
     Although you can use any editor and run the scripts in a terminal using python,
     Geany is by far the easiest and most compatible application to use for creating
     and running Python scripts. Download and install it with::
 
-      sudo apt-get install geany xterm
+      $ sudo apt-get install geany xterm
 
     NB IDLE can't cope with some aspects of the way that most of the pi3d
     demos get key presses using the curses module. There will be an error
@@ -315,7 +303,7 @@ Editing scripts and running
 
     Some of the demos require the tk graphics toolkit.  To download and install it::
 
-      sudo apt-get install tk
+      $ sudo apt-get install tk
 
 #.  **Load and run**
 
@@ -327,25 +315,25 @@ Editing scripts and running
       $ python3 Minimal.py
       
     or load any of the demos into Geany and run (using the cogs icon). As a minimum,
-    scripts need these elements in order to use the Pi3D library::
+    scripts need these elements in order to use the pi3d library::
 
       import pi3d
-      DISPLAY = pi3d.Display.create(w=128, h=128)
-      shader = pi3d.Shader("uv_flat")
-      sprite = pi3d.ImageSprite("textures/PATRN.PNG", shader, w=10.0, h=10.0) # path relative to program dir
+      DISPLAY = pi3d.Display.create()
+      ball = pi3d.Sphere(z=5.0)
       while DISPLAY.loop_running():
-        sprite.draw()
+        ball.draw()
 
-    But.. a real application will need other code to actually do something, for
-    instance to get user input in order to stop the program!
+    (Which should work even without python imaging) But.. a real application
+    will need other code to actually do something, for instance to get user
+    input in order to stop the program!
 
 
 A Very Brief Explanation
 ========================
 
-The whole idea of Pi3D is that you don't have to get involved in too many of
+The whole idea of pi3d is that you don't have to get involved in too many of
 the nuts and bolts of how the OpenGL graphics processor works however it might
-help to get an overview of the layout of Pi3D. More detailed explanations can
+help to get an overview of the layout of pi3d. More detailed explanations can
 be found in the documentation of each of the modules. Read `FAQ`_ before
 you try anything ambitious or if anything goes wrong, obviously. There is a
 `3D Graphics Explanation`_ where I try to explain in some more detail what
@@ -358,7 +346,7 @@ is going on.
   before some of the other objects are created so it's a good idea to create one
   first job.
   
-  **Shape** `All objects to be drawn by Pi3D`_ inherit from the `Shape`_ class which holds
+  **Shape** `All objects to be drawn by pi3d`_ inherit from the `Shape`_ class which holds
   details of position, rotation, scale as well as specific data needed for
   drawing the shape. Each `Shape`_ contains an array of `Buffer`_ objects; normally
   only containing one but there could be more in complicated models created
@@ -372,7 +360,7 @@ is going on.
   **Shader** The `Shader`_ class is used to compile *very fast* programs that are run on
   the graphics processor. They have two parts: *Vertex Shaders* that do calculation
   for each of the vertices of the `Buffer`_ and *Fragment Shaders* applied to
-  each pixel. In Pi3D we have kept the shaders out of the main python files
+  each pixel. In pi3d we have kept the shaders out of the main python files
   and divided them using the two extensions .vs and .fs The shader language
   is C like, very clever indeed, but rather hard to fathom out.
   
@@ -394,6 +382,10 @@ is going on.
   created by the `Display`_. The `Light`_ has properties defining the direction,
   the colour (and strength i.e. RGB values) and ambient colour (and strength).
 
+  Although drawing a Shape requires references to ``Shader``, ``Light`` and ``Camera``
+  objects, default instances will be created automatically if they are not
+  specified (as in the example minimal code above)
+
   When you look through the demos you will see one or two things that may
   not be immediately obvious. All the demos start with::
   
@@ -406,8 +398,8 @@ is going on.
   
     import demo
 
-  Allows the demo files to be put in a subdirectory but still run. If you install
-  Pi3D using pip or ``python setup.py install`` then you can take this out::
+  Allows the demo files to be put in a different location from pi3d but still run. If you install
+  pi3d using pip or ``python setup.py install`` then you can take this out::
   
     import pi3d
 
@@ -436,7 +428,7 @@ is going on.
 .. _Camera: pi3d.html#pi3d.Camera.Camera
 .. _Texture: pi3d.html#pi3d.Texture.Texture
 .. _Light: pi3d.html#pi3d.Light.Light
-.. _`All objects to be drawn by Pi3D`: pi3d.shape.html#module-pi3d.shape.Cone
+.. _`All objects to be drawn by pi3d`: pi3d.shape.html#module-pi3d.shape.Cone
 .. _`FAQ`: FAQ.html
 .. _`3D Graphics Explanation`: GPUexplain.html
 
@@ -444,7 +436,7 @@ is going on.
 Documentation
 =============
 
-Please note that Pi3D functions may change significantly during its development.
+Please note that pi3d functions may change significantly during its development.
 
 Bug reports, comments, feature requests and fixes are most welcome!
 
@@ -455,13 +447,13 @@ or on http://pi3d.github.com/html/index.html
 Acknowledgements
 ================
 
-Pi3D started with code based on Peter de Rivaz 'pyopengles'
+pi3d started with code based on Peter de Rivaz 'pyopengles'
 (https://github.com/peterderivaz/pyopengles) with some tweaking from Jon Macey's
 code (jonmacey.blogspot.co.uk/2012/06/).
 
 Many Thanks, especially to Peter de Rivaz, Jon Macey, Richar Urwin, Peter Hess,
-David Wallin, Avishay Orpaz (avishorp), Guenter Kreidl and others who have 
-contributed to Pi3D - keep up the good work!
+David Wallin, Avishay Orpaz (avishorp), Guenter Kreidl, Benjamin Denozière
+and others who have contributed to pi3d - keep up the good work!
 
 
 **PLEASE READ LICENSING AND COPYRIGHT NOTICES ESPECIALLY IF USING FOR COMMERCIAL PURPOSES**

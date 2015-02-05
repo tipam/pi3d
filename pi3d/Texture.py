@@ -2,7 +2,7 @@
 from __future__ import print_function
 
 import ctypes
-import sys
+import sys, os
 
 from six.moves import xrange
 
@@ -72,7 +72,10 @@ class Texture(Loadable):
         if file_string[0] == '/': #absolute address
           self.file_string = file_string
         else:
-          self.file_string = sys.path[0] + '/' + file_string
+          for p in sys.path:
+            if os.path.isfile(p + '/' + file_string): # this could theoretically get different files with same name
+              self.file_string = p + '/' + file_string
+              break
       else:
         self.file_string = file_string # file_string is a PIL Image
         self.is_file = False
@@ -217,7 +220,8 @@ class Texture(Loadable):
       '_tex': self._tex,
       '_loaded': self._loaded,
       'opengl_loaded': False,
-      'disk_loaded': self.disk_loaded
+      'disk_loaded': self.disk_loaded,
+      'm_repeat': self.m_repeat
       }
 
 class TextureCache(object):
