@@ -4,6 +4,11 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
+v1.13
+2015-02-05  Importable to Android using python-for-android. Mouse buttons
+            and thread stopping on program close. EGL ani-aliasing.
+            Texture pickling fixed.
+
 v1.12
 2014-12-22  Light can be defined as originating from a point. Shaders can
             use #include to reduce duplication of code

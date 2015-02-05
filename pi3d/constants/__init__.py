@@ -4,7 +4,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 pi3d.constants contains constant values, mainly integers, from OpenGL ES 2.0.
 """
 
-VERSION = '1.12'
+VERSION = '1.13'
 
 STARTUP_MESSAGE = """
 
@@ -95,4 +95,3 @@ def _detect_platform_and_load_libraries():
   return loader()
 
 PLATFORM, bcm, openegl, opengles = _detect_platform_and_load_libraries()
-#PLATFORM = PLATFORM_ANDROID
