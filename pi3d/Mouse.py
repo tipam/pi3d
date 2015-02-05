@@ -11,6 +11,10 @@ class _Mouse(threading.Thread):
   """holds Mouse object, see also (the preferred) events methods"""
   BUTTON_1 = 1 << 1
   BUTTON_2 = 1 << 2
+  LEFT_BUTTON = 9 # 1001
+  RIGHT_BUTTON = 10 # 1010
+  MIDDLE_BUTTON = 12 # 1100
+  BUTTON_UP = 8 # 1000
   BUTTONS = BUTTON_1 & BUTTON_2
   HEADER = 1 << 3
   XSIGN = 1 << 4
@@ -42,12 +46,14 @@ class _Mouse(threading.Thread):
     from pi3d.Display import Display
     Display.INSTANCE.external_mouse = self
 
+    self.daemon = True # to kill app rather than waiting for mouse event
     self.reset()
 
   def reset(self):
     with self.lock:
       self._x = self._y = self._dx = self._dy = 0
     self.button = False
+    self._buttons = 0
 
   def start(self):
     if not self.running:
@@ -67,9 +73,26 @@ class _Mouse(threading.Thread):
     with self.lock:
       return self._dx, self._dy
 
+  def button_status(self):
+    '''return the button status - use events system for capturing button
+    events more scientifically.
+    in _check_event self.buffr returns the following binary:
+    L-button 00001001 00000000 00000000
+    R-button 00001010 00000000 00000000
+    M-button 00001100 00000000 00000000
+    buttonUp 00001000 00000000 00000000
+    '''
+    with self.lock:
+      return self._buttons
+
   def _check_event(self):
     if len(self.buffr) >= 3:
-      buttons = ord(self.buffr[0])
+      buttons = [ord(c) for c in self.buffr]
+      if buttons[1] == 0 and buttons[2] == 0:
+        self._buttons = buttons[0]
+      else:
+        self._buttons = 0
+      buttons = buttons[0]
       self.buffr = self.buffr[1:]
       if buttons & _Mouse.HEADER:
         dx, dy = map(ord, self.buffr[0:2])

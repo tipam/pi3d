@@ -25,6 +25,7 @@ MARK_CAMERA_CLEAN_ON_EACH_LOOP = True
 
 DEFAULT_FOV = 45.0
 DEFAULT_DEPTH = 24
+DEFAULT_SAMPLES = 4
 DEFAULT_NEAR = 1.0
 DEFAULT_FAR = 1000.0
 WIDTH = 0
@@ -364,7 +365,7 @@ class Display(object):
 def create(x=None, y=None, w=None, h=None, near=None, far=None,
            fov=DEFAULT_FOV, depth=DEFAULT_DEPTH, background=None,
            tk=False, window_title='', window_parent=None, mouse=False,
-           frames_per_second=None):
+           frames_per_second=None, samples=DEFAULT_SAMPLES):
   """
   Creates a pi3d Display.
 
@@ -398,6 +399,8 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
     Automatically create a Mouse.
   *frames_per_second*
     Maximum frames per second to render (None means "free running").
+  *samples*
+    ELG_SAMPLES default 4 improved anti-aliasing
   """
   if tk:
     if PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
@@ -481,7 +484,7 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
   display.right = x + w
   display.bottom = y + h
 
-  display.opengl.create_display(x, y, w, h, depth)
+  display.opengl.create_display(x, y, w, h, depth=depth, samples=samples)
   if PLATFORM == PLATFORM_ANDROID:
     display.width = display.right = display.max_width = display.opengl.width #not available until after create_display
     display.height = display.bottom = display.max_height = display.opengl.height
