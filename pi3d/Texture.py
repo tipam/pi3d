@@ -220,7 +220,8 @@ class Texture(Loadable):
       '_tex': self._tex,
       '_loaded': self._loaded,
       'opengl_loaded': False,
-      'disk_loaded': self.disk_loaded
+      'disk_loaded': self.disk_loaded,
+      'm_repeat': self.m_repeat
       }
 
 class TextureCache(object):
