@@ -35,11 +35,11 @@ if PLATFORM == PLATFORM_ANDROID:
   from kivy.app import App
   from kivy.uix.floatlayout import FloatLayout
   from kivy.clock import Clock
-  
+
   class Pi3dScreen(FloatLayout):
     def __init__(self, *args, **kwargs):
       super(Pi3dScreen, self).__init__()
-      self.TAP_TM = 0.25
+      self.TAP_TM = 0.15
       self.TAP_GAP = 1.0
       self.moved = False
       self.tapped = False
@@ -47,14 +47,18 @@ if PLATFORM == PLATFORM_ANDROID:
       self.last_down = 0.0
       self.last_last_down = 0.0
       self.touch = None
+
     def update(self, dt):
       pass
+
     def on_touch_down(self, touch):
       self.last_last_down = self.last_down
       self.last_down = time.time()
+
     def on_touch_move(self, touch):
       self.moved = True
       self.touch = touch
+
     def on_touch_up(self, touch):
       tm_now = time.time()
       if (tm_now - self.last_down) < self.TAP_TM: #this was a tap
@@ -65,11 +69,12 @@ if PLATFORM == PLATFORM_ANDROID:
           self.tapped = True
           self.double_tapped = False
         self.touch = touch
-      
+
   class Pi3dApp(App):
     frames_per_second = 60.0
     def set_loop(self, loop_function):
       self.loop_function = loop_function
+
     def build(self):
       self.screen = Pi3dScreen()
       Clock.schedule_interval(self.loop_function, 1.0 / self.frames_per_second)
