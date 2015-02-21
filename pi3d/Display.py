@@ -25,7 +25,7 @@ MARK_CAMERA_CLEAN_ON_EACH_LOOP = True
 
 DEFAULT_FOV = 45.0
 DEFAULT_DEPTH = 24
-DEFAULT_SAMPLES = 4
+DEFAULT_SAMPLES = 0
 DEFAULT_NEAR = 1.0
 DEFAULT_FAR = 1000.0
 WIDTH = 0
@@ -405,7 +405,7 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
   *frames_per_second*
     Maximum frames per second to render (None means "free running").
   *samples*
-    ELG_SAMPLES default 4 improved anti-aliasing
+    EGL_SAMPLES default 0, set to 4 for improved anti-aliasing
   """
   if tk:
     if PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
