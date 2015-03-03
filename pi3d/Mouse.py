@@ -2,6 +2,9 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import threading
 import six
+import ctypes
+from pyxlib import xlib
+from pyxlib.x import *
 
 from pi3d.util import Log
 
@@ -21,7 +24,7 @@ class _Mouse(threading.Thread):
   YSIGN = 1 << 5
   INSTANCE = None
 
-  def __init__(self, mouse='mice', restrict=True, width=1920, height=1200):
+  def __init__(self, mouse='mice', restrict=True, width=1920, height=1200, use_x=False):
     """
     Arguments:
       *mouse*
@@ -46,6 +49,21 @@ class _Mouse(threading.Thread):
     from pi3d.Display import Display
     Display.INSTANCE.external_mouse = self
 
+    self.use_x = False
+    if use_x:
+      from pi3d.constants import PLATFORM, PLATFORM_ANDROID, PLATFORM_PI
+      if PLATFORM != PLATFORM_ANDROID and PLATFORM != PLATFORM_PI:
+        self.d = Display.INSTANCE.opengl.d
+        self.window = Display.INSTANCE.opengl.window
+        self.root = ctypes.c_ulong(0)
+        self.child = ctypes.c_ulong(0)
+        self.x = ctypes.c_int(0)
+        self.y = ctypes.c_int(0)
+        self.rootx = ctypes.c_int(0)
+        self.rooty = ctypes.c_int(0)
+        self.mask = ctypes.c_uint(0)
+        self.use_x = True
+
     self.daemon = True # to kill app rather than waiting for mouse event
     self.reset()
 
@@ -66,8 +84,16 @@ class _Mouse(threading.Thread):
     self.fd.close()
 
   def position(self):
-    with self.lock:
-      return self._x, self._y
+    if self.use_x:
+      xlib.XQueryPointer(self.d, self.window,
+                        ctypes.byref(self.root), ctypes.byref(self.child),
+                        ctypes.byref(self.rootx), ctypes.byref(self.rooty),
+                        ctypes.byref(self.x),ctypes.byref(self.y),
+                        self.mask)
+      return self.x.value, self.y.value
+    else:
+      with self.lock:
+        return self._x, self._y
 
   def velocity(self):
     with self.lock:
