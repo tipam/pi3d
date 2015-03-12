@@ -72,7 +72,7 @@ class Buffer(Loadable):
 
     if normals == None: #i.e. normals will only be generated if explictly None
       LOGGER.debug('Calculating normals ...')
-      self.normals = self._calc_normals()
+      self.normals = self.calc_normals()
     else:
       self.normals = np.array(normals)
       
@@ -81,7 +81,7 @@ class Buffer(Loadable):
     self._pack_array_buffer()
     self._pack_element_array_buffer()
 
-  def _calc_normals(self):
+  def calc_normals(self):
     normals = np.zeros(self.vertices.shape, dtype=float) #empty array rights size
     fv = self.vertices[self.indices] #expand faces with x,y,z values for each vertex
     #cross product of two edges of triangles
