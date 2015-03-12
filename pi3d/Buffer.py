@@ -61,40 +61,38 @@ class Buffer(Loadable):
         0  ntile, shiny, blend           0   2
         1  material                      3   5
         2  umult, vmult, point_size      6   8
-        3  u_off, v_off (only 2 used)    9  10
+        3  u_off, v_off, line_width      9  10
     ===== ============================ ==== ==
     """
     #self.shape = shape
     self.textures = []
-    pts = np.array(pts, dtype=float)
-    texcoords = np.array(texcoords, dtype=float)
-    faces = np.array(faces, dtype=int)
+    self.vertices = np.array(pts, dtype=float)
+    self.tex_coords = np.array(texcoords, dtype=float)
+    self.indices = np.array(faces, dtype=int)
 
     if normals == None: #i.e. normals will only be generated if explictly None
       LOGGER.debug('Calculating normals ...')
-
-      normals = np.zeros(pts.shape, dtype=float) #empty array rights size
-
-      fv = pts[faces] #expand faces with x,y,z values for each vertex
-      #cross product of two edges of triangles
-      fn = np.cross(fv[:,1] - fv[:,0], fv[:,2] - fv[:,0])
-      fn = Utility.normalize_v3(fn)
-      normals[faces[:,0]] += fn #add up all normal vectors for a vertex
-      normals[faces[:,1]] += fn
-      normals[faces[:,2]] += fn
-      normals = Utility.normalize_v3(normals)
+      self.normals = self._calc_normals()
     else:
-      normals = np.array(normals)
+      self.normals = np.array(normals)
       
-    # keep a copy for speeding up the collision testing of ElevationMap
-    self.vertices = pts
-    self.normals = normals
-    self.tex_coords = texcoords
-    self.indices = faces
     self.material = (0.5, 0.5, 0.5, 1.0)
-    self.__pack_data()
+    self.draw_method = GL_TRIANGLES
+    self._pack_array_buffer()
+    self._pack_element_array_buffer()
 
-  def __pack_data(self):
+  def _calc_normals(self):
+    normals = np.zeros(self.vertices.shape, dtype=float) #empty array rights size
+    fv = self.vertices[self.indices] #expand faces with x,y,z values for each vertex
+    #cross product of two edges of triangles
+    fn = np.cross(fv[:,1] - fv[:,0], fv[:,2] - fv[:,0])
+    fn = Utility.normalize_v3(fn)
+    normals[self.indices[:,0]] += fn #add up all normal vectors for a vertex
+    normals[self.indices[:,1]] += fn
+    normals[self.indices[:,2]] += fn
+    return Utility.normalize_v3(normals)
+
+  def _pack_array_buffer(self):
     # Pack points,normals and texcoords into tuples and convert to ctype floats.
     n_verts = len(self.vertices)
     if len(self.tex_coords) != n_verts:
@@ -110,6 +108,7 @@ class Buffer(Loadable):
       self.array_buffer = c_floats(np.concatenate((self.vertices, self.normals, self.tex_coords),
                           axis=1).reshape(-1).tolist())
 
+  def _pack_element_array_buffer(self):
     self.ntris = len(self.indices)
     self.element_array_buffer = c_shorts(self.indices.reshape(-1))
     from pi3d.Display import Display
@@ -123,27 +122,45 @@ class Buffer(Loadable):
     self.disp.ebufs_dict[str(self.ebuf)][1] = 1
     self.disp.tidy_needed = True
 
-  def re_init(self, shape, pts, texcoords, faces, normals=None, smooth=True):
-    """Only reset the opengl buffer variables: vertices, tex_coords, indices
-    normals (which is generated if not supplied) **NB this method will
-    go horribly wrong if you change the size of the arrays supplied in
-    the argument as the opengles buffers are reused** Arguments are
-    as per __init__()"""
-    tmp_unib = (c_float * 12)(self.unib[0], self.unib[1], self.unib[2],
-                              self.unib[3], self.unib[4], self.unib[5],
-                              self.unib[6], self.unib[7], self.unib[8],
-                              self.unib[9], self.unib[10], self.unib[11])
-    self.__init__(shape, pts, texcoords, faces, normals, smooth)
-    opengles.glBufferData(GL_ARRAY_BUFFER,
-                          ctypes.sizeof(self.array_buffer),
-                          ctypes.byref(self.array_buffer),
-                          GL_STATIC_DRAW)
-    opengles.glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                          ctypes.sizeof(self.element_array_buffer),
-                          ctypes.byref(self.element_array_buffer),
-                          GL_STATIC_DRAW)
-    self.opengl_loaded = True
-    self.unib = tmp_unib
+  def re_init(self, pts=None, texcoords=None, normals=None, offset=0):
+    """Only reset the opengl buffer variables: vertices, tex_coords, normals
+    (which will not be generated if not supplied)
+    **NB this method will go horribly wrong if you change the size of the
+    arrays supplied in the argument as the opengles buffers are reused
+    At least one of pts, texcoords or normals must be a list**
+
+      Arguments:
+        *pts*
+          list of (x,y,z) tuples, default None
+        *texcoords*
+          list of (u,v) tuples, default None
+        *normals*
+          list of (x,y,z) tuples, default None
+        *offset*
+          number of vertices offset from the start of vertices, default 0
+      """
+    stride = int(self.N_BYTES / 4) #i.e. this can't change from init
+    if not (pts == None):
+      n = len(pts)
+    elif not (texcoords == None):
+      n = len(texcoords)
+    else: 
+      n = len(normals)
+    for i in range(n):
+      ioff = offset + i
+      fr = ioff * stride
+      if not (pts == None):
+        self.array_buffer[fr:fr + 3] = self.vertices[ioff][:] = pts[i][:]
+      fr += 3
+      if not (normals == None):
+        self.array_buffer[fr:fr + 3] = self.normals[ioff][:] = normals[i][:]
+      fr += 3
+      if not (texcoords == None):
+        self.array_buffer[fr:fr + 2] = self.tex_coords[ioff][:] = texcoords[i][:]
+    self._select()
+    opengles.glBufferSubData(GL_ARRAY_BUFFER, 0,
+                      ctypes.sizeof(self.array_buffer),
+                      ctypes.byref(self.array_buffer))
 
   def _load_opengl(self):
     self.vbuf = c_int()
@@ -273,10 +290,7 @@ class Buffer(Loadable):
 
     opengles.glEnable(GL_DEPTH_TEST) # TODO find somewhere more efficient to do this
 
-    if self.unib[8] == 0:
-      opengles.glDrawElements(GL_TRIANGLES, self.ntris * 3, GL_UNSIGNED_SHORT, 0)
-    else:
-      opengles.glDrawElements(GL_POINTS, self.ntris * 3, GL_UNSIGNED_SHORT, 0)
+    opengles.glDrawElements(self.draw_method, self.ntris * 3, GL_UNSIGNED_SHORT, 0)
 
   # Implement pickle/unpickle support
   def __getstate__(self):
@@ -287,7 +301,8 @@ class Buffer(Loadable):
       'tex_coords': self.tex_coords,
       'indices': self.indices,
       'material': self.material,
-      'textures': self.textures
+      'textures': self.textures,
+      'draw_method': self.draw_method
       }
   
   def __setstate__(self, state):
@@ -299,6 +314,8 @@ class Buffer(Loadable):
     self.indices = state['indices']
     self.material = state['material']
     self.textures = state['textures']
+    self.draw_method = state['draw_method']
     self.opengl_loaded = False
     self.disk_loaded = True
-    self.__pack_data()
+    self._pack_array_buffer()
+    self._pack_element_array_buffer()

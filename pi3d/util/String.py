@@ -143,8 +143,7 @@ class String(Shape):
               self.buf[0].array_buffer[(i * 4 + j) * stride + offset + k] = tc[k]
           uvmod = True
       self.buf[0]._select() #then just call glBufferData
-      opengles.glBufferData(GL_ARRAY_BUFFER,
+      opengles.glBufferSubData(GL_ARRAY_BUFFER, 0,
                         ctypes.sizeof(self.buf[0].array_buffer),
-                        ctypes.byref(self.buf[0].array_buffer),
-                        GL_STATIC_DRAW)
+                        ctypes.byref(self.buf[0].array_buffer))
       self.string = new_string

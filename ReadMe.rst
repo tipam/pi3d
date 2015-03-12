@@ -136,21 +136,15 @@ Demos on github.com/pi3d/pi3d_demos include
 Files and folders in this repository
 ====================================
 
-Total zipped download from github c. 24 MB
+Total zipped download from github c. 574 kB extracts to 1.2 MB
 
-#.  **pi3d** The main pi3d module files 540 kB
-#.  **shaders** Shader files used by the pi3d module 33 kB
-#.  **echomesh** Utility functions 14kB
-#.  **textures** Various textures to play with 13 MB
-#.  **models** Demo obj and egg models 26 MB
-#.  **fonts** ttf and Bitmap fonts that can be using for drawing text see in
-    /usr/share/fonts/truetype for others, or look online. 1.0 MB
-#.  **demos** Source code of the demos included 96 kB
-#.  **screenshots** Example screenshots of the demos included 860 kB
+#.  **pi3d** The main pi3d module files 446 kB
 #.  **pyxlib** Library to enable use on general linux machines 209 kB
-#.  **ChangeLog.txt** Latest changes of pi3d
-#.  **ReadMe.rst** This file
-
+#.  **images** To show in ReadMe on github 325 kB
+#.  **ReadMe** This file in markup and plain text 31 kB
+#.  **ChangeLog.txt** Latest changes of pi3d 19 kB
+#.  **six.py** utilities to help run under python2 and python3 13 kB
+#.  **misc. others** 10 kB
 
 Setup on the Raspberry Pi
 =========================
@@ -267,22 +261,45 @@ Setup on the Raspberry Pi
     to have python3-pillow or python3-pip etc. See `FAQ`_ for a description
     of all the steps to get a quick loading stand-alone pi3d SD card.
 
-Setup on alternative Linux platforms
+Setup on desktop and laptop machines
 ====================================
 
-#.  The machine will need to have a gpu that runs OpenGL2+ and obviously
-    it will need to have python installed. If the Linux is running in vmware
-    you will need to 'enable 3d acceleration'. You need to install libraries
-    that emulate OpenGLES behaviour for the gpu::
+  The machine will need to have a gpu that runs OpenGL2+ and obviously
+  it will need to have python installed. At the moment pi3d needs to run
+  in an essentially Linux environment this can be in its own boot partition
+  or in vmware (eg Player which is free, you will also need to
+  ``enable 3d acceleration``.)
 
-      $ sudo apt-get install mesa-utils-extra
+  You need to install libraries
+  that emulate OpenGLES behaviour for the gpu::
 
-    This should install libEGL.so.1 and libGLESv2.so.2 if these change
-    (which I suppose they could in time) then the references will need to
-    be altered in pi3d/constants/__init__.py
+    $ sudo apt-get install mesa-utils-extra
 
-    The installation of PIL or Pillow should be the same as above but you
-    are more likely to need to manually install python-numpy or python3-numpy
+  Which should install mesa versions of libEGL.so and libGLESv2.so However
+  mesa-utils-extra isn't available on all linux distros but libgles2-mesa
+  and libgles2-mesa-dev may provide the required libraries.
+
+  In vmware player on Windows_8.1 I have successfully run pi3d installing lubuntu
+  (quickest to set up (1h inc downloads) and run) and ubuntu but debian 7 took a lot
+  more setting up and didn't render graphics! Apparently LinuxMint does
+  work. One issue running under vmware is that the Mouse class doesn't get
+  the correct movements back from /dev/input/mice so you have to use the
+  argument ``use_x=True``. This provides coordinates of the pointer position
+  relative to the window so limits movement for steering as used in the demos.
+
+  The installation of PIL or Pillow should be the same as for the Raspberry
+  Pi above but you are more likely to need to manually install python-numpy
+  (or python3-numpy)
+
+  It is likely that pi3d will run on OSX but you might have to compile
+  your own mesa libraries (though some seem to be available) Pi3d has
+  been run successfully in vmware on mac.
+
+Android
+=======
+
+  Running pi3d on Android is more complicated, but possible.
+  see `Android`_
 
 Editing scripts and running
 ===========================
@@ -431,6 +448,7 @@ is going on.
 .. _`All objects to be drawn by pi3d`: pi3d.shape.html#module-pi3d.shape.Cone
 .. _`FAQ`: FAQ.html
 .. _`3D Graphics Explanation`: GPUexplain.html
+.. _Android: AndroidUse.html
 
 
 Documentation

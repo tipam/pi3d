@@ -421,9 +421,28 @@ class Shape(Loadable):
     self.unif[index_from:(index_from + len(data))] = data
 
   def set_point_size(self, point_size=0.0):
-    """if this is > 0.0  the vertices will be drawn as points"""
+    """This will set the draw_method in all Buffers of this Shape"""
     for b in self.buf:
       b.unib[8] = point_size
+      b.draw_method = GL_POINTS
+
+  def set_line_width(self, line_width=0.0):
+    """This will set the draw_method in all Buffers of this Shape
+    
+    NB it differs from point size in that glLineWidth() is called here
+    and that line width will be used for all subsequent draw() operations
+    so if you want to draw shapes with different thickness lines you will
+    have to call this method repeatedly just before each draw()
+    
+    Also, there doens't seem to be an equivalent of gl_PointSize as used
+    in the shader language to make lines shrink with distance.
+
+    If you are drawing lines with high contrast they will look better
+    anti aliased which is done by Display.create(samples=4) """
+    for b in self.buf:
+      b.unib[11] = line_width
+      opengles.glLineWidth(ctypes.c_float(line_width))
+      b.draw_method = GL_LINE_STRIP
 
   def add_child(self, child):
     """puts a Shape into the children list"""

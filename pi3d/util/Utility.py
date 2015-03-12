@@ -10,7 +10,7 @@ from pi3d.util.Ctypes import c_bytes
 
 def normalize_v3(arr):
     ''' Normalize a numpy array of 3 component vectors shape=(n,3) '''
-    lens = npsqrt( arr[:,0]**2 + arr[:,1]**2 + arr[:,2]**2)
+    lens = npsqrt( arr[:,0]**2 + arr[:,1]**2 + arr[:,2]**2) + 0.000001
     return divide(arr.T, lens).T
 
 def magnitude(*args):

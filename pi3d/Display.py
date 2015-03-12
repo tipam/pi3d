@@ -47,13 +47,17 @@ if PLATFORM == PLATFORM_ANDROID:
       self.last_down = 0.0
       self.last_last_down = 0.0
       self.touch = None
+      self.previous_touch = None
 
     def update(self, dt):
       pass
 
     def on_touch_down(self, touch):
+      touch.ud['down'] = True #needed for keeping track of 'other' touch location
       self.last_last_down = self.last_down
       self.last_down = time.time()
+      self.previous_touch = self.touch
+      self.touch = touch
 
     def on_touch_move(self, touch):
       self.moved = True
@@ -68,7 +72,7 @@ if PLATFORM == PLATFORM_ANDROID:
         else:
           self.tapped = True
           self.double_tapped = False
-        self.touch = touch
+      touch.ud['down'] = False
 
   class Pi3dApp(App):
     frames_per_second = 60.0
