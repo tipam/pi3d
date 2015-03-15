@@ -66,15 +66,15 @@ class Buffer(Loadable):
     """
     #self.shape = shape
     self.textures = []
-    self.vertices = np.array(pts, dtype=float)
-    self.tex_coords = np.array(texcoords, dtype=float)
-    self.indices = np.array(faces, dtype=int)
+    self.vertices = np.array(pts, dtype="float32")
+    self.tex_coords = np.array(texcoords, dtype="float32")
+    self.indices = np.array(faces, dtype="short")
 
     if normals == None: #i.e. normals will only be generated if explictly None
       LOGGER.debug('Calculating normals ...')
       self.normals = self.calc_normals()
     else:
-      self.normals = np.array(normals)
+      self.normals = np.array(normals, dtype="float32")
       
     self.material = (0.5, 0.5, 0.5, 1.0)
     self.draw_method = GL_TRIANGLES
@@ -82,7 +82,7 @@ class Buffer(Loadable):
     self._pack_element_array_buffer()
 
   def calc_normals(self):
-    normals = np.zeros(self.vertices.shape, dtype=float) #empty array rights size
+    normals = np.zeros(self.vertices.shape, dtype="float32") #empty array rights size
     fv = self.vertices[self.indices] #expand faces with x,y,z values for each vertex
     #cross product of two edges of triangles
     fn = np.cross(fv[:,1] - fv[:,0], fv[:,2] - fv[:,0])
@@ -98,19 +98,19 @@ class Buffer(Loadable):
     if len(self.tex_coords) != n_verts:
       if len(self.normals) != n_verts:
         self.N_BYTES = 12 # only use pts
-        self.array_buffer = c_floats(self.vertices.reshape(-1).tolist())
+        self.array_buffer = self.vertices
       else:
         self.N_BYTES = 24 # use pts and normals
-        self.array_buffer = c_floats(np.concatenate((self.vertices, self.normals),
-                            axis=1).reshape(-1).tolist())
+        self.array_buffer = np.concatenate((self.vertices, self.normals),
+                            axis=1)
     else:
       self.N_BYTES = 32 # use all three NB doesn't check that normals are there
-      self.array_buffer = c_floats(np.concatenate((self.vertices, self.normals, self.tex_coords),
-                          axis=1).reshape(-1).tolist())
+      self.array_buffer = np.concatenate((self.vertices, self.normals, self.tex_coords),
+                          axis=1)
 
   def _pack_element_array_buffer(self):
     self.ntris = len(self.indices)
-    self.element_array_buffer = c_shorts(self.indices.reshape(-1))
+    self.element_array_buffer = self.indices
     from pi3d.Display import Display
     self.disp = Display.INSTANCE # rely on there always being one!
 
@@ -139,28 +139,29 @@ class Buffer(Loadable):
         *offset*
           number of vertices offset from the start of vertices, default 0
       """
-    stride = int(self.N_BYTES / 4) #i.e. this can't change from init
+    stride = int(self.N_BYTES / 4) #i.e. 3, 6 or 8 This can't change from init
     if not (pts == None):
       n = len(pts)
-    elif not (texcoords == None):
-      n = len(texcoords)
-    else: 
+      if not (isinstance(pts, np.ndarray)):
+        pts = np.array(pts)
+      #self.array_buffer[offset:(offset + n), 0:3] = self.vertices[offset:(offset + n),:] = pts[:,:]
+      self.array_buffer[offset:(offset + n), 0:3] = pts[:,:]
+    if not (normals == None): 
       n = len(normals)
-    for i in range(n):
-      ioff = offset + i
-      fr = ioff * stride
-      if not (pts == None):
-        self.array_buffer[fr:fr + 3] = self.vertices[ioff][:] = pts[i][:]
-      fr += 3
-      if not (normals == None):
-        self.array_buffer[fr:fr + 3] = self.normals[ioff][:] = normals[i][:]
-      fr += 3
-      if not (texcoords == None):
-        self.array_buffer[fr:fr + 2] = self.tex_coords[ioff][:] = texcoords[i][:]
+      if not (isinstance(normals, np.ndarray)):
+        normals = np.array(normals)
+      #self.array_buffer[offset:(offset + n), 3:6] = self.normals[offset:(offset + n),:] = normals[:,:]
+      self.array_buffer[offset:(offset + n), 3:6] = normals[:,:]
+    if not (texcoords == None):
+      n = len(texcoords)
+      if not (isinstance(texcoords, np.ndarray)):
+        texcoords = np.array(texcoords)
+      #self.array_buffer[offset:(offset + n), 6:8] = self.tex_coords[offset:(offset + n),:] = texcoords[:,:]
+      self.array_buffer[offset:(offset + n), 6:8] = texcoords[:,:]
     self._select()
     opengles.glBufferSubData(GL_ARRAY_BUFFER, 0,
-                      ctypes.sizeof(self.array_buffer),
-                      ctypes.byref(self.array_buffer))
+                      self.array_buffer.nbytes,
+                      self.array_buffer.ctypes.data)
 
   def _load_opengl(self):
     self.vbuf = c_int()
@@ -171,12 +172,12 @@ class Buffer(Loadable):
     self.disp.ebufs_dict[str(self.ebuf)] = [self.ebuf, 0]
     self._select()
     opengles.glBufferData(GL_ARRAY_BUFFER,
-                          ctypes.sizeof(self.array_buffer),
-                          ctypes.byref(self.array_buffer),
+                          self.array_buffer.nbytes,
+                          self.array_buffer.ctypes.data,
                           GL_STATIC_DRAW)
     opengles.glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                          ctypes.sizeof(self.element_array_buffer),
-                          ctypes.byref(self.element_array_buffer),
+                          self.element_array_buffer.nbytes,
+                          self.element_array_buffer.ctypes.data,
                           GL_STATIC_DRAW)
 
   def _unload_opengl(self):
@@ -296,26 +297,26 @@ class Buffer(Loadable):
   def __getstate__(self):
     return {
       'unib': list(self.unib),
-      'vertices': self.vertices,
-      'normals': self.normals,
-      'tex_coords': self.tex_coords,
-      'indices': self.indices,
+      'array_buffer': self.array_buffer,
+      'element_array_buffer': self.element_array_buffer,
       'material': self.material,
       'textures': self.textures,
-      'draw_method': self.draw_method
+      'draw_method': self.draw_method,
+      'ntris': self.ntris,
+      'N_BYTES': self.N_BYTES
       }
   
   def __setstate__(self, state):
     unib_tuple = tuple(state['unib'])
     self.unib = (ctypes.c_float * 12)(*unib_tuple)
-    self.vertices = state['vertices']
-    self.normals = state['normals']
-    self.tex_coords = state['tex_coords']
-    self.indices = state['indices']
+    self.array_buffer = state['array_buffer']
+    self.element_array_buffer = state['element_array_buffer']
     self.material = state['material']
     self.textures = state['textures']
     self.draw_method = state['draw_method']
     self.opengl_loaded = False
     self.disk_loaded = True
-    self._pack_array_buffer()
-    self._pack_element_array_buffer()
+    self.ntris = state['ntris']
+    self.N_BYTES = state['N_BYTES']
+    from pi3d.Display import Display
+    self.disp = Display.INSTANCE # rely on there always being one!

@@ -2,7 +2,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import ctypes
 
-from numpy import array, dot, savez, load
+from numpy import array, dot, savez, load, zeros
 from math import radians, pi, sin, cos
 
 from pi3d.constants import *
@@ -143,10 +143,7 @@ class Shape(Loadable):
     """translate to offset"""
 
     self.MFlg = True
-    self.M = (ctypes.c_float * 32)(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+    self.M = zeros(32, dtype="float32").reshape(2,4,4)
 
 
   def draw(self, shader=None, txtrs=None, ntl=None, shny=None, camera=None, mlist=[]):
@@ -194,22 +191,22 @@ class Shape(Loadable):
       for m in mlist[-1::-1]:
         self.MRaw = dot(self.MRaw, m)
       ######################################
-      self.M[0:16] = self.MRaw.ravel()
+      self.M[0,:,:] = self.MRaw[:,:]
       #self.M[0:16] = c_floats(self.MRaw.reshape(-1).tolist()) #pypy version
-      self.M[16:32] = dot(self.MRaw, camera.mtrx).ravel()
+      self.M[1,:,:] = dot(self.MRaw, camera.mtrx)[:,:]
       #self.M[16:32] = c_floats(dot(self.MRaw, camera.mtrx).reshape(-1).tolist()) #pypy
       self.MFlg = False
 
     elif camera.was_moved:
       # Only do this if it's not done because model moved.
-      self.M[16:32] = dot(self.MRaw, camera.mtrx).ravel()
+      self.M[1,:,:] = dot(self.MRaw, camera.mtrx)[:,:]
 
     if camera.was_moved:
       self.unif[18:21] = camera.eye[0:3]
 
     opengles.glUniformMatrix4fv(shader.unif_modelviewmatrix, 2,
                                 ctypes.c_int(0),
-                                ctypes.byref(self.M))
+                                self.M.ctypes.data)
 
     opengles.glUniform3fv(shader.unif_unif, 20, ctypes.byref(self.unif))
     for b in self.buf:

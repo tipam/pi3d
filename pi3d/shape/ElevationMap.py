@@ -214,10 +214,10 @@ class ElevationMap(Shape):
     p1 = p0 + 1
     p2 = p0 + self.ix
     p3 = p0 + self.ix + 1
-    v0 = self.buf[0].vertices[p0]
-    v1 = self.buf[0].vertices[p1]
-    v2 = self.buf[0].vertices[p2]
-    v3 = self.buf[0].vertices[p3]
+    v0 = self.buf[0].array_buffer[p0,0:3]
+    v1 = self.buf[0].array_buffer[p1,0:3]
+    v2 = self.buf[0].array_buffer[p2,0:3]
+    v3 = self.buf[0].array_buffer[p3,0:3]
 
     if pz > (v0[2] + hs / ws * (px - v0[0])):
     #opposite side of the diagonal so swap base corners
@@ -272,8 +272,8 @@ class ElevationMap(Shape):
         p = j*self.ix + i # pointer to the start of xyz for i,j in the vertices array
         p1 = j*self.ix + i - 1 # pointer to the start of xyz for i-1,j
         p2 = (j-1)*self.ix + i # pointer to the start of xyz for i, j-1
-        vertp = self.buf[0].vertices[p]
-        normp = self.buf[0].normals[p]
+        vertp = self.buf[0].array_buffer[p,0:3]
+        normp = self.buf[0].array_buffer[p,3:6]
         # work out distance squared from this vertex to the point
         distSq = (px - vertp[0])**2 + (py - vertp[1])**2 + (pz - vertp[2])**2
         if distSq < minDist: # this vertex is nearest so keep a record
@@ -289,10 +289,10 @@ class ElevationMap(Shape):
 
         #if the intersection point is in this rectangle then the x,z values
         #will lie between edges
-        if xIsect > self.buf[0].vertices[p1][0] and \
-           xIsect < self.buf[0].vertices[p][0] and \
-           zIsect > self.buf[0].vertices[p2][2] and \
-           zIsect < self.buf[0].vertices[p][2]:
+        if xIsect > self.buf[0].array_buffer[p1,0] and \
+           xIsect < self.buf[0].array_buffer[p,0] and \
+           zIsect > self.buf[0].array_buffer[p2,2] and \
+           zIsect < self.buf[0].array_buffer[p,2]:
           pDistSq = pDist**2
           # finally if the perpendicular distance is less than the nearest so far
           #keep a record
@@ -307,7 +307,7 @@ class ElevationMap(Shape):
 
     if minDist <= radSq: #i.e. near enough to clash so return normal
       p = minLoc[1]*self.ix + minLoc[0]
-      normp = self.buf[0].normals[p]
+      normp = self.buf[0].array_buffer[p,3:6]
       if minDist < 0:
         jump = rad - minDist
       else:
@@ -340,7 +340,7 @@ class ElevationMap(Shape):
     z0 = int(math.floor((halfd + pz)/dz + 0.5))
     if z0 < 0: z0 = 0
     if z0 > self.iy-1: z0 = self.iy-1
-    normp = array(self.buf[0].normals[z0*self.ix + x0])
+    normp = array(self.buf[0].array_buffer[z0*self.ix + x0,3:6])
     # slight simplification to working out cross products as dirctn always 0,0,1
     #sidev = cross(normp, dirctn)
     sidev = array([normp[1], -normp[0], 0.0])

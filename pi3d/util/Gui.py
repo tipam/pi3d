@@ -387,7 +387,7 @@ class TextBox(Widget):
     """Find the x,y location of each letter's bottom left and top right
     vertices to return a character index of the click x,y
     """
-    verts = self.shapes[0].buf[0].vertices
+    verts = self.shapes[0].buf[0].array_buffer[:,0:3]
     x = x - self.x + verts[2][0]
     y = y - self.y + verts[0][1]
     nv = len(verts)
@@ -404,7 +404,7 @@ class TextBox(Widget):
     return len(self.txt)
 
   def _get_cursor_loc(self, i):
-    verts = self.shapes[0].buf[0].vertices
+    verts = self.shapes[0].buf[0].array_buffer[:,0:3]
     maxi = int(len(verts) / 4 - 1)
     if maxi < 0:
       return self.x, self.y

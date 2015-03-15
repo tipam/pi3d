@@ -140,10 +140,10 @@ class String(Shape):
           texc = self.font.glyph_table[c][2]
           for j, tc in enumerate(texc): #patch values directly into array_buffer
             for k in [0, 1]:
-              self.buf[0].array_buffer[(i * 4 + j) * stride + offset + k] = tc[k]
+              self.buf[0].array_buffer[(i * 4 + j),(offset + k)] = tc[k]
           uvmod = True
       self.buf[0]._select() #then just call glBufferData
       opengles.glBufferSubData(GL_ARRAY_BUFFER, 0,
-                        ctypes.sizeof(self.buf[0].array_buffer),
-                        ctypes.byref(self.buf[0].array_buffer))
+                        self.buf[0].array_buffer.nbytes,
+                        self.buf[0].array_buffer.ctypes.data)
       self.string = new_string
