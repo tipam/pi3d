@@ -66,30 +66,51 @@ class Buffer(Loadable):
     """
     #self.shape = shape
     self.textures = []
-    self.vertices = np.array(pts, dtype="float32")
-    self.tex_coords = np.array(texcoords, dtype="float32")
-    self.indices = np.array(faces, dtype="short")
 
-    if normals == None: #i.e. normals will only be generated if explictly None
-      LOGGER.debug('Calculating normals ...')
-      self.normals = self.calc_normals()
+    #self.indices = np.array(faces, dtype="short") # needed in calc_normals
+    self.element_array_buffer = np.array(faces, dtype="short")
+    self.ntris = len(self.element_array_buffer)
+
+    n_verts = len(pts)
+    if len(texcoords) != n_verts:
+      if normals != None and len(normals) != n_verts:
+        self.N_BYTES = 12 # only use vertices
+        bufw = 3 # width to create array_buffer
+      else:
+        self.N_BYTES = 24 # use pts and normals
+        bufw = 6
     else:
-      self.normals = np.array(normals, dtype="float32")
+      self.N_BYTES = 32 # use all three NB doesn't check that normals are there
+      bufw = 8
+    self.array_buffer = np.zeros((n_verts, bufw), dtype="float32")
+    if n_verts > 0: # TODO Mergeshape starts out with an empty buffer
+      self.array_buffer[:,0:3] = np.array(pts, dtype="float32")
+      if bufw == 8:
+        self.array_buffer[:,6:8] = np.array(texcoords, dtype="float32")
+      if bufw > 3:
+        if normals == None: #i.e. normals will only be generated if explictly None
+          LOGGER.debug('Calculating normals ...')
+          self.array_buffer[:,3:6] = self.calc_normals()
+        else:
+          self.array_buffer[:,3:6] = np.array(normals, dtype="float32")
       
     self.material = (0.5, 0.5, 0.5, 1.0)
     self.draw_method = GL_TRIANGLES
-    self._pack_array_buffer()
-    self._pack_element_array_buffer()
+    from pi3d.Display import Display
+    self.disp = Display.INSTANCE # rely on there always being one!
+
+    #self._pack_array_buffer()
+    #self._pack_element_array_buffer()
 
   def calc_normals(self):
-    normals = np.zeros(self.vertices.shape, dtype="float32") #empty array rights size
-    fv = self.vertices[self.indices] #expand faces with x,y,z values for each vertex
+    normals = np.zeros((len(self.array_buffer), 3), dtype="float32") #empty array rights size
+    fv = self.array_buffer[self.element_array_buffer,0:3] #expand faces with x,y,z values for each vertex
     #cross product of two edges of triangles
     fn = np.cross(fv[:,1] - fv[:,0], fv[:,2] - fv[:,0])
     fn = Utility.normalize_v3(fn)
-    normals[self.indices[:,0]] += fn #add up all normal vectors for a vertex
-    normals[self.indices[:,1]] += fn
-    normals[self.indices[:,2]] += fn
+    normals[self.element_array_buffer[:,0]] += fn #add up all normal vectors for a vertex
+    normals[self.element_array_buffer[:,1]] += fn
+    normals[self.element_array_buffer[:,2]] += fn
     return Utility.normalize_v3(normals)
 
   def _pack_array_buffer(self):
