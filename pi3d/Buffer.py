@@ -99,8 +99,6 @@ class Buffer(Loadable):
     from pi3d.Display import Display
     self.disp = Display.INSTANCE # rely on there always being one!
 
-    #self._pack_array_buffer()
-    #self._pack_element_array_buffer()
 
   def calc_normals(self):
     normals = np.zeros((len(self.array_buffer), 3), dtype="float32") #empty array rights size
@@ -113,7 +111,7 @@ class Buffer(Loadable):
     normals[self.element_array_buffer[:,2]] += fn
     return Utility.normalize_v3(normals)
 
-  def _pack_array_buffer(self):
+  """def _pack_array_buffer(self):
     # Pack points,normals and texcoords into tuples and convert to ctype floats.
     n_verts = len(self.vertices)
     if len(self.tex_coords) != n_verts:
@@ -133,7 +131,8 @@ class Buffer(Loadable):
     self.ntris = len(self.indices)
     self.element_array_buffer = self.indices
     from pi3d.Display import Display
-    self.disp = Display.INSTANCE # rely on there always being one!
+    self.disp = Display.INSTANCE # rely on there always being one!"""
+
 
   def __del__(self):
     #super(Buffer, self).__del__() #TODO supposed to always call super.__del__
@@ -142,6 +141,7 @@ class Buffer(Loadable):
     self.disp.vbufs_dict[str(self.vbuf)][1] = 1
     self.disp.ebufs_dict[str(self.ebuf)][1] = 1
     self.disp.tidy_needed = True
+
 
   def re_init(self, pts=None, texcoords=None, normals=None, offset=0):
     """Only reset the opengl buffer variables: vertices, tex_coords, normals
@@ -165,24 +165,22 @@ class Buffer(Loadable):
       n = len(pts)
       if not (isinstance(pts, np.ndarray)):
         pts = np.array(pts)
-      #self.array_buffer[offset:(offset + n), 0:3] = self.vertices[offset:(offset + n),:] = pts[:,:]
       self.array_buffer[offset:(offset + n), 0:3] = pts[:,:]
     if not (normals == None): 
       n = len(normals)
       if not (isinstance(normals, np.ndarray)):
         normals = np.array(normals)
-      #self.array_buffer[offset:(offset + n), 3:6] = self.normals[offset:(offset + n),:] = normals[:,:]
       self.array_buffer[offset:(offset + n), 3:6] = normals[:,:]
     if not (texcoords == None):
       n = len(texcoords)
       if not (isinstance(texcoords, np.ndarray)):
         texcoords = np.array(texcoords)
-      #self.array_buffer[offset:(offset + n), 6:8] = self.tex_coords[offset:(offset + n),:] = texcoords[:,:]
       self.array_buffer[offset:(offset + n), 6:8] = texcoords[:,:]
     self._select()
     opengles.glBufferSubData(GL_ARRAY_BUFFER, 0,
                       self.array_buffer.nbytes,
                       self.array_buffer.ctypes.data)
+
 
   def _load_opengl(self):
     self.vbuf = c_int()
@@ -201,14 +199,17 @@ class Buffer(Loadable):
                           self.element_array_buffer.ctypes.data,
                           GL_STATIC_DRAW)
 
+
   def _unload_opengl(self):
     opengles.glDeleteBuffers(1, ctypes.byref(self.vbuf))
     opengles.glDeleteBuffers(1, ctypes.byref(self.ebuf))
+
 
   def _select(self):
     """Makes our buffers active."""
     opengles.glBindBuffer(GL_ARRAY_BUFFER, self.vbuf)
     opengles.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.ebuf)
+
 
   def set_draw_details(self, shader, textures, ntiles=0.0, shiny=0.0,
                        umult=1.0, vmult=1.0):
@@ -239,14 +240,18 @@ class Buffer(Loadable):
     self.unib[6] = umult
     self.unib[7] = vmult
 
+
   def set_material(self, mtrl):
     self.unib[3:6] = mtrl[0:3]
+
 
   def set_textures(self, textures):
     self.textures = textures
 
+
   def set_offset(self, offset=(0.0, 0.0)):
     self.unib[9:11] = offset
+
 
   def draw(self, shape=None, shader=None, textures=None, ntl=None, shny=None, fullset=True):
     """Draw this Buffer, called by the parent Shape.draw()
@@ -314,6 +319,7 @@ class Buffer(Loadable):
 
     opengles.glDrawElements(self.draw_method, self.ntris * 3, GL_UNSIGNED_SHORT, 0)
 
+
   # Implement pickle/unpickle support
   def __getstate__(self):
     return {
@@ -326,6 +332,7 @@ class Buffer(Loadable):
       'ntris': self.ntris,
       'N_BYTES': self.N_BYTES
       }
+
   
   def __setstate__(self, state):
     unib_tuple = tuple(state['unib'])
