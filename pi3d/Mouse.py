@@ -3,8 +3,11 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import threading
 import six
 import ctypes
-from pyxlib import xlib
-from pyxlib.x import *
+
+from pi3d.constants import PLATFORM, PLATFORM_ANDROID, PLATFORM_PI
+if PLATFORM != PLATFORM_ANDROID and PLATFORM != PLATFORM_PI:
+  from pyxlib import xlib
+  from pyxlib.x import *
 
 from pi3d.util import Log
 
@@ -50,8 +53,7 @@ class _Mouse(threading.Thread):
     Display.INSTANCE.external_mouse = self
 
     self.use_x = False
-    if use_x:
-      from pi3d.constants import PLATFORM, PLATFORM_ANDROID, PLATFORM_PI
+    if use_x: # version as argument to __init__
       if PLATFORM != PLATFORM_ANDROID and PLATFORM != PLATFORM_PI:
         self.d = Display.INSTANCE.opengl.d
         self.window = Display.INSTANCE.opengl.window
