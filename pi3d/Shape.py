@@ -461,22 +461,16 @@ class Shape(Loadable):
     """Find the limits of vertices in three dimensions. Returns a tuple
     (left, bottom, front, right, top, back)
     """
-    left, bottom, front  = 10000, 10000, 10000
-    right, top, back = -10000, -10000, -10000
+    left, bottom, front  = 10000.0, 10000.0, 10000.0
+    right, top, back = -10000.0, -10000.0, -10000.0
     for b in self.buf:
-      for v in b.vertices:
-        if v[0] < left:
-          left = v[0]
-        if v[0] > right:
-          right = v[0]
-        if v[1] < bottom:
-          bottom = v[1]
-        if v[1] > top:
-          top = v[1]
-        if v[2] < front:
-          front = v[2]
-        if v[2] > back:
-          back = v[2]
+      v = b.array_buffer # alias to simplify code. vertices are array_buffer[:,0:3]
+      left = min(left, v[:,0].min())
+      bottom = min(bottom, v[:,1].min())
+      front = min(front, v[:,2].min())
+      right = max(right, v[:,0].max())
+      top = max(top, v[:,1].max())
+      back = max(back, v[:,2].max())
 
     return (left, bottom, front, right, top, back)
 
