@@ -176,6 +176,7 @@ class Buffer(Loadable):
       if not (isinstance(texcoords, np.ndarray)):
         texcoords = np.array(texcoords)
       self.array_buffer[offset:(offset + n), 6:8] = texcoords[:,:]
+    self.load_opengl() # has to be called prior to _select
     self._select()
     opengles.glBufferSubData(GL_ARRAY_BUFFER, 0,
                       self.array_buffer.nbytes,
