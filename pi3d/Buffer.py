@@ -149,14 +149,15 @@ class Buffer(Loadable):
     **NB this method will go horribly wrong if you change the size of the
     arrays supplied in the argument as the opengles buffers are reused
     At least one of pts, texcoords or normals must be a list**
+    This method will run faster if the new data is passed as numpy 2D arrays.
 
       Arguments:
         *pts*
-          list of (x,y,z) tuples, default None
+          numpy 2D array or list of (x,y,z) tuples, default None
         *texcoords*
-          list of (u,v) tuples, default None
+          numpy 2D array or list of (u,v) tuples, default None
         *normals*
-          list of (x,y,z) tuples, default None
+          numpy 2D array or list of (x,y,z) tuples, default None
         *offset*
           number of vertices offset from the start of vertices, default 0
       """
