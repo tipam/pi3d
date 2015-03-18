@@ -87,6 +87,7 @@ pi3d/shape/EnvironmentCube.py
 pi3d/shape/Extrude.py
 pi3d/shape/Helix.py
 pi3d/shape/Lathe.py
+pi3d/shape/Lines.py
 pi3d/shape/LodSprite.py
 pi3d/shape/MergeShape.py
 pi3d/shape/Model.py
