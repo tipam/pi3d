@@ -3,6 +3,7 @@ from __future__ import print_function
 
 import ctypes
 import sys, os
+import numpy as np
 
 from six.moves import xrange
 
@@ -158,7 +159,8 @@ class Texture(Loadable):
     RGBs = 'RGBA' if self.alpha else 'RGB'
     if im.mode != RGBs:
       im = im.convert(RGBs)
-    self.image = im.tostring('raw', RGBs) # TODO change to tobytes WHEN Pillow is default PIL in debian (jessie becomes current)
+    #self.image = im.tostring('raw', RGBs) # TODO change to tobytes WHEN Pillow is default PIL in debian (jessie becomes current)
+    self.image = np.array(im)
     self._tex = ctypes.c_int()
     if self.is_file and 'fonts/' in self.file_string:
       self.im = im
@@ -175,7 +177,8 @@ class Texture(Loadable):
     RGBv = GL_RGBA if self.alpha else GL_RGB
     opengles.glTexImage2D(GL_TEXTURE_2D, 0, RGBv, self.ix, self.iy, 0, RGBv,
                           GL_UNSIGNED_BYTE,
-                          ctypes.string_at(self.image, len(self.image)))
+                          #ctypes.string_at(self.image, len(self.image)))
+                          self.image.ctypes.data_as(ctypes.POINTER(ctypes.c_short)))
 
     opengles.glEnable(GL_TEXTURE_2D)
     opengles.glGenerateMipmap(GL_TEXTURE_2D)

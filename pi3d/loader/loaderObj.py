@@ -237,16 +237,14 @@ def loadFileOBJ(model, fileName):
     n = len(model.buf) - 1
     model.vGroup[g] = n
 
-    model.buf[n].indicesLen = len(model.buf[n].indices)
+    model.buf[n].indicesLen = len(model.buf[n].element_array_buffer)
     model.buf[n].material = (0.0, 0.0, 0.0, 0.0)
     model.buf[n].ttype = GL_TRIANGLES
 
     if VERBOSE:
       print()
-      print("indices=", len(model.buf[n].indices))
-      print("vertices=", len(model.buf[n].vertices))
-      print("normals=", len(model.buf[n].normals))
-      print("tex_coords=", len(model.buf[n].tex_coords))
+      print("indices=", len(model.buf[n].element_array_buffer))
+      print("vertices=", len(model.buf[n].array_buffer))
 
   try:
     material_lib = parse_mtl(open(os.path.join(filePath, mtllib), 'r'))

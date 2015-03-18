@@ -4,9 +4,17 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
+v1.14
+2015-03-19  Fairly major change in the way python array data is passed to
+            libGLESv2 functions. Now generally uses ndarray.ctypes.data
+            rather than expanding values and creating a new ctypes array.
+            Lines class and line drawing added. anti-alias defaults off
+            as it breaks pi3d on vmware. Mouse option to use x11 pointer
+            as standard Mouse doesn't work on vmware. 
+
 v1.13
 2015-02-05  Importable to Android using python-for-android. Mouse buttons
-            and thread stopping on program close. EGL ani-aliasing.
+            and thread stopping on program close. EGL anti-aliasing.
             Texture pickling fixed.
 
 v1.12

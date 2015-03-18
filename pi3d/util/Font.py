@@ -1,6 +1,7 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import ctypes
+import numpy as np
 import itertools
 import os.path
 import sys
@@ -152,7 +153,9 @@ class Font(Texture):
         all_fits = True
 
     RGBs = 'RGBA' if self.alpha else 'RGB'
-    self.image = self.im.convert(RGBs).tostring('raw', RGBs)
+    #self.image = self.im.convert(RGBs).tostring('raw', RGBs)
+    self.im = self.im.convert(RGBs)
+    self.image = np.array(self.im)
     self._tex = ctypes.c_int()
 
   def _load_disk(self):

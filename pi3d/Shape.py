@@ -2,7 +2,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import ctypes
 
-from numpy import array, dot, savez, load
+from numpy import array, dot, savez, load, zeros
 from math import radians, pi, sin, cos
 
 from pi3d.constants import *
@@ -143,10 +143,7 @@ class Shape(Loadable):
     """translate to offset"""
 
     self.MFlg = True
-    self.M = (ctypes.c_float * 32)(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+    self.M = zeros(32, dtype="float32").reshape(2,4,4)
 
 
   def draw(self, shader=None, txtrs=None, ntl=None, shny=None, camera=None, mlist=[]):
@@ -194,22 +191,22 @@ class Shape(Loadable):
       for m in mlist[-1::-1]:
         self.MRaw = dot(self.MRaw, m)
       ######################################
-      self.M[0:16] = self.MRaw.ravel()
+      self.M[0,:,:] = self.MRaw[:,:]
       #self.M[0:16] = c_floats(self.MRaw.reshape(-1).tolist()) #pypy version
-      self.M[16:32] = dot(self.MRaw, camera.mtrx).ravel()
+      self.M[1,:,:] = dot(self.MRaw, camera.mtrx)[:,:]
       #self.M[16:32] = c_floats(dot(self.MRaw, camera.mtrx).reshape(-1).tolist()) #pypy
       self.MFlg = False
 
     elif camera.was_moved:
       # Only do this if it's not done because model moved.
-      self.M[16:32] = dot(self.MRaw, camera.mtrx).ravel()
+      self.M[1,:,:] = dot(self.MRaw, camera.mtrx)[:,:]
 
     if camera.was_moved:
       self.unif[18:21] = camera.eye[0:3]
 
     opengles.glUniformMatrix4fv(shader.unif_modelviewmatrix, 2,
                                 ctypes.c_int(0),
-                                ctypes.byref(self.M))
+                                self.M.ctypes.data)
 
     opengles.glUniform3fv(shader.unif_unif, 20, ctypes.byref(self.unif))
     for b in self.buf:
@@ -421,9 +418,28 @@ class Shape(Loadable):
     self.unif[index_from:(index_from + len(data))] = data
 
   def set_point_size(self, point_size=0.0):
-    """if this is > 0.0  the vertices will be drawn as points"""
+    """This will set the draw_method in all Buffers of this Shape"""
     for b in self.buf:
       b.unib[8] = point_size
+      b.draw_method = GL_POINTS
+
+  def set_line_width(self, line_width=0.0):
+    """This will set the draw_method in all Buffers of this Shape
+    
+    NB it differs from point size in that glLineWidth() is called here
+    and that line width will be used for all subsequent draw() operations
+    so if you want to draw shapes with different thickness lines you will
+    have to call this method repeatedly just before each draw()
+    
+    Also, there doens't seem to be an equivalent of gl_PointSize as used
+    in the shader language to make lines shrink with distance.
+
+    If you are drawing lines with high contrast they will look better
+    anti aliased which is done by Display.create(samples=4) """
+    for b in self.buf:
+      b.unib[11] = line_width
+      opengles.glLineWidth(ctypes.c_float(line_width))
+      b.draw_method = GL_LINE_STRIP
 
   def add_child(self, child):
     """puts a Shape into the children list"""
@@ -445,22 +461,16 @@ class Shape(Loadable):
     """Find the limits of vertices in three dimensions. Returns a tuple
     (left, bottom, front, right, top, back)
     """
-    left, bottom, front  = 10000, 10000, 10000
-    right, top, back = -10000, -10000, -10000
+    left, bottom, front  = 10000.0, 10000.0, 10000.0
+    right, top, back = -10000.0, -10000.0, -10000.0
     for b in self.buf:
-      for v in b.vertices:
-        if v[0] < left:
-          left = v[0]
-        if v[0] > right:
-          right = v[0]
-        if v[1] < bottom:
-          bottom = v[1]
-        if v[1] > top:
-          top = v[1]
-        if v[2] < front:
-          front = v[2]
-        if v[2] > back:
-          back = v[2]
+      v = b.array_buffer # alias to simplify code. vertices are array_buffer[:,0:3]
+      left = min(left, v[:,0].min())
+      bottom = min(bottom, v[:,1].min())
+      front = min(front, v[:,2].min())
+      right = max(right, v[:,0].max())
+      top = max(top, v[:,1].max())
+      back = max(back, v[:,2].max())
 
     return (left, bottom, front, right, top, back)
 

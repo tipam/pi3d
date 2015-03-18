@@ -1,4 +1,5 @@
 import ctypes
+import numpy as np
 
 from PIL import ImageDraw
 
@@ -59,5 +60,7 @@ class Pngfont(Texture):
     self.im.putalpha(alph)
 
     RGBs = 'RGBA' if self.alpha else 'RGB'
-    self.image = self.im.convert(RGBs).tostring('raw', RGBs)
+    #self.image = self.im.convert(RGBs).tostring('raw', RGBs)
+    self.im = self.im.convert(RGBs)
+    self.image = np.array(self.im)
     self._tex = ctypes.c_int()

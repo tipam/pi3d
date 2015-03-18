@@ -1,6 +1,7 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import ctypes
+import numpy as np
 import itertools
 import os.path
 import sys
@@ -124,7 +125,9 @@ class FixedString(Texture):
       elif f_type == 'SMOOTH':
         self.im = self.im.filter(ImageFilter.SMOOTH_MORE)
         
-    self.image = self.im.convert('RGBA').tostring('raw', 'RGBA')
+    #self.image = self.im.convert('RGBA').tostring('raw', 'RGBA')
+    self.im = self.im.convert('RGBA')
+    self.image = np.array(self.im)
     self._tex = ctypes.c_int()
     
     bmedge = nlines * height + 2.0 * margin
@@ -149,11 +152,11 @@ class FixedString(Texture):
     import numpy as np
     a = np.array(self.im, dtype=np.uint8)
     a = np.average(a, axis=2, weights=[1.0, 1.0, 1.0, 0.0]).astype(int)
-    b = [[0.01,0.025, 0.05,0.025, 0.01],
-          [0.025,0.05, 0.065,0.05, 0.025],
-          [0.05,0.065, 0.1,0.065, 0.05],
-          [0.025,0.05, 0.065,0.05, 0.025],
-          [0.01,0.025, 0.05,0.025, 0.01]]
+    b = [[0.01, 0.025, 0.05, 0.025, 0.01],
+         [0.025,0.05,  0.065,0.05,  0.025],
+         [0.05, 0.065, 0.1,  0.065, 0.05],
+         [0.025,0.05,  0.065,0.05,  0.025],
+         [0.01, 0.025, 0.05, 0.025, 0.01]]
     c = np.zeros(a.shape, dtype=np.uint8)
     steps = [i - 2 for i in range(5)]
     for i, istep in enumerate(steps):
