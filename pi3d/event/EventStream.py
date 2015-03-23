@@ -169,7 +169,7 @@ class EventStream(object):
 
     selectlist = [x.filehandle for x in streams]
     ready = select.select(selectlist, [ ], [ ], 0)[0]
-    if not ready: returisn
+    if not ready: return
     while ready:
       for fd in ready:
         try:
