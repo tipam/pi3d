@@ -45,7 +45,7 @@ class PostProcess(OffScreenTexture):
     self.scale = scale
     # load shader
     self.shader = Shader(shader)
-    if camera == None:
+    if camera is None:
       self.viewcam = Camera.instance() # in case this is prior to one being created
     else:
       self.viewcam = camera
@@ -53,10 +53,10 @@ class PostProcess(OffScreenTexture):
     self.sprite = LodSprite(z=20.0, w=self.ix, h=self.iy, n=divide)
     self.sprite.set_2d_size(w=self.ix, h=self.iy)
     for b in self.sprite.buf:
-      b.unib[6] = self.scale # ufact
-      b.unib[7] = self.scale # vfact
-      b.unib[9] = (1.0 - self.scale) * 0.5 # uoffset
-      b.unib[10] = (1.0 - self.scale) * 0.5 # voffset
+      b.unib[2,0] = self.scale # ufact
+      b.unib[2,1] = self.scale # vfact
+      b.unib[3,0] = (1.0 - self.scale) * 0.5 # uoffset
+      b.unib[3,1] = (1.0 - self.scale) * 0.5 # voffset
     self.alpha = False
     self.blend = True
     self.mipmap = mipmap
@@ -92,8 +92,8 @@ class PostProcess(OffScreenTexture):
       *unif_vals*
         dictionay object i.e. {a:unif[a], b:unif[b], c:unif[c]} where a,b,c
         are subscripts of the unif array in Shape available for user
-        custom space i.e. unif[48]...unif[59] corresponding with the vec3
-        uniform variables unif[16][0] to unit[19][2]
+        custom space i.e. unif[16]...unif[19]
+        NB the values must be three value tuples or 1D arrays
     """
     if unif_vals:
       for i in unif_vals:

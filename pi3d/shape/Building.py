@@ -237,7 +237,7 @@ class ObjectCuboid(object):
     Without a pos argument: "does object o overlap me?"
     With a pos argument: "would object o overlap me if it was at position 'pos'?"
     """
-    if pos == None:
+    if pos is None:
       pos = o.position
     return _overlap(self.position.x-self.bulk, self.size.x+2*self.bulk, pos.x-o.bulk, o.size.x+o.bulk*2) and \
       _overlap(self.position.y-self.bulk, self.size.y+2*self.bulk, pos.y-o.bulk, o.size.y+o.bulk*2) and \
@@ -468,7 +468,7 @@ class Building (object):
     self.ceilingthickness = 1.0
     self.walls = []
 
-    if scheme == None:
+    if scheme is None:
       self.scheme = Building.baseScheme
     else:
       self.scheme = scheme

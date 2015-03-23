@@ -41,9 +41,9 @@ class Model(Shape):
     """create a new Model but buf points to same array of Buffers
     so much quicker to create than reloading all the vertices etc
     """
-    newModel = Model(file_string = "__clone__", x=self.unif[0], y=self.unif[1], z=self.unif[2],
-               rx=self.unif[3], ry=self.unif[4], rz=self.unif[5], sx=self.unif[6], sy=self.unif[7], sz=self.unif[8],
-               cx=self.unif[9], cy=self.unif[10], cz=self.unif[11])
+    newModel = Model(file_string = "__clone__", x=self.unif[0,0], y=self.unif[0,1], z=self.unif[0,2],
+               rx=self.unif[1,0], ry=self.unif[1,1], rz=self.unif[1,2], sx=self.unif[2,0], sy=self.unif[2,1], sz=self.unif[2,2],
+               cx=self.unif[3,0], cy=self.unif[3,1], cz=self.unif[3,2])
     newModel.buf = self.buf
     newModel.vGroup = self.vGroup
     newModel.shader = self.shader

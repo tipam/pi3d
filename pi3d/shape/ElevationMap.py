@@ -166,8 +166,8 @@ class ElevationMap(Shape):
      (providing it's inside the map area)
     """
     #adjust for map not set at origin
-    px -= self.unif[0]
-    pz -= self.unif[2]
+    px -= self.unif[0,0]
+    pz -= self.unif[0,2]
 
     wh = self.width * 0.5
     hh = self.depth * 0.5
@@ -178,7 +178,7 @@ class ElevationMap(Shape):
     if px > -wh and px < wh and pz > -hh and pz < hh:
       pixht = self.pixels[(wh + px) / ws,(hh + pz) / hs] * ht
 
-    return pixht + self.unif[1]
+    return pixht + self.unif[0,1]
 
   def calcHeight(self, px, pz, inc_normal=False):
     """accurately return the height of the map at the point specified
@@ -190,8 +190,8 @@ class ElevationMap(Shape):
         optionall return a tuple with height and normal vector (h, (nx,ny,nz))
     """
     #adjust for map not set at origin
-    px -= self.unif[0]
-    pz -= self.unif[2]
+    px -= self.unif[0,0]
+    pz -= self.unif[0,2]
 
     wh = self.width * 0.5
     hh = self.depth * 0.5
@@ -226,8 +226,8 @@ class ElevationMap(Shape):
       y, n = _intersect_triangle(v1, v0, v3, (px, 0, pz))
     if inc_normal:
       n /= ((n * n).sum()) ** 0.5 # normalise to unit len
-      return (self.unif[1] + y, n)
-    return self.unif[1] + y
+      return (self.unif[0,1] + y, n)
+    return self.unif[0,1] + y
 
   def clashTest(self, px, py, pz, rad):
     """Works out if an object at a given location and radius will overlap
@@ -245,9 +245,9 @@ class ElevationMap(Shape):
     """
     radSq = rad**2
     # adjust for map not set at origin
-    px -= self.unif[0]
-    py -= self.unif[1]
-    pz -= self.unif[2]
+    px -= self.unif[0,0]
+    py -= self.unif[0,1]
+    pz -= self.unif[0,2]
     ht = self.height/255
     halfw = self.width/2.0
     halfd = self.depth/2.0
@@ -300,7 +300,7 @@ class ElevationMap(Shape):
             minDist = pDistSq
             minLoc = (i,j)
 
-    gLevel = self.calcHeight(px + self.unif[0], pz + self.unif[1]) #check it hasn't tunnelled through by going fast
+    gLevel = self.calcHeight(px + self.unif[0,0], pz + self.unif[0,1]) #check it hasn't tunnelled through by going fast
     if gLevel > (py-rad):
       minDist = py - gLevel
       minLoc = (int((x0+x1)/2), int((z0+z1)/2))
@@ -328,8 +328,8 @@ class ElevationMap(Shape):
       *pz*
         z location
     """
-    px -= self.unif[0]
-    pz -= self.unif[2]
+    px -= self.unif[0,0]
+    pz -= self.unif[0,2]
     halfw = self.width/2.0
     halfd = self.depth/2.0
     dx = self.width/self.ix

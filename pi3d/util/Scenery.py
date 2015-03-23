@@ -21,7 +21,7 @@ class SceneryItem(object):
     There is enough information to allow objects to be created and pickled.
     
     At the moment the SceneryItems are either ElevationMaps which are
-    specified by defining put_on == None. The key to this dictionary record
+    specified by defining put_on = None. The key to this dictionary record
     is the stem of the name used as the map texture to define the elevation
     i.e. 'map00' will look for 'map00.png' which should be 33x33 pixels
     as the ElevationMap uses 32 divisions.
@@ -82,7 +82,7 @@ class Scene(object):
     '''
     for key in self.scenery_list:
       s_item = self.scenery_list[key]
-      if s_item.put_on == None: #this is a map - do all these first pass
+      if s_item.put_on is None: #this is a map - do all these first pass
         print('pickling {}'.format(key))
         mymap = pi3d.ElevationMap(mapfile='{}/{}.png'.format(self.path, key), name=key,
                            width=(self.msize + 0.001), depth=(self.msize + 0.001), height=s_item.height, 
@@ -94,7 +94,7 @@ class Scene(object):
         s_item.shape = mymap # temp store all these for the sake of make_pickle
     for key in self.scenery_list:
       s_item = self.scenery_list[key]
-      if s_item.put_on != None: #model so need to put on map
+      if s_item.put_on is not None: #model so need to put on map
         print('pickling {}'.format(key))
         md = s_item.model_details
         if not md['model'] in self.models:

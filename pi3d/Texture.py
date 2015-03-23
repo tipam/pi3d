@@ -99,7 +99,7 @@ class Texture(Loadable):
     super(Texture, self).__del__()
     try:
       from pi3d.Display import Display
-      if Display.INSTANCE:
+      if Display.INSTANCE is not None:
         Display.INSTANCE.textures_dict[str(self._tex)][1] = 1
         Display.INSTANCE.tidy_needed = True
     except:
@@ -171,7 +171,7 @@ class Texture(Loadable):
     """overrides method of Loadable"""
     opengles.glGenTextures(4, ctypes.byref(self._tex), 0)
     from pi3d.Display import Display
-    if Display.INSTANCE:
+    if Display.INSTANCE is not None:
       Display.INSTANCE.textures_dict[str(self._tex)] = [self._tex, 0]
     opengles.glBindTexture(GL_TEXTURE_2D, self._tex)
     RGBv = GL_RGBA if self.alpha else GL_RGB
@@ -237,7 +237,7 @@ class TextureCache(object):
   def create(self, file_string, blend=False, flip=False, size=0, **kwds):
     key = file_string, blend, flip, size
     texture = self.cache.get(key, None)
-    if not texture:
+    if texture is None:
       texture = Texture(*key, **kwds)
       self.cache[key] = texture
 

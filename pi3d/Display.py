@@ -100,7 +100,7 @@ class Display(object):
       An optional Tk window.
 
     """
-    if Display.INSTANCE:
+    if Display.INSTANCE is not None:
       assert ALLOW_MULTIPLE_DISPLAYS
       LOGGER.warning('A second instance of Display was created')
     else:
@@ -299,7 +299,7 @@ class Display(object):
     if MARK_CAMERA_CLEAN_ON_EACH_LOOP:
       from pi3d.Camera import Camera
       camera = Camera.instance()
-      if camera:
+      if camera is not None:
         camera.was_moved = False
 
     if self.tidy_needed:
@@ -444,7 +444,7 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
         # ... just force full screen - TK will automatically fit itself into the screen
         w = 1920
         h = 1180
-      if background:
+      if background is not None:
         bg_i = [int(i * 255) for i in background]
         bg = '#{:02X}{:02X}{:02X}'.format(bg_i[0], bg_i[1], bg_i[2])
       else:
@@ -508,7 +508,7 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
     display.mouse = Mouse(width=w, height=h, restrict=False)
     display.mouse.start()
 
-  if background:
+  if background is not None:
     display.set_background(*background)
 
   return display

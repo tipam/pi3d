@@ -116,7 +116,7 @@ class x11Keyboard(object):
     self.key_code = ""
 
   def _update_event(self):
-    if not self.display: #Because DummyTkWin Keyboard instance created before Display!
+    if self.display is None: #Because DummyTkWin Keyboard instance created before Display!
       from pi3d.Display import Display
       self.display = Display.INSTANCE
     n = len(self.display.event_list)

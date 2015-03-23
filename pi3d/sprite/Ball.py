@@ -17,9 +17,9 @@ class Ball(ImageSprite):
                               camera=camera, light=light, w=2.0*radius,
                               h=2.0*radius, name="",x=x, y=y, z=z)
     self.radius = radius
-    #self.unif[0] = x
-    #self.unif[1] = y
-    #self.unif[2] = z
+    #self.unif[0,0] = x
+    #self.unif[0,1] = y
+    #self.unif[0,2] = z
     self.vx = vx
     self.vy = vy
     self.mass = radius * radius
@@ -31,8 +31,8 @@ class Ball(ImageSprite):
 
   def hit(self, otherball):
     """Used for pre-checking ball positions."""
-    dx = (self.unif[0] + self.vx) - (otherball.unif[0] + otherball.vx)
-    dy = (self.unif[1] + self.vy) - (otherball.unif[1] + otherball.vy)
+    dx = (self.unif[0,0] + self.vx) - (otherball.unif[0,0] + otherball.vx)
+    dy = (self.unif[0,1] + self.vy) - (otherball.unif[0,1] + otherball.vy)
     rd = self.radius + otherball.radius
     return dot(dx, dy) < (rd * rd)
 
@@ -40,10 +40,10 @@ class Ball(ImageSprite):
     """work out resultant velocities using 17th.C phsyics"""
     # relative positions
     rd = self.radius + otherball.radius
-    dx = self.unif[0] - otherball.unif[0]
+    dx = self.unif[0,0] - otherball.unif[0,0]
     if abs(dx) > rd:
       return
-    dy = self.unif[1] - otherball.unif[1]
+    dy = self.unif[0,1] - otherball.unif[0,1]
     if dx * dx + dy * dy > rd * rd:
       return
     # check sign of a.b to see if converging
@@ -82,14 +82,14 @@ class Ball(ImageSprite):
 
   def bounce_wall(self, width, height):
     left, right, top, bottom = -width/2.0, width/2.0, height/2.0, -height/2.0
-    if self.unif[0] > (right - self.radius):
+    if self.unif[0,0] > (right - self.radius):
       self.vx = -abs(self.vx)
-    elif self.unif[0] < (left + self.radius):
+    elif self.unif[0,0] < (left + self.radius):
       self.vx = abs(self.vx)
 
-    if self.unif[1] > (top - self.radius):
+    if self.unif[0,1] > (top - self.radius):
       self.vy = -abs(self.vy)
-    elif self.unif[1] < (bottom + self.radius):
+    elif self.unif[0,1] < (bottom + self.radius):
       self.vy = abs(self.vy)
 
   def repaint(self, t):

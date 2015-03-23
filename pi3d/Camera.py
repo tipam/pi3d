@@ -37,7 +37,7 @@ class Camera(DefaultInstance):
     self.at = at
     self.start_eye = eye # for reset with different lens settings
     self.eye = [eye[0], eye[1], eye[2]]
-    if lens == None:
+    if lens is None:
       from pi3d.Display import Display
       lens = [Display.INSTANCE.near, Display.INSTANCE.far, Display.INSTANCE.fov,
                   Display.INSTANCE.width / float(Display.INSTANCE.height)]
@@ -65,7 +65,7 @@ class Camera(DefaultInstance):
 
   def reset(self, lens=None, is_3d=True, scale=1.0):
     """Has to be called each loop if the camera position or rotation changes"""
-    if lens != None:
+    if lens is not None:
       view = _LookAtMatrix(self.at, self.start_eye, [0, 1, 0])
       projection = _ProjectionMatrix(lens[0], lens[1], lens[2] / scale, lens[3])
       self.model_view = dot(view, projection)

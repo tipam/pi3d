@@ -137,8 +137,8 @@ class FixedString(Texture):
     if shader != None:
       self.sprite.shader = shader
       buf.shader = shader
-    buf.unib[6] = float(maxwid / texture_wid) #scale to fit
-    buf.unib[7] = float(bmedge / texture_hgt)
+    buf.unib[2,0] = float(maxwid / texture_wid) #scale to fit
+    buf.unib[2,1] = float(bmedge / texture_hgt)
     
   def set_shader(self, shader):
     ''' wrapper for Shape.set_shader'''
