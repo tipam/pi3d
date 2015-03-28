@@ -34,7 +34,7 @@ class Shape(Loadable):
     """
     super(Shape, self).__init__()
     self.name = name
-    light = light or Light.instance()
+    light = light if light is not None else Light.instance()
     # uniform variables all in one array (for Shape and one for Buffer)
     self.unif = array([ # was (ctypes.c_float * 60)
       [x, y, z], [rx, ry, rz],
