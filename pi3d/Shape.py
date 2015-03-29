@@ -160,8 +160,10 @@ class Shape(Loadable):
     from pi3d.Camera import Camera
     from pi3d.Shader import Shader
 
-    camera = camera if camera is not None else self._camera if self._camera is not None else Camera.instance()
-    shader = shader if shader is not None else self.shader if self.shader is not None else Shader.instance()
+    #camera = camera if camera is not None else self._camera if self._camera is not None else Camera.instance()
+    #shader = shader if shader is not None else self.shader if self.shader is not None else Shader.instance()
+    camera = camera or self._camera or Camera.instance()
+    shader = shader or self.shader or Shader.instance()
     shader.use()
 
     if self.MFlg or len(mlist) > 0:
@@ -490,7 +492,9 @@ class Shape(Loadable):
     self.scl[0, 0] = sx
     self.scl[1, 1] = sy
     self.scl[2, 2] = sz
-    self.unif[2,:] = sx, sy, sz
+    self.unif[0, 0] = sx
+    self.unif[1, 1] = sy
+    self.unif[2, 2] = sz
     self.MFlg = True
     self.sclflg = True
 
@@ -507,7 +511,9 @@ class Shape(Loadable):
     self.tr1[3, 0] = x - self.unif[3,0]
     self.tr1[3, 1] = y - self.unif[3,1]
     self.tr1[3, 2] = z - self.unif[3,2]
-    self.unif[0,:] = x, y, z
+    self.unif[0,0] = x
+    self.unif[0,1] = y
+    self.unif[0,2] = z
     self.MFlg = True
 
   def positionX(self, v):

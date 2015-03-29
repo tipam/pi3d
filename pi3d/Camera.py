@@ -36,7 +36,7 @@ class Camera(DefaultInstance):
 
     self.at = at
     self.start_eye = eye # for reset with different lens settings
-    self.eye = [eye[0], eye[1], eye[2]]
+    self.eye = np.array(eye)
     if lens is None:
       from pi3d.Display import Display
       lens = [Display.INSTANCE.near, Display.INSTANCE.far, Display.INSTANCE.fov,
@@ -102,12 +102,10 @@ class Camera(DefaultInstance):
       *pt*
         tuple (x, y, z) floats
     """
-    self.mtrx = np.dot([[1, 0, 0, 0],
-                     [0, 1, 0, 0],
-                     [0, 0, 1, 0],
-                     [-pt[0], -pt[1], -pt[2], 1]],
-                    self.mtrx)
-    self.eye = [pt[0], pt[1], pt[2]]
+    self.eye = np.array(pt)
+    m = np.identity(4, dtype="float32")
+    m[3,:3] = -self.eye
+    self.mtrx = np.dot(m, self.mtrx)
     self.was_moved = True
 
   def rotateZ(self, angle):
@@ -196,8 +194,8 @@ def _LookAtMatrix(at, eye, up=[0, 1, 0], reflect=False):
   # If reflect, then reflect in plane -20.0 (water depth)
   if reflect:
     depth = -20.0 # Shallower to avoid edge effects
-    eye = [eye[0], -eye[1], eye[2]]
-    at = [at[0], -at[1], at[2]]
+    eye[1] *= -1
+    at[1] *= -1
   zaxis = vec_normal(vec_sub(at, eye))
   xaxis = vec_normal(vec_cross(up, zaxis))
   yaxis = vec_cross(zaxis, xaxis)
