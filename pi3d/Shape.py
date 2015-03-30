@@ -36,17 +36,17 @@ class Shape(Loadable):
     self.name = name
     light = light if light is not None else Light.instance()
     # uniform variables all in one array (for Shape and one for Buffer)
-    self.unif = array([ # was (ctypes.c_float * 60)
-      [x, y, z], [rx, ry, rz],
-      [sx, sy, sz], [cx, cy, cz],
-      [0.5, 0.5, 0.5], [5000.0, 0.8, 1.0],
-      [0.0, 0.0, 0.0], [light.is_point, 0.0, 0.0],
-      [light.lightpos[0], light.lightpos[1], light.lightpos[2]],
-      [light.lightcol[0], light.lightcol[1], light.lightcol[2]],
-      [light.lightamb[0], light.lightamb[1], light.lightamb[2]],
-      [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0],
-      [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0],
-      [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]], dtype="float32")
+    self.unif =  (ctypes.c_float * 60)(
+      x, y, z, rx, ry, rz,
+      sx, sy, sz, cx, cy, cz,
+      0.5, 0.5, 0.5, 5000.0, 0.8, 1.0,
+      0.0, 0.0, 0.0, light.is_point, 0.0, 0.0,
+      light.lightpos[0], light.lightpos[1], light.lightpos[2],
+      light.lightcol[0], light.lightcol[1], light.lightcol[2],
+      light.lightamb[0], light.lightamb[1], light.lightamb[2],
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
     """ pass to shader array of vec3 uniform variables:
 
     ===== ========================================== ==== ==
@@ -98,38 +98,38 @@ class Shape(Loadable):
     self.tr1 = array([[1.0, 0.0, 0.0, 0.0],
                       [0.0, 1.0, 0.0, 0.0],
                       [0.0, 0.0, 1.0, 0.0],
-                      [self.unif[0,0] - self.unif[3,0], self.unif[0,1] - self.unif[3,1], self.unif[0,2] - self.unif[3,2], 1.0]])
+                      [self.unif[0] - self.unif[9], self.unif[1] - self.unif[10], self.unif[2] - self.unif[11], 1.0]])
     """translate to position - offset"""
 
-    s, c = sin(radians(self.unif[1,0])), cos(radians(self.unif[1,0]))
+    s, c = sin(radians(self.unif[3])), cos(radians(self.unif[3]))
     self.rox = array([[1.0, 0.0, 0.0, 0.0],
                       [0.0, c, s, 0.0],
                       [0.0, -s, c, 0.0],
                       [0.0, 0.0, 0.0, 1.0]])
-    self.roxflg = True if self.unif[1,0] != 0.0 else False
+    self.roxflg = True if self.unif[3] != 0.0 else False
     """rotate about x axis"""
 
-    s, c = sin(radians(self.unif[1,1])), cos(radians(self.unif[1,1]))
+    s, c = sin(radians(self.unif[4])), cos(radians(self.unif[4]))
     self.roy = array([[c, 0.0, -s, 0.0],
                       [0.0, 1.0, 0.0, 0.0],
                       [s, 0.0, c, 0.0],
                       [0.0, 0.0, 0.0, 1.0]])
-    self.royflg = True if self.unif[1,1] != 0.0 else False
+    self.royflg = True if self.unif[4] != 0.0 else False
     """rotate about y axis"""
 
-    s, c = sin(radians(self.unif[1,2])), cos(radians(self.unif[1,2]))
+    s, c = sin(radians(self.unif[5])), cos(radians(self.unif[5]))
     self.roz = array([[c, s, 0.0, 0.0],
                       [-s, c, 0.0, 0.0],
                       [0.0, 0.0, 1.0, 0.0],
                       [0.0, 0.0, 0.0, 1.0]])
-    self.rozflg = True if self.unif[1,2] != 0.0 else False
+    self.rozflg = True if self.unif[5] != 0.0 else False
     """rotate about z axis"""
 
-    self.scl = array([[self.unif[2,0], 0.0, 0.0, 0.0],
-                      [0.0, self.unif[2,1], 0.0, 0.0],
-                      [0.0, 0.0, self.unif[2,2], 0.0],
+    self.scl = array([[self.unif[6], 0.0, 0.0, 0.0],
+                      [0.0, self.unif[7], 0.0, 0.0],
+                      [0.0, 0.0, self.unif[8], 0.0],
                       [0.0, 0.0, 0.0, 1.0]])
-    if self.unif[2,0] != 1.0 or self.unif[2,1] != 1.0 or self.unif[2,2] != 1.0:
+    if self.unif[6] != 1.0 or self.unif[7] != 1.0 or self.unif[8] != 1.0:
       self.sclflg = True 
     else:
       self.sclflg = False
@@ -138,8 +138,8 @@ class Shape(Loadable):
     self.tr2 = array([[1.0, 0.0, 0.0, 0.0],
                       [0.0, 1.0, 0.0, 0.0],
                       [0.0, 0.0, 1.0, 0.0],
-                      [self.unif[3,0], self.unif[3,1], self.unif[3,2], 1.0]])
-    if self.unif[3,0] != 0.0 or self.unif[3,1] != 0.0 or self.unif[3,2] != 0.0:
+                      [self.unif[9], self.unif[10], self.unif[11], 1.0]])
+    if self.unif[9] != 0.0 or self.unif[10] != 0.0 or self.unif[11] != 0.0:
       self.tr2flg = True 
     else:
       self.tr2flg = False
@@ -160,8 +160,6 @@ class Shape(Loadable):
     from pi3d.Camera import Camera
     from pi3d.Shader import Shader
 
-    #camera = camera if camera is not None else self._camera if self._camera is not None else Camera.instance()
-    #shader = shader if shader is not None else self.shader if self.shader is not None else Shader.instance()
     camera = camera or self._camera or Camera.instance()
     shader = shader or self.shader or Shader.instance()
     shader.use()
@@ -207,13 +205,13 @@ class Shape(Loadable):
       self.M[1,:,:] = dot(self.MRaw, camera.mtrx)[:,:]
 
     if camera.was_moved:
-      self.unif[6,:] = camera.eye[0:3]
+      self.unif[18:21] = camera.eye[0:3]
 
     opengles.glUniformMatrix4fv(shader.unif_modelviewmatrix, 2,
                                 ctypes.c_int(0),
                                 self.M.ctypes.data)
 
-    opengles.glUniform3fv(shader.unif_unif, 20, self.unif.ctypes.data)
+    opengles.glUniform3fv(shader.unif_unif, 20, ctypes.byref(self.unif))
     for b in self.buf:
       # Shape.draw has to be passed either parameter == None or values to pass
       # on.
@@ -266,12 +264,12 @@ class Shape(Loadable):
       while len(b.textures) < (2 + ofst):
         b.textures.append(None)
       b.textures[1 + ofst] = normtex
-      b.unib[0,0] = ntiles
+      b.unib[0] = ntiles
       if shinetex is not None:
         while len(b.textures) < (3 + ofst):
           b.textures.append(None)
         b.textures[2 + ofst] = shinetex
-        b.unib[0,1] = shiny
+        b.unib[1] = shiny
 
   def set_draw_details(self, shader, textures, ntiles = 0.0, shiny = 0.0,
                       umult=1.0, vmult=1.0):
@@ -321,7 +319,7 @@ class Shape(Loadable):
   def offset(self):
     """Get offset as (u, v) tuple of (first) buf uv. Doesnt check that buf array
     exists and has at least one value and only returns offset for that value"""
-    return self.buf[0].unib[3,:]
+    return self.buf[0].unib[9:11]
 
 
   def set_fog(self, fogshade, fogdist):
@@ -334,9 +332,9 @@ class Shape(Loadable):
       *fogdist*
         distance from Camera at which Shape is 100% fogshade
     """
-    self.unif[4,:] = fogshade[0:3]
-    self.unif[5,0] = fogdist
-    self.unif[5,1] = fogshade[3]
+    self.unif[12:15] = fogshade[0:3]
+    self.unif[15] = fogdist
+    self.unif[16] = fogshade[3]
 
   def set_alpha(self, alpha=1.0):
     """Set alpha for this Shape only
@@ -345,11 +343,11 @@ class Shape(Loadable):
       *alpha*
         alpha value between 0.0 and 1.0 (default)
     """
-    self.unif[5,2] = alpha
+    self.unif[17] = alpha
 
   def alpha(self):
     """Get value of alpha"""
-    return self.unif[5,2]
+    return self.unif[17]
 
   def set_light(self, light, num=0):
     """Set the values of the lights.
@@ -364,11 +362,11 @@ class Shape(Loadable):
     # only uses 1.
     if num > 1 or num < 0:
       num = 0
-    stn = 8 + num * 3
-    self.unif[stn,:] = light.lightpos[0:3]
-    self.unif[(stn + 1),:] = light.lightcol[0:3]
-    self.unif[(stn + 2),:] = light.lightamb[0:3]
-    self.unif[7,num] = light.is_point
+    stn = 24 + num * 9
+    self.unif[stn:(stn + 3)] = light.lightpos[0:3]
+    self.unif[(stn + 3):(stn + 6)] = light.lightcol[0:3]
+    self.unif[(stn + 6):(stn + 9)] = light.lightamb[0:3]
+    self.unif[21 + num] = light.is_point
 
   def set_2d_size(self, w=None, h=None, x=0, y=0):
     """saves size to be drawn and location in pixels for use by 2d shader
@@ -390,8 +388,8 @@ class Shape(Loadable):
       w = Display.INSTANCE.width
     if h is None:
       h = Display.INSTANCE.height
-    self.unif[14,0:2] = [x, y]
-    self.unif[15,:] = [w, h, Display.INSTANCE.height]
+    self.unif[42:44] = [x, y]
+    self.unif[45:48] = [w, h, Display.INSTANCE.height]
 
   def set_2d_location(self, x, y):
     """saves location in pixels for use by 2d shader
@@ -404,7 +402,7 @@ class Shape(Loadable):
         Top of image from top of display, pixels
 
     """
-    self.unif[14,0:2] = [x, y]
+    self.unif[42:44] = [x, y]
 
   def set_custom_data(self, index_from, data):
     """save general purpose custom data for use by any shader **NB it is up
@@ -414,8 +412,8 @@ class Shape(Loadable):
     Arguments:
 
       *index_from*
-        start index in unif array for filling data should be 16, 17, 18, 19
-        14 and 15 could be used if they do not conflict with existing shaders
+        start index in unif array for filling data should be 48 to 59
+        42 to 47 could be used if they do not conflict with existing shaders
         i.e. 2d_flat, defocus etc
       *data*
         2D array of values to put in [[a,b,c],[d,e,f]]
@@ -425,7 +423,7 @@ class Shape(Loadable):
   def set_point_size(self, point_size=0.0):
     """This will set the draw_method in all Buffers of this Shape"""
     for b in self.buf:
-      b.unib[2,2] = point_size
+      b.unib[8] = point_size
       b.draw_method = GL_POINTS
 
   def set_line_width(self, line_width=0.0):
@@ -442,7 +440,7 @@ class Shape(Loadable):
     If you are drawing lines with high contrast they will look better
     anti aliased which is done by Display.create(samples=4) """
     for b in self.buf:
-      b.unib[3,2] = line_width
+      b.unib[11] = line_width
       opengles.glLineWidth(ctypes.c_float(line_width))
       b.draw_method = GL_LINE_STRIP
 
@@ -452,15 +450,15 @@ class Shape(Loadable):
 
   def x(self):
     """get value of x"""
-    return self.unif[0,0]
+    return self.unif[0]
 
   def y(self):
     """get value of y"""
-    return self.unif[0,1]
+    return self.unif[1]
 
   def z(self):
     """get value of z"""
-    return self.unif[0,2]
+    return self.unif[2]
 
   def get_bounds(self):
     """Find the limits of vertices in three dimensions. Returns a tuple
@@ -492,9 +490,9 @@ class Shape(Loadable):
     self.scl[0, 0] = sx
     self.scl[1, 1] = sy
     self.scl[2, 2] = sz
-    self.unif[0, 0] = sx
-    self.unif[1, 1] = sy
-    self.unif[2, 2] = sz
+    self.unif[6] = sx
+    self.unif[7] = sy
+    self.unif[8] = sz
     self.MFlg = True
     self.sclflg = True
 
@@ -508,12 +506,12 @@ class Shape(Loadable):
       *z*
         z position
     """
-    self.tr1[3, 0] = x - self.unif[3,0]
-    self.tr1[3, 1] = y - self.unif[3,1]
-    self.tr1[3, 2] = z - self.unif[3,2]
-    self.unif[0,0] = x
-    self.unif[0,1] = y
-    self.unif[0,2] = z
+    self.tr1[3, 0] = x - self.unif[9]
+    self.tr1[3, 1] = y - self.unif[10]
+    self.tr1[3, 2] = z - self.unif[11]
+    self.unif[0] = x
+    self.unif[1] = y
+    self.unif[2] = z
     self.MFlg = True
 
   def positionX(self, v):
@@ -522,8 +520,8 @@ class Shape(Loadable):
       *v*
         x position
     """
-    self.tr1[3, 0] = v - self.unif[3,0]
-    self.unif[0,0] = v
+    self.tr1[3, 0] = v - self.unif[9]
+    self.unif[0] = v
     self.MFlg = True
 
   def positionY(self, v):
@@ -532,8 +530,8 @@ class Shape(Loadable):
       *v*
         y position
     """
-    self.tr1[3, 1] = v - self.unif[3,1]
-    self.unif[0,1] = v
+    self.tr1[3, 1] = v - self.unif[10]
+    self.unif[1] = v
     self.MFlg = True
 
   def positionZ(self, v):
@@ -542,8 +540,8 @@ class Shape(Loadable):
       *v*
         z position
     """
-    self.tr1[3, 2] = v - self.unif[3,2]
-    self.unif[0,2] = v
+    self.tr1[3, 2] = v - self.unif[11]
+    self.unif[2] = v
     self.MFlg = True
 
   def translate(self, dx, dy, dz):
@@ -560,9 +558,9 @@ class Shape(Loadable):
     self.tr1[3, 1] += dy
     self.tr1[3, 2] += dz
     self.MFlg = True
-    self.unif[0,0] += dx
-    self.unif[0,1] += dy
-    self.unif[0,2] += dz
+    self.unif[0] += dx
+    self.unif[1] += dy
+    self.unif[2] += dz
 
   def translateX(self, v):
     """Arguments:
@@ -571,7 +569,7 @@ class Shape(Loadable):
         x translation
     """
     self.tr1[3, 0] += v
-    self.unif[0,0] += v
+    self.unif[0] += v
     self.MFlg = True
 
   def translateY(self, v):
@@ -581,7 +579,7 @@ class Shape(Loadable):
         y translation
     """
     self.tr1[3, 1] += v
-    self.unif[0,1] += v
+    self.unif[1] += v
     self.MFlg = True
 
   def translateZ(self, v):
@@ -591,7 +589,7 @@ class Shape(Loadable):
         z translation
     """
     self.tr1[3, 2] += v
-    self.unif[0,2] += v
+    self.unif[2] += v
     self.MFlg = True
 
   def rotateToX(self, v):
@@ -604,7 +602,7 @@ class Shape(Loadable):
     self.rox[1, 1] = self.rox[2, 2] = c
     self.rox[1, 2] = s
     self.rox[2, 1] = -s
-    self.unif[1,0] = v
+    self.unif[3] = v
     self.MFlg = True
     self.roxflg = True
 
@@ -618,7 +616,7 @@ class Shape(Loadable):
     self.roy[0, 0] = self.roy[2, 2] = c
     self.roy[0, 2] = -s
     self.roy[2, 0] = s
-    self.unif[1,1] = v
+    self.unif[4] = v
     self.MFlg = True
     self.royflg = True
 
@@ -632,7 +630,7 @@ class Shape(Loadable):
     self.roz[0, 0] = self.roz[1, 1] = c
     self.roz[0, 1] = s
     self.roz[1, 0] = -s
-    self.unif[1,2] = v
+    self.unif[5] = v
     self.MFlg = True
     self.rozflg = True
 
@@ -642,8 +640,8 @@ class Shape(Loadable):
       *v*
         x rotational increment
     """
-    self.unif[1,0] += v
-    s, c = sin(radians(self.unif[1,0])), cos(radians(self.unif[1,0]))
+    self.unif[3] += v
+    s, c = sin(radians(self.unif[3])), cos(radians(self.unif[3]))
     self.rox[1, 1] = self.rox[2, 2] = c
     self.rox[1, 2] = s
     self.rox[2, 1] = -s
@@ -656,8 +654,8 @@ class Shape(Loadable):
       *v*
         y rotational increment
     """
-    self.unif[1,1] += v
-    s, c = sin(radians(self.unif[1,1])), cos(radians(self.unif[1,1]))
+    self.unif[4] += v
+    s, c = sin(radians(self.unif[4])), cos(radians(self.unif[4]))
     self.roy[0, 0] = self.roy[2, 2] = c
     self.roy[0, 2] = -s
     self.roy[2, 0] = s
@@ -670,8 +668,8 @@ class Shape(Loadable):
       *v*
         z rotational increment
     """
-    self.unif[1,2] += v
-    s, c = sin(radians(self.unif[1,2])), cos(radians(self.unif[1,2]))
+    self.unif[5] += v
+    s, c = sin(radians(self.unif[5])), cos(radians(self.unif[5]))
     self.roz[0, 0] = self.roz[1, 1] = c
     self.roz[0, 1] = s
     self.roz[1, 0] = -s
@@ -760,8 +758,7 @@ class Shape(Loadable):
   
   def __getstate__(self):
     return {
-      #'unif': list(self.unif),
-      'unif': self.unif,
+      'unif': list(self.unif),
       'childModel': self.childModel,
       'children': self.children,
       'name': self.name,
@@ -770,9 +767,8 @@ class Shape(Loadable):
       }
   
   def __setstate__(self, state):
-    #unif_tuple = tuple(state['unif'])
-    #self.unif = (ctypes.c_float * 60)(*unif_tuple)
-    self.unif = state['unif']
+    unif_tuple = tuple(state['unif'])
+    self.unif = (ctypes.c_float * 60)(*unif_tuple)
     self.childModel = state['childModel']
     self.name = state['name']
     self.children = state['children']

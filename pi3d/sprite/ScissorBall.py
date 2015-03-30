@@ -28,7 +28,7 @@ class ScissorBall(Ball):
                         ctypes.c_int(int(Display.INSTANCE.height)))
       #NB the screen coordinates for glScissor have origin in BOTTOM left
     else:
-      opengles.glScissor(ctypes.c_int(int(self.or_x + self.unif[0,0] - self.radius - 5)),
-                        ctypes.c_int(int(self.or_y + self.unif[0,1] - self.radius - 5)),
+      opengles.glScissor(ctypes.c_int(int(self.or_x + self.unif[0] - self.radius - 5)),
+                        ctypes.c_int(int(self.or_y + self.unif[1] - self.radius - 5)),
                         ctypes.c_int(int(self.w + 10)), ctypes.c_int(int(self.h + 10)))
     self.draw()

@@ -111,7 +111,7 @@ class String(Shape):
     self.buf = []
     self.buf.append(Buffer(self, self.verts, self.texcoords, self.inds, self.norms))
     self.buf[0].textures = [font]
-    self.buf[0].unib[0,1] = -1.0
+    self.buf[0].unib[1] = -1.0
     
     self.string = string #for later use in quick_change() method
     self.maxlen = len(string)

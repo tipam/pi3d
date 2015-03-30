@@ -47,10 +47,10 @@ class Buffer(Loadable):
     super(Buffer, self).__init__()
 
     # Uniform variables all in one array!
-    self.unib = np.array([[0.0, 0.0, 0.0],
-                          [0.5, 0.5, 0.5],
-                          [1.0, 1.0, 0.0],
-                          [0.0, 0.0, 0.0]], dtype="float32")
+    self.unib = (c_float * 12)(0.0, 0.0, 0.0,
+                               0.5, 0.5, 0.5,
+                               1.0, 1.0, 0.0,
+                               0.0, 0.0, 0.0)
     """ pass to shader array of vec3 uniform variables:
 
     ===== ============================ ==== ==
@@ -237,14 +237,14 @@ class Buffer(Loadable):
     """
     self.shader = shader
     self.textures = textures # array of Textures
-    self.unib[0,0] = ntiles
-    self.unib[0,1] = shiny
-    self.unib[2,0] = umult
-    self.unib[2,1] = vmult
+    self.unib[0] = ntiles
+    self.unib[1] = shiny
+    self.unib[6] = umult
+    self.unib[7] = vmult
 
 
   def set_material(self, mtrl):
-    self.unib[1,:] = mtrl[0:3]
+    self.unib[3:6] = mtrl[0:3]
 
 
   def set_textures(self, textures):
@@ -252,7 +252,7 @@ class Buffer(Loadable):
 
 
   def set_offset(self, offset=(0.0, 0.0)):
-    self.unib[3,0:2] = offset
+    self.unib[9:11] = offset
 
 
   def draw(self, shape=None, shader=None, textures=None, ntl=None, shny=None, fullset=True):
@@ -277,9 +277,9 @@ class Buffer(Loadable):
     shader = shader or self.shader
     textures = textures or self.textures
     if ntl is not None:
-      self.unib[0,0] = ntl
+      self.unib[0] = ntl
     if shny is not None:
-      self.unib[0,1] = shny
+      self.unib[1] = shny
     self._select()
 
     opengles.glVertexAttribPointer(shader.attr_vertex, 3, GL_FLOAT, 0, self.N_BYTES, 0)
@@ -293,7 +293,7 @@ class Buffer(Loadable):
 
     opengles.glDisable(GL_BLEND)
 
-    self.unib[0,2] = 0.6
+    self.unib[2] = 0.6
     for t, texture in enumerate(textures):
       if (self.disp.last_textures[t] != texture or
             self.disp.last_shader != shader): # very slight speed increase for sprites
@@ -305,17 +305,17 @@ class Buffer(Loadable):
 
       if texture.blend:
         # i.e. if any of the textures set to blend then all will for this shader.
-        self.unib[0,2] = 0.05
+        self.unib[2] = 0.05
 
-    if self.unib[0,2] != 0.6 or shape.unif[5,2] < 1.0 or shape.unif[5,1] < 1.0:
-      #use unib[0,2] as flag to indicate if any Textures to be blended
+    if self.unib[2] != 0.6 or shape.unif[5,2] < 1.0 or shape.unif[5,1] < 1.0:
+      #use unib[2] as flag to indicate if any Textures to be blended
       #needs to be done outside for..textures so materials can be transparent
         opengles.glEnable(GL_BLEND)
-        self.unib[0,2] = 0.05
+        self.unib[2] = 0.05
 
     self.disp.last_shader = shader
 
-    opengles.glUniform3fv(shader.unif_unib, 4, self.unib.ctypes.data)
+    opengles.glUniform3fv(shader.unif_unib, 4, ctypes.byref(self.unib))
 
     opengles.glEnable(GL_DEPTH_TEST) # TODO find somewhere more efficient to do this
 
@@ -325,8 +325,7 @@ class Buffer(Loadable):
   # Implement pickle/unpickle support
   def __getstate__(self):
     return {
-      #'unib': list(self.unib),
-      'unib': self.unib,
+      'unib': list(self.unib),
       'array_buffer': self.array_buffer,
       'element_array_buffer': self.element_array_buffer,
       'material': self.material,
@@ -338,9 +337,8 @@ class Buffer(Loadable):
 
   
   def __setstate__(self, state):
-    #unib_tuple = tuple(state['unib'])
-    #self.unib = (ctypes.c_float * 12)(*unib_tuple)
-    self.unib = state['unib']
+    unib_tuple = tuple(state['unib'])
+    self.unib = (ctypes.c_float * 12)(*unib_tuple)
     self.array_buffer = state['array_buffer']
     self.element_array_buffer = state['element_array_buffer']
     self.material = state['material']

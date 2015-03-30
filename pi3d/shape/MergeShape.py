@@ -146,7 +146,7 @@ class MergeShape(Shape):
       z = zpos + random.random() * d - d * 0.5
       rh = random.random() * (maxscl - minscl) + minscl
       rt = random.random() * 360.0
-      y = elevmap.calcHeight(self.unif[0,0] + x, self.unif[0,2] + z) + rh * 2
+      y = elevmap.calcHeight(self.unif[0] + x, self.unif[2] + z) + rh * 2
       blist.append([bufr, x, y, z, 0.0, rt, 0.0, rh, rh, rh])
     self.merge(blist)
 

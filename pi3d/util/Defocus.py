@@ -42,10 +42,10 @@ class Defocus(OffScreenTexture):
       *amount*
         degree of max blur, float. Values over 5 will cause banding
     """
-    shape.unif[14,0] = dist_fr # shader unif[14]
-    shape.unif[14,1] = dist_to
-    shape.unif[14,2] = amount
-    shape.unif[15,0] = 1.0/self.ix # shader unif[15]
-    shape.unif[15,1] = 1.0/self.iy
+    shape.unif[42] = dist_fr # shader unif[14]
+    shape.unif[43] = dist_to
+    shape.unif[44] = amount
+    shape.unif[45] = 1.0/self.ix # shader unif[15]
+    shape.unif[46] = 1.0/self.iy
     shape.draw(self.shader, [self], 0.0, 0.0)
 
