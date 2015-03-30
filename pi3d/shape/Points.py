@@ -28,6 +28,10 @@ class Points(Shape):
     self.normals = []
     n_v = len(vertices)
     self.indices = [(a, a + 1, a + 2) for a in range(0, n_v, 3)]
+    for i in range(1,3):
+      last = self.indices[-1]
+      if last[i] >= n_v:
+        last[i] = n_v - 1
     self.tex_coords = []
     self.buf = [Buffer(self, self.vertices, self.tex_coords, self.indices,
                 self.normals, smooth=False)]

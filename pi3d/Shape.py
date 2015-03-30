@@ -420,14 +420,20 @@ class Shape(Loadable):
     """
     self.unif[index_from:(index_from + len(data))] = data
 
-  def set_point_size(self, point_size=0.0):
+  def set_point_size(self, point_size=1.0):
     """This will set the draw_method in all Buffers of this Shape"""
     for b in self.buf:
       b.unib[8] = point_size
       b.draw_method = GL_POINTS
 
-  def set_line_width(self, line_width=0.0):
+  def set_line_width(self, line_width=1.0, closed=False):
     """This will set the draw_method in all Buffers of this Shape
+
+      *line-width*
+        line width default 1
+
+      *closed*
+        if set to True then the last leg will be filled in. ie polygon
     
     NB it differs from point size in that glLineWidth() is called here
     and that line width will be used for all subsequent draw() operations
@@ -442,8 +448,16 @@ class Shape(Loadable):
     for b in self.buf:
       b.unib[11] = line_width
       opengles.glLineWidth(ctypes.c_float(line_width))
-      b.draw_method = GL_LINE_STRIP
+      if closed:
+        b.draw_method = GL_LINE_LOOP
+      else:
+        b.draw_method = GL_LINE_STRIP
 
+  def re_init(self, pts=None, texcoords=None, normals=None, offset=0):
+    """ wrapper for Buffer.re_init()
+    """
+    self.buf[0].re_init(pts, texcoords, normals, offset)
+    
   def add_child(self, child):
     """puts a Shape into the children list"""
     self.children.append(child)
