@@ -190,7 +190,7 @@ class Shape(Loadable):
       newmlist.append(self.MRaw)
       if len(self.children) > 0:
         for c in self.children:
-          c.draw(shader, txtrs, ntl, shny, camera, newmlist)
+          c.draw(shader, txtrs, ntl, shny, camera, newmlist) # TODO issues where child doesn't use same shader 
       for m in mlist[-1::-1]:
         self.MRaw = dot(self.MRaw, m)
       ######################################
