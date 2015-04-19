@@ -773,21 +773,24 @@ class Shape(Loadable):
   def __getstate__(self):
     return {
       'unif': list(self.unif),
-      'childModel': self.childModel,
+      #'childModel': self.childModel,
       'children': self.children,
       'name': self.name,
       'buf': self.buf,
-      'textures': self.textures
+      'textures': self.textures,
+      'shader': self.shader
+
       }
   
   def __setstate__(self, state):
     unif_tuple = tuple(state['unif'])
     self.unif = (ctypes.c_float * 60)(*unif_tuple)
-    self.childModel = state['childModel']
+    #self.childModel = state['childModel']
     self.name = state['name']
     self.children = state['children']
     self.buf = state['buf']
     self.textures = state['textures']
+    self.shader = state['shader']
     self.opengl_loaded = False
     self.disk_loaded = True
     self._camera = None

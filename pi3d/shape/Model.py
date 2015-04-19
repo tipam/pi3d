@@ -52,5 +52,6 @@ class Model(Shape):
 
   def reparentTo(self, parent):
     #TODO functionality not implemented would need to cope with Shape methods
-    if self not in parent.childModel:
-      parent.childModel.append(self)
+    #if self not in parent.childModel:
+    #  parent.childModel.append(self)
+    pass
