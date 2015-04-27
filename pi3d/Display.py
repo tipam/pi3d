@@ -340,6 +340,9 @@ class Display(object):
     self.tidy_needed = False
 
   def _loop_end(self):
+    if PLATFORM == PLATFORM_WINDOWS:
+      pygame.event.clear()
+      
     with self.lock:
       self.sprites_to_unload, to_unload = set(), self.sprites_to_unload
       if to_unload:

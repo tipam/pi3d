@@ -82,6 +82,8 @@ def _linux():
 def _windows():
   platform = PLATFORM_WINDOWS
   bcm = None
+  ########## NB MODIFY THESE PATHS TO MATCH THE LOCATION ON YOUR COMPUTER
+  ########## NB NB NB NB NB NB NB NB NB NB NB NB NB NB NB NB NB NB ######
   opengles = _load_library("C:/Program Files (x86)/Google/Chrome/Application/42.0.2311.90/libglesv2.dll", "Win")
   openegl = _load_library("C:/Program Files (x86)/Google/Chrome/Application/42.0.2311.90/libegl.dll", "Win")
 

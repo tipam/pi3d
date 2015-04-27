@@ -19,5 +19,5 @@ void main(void) {
   texcoordout = texcoord * unib[2].xy + unib[3].xy;
 
   gl_Position = modelviewmatrix[1] * vec4(vertex,1.0);
-  gl_PointSize = unib[2][2] / dist;
+  //gl_PointSize = unib[2][2] / dist; // NB this line stops the shader working on windows platforms!
 }
