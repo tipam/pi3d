@@ -41,7 +41,7 @@ class _nixMouse(threading.Thread):
       *height*
         mouse y limit
     """
-    super(_Mouse, self).__init__()
+    super(_nixMouse, self).__init__()
     self.fd = open('/dev/input/' + mouse, 'rb')
     self.running = False
     self.buffr = '' if six.PY3 else b''
@@ -80,7 +80,7 @@ class _nixMouse(threading.Thread):
   def start(self):
     if not self.running:
       self.running = True
-      super(_Mouse, self).start()
+      super(_nixMouse, self).start()
 
   def run(self):
     while self.running:
