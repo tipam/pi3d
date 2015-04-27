@@ -124,13 +124,13 @@ class _nixMouse(threading.Thread):
         self._buttons = 0
       buttons = buttons[0]
       self.buffr = self.buffr[1:]
-      if (buttons & _Mouse.HEADER) > 0:
+      if (buttons & _nixMouse.HEADER) > 0:
         dx, dy = map(ord, self.buffr[0:2])
         self.buffr = self.buffr[2:]
-        self.button = buttons & _Mouse.BUTTONS
-        if (buttons & _Mouse.XSIGN) > 0:
+        self.button = buttons & _nixMouse.BUTTONS
+        if (buttons & _nixMouse.XSIGN) > 0:
           dx -= 256
-        if (buttons & _Mouse.YSIGN) > 0:
+        if (buttons & _nixMouse.YSIGN) > 0:
           dy -= 256
 
         x = self._x + dx
