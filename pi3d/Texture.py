@@ -70,12 +70,12 @@ class Texture(Loadable):
     try:
       if '' + file_string == file_string: #HORRIBLE. Only way to cope with python2v3
         self.is_file = True # read image from file
-        if file_string[0] == '/': #absolute address
+        if file_string.startswith('/') or file_string.startswith('C:'): #absolute address
           self.file_string = file_string
         else:
           for p in sys.path:
-            if os.path.isfile(p + '/' + file_string): # this could theoretically get different files with same name
-              self.file_string = p + '/' + file_string
+            self.file_string = os.path.join(p, file_string)
+            if os.path.isfile(os.path.join(p, file_string)): # this could theoretically get different files with same name
               break
       else:
         self.file_string = file_string # file_string is a PIL Image
@@ -169,7 +169,10 @@ class Texture(Loadable):
 
   def _load_opengl(self):
     """overrides method of Loadable"""
-    opengles.glGenTextures(4, ctypes.byref(self._tex), 0)
+    try:
+      opengles.glGenTextures(4, ctypes.byref(self._tex), 0)
+    except Exception as e: # TODO windows throws exceptions just for this call!
+      print("{} [glGenTextures() on windows only!]".format(e))
     from pi3d.Display import Display
     if Display.INSTANCE:
       Display.INSTANCE.textures_dict[str(self._tex)] = [self._tex, 0]

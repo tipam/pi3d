@@ -4,8 +4,10 @@ import threading
 import six
 import ctypes
 
-from pi3d.constants import PLATFORM, PLATFORM_ANDROID, PLATFORM_PI
-if PLATFORM != PLATFORM_ANDROID and PLATFORM != PLATFORM_PI:
+from pi3d.constants import PLATFORM, PLATFORM_ANDROID, PLATFORM_PI, PLATFORM_WINDOWS
+if PLATFORM == PLATFORM_WINDOWS:
+  import pygame
+elif PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
   from pyxlib import xlib
   from pyxlib.x import *
 
@@ -13,7 +15,7 @@ from pi3d.util import Log
 
 LOGGER = Log.logger(__name__)
 
-class _Mouse(threading.Thread):
+class _nixMouse(threading.Thread):
   """holds Mouse object, see also (the preferred) events methods"""
   BUTTON_1 = 1 << 1
   BUTTON_2 = 1 << 2
@@ -152,7 +154,69 @@ class _Mouse(threading.Thread):
   def stop(self):
     self.running = False
 
+class _winMouse(object):
+  """holds Mouse object, see also (the preferred) events methods"""
+  BUTTON_1 = 1 << 1
+  BUTTON_2 = 1 << 2
+  LEFT_BUTTON = 9 # 1001
+  RIGHT_BUTTON = 10 # 1010
+  MIDDLE_BUTTON = 12 # 1100
+  BUTTON_UP = 8 # 1000
+  BUTTONS = BUTTON_1 & BUTTON_2
+  HEADER = 1 << 3
+  XSIGN = 1 << 4
+  YSIGN = 1 << 5
+  INSTANCE = None
+
+  def __init__(self, mouse='mice', restrict=True, width=1920, height=1200, use_x=False):
+    """
+    Arguments:
+      *mouse*
+        /dev/input/ device name
+      *restrict*
+        stops or allows the mouse x and y values to carry on going beyond:
+      *width*
+        mouse x limit
+      *height*
+        mouse y limit
+    """
+    self._x = self._y = self._dx = self._dy = 0
+
+  def reset(self):
+    pass
+    
+  def start(self):
+    pass
+
+  def run(self):
+    pass
+
+  def position(self):
+    pos_list = pygame.event.get(pygame.MOUSEMOTION)
+    if len(pos_list) > 0:
+      x, y = pos_list[-1].pos # discard all but the last position
+      y *= -1 
+      self._dx = x - self._x
+      self._dy = y - self._y
+      self._x = x
+      self._y = y
+    return self._x, self._y
+
+  def velocity(self):
+    return self._dx, self._dy
+    
+  def button_status(self):
+    pass
+
+  def stop(self):
+    pass
+
 def Mouse(*args, **kwds):
-  if not _Mouse.INSTANCE:
-    _Mouse.INSTANCE = _Mouse(*args, **kwds)
-  return _Mouse.INSTANCE
+  if PLATFORM == PLATFORM_WINDOWS:
+    if not _winMouse.INSTANCE:
+      _winMouse.INSTANCE = _winMouse(*args, **kwds)
+    return _winMouse.INSTANCE
+  else:
+    if not _nixMouse.INSTANCE:
+      _nixMouse.INSTANCE = _nixMouse(*args, **kwds)
+    return _nixMouse.INSTANCE
