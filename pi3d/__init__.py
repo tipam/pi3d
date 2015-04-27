@@ -25,7 +25,8 @@ from pi3d.Light import Light
 from pi3d.shape.EnvironmentCube import EnvironmentCube, loadECfiles
 from pi3d.shape.Sprite import Sprite, ImageSprite
 
-from pi3d.event.Event import InputEvents
+if PLATFORM != PLATFORM_WINDOWS:
+  from pi3d.event.Event import InputEvents
 
 from pi3d.shape.Building import Building
 from pi3d.shape.Building import corridor

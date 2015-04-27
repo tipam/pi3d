@@ -43,12 +43,15 @@ PLATFORM_LINUX = 3
 PLATFORM_ANDROID = 4
 
 # Lastly, load the libraries.
-def _load_library(name):
+def _load_library(name, dll_type="C"):
   """Try to load a shared library, report an error on failure."""
   if name:
     try:
       import ctypes
-      return ctypes.CDLL(name)
+      if dll_type == "Win":
+        return ctypes.WinDLL(name)
+      else:
+        return ctypes.CDLL(name)
     except:
       from pi3d.util import Log
       Log.logger(__name__).error("Couldn't load library %s", name)
@@ -76,12 +79,21 @@ def _linux():
   
   return platform, bcm, openegl, opengles # opengles now determined by platform
 
+def _windows():
+  platform = PLATFORM_WINDOWS
+  bcm = None
+  opengles = _load_library("C:/Program Files (x86)/Google/Chrome/Application/42.0.2311.90/libglesv2.dll", "Win")
+  openegl = _load_library("C:/Program Files (x86)/Google/Chrome/Application/42.0.2311.90/libegl.dll", "Win")
+
+  return platform, bcm, openegl, opengles # opengles now determined by platform
+
 def _darwin():
   pass
 
 _PLATFORMS = {
   'linux': _linux,
-  'darwin': _darwin
+  'darwin': _darwin,
+  'windows': _windows
   }
 
 def _detect_platform_and_load_libraries():

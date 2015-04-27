@@ -13,7 +13,9 @@ from pi3d.util import Log
 from pi3d.util import Utility
 from pi3d.util.DisplayOpenGL import DisplayOpenGL
 
-if PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
+if PLATFORM == PLATFORM_WINDOWS:
+  import pygame
+elif PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
   from pyxlib.x import *
   from pyxlib import xlib
 
@@ -120,7 +122,8 @@ class Display(object):
     self.last_textures = [None, None, None] # if more than 3 used this will break in Buffer.draw()
     self.external_mouse = None
 
-    if PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
+    if (PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID and
+        PLATFORM != PLATFORM_WINDOWS):
       self.event_list = []
       self.ev = xlib.XEvent()
     elif PLATFORM == PLATFORM_ANDROID:
@@ -280,7 +283,10 @@ class Display(object):
   def _loop_begin(self):
     # TODO(rec):  check if the window was resized and resize it, removing
     # code from MegaStation to here.
-    if PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
+    if PLATFORM == PLATFORM_WINDOWS:
+      if pygame.event.get(pygame.QUIT):
+        self.destroy()
+    elif PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
       n = xlib.XEventsQueued(self.opengl.d, xlib.QueuedAfterFlush)
       for i in range(n):
         if xlib.XCheckMaskEvent(self.opengl.d, KeyPressMask, self.ev):
