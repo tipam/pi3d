@@ -15,10 +15,11 @@ whilst giving access to the power of the Raspberry Pi GPU. It enables both
 3D and 2D rendering and aims to provide a host of exciting commands to load
 in textured/animated models, create fractal landscapes, shaders and much more.
 
-The pi3d module runs on platforms other than the Raspberry Pi (X on linux
-and Android using python-for-android) and runs with python 3 as well as 2.
+The pi3d module runs on platforms other than the Raspberry Pi (On Windows
+using pygame, on linux using the X server directly and on Android using
+python-for-android) and runs with python 3 as well as 2.
 The OpenGLES2.0 functionality of the Raspberry Pi or Android is used directly
-or via mesa on 'big' machines. This makes it generally *faster*
+or via mesa or ANGLE on 'big' machines. This makes it generally *faster*
 and opens up the world of *shaders* that allow effects such as normal and 
 reflection maps, blurring and many others. It has various demos of built-in
 shapes, landscapes, model loading, walk-about camera and much more! See the demos
@@ -27,22 +28,6 @@ included with this code and experiment with them ..
 If you are reading this document as the ReadMe in the repository then you
 can find the full version of the documentation here
 http://pi3d.github.com/html/index.html
-
-Demos for pi3d are now stored at https://github.com/pi3d/pi3d_demos
-===================================================================
-N.B. Shaders are now integrated into programs differently. The syntax used
-to be::
-
-    myshader = pi3d.Shader('shaders/uv_flat')
-
-and is now::
-
-    myshader = pi3d.Shader('uv_flat')
-
-this will use the default shaders 'bundled' with the package. The old format
-will be interpreted as 'look in a subdirectory of the directory where the demo
-is being run from.' This is probably what you would do if you rolled your own
-special shaders for your own project.
 
 Demos on github.com/pi3d/pi3d_demos include
 ===========================================
@@ -132,6 +117,8 @@ Demos on github.com/pi3d/pi3d_demos include
 #.  **CollisionBalls.py** More bouncing balls across the screen -
     this time  bouncing off each other on the desktop
 
+There are actually at least 50 demos showing a variety of ways of using
+pi3d with different levels of complexity.
 
 Files and folders in this repository
 ====================================
@@ -265,10 +252,10 @@ Setup on desktop and laptop machines
 ====================================
 
   The machine will need to have a gpu that runs OpenGL2+ and obviously
-  it will need to have python installed. At the moment pi3d needs to run
-  in an essentially Linux environment this can be in its own boot partition
-  or in vmware (eg Player which is free, you will also need to
-  ``enable 3d acceleration``.)
+  it will need to have python installed. Setting up in a Linux environment
+  is most similar to the procedure for the Raspberry Pi. Linux can be set
+  upe in its own boot partition or in vmware (eg Player which is free, you
+  will also need to ``enable 3d acceleration``.)
 
   You need to install libraries
   that emulate OpenGLES behaviour for the gpu::
@@ -294,6 +281,62 @@ Setup on desktop and laptop machines
   It is likely that pi3d will run on OSX but you might have to compile
   your own mesa libraries (though some seem to be available) Pi3d has
   been run successfully in vmware on mac.
+
+Windows
+=======
+
+  In order for pi3d to run on windows you need to install python, Pillow
+  and numpy (as above) but pi3d also require pygame to provide the graphics
+  surface and UI, also ANGLE to provide the EGL and GLESv2 emulator libraries.
+  Fortunately these files are used by many common applications such as
+  the Chrome and Firefox browsers.
+
+  There are the usual issues of 32v.64bit and python2v3. and while
+  testing and developing I used python2.7 and 32 bits as this seemed to
+  be the most straightforward installation for pygame. However there are
+  resources and instructions for all the components in all flavours is you
+  search around on line! These were the steps I took::
+
+    1. download and run the msi for python2.7.9 from python.org. I had to
+    select the last option in the list of components to install
+    ``..add python.exe to Path`` by selecting the option to install on
+    hard drive.
+
+    2. open command prompt window then
+    3. .. easy_install pygame
+    4. .. easy_install numpy
+    5. .. easy_install Pillow
+    
+    NB these easy_install routines are pretty fast but with the Pillow
+    module, at least, they leave the compiled files zipped inside an egg
+    file. This probably has an impact on start-up time when you first run
+    a program using pi3d. Apparently there is an option to force it to unzip
+
+    .. easy_install --always-unzip
+
+  As well as installing the python modules you also need to find the two
+  ANGLE dll files on your system and edit the path to these files
+  in the pi3d file ``pi3d/constants/__init__.py`` around lines 87,88
+  There is a utility search program included with pi3d ``scripts/find_libegl.py``
+  which will quickly look in the areas where I found them on my system, however
+  if none are found you should use the windows search functionality, and
+  if there are still none you will have to install Chrome or Firefox.
+
+  Because of the need to edit ``pi3d/constants/__init__.py`` (I might make
+  this more automatic at some stage) it is probably better to not install
+  pi3d using the pip or easy_install methods. Instead either clone it with
+  git or download the zip from github and extract somewhere sensible on
+  your system. If you do this you will then have to add the path to pi3d
+  at the beginning of any files trying to import pi3d::
+
+      import sys
+      sys.path.insert(1, "C:\Users\whoever\Documents\GitHub\pi3d")
+
+  for convenience, in pi3d_demos this is included in a file ``demo.py``
+  which is imported at the start of each file.
+
+  On windows the pi3d events system (as used by Silo and a couple of other
+  demos) does not work as it uses fairly low level linux specific code.
 
 Android
 =======

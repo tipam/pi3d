@@ -162,6 +162,7 @@ class _winMouse(object):
   RIGHT_BUTTON = 10 # 1010
   MIDDLE_BUTTON = 12 # 1100
   BUTTON_UP = 8 # 1000
+  BUTTON_MAP = {1:LEFT_BUTTON, 2:MIDDLE_BUTTON, 3:RIGHT_BUTTON}
   BUTTONS = BUTTON_1 & BUTTON_2
   HEADER = 1 << 3
   XSIGN = 1 << 4
@@ -212,6 +213,13 @@ class _winMouse(object):
         self._x += self._dx
         self._y += self._dy
         pygame.mouse.set_pos(self.centre)
+    but_list = pygame.event.get(pygame.MOUSEBUTTONDOWN)
+    if len(but_list) > 0:
+      self._buttons = BUTTON_MAP[but_list[-1].button] # discard all but last button
+    else:  
+      but_list = pygame.event.get(pygame.MOUSEBUTTONUP)
+      if len(but_list) > 0:
+        self._buttons = BUTTON_UP
 
   def position(self):
     self._check_event()
@@ -222,7 +230,7 @@ class _winMouse(object):
     return self._dx, self._dy
     
   def button_status(self):
-    pass
+    return self._buttons
 
   def stop(self):
     pass
