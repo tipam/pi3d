@@ -171,8 +171,8 @@ class Texture(Loadable):
     """overrides method of Loadable"""
     try:
       opengles.glGenTextures(4, ctypes.byref(self._tex), 0)
-    except Exception as e: # TODO windows throws exceptions just for this call!
-      print("{} [glGenTextures() on windows only!]".format(e))
+    except: # TODO windows throws exceptions just for this call!
+      print("[warning glGenTextures() on windows only!]")
     from pi3d.Display import Display
     if Display.INSTANCE is not None:
       Display.INSTANCE.textures_dict[str(self._tex)] = [self._tex, 0]

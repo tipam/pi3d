@@ -169,7 +169,7 @@ class _winMouse(object):
   YSIGN = 1 << 5
   INSTANCE = None
 
-  def __init__(self, restrict=True):
+  def __init__(self, restrict=True, width=1920, height=1200, use_x=False):
     """
     Arguments:
       *mouse*

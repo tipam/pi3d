@@ -127,9 +127,13 @@ class DisplayOpenGL(object):
       self.surface = openegl.eglCreateWindowSurface(self.display, self.config, self.nw_p, 0)
 
     elif PLATFORM == PLATFORM_WINDOWS:
+      flags = pygame.RESIZABLE | pygame.OPENGL
+      wsize = (w, h)
+      if w == self.width and h == self.height: # i.e. full screen
+        flags = pygame.FULLSCREEN | pygame.OPENGL
+        wsize = (0, 0)
       self.width, self.height = w, h
-      self.d = pygame.display.set_mode((self.width, self.height), 
-                      pygame.DOUBLEBUF | pygame.RESIZABLE | pygame.OPENGL)
+      self.d = pygame.display.set_mode(wsize, flags)
       self.window = pygame.display.get_wm_info()["window"]
       self.surface = openegl.eglCreateWindowSurface(self.display, self.config, self.window, 0)
       
