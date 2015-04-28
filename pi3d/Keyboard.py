@@ -2,7 +2,9 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 from pi3d.constants import *
 
-if PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
+if PLATFORM == PLATFORM_WINDOWS:
+  import pygame
+elif PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
   from pyxlib import x
 
 USE_CURSES = True
@@ -116,7 +118,7 @@ class x11Keyboard(object):
     self.key_code = ""
 
   def _update_event(self):
-    if not self.display: #Because DummyTkWin Keyboard instance created before Display!
+    if self.display is None: #Because DummyTkWin Keyboard instance created before Display!
       from pi3d.Display import Display
       self.display = Display.INSTANCE
     n = len(self.display.event_list)
@@ -167,10 +169,39 @@ class AndroidKeyboard(object):
     except:
       pass
 
+"""Windows keyboard - uses pygame
+"""
+class WindowsKeyboard(object):
+  def __init__(self):
+    self.key_list = []
+    pygame.init() # shoudn't matter re-doing this. Some demos have Keyboard before Display
+    pygame.key.set_repeat(500, 25)
+    pass
+
+  def read(self):
+    pygame.event.get(pygame.KEYUP) # discard these TODO use them in some way?
+    self.key_list.extend(pygame.event.get(pygame.KEYDOWN))
+    if len(self.key_list) > 0:
+      key = self.key_list[0].key
+      self.key_list = self.key_list[1:]
+      return key
+    return -1
+
+  def close(self):
+    pass
+
+  def __del__(self):
+    try:
+      self.close()
+    except:
+      pass
+
 
 def Keyboard(use_curses=USE_CURSES):
   if PLATFORM == PLATFORM_ANDROID:
     return AndroidKeyboard()
+  elif PLATFORM == PLATFORM_WINDOWS:
+    return WindowsKeyboard()
   elif PLATFORM != PLATFORM_PI:
     return x11Keyboard()
   else:

@@ -9,7 +9,9 @@ from pi3d.constants import *
 
 from pi3d.util.Ctypes import c_ints
 
-if PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
+if PLATFORM == PLATFORM_WINDOWS:
+  import pygame
+elif PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
   from pyxlib import xlib
   from pyxlib.x import *
 
@@ -28,6 +30,13 @@ class DisplayOpenGL(object):
       s = bcm.graphics_get_display_size(0, ctypes.byref(w), ctypes.byref(h))
       assert s >= 0
       self.width, self.height = w.value, h.value
+    elif PLATFORM == PLATFORM_WINDOWS:
+      pygame.init()
+      self.d = pygame.display.set_mode((0, 0), 
+                      pygame.DOUBLEBUF | pygame.RESIZABLE | pygame.OPENGL)
+      info = pygame.display.Info()
+      self.width, self.height = info.current_w, info.current_h
+
     else: # use libX11
       self.d = xlib.XOpenDisplay(None)
       self.screen = xlib.XDefaultScreenOfDisplay(self.d)
@@ -117,6 +126,13 @@ class DisplayOpenGL(object):
 
       self.surface = openegl.eglCreateWindowSurface(self.display, self.config, self.nw_p, 0)
 
+    elif PLATFORM == PLATFORM_WINDOWS:
+      self.width, self.height = w, h
+      self.d = pygame.display.set_mode((self.width, self.height), 
+                      pygame.DOUBLEBUF | pygame.RESIZABLE | pygame.OPENGL)
+      self.window = pygame.display.get_wm_info()["window"]
+      self.surface = openegl.eglCreateWindowSurface(self.display, self.config, self.window, 0)
+      
     else:
       self.width, self.height = w, h
 
@@ -210,7 +226,9 @@ class DisplayOpenGL(object):
         bcm.vc_dispmanx_display_close(self.dispman_display)
 
       self.active = False
-      if PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
+      if PLATFORM == PLATFORM_WINDOWS:
+        pygame.display.quit()
+      elif PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
         xlib.XCloseDisplay(self.d)
 
   def swap_buffers(self):

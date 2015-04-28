@@ -34,16 +34,19 @@ class Shape(Loadable):
     """
     super(Shape, self).__init__()
     self.name = name
-    light = light or Light.instance()
+    light = light if light is not None else Light.instance()
     # uniform variables all in one array (for Shape and one for Buffer)
-    self.unif = (ctypes.c_float * 60)(
+    self.unif =  (ctypes.c_float * 60)(
       x, y, z, rx, ry, rz,
       sx, sy, sz, cx, cy, cz,
       0.5, 0.5, 0.5, 5000.0, 0.8, 1.0,
       0.0, 0.0, 0.0, light.is_point, 0.0, 0.0,
       light.lightpos[0], light.lightpos[1], light.lightpos[2],
       light.lightcol[0], light.lightcol[1], light.lightcol[2],
-      light.lightamb[0], light.lightamb[1], light.lightamb[2])
+      light.lightamb[0], light.lightamb[1], light.lightamb[2],
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
     """ pass to shader array of vec3 uniform variables:
 
     ===== ========================================== ==== ==
@@ -161,7 +164,7 @@ class Shape(Loadable):
     shader = shader or self.shader or Shader.instance()
     shader.use()
 
-    if self.MFlg or len(mlist):
+    if self.MFlg or len(mlist) > 0:
       '''
       # Calculate rotation and translation matrix for this model using numpy.
       self.MRaw = dot(self.tr2,
@@ -187,7 +190,7 @@ class Shape(Loadable):
       newmlist.append(self.MRaw)
       if len(self.children) > 0:
         for c in self.children:
-          c.draw(shader, txtrs, ntl, shny, camera, newmlist)
+          c.draw(shader, txtrs, ntl, shny, camera, newmlist) # TODO issues where child doesn't use same shader 
       for m in mlist[-1::-1]:
         self.MRaw = dot(self.MRaw, m)
       ######################################
@@ -262,7 +265,7 @@ class Shape(Loadable):
         b.textures.append(None)
       b.textures[1 + ofst] = normtex
       b.unib[0] = ntiles
-      if shinetex:
+      if shinetex is not None:
         while len(b.textures) < (3 + ofst):
           b.textures.append(None)
         b.textures[2 + ofst] = shinetex
@@ -381,9 +384,9 @@ class Shape(Loadable):
 
     """
     from pi3d.Display import Display
-    if w == None:
+    if w is None:
       w = Display.INSTANCE.width
-    if h == None:
+    if h is None:
       h = Display.INSTANCE.height
     self.unif[42:44] = [x, y]
     self.unif[45:48] = [w, h, Display.INSTANCE.height]
@@ -409,22 +412,28 @@ class Shape(Loadable):
     Arguments:
 
       *index_from*
-        start index in unif array for filling data should be 48 to 59 though
+        start index in unif array for filling data should be 48 to 59
         42 to 47 could be used if they do not conflict with existing shaders
         i.e. 2d_flat, defocus etc
       *data*
-        array of values to put in
+        2D array of values to put in [[a,b,c],[d,e,f]]
     """
     self.unif[index_from:(index_from + len(data))] = data
 
-  def set_point_size(self, point_size=0.0):
+  def set_point_size(self, point_size=1.0):
     """This will set the draw_method in all Buffers of this Shape"""
     for b in self.buf:
       b.unib[8] = point_size
       b.draw_method = GL_POINTS
 
-  def set_line_width(self, line_width=0.0):
+  def set_line_width(self, line_width=1.0, closed=False):
     """This will set the draw_method in all Buffers of this Shape
+
+      *line-width*
+        line width default 1
+
+      *closed*
+        if set to True then the last leg will be filled in. ie polygon
     
     NB it differs from point size in that glLineWidth() is called here
     and that line width will be used for all subsequent draw() operations
@@ -439,8 +448,16 @@ class Shape(Loadable):
     for b in self.buf:
       b.unib[11] = line_width
       opengles.glLineWidth(ctypes.c_float(line_width))
-      b.draw_method = GL_LINE_STRIP
+      if closed:
+        b.draw_method = GL_LINE_LOOP
+      else:
+        b.draw_method = GL_LINE_STRIP
 
+  def re_init(self, pts=None, texcoords=None, normals=None, offset=0):
+    """ wrapper for Buffer.re_init()
+    """
+    self.buf[0].re_init(pts, texcoords, normals, offset)
+    
   def add_child(self, child):
     """puts a Shape into the children list"""
     self.children.append(child)
@@ -487,7 +504,9 @@ class Shape(Loadable):
     self.scl[0, 0] = sx
     self.scl[1, 1] = sy
     self.scl[2, 2] = sz
-    self.unif[6:9] = sx, sy, sz
+    self.unif[6] = sx
+    self.unif[7] = sy
+    self.unif[8] = sz
     self.MFlg = True
     self.sclflg = True
 
@@ -504,7 +523,9 @@ class Shape(Loadable):
     self.tr1[3, 0] = x - self.unif[9]
     self.tr1[3, 1] = y - self.unif[10]
     self.tr1[3, 2] = z - self.unif[11]
-    self.unif[0:3] = x, y, z
+    self.unif[0] = x
+    self.unif[1] = y
+    self.unif[2] = z
     self.MFlg = True
 
   def positionX(self, v):
@@ -752,21 +773,24 @@ class Shape(Loadable):
   def __getstate__(self):
     return {
       'unif': list(self.unif),
-      'childModel': self.childModel,
+      #'childModel': self.childModel,
       'children': self.children,
       'name': self.name,
       'buf': self.buf,
-      'textures': self.textures
+      'textures': self.textures,
+      'shader': self.shader
+
       }
   
   def __setstate__(self, state):
     unif_tuple = tuple(state['unif'])
     self.unif = (ctypes.c_float * 60)(*unif_tuple)
-    self.childModel = state['childModel']
+    #self.childModel = state['childModel']
     self.name = state['name']
     self.children = state['children']
     self.buf = state['buf']
     self.textures = state['textures']
+    self.shader = state['shader']
     self.opengl_loaded = False
     self.disk_loaded = True
     self._camera = None

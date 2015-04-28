@@ -59,7 +59,7 @@ def loadFileOBJ(model, fileName):
   """
   model.coordinateSystem = "Y-up"
   model.parent = None
-  model.childModel = [] # don't really need parent and child pointers but will speed up traversing tree
+  #model.childModel = [] # don't really need parent and child pointers but will speed up traversing tree
   model.vNormal = False
   model.vGroup = {} # holds the information for each vertex group
 

@@ -149,11 +149,11 @@ class EventStream(object):
     """
     Grabs all streams of the given type.
     """
-    if streams == None:
+    if streams is None:
       streams = EventStream.AllStreams
 
     for x in streams:
-      if x.deviceType == deviceType and (deviceIndex == None or
+      if x.deviceType == deviceType and (deviceIndex is None or
                                         x.deviceIndex == deviceIndex):
         x.grab(grab)
 
@@ -164,7 +164,7 @@ class EventStream(object):
 
     If the streams parameter is not given, then all streams are selected.
     """
-    if streams == None:
+    if streams is None:
       streams = EventStream.AllStreams
 
     selectlist = [x.filehandle for x in streams]

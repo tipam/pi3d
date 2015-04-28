@@ -45,7 +45,7 @@ class PostProcess(OffScreenTexture):
     self.scale = scale
     # load shader
     self.shader = Shader(shader)
-    if camera == None:
+    if camera is None:
       self.viewcam = Camera.instance() # in case this is prior to one being created
     else:
       self.viewcam = camera
@@ -93,7 +93,8 @@ class PostProcess(OffScreenTexture):
         dictionay object i.e. {a:unif[a], b:unif[b], c:unif[c]} where a,b,c
         are subscripts of the unif array in Shape available for user
         custom space i.e. unif[48]...unif[59] corresponding with the vec3
-        uniform variables unif[16][0] to unit[19][2]
+        uniform variables unif[16][0] to unif[19][2]
+        NB the values must be three value tuples or 1D arrays
     """
     if unif_vals:
       for i in unif_vals:

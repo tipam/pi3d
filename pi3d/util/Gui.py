@@ -97,7 +97,7 @@ class Widget(object):
     self.callback = callback
     self.shortcut = shortcut
     self.label_pos = label_pos
-    if label:
+    if label is not None:
       self.labelobj = pi3d.String(font=gui.font, string=label, is_3d=False,
                               camera=gui.camera, justify='L')
       self.labelobj.set_shader(gui.shader)
@@ -113,7 +113,7 @@ class Widget(object):
     self.bounds = [x, y - b[4] + b[1], x + b[3] - b[0], y]
     for s in self.shapes:
       s.position(x - b[0], y - b[4], 1.0)
-    if self.labelobj:
+    if self.labelobj is not None:
       b = self.labelobj.get_bounds()
       if self.label_pos == 'above':
         self.labelobj.position((x + self.bounds[2] - b[3] - b[0]) / 2.0,
@@ -225,7 +225,7 @@ class Scrollbar(Widget):
             label=label, label_pos=label_pos, shortcut=shortcut)
     self.toggle = False
     self.t_stop = [self.bounds[0] + thumb_w, self.bounds[2] - thumb_w]
-    if not start_val:
+    if start_val is None:
       start_val = width / 2.0
     self.thumbpos = start_val / width * (self.t_stop[1] - self.t_stop[0])
     self.shapes[4].positionX(self.t_stop[0] + self.thumbpos)
@@ -234,7 +234,7 @@ class Scrollbar(Widget):
     self.shapes[3].translateX((width + end_w) / 2.0)
     self.bounds[0] -= end_w
     self.bounds[2] += end_w
-    if self.labelobj:
+    if self.labelobj is not None:
       if label_pos == 'left':
         self.labelobj.translateX(-end_w)
       elif label_pos == 'right':
@@ -316,7 +316,7 @@ class Menu(object):
     """
     self.visible = visible
     self.parent_item = parent_item
-    if parent_item:
+    if parent_item is not None:
       parent_item.child_menu = self
       if position == 'right':
         self.x = parent_item.bounds[2] + 5

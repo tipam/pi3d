@@ -15,6 +15,6 @@ void main(void) {
   dist = length(inray);
   inray = normalize(inray);
 
-  gl_Position = modelviewmatrix[1] * vec4(vertex,1.0);
+  gl_Position = modelviewmatrix[1] * vec4(vertex, 1.0);
   gl_PointSize = unib[2][2] / dist;
 }

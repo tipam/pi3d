@@ -1,9 +1,9 @@
 precision mediump float;
 
 uniform sampler2D tex0;
-uniform vec3 unib[3];
+uniform vec3 unib[4];
 //uniform float blend ====> unib[0][2]
-uniform vec3 unif[16];
+uniform vec3 unif[20];
 //uniform vec2 (x, y) =========> unif[14]
 //uniform vec3(w, h, full_h) => unif[15]
 

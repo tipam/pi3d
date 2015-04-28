@@ -23,7 +23,7 @@ from distutils.core import setup
 from os import listdir
 
 setup(name='pi3d',
-      version='1.14',
+      version='2.0',
       description='pi3d OpenGLES2 3D graphics library',
       author='Tim Skillman, Paddy Gaunt, Tom Ritchford',
       author_email='http://pi3d.github.com/html/index.html',
@@ -34,7 +34,8 @@ setup(name='pi3d',
       package_data={'pi3d': ['shaders/*', 'util/icons/*']},
       data_files=[('', ['ChangeLog.txt'])],
       license='MIT generally but see docstrings in specific files',
-      platforms=['Raspberry Pi', 'Linux (requires X and mesa-utils-extra)'],
+      platforms=['Raspberry Pi', 'Linux (requires X and mesa-utils-extra)',
+                 'Windows (requires pygame and ANGLE dll_s)'],
       long_description=open('README', 'r').read(),
       classifiers=['Development Status :: 5 - Production/Stable',
               'Programming Language :: Python :: 2',
