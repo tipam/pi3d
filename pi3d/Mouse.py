@@ -168,7 +168,7 @@ class _winMouse(object):
   YSIGN = 1 << 5
   INSTANCE = None
 
-  def __init__(self, mouse='mice', restrict=True, width=1920, height=1200, use_x=False):
+  def __init__(self, restrict=True):
     """
     Arguments:
       *mouse*
@@ -181,6 +181,12 @@ class _winMouse(object):
         mouse y limit
     """
     self._x = self._y = self._dx = self._dy = 0
+    from pi3d.Display import Display
+    self.centre = (Display.INSTANCE.width / 2, Display.INSTANCE.height / 2)
+    self.restrict = restrict
+    if not self.restrict:
+      pygame.mouse.set_pos(self.centre)
+      pygame.mouse.set_visible(False)
 
   def reset(self):
     pass
@@ -191,18 +197,28 @@ class _winMouse(object):
   def run(self):
     pass
 
-  def position(self):
+  def _check_event(self):
     pos_list = pygame.event.get(pygame.MOUSEMOTION)
     if len(pos_list) > 0:
       x, y = pos_list[-1].pos # discard all but the last position
-      y *= -1 
-      self._dx = x - self._x
-      self._dy = y - self._y
-      self._x = x
-      self._y = y
+      if self.restrict:
+        self._dx = x - self._x
+        self._dy = -y - self._y # swap to +ve upwards
+        self._x = x
+        self._y = -y
+      else:
+        self._dx = x - self.centre[0]
+        self._dy = self.centre[1] - y # swap to +ve upwards
+        self._x += self._dx
+        self._y += self._dy
+        pygame.mouse.set_pos(self.centre)
+
+  def position(self):
+    self._check_event()
     return self._x, self._y
 
   def velocity(self):
+    self._check_event()
     return self._dx, self._dy
     
   def button_status(self):
