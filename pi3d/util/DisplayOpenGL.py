@@ -17,7 +17,6 @@ elif PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
 
 class DisplayOpenGL(object):
   def __init__(self):
-    #self.reset_depth = False # TODO find some better way
     if PLATFORM == PLATFORM_ANDROID:
       self.width, self.height = 320, 480 # put in some non-zero place-holders
     elif PLATFORM == PLATFORM_PI:
@@ -239,9 +238,5 @@ class DisplayOpenGL(object):
   def swap_buffers(self):
     #opengles.glFlush()
     #opengles.glFinish()
-    #clear_matrices
-    #if self.reset_depth:
-    #  opengles.glEnable(GL_DEPTH_TEST) # disabled by kivy! TODO find somewhere better for this
-    #  self.reset_depth = False
     openegl.eglSwapBuffers(self.display, self.surface)
 
