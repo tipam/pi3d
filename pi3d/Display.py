@@ -383,7 +383,7 @@ class Display(object):
 def create(x=None, y=None, w=None, h=None, near=None, far=None,
            fov=DEFAULT_FOV, depth=DEFAULT_DEPTH, background=None,
            tk=False, window_title='', window_parent=None, mouse=False,
-           frames_per_second=None, samples=DEFAULT_SAMPLES):
+           frames_per_second=None, samples=DEFAULT_SAMPLES, pygame=False):
   """
   Creates a pi3d Display.
 
@@ -420,6 +420,8 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
   *samples*
     EGL_SAMPLES default 0, set to 4 for improved anti-aliasing
   """
+  if pygame:
+    PLATFORM = PLATFORM_WINDOWS
   if tk:
     if PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
       #just use python-xlib same as non-tk but need dummy behaviour

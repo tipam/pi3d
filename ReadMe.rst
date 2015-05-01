@@ -286,7 +286,7 @@ Windows
 =======
 
   In order for pi3d to run on windows you need to install python, Pillow
-  and numpy (as above) but pi3d also require pygame to provide the graphics
+  and numpy (as above) but pi3d also requires pygame to provide the graphics
   surface and UI, also ANGLE to provide the EGL and GLESv2 emulator libraries.
   Fortunately these files are used by many common applications such as
   the Chrome and Firefox browsers.
@@ -294,7 +294,7 @@ Windows
   There are the usual issues of 32v.64bit and python2v3. and while
   testing and developing I used python2.7 and 32 bits as this seemed to
   be the most straightforward installation for pygame. However there are
-  resources and instructions for all the components in all flavours is you
+  resources and instructions for all the components in all flavours if you
   search around on line! These were the steps I took::
 
     1. download and run the msi for python2.7.9 from python.org. I had to
@@ -302,17 +302,20 @@ Windows
     ``..add python.exe to Path`` by selecting the option to install on
     hard drive.
 
+    3. download and run the msi for pygame win32-py2.7 from pygame.org.
     2. open command prompt window then
-    3. .. easy_install pygame
     4. .. easy_install numpy
     5. .. easy_install Pillow
     
-    NB these easy_install routines are pretty fast but with the Pillow
-    module, at least, they leave the compiled files zipped inside an egg
+    NB the easy_install routine takes a while for numpy but is pretty fast
+    for the Pillow module but it leaves the compiled files zipped inside an egg
     file. This probably has an impact on start-up time when you first run
     a program using pi3d. Apparently there is an option to force it to unzip
 
     .. easy_install --always-unzip
+    or easy_install -Z
+
+    but neither were satisfactory when I tried.
 
   As well as installing the python modules you also need to find the two
   ANGLE dll files on your system and edit the path to these files
@@ -337,6 +340,12 @@ Windows
 
   On windows the pi3d events system (as used by Silo and a couple of other
   demos) does not work as it uses fairly low level linux specific code.
+
+  If you ``mymouse = pi3d.Mouse(restrict=False)`` as in most of the demos
+  then the cursor becomes hidden and stuck the centre of the pygame window.
+  This means you can't move or resize the window or close it with the X.
+  i.e. you must make sure that you have a keyboard methods of escaping from
+  the program (presumably Ctrl+Alt+Del would be a route!).
 
 Android
 =======

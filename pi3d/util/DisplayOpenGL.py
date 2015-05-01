@@ -83,6 +83,7 @@ class DisplayOpenGL(object):
     opengles.glDepthMask(1);
     opengles.glCullFace(GL_FRONT)
     opengles.glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST)
+    opengles.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
     # Switches off alpha blending problem with desktop - is there a bug in the
     # driver?

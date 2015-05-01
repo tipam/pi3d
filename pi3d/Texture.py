@@ -185,7 +185,6 @@ class Texture(Loadable):
 
     opengles.glEnable(GL_TEXTURE_2D)
     opengles.glGenerateMipmap(GL_TEXTURE_2D)
-    opengles.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
     if self.mipmap:
       opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
                                GL_LINEAR_MIPMAP_NEAREST)
