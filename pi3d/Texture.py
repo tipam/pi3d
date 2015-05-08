@@ -17,6 +17,9 @@ MAX_SIZE = 1920
 DEFER_TEXTURE_LOADING = True
 WIDTHS = [4, 8, 16, 32, 48, 64, 72, 96, 128, 144, 192, 256,
            288, 384, 512, 576, 640, 720, 768, 800, 960, 1024, 1080, 1920]
+FILE = 0
+PIL_IMAGE = 1
+NUMPY = 2
 
 def round_up_to_power_of_2(x):
   p = 1
@@ -43,15 +46,17 @@ class Texture(Loadable):
     Arguments:
       *file_string*
         path and name of image file relative to top dir. Can now pass an
-        already created PIL.Image object instead.
+        already created PIL.Image object or a numpy array instead. The alpha
+        value of Texture willl be set according to the 'mode' of Image objects
+        or the size of the last dimension of numpy arrays (4 -> alpha is True)
       *blend*
         controls if low alpha pixels are discarded (if False) or drawn
         by the shader. If set to true then this texture needs to be
         drawn AFTER other objects that are FURTHER AWAY
       *flip*
-        flips the image
+        flips the image [not used for numpy arrays]
       *size*
-        to resize image to
+        to resize image to [not used for numpy arrays]
       *defer*
         can load from file in other thread and defer opengl work until
         texture needed, default True
@@ -68,21 +73,21 @@ class Texture(Loadable):
     """
     super(Texture, self).__init__()
     try:
-      if '' + file_string == file_string: #HORRIBLE. Only way to cope with python2v3
-        self.is_file = True # read image from file
-        if file_string.startswith('/') or file_string.startswith('C:'): #absolute address
-          self.file_string = file_string
-        else:
-          for p in sys.path:
-            self.file_string = os.path.join(p, file_string)
-            if os.path.isfile(os.path.join(p, file_string)): # this could theoretically get different files with same name
-              break
+      # should jump out of try/except if not a string when startswith() called
+      self.string_type = FILE # read image from file
+      if file_string.startswith('/') or file_string.startswith('C:'): #absolute address
+        self.file_string = file_string
       else:
-        self.file_string = file_string # file_string is a PIL Image
-        self.is_file = False
+        for p in sys.path:
+          self.file_string = os.path.join(p, file_string)
+          if os.path.isfile(os.path.join(p, file_string)): # this could theoretically get different files with same name
+            break
     except:
-      self.file_string = file_string # file_string is a PIL Image
-      self.is_file = False
+      self.file_string = file_string
+      if isinstance(self.file_string, np.ndarray):
+        self.string_type = NUMPY # file_string is a numpy array
+      else:
+        self.string_type = PIL_IMAGE # file_string is a PIL Image
     self.blend = blend
     self.flip = flip
     self.size = size
@@ -120,13 +125,22 @@ class Texture(Loadable):
     if self._loaded:
       return
 
-    if self.is_file:
+    if self.string_type == FILE:
       s = self.file_string + ' '
       im = Image.open(self.file_string)
-    else:
+    elif self.string_type == PIL_IMAGE:
       s = 'PIL.Image '
       im = self.file_string
+    else:
+      s = 'numpy.ndarray '
+      self.iy, self.ix, mode = self.file_string.shape
+      self.alpha = (mode == 4)
+      self.image = self.file_string
+      self._tex = ctypes.c_int()
+      self._loaded = True
+      return # skip the rest for numpy arrays - faster but no size checking
 
+    # only do this if loading from disk or PIL image
     self.ix, self.iy = im.size
     s += '(%s)' % im.mode
     self.alpha = (im.mode == 'RGBA' or im.mode == 'LA')
@@ -162,7 +176,7 @@ class Texture(Loadable):
     #self.image = im.tostring('raw', RGBs) # TODO change to tobytes WHEN Pillow is default PIL in debian (jessie becomes current)
     self.image = np.array(im)
     self._tex = ctypes.c_int()
-    if self.is_file and 'fonts/' in self.file_string:
+    if self.string_type == FILE and 'fonts/' in self.file_string:
       self.im = im
       
     self._loaded = True
@@ -170,19 +184,24 @@ class Texture(Loadable):
   def _load_opengl(self):
     """overrides method of Loadable"""
     try:
-      opengles.glGenTextures(4, ctypes.byref(self._tex), 0)
+      opengles.glGenTextures(1, ctypes.byref(self._tex), 0)
     except: # TODO windows throws exceptions just for this call!
       print("[warning glGenTextures() on windows only!]")
     from pi3d.Display import Display
     if Display.INSTANCE is not None:
       Display.INSTANCE.textures_dict[str(self._tex)] = [self._tex, 0]
+    self.update_ndarray()
+
+  def update_ndarray(self, new_array=None):
+    """to allow numpy arrays to be patched in to textures without regenerating
+    new glTextureBuffers i.e. for movie textures"""
+    if new_array is not None:
+      self.image = new_array
     opengles.glBindTexture(GL_TEXTURE_2D, self._tex)
     RGBv = GL_RGBA if self.alpha else GL_RGB
     opengles.glTexImage2D(GL_TEXTURE_2D, 0, RGBv, self.ix, self.iy, 0, RGBv,
                           GL_UNSIGNED_BYTE,
-                          #ctypes.string_at(self.image, len(self.image)))
                           self.image.ctypes.data_as(ctypes.POINTER(ctypes.c_short)))
-
     opengles.glEnable(GL_TEXTURE_2D)
     opengles.glGenerateMipmap(GL_TEXTURE_2D)
     if self.mipmap:
