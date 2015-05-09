@@ -169,7 +169,7 @@ class _winMouse(object):
   YSIGN = 1 << 5
   INSTANCE = None
 
-  def __init__(self, restrict=True):
+  def __init__(self, restrict=True, width=1920, height=1200, use_x=False):
     """
     Arguments:
       *mouse*
@@ -188,6 +188,7 @@ class _winMouse(object):
     if not self.restrict:
       pygame.mouse.set_pos(self.centre)
       pygame.mouse.set_visible(False)
+    self._buttons = _winMouse.BUTTON_UP
 
   def reset(self):
     pass
@@ -215,11 +216,11 @@ class _winMouse(object):
         pygame.mouse.set_pos(self.centre)
     but_list = pygame.event.get(pygame.MOUSEBUTTONDOWN)
     if len(but_list) > 0:
-      self._buttons = BUTTON_MAP[but_list[-1].button] # discard all but last button
+      self._buttons = _winMouse.BUTTON_MAP[but_list[-1].button] # discard all but last button
     else:  
       but_list = pygame.event.get(pygame.MOUSEBUTTONUP)
       if len(but_list) > 0:
-        self._buttons = BUTTON_UP
+        self._buttons = _winMouse.BUTTON_UP
 
   def position(self):
     self._check_event()
@@ -230,6 +231,7 @@ class _winMouse(object):
     return self._dx, self._dy
     
   def button_status(self):
+    self._check_event()
     return self._buttons
 
   def stop(self):

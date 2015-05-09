@@ -434,11 +434,23 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
           self.event_list = []
 
         def update(self):
-          self.key = self.tkKeyboard.read_code()
-          if self.key == "":
-            self.ev = ""
+          if PLATFORM == PLATFORM_WINDOWS: #uses pygame UI
+            k = self.tkKeyboard.read()
+            if k == -1:
+              self.key = ""
+              self.ev = ""
+            else:
+              if k == 27:
+                self.key = "Escape"
+              else:
+                self.key = chr(k)
+              self.ev = "key"
           else:
-            self.ev = "key"
+            self.key = self.tkKeyboard.read_code()
+            if self.key == "":
+              self.ev = ""
+            else:
+              self.ev = "key"
 
       tkwin = DummyTkWin()
       x = x or 0

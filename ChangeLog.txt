@@ -4,6 +4,18 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
+v2.1
+2015-05-09  Texture.__init__ now copes with numpy array and a method has
+            been added to make only the required opengles function calls
+            for each texture change. This will now produce reasonable
+            video textues. Some fixes to running on windows for mouse and
+            tk argument to display creation.
+
+v2.0
+2015-04-28  Runs on windows using pygame and ANGLE dll files. Some speed
+            increases, use of numpy arrays in Camera, much better
+            reflection shader. 
+
 v1.14
 2015-03-19  Fairly major change in the way python array data is passed to
             libGLESv2 functions. Now generally uses ndarray.ctypes.data

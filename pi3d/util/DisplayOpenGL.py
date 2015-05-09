@@ -17,7 +17,6 @@ elif PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
 
 class DisplayOpenGL(object):
   def __init__(self):
-    #self.reset_depth = False # TODO find some better way
     if PLATFORM == PLATFORM_ANDROID:
       self.width, self.height = 320, 480 # put in some non-zero place-holders
     elif PLATFORM == PLATFORM_PI:
@@ -83,6 +82,7 @@ class DisplayOpenGL(object):
     opengles.glDepthMask(1);
     opengles.glCullFace(GL_FRONT)
     opengles.glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST)
+    opengles.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
     # Switches off alpha blending problem with desktop - is there a bug in the
     # driver?
@@ -127,9 +127,13 @@ class DisplayOpenGL(object):
       self.surface = openegl.eglCreateWindowSurface(self.display, self.config, self.nw_p, 0)
 
     elif PLATFORM == PLATFORM_WINDOWS:
+      flags = pygame.RESIZABLE | pygame.OPENGL
+      wsize = (w, h)
+      if w == self.width and h == self.height: # i.e. full screen
+        flags = pygame.FULLSCREEN | pygame.OPENGL
+        wsize = (0, 0)
       self.width, self.height = w, h
-      self.d = pygame.display.set_mode((self.width, self.height), 
-                      pygame.DOUBLEBUF | pygame.RESIZABLE | pygame.OPENGL)
+      self.d = pygame.display.set_mode(wsize, flags)
       self.window = pygame.display.get_wm_info()["window"]
       self.surface = openegl.eglCreateWindowSurface(self.display, self.config, self.window, 0)
       
@@ -234,9 +238,5 @@ class DisplayOpenGL(object):
   def swap_buffers(self):
     #opengles.glFlush()
     #opengles.glFinish()
-    #clear_matrices
-    #if self.reset_depth:
-    #  opengles.glEnable(GL_DEPTH_TEST) # disabled by kivy! TODO find somewhere better for this
-    #  self.reset_depth = False
     openegl.eglSwapBuffers(self.display, self.surface)
 
