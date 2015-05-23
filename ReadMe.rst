@@ -306,6 +306,9 @@ Windows
     2. open command prompt window then
     4. .. easy_install numpy
     5. .. easy_install Pillow
+
+    An alternative to easy_install which may be quicker is pip see some
+    discussion here https://groups.google.com/d/msg/pi3d/26I1m_BvVk8/XGfCiMbbAJAJ
     
     NB the easy_install routine takes a while for numpy but is pretty fast
     for the Pillow module but it leaves the compiled files zipped inside an egg
@@ -317,25 +320,34 @@ Windows
 
     but neither were satisfactory when I tried.
 
-  As well as installing the python modules you also need to find the two
-  ANGLE dll files on your system and edit the path to these files
-  in the pi3d file ``pi3d/constants/__init__.py`` around lines 87,88
-  There is a utility search program included with pi3d ``scripts/find_libegl.py``
-  which will quickly look in the areas where I found them on my system, however
-  if none are found you should use the windows search functionality, and
-  if there are still none you will have to install Chrome or Firefox.
+  As well as installing the python modules you also need to find several
+  ANGLE dll files on your system and copy them into the starting directory
+  of the main python file of your project. In theory you could alter the
+  Windows ``Path`` to point to the location of these files but I couldn't
+  get that to work. If you manage to do this then you need to edit the
+  path to these files in the pi3d file ``pi3d/constants/__init__.py``
+  around lines 87,88. Chrome and Firefox will have copies of the dlls you
+  can find if you search starting from ``C:\Program Files (x86)\``
+  You need to copy the files::
 
-  Because of the need to edit ``pi3d/constants/__init__.py`` (I might make
-  this more automatic at some stage) it is probably better to not install
-  pi3d using the pip or easy_install methods. Instead either clone it with
-  git or download the zip from github and extract somewhere sensible on
-  your system. If you do this you will then have to add the path to pi3d
-  at the beginning of any files trying to import pi3d::
+    libglesv2.dll
+    libegl.dll
+    
+    d3dcompiler_47.dll ## NB the number at the end will increment with later releases
+    mozglue.dll ## only for Firefox
+
+  You might only need the first two files if your system has recent drivers
+  or GPU.
+    
+  Can install pi3d using the pip or easy_install methods but you can also
+  either clone it with git or download the zip from github and extract
+  somewhere sensible on your system. If you do this you will then have to
+  add the path to pi3d at the beginning of any files trying to import pi3d::
 
       import sys
       sys.path.insert(1, "C:\Users\whoever\Documents\GitHub\pi3d")
 
-  for convenience, in pi3d_demos this is included in a file ``demo.py``
+  For convenience, in pi3d_demos this is included in a file ``demo.py``
   which is imported at the start of each file.
 
   On windows the pi3d events system (as used by Silo and a couple of other
