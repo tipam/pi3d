@@ -1,7 +1,5 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
-
 from pi3d.constants import *
-
 if PLATFORM == PLATFORM_WINDOWS:
   import pygame
 elif PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
@@ -23,6 +21,9 @@ class CursesKeyboard(object):
 
   def read(self):
     return self.key.getch()
+
+  def read_code(self):
+    return ""
 
   def close(self):
     import curses
@@ -72,6 +73,9 @@ class SysKeyboard(object):
       return ord(sys.stdin.read())
     except KeyboardInterrupt:
       return 0
+
+  def read_code(self):
+    return ""
 
   def close(self):
     termios.tcsetattr(self.fd, termios.TCSAFLUSH, self.attrs_save)
@@ -160,6 +164,9 @@ class AndroidKeyboard(object):
   def read(self):
     return -1
 
+  def read_code(self):
+    return ""
+
   def close(self):
     pass
 
@@ -172,20 +179,44 @@ class AndroidKeyboard(object):
 """Windows keyboard - uses pygame
 """
 class WindowsKeyboard(object):
+  """ In this case KEYBOARD maps pygame codes to the X11 codes used above
+  """
+  KEYBOARD = {282:[145, "F1"], 283:[146, "F2"], 284:[147, "F3"],
+            285:[148, "F4"], 286:[149, "F5"], 287:[150, "F6"], 288:[151, "F7"], 
+            289:[152, "F8"], 290:[153, "F9"], 291:[154, "F10"], 60:[92, "\\"],
+            292:[155, "F11"], 293:[156, "F12"], 271:[13, "KP_Enter"],
+            305:[0, "Control_R"], 306:[0, "Control_L"], 308:[0, "Alt_L"], 
+            307:[0, "Alt_R"], 278:[129, "Home"], 273:[134, "Up"], 
+            280:[130, "Page_Up"], 276:[136, "Left"], 275:[137, "Right"],
+            279:[132, "End"], 274:[135, "Down"], 281:[133, "Page_Down"], 
+            277:[128, "Insert"], 127:[131, "DEL"]}
   def __init__(self):
     self.key_list = []
     pygame.init() # shoudn't matter re-doing this. Some demos have Keyboard before Display
     pygame.key.set_repeat(500, 25)
-    pass
+    self.key_num = 0
+    self.key_code = ""
 
   def read(self):
     pygame.event.get(pygame.KEYUP) # discard these TODO use them in some way?
     self.key_list.extend(pygame.event.get(pygame.KEYDOWN))
     if len(self.key_list) > 0:
       key = self.key_list[0].key
+      if key in self.KEYBOARD:
+        self.key_code = self.KEYBOARD[key][1]
+        key = self.KEYBOARD[key][0]
+      else:
+        self.key_code = "" # have to assume ascii code conversion will do
       self.key_list = self.key_list[1:]
       return key
     return -1
+
+  def read_code(self):
+    key = self.read()
+    if key == -1:
+      return ""
+    else:
+      return self.key_code
 
   def close(self):
     pass

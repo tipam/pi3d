@@ -82,10 +82,23 @@ def _linux():
 def _windows():
   platform = PLATFORM_WINDOWS
   bcm = None
-  ########## NB MODIFY THESE PATHS TO MATCH THE LOCATION ON YOUR COMPUTER
-  ########## NB NB NB NB NB NB NB NB NB NB NB NB NB NB NB NB NB NB ######
-  opengles = _load_library("C:/Program Files (x86)/Google/Chrome/Application/42.0.2311.90/libglesv2.dll", "Win")
-  openegl = _load_library("C:/Program Files (x86)/Google/Chrome/Application/42.0.2311.90/libegl.dll", "Win")
+  """ NB You will need to copy the relevant dll files for ANGLE into the
+  starting directory for the python file you are running. i.e. .../pi3d_demos
+  In theory you can add the path to the `Path` variable but I couldn't get
+  this to work.
+  If you have chrome or firefox installed you should be able to find the
+  required files in
+  C:/Program Files (x86)/Google/Chrome/Application/42.0.2311.90/
+  C:/Program Files (x86)/Mozill Firefox/ ... or equivalent latest location
+  use the windows search
+  You need to copy *ALL* these files
+  1. libglesv2.dll
+  2. libegl.dll
+  3. d3dcompiler_47.dll (number will change with later releases - use highest)
+  [4. mozglue.dll only for firefox]
+  """
+  opengles = _load_library("libglesv2.dll", "Win")
+  openegl = _load_library("libegl.dll", "Win")
 
   return platform, bcm, openegl, opengles # opengles now determined by platform
 
