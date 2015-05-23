@@ -1,5 +1,6 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
-from pi3d.constants import *if PLATFORM == PLATFORM_WINDOWS:
+from pi3d.constants import *
+if PLATFORM == PLATFORM_WINDOWS:
   import pygame
 elif PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
   from pyxlib import x
