@@ -288,10 +288,13 @@ Windows
   In order for pi3d to run on windows you need to install python, Pillow
   and numpy (as above) but pi3d also requires pygame to provide the graphics
   surface and UI, also ANGLE to provide the EGL and GLESv2 emulator libraries.
-  Fortunately these files are used by many common applications such as
-  the Chrome and Firefox browsers.
+  These files are used by some common applications such as the Chrome and
+  Firefox browsers so you may have copies already on your machine but in
+  my experience you will need to copy the files to your project location and
+  existing copies  will be 32 bit versions so won't work with 64 bit python
+  - see notes below.
 
-  There are the usual issues of 32v.64bit and python2v3. and while
+  There are the usual issues of 32v.64bit and python2v3. While
   testing and developing I used python2.7 and 32 bits as this seemed to
   be the most straightforward installation for pygame. However there are
   resources and instructions for all the components in all flavours if you
@@ -304,11 +307,11 @@ Windows
 
     3. download and run the msi for pygame win32-py2.7 from pygame.org.
     2. open command prompt window then
-    4. .. easy_install numpy
-    5. .. easy_install Pillow
+    4. .. pip install numpy
+    5. .. pip install Pillow
 
-    An alternative to easy_install which may be quicker is pip see some
-    discussion here https://groups.google.com/d/msg/pi3d/26I1m_BvVk8/XGfCiMbbAJAJ
+    Alternatively use windows installers or easy_install see some discussion
+    here https://groups.google.com/d/msg/pi3d/26I1m_BvVk8/XGfCiMbbAJAJ
     
     NB the easy_install routine takes a while for numpy but is pretty fast
     for the Pillow module but it leaves the compiled files zipped inside an egg
@@ -320,19 +323,20 @@ Windows
 
     but neither were satisfactory when I tried.
 
-  As well as installing the python modules you also need to find several
-  ANGLE dll files on your system and copy them into the starting directory
-  of the main python file of your project. In theory you could alter the
-  Windows ``Path`` to point to the location of these files but I couldn't
-  get that to work. If you manage to do this then you need to edit the
-  path to these files in the pi3d file ``pi3d/constants/__init__.py``
-  around lines 87,88. Chrome and Firefox will have copies of the dlls you
-  can find if you search starting from ``C:\Program Files (x86)\``
+  As well as installing the python modules you also need to either find
+  several ANGLE dll files on your system or download them from
+  http://github.com/paddywwoof/pi3d_windll and copy them into the starting
+  directory of the main python file of your project. (If you are running
+  64 bit python you will have to use the downloaded versions.) In theory
+  you could alter the Windows ``Path`` to point to the location of these
+  files but I couldn't get that to work. If you manage to do this then you
+  need to edit the path to these files in the pi3d file ``pi3d/constants/__init__.py``
+  around lines 87,88. You should be able to find the Chrome and Firefox
+  copies of the dlls by starting a search from ``C:\Program Files (x86)\``
   You need to copy the files::
 
     libglesv2.dll
     libegl.dll
-    
     d3dcompiler_47.dll ## NB the number at the end will increment with later releases
     mozglue.dll ## only for Firefox
 
