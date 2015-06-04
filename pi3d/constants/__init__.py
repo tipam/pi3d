@@ -4,7 +4,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 pi3d.constants contains constant values, mainly integers, from OpenGL ES 2.0.
 """
 
-VERSION = '2.2'
+VERSION = '2.4'
 
 STARTUP_MESSAGE = """
 
@@ -75,8 +75,8 @@ def _linux():
     openegl = _load_library('/system/lib/libEGL.so')
   elif platform == PLATFORM_PI:
     try:
-      opengles = _load_library('/opt/vc/src/libGLESv2.so') # raspbian
-      openegl = _load_library('/opt/vc/src/libEGL.so')
+      opengles = _load_library('/opt/vc/lib/libGLESv2.so') # raspbian
+      openegl = _load_library('/opt/vc/lib/libEGL.so')
     except:
       opengles = _load_library('/usr/lib/libGLESv2.so') # ubuntu MATE
       openegl = _load_library('/usr/lib/libEGL.so')
