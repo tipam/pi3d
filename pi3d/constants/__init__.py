@@ -77,7 +77,7 @@ def _linux():
     try:
       opengles = _load_library('/opt/vc/src/libGLESv2.so') # raspbian
       openegl = _load_library('/opt/vc/src/libEGL.so')
-    finally:
+    except:
       opengles = _load_library('/usr/lib/libGLESv2.so') # ubuntu MATE
       openegl = _load_library('/usr/lib/libEGL.so')
   else:

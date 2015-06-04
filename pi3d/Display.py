@@ -250,7 +250,7 @@ class Display(object):
     try:
       import pygame # NB seems to be needed on some setups (64 bit anaconda windows!)
       pygame.quit()
-    finally:
+    except:
       pass
 
   def clear(self):
