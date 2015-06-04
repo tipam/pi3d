@@ -247,6 +247,11 @@ class Display(object):
     except:
       pass
     Display.INSTANCE = None
+    try:
+      import pygame # NB seems to be needed on some setups (64 bit anaconda windows!)
+      pygame.quit()
+    finally:
+      pass
 
   def clear(self):
     """Clear the Display."""

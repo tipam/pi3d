@@ -73,6 +73,13 @@ def _linux():
     platform = PLATFORM_ANDROID
     opengles = _load_library('/system/lib/libGLESv2.so')
     openegl = _load_library('/system/lib/libEGL.so')
+  elif platform == PLATFORM_PI:
+    try:
+      opengles = _load_library('/opt/vc/src/libGLESv2.so') # raspbian
+      openegl = _load_library('/opt/vc/src/libEGL.so')
+    except OSError:
+      opengles = _load_library('/usr/lib/libGLESv2.so') # ubuntu MATE
+      openegl = _load_library('/usr/lib/libEGL.so')
   else:
     opengles = _load_library(find_library('GLESv2')) # has to happen first
     openegl = _load_library(find_library('EGL')) # otherwise missing symbol on pi loading egl
