@@ -4,6 +4,10 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
+v2.3
+2015-06-04  ubuntu MATE has different copies of EGL and GLESv2
+            also pygame needs closing on some windows systems
+
 v2.2
 2015-05-23  Windows dll requirement clarified. Keyboard on windows returns
             same codes as X11 (more or less)
