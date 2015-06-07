@@ -4,6 +4,12 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
+v2.5
+2015-06-07  better loading of alternaive shared objects i.e. for ubuntu MATE
+            StereoCam added.
+v2.4
+2015-06-06  some bug fixes w.r.t
+            init on ubuntu MATE
 v2.3
 2015-06-04  ubuntu MATE has different copies of EGL and GLESv2
             also pygame needs closing on some windows systems
