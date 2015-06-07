@@ -123,6 +123,7 @@ pi3d/util/RotateVec.py
 pi3d/util/Scenery.py
 pi3d/util/Screenshot.py
 pi3d/util/ShadowCaster.py
+pi3d/util/StereoCam.py
 pi3d/util/String.py
 pi3d/util/TkWin.py
 pi3d/util/Utility.py
