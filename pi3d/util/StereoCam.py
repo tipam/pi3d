@@ -7,11 +7,12 @@ from pi3d.shape.Sprite import Sprite
 from pi3d.util.OffScreenTexture import OffScreenTexture
 from pi3d.Display import Display
 
-class Binocular(object):
+class StereoCam(object):
   """For creating an apparatus with two sprites to hold left and right
   eye views.
 
-  This Class is used to hold the Camera"""
+  This Class is used to hold the 3D Camera which should be used to draw
+  the 3D objects. It also holds a 2D Camera for drawing the Sprites"""
   def __init__(self, shader="uv_flat", mipmap=False, separation=0.4):
     """ calls Texture.__init__ but doesn't need to set file name as
     texture generated from the framebuffer. Keyword Arguments:
