@@ -161,8 +161,6 @@ class Shape(Loadable):
     from pi3d.Shader import Shader
 
     camera = camera or self._camera or Camera.instance()
-    shader = shader or self.shader or Shader.instance()
-    shader.use()
 
     if self.MFlg or len(mlist) > 0:
       '''
@@ -207,15 +205,10 @@ class Shape(Loadable):
     if camera.was_moved:
       self.unif[18:21] = camera.eye[0:3]
 
-    opengles.glUniformMatrix4fv(shader.unif_modelviewmatrix, 2,
-                                ctypes.c_int(0),
-                                self.M.ctypes.data)
-
-    opengles.glUniform3fv(shader.unif_unif, 20, ctypes.byref(self.unif))
     for b in self.buf:
       # Shape.draw has to be passed either parameter == None or values to pass
       # on.
-      b.draw(self, shader, txtrs, ntl, shny)
+      b.draw(self, self.M, self.unif, shader, txtrs, ntl, shny)
 
   def set_shader(self, shader):
     """Wrapper method to set just the Shader for all the Buffer objects of

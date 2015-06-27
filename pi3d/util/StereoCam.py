@@ -13,7 +13,7 @@ class StereoCam(object):
 
   This Class is used to hold the 3D Camera which should be used to draw
   the 3D objects. It also holds a 2D Camera for drawing the Sprites"""
-  def __init__(self, shader="uv_flat", mipmap=False, separation=0.4):
+  def __init__(self, shader="uv_flat", mipmap=False, separation=0.4, interlace=0):
     """ calls Texture.__init__ but doesn't need to set file name as
     texture generated from the framebuffer. Keyword Arguments:
 
@@ -28,28 +28,62 @@ class StereoCam(object):
       *separation*
         distance between the two camera positions - how wide apart the
         eye views are.
+
+      *interlace*
+        if interlace > 0 then the images are not taken with glScissor and
+        must be drawn with a special interlacing shader.
     """
     # load shader
-    self.shader = Shader(shader)
+    if interlace <= 0:
+      self.shader = Shader(shader)
+    else:
+      self.shader = Shader(vshader_source = """
+precision mediump float;
+attribute vec3 vertex;
+attribute vec2 texcoord;
+uniform mat4 modelviewmatrix[2];
+varying vec2 texcoordout;
+void main(void) {
+  texcoordout = texcoord;
+  gl_Position = modelviewmatrix[1] * vec4(vertex,1.0);
+}
+    """, fshader_source = """
+precision mediump float;
+uniform sampler2D tex0;
+uniform sampler2D tex1;
+varying vec2 texcoordout;
+void main(void) {{
+  vec4 texc0 = texture2D(tex0, texcoordout);
+  vec4 texc1 = texture2D(tex1, texcoordout);
+  vec2 coord = vec2(gl_FragCoord);
+  gl_FragColor = mix(texc0, texc1, step(0.5, fract(coord.x / {:f})));
+}}
+    """.format(interlace * 2.0))
+      #self.shader = Shader("2d_flat")
     self.camera_3d = Camera()
     self.camera_2d = Camera(is_3d=False)
     self.offs = separation / 2.0
+    self.interlace = interlace
     self.textures = []
     self.sprites = []
     self.tex_list = []
     for i in range(2):
-      self.textures.append(OffScreenTexture(name="bin"))
+      self.textures.append(OffScreenTexture(name="stereo"))
       ix, iy = self.textures[i].ix, self.textures[i].iy
       #two sprites full width but moved so that they are centred on the
       #left and right edges. The offset values then move the uv mapping
       #so the image is on the right of the left sprite and left of the
       #right sprite
-      self.sprites.append(Sprite(z=20.0, x=-ix/2.0 + i*ix, w=ix, h=iy, flip=True))
-      self.sprites[i].set_offset((i * 0.5 - 0.25, 0.0))
+      self.sprites.append(Sprite(z=20.0, w=ix, h=iy, flip=True))
+      if interlace <= 0:
+        self.sprites[i].positionX(-ix/2.0 + i*ix)
+        self.sprites[i].set_offset((i * 0.5 - 0.25, 0.0))
+      else:
+        self.sprites[i].set_2d_size(w=ix, h=iy)
       self.textures[i].alpha = False
       self.textures[i].blend = True
       self.textures[i].mipmap = mipmap
-      self.tex_list.append([self.textures[i]])
+      self.tex_list.append(self.textures[i])
 
   def move_camera(self, position, rot, tilt):
     self.camera_3d.reset()
@@ -68,23 +102,28 @@ class StereoCam(object):
                             -self.camera_3d.mtrx[0,3] * offs))
     tex = self.textures[side]
     tex._start()
-    xx = tex.ix / 4.0 # draw the middle only - half width
-    yy = 0
-    ww = tex.ix / 2.0
-    hh = tex.iy
-    opengles.glEnable(GL_SCISSOR_TEST)
-    opengles.glScissor(ctypes.c_int(int(xx)), ctypes.c_int(int(yy)),
-                  ctypes.c_int(int(ww)), ctypes.c_int(int(hh)))
+    if self.interlace <= 0:
+      xx = tex.ix / 4.0 # draw the middle only - half width
+      yy = 0
+      ww = tex.ix / 2.0
+      hh = tex.iy
+      opengles.glEnable(GL_SCISSOR_TEST)
+      opengles.glScissor(ctypes.c_int(int(xx)), ctypes.c_int(int(yy)),
+                    ctypes.c_int(int(ww)), ctypes.c_int(int(hh)))
 
   def end_capture(self, side):
     """ stop capturing to texture and resume normal rendering to default
     """
     self.textures[side]._end()
-    opengles.glDisable(GL_SCISSOR_TEST)
+    if self.interlace <= 0:
+      opengles.glDisable(GL_SCISSOR_TEST)
 
   def draw(self):
     """ draw the shape using the saved texture
     """
-    for i in range(2):
-     self.sprites[i].draw(self.shader, self.tex_list[i], 0.0, 0.0, self.camera_2d)
+    if self.interlace <= 0:
+      for i in range(2):
+        self.sprites[i].draw(self.shader, [self.tex_list[i]], 0.0, 0.0, self.camera_2d)
+    else:
+      self.sprites[0].draw(self.shader, self.tex_list, 0.0, 0.0, self.camera_2d)
 
