@@ -6,6 +6,7 @@ import numpy as np
 from ctypes import c_float, c_int, c_short
 
 from pi3d.constants import *
+from pi3d.Shader import Shader
 from pi3d.util import Log
 from pi3d.util import Utility
 from pi3d.util.Loadable import Loadable
@@ -66,6 +67,7 @@ class Buffer(Loadable):
     """
     #self.shape = shape
     self.textures = []
+    self.shader = None
 
     #self.indices = np.array(faces, dtype="short") # needed in calc_normals
     self.element_array_buffer = np.array(faces, dtype="short")
@@ -253,7 +255,7 @@ class Buffer(Loadable):
     """
     self.load_opengl()
 
-    shader = shader or self.shader or shape.shader or pi3d.Shader.instance()
+    shader = shader or self.shader or shape.shader or Shader.instance()
     shader.use()
     opengles.glUniformMatrix4fv(shader.unif_modelviewmatrix, 2,
                                 ctypes.c_int(0), M.ctypes.data)

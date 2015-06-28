@@ -8,6 +8,7 @@ from math import radians, pi, sin, cos
 from pi3d.constants import *
 from pi3d.Buffer import Buffer
 from pi3d.Light import Light
+from pi3d.Camera import Camera
 from pi3d.util import Utility
 from pi3d.util.Ctypes import c_floats
 
@@ -156,9 +157,6 @@ class Shape(Loadable):
     set using set_draw_details or Buffer.set_draw_details.
     """
     self.load_opengl() # really just to set the flag so _unload_opengl runs
-
-    from pi3d.Camera import Camera
-    from pi3d.Shader import Shader
 
     camera = camera or self._camera or Camera.instance()
 
