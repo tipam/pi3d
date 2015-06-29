@@ -79,23 +79,27 @@ class MergeShape(Shape):
         bufr = b[0]
 
       n = len(bufr.array_buffer)
-      
+
       if VERBOSE:
         print("Merging", bufr.name)
 
       original_vertex_count = len(vertices)
 
-      vrot = []
-      nrot = []
-      for v in range(0, n):
-        # Scale, offset and store vertices
-        vx, vy, vz = rotate_vec(b[4], b[5], b[6], bufr.array_buffer[v,0:3])
-        vrot.append((vx * b[7] + b[1], vy * b[8] + b[2], vz * b[9] + b[3]))
-        # Rotate normals
-        nrot.append(rotate_vec(b[4], b[5], b[6], bufr.array_buffer[v,3:6]))
+      vrot = rotate_vec(b[4], b[5], b[6], np.array(bufr.array_buffer[:,0:3]))
+      vrot[:,0] = vrot[:,0] * b[7] + b[1]
+      vrot[:,1] = vrot[:,1] * b[8] + b[2]
+      vrot[:,2] = vrot[:,2] * b[9] + b[3]
+      if bufr.array_buffer.shape[1] >= 6:
+        nrot = rotate_vec(b[4], b[5], b[6], np.array(bufr.array_buffer[:,3:6]))
+      else:
+        nrot = np.zeros((n, 3))
+
       vertices = np.append(vertices, vrot)
       normals = np.append(normals, nrot)
-      tex_coords = np.append(tex_coords, bufr.array_buffer[:,6:8])
+      if bufr.array_buffer.shape[1] == 8:
+        tex_coords = np.append(tex_coords, bufr.array_buffer[:,6:8])
+      else:
+        tex_coords = np.append(tex_coords, np.zeros((n, 2)))
 
       n = int(len(vertices) / 3)
       vertices.shape = (n, 3)
@@ -109,8 +113,13 @@ class MergeShape(Shape):
       n = int(len(indices) / 3)
       indices.shape = (n, 3)
 
-    self.buf = []
-    self.buf.append(Buffer(self, vertices, tex_coords, indices, normals))
+    self.buf = [Buffer(self, vertices, tex_coords, indices, normals)]
+    # add some Buffer details from last one in list
+    self.buf[0].shader = bufr.shader
+    self.buf[0].material = bufr.material
+    self.buf[0].textures = bufr.textures
+    self.buf[0].draw_method = bufr.draw_method
+    self.buf[0].unib = bufr.unib
 
   def add(self, bufr, x=0.0, y=0.0, z=0.0, rx=0.0, ry=0.0, rz=0.0,
           sx=1.0, sy=1.0, sz=1.0):

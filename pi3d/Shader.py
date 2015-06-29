@@ -89,16 +89,17 @@ class Shader(DefaultInstance):
       src = src or self._load_shader(shfile + suffix)
       characters = ctypes.c_char_p(src.encode())
       shader = opengles.glCreateShader(shader_type)
-      opengles.glShaderSource(shader, 1, ctypes.byref(characters), 0)
+      src_len = (ctypes.c_int * 1)(len(src)) # array of just one c_int
+      opengles.glShaderSource(shader, 1, ctypes.byref(characters), ctypes.byref(src_len))
       opengles.glCompileShader(shader)
       self.showshaderlog(shader, src)
       opengles.glAttachShader(self.program, shader)
       return shader, src
 
-    self.vshader_source, self.vshader = make_shader(
+    self.vshader, self.vshader_source = make_shader(
       vshader_source, '.vs', GL_VERTEX_SHADER)
 
-    self.fshader_source, self.fshader = make_shader(
+    self.fshader, self.fshader_source = make_shader(
       fshader_source, '.fs', GL_FRAGMENT_SHADER)
 
     opengles.glLinkProgram(self.program)
