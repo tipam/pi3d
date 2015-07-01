@@ -1,7 +1,14 @@
 from pi3d.util.Utility import from_polar
+import numpy as np
 
 """Calculate position or direction 3D vector after rotation about axis"""
 def rotate_vec(rx, ry, rz, xyz):
+  if isinstance(xyz, np.ndarray) and len(xyz.shape) > 1:
+    return _rotate_vec_numpy(rx, ry, rz, xyz)
+  else:
+    return _rotate_vec_normal(rx, ry, rz, xyz)
+
+def _rotate_vec_normal(rx, ry, rz, xyz):
   x, y, z = xyz
   if ry:
     ca, sa = from_polar(ry)
@@ -19,18 +26,21 @@ def rotate_vec(rx, ry, rz, xyz):
     y = x * sa + y * ca
     x = xx
   return x, y, z
-"""
-# no longer used anywhere
 
-def rotate_vec_x(r, xyz):
-  ca, sa = from_polar(r)
-  return xyz[0], xyz[1] * ca - xyz[2] * sa, xyz[1] * sa + xyz[2] * ca
-
-def rotate_vec_y(r, xyz):
-  ca, sa = from_polar(r)
-  return xyz[2] * sa + xyz[0] * ca, xyz[1], xyz[2] * ca - xyz[0] * sa
-
-def rotate_vec_z(r, xyz):
-  ca, sa = from_polar(r)
-  return xyz[0] * ca - xyz[1] * sa, xyz[0] * sa + xyz[1] * ca, xyz[2]
-"""
+def _rotate_vec_numpy(rx, ry, rz, xyz):
+  if ry:
+    ca, sa = from_polar(ry)
+    zz = xyz[:,2] * ca - xyz[:,0] * sa
+    xyz[:,0] = xyz[:,2] * sa + xyz[:,0] * ca
+    xyz[:,2] = zz
+  if rx:
+    ca, sa = from_polar(rx)
+    yy = xyz[:,1] * ca - xyz[:,2] * sa
+    xyz[:,2] = xyz[:,1] * sa + xyz[:,2] * ca
+    xyz[:,1] = yy
+  if rz:
+    ca, sa = from_polar(rz)
+    xx = xyz[:,0] * ca - xyz[:,1] * sa
+    xyz[:,1] = xyz[:,0] * sa + xyz[:,1] * ca
+    xyz[:,0] = xx
+  return xyz

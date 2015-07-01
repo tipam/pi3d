@@ -4,8 +4,14 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
+v2.6
+2015-07-02  Moved Shader specific code from Shape.draw() to Buffer.draw()
+            to allow different Shaders on parts of same shape. MergeShape
+            uses faster numpy RotateVec and copies other parts of Buffer
+            as well as arrays.
+
 v2.5
-2015-06-07  better loading of alternaive shared objects i.e. for ubuntu MATE
+2015-06-07  better loading of alternative shared objects i.e. for ubuntu MATE
             StereoCam added.
 v2.4
 2015-06-06  some bug fixes w.r.t

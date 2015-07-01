@@ -6,6 +6,7 @@ import numpy as np
 from ctypes import c_float, c_int, c_short
 
 from pi3d.constants import *
+from pi3d.Shader import Shader
 from pi3d.util import Log
 from pi3d.util import Utility
 from pi3d.util.Loadable import Loadable
@@ -66,6 +67,7 @@ class Buffer(Loadable):
     """
     #self.shape = shape
     self.textures = []
+    self.shader = None
 
     #self.indices = np.array(faces, dtype="short") # needed in calc_normals
     self.element_array_buffer = np.array(faces, dtype="short")
@@ -110,28 +112,6 @@ class Buffer(Loadable):
     normals[self.element_array_buffer[:,1]] += fn
     normals[self.element_array_buffer[:,2]] += fn
     return Utility.normalize_v3(normals)
-
-  """def _pack_array_buffer(self):
-    # Pack points,normals and texcoords into tuples and convert to ctype floats.
-    n_verts = len(self.vertices)
-    if len(self.tex_coords) != n_verts:
-      if len(self.normals) != n_verts:
-        self.N_BYTES = 12 # only use pts
-        self.array_buffer = self.vertices
-      else:
-        self.N_BYTES = 24 # use pts and normals
-        self.array_buffer = np.concatenate((self.vertices, self.normals),
-                            axis=1)
-    else:
-      self.N_BYTES = 32 # use all three NB doesn't check that normals are there
-      self.array_buffer = np.concatenate((self.vertices, self.normals, self.tex_coords),
-                          axis=1)
-
-  def _pack_element_array_buffer(self):
-    self.ntris = len(self.indices)
-    self.element_array_buffer = self.indices
-    from pi3d.Display import Display
-    self.disp = Display.INSTANCE # rely on there always being one!"""
 
 
   def __del__(self):
@@ -255,7 +235,8 @@ class Buffer(Loadable):
     self.unib[9:11] = offset
 
 
-  def draw(self, shape=None, shader=None, textures=None, ntl=None, shny=None, fullset=True):
+  def draw(self, shape=None, M=None, unif=None, shader=None,
+                     textures=None, ntl=None, shny=None, fullset=True):
     """Draw this Buffer, called by the parent Shape.draw()
 
     Keyword arguments:
@@ -274,7 +255,12 @@ class Buffer(Loadable):
     """
     self.load_opengl()
 
-    shader = shader or self.shader
+    shader = shader or self.shader or shape.shader or Shader.instance()
+    shader.use()
+    opengles.glUniformMatrix4fv(shader.unif_modelviewmatrix, 2,
+                                ctypes.c_int(0), M.ctypes.data)
+
+    opengles.glUniform3fv(shader.unif_unif, 20, ctypes.byref(unif))
     textures = textures or self.textures
     if ntl is not None:
       self.unib[0] = ntl

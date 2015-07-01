@@ -8,6 +8,7 @@ from math import radians, pi, sin, cos
 from pi3d.constants import *
 from pi3d.Buffer import Buffer
 from pi3d.Light import Light
+from pi3d.Camera import Camera
 from pi3d.util import Utility
 from pi3d.util.Ctypes import c_floats
 
@@ -157,12 +158,7 @@ class Shape(Loadable):
     """
     self.load_opengl() # really just to set the flag so _unload_opengl runs
 
-    from pi3d.Camera import Camera
-    from pi3d.Shader import Shader
-
     camera = camera or self._camera or Camera.instance()
-    shader = shader or self.shader or Shader.instance()
-    shader.use()
 
     if self.MFlg or len(mlist) > 0:
       '''
@@ -207,15 +203,10 @@ class Shape(Loadable):
     if camera.was_moved:
       self.unif[18:21] = camera.eye[0:3]
 
-    opengles.glUniformMatrix4fv(shader.unif_modelviewmatrix, 2,
-                                ctypes.c_int(0),
-                                self.M.ctypes.data)
-
-    opengles.glUniform3fv(shader.unif_unif, 20, ctypes.byref(self.unif))
     for b in self.buf:
       # Shape.draw has to be passed either parameter == None or values to pass
       # on.
-      b.draw(self, shader, txtrs, ntl, shny)
+      b.draw(self, self.M, self.unif, shader, txtrs, ntl, shny)
 
   def set_shader(self, shader):
     """Wrapper method to set just the Shader for all the Buffer objects of
@@ -424,7 +415,7 @@ class Shape(Loadable):
     """This will set the draw_method in all Buffers of this Shape"""
     for b in self.buf:
       b.unib[8] = point_size
-      b.draw_method = GL_POINTS
+      b.draw_method = GL_POINTS if point_size > 0.0 else GL_TRIANGLES
 
   def set_line_width(self, line_width=1.0, closed=False):
     """This will set the draw_method in all Buffers of this Shape
@@ -449,9 +440,9 @@ class Shape(Loadable):
       b.unib[11] = line_width
       opengles.glLineWidth(ctypes.c_float(line_width))
       if closed:
-        b.draw_method = GL_LINE_LOOP
+        b.draw_method = GL_LINE_LOOP if line_width > 0.0 else GL_TRIANGLES
       else:
-        b.draw_method = GL_LINE_STRIP
+        b.draw_method = GL_LINE_STRIP if line_width > 0.0 else GL_TRIANGLES
 
   def re_init(self, pts=None, texcoords=None, normals=None, offset=0):
     """ wrapper for Buffer.re_init()
