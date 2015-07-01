@@ -415,7 +415,7 @@ class Shape(Loadable):
     """This will set the draw_method in all Buffers of this Shape"""
     for b in self.buf:
       b.unib[8] = point_size
-      b.draw_method = GL_POINTS
+      b.draw_method = GL_POINTS if point_size > 0.0 else GL_TRIANGLES
 
   def set_line_width(self, line_width=1.0, closed=False):
     """This will set the draw_method in all Buffers of this Shape
@@ -440,9 +440,9 @@ class Shape(Loadable):
       b.unib[11] = line_width
       opengles.glLineWidth(ctypes.c_float(line_width))
       if closed:
-        b.draw_method = GL_LINE_LOOP
+        b.draw_method = GL_LINE_LOOP if line_width > 0.0 else GL_TRIANGLES
       else:
-        b.draw_method = GL_LINE_STRIP
+        b.draw_method = GL_LINE_STRIP if line_width > 0.0 else GL_TRIANGLES
 
   def re_init(self, pts=None, texcoords=None, normals=None, offset=0):
     """ wrapper for Buffer.re_init()

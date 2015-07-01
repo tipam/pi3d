@@ -343,7 +343,7 @@ Windows
   You might only need the first two files if your system has recent drivers
   or GPU.
     
-  Can install pi3d using the pip or easy_install methods but you can also
+  You can install pi3d using the pip or easy_install methods but you can also
   either clone it with git or download the zip from github and extract
   somewhere sensible on your system. If you do this you will then have to
   add the path to pi3d at the beginning of any files trying to import pi3d::
@@ -358,7 +358,7 @@ Windows
   demos) does not work as it uses fairly low level linux specific code.
 
   If you ``mymouse = pi3d.Mouse(restrict=False)`` as in most of the demos
-  then the cursor becomes hidden and stuck the centre of the pygame window.
+  then the cursor becomes hidden and stuck at the centre of the pygame window.
   This means you can't move or resize the window or close it with the X.
   i.e. you must make sure that you have a keyboard methods of escaping from
   the program (presumably Ctrl+Alt+Del would be a route!).
@@ -375,8 +375,9 @@ Editing scripts and running
 #.  **Install Geany to run pi3d**
 
     Although you can use any editor and run the scripts in a terminal using python,
-    Geany is by far the easiest and most compatible application to use for creating
-    and running Python scripts. Download and install it with::
+    on the RaspberryPi Geany seems to be the easiest and most compatible
+    application to use for creating and running Python scripts. Download
+    and install it with::
 
       $ sudo apt-get install geany xterm
 
