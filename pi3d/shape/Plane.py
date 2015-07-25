@@ -42,7 +42,7 @@ class Plane(Shape):
     self.texcoords = ((0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0),
                       (0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0))
 
-    self.inds = ((0, 1, 3), (1, 2, 3), (5, 4, 7), (6, 5, 7))
+    self.inds = ((3, 0, 1), (1, 2, 3), (7, 6, 5), (5, 4, 7))
 
     self.buf = []
     self.buf.append(Buffer(self, self.verts, self.texcoords, self.inds, self.norms))

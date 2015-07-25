@@ -26,13 +26,14 @@ class TCone(Shape):
     if VERBOSE:
       print("Creating Truncated Cone ...")
 
-    path = []
-    path.append((0, height * .5))
-    path.append((radiusTop, height * .5))
-    path.append((radiusTop, height * .4999))
-    path.append((radiusBot, -height * .4999))
-    path.append((radiusBot, -height * .5))
-    path.append((0, -height * .5))
+    path = [(0, height * 0.5),
+            (radiusTop * 0.999, height * 0.5),
+            (radiusTop, height * 0.5),
+            (radiusTop, height * 0.499),
+            (radiusBot, -height * 0.499),
+            (radiusBot, -height * 0.5),
+            (radiusBot * 0.999, -height * 0.5),
+            (0, -height * 0.5)]
 
     self.radiusBot = radiusBot
     self.radiusTop = radiusTop

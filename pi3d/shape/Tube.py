@@ -25,16 +25,18 @@ class Tube(Shape):
       print("Creating Tube ...")
 
     t = thickness * 0.5
-    path = []
-    path.append((radius - t, height * .5))
-    path.append((radius + t, height * .5))
-    path.append((radius + t, height * .4999))
-    path.append((radius + t, -height * .4999))
-    path.append((radius + t, -height * .5))
-    path.append((radius - t, -height * .5))
-    path.append((radius - t, -height * .4999))
-    path.append((radius - t, height * .4999))
-    path.append((radius - t, height * .5))
+    path = [(radius - t * 0.999, height * 0.5),
+            (radius + t * 0.999, height * 0.5),
+            (radius + t, height * 0.5),
+            (radius + t, height * 0.4999),
+            (radius + t, -height * 0.4999),
+            (radius + t, -height * 0.5),
+            (radius + t * 0.999, -height * 0.5),
+            (radius - t * 0.999, -height * 0.5),
+            (radius - t, -height * 0.5),
+            (radius - t, -height * 0.499),
+            (radius - t, height * 0.499),
+            (radius - t, height * 0.5)]
 
     self.radius = radius
     self.thickness = thickness

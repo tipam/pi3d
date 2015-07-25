@@ -36,7 +36,7 @@ class Sprite(Shape):
     self.norms = ((0, 0, -1), (0, 0, -1),  (0, 0, -1), (0, 0, -1))
     self.texcoords = ((0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0 , 1.0))
 
-    self.inds = ((0, 1, 3), (1, 2, 3)) if not flip else ((3, 2, 0), (2, 1, 0))
+    self.inds = ((3, 0, 1), (1, 2, 3)) if not flip else ((0, 3, 2), (2, 1, 0))
 
     self.buf = []
     self.buf.append(Buffer(self, self.verts, self.texcoords, self.inds, self.norms))

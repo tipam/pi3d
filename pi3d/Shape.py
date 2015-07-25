@@ -160,7 +160,7 @@ class Shape(Loadable):
 
     camera = camera or self._camera or Camera.instance()
 
-    if self.MFlg or len(mlist) > 0:
+    if self.MFlg or len(mlist) > 0 or len(self.children) > 0:
       '''
       # Calculate rotation and translation matrix for this model using numpy.
       self.MRaw = dot(self.tr2,
@@ -734,20 +734,19 @@ class Shape(Loadable):
       tcy = 1.0 - ((py - miny) / (maxy - miny))
 
       # Normalized 2D vector between path points
-      dx, dy = Utility.vec_normal(Utility.vec_sub((px, py), (opx, opy)))
+      if p == 0:
+        ipx, ipy = path[1][0] * 1.0, path[1][1] * 1.0
+      else:
+        ipx, ipy = px, py
+      dx, dy = Utility.vec_normal(Utility.vec_sub((ipx, ipy), (opx, opy)))
 
-      for r in range (0, rl):
+      for r in range (0, rl + 1):
         sinr = sin(pr * r)
         cosr = cos(pr * r)
         verts.append((px * sinr, py, px * cosr))
         norms.append((-sinr * dy, dx, -cosr * dy))
         tex_coords.append((1.0 - tcx * r, tcy))
         py += rdiv
-
-      # Last path profile (tidies texture coords).
-      verts.append((0, py, px))
-      norms.append((0, dx, -dy))
-      tex_coords.append((0, tcy))
 
       if p < s - 1:
         pn += (rl + 1)
