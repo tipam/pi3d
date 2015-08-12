@@ -708,14 +708,11 @@ class Shape(Loadable):
     pr = (pi / self.sides) * 2.0
     rdiv = rise / rl
 
-    # Find largest and smallest y of the path used for stretching the texture
-    miny = path[0][1]
-    maxy = path[s-1][1]
-    for p in range(s):
-      if path[p][1] < miny:
-        miny = path[p][1]
-      if path[p][1] > maxy:
-        maxy = path[p][1]
+    # Find length of the path
+    path_len = 0.0
+    for p in range(1, s):
+      path_len += ((path[p][0] - path[p-1][0])**2 +
+                   (path[p][1] - path[p-1][1])**2)**0.5
 
     verts = []
     norms = []
@@ -725,12 +722,15 @@ class Shape(Loadable):
     opx = path[0][0]
     opy = path[0][1]
 
+    tcy = 0.0
     for p in range(s):
 
       px = path[p][0] * 1.0
       py = path[p][1] * 1.0
 
-      tcy = 1.0 - ((py - miny) / (maxy - miny))
+      if p > 0:
+        tcy += ((path[p][0] - path[p-1][0])**2 +
+                (path[p][1] - path[p-1][1])**2)**0.5 / path_len
 
       # Normalized 2D vector between path points
       if p == 0:
