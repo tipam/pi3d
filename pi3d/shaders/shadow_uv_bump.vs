@@ -2,22 +2,23 @@
 
 varying vec2 texcoordout;
 varying vec2 bumpcoordout;
-varying vec3 inray;
-varying vec3 normout;
 varying float dist;
 varying vec3 lightVector;
 varying float lightFactor;
 
+varying vec4 shadowposn;
+
 void main(void) {
+  vec3 normout;
 #include std_main_vs.inc
   bumpcoordout = (texcoord * unib[2].xy + unib[3].xy) * vec2(1.0, 1.0) * unib[0][0];
 
-  inray = vec3(relPosn - vec4(unif[6], 0.0)); // ----- vector from the camera to this vertex
+  vec3 inray = vec3(relPosn - vec4(unif[6], 0.0)); // ----- vector from the camera to this vertex
   dist = length(inray);
-  inray = normalize(inray);
 
   texcoordout = texcoord * unib[2].xy + unib[3].xy;
+  shadowposn = modelviewmatrix[2] * vec4(vertex, 1.0);
 
   gl_Position = modelviewmatrix[1] * vec4(vertex,1.0);
-  //gl_PointSize = unib[2][2] / dist; // NB this line stops the shader working on windows platforms!
+  gl_PointSize = unib[2][2] / dist;
 }

@@ -27,7 +27,7 @@ class FixedString(Texture):
 
   def __init__(self, font, string, camera=None, color=(255,255,255,255),
                font_size=24, margin=5.0, justify='C',
-               background_color=None, shader=None, f_type=''):
+               background_color=None, shader=None, f_type='', mipmap=True):
     """Arguments:
     
     *font*:
@@ -65,7 +65,7 @@ class FixedString(Texture):
       filter type. BUMP will generate a normal map, EMBOSS, CONTOUR, BLUR
       and SMOOTH do what they sound like they will do.
     """
-    super(FixedString, self).__init__(font)
+    super(FixedString, self).__init__(font, mipmap=mipmap)
     self.font = font
     try:
       imgfont = ImageFont.truetype(font, font_size)

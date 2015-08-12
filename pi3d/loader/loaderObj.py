@@ -63,10 +63,10 @@ def loadFileOBJ(model, fileName):
   model.vNormal = False
   model.vGroup = {} # holds the information for each vertex group
 
-  # read in the file and parse into some arrays
+  # read in the file and parse into some arrays, name='teapot', z=4
 
+  #import os
   if fileName[0] != '/':
-    import os
     for p in sys.path:
       if os.path.isfile(p + '/' + fileName): # this could theoretically get different files with same name
         fileName = p + '/' + fileName

@@ -30,7 +30,7 @@ class Font(Texture):
 
   def __init__(self, font, color=(255,255,255,255), codepoints=None,
                add_codepoints=None, font_size=48, image_size=512,
-               italic_adjustment=1.1, background_color=None):
+               italic_adjustment=1.1, background_color=None, mipmap=True):
     """Arguments:
     *font*:
       File path/name to a TrueType font file.
@@ -76,7 +76,7 @@ class Font(Texture):
       value is 1.1; you can get a tighter bounding if you set this down
       closer to 1, but italics might get cut off at the right.
     """
-    super(Font, self).__init__(font)
+    super(Font, self).__init__(font, mipmap=mipmap)
     self.font = font
     try:
       imgfont = ImageFont.truetype(font, font_size)
