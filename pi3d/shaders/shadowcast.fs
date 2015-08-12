@@ -6,9 +6,9 @@ varying vec4 position;
 vec4 pack (float depth)
 {
   const vec4 bitSh = vec4(256.0 * 256.0, 256.0, 1.0, 0.0);
-  const float invB = 1.0 / 256.0; // compiler might do this anyway!
+  const vec4 bitMsk = vec4(0, 1.0 / 256.0, 1.0 / 256.0, 1.0 / 256.0);
   vec4 comp = fract(depth * bitSh);
-  comp -= fract(256.0 * comp) * invB;
+  comp -= comp.xxyz * bitMsk;
   return comp;
 }
 
