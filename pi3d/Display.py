@@ -113,6 +113,7 @@ class Display(object):
     if use_pygame or pi3d.PLATFORM == pi3d.PLATFORM_WINDOWS:
       try:
         import pygame
+        use_pygame = True # for Windows
       except ImportError:
         LOGGER.warning('Do you need to install pygame?')
         use_pygame = False
