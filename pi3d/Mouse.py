@@ -4,10 +4,11 @@ import threading
 import six
 import ctypes
 
-from pi3d.constants import PLATFORM, PLATFORM_ANDROID, PLATFORM_PI, PLATFORM_WINDOWS
-if PLATFORM == PLATFORM_WINDOWS:
+import pi3d
+
+if pi3d.USE_PYGAME:
   import pygame
-elif PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
+elif pi3d.PLATFORM != pi3d.PLATFORM_PI and pi3d.PLATFORM != pi3d.PLATFORM_ANDROID:
   from pyxlib import xlib
   from pyxlib.x import *
 
@@ -56,7 +57,7 @@ class _nixMouse(threading.Thread):
 
     self.use_x = False
     if use_x: # version as argument to __init__
-      if PLATFORM != PLATFORM_ANDROID and PLATFORM != PLATFORM_PI:
+      if pi3d.PLATFORM != pi3d.PLATFORM_ANDROID and pi3d.PLATFORM != pi3d.PLATFORM_PI:
         self.d = Display.INSTANCE.opengl.d
         self.window = Display.INSTANCE.opengl.window
         self.root = ctypes.c_ulong(0)
@@ -154,7 +155,7 @@ class _nixMouse(threading.Thread):
   def stop(self):
     self.running = False
 
-class _winMouse(object):
+class _pygameMouse(object):
   """holds Mouse object, see also (the preferred) events methods"""
   BUTTON_1 = 1 << 1
   BUTTON_2 = 1 << 2
@@ -186,9 +187,10 @@ class _winMouse(object):
     self.centre = (Display.INSTANCE.width / 2, Display.INSTANCE.height / 2)
     self.restrict = restrict
     if not self.restrict:
+      import pygame
       pygame.mouse.set_pos(self.centre)
       pygame.mouse.set_visible(False)
-    self._buttons = _winMouse.BUTTON_UP
+    self._buttons = _pygameMouse.BUTTON_UP
 
   def reset(self):
     pass
@@ -200,6 +202,7 @@ class _winMouse(object):
     pass
 
   def _check_event(self):
+    import pygame
     pos_list = pygame.event.get(pygame.MOUSEMOTION)
     if len(pos_list) > 0:
       x, y = pos_list[-1].pos # discard all but the last position
@@ -216,11 +219,11 @@ class _winMouse(object):
         pygame.mouse.set_pos(self.centre)
     but_list = pygame.event.get(pygame.MOUSEBUTTONDOWN)
     if len(but_list) > 0:
-      self._buttons = _winMouse.BUTTON_MAP[but_list[-1].button] # discard all but last button
+      self._buttons = _pygameMouse.BUTTON_MAP[but_list[-1].button] # discard all but last button
     else:  
       but_list = pygame.event.get(pygame.MOUSEBUTTONUP)
       if len(but_list) > 0:
-        self._buttons = _winMouse.BUTTON_UP
+        self._buttons = _pygameMouse.BUTTON_UP
 
   def position(self):
     self._check_event()
@@ -238,10 +241,10 @@ class _winMouse(object):
     pass
 
 def Mouse(*args, **kwds):
-  if PLATFORM == PLATFORM_WINDOWS:
-    if not _winMouse.INSTANCE:
-      _winMouse.INSTANCE = _winMouse(*args, **kwds)
-    return _winMouse.INSTANCE
+  if pi3d.USE_PYGAME:
+    if not _pygameMouse.INSTANCE:
+      _pygameMouse.INSTANCE = _pygameMouse(*args, **kwds)
+    return _pygameMouse.INSTANCE
   else:
     if not _nixMouse.INSTANCE:
       _nixMouse.INSTANCE = _nixMouse(*args, **kwds)

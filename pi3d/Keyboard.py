@@ -1,8 +1,10 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
-from pi3d.constants import *
-if PLATFORM == PLATFORM_WINDOWS:
+
+import pi3d
+
+if pi3d.USE_PYGAME:
   import pygame
-elif PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
+elif pi3d.PLATFORM != pi3d.PLATFORM_PI and pi3d.PLATFORM != pi3d.PLATFORM_ANDROID:
   from pyxlib import x
 
 USE_CURSES = True
@@ -174,11 +176,11 @@ class AndroidKeyboard(object):
     try:
       self.close()
     except:
-      pass
+      passwindows
 
 """Windows keyboard - uses pygame
 """
-class WindowsKeyboard(object):
+class PygameKeyboard(object):
   """ In this case KEYBOARD maps pygame codes to the X11 codes used above
   """
   KEYBOARD = {282:[145, "F1"], 283:[146, "F2"], 284:[147, "F3"],
@@ -192,12 +194,14 @@ class WindowsKeyboard(object):
             277:[128, "Insert"], 127:[131, "DEL"]}
   def __init__(self):
     self.key_list = []
+    import pygame
     pygame.init() # shoudn't matter re-doing this. Some demos have Keyboard before Display
     pygame.key.set_repeat(500, 25)
     self.key_num = 0
     self.key_code = ""
 
   def read(self):
+    import pygame
     pygame.event.get(pygame.KEYUP) # discard these TODO use them in some way?
     self.key_list.extend(pygame.event.get(pygame.KEYDOWN))
     if len(self.key_list) > 0:
@@ -229,11 +233,12 @@ class WindowsKeyboard(object):
 
 
 def Keyboard(use_curses=USE_CURSES):
-  if PLATFORM == PLATFORM_ANDROID:
+  if pi3d.PLATFORM == pi3d.PLATFORM_ANDROID:
     return AndroidKeyboard()
-  elif PLATFORM == PLATFORM_WINDOWS:
-    return WindowsKeyboard()
-  elif PLATFORM != PLATFORM_PI:
+  #elif PLATFORM == PLATFORM_WINDOWS:
+  elif pi3d.USE_PYGAME:
+    return PygameKeyboard()
+  elif pi3d.PLATFORM != pi3d.PLATFORM_PI:
     return x11Keyboard()
   else:
     return CursesKeyboard() if use_curses else SysKeyboard()
