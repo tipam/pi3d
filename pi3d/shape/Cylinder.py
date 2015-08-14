@@ -19,13 +19,14 @@ class Cylinder(Shape):
     if VERBOSE:
       print("Creating Cylinder ...")
 
-    path = []
-    path.append((0, height * .5))
-    path.append((radius, height * .5))
-    path.append((radius, height * .4999))
-    path.append((radius, -height * .4999))
-    path.append((radius, -height * .5))
-    path.append((0, -height * .5))
+    path = [(0, height * 0.5),
+            (radius * 0.999, height * 0.5),
+            (radius, height * 0.5),
+            (radius, height * 0.499),
+            (radius, -height * 0.499),
+            (radius, -height * 0.5),
+            (radius * 0.999, -height * 0.5),
+            (0, -height * 0.5)]
 
     self.radius = radius
     self.height = height

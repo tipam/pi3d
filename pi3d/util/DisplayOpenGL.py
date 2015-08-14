@@ -5,11 +5,12 @@ import time
 from ctypes import c_int, c_float
 from six.moves import xrange
 
+import pi3d
 from pi3d.constants import *
 
 from pi3d.util.Ctypes import c_ints
 
-if PLATFORM == PLATFORM_WINDOWS:
+if pi3d.USE_PYGAME:
   import pygame
 elif PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
   from pyxlib import xlib
@@ -29,7 +30,8 @@ class DisplayOpenGL(object):
       s = bcm.graphics_get_display_size(0, ctypes.byref(w), ctypes.byref(h))
       assert s >= 0
       self.width, self.height = w.value, h.value
-    elif PLATFORM == PLATFORM_WINDOWS:
+    elif pi3d.USE_PYGAME:
+      import pygame
       pygame.init()
       self.d = pygame.display.set_mode((0, 0), 
                       pygame.DOUBLEBUF | pygame.RESIZABLE | pygame.OPENGL)
@@ -126,7 +128,8 @@ class DisplayOpenGL(object):
 
       self.surface = openegl.eglCreateWindowSurface(self.display, self.config, self.nw_p, 0)
 
-    elif PLATFORM == PLATFORM_WINDOWS:
+    elif pi3d.USE_PYGAME:
+      import pygame
       flags = pygame.RESIZABLE | pygame.OPENGL
       wsize = (w, h)
       if w == self.width and h == self.height: # i.e. full screen
@@ -230,7 +233,8 @@ class DisplayOpenGL(object):
         bcm.vc_dispmanx_display_close(self.dispman_display)
 
       self.active = False
-      if PLATFORM == PLATFORM_WINDOWS:
+      if pi3d.USE_PYGAME:
+        import pygame
         pygame.display.quit()
       elif PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
         xlib.XCloseDisplay(self.d)

@@ -23,13 +23,11 @@ class Cone(Shape):
     if VERBOSE:
       print("Creating Cone ...")
 
-    path = []
-    path.append((0.0, height * .5))
-    path.append((0.0001, height * .5))
-    path.append((radius, -height * .4999))
-    path.append((radius, -height * .5))
-    path.append((0.0001, -height * .5))
-    path.append((0.0, -height * .5))
+    path = [(0.0, height * 0.5),
+            (radius * 0.999, -height * 0.499),
+            (radius, -height * 0.5),
+            (radius * 0.999, -height * 0.5),
+            (0.0, -height * 0.5)]
 
     self.radius = radius
     self.height = height

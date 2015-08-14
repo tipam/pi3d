@@ -4,7 +4,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 pi3d.constants contains constant values, mainly integers, from OpenGL ES 2.0.
 """
 
-VERSION = '2.6'
+VERSION = '2.7'
 
 STARTUP_MESSAGE = """
 
@@ -41,6 +41,9 @@ PLATFORM_OSX = 1
 PLATFORM_WINDOWS = 2
 PLATFORM_LINUX = 3
 PLATFORM_ANDROID = 4
+
+# Force pygame if possible
+USE_PYGAME = False
 
 # Lastly, load the libraries.
 def _load_library(name, dll_type="C"):
@@ -88,12 +91,17 @@ def _linux():
   return platform, bcm, openegl, opengles # opengles now determined by platform
 
 def _windows():
+  global USE_PYGAME
   platform = PLATFORM_WINDOWS
+  USE_PYGAME = True
   bcm = None
   """ NB You will need to copy the relevant dll files for ANGLE into the
   starting directory for the python file you are running. i.e. .../pi3d_demos
   In theory you can add the path to the `Path` variable but I couldn't get
   this to work.
+  
+  On 32 bit python:
+  -----------------
   If you have chrome or firefox installed you should be able to find the
   required files in
   C:/Program Files (x86)/Google/Chrome/Application/42.0.2311.90/
@@ -104,6 +112,11 @@ def _windows():
   2. libegl.dll
   3. d3dcompiler_47.dll (number will change with later releases - use highest)
   [4. mozglue.dll only for firefox]
+  
+  On 64 bit python:
+  -----------------
+  As above but you have to download 64 bit versions of the dll files from
+  here http://github.com/paddywwoof/pi3d_windll
   """
   opengles = _load_library("libglesv2.dll", "Win")
   openegl = _load_library("libegl.dll", "Win")

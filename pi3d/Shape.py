@@ -147,10 +147,11 @@ class Shape(Loadable):
     """translate to offset"""
 
     self.MFlg = True
-    self.M = zeros(32, dtype="float32").reshape(2,4,4)
+    #self.M = zeros(32, dtype="float32").reshape(2,4,4)
+    self.M = zeros(48, dtype="float32").reshape(3,4,4) # 3rd matrix added for casting shadows v2.7
 
 
-  def draw(self, shader=None, txtrs=None, ntl=None, shny=None, camera=None, mlist=[]):
+  def draw(self, shader=None, txtrs=None, ntl=None, shny=None, camera=None, mlist=[], light_camera=None):
     """If called without parameters, there has to have been a previous call to
     set_draw_details() for each Buffer in buf[].
     NB there is no facility for setting umult and vmult with draw: they must be
@@ -160,15 +161,8 @@ class Shape(Loadable):
 
     camera = camera or self._camera or Camera.instance()
 
-    if self.MFlg or len(mlist) > 0:
-      '''
+    if self.MFlg or len(mlist) > 0 or len(self.children) > 0:
       # Calculate rotation and translation matrix for this model using numpy.
-      self.MRaw = dot(self.tr2,
-        dot(self.scl,
-            dot(self.roy,
-                dot(self.rox,
-                    dot(self.roz, self.tr1)))))
-      '''
       self.MRaw = self.tr1
       if self.rozflg:
         self.MRaw = dot(self.roz, self.MRaw)
@@ -186,7 +180,7 @@ class Shape(Loadable):
       newmlist.append(self.MRaw)
       if len(self.children) > 0:
         for c in self.children:
-          c.draw(shader, txtrs, ntl, shny, camera, newmlist) # TODO issues where child doesn't use same shader 
+          c.draw(shader, txtrs, ntl, shny, camera, newmlist, light_camera) # TODO issues where child doesn't use same shader 
       for m in mlist[-1::-1]:
         self.MRaw = dot(self.MRaw, m)
       ######################################
@@ -194,11 +188,15 @@ class Shape(Loadable):
       #self.M[0:16] = c_floats(self.MRaw.reshape(-1).tolist()) #pypy version
       self.M[1,:,:] = dot(self.MRaw, camera.mtrx)[:,:]
       #self.M[16:32] = c_floats(dot(self.MRaw, camera.mtrx).reshape(-1).tolist()) #pypy
+      if light_camera is not None:
+        self.M[2,:,:] = dot(self.MRaw, light_camera.mtrx)[:,:]
       self.MFlg = False
 
     elif camera.was_moved:
       # Only do this if it's not done because model moved.
       self.M[1,:,:] = dot(self.MRaw, camera.mtrx)[:,:]
+      if light_camera is not None:
+        self.M[2,:,:] = dot(self.MRaw, light_camera.mtrx)[:,:]
 
     if camera.was_moved:
       self.unif[18:21] = camera.eye[0:3]
@@ -417,7 +415,7 @@ class Shape(Loadable):
       b.unib[8] = point_size
       b.draw_method = GL_POINTS if point_size > 0.0 else GL_TRIANGLES
 
-  def set_line_width(self, line_width=1.0, closed=False):
+  def set_line_width(self, line_width=1.0, strip=True, closed=False):
     """This will set the draw_method in all Buffers of this Shape
 
       *line-width*
@@ -439,10 +437,11 @@ class Shape(Loadable):
     for b in self.buf:
       b.unib[11] = line_width
       opengles.glLineWidth(ctypes.c_float(line_width))
-      if closed:
-        b.draw_method = GL_LINE_LOOP if line_width > 0.0 else GL_TRIANGLES
+      if strip:
+        draw_method = GL_LINE_LOOP if closed else GL_LINE_STRIP
       else:
-        b.draw_method = GL_LINE_STRIP if line_width > 0.0 else GL_TRIANGLES
+        draw_method = GL_LINES
+      b.draw_method = draw_method if line_width > 0.0 else GL_TRIANGLES
 
   def re_init(self, pts=None, texcoords=None, normals=None, offset=0):
     """ wrapper for Buffer.re_init()
@@ -709,14 +708,11 @@ class Shape(Loadable):
     pr = (pi / self.sides) * 2.0
     rdiv = rise / rl
 
-    # Find largest and smallest y of the path used for stretching the texture
-    miny = path[0][1]
-    maxy = path[s-1][1]
-    for p in range(s):
-      if path[p][1] < miny:
-        miny = path[p][1]
-      if path[p][1] > maxy:
-        maxy = path[p][1]
+    # Find length of the path
+    path_len = 0.0
+    for p in range(1, s):
+      path_len += ((path[p][0] - path[p-1][0])**2 +
+                   (path[p][1] - path[p-1][1])**2)**0.5
 
     verts = []
     norms = []
@@ -726,28 +722,30 @@ class Shape(Loadable):
     opx = path[0][0]
     opy = path[0][1]
 
+    tcy = 0.0
     for p in range(s):
 
       px = path[p][0] * 1.0
       py = path[p][1] * 1.0
 
-      tcy = 1.0 - ((py - miny) / (maxy - miny))
+      if p > 0:
+        tcy += ((path[p][0] - path[p-1][0])**2 +
+                (path[p][1] - path[p-1][1])**2)**0.5 / path_len
 
       # Normalized 2D vector between path points
-      dx, dy = Utility.vec_normal(Utility.vec_sub((px, py), (opx, opy)))
+      if p == 0:
+        ipx, ipy = path[1][0] * 1.0, path[1][1] * 1.0
+      else:
+        ipx, ipy = px, py
+      dx, dy = Utility.vec_normal(Utility.vec_sub((ipx, ipy), (opx, opy)))
 
-      for r in range (0, rl):
+      for r in range (0, rl + 1):
         sinr = sin(pr * r)
         cosr = cos(pr * r)
         verts.append((px * sinr, py, px * cosr))
         norms.append((-sinr * dy, dx, -cosr * dy))
         tex_coords.append((1.0 - tcx * r, tcy))
         py += rdiv
-
-      # Last path profile (tidies texture coords).
-      verts.append((0, py, px))
-      norms.append((0, dx, -dy))
-      tex_coords.append((0, tcy))
 
       if p < s - 1:
         pn += (rl + 1)

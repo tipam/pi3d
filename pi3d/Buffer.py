@@ -257,7 +257,7 @@ class Buffer(Loadable):
 
     shader = shader or self.shader or shape.shader or Shader.instance()
     shader.use()
-    opengles.glUniformMatrix4fv(shader.unif_modelviewmatrix, 2,
+    opengles.glUniformMatrix4fv(shader.unif_modelviewmatrix, 3,
                                 ctypes.c_int(0), M.ctypes.data)
 
     opengles.glUniform3fv(shader.unif_unif, 20, ctypes.byref(unif))

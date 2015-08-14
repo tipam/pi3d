@@ -54,6 +54,8 @@ pi3d/shaders/mat_reflect.fs
 pi3d/shaders/mat_reflect.vs
 pi3d/shaders/post_base.fs
 pi3d/shaders/post_base.vs
+pi3d/shaders/shadow_uv_bump.fs
+pi3d/shaders/shadow_uv_bump.vs
 pi3d/shaders/shadowcast.fs
 pi3d/shaders/shadowcast.vs
 pi3d/shaders/star.fs

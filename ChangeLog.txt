@@ -4,6 +4,17 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
+v2.7
+2015-08-14  Much improved shadow casting using depth mapping to OffScreenTexture.
+            Shape.lathe() patched so normal on first leg of path realistic,
+            also edges of shapes redefined in elements so line drawing
+            generally produces quads rather than triangles. Also texture
+            mapping in lathe corrected to use distance along path rather
+            than y position. Texture reflection in shaders fixed. Normals
+            in String fixed. Option to use pygame rather than X11 display,
+            mouse and keyboard to avoid having to run as root on linux.
+            
+
 v2.6
 2015-07-02  Moved Shader specific code from Shape.draw() to Buffer.draw()
             to allow different Shaders on parts of same shape. MergeShape

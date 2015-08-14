@@ -28,11 +28,13 @@ class Torus(Shape):
     if VERBOSE:
       print("Creating Torus ...")
 
-    path = []
+    #path = []
     st = (math.pi * 2)/ringrots
-    for r in range(ringrots + 1):
-      x, y = Utility.from_polar_rad(r * st, thickness)
-      path.append((radius + y, x))  # TODO: why the reversal?
+    #for r in range(ringrots + 1):
+    #  x, y = Utility.from_polar_rad(r * st, thickness)
+    #  path.append((radius + y, x))  # TODO: why the reversal?
+    path = [(radius - thickness * math.cos(i * st),
+             thickness * math.sin(i * st)) for i in range(ringrots + 1)]
 
     self.radius = radius
     self.thickness = thickness

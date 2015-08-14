@@ -18,7 +18,7 @@ DEFAULT_FONT_SIZE = 0.24
 DEFAULT_FONT_SCALE = DEFAULT_FONT_SIZE / DOTS_PER_INCH
 GAP = 1.0
 
-_NORMALS = [[0.0, 0.0, 1.0], [0.0, 0.0, 1.0], [0.0, 0.0, 1.0], [0.0, 0.0, 1.0]]
+_NORMALS = [[0.0, 0.0, -1.0], [0.0, 0.0, -1.0], [0.0, 0.0, -1.0], [0.0, 0.0, -1.0]]
 
 class String(Shape):
   """Shape used for writing text on screen. It is a flat, one sided rectangualar plane"""
