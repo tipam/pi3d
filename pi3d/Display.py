@@ -110,9 +110,10 @@ class Display(object):
       Display.INSTANCE = self
 
     self.tkwin = tkwin
-    if use_pygame or pi3d.PLATFORM == pi3d.PLATFORM_WINDOWS:
+    if (use_pygame and pi3d.PLATFORM != pi3d.PLATFORM_PI)  or pi3d.PLATFORM == pi3d.PLATFORM_WINDOWS:
       try:
         import pygame
+        use_pygame = True
       except ImportError:
         LOGGER.warning('Do you need to install pygame?')
         use_pygame = False
