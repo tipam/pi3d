@@ -65,12 +65,14 @@ from pi3d.util.String import String
 from pi3d.util.FixedString import FixedString
 
 from pi3d.util.Defocus import Defocus
+from pi3d.util.FastText import FastText
 from pi3d.util.Font import Font
 from pi3d.util.Pngfont import Pngfont
 from pi3d.util.PostProcess import PostProcess
 from pi3d.util.Screenshot import screenshot
 from pi3d.util.ShadowCaster import ShadowCaster
 from pi3d.util.StereoCam import StereoCam
+from pi3d.util.TextBlock import TextBlock
 
 from pi3d.util.Gui import Button
 from pi3d.util.Gui import Gui

@@ -133,7 +133,7 @@ class DisplayOpenGL(object):
       flags = pygame.RESIZABLE | pygame.OPENGL
       wsize = (w, h)
       if w == self.width and h == self.height: # i.e. full screen
-        flags = pygame.FULLSCREEN | pygame.OPENGL
+        flags = pygame.FULLSCREEN | pygame.OPENGL | pygame.NOFRAME
         wsize = (0, 0)
       self.width, self.height = w, h
       self.d = pygame.display.set_mode(wsize, flags)

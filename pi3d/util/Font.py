@@ -29,7 +29,7 @@ class Font(Texture):
   then creates a table mapping codepoints to subrectangles of that Texture."""
 
   def __init__(self, font, color=(255,255,255,255), codepoints=None,
-               add_codepoints=None, font_size=48, image_size=512,
+               add_codepoints=None, font_size=42, image_size=512,
                italic_adjustment=1.1, background_color=None, mipmap=True):
     """Arguments:
     *font*:
@@ -66,15 +66,14 @@ class Font(Texture):
 
     *image_size*:
       Width and height of the Texture that backs the image.
-      If it doesn't fit then a larger size will be tried up to MAX_SIZE.
-      The isses are: maximum image size supported by the gpu (2048x2048?)
-      gpu memory usage and time to load by working up the size required
-      in 256 pixel steps.
+      Since the introduction of FastText using Point drawing image_size is
+      no longer used - all Font Textures are 1024.
 
     *italic_adjustment*:
       Adjusts the bounding width to take italics into account.  The default
       value is 1.1; you can get a tighter bounding if you set this down
-      closer to 1, but italics might get cut off at the right.
+      closer to 1, but italics might get cut off at the right. Since FastText
+      this isn't used.
     """
     super(Font, self).__init__(font, mipmap=mipmap)
     self.font = font
@@ -88,72 +87,71 @@ class Font(Texture):
 
       raise Exception(msg)
 
-    pipew, pipeh = imgfont.getsize('|') # TODO this is a horrible hack
-    #to cope with a bug in Pillow where ascender depends on char height!
     ascent, descent = imgfont.getmetrics()
     self.height = ascent + descent
+    self.spacing = 64
 
-    codepoints = (codepoints and list(codepoints)) or list(range(256))
-    if add_codepoints:
-      codepoints += list(add_codepoints)
+    image_size = self.spacing  * 16  # or 1024 TODO this may go wrong if self.height != 64
 
-    all_fits = False
-    while image_size < MAX_SIZE and not all_fits:
-      self.im = Image.new("RGBA", (image_size, image_size), background_color)
-      self.alpha = True
-      self.ix, self.iy = image_size, image_size
+    if codepoints is not None:
+      codepoints = list(codepoints)
+    else:
+      codepoints = list(range(256))
+    if add_codepoints is not None:
+      add_codepoints = list(add_codepoints)
+      if (len(codepoints) + len(add_codepoints)) > 256: # make room at end
+        codepoints = codepoints[:(256 - len(add_codepoints))]
+      codepoints += add_codepoints
 
-      self.glyph_table = {}
+    self.im = Image.new("RGBA", (image_size, image_size), background_color)
+    self.alpha = True
+    self.ix, self.iy = image_size, image_size
 
-      draw = ImageDraw.Draw(self.im)
+    self.glyph_table = {}
 
-      curX = 0.0
-      curY = 0.0
-      characters = []
-      
-      for i in itertools.chain([0], codepoints):
-        try:
-          ch = unichr(i)
-        except TypeError:
-          ch = i
-        # TODO: figure out how to skip missing characters entirely.
-        # if imgfont.font.getabc(ch)[0] <= 0 and ch != zero:
-        #   print('skipping', ch)
-        #   continue
-        chstr = '|' + ch # TODO horrible hack
-        chwidth, chheight = imgfont.getsize(chstr)
+    draw = ImageDraw.Draw(self.im)
 
-        if curX + chwidth * italic_adjustment >= image_size:
-          curX = 0.0
-          curY += self.height + 1.0 #leave 1 pixel gap
-          if curY >= image_size: #run out of space try again with bigger img
-            all_fits = False
-            image_size += 256
-            break
+    curX = 0.0
+    curY = 0.0
+    yindex = 0
+    xindex = 0
+    characters = []
 
-        draw.text((curX, curY), chstr, font=imgfont, fill=color)
-        x = (curX + pipew + 0.0) / self.ix
-        y = (curY + self.height + 0.0) / self.iy
-        tw = (chwidth - pipew + 0.0) / self.ix
-        th = (self.height + 0.0) / self.iy
-        w = image_size
-        h = image_size
+    for i in itertools.chain([0], codepoints):
+      try:
+        ch = unichr(i)
+      except TypeError:
+        ch = i
 
-        table_entry = [
-          chwidth - pipew,
-          chheight,
-          [[x + tw, y - th], [x, y - th], [x, y], [x + tw, y]],
-          [[chwidth, 0, 0], [pipew, 0, 0], [pipew, -self.height, 0], [chwidth, -self.height, 0]]
-          ]
+      chwidth, chheight = imgfont.getsize(ch)
 
-        self.glyph_table[ch] = table_entry
+      curX = xindex * self.spacing
+      curY = yindex * self.spacing
 
-        # Correct the character width for italics.
-        curX += chwidth * italic_adjustment
-        all_fits = True
+      offset = (self.spacing - chwidth)  / 2.0
+      draw.text((curX + offset, curY), ch, font=imgfont, fill=color)
+      x = (curX + offset + 0.0) / self.ix
+      y = (curY + self.height + 0.0) / self.iy
+      tw = (chwidth + 0.0) / self.ix
+      th = (self.height + 0.0) / self.iy
+
+      table_entry = [
+        chwidth,
+        chheight,
+        [[x + tw, y - th], [x, y - th], [x, y], [x + tw, y]],
+        [[chwidth, 0, 0], [0, 0, 0], [0, -self.height, 0], [chwidth, -self.height, 0]],
+        float(curX) / self.ix,
+        float(curY) / self.iy
+        ]
+
+      self.glyph_table[ch] = table_entry
+
+      xindex += 1
+      if xindex >= 16:
+        xindex = 0
+        yindex += 1
 
     RGBs = 'RGBA' if self.alpha else 'RGB'
-    #self.image = self.im.convert(RGBs).tostring('raw', RGBs)
     self.im = self.im.convert(RGBs)
     self.image = np.array(self.im)
     self._tex = ctypes.c_int()

@@ -64,12 +64,12 @@ class PostProcess(OffScreenTexture):
     if add_tex:
       self.tex_list.extend(add_tex)
 
-  def start_capture(self):
+  def start_capture(self, clear=True):
     """ after calling this method all object.draw()s will rendered
     to this texture and not appear on the display. Large objects
     will obviously take a while to draw and re-draw
     """
-    super(PostProcess, self)._start()
+    super(PostProcess, self)._start(clear=clear)
     from pi3d.Display import Display
     xx = Display.INSTANCE.width / 2.0 * (1.0 - self.scale)
     yy = Display.INSTANCE.height / 2.0 * (1.0 - self.scale)

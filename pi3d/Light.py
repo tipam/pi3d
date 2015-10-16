@@ -5,7 +5,7 @@ from pi3d.util.DefaultInstance import DefaultInstance
 class Light(DefaultInstance):
   """ Holds information about lighting to be used in shaders """
   def __init__(self,
-               lightpos=(10, -10, 20),
+               lightpos=(10, -10, -5),
                lightcol=(1.0, 1.0, 1.0),
                lightamb=(0.1, 0.1, 0.2), is_point=False):
     """ set light values. These are set in Shape.unif as part of the Shape

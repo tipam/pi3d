@@ -34,7 +34,7 @@ class OffScreenTexture(Texture):
     """ have to override this
     """
 
-  def _start(self):
+  def _start(self, clear=True):
     """ after calling this method all object.draw()s will rendered
     to this texture and not appear on the display. Large objects
     will obviously take a while to draw and re-draw
@@ -48,7 +48,8 @@ class OffScreenTexture(Texture):
                 self.ix, self.iy)
     opengles.glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
                 GL_RENDERBUFFER, self.depthbuffer[0])
-    opengles.glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT)
+    if clear: # TODO allow just depth or just color clearing?
+      opengles.glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT)
 
     #assert opengles.glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE
 
