@@ -9,7 +9,7 @@ import math
 import colorsys
 
 
-class FastText(object):
+class PointText(object):
   def __init__(self, font, camera, max_chars=100):
     """ Arguments:
     *font*:
@@ -43,7 +43,7 @@ class FastText(object):
     self.text = Points(camera=camera, vertices=self.locations, normals=self.normals, tex_coords=self.uv,
                    point_size=self.font.height)
     self.text.set_draw_details(self.shader, [self.font])
-    self.text.unif[48] = 0.057  # used to hold
+    self.text.unif[48] = 0.058  # used to hold
     #Reset all characters to space so there are no false character shadows
     try:
       glyph = self.font.glyph_table[' '] #u' ' doesn't work on python3.2!!

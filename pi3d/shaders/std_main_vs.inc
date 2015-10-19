@@ -9,6 +9,7 @@
     lightVector = vec3(relPosn) - unif[8];
     lightFactor = pow(length(lightVector), -2.0);
     lightVector = normalize(lightVector);
+    lightVector.z *= -1.0;
   } else {                                  // this is directional light
     lightVector = normalize(unif[8]);
     lightFactor = 1.0;
