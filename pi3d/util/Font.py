@@ -66,13 +66,13 @@ class Font(Texture):
 
     *image_size*:
       Width and height of the Texture that backs the image.
-      Since the introduction of FastText using Point drawing image_size is
+      Since the introduction of PointText using Point drawing image_size is
       no longer used - all Font Textures are 1024.
 
     *italic_adjustment*:
       Adjusts the bounding width to take italics into account.  The default
       value is 1.1; you can get a tighter bounding if you set this down
-      closer to 1, but italics might get cut off at the right. Since FastText
+      closer to 1, but italics might get cut off at the right. Since PointText
       this isn't used.
     """
     super(Font, self).__init__(font, mipmap=mipmap)

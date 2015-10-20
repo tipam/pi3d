@@ -96,7 +96,7 @@ class TextBlockColourGradient(TextBlockColour):
 
 class TextBlock(object):
   def __init__(self, x, y, z, rot, char_count, data_obj=None, attr=None,
-            text_format="{:s}", size=0.25, spacing="C", space=1.1,
+            text_format="{:s}", size=0.99, spacing="C", space=1.1,
             colour=(1.0,1.0,1.0,1.0) , char_rot=0.0, justify=0.0):
     """ Arguments:
     *x, y, z*:
@@ -135,6 +135,7 @@ class TextBlock(object):
     self.size = size
     self.spacing = spacing
     self.space = space
+    self.point_size = 48
     
     #If the colour is a tuple initialize it a plain colour
     #Otherwise use a TextBlockColour object and its textBlock reference to this TextBlock
@@ -232,12 +233,15 @@ class TextBlock(object):
     for char in strval:
       glyph = self._text_manager.font.glyph_table[char]
       self._text_manager.uv[index+self._buffer_index] = glyph[4:]
+      """scale is needed if pointsize is different in Points from Font which is
+      needed to avoid clipping or overlap of corners when rotation some truetype fonts"""
+      g_scale = float(self._text_manager.point_size) / self._text_manager.font.height
       char_offset = pos
       if self.spacing == "F":
         #center character to the right 
-        char_offset += float(glyph[0]) * self.size * 0.5
+        char_offset += float(glyph[0]) * g_scale * self.size * 0.5
       self.char_offsets[index] = char_offset
-      spacing = (glyph[0] * vari_width) + const_width
+      spacing = (glyph[0] * g_scale * vari_width) + const_width
       pos += spacing
       index += 1
     

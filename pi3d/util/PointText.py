@@ -10,14 +10,19 @@ import colorsys
 
 
 class PointText(object):
-  def __init__(self, font, camera, max_chars=100):
+  def __init__(self, font, camera, max_chars=100, point_size=48):
     """ Arguments:
     *font*:
       A PointFont object.
     *camera*:
       camera to use for drawing the text.  Normally a fixed 2d camera.
-    *fmax_chars*:
-      maximum number of chars which determines the number of points in the buffer
+    *max_chars*:
+      maximum number of chars, which determines the number of points in the buffer
+    *point_size*:
+      size of "default" characters created using the Points class and the
+      font. This is further scaled by the TextBlock.size
+      This refinement is needed to allow pointsize to be different in Points from
+      Font to avoid clipping or overlap of corners when rotation some truetype fonts
     """
     self.max_chars = max_chars
     self.font = font
@@ -40,10 +45,11 @@ class PointText(object):
     self._first_free_char = 0
     self._do_buffer_reinit = False
 
-    self.text = Points(camera=camera, vertices=self.locations, normals=self.normals, tex_coords=self.uv,
-                   point_size=self.font.height)
+    self.point_size = point_size
+    self.text = Points(camera=camera, vertices=self.locations, normals=self.normals,
+                       tex_coords=self.uv, point_size=self.point_size)
     self.text.set_draw_details(self.shader, [self.font])
-    self.text.unif[48] = 0.058  # used to hold
+    self.text.unif[48] = 0.058  # used to hold "patch size" passed to shader
     #Reset all characters to space so there are no false character shadows
     try:
       glyph = self.font.glyph_table[' '] #u' ' doesn't work on python3.2!!
@@ -79,7 +85,8 @@ class PointText(object):
     ''' Draw all the text characters.  If the re_init flag is set then
     update the points shape buffer. '''
     if self._do_buffer_reinit == True:
-        self.text.buf[0].re_init(pts=self.locations, normals=self.normals, texcoords=self.uv) # reform opengles array_buffer
+        self.text.buf[0].re_init(pts=self.locations, normals=self.normals,
+                              texcoords=self.uv) # reform opengles array_buffer
 
     self.text.draw()
 
