@@ -36,9 +36,11 @@ class TextBlockColour(object):
 
     textBlock = self.textBlock
     manager = textBlock._text_manager
-          
+    st = textBlock._buffer_index
+    mid = st + textBlock._string_length
+    end = st + textBlock.char_count
     #Reset alpha to zero for all characters.  Prevents displaying old chars from longer strings
-    manager.normals[textBlock._buffer_index:textBlock._buffer_index+textBlock.char_count, 1] = 0
+    manager.normals[st:end, 2] = 0
         
     #Fill an array with the colour to copy to the manager normals
     #rotation is included for efficiency
@@ -48,7 +50,7 @@ class TextBlockColour(object):
     normal[2] = (self.colour[3] * 0.999) + (math.floor(self.colour[2] * 999))
     
     #Only set colour alpha for string length. Zero for non displayed characters
-    manager.normals[textBlock._buffer_index:textBlock._buffer_index+textBlock._string_length, :] = normal
+    manager.normals[st:mid, :] = normal
 
 
 class TextBlockColourGradient(TextBlockColour):
@@ -91,7 +93,7 @@ class TextBlockColourGradient(TextBlockColour):
       normal[2] = (a * 0.999) + math.floor((rgb[2] * 999))
       
       #Only set colour alpha for string length. Zero for non displayed characters
-      manager.normals[textBlock._buffer_index+index, :] = normal
+      manager.normals[textBlock._buffer_index + index, :] = normal
 
 
 class TextBlock(object):
@@ -122,7 +124,7 @@ class TextBlock(object):
     *char_rot*:
       character rotation in degrees
     *justify*:
-      Justification position. 0.0=Right, 1.0=Left, 0.5=Center
+      Justification position. 0.0=Left, 0.5=Center, 1.0=Right
     """
     self.x = x 
     self.y = y 
@@ -193,8 +195,7 @@ class TextBlock(object):
     end = st + self.char_count
     self._text_manager.locations[st:end, :] = locations
     self._text_manager.normals[st:mid, 0] = self.rot + self.char_rot
-    #if visible text is shorter make remainder of character zero alpha
-    self._text_manager.normals[mid:end, 2] = np.floor(self._text_manager.normals[mid:end, 2])
+
     self._text_manager.set_do_reinit()
 
   def recolour(self):
