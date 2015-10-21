@@ -188,8 +188,13 @@ class TextBlock(object):
     locations[:, 0] = np.multiply(self.char_offsets, math.cos(self.rot))
     locations[:, 1] = np.multiply(self.char_offsets, math.sin(self.rot))
     locations = np.add(locations, pos)
-    self._text_manager.locations[self._buffer_index:self._buffer_index + self.char_count, :] = locations
-    self._text_manager.normals[self._buffer_index:self._buffer_index + self._string_length, 0] = self.rot + self.char_rot
+    st = self._buffer_index
+    mid = st + self._string_length
+    end = st + self.char_count
+    self._text_manager.locations[st:end, :] = locations
+    self._text_manager.normals[st:mid, 0] = self.rot + self.char_rot
+    #if visible text is shorter make remainder of character zero alpha
+    self._text_manager.normals[mid:end, 2] = np.floor(self._text_manager.normals[mid:end, 2])
     self._text_manager.set_do_reinit()
 
   def recolour(self):
