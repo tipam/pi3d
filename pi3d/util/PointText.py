@@ -61,7 +61,7 @@ class PointText(object):
     ''' Regenerate all text blocks that are linked to data objects and have
     changed value '''
     for block in self.text_blocks:
-      if block.data_obj != None:
+      if block.data_obj is not None:
         value = block.get_value()
         if value != block.last_value:
           block.last_value = value
@@ -84,7 +84,7 @@ class PointText(object):
   def draw(self):
     ''' Draw all the text characters.  If the re_init flag is set then
     update the points shape buffer. '''
-    if self._do_buffer_reinit == True:
+    if self._do_buffer_reinit:
         self.text.buf[0].re_init(pts=self.locations, normals=self.normals,
                               texcoords=self.uv) # reform opengles array_buffer
 

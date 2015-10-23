@@ -28,10 +28,10 @@ class TextBlockColour(object):
     self.set_colour()
     
   def set_colour(self, colour=None, alpha=None):
-    if colour != None:
+    if colour is not None:
       self.colour[0:2] = colour[0:2]
     
-    if alpha != None:
+    if alpha is not None:
       self.colour[3] = alpha
 
     textBlock = self.textBlock
@@ -63,12 +63,12 @@ class TextBlockColourGradient(TextBlockColour):
     ''' Colour each character with a gradient from colour1 to colour2
     Interpolate hsv instead of rgb since it is a more natural change.
     '''
-    if colour1 != None:
+    if colour1 is not None:
       self.colour1 = colour1
-    if colour2 != None:
+    if colour2 is not None:
       self.colour2 = colour2
       
-    if self.textBlock == None:
+    if self.textBlock is None:
       return
       
     colour1 = self.colour1
