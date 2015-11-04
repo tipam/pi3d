@@ -104,7 +104,9 @@ class _nixMouse(threading.Thread):
 
   def velocity(self):
     with self.lock:
-      return self._dx, self._dy
+      dx, dy = self._dx, self._dy
+      self._dx, self._dy = 0, 0 # need resetting after a read as no event will do this
+      return dx, dy
 
   def button_status(self):
     '''return the button status - use events system for capturing button
@@ -233,7 +235,9 @@ class _pygameMouse(object):
 
   def velocity(self):
     self._check_event()
-    return self._dx, self._dy
+    dx, dy = self._dx, self._dy
+    self._dx, self._dy = 0, 0 # need resetting after a read as no event will do this
+    return dx, dy
     
   def button_status(self):
     self._check_event()

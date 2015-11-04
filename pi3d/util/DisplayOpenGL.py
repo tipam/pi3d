@@ -22,7 +22,7 @@ class DisplayOpenGL(object):
       self.width, self.height = 320, 480 # put in some non-zero place-holders
     elif PLATFORM == PLATFORM_PI:
       b = bcm.bcm_host_init()
-      assert b >= 0
+      #assert b >= 0 ## this assertion can fail with the pi camera running too
 
       # Get the width and height of the screen
       w = c_int()

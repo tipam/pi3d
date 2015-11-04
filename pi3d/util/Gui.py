@@ -4,7 +4,8 @@ import six, sys, os, time
 
 import pi3d
 
-DT = 0.25 #minimum time between mouse clicks or key strokes
+DTK = 0.05 #minimum time between key strokes
+DTM = 0.15 #minimum time between mouse clicks
 
 class Gui(object):
   def __init__(self, font):
@@ -35,7 +36,7 @@ class Gui(object):
     self.pointer = pi3d.Sprite(camera=self.camera, w=tex.ix, h=tex.iy, z=0.5)
     self.pointer.set_draw_details(self.shader, [tex])
     self.p_dx, self.p_dy = tex.ix/2.0, -tex.iy/2.0
-    self.next_tm = time.time() + DT
+    self.next_tm = time.time() + DTM
 
   def draw(self, x, y):
     """draw all visible widges and pointer at x, y
@@ -50,7 +51,7 @@ class Gui(object):
     tm = time.time()
     if tm < self.next_tm:
       return
-    self.next_tm = tm + DT
+    self.next_tm = tm + DTM
     for w in self.widgets:
       if w.visible and w.check(x, y):
         self.focus = w
@@ -60,7 +61,7 @@ class Gui(object):
     tm = time.time()
     if tm < self.next_tm:
       return
-    self.next_tm = tm + DT
+    self.next_tm = tm + DTK
     if type(self.focus) is TextBox:
       self.focus._click(k)
     else:

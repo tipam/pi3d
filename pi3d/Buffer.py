@@ -51,7 +51,7 @@ class Buffer(Loadable):
     self.unib = (c_float * 12)(0.0, 0.0, 0.0,
                                0.5, 0.5, 0.5,
                                1.0, 1.0, 0.0,
-                               0.0, 0.0, 0.0)
+                               0.0, 0.0, 1.0)
     """ pass to shader array of vec3 uniform variables:
 
     ===== ============================ ==== ==
@@ -62,8 +62,8 @@ class Buffer(Loadable):
         0  ntile, shiny, blend           0   2
         1  material                      3   5
         2  umult, vmult, point_size      6   8
-        3  u_off, v_off, line_width      9  10
-    ===== ============================ ==== ==
+        3  u_off, v_off, line_width/bump 9  10 #NB line width and bump factor
+    ===== ============================ ==== ==  clash but shouldn't be an issue
     """
     #self.shape = shape
     self.textures = []
@@ -194,7 +194,7 @@ class Buffer(Loadable):
 
 
   def set_draw_details(self, shader, textures, ntiles=0.0, shiny=0.0,
-                       umult=1.0, vmult=1.0):
+                       umult=1.0, vmult=1.0, bump_factor=1.0):
     """Can be used to set information needed for drawing as a one off
     rather than sending as arguments to draw().
 
@@ -214,6 +214,8 @@ class Buffer(Loadable):
         multiplier for tiling the texture in the u direction
       *vmult*
         multiplier for tiling the texture in the v direction
+      *bump_factor*
+        multiplier for the normal map surface distortion effect
     """
     self.shader = shader
     self.textures = textures # array of Textures
@@ -221,6 +223,7 @@ class Buffer(Loadable):
     self.unib[1] = shiny
     self.unib[6] = umult
     self.unib[7] = vmult
+    self.unib[11] = bump_factor
 
 
   def set_material(self, mtrl):

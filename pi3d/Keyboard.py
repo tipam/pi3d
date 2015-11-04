@@ -25,6 +25,9 @@ class CursesKeyboard(object):
     return self.key.getch()
 
   def read_code(self):
+    c = self.key.getch()
+    if c > -1:
+      return chr(c)
     return ""
 
   def close(self):
@@ -191,7 +194,8 @@ class PygameKeyboard(object):
             307:[0, "Alt_R"], 278:[129, "Home"], 273:[134, "Up"], 
             280:[130, "Page_Up"], 276:[136, "Left"], 275:[137, "Right"],
             279:[132, "End"], 274:[135, "Down"], 281:[133, "Page_Down"], 
-            277:[128, "Insert"], 127:[131, "DEL"]}
+            277:[128, "Insert"], 127:[131, "DEL"], 304:[0,"Shift_L"],
+            303:[0,"Shift_R"], 301:[0,"Caps"], 13:[0,"Return"], 8:[0,"BackSpace"]}
   def __init__(self):
     self.key_list = []
     import pygame
@@ -209,8 +213,10 @@ class PygameKeyboard(object):
       if key in self.KEYBOARD:
         self.key_code = self.KEYBOARD[key][1]
         key = self.KEYBOARD[key][0]
+      elif key < 256:
+        self.key_code = chr(key) # have to assume ascii code conversion will do
       else:
-        self.key_code = "" # have to assume ascii code conversion will do
+        self.key_code = ""
       self.key_list = self.key_list[1:]
       return key
     return -1

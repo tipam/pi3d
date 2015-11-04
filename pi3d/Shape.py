@@ -223,7 +223,7 @@ class Shape(Loadable):
       b.shader = shader
 
   def set_normal_shine(self, normtex, ntiles=1.0, shinetex=None,
-                       shiny=0.0, is_uv=True):
+                       shiny=0.0, is_uv=True, bump_factor=1.0):
     """Used to set some of the draw details for all Buffers in Shape.
     This is useful where a Model object has been loaded from an obj file and
     the textures assigned automatically.
@@ -244,7 +244,9 @@ class Shape(Loadable):
         textures[2] i.e. if using a 'uv' type Shader. However, for 'mat' type
         Shaders they are moved down one, as the basic shade is defined by
         material rgb rather than from a Texture.
-    """
+      *bump_factor*
+        multiplier for the normal map surface distortion effect
+   """
     ofst = 0 if is_uv else -1
     for b in self.buf:
       b.textures = b.textures or []
@@ -254,6 +256,7 @@ class Shape(Loadable):
         b.textures.append(None)
       b.textures[1 + ofst] = normtex
       b.unib[0] = ntiles
+      b.unib[11] = bump_factor
       if shinetex is not None:
         while len(b.textures) < (3 + ofst):
           b.textures.append(None)
@@ -261,7 +264,7 @@ class Shape(Loadable):
         b.unib[1] = shiny
 
   def set_draw_details(self, shader, textures, ntiles = 0.0, shiny = 0.0,
-                      umult=1.0, vmult=1.0):
+                      umult=1.0, vmult=1.0, bump_factor=1.0):
     """Wrapper to call set_draw_details() for each Buffer object.
 
     Arguments:
@@ -272,7 +275,7 @@ class Shape(Loadable):
     """
     self.shader = shader
     for b in self.buf:
-      b.set_draw_details(shader, textures, ntiles, shiny, umult, vmult)
+      b.set_draw_details(shader, textures, ntiles, shiny, umult, vmult, bump_factor)
 
   def set_material(self, material):
     """Wrapper for setting material shade in each Buffer object.
