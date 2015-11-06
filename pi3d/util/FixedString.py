@@ -164,7 +164,7 @@ class FixedString(Texture):
     steps = [i - 2 for i in range(5)]
     for i, istep in enumerate(steps):
       for j, jstep in enumerate(steps):
-        c += np.roll(np.roll(a, istep, 0), jstep, 1) * b[i][j]
+        c += (np.roll(np.roll(a, istep, 0), jstep, 1) * b[i][j]).astype(np.uint8)
     cx = np.roll(c, 1, 0)
     cy = np.roll(c, 1, 1)
     d = np.zeros((a.shape[0], a.shape[1], 4), dtype=np.uint8)
