@@ -203,8 +203,8 @@ class Texture(Loadable):
                           GL_UNSIGNED_BYTE,
                           self.image.ctypes.data_as(ctypes.POINTER(ctypes.c_short)))
     opengles.glEnable(GL_TEXTURE_2D)
-    opengles.glGenerateMipmap(GL_TEXTURE_2D)
     if self.mipmap:
+      opengles.glGenerateMipmap(GL_TEXTURE_2D)
       opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
                                GL_LINEAR_MIPMAP_NEAREST)
       opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,

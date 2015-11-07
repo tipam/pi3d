@@ -68,6 +68,8 @@ class _nixMouse(threading.Thread):
         self.rooty = ctypes.c_int(0)
         self.mask = ctypes.c_uint(0)
         self.use_x = True
+        self.x_offset = Display.INSTANCE.width // 2 + 1
+        self.y_offset = Display.INSTANCE.height // 2
 
     self.daemon = True # to kill app rather than waiting for mouse event
     self.reset()
@@ -95,14 +97,16 @@ class _nixMouse(threading.Thread):
                         ctypes.byref(self.rootx), ctypes.byref(self.rooty),
                         ctypes.byref(self.x),ctypes.byref(self.y),
                         self.mask)
-      return self.x.value, self.y.value
+      return self.x.value - self.x_offset, -self.y.value + self.y_offset
     else:
       with self.lock:
         return self._x, self._y
 
   def velocity(self):
     with self.lock:
-      return self._dx, self._dy
+      dx, dy = self._dx, self._dy
+      self._dx, self._dy = 0, 0 # need resetting after a read as no event will do this
+      return dx, dy
 
   def button_status(self):
     '''return the button status - use events system for capturing button
@@ -209,8 +213,8 @@ class _pygameMouse(object):
       if self.restrict:
         self._dx = x - self._x
         self._dy = -y - self._y # swap to +ve upwards
-        self._x = x
-        self._y = -y
+        self._x = x - self.centre[0]
+        self._y = -y + self.centre[1]
       else:
         self._dx = x - self.centre[0]
         self._dy = self.centre[1] - y # swap to +ve upwards
@@ -231,11 +235,15 @@ class _pygameMouse(object):
 
   def velocity(self):
     self._check_event()
-    return self._dx, self._dy
+    dx, dy = self._dx, self._dy
+    self._dx, self._dy = 0, 0 # need resetting after a read as no event will do this
+    return dx, dy
     
   def button_status(self):
     self._check_event()
-    return self._buttons
+    b_val = self._buttons
+    self._buttons = _pygameMouse.BUTTON_UP
+    return b_val
 
   def stop(self):
     pass

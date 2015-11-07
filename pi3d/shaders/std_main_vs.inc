@@ -9,26 +9,22 @@
     lightVector = vec3(relPosn) - unif[8];
     lightFactor = pow(length(lightVector), -2.0);
     lightVector = normalize(lightVector);
+    lightVector.z *= -1.0;
   } else {                                  // this is directional light
     lightVector = normalize(unif[8]);
     lightFactor = 1.0;
   }
   lightVector.z *= -1.0;
+  // uvec, vvec are tangent and bitangent vectors at the vertex approx
+  // lining up with the uv texture mapping. Because (0, 1, 0) is such a
+  // common normal direction uvec is generated using just off vertical
+  vec3 uvec = normalize(cross(normal, vec3(0.0003, -1.0, 0.0003)));
+  vec3 vvec = normalize(cross(uvec, normal));
   normout = normalize(vec3(modelviewmatrix[0] * vec4(normal, 0.0)));   
-  vec3 bnorm = vec3(0.0, 0.0, 1.0); // ----- normal to original bump map sheet
-  float c = dot(bnorm, normout); // ----- cosine
-  float t = 1.0 - c;
-  vec3 a = cross(bnorm, normout); // ----- axis
-  float s = length(a); // ----- sine (depends on bnorm and normout being unit vectors)
-  if (s > 0.0) a = normalize(a);
-  // ----- vector mult for rotation about axis. This rather messy process is
-  // done here in the vertex shader to orientate the light vector relative
-  // to the normal map so that a simple dot product can be done with the
-  // bump map value rather than having to rotation in the fragment shader.
-  float txx = t * a.x * a.x, tyy = t * a.y * a.y, tzz = t * a.z * a.z,
-        txy = t * a.x * a.y, txz = t * a.x * a.z, tyz = t * a.y * a.z,
-        xs = a.z * s, ys = a.y * s, zs = a.z * s; // compiler might have noticed this optimisation, but anyway..
-  lightVector = vec3(mat4(txx + c,  txy + zs, txz - ys, 0.0,
-                          txy - zs, tyy + c,  tyz + xs, 0.0,
-                          txz + ys, tyz - xs, tzz + c,  0.0,
-                          0.0,      0.0,      0.0,      1.0) * vec4(lightVector, 0.0));
+  uvec = vec3(modelviewmatrix[0] * vec4(uvec, 0.0));
+  vvec = vec3(modelviewmatrix[0] * vec4(vvec, 0.0));
+
+  lightVector = vec3(mat4(uvec.x, vvec.x, -normout.x, 0.0,
+                          uvec.y, vvec.y, -normout.y, 0.0,
+                          uvec.z, vvec.z, -normout.z, 0.0,
+                          0.0,    0.0,    0.0,        1.0) * vec4(lightVector, 0.0));

@@ -542,8 +542,9 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
     display.width = display.right = display.max_width = display.opengl.width #not available until after create_display
     display.height = display.bottom = display.max_height = display.opengl.height
     display.top = display.bottom = 0
-    display.android.frames_per_second = frames_per_second
-    display.frames_per_second = None #to avoid clash between two systems!
+    if frames_per_second is not None:
+      display.android.frames_per_second = frames_per_second
+      display.frames_per_second = None #to avoid clash between two systems!
     
   display.mouse = None
 

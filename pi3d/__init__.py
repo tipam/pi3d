@@ -60,17 +60,21 @@ from pi3d.sprite.Ball import Ball
 
 from pi3d.util import Log
 from pi3d.util import Utility
-from pi3d.util.Clashtest import Clashtest
-from pi3d.util.String import String
-from pi3d.util.FixedString import FixedString
 
+from pi3d.util.Clashtest import Clashtest
 from pi3d.util.Defocus import Defocus
+from pi3d.util.FixedString import FixedString
 from pi3d.util.Font import Font
 from pi3d.util.Pngfont import Pngfont
+from pi3d.util.PointText import PointText
 from pi3d.util.PostProcess import PostProcess
 from pi3d.util.Screenshot import screenshot
 from pi3d.util.ShadowCaster import ShadowCaster
 from pi3d.util.StereoCam import StereoCam
+from pi3d.util.String import String
+from pi3d.util.TextBlock import TextBlock
+from pi3d.util.TextBlock import TextBlockColour
+from pi3d.util.TextBlock import TextBlockColourGradient
 
 from pi3d.util.Gui import Button
 from pi3d.util.Gui import Gui

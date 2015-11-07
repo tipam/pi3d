@@ -95,6 +95,70 @@ class Camera(DefaultInstance):
     self.rotate(tilt, rot, 0)
     return tilt, rot
 
+  def get_direction(self):
+    """ returns the direction that the Camera is pointing as a numpy unit
+    vector [x,y,z] this can be used directly for positioning the view
+    position without resorting to trig functions. Also see relocate()
+    """
+    return self.mtrx[0:3,3]
+
+  def relocate(self, rot=None, tilt=None, point=np.array([0.0, 0.0, 0.0]),
+                distance=np.array([0.0, 0.0, 0.0]), normal=None,
+                slope_factor=0.5, crab=False):
+    """ A convenience function for frequently used Camera animation steps.
+    The camera is reset and the rotation and tilt are applied. If a normal
+    is not supplied the camera is positioned using the distance and point
+    vectors. If there is a normal then the camera is moved to the point
+    and the new position relative to this is returned. This behaviour
+    allows the y coordinate to be subsequently adjusted (in the calling
+    program) using ElevationMap.calcHeight()
+
+    The normal vector is also used in conjunction with the slope_factor
+    to determine an adjustment to the distance moved each frame.
+
+      *rot*
+        absolute y rotation of the Camera
+
+      *tilt*
+        x rotation
+
+      *point*
+        3D vector to move relative to (or to if normal is None)
+
+      *distance*
+        3D vector from point to Camera
+
+      *normal*
+        3D vector normal to surface at point
+
+      *slope_factor*
+        effect of normal vector on movement
+
+      *crab*
+        if True then distance is horizontally at right angles to direction
+        that the Camera is pointing
+    """
+    self.reset()
+    if tilt is not None:
+      self.rotateX(tilt)
+    if rot is not None:
+      self.rotateY(rot)
+
+    direction = self.mtrx[0:3,3]
+    if crab:
+      direction = np.cross(direction, [0.0, 1.0, 0.0]) # horizontal sideways
+    if normal is None: # move the camera to new location now
+      new_point = direction * distance + point
+      self.position(new_point)
+      return new_point
+    else: # move the camera to old position but return new position (for height adjustment)
+      self.position(point)
+      # resultant in x,z plane
+      netf = np.dot(direction[[0,2]], (normal[[0,2]] * slope_factor))
+      if netf > -1.0:
+        return direction * distance * (1.0 + netf) + point
+    return point # otherwise don't move!
+
   def position(self, pt):
     """position camera
 

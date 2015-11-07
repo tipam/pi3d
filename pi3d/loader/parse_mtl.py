@@ -32,7 +32,7 @@ class Materials(object):
     'map_Ka': Prop('mapAmbient', str_f),
     'map_Kd': Prop('mapDiffuse', str_f),
     'map_Ks': Prop('mapSpecular', str_f),
-    'map_bump': Prop('mapBump', str_f),
+    'map_Bump': Prop('mapBump', str_f),
     'map_d': Prop('mapAlpha', str_f),
     }
 

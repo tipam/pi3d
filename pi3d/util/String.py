@@ -94,7 +94,7 @@ class String(Shape):
       glyph = font.glyph_table.get(c, default)
       if not glyph:
         continue
-      w, h, texc, verts = glyph
+      w, h, texc, verts = glyph[0:4]
       for j in verts:
         temp_verts.append((j[0]+xoff, j[1], j[2]))
       xoff += w

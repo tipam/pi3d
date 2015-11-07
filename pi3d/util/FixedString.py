@@ -62,8 +62,8 @@ class FixedString(Texture):
       draw. default None
       
     *f_type*:
-      filter type. BUMP will generate a normal map, EMBOSS, CONTOUR, BLUR
-      and SMOOTH do what they sound like they will do.
+      filter type. BUMP will generate a normal map (indented), EMBOSS,
+      CONTOUR, BLUR and SMOOTH do what they sound like they will do.
     """
     super(FixedString, self).__init__(font, mipmap=mipmap)
     self.font = font
@@ -149,6 +149,9 @@ class FixedString(Texture):
     self.sprite.draw(shader, txtrs, ntl, shny, camera, mlist)
     
   def make_bump_map(self):
+    """ essentially just blurs the image then allocates R or G values
+    according to the rate of change of grayscale in x and y directions
+    """
     import numpy as np
     a = np.array(self.im, dtype=np.uint8)
     a = np.average(a, axis=2, weights=[1.0, 1.0, 1.0, 0.0]).astype(int)
@@ -161,12 +164,12 @@ class FixedString(Texture):
     steps = [i - 2 for i in range(5)]
     for i, istep in enumerate(steps):
       for j, jstep in enumerate(steps):
-        c += np.roll(np.roll(a, istep, 0), jstep, 1) * b[i][j]
+        c += (np.roll(np.roll(a, istep, 0), jstep, 1) * b[i][j]).astype(np.uint8)
     cx = np.roll(c, 1, 0)
     cy = np.roll(c, 1, 1)
     d = np.zeros((a.shape[0], a.shape[1], 4), dtype=np.uint8)
-    d[:, :, 0] = ((cy - c) + 127).astype(int)
-    d[:, :, 1] = ((cx - c) + 127).astype(int)
+    d[:, :, 0] = ((c - cy) + 127).astype(int)
+    d[:, :, 1] = ((c - cx) + 127).astype(int)
     d[:, :, 2] = (np.clip((65025 - (127 - d[:, :, 0]) ** 2 - (127 - d[:, :, 1]) ** 2) ** 0.5, 0, 255)).astype(int)
     d[:, :, 3] = 255
     return Image.fromarray(d)
