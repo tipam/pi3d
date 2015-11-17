@@ -19,7 +19,10 @@ which really just does this:
   import sys
   sys.append('/home/pi/pi3d')
 """
-from distutils.core import setup
+try:
+    from setuptools.commands import setup
+except ImportError:
+    from distutils.core import setup
 from os import listdir
 
 setup(name='pi3d',
