@@ -74,6 +74,8 @@ pi3d/shaders/uv_flat.fs
 pi3d/shaders/uv_flat.vs
 pi3d/shaders/uv_light.fs
 pi3d/shaders/uv_light.vs
+pi3d/shaders/uv_pointsprite.fs
+pi3d/shaders/uv_pointsprite.vs
 pi3d/shaders/uv_reflect.fs
 pi3d/shaders/uv_reflect.vs
 pi3d/shaders/uv_toon.fs
@@ -120,6 +122,7 @@ pi3d/util/Loadable.py
 pi3d/util/Log.py
 pi3d/util/OffScreenTexture.py
 pi3d/util/Pngfont.py
+pi3d/util/PointText.py
 pi3d/util/PostProcess.py
 pi3d/util/RotateVec.py
 pi3d/util/Scenery.py
@@ -127,6 +130,7 @@ pi3d/util/Screenshot.py
 pi3d/util/ShadowCaster.py
 pi3d/util/StereoCam.py
 pi3d/util/String.py
+pi3d/util/TextBlock.py
 pi3d/util/TkWin.py
 pi3d/util/Utility.py
 pi3d/util/__init__.py

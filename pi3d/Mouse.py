@@ -123,10 +123,10 @@ class _nixMouse(threading.Thread):
   def _check_event(self):
     if len(self.buffr) >= 3:
       buttons = [ord(c) for c in self.buffr]
-      if buttons[1] == 0 and buttons[2] == 0:
+      if buttons[0] in [8, 9, 10, 12]:
         self._buttons = buttons[0]
-      else:
-        self._buttons = 0
+      #else:
+      #  self._buttons = 0
       buttons = buttons[0]
       self.buffr = self.buffr[1:]
       if (buttons & _nixMouse.HEADER) > 0:
@@ -223,10 +223,12 @@ class _pygameMouse(object):
         pygame.mouse.set_pos(self.centre)
     but_list = pygame.event.get(pygame.MOUSEBUTTONDOWN)
     if len(but_list) > 0:
+      print("down ", but_list)
       self._buttons = _pygameMouse.BUTTON_MAP[but_list[-1].button] # discard all but last button
     else:  
       but_list = pygame.event.get(pygame.MOUSEBUTTONUP)
       if len(but_list) > 0:
+        print("up ", but_list)
         self._buttons = _pygameMouse.BUTTON_UP
 
   def position(self):
@@ -242,7 +244,7 @@ class _pygameMouse(object):
   def button_status(self):
     self._check_event()
     b_val = self._buttons
-    self._buttons = _pygameMouse.BUTTON_UP
+    #self._buttons = _pygameMouse.BUTTON_UP
     return b_val
 
   def stop(self):
