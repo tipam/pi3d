@@ -90,7 +90,7 @@ class Camera(DefaultInstance):
       return
     dx, dy, dz = target[0] - self.eye[0], target[1] - self.eye[1], target[2] - self.eye[2]
     rot = -degrees(atan2(dx, dz))
-    horiz = sqrt(np.dot([dx,dz], [dx, dz]))
+    horiz = (dx * dx + dz * dz) ** 0.5
     tilt = degrees(atan2(dy, horiz))
     self.rotate(tilt, rot, 0)
     return tilt, rot

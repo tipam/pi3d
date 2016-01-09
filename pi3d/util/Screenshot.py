@@ -22,11 +22,11 @@ def screenshot(filestring):
   LOGGER.info('Taking screenshot of "%s"', filestring)
 
   w, h = Display.INSTANCE.width, Display.INSTANCE.height
-  size = h * w * 3
+  size = h * w * 4
   img = (ctypes.c_char * size)()
-  opengles.glReadPixels(0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE, ctypes.byref(img))
+  opengles.glReadPixels(0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, ctypes.byref(img))
 
-  im = Image.frombuffer('RGB', (w, h), img, 'raw', 'RGB', 0, 1)
+  im = Image.frombuffer('RGBA', (w, h), img, 'raw', 'RGBA', 0, 1)
   im = im.transpose(Image.FLIP_TOP_BOTTOM)
   im.save(filestring)
 
