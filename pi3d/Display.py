@@ -402,7 +402,7 @@ class Display(object):
 def create(x=None, y=None, w=None, h=None, near=None, far=None,
            fov=DEFAULT_FOV, depth=DEFAULT_DEPTH, background=None,
            tk=False, window_title='', window_parent=None, mouse=False,
-           frames_per_second=None, samples=DEFAULT_SAMPLES, use_pygame=False):
+           frames_per_second=None, samples=DEFAULT_SAMPLES, use_pygame=False, layer=0):
   """
   Creates a pi3d Display.
 
@@ -442,6 +442,8 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
     To use pygame for display surface, mouse and keyboard - as per windows
     This almost certainly would conflict if attempting to use in combination
     with tk=True. Default False
+  *layer*
+    Dispmanx layer for Raspberry PI. Default 0
   """
   if tk: #NB this happens before Display created so use_pygame will not work on linux
     if pi3d.PLATFORM != pi3d.PLATFORM_PI and pi3d.PLATFORM != pi3d.PLATFORM_ANDROID:
@@ -537,7 +539,7 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
   display.right = x + w
   display.bottom = y + h
 
-  display.opengl.create_display(x, y, w, h, depth=depth, samples=samples)
+  display.opengl.create_display(x, y, w, h, depth=depth, samples=samples, layer=layer)
   if pi3d.PLATFORM == pi3d.PLATFORM_ANDROID:
     display.width = display.right = display.max_width = display.opengl.width #not available until after create_display
     display.height = display.bottom = display.max_height = display.opengl.height
