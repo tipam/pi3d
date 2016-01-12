@@ -41,7 +41,8 @@ class Texture(Loadable):
   384, 512, 576, 640, 720, 768, 800, 960, 1024, 1080, 1920
   """
   def __init__(self, file_string, blend=False, flip=False, size=0,
-               defer=DEFER_TEXTURE_LOADING, mipmap=True, m_repeat=False, free_after_load=False):
+               defer=DEFER_TEXTURE_LOADING, mipmap=True, m_repeat=False,
+               free_after_load=False, i_format=None):
     """
     Arguments:
       *file_string*
@@ -72,6 +73,8 @@ class Texture(Loadable):
         then this can be used to make a non-seamless texture tile
       *free_after_load*
         release image memory after loading it in opengl
+      *i_format*
+        opengl internal format for the texture - see glTexImage2D
     """
     super(Texture, self).__init__()
     try:
@@ -97,6 +100,7 @@ class Texture(Loadable):
     self.m_repeat = GL_MIRRORED_REPEAT if m_repeat else GL_REPEAT
     self.byte_size = 0
     self.free_after_load = free_after_load
+    self.i_format = i_format
     self._loaded = False
     if defer:
       self.load_disk()
@@ -202,7 +206,8 @@ class Texture(Loadable):
       self.image = new_array
     opengles.glBindTexture(GL_TEXTURE_2D, self._tex)
     RGBv = GL_RGBA if self.alpha else GL_RGB
-    opengles.glTexImage2D(GL_TEXTURE_2D, 0, RGBv, self.ix, self.iy, 0, RGBv,
+    iformat = self.i_format if self.i_format else RGBv
+    opengles.glTexImage2D(GL_TEXTURE_2D, 0, iformat, self.ix, self.iy, 0, RGBv,
                           GL_UNSIGNED_BYTE,
                           self.image.ctypes.data_as(ctypes.POINTER(ctypes.c_short)))
     opengles.glEnable(GL_TEXTURE_2D)
