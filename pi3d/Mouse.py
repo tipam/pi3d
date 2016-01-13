@@ -91,6 +91,8 @@ class _nixMouse(threading.Thread):
     self.fd.close()
 
   def position(self):
+    ''' returns x, y tuple
+    '''
     if self.use_x:
       xlib.XQueryPointer(self.d, self.window,
                         ctypes.byref(self.root), ctypes.byref(self.child),
@@ -103,6 +105,8 @@ class _nixMouse(threading.Thread):
         return self._x, self._y
 
   def velocity(self):
+    ''' returns dx, dy tuple of distance moved since last reading
+    '''
     with self.lock:
       dx, dy = self._dx, self._dy
       self._dx, self._dy = 0, 0 # need resetting after a read as no event will do this
@@ -111,11 +115,11 @@ class _nixMouse(threading.Thread):
   def button_status(self):
     '''return the button status - use events system for capturing button
     events more scientifically.
-    in _check_event self.buffr returns the following binary:
-    L-button 00001001 00000000 00000000
-    R-button 00001010 00000000 00000000
-    M-button 00001100 00000000 00000000
-    buttonUp 00001000 00000000 00000000
+    in _check_event self.buffr returns the following values:
+    Mouse.LEFT_BUTTON 9
+    Mouse.RIGHT_BUTTON 10
+    Mouse.MIDDLE_BUTTON 12
+    Mouse.BUTTONUP 8
     '''
     with self.lock:
       return self._buttons
@@ -232,16 +236,28 @@ class _pygameMouse(object):
         self._buttons = _pygameMouse.BUTTON_UP
 
   def position(self):
+    ''' returns x, y tuple
+    '''
     self._check_event()
     return self._x, self._y
 
   def velocity(self):
+    ''' returns dx, dy tuple of distance moved since last reading
+    '''
     self._check_event()
     dx, dy = self._dx, self._dy
     self._dx, self._dy = 0, 0 # need resetting after a read as no event will do this
     return dx, dy
     
   def button_status(self):
+    '''return the button status - use events system for capturing button
+    events more scientifically.
+    in _check_event self.buffr returns the following values:
+    Mouse.LEFT_BUTTON 9
+    Mouse.RIGHT_BUTTON 10
+    Mouse.MIDDLE_BUTTON 12
+    Mouse.BUTTONUP 8
+    '''
     self._check_event()
     b_val = self._buttons
     #self._buttons = _pygameMouse.BUTTON_UP
