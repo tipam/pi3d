@@ -256,7 +256,9 @@ class Texture(Loadable):
       '_loaded': self._loaded,
       'opengl_loaded': False,
       'disk_loaded': self.disk_loaded,
-      'm_repeat': self.m_repeat
+      'm_repeat': self.m_repeat,
+      'i_format': self.i_format,
+      'free_after_load': self.free_after_load
       }
 
 class TextureCache(object):
