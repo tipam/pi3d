@@ -228,6 +228,7 @@ class Texture(Loadable):
                              self.m_repeat)
     if self.free_after_load:
         self.image = None
+        self._loaded = False
 
 
   def _unload_opengl(self):
