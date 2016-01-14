@@ -307,11 +307,10 @@ class Display(object):
     elif pi3d.PLATFORM != pi3d.PLATFORM_PI and pi3d.PLATFORM != pi3d.PLATFORM_ANDROID:
       n = xlib.XEventsQueued(self.opengl.d, xlib.QueuedAfterFlush)
       for i in range(n):
-        if xlib.XCheckMaskEvent(self.opengl.d, KeyPressMask, self.ev):
-          self.event_list.append(self.ev)
-        else:
           xlib.XNextEvent(self.opengl.d, self.ev)
-          if self.ev.type == ClientMessage:
+          if self.ev.type == KeyPress or self.ev.type == KeyRelease:
+              self.event_list.append(self.ev)
+          elif self.ev.type == ClientMessage:
             if (self.ev.xclient.data.l[0] == self.opengl.WM_DELETE_WINDOW.value):
               self.destroy()
     self.clear()
