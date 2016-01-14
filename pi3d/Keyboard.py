@@ -130,10 +130,9 @@ class x11Keyboard(object):
     if self.display is None: #Because DummyTkWin Keyboard instance created before Display!
       from pi3d.Display import Display
       self.display = Display.INSTANCE
-    n = len(self.display.event_list)
-    for i, e in enumerate(self.display.event_list):
-      if e.type == x.KeyPress or e.type == x.KeyRelease: #TODO not sure why KeyRelease needed!
-        self.display.event_list.pop(i)
+    while len(self.display.event_list) > 0:
+      e = self.display.event_list.pop(0)
+      if e.type == x.KeyPress:
         self.key_num = self.KEYBOARD[e.xkey.keycode][0]
         self.key_code = self.KEYBOARD[e.xkey.keycode][1]
         return True
@@ -248,4 +247,3 @@ def Keyboard(use_curses=USE_CURSES):
     return x11Keyboard()
   else:
     return CursesKeyboard() if use_curses else SysKeyboard()
-

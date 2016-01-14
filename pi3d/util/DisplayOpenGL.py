@@ -163,7 +163,7 @@ class DisplayOpenGL(object):
       #                                min_width = 20,
       #                                min_height = 20)
 
-      xlib.XSelectInput(self.d, self.window, KeyPressMask)
+      xlib.XSelectInput(self.d, self.window, KeyPressMask | KeyReleaseMask)
       xlib.XMapWindow(self.d, self.window)
       self.surface = openegl.eglCreateWindowSurface(self.display, self.config, self.window, 0)
 
