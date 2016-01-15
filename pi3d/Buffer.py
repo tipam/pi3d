@@ -161,7 +161,7 @@ class Buffer(Loadable):
     self._select()
     opengles.glBufferSubData(GL_ARRAY_BUFFER, 0,
                       self.array_buffer.nbytes,
-                      self.array_buffer.ctypes.data)
+                      self.array_buffer.ctypes.data_as(ctypes.POINTER(ctypes.c_float)))
 
 
   def _load_opengl(self):
@@ -174,11 +174,11 @@ class Buffer(Loadable):
     self._select()
     opengles.glBufferData(GL_ARRAY_BUFFER,
                           self.array_buffer.nbytes,
-                          self.array_buffer.ctypes.data,
+                          self.array_buffer.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
                           GL_STATIC_DRAW)
     opengles.glBufferData(GL_ELEMENT_ARRAY_BUFFER,
                           self.element_array_buffer.nbytes,
-                          self.element_array_buffer.ctypes.data,
+                          self.element_array_buffer.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
                           GL_STATIC_DRAW)
 
 
