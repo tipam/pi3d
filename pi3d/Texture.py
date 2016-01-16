@@ -41,7 +41,8 @@ class Texture(Loadable):
   384, 512, 576, 640, 720, 768, 800, 960, 1024, 1080, 1920
   """
   def __init__(self, file_string, blend=False, flip=False, size=0,
-               defer=DEFER_TEXTURE_LOADING, mipmap=True, m_repeat=False):
+               defer=DEFER_TEXTURE_LOADING, mipmap=True, m_repeat=False,
+               free_after_load=False, i_format=None):
     """
     Arguments:
       *file_string*
@@ -70,6 +71,10 @@ class Texture(Loadable):
       *m_repeat*
         if the texture is repeated (see umult and vmult in Shape.set_draw_details)
         then this can be used to make a non-seamless texture tile
+      *free_after_load*
+        release image memory after loading it in opengl
+      *i_format*
+        opengl internal format for the texture - see glTexImage2D
     """
     super(Texture, self).__init__()
     try:
@@ -94,6 +99,8 @@ class Texture(Loadable):
     self.mipmap = mipmap
     self.m_repeat = GL_MIRRORED_REPEAT if m_repeat else GL_REPEAT
     self.byte_size = 0
+    self.free_after_load = free_after_load
+    self.i_format = i_format
     self._loaded = False
     if defer:
       self.load_disk()
@@ -199,7 +206,8 @@ class Texture(Loadable):
       self.image = new_array
     opengles.glBindTexture(GL_TEXTURE_2D, self._tex)
     RGBv = GL_RGBA if self.alpha else GL_RGB
-    opengles.glTexImage2D(GL_TEXTURE_2D, 0, RGBv, self.ix, self.iy, 0, RGBv,
+    iformat = self.i_format if self.i_format else RGBv
+    opengles.glTexImage2D(GL_TEXTURE_2D, 0, iformat, self.ix, self.iy, 0, RGBv,
                           GL_UNSIGNED_BYTE,
                           self.image.ctypes.data_as(ctypes.POINTER(ctypes.c_short)))
     opengles.glEnable(GL_TEXTURE_2D)
@@ -218,6 +226,9 @@ class Texture(Loadable):
                              self.m_repeat)
     opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,
                              self.m_repeat)
+    if self.free_after_load:
+        self.image = None
+        self._loaded = False
 
 
   def _unload_opengl(self):
@@ -245,7 +256,9 @@ class Texture(Loadable):
       '_loaded': self._loaded,
       'opengl_loaded': False,
       'disk_loaded': self.disk_loaded,
-      'm_repeat': self.m_repeat
+      'm_repeat': self.m_repeat,
+      'i_format': self.i_format,
+      'free_after_load': self.free_after_load
       }
 
 class TextureCache(object):

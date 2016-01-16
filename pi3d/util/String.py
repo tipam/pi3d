@@ -145,5 +145,5 @@ class String(Shape):
       self.buf[0]._select() #then just call glBufferData
       opengles.glBufferSubData(GL_ARRAY_BUFFER, 0,
                         self.buf[0].array_buffer.nbytes,
-                        self.buf[0].array_buffer.ctypes.data)
+                        self.buf[0].array_buffer.ctypes.data_as(ctypes.POINTER(ctypes.c_float)))
       self.string = new_string

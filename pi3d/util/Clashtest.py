@@ -1,4 +1,5 @@
 import ctypes
+import numpy as np
 
 from six.moves import xrange
 
@@ -18,9 +19,8 @@ class Clashtest(OffScreenTexture):
     # load clashtest shader
     self.shader = Shader("clashtest")
 
-    self.img = (ctypes.c_char * (self.ix * 3))()
-    self.step = 3 * int(self.ix / 50)
-    self.img_sz = len(self.img)-3
+    self.img = np.zeros((self.ix, 4), dtype=np.uint8)
+    self.step = int(self.ix / 100)
     self.s_flg = False
     self.y0 = int(self.iy / 2)
 
@@ -45,15 +45,19 @@ class Clashtest(OffScreenTexture):
     Keyword argument:
       *grain*
         Number of locations to check over the whole image
+        NB this is no longer used - there are fixed 100 checks across the
+        full width at the mid y position. This self.setp value is set in
+        __init__()
     """
     opengles.glDisable(GL_SCISSOR_TEST)
     self.s_flg = False
+    img = self.img # alias to make code a bit less bulky!
     opengles.glReadPixels(0, self.y0, self.ix, 1,
-                               GL_RGB, GL_UNSIGNED_BYTE,
-                               ctypes.byref(self.img))
-    r0 = self.img[0:3]
-    for i in xrange(0, self.img_sz, self.step):
-      if self.img[i:(i+3)] != r0:
-        return True
+                          GL_RGBA, GL_UNSIGNED_BYTE,
+                          img.ctypes.data_as(ctypes.POINTER(ctypes.c_short)))
 
+    if  (np.any(img[::self.step,0] != img[0,0]) or 
+         np.any(img[::self.step,1] != img[0,1]) or 
+         np.any(img[::self.step,2] != img[0,2])):
+      return True
     return False

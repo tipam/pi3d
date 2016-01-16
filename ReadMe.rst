@@ -6,6 +6,9 @@ Introduction to pi3d
 
 **pi3d written by Tim Skillman, Paddy Gaunt, Tom Ritchford Copyright (c) 2015**
 
+Here is a link to an excellent, self explanatory `YouTube`_ video made by 
+Peter Farrell that covers much of the content of this ReadMe.
+
 There's plenty of 3D code flying around at the moment for the Raspberry Pi,
 but much of it is rather complicated to understand and most of it can sit
 under the bonnet!
@@ -549,6 +552,7 @@ is going on.
 .. _`FAQ`: FAQ.html
 .. _`3D Graphics Explanation`: GPUexplain.html
 .. _Android: AndroidUse.html
+.. _YouTube: https://youtu.be/gXTU6x8dQJw
 
 
 Documentation
@@ -570,8 +574,9 @@ pi3d started with code based on Peter de Rivaz 'pyopengles'
 code (jonmacey.blogspot.co.uk/2012/06/).
 
 Many Thanks, especially to Peter de Rivaz, Jon Macey, Richar Urwin, Peter Hess,
-David Wallin, Avishay Orpaz (avishorp), Guenter Kreidl, Benjamin Denozière
-and others who have contributed to pi3d - keep up the good work!
+David Wallin, Avishay Orpaz (avishorp), Guenter Kreidl, Benjamin Denozière,
+Matthew Coleman, Piotr Bednarski, @swehner and others who have contributed 
+to pi3d - keep up the good work!
 
 
 **PLEASE READ LICENSING AND COPYRIGHT NOTICES ESPECIALLY IF USING FOR COMMERCIAL PURPOSES**

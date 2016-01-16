@@ -43,7 +43,7 @@ class DisplayOpenGL(object):
       self.screen = xlib.XDefaultScreenOfDisplay(self.d)
       self.width, self.height = xlib.XWidthOfScreen(self.screen), xlib.XHeightOfScreen(self.screen)
 
-  def create_display(self, x=0, y=0, w=0, h=0, depth=24, samples=4):
+  def create_display(self, x=0, y=0, w=0, h=0, depth=24, samples=4, layer=0):
     self.display = openegl.eglGetDisplay(EGL_DEFAULT_DISPLAY)
     assert self.display != EGL_NO_DISPLAY
 
@@ -71,7 +71,7 @@ class DisplayOpenGL(object):
                                             EGL_NO_CONTEXT, ctypes.byref(context_attribs) )
     assert self.context != EGL_NO_CONTEXT
 
-    self.create_surface(x, y, w, h)
+    self.create_surface(x, y, w, h, layer)
 
     opengles.glDepthRangef(c_float(0.0), c_float(1.0))
     opengles.glClearColor (c_float(0.3), c_float(0.3), c_float(0.7), c_float(1.0))
@@ -95,7 +95,7 @@ class DisplayOpenGL(object):
     #opengles.glEnableClientState(GL_NORMAL_ARRAY)
     self.active = True
 
-  def create_surface(self, x=0, y=0, w=0, h=0):
+  def create_surface(self, x=0, y=0, w=0, h=0, layer=0):
     #Set the viewport position and size
     dst_rect = c_ints((x, y, w, h))
     src_rect = c_ints((x, y, w << 16, h << 16))
@@ -115,7 +115,7 @@ class DisplayOpenGL(object):
       self.dispman_element = bcm.vc_dispmanx_element_add(
         self.dispman_update,
         self.dispman_display,
-        0, ctypes.byref(dst_rect),
+        layer, ctypes.byref(dst_rect),
         0, ctypes.byref(src_rect),
         DISPMANX_PROTECTION_NONE,
         0, 0, 0)
@@ -163,7 +163,7 @@ class DisplayOpenGL(object):
       #                                min_width = 20,
       #                                min_height = 20)
 
-      xlib.XSelectInput(self.d, self.window, KeyPressMask)
+      xlib.XSelectInput(self.d, self.window, KeyPressMask | KeyReleaseMask)
       xlib.XMapWindow(self.d, self.window)
       self.surface = openegl.eglCreateWindowSurface(self.display, self.config, self.window, 0)
 
