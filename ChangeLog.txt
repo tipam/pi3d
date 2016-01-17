@@ -4,6 +4,28 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
+v2.9
+2016-01-16  Bug fixes: glReadPixels fixed on linux and windows so Screenshot 
+            and ClashTest work. glBufferData ctypes pointer fixed explicitly 
+            to c_float allows large buffers to work.
+            Improvements: Optionally use setuptools, Mouse button more useful.
+            Options to free numpy array after image loaded, to use different 
+            dispmanx layers and use different texture formats (apart from 
+            GL_RGB and GL_RGBA), xbox event structure fix, X11 keyboard 
+            release events stored.
+
+v2.8
+2015-11-07  some overdue, significant improvements to the way the light 
+            vector is mapped to the plane of the tangent and cotangent vectors. 
+            (needed for normal map effect). fixes to the Mouse and Keyboard 
+            classes to make behaviour more similar across platforms Matt's 
+            FastText and TextBlock classes and the uv_pointsprite shader
+            mods to the Font class so it can work either with the FastTest 
+            or String classes following Peter Farrell's suggestion, a method 
+            in Camera that does the reset() rotate() and position() and 
+            returns the new location for a Camera moving over an ElevationMap 
+            taking into account surface steepness.
+
 v2.7
 2015-08-14  Much improved shadow casting using depth mapping to OffScreenTexture.
             Shape.lathe() patched so normal on first leg of path realistic,
