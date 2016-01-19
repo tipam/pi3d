@@ -226,7 +226,7 @@ class Texture(Loadable):
     iformat = self.__get_format_from_array(self.image, self.i_format)
     opengles.glTexImage2D(GL_TEXTURE_2D, 0, iformat, self.ix, self.iy, 0, iformat,
                           GL_UNSIGNED_BYTE,
-                          self.image.ctypes.data_as(ctypes.POINTER(ctypes.c_short)))
+                          self.image.ctypes.data_as(ctypes.POINTER(ctypes.c_ubyte)))
     opengles.glEnable(GL_TEXTURE_2D)
     if self.mipmap:
       opengles.glGenerateMipmap(GL_TEXTURE_2D)
