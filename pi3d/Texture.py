@@ -122,6 +122,27 @@ class Texture(Loadable):
     self.load_opengl()
     return self._tex
 
+  def __get_format_from_array(self, arr, req_format):
+    channels = arr.shape[2] if len(arr.shape) == 3 else 1
+    if req_format == GL_ALPHA:
+      #if channels != 1 raise
+      return GL_ALPHA
+
+    modes = [GL_LUMINANCE, GL_LUMINANCE_ALPHA, GL_RGB, GL_RGBA]
+    return modes[channels - 1]
+
+  def __img_to_array(self, im):
+    if im.mode == 'LA':
+      # convert LA image to array doesn't work
+      # convert to rgba and strip rg channel - seems to be the fastest way to get the image in a numpy format
+      rgba = im.convert('RGBA')
+      arr = np.array(rgba)
+      arr = np.delete(arr, np.s_[0:2], 2)
+    else:
+      arr = np.array(im)
+
+    return arr
+
   def _load_disk(self):
     """overrides method of Loadable
     Pngfont, Font, Defocus and ShadowCaster inherit from Texture but
@@ -177,11 +198,8 @@ class Texture(Loadable):
     if self.flip:
       im = im.transpose(Image.FLIP_TOP_BOTTOM)
 
-    RGBs = 'RGBA' if self.alpha else 'RGB'
-    if im.mode != RGBs:
-      im = im.convert(RGBs)
     #self.image = im.tostring('raw', RGBs) # TODO change to tobytes WHEN Pillow is default PIL in debian (jessie becomes current)
-    self.image = np.array(im)
+    self.image = self.__img_to_array(im)
     self._tex = ctypes.c_int()
     if self.string_type == FILE and 'fonts/' in self.file_string:
       self.im = im
@@ -205,9 +223,8 @@ class Texture(Loadable):
     if new_array is not None:
       self.image = new_array
     opengles.glBindTexture(GL_TEXTURE_2D, self._tex)
-    RGBv = GL_RGBA if self.alpha else GL_RGB
-    iformat = self.i_format if self.i_format else RGBv
-    opengles.glTexImage2D(GL_TEXTURE_2D, 0, iformat, self.ix, self.iy, 0, RGBv,
+    iformat = self.__get_format_from_array(self.image, self.i_format)
+    opengles.glTexImage2D(GL_TEXTURE_2D, 0, iformat, self.ix, self.iy, 0, iformat,
                           GL_UNSIGNED_BYTE,
                           self.image.ctypes.data_as(ctypes.POINTER(ctypes.c_short)))
     opengles.glEnable(GL_TEXTURE_2D)
