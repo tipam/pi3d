@@ -223,13 +223,7 @@ class Texture(Loadable):
     if new_array is not None:
       self.image = new_array
     opengles.glBindTexture(GL_TEXTURE_2D, self._tex)
-    iformat = self.__get_format_from_array(self.image, self.i_format)
-    opengles.glTexImage2D(GL_TEXTURE_2D, 0, iformat, self.ix, self.iy, 0, iformat,
-                          GL_UNSIGNED_BYTE,
-                          self.image.ctypes.data_as(ctypes.POINTER(ctypes.c_ubyte)))
-    opengles.glEnable(GL_TEXTURE_2D)
     if self.mipmap:
-      opengles.glGenerateMipmap(GL_TEXTURE_2D)
       opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
                                GL_LINEAR_MIPMAP_NEAREST)
       opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
@@ -239,6 +233,15 @@ class Texture(Loadable):
                                GL_NEAREST)
       opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
                                GL_NEAREST)
+
+    iformat = self.__get_format_from_array(self.image, self.i_format)
+    opengles.glTexImage2D(GL_TEXTURE_2D, 0, iformat, self.ix, self.iy, 0, iformat,
+                          GL_UNSIGNED_BYTE,
+                          self.image.ctypes.data_as(ctypes.POINTER(ctypes.c_ubyte)))
+    opengles.glEnable(GL_TEXTURE_2D)
+    if self.mipmap:
+      opengles.glGenerateMipmap(GL_TEXTURE_2D)
+
     opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,
                              self.m_repeat)
     opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,
