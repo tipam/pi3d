@@ -20,6 +20,11 @@ WIDTHS = [4, 8, 16, 32, 48, 64, 72, 96, 128, 144, 192, 256,
 FILE = 0
 PIL_IMAGE = 1
 NUMPY = 2
+FORMAT_MODES = {GL_ALPHA: 'L',
+                GL_LUMINANCE: 'L',
+                GL_LUMINANCE_ALPHA: 'LA',
+                GL_RGB: 'RGB',
+                GL_RGBA: 'RGBA'}
 
 def round_up_to_power_of_2(x):
   p = 1
@@ -122,22 +127,35 @@ class Texture(Loadable):
     self.load_opengl()
     return self._tex
 
-  def __get_format_from_array(self, arr, req_format):
-    channels = arr.shape[2] if len(arr.shape) == 3 else 1
+  def _get_format_from_array(self, arr, req_format):
+    """get GL format depending on channels in array. doesn't verify if #channels
+    is consistent with the GL format"""
+    channels = min(arr.shape[2], 4) if len(arr.shape) == 3 else 1
     if req_format == GL_ALPHA:
-      #if channels != 1 raise
       return GL_ALPHA
 
     modes = [GL_LUMINANCE, GL_LUMINANCE_ALPHA, GL_RGB, GL_RGBA]
     return modes[channels - 1]
 
-  def __img_to_array(self, im):
+  def _img_to_array(self, im):
+    """convert image to numpy.array.
+    if i_format is specified and the image isn't in an adequate format, convert image.
+    if no i_format is specified, choose the most adequate OpenGL format depending
+    on image mode."""
+    if self.i_format:
+      # if format is specified, convert the image accordingly
+      expected_mode = FORMAT_MODES[self.i_format]
+      if im.mode != expected_mode and self.i_format != GL_LUMINANCE_ALPHA:
+        im = im.convert(expected_mode)
+    elif im.mode not in ['RGBA', 'RGB', 'LA', 'L']:
+        # other image types are converted to rgba
+        im = im.convert('RGBA')
+
     if im.mode == 'LA':
-      # convert LA image to array doesn't work
-      # convert to rgba and strip rg channel - seems to be the fastest way to get the image in a numpy format
+      # convert LA image to array directly doesn't work
+      # convert to rgba and strip rg channel - seems to be the fastest way
       rgba = im.convert('RGBA')
-      arr = np.array(rgba)
-      arr = np.delete(arr, np.s_[0:2], 2)
+      arr = np.array(np.array(rgba)[:,:,2:4])
     else:
       arr = np.array(im)
 
@@ -199,7 +217,7 @@ class Texture(Loadable):
       im = im.transpose(Image.FLIP_TOP_BOTTOM)
 
     #self.image = im.tostring('raw', RGBs) # TODO change to tobytes WHEN Pillow is default PIL in debian (jessie becomes current)
-    self.image = self.__img_to_array(im)
+    self.image = self._img_to_array(im)
     self._tex = ctypes.c_int()
     if self.string_type == FILE and 'fonts/' in self.file_string:
       self.im = im
@@ -234,7 +252,7 @@ class Texture(Loadable):
       opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
                                GL_NEAREST)
 
-    iformat = self.__get_format_from_array(self.image, self.i_format)
+    iformat = self._get_format_from_array(self.image, self.i_format)
     opengles.glTexImage2D(GL_TEXTURE_2D, 0, iformat, self.ix, self.iy, 0, iformat,
                           GL_UNSIGNED_BYTE,
                           self.image.ctypes.data_as(ctypes.POINTER(ctypes.c_ubyte)))
