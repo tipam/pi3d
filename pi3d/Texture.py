@@ -47,7 +47,7 @@ class Texture(Loadable):
   """
   def __init__(self, file_string, blend=False, flip=False, size=0,
                defer=DEFER_TEXTURE_LOADING, mipmap=True, m_repeat=False,
-               free_after_load=False, i_format=None):
+               free_after_load=False, i_format=None, filter=None):
     """
     Arguments:
       *file_string*
@@ -67,9 +67,10 @@ class Texture(Loadable):
         can load from file in other thread and defer opengl work until
         texture needed, default True
       *mipmap*
-        use linear interpolation for mipmaps, if set False then nearest
-        pixel values will be used. This is needed for exact pixel represent-
-        ation of images. **NB BECAUSE THIS BEHAVIOUR IS SET GLOBALLY AT
+        create and use mipmaps for this texture
+        (if true - linear interpolation will be used by default, else nearest interpolation).
+        see filter to control this behavior
+        **NB BECAUSE THIS BEHAVIOUR IS SET GLOBALLY AT
         THE TIME THAT THE TEXTURE IS LOADED IT WILL BE SET BY THE LAST
         TEXTURE TO BE LOADED PRIOR TO DRAWING**
         TODO possibly reset in Buffer.draw() each time a texture is loaded?
@@ -80,6 +81,10 @@ class Texture(Loadable):
         release image memory after loading it in opengl
       *i_format*
         opengl internal format for the texture - see glTexImage2D
+      *filter*
+        interpolation to use for for textures: GL_NEAREST or GL_LINEAR.
+        if mipmap is true: NEAREST_MIPMAP_NEAREST or LINEAR_MIPMAP_NEAREST (default) will be used as minfilter 
+        if mipmap is false: NEAREST (default) or LINEAR will be used as filter 
     """
     super(Texture, self).__init__()
     try:
@@ -106,6 +111,7 @@ class Texture(Loadable):
     self.byte_size = 0
     self.free_after_load = free_after_load
     self.i_format = i_format
+    self.filter = filter
     self._loaded = False
     if defer:
       self.load_disk()
@@ -235,22 +241,27 @@ class Texture(Loadable):
       Display.INSTANCE.textures_dict[str(self._tex)] = [self._tex, 0]
     self.update_ndarray()
 
+  def _get_filter(self, t):
+    f = self.filter
+    if f is None:
+      # default for mipmap is linear
+      f = GL_LINEAR if self.mipmap else GL_NEAREST
+
+    if t == GL_TEXTURE_MIN_FILTER and self.mipmap:
+      # use mipmaps for min filter if requested requested
+      f = GL_LINEAR_MIPMAP_NEAREST if f == GL_LINEAR else GL_NEAREST_MIPMAP_NEAREST
+
+    return f
+
   def update_ndarray(self, new_array=None):
     """to allow numpy arrays to be patched in to textures without regenerating
     new glTextureBuffers i.e. for movie textures"""
     if new_array is not None:
       self.image = new_array
     opengles.glBindTexture(GL_TEXTURE_2D, self._tex)
-    if self.mipmap:
-      opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-                               GL_LINEAR_MIPMAP_NEAREST)
-      opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
-                               GL_LINEAR)
-    else:
-      opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-                               GL_NEAREST)
-      opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
-                               GL_NEAREST)
+    # set filters according to mipmap and filter request
+    for t in [GL_TEXTURE_MIN_FILTER, GL_TEXTURE_MAG_FILTER]:
+      opengles.glTexParameteri(GL_TEXTURE_2D, t, self._get_filter(t))
 
     iformat = self._get_format_from_array(self.image, self.i_format)
     opengles.glTexImage2D(GL_TEXTURE_2D, 0, iformat, self.ix, self.iy, 0, iformat,
@@ -296,7 +307,8 @@ class Texture(Loadable):
       'disk_loaded': self.disk_loaded,
       'm_repeat': self.m_repeat,
       'i_format': self.i_format,
-      'free_after_load': self.free_after_load
+      'free_after_load': self.free_after_load,
+      'filter': self.filter
       }
 
 class TextureCache(object):
