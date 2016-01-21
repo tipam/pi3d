@@ -80,7 +80,6 @@ void main(void) {{
         self.sprites[i].set_offset((i * 0.5 - 0.25, 0.0))
       else:
         self.sprites[i].set_2d_size(w=ix, h=iy)
-      self.textures[i].alpha = False
       self.textures[i].blend = True
       self.textures[i].mipmap = mipmap
       self.tex_list.append(self.textures[i])

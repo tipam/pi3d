@@ -161,7 +161,7 @@ class Texture(Loadable):
       # convert LA image to array directly doesn't work
       # convert to rgba and strip rg channel - seems to be the fastest way
       rgba = im.convert('RGBA')
-      arr = np.array(np.array(rgba)[:,:,2:4])
+      arr = np.array(rgba)[:,:,2:4].astype(np.uint8)
     else:
       arr = np.array(im)
 
@@ -186,7 +186,6 @@ class Texture(Loadable):
     else:
       s = 'numpy.ndarray '
       self.iy, self.ix, mode = self.file_string.shape
-      self.alpha = (mode == 4)
       self.image = self.file_string
       self._tex = ctypes.c_int()
       self._loaded = True
@@ -195,7 +194,6 @@ class Texture(Loadable):
     # only do this if loading from disk or PIL image
     self.ix, self.iy = im.size
     s += '(%s)' % im.mode
-    self.alpha = (im.mode == 'RGBA' or im.mode == 'LA')
 
     if self.mipmap:
       resize_type = Image.BICUBIC
@@ -299,7 +297,6 @@ class Texture(Loadable):
       'file_string': self.file_string,
       'ix': self.ix,
       'iy': self.iy,
-      'alpha': self.alpha,
       'image': self.image,
       '_tex': self._tex,
       '_loaded': self._loaded,

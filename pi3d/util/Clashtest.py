@@ -54,7 +54,7 @@ class Clashtest(OffScreenTexture):
     img = self.img # alias to make code a bit less bulky!
     opengles.glReadPixels(0, self.y0, self.ix, 1,
                           GL_RGBA, GL_UNSIGNED_BYTE,
-                          img.ctypes.data_as(ctypes.POINTER(ctypes.c_short)))
+                          img.ctypes.data_as(ctypes.POINTER(ctypes.c_ubyte)))
 
     if  (np.any(img[::self.step,0] != img[0,0]) or 
          np.any(img[::self.step,1] != img[0,1]) or 
