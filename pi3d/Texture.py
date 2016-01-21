@@ -151,7 +151,7 @@ class Texture(Loadable):
     if self.i_format:
       # if format is specified, convert the image accordingly
       expected_mode = FORMAT_MODES[self.i_format]
-      if im.mode != expected_mode and self.i_format != GL_LUMINANCE_ALPHA:
+      if im.mode != expected_mode:
         im = im.convert(expected_mode)
     elif im.mode not in ['RGBA', 'RGB', 'LA', 'L']:
         # other image types are converted to rgba
