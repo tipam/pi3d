@@ -20,6 +20,11 @@ WIDTHS = [4, 8, 16, 32, 48, 64, 72, 96, 128, 144, 192, 256,
 FILE = 0
 PIL_IMAGE = 1
 NUMPY = 2
+FORMAT_MODES = {GL_ALPHA: 'L',
+                GL_LUMINANCE: 'L',
+                GL_LUMINANCE_ALPHA: 'LA',
+                GL_RGB: 'RGB',
+                GL_RGBA: 'RGBA'}
 
 def round_up_to_power_of_2(x):
   p = 1
@@ -42,7 +47,7 @@ class Texture(Loadable):
   """
   def __init__(self, file_string, blend=False, flip=False, size=0,
                defer=DEFER_TEXTURE_LOADING, mipmap=True, m_repeat=False,
-               free_after_load=False, i_format=None):
+               free_after_load=False, i_format=None, filter=None):
     """
     Arguments:
       *file_string*
@@ -62,9 +67,10 @@ class Texture(Loadable):
         can load from file in other thread and defer opengl work until
         texture needed, default True
       *mipmap*
-        use linear interpolation for mipmaps, if set False then nearest
-        pixel values will be used. This is needed for exact pixel represent-
-        ation of images. **NB BECAUSE THIS BEHAVIOUR IS SET GLOBALLY AT
+        create and use mipmaps for this texture
+        (if true - linear interpolation will be used by default, else nearest interpolation).
+        see filter to control this behavior
+        **NB BECAUSE THIS BEHAVIOUR IS SET GLOBALLY AT
         THE TIME THAT THE TEXTURE IS LOADED IT WILL BE SET BY THE LAST
         TEXTURE TO BE LOADED PRIOR TO DRAWING**
         TODO possibly reset in Buffer.draw() each time a texture is loaded?
@@ -75,6 +81,10 @@ class Texture(Loadable):
         release image memory after loading it in opengl
       *i_format*
         opengl internal format for the texture - see glTexImage2D
+      *filter*
+        interpolation to use for for textures: GL_NEAREST or GL_LINEAR.
+        if mipmap is true: NEAREST_MIPMAP_NEAREST or LINEAR_MIPMAP_NEAREST (default) will be used as minfilter 
+        if mipmap is false: NEAREST (default) or LINEAR will be used as filter 
     """
     super(Texture, self).__init__()
     try:
@@ -101,6 +111,7 @@ class Texture(Loadable):
     self.byte_size = 0
     self.free_after_load = free_after_load
     self.i_format = i_format
+    self.filter = filter
     self._loaded = False
     if defer:
       self.load_disk()
@@ -121,6 +132,40 @@ class Texture(Loadable):
     """do the deferred opengl work and return texture"""
     self.load_opengl()
     return self._tex
+
+  def _get_format_from_array(self, arr, req_format):
+    """get GL format depending on channels in array. doesn't verify if #channels
+    is consistent with the GL format"""
+    channels = min(arr.shape[2], 4) if len(arr.shape) == 3 else 1
+    if req_format == GL_ALPHA:
+      return GL_ALPHA
+
+    modes = [GL_LUMINANCE, GL_LUMINANCE_ALPHA, GL_RGB, GL_RGBA]
+    return modes[channels - 1]
+
+  def _img_to_array(self, im):
+    """convert image to numpy.array.
+    if i_format is specified and the image isn't in an adequate format, convert image.
+    if no i_format is specified, choose the most adequate OpenGL format depending
+    on image mode."""
+    if self.i_format:
+      # if format is specified, convert the image accordingly
+      expected_mode = FORMAT_MODES[self.i_format]
+      if im.mode != expected_mode:
+        im = im.convert(expected_mode)
+    elif im.mode not in ['RGBA', 'RGB', 'LA', 'L']:
+        # other image types are converted to rgba
+        im = im.convert('RGBA')
+
+    if im.mode == 'LA':
+      # convert LA image to array directly doesn't work
+      # convert to rgba and strip rg channel - seems to be the fastest way
+      rgba = im.convert('RGBA')
+      arr = np.array(np.array(rgba)[:,:,2:4])
+    else:
+      arr = np.array(im)
+
+    return arr
 
   def _load_disk(self):
     """overrides method of Loadable
@@ -177,11 +222,8 @@ class Texture(Loadable):
     if self.flip:
       im = im.transpose(Image.FLIP_TOP_BOTTOM)
 
-    RGBs = 'RGBA' if self.alpha else 'RGB'
-    if im.mode != RGBs:
-      im = im.convert(RGBs)
     #self.image = im.tostring('raw', RGBs) # TODO change to tobytes WHEN Pillow is default PIL in debian (jessie becomes current)
-    self.image = np.array(im)
+    self.image = self._img_to_array(im)
     self._tex = ctypes.c_int()
     if self.string_type == FILE and 'fonts/' in self.file_string:
       self.im = im
@@ -199,29 +241,36 @@ class Texture(Loadable):
       Display.INSTANCE.textures_dict[str(self._tex)] = [self._tex, 0]
     self.update_ndarray()
 
+  def _get_filter(self, t):
+    f = self.filter
+    if f is None:
+      # default for mipmap is linear
+      f = GL_LINEAR if self.mipmap else GL_NEAREST
+
+    if t == GL_TEXTURE_MIN_FILTER and self.mipmap:
+      # use mipmaps for min filter if requested requested
+      f = GL_LINEAR_MIPMAP_NEAREST if f == GL_LINEAR else GL_NEAREST_MIPMAP_NEAREST
+
+    return f
+
   def update_ndarray(self, new_array=None):
     """to allow numpy arrays to be patched in to textures without regenerating
     new glTextureBuffers i.e. for movie textures"""
     if new_array is not None:
       self.image = new_array
     opengles.glBindTexture(GL_TEXTURE_2D, self._tex)
-    RGBv = GL_RGBA if self.alpha else GL_RGB
-    iformat = self.i_format if self.i_format else RGBv
-    opengles.glTexImage2D(GL_TEXTURE_2D, 0, iformat, self.ix, self.iy, 0, RGBv,
+    # set filters according to mipmap and filter request
+    for t in [GL_TEXTURE_MIN_FILTER, GL_TEXTURE_MAG_FILTER]:
+      opengles.glTexParameteri(GL_TEXTURE_2D, t, self._get_filter(t))
+
+    iformat = self._get_format_from_array(self.image, self.i_format)
+    opengles.glTexImage2D(GL_TEXTURE_2D, 0, iformat, self.ix, self.iy, 0, iformat,
                           GL_UNSIGNED_BYTE,
-                          self.image.ctypes.data_as(ctypes.POINTER(ctypes.c_short)))
+                          self.image.ctypes.data_as(ctypes.POINTER(ctypes.c_ubyte)))
     opengles.glEnable(GL_TEXTURE_2D)
     if self.mipmap:
       opengles.glGenerateMipmap(GL_TEXTURE_2D)
-      opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-                               GL_LINEAR_MIPMAP_NEAREST)
-      opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
-                               GL_LINEAR)
-    else:
-      opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-                               GL_NEAREST)
-      opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
-                               GL_NEAREST)
+
     opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,
                              self.m_repeat)
     opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,
@@ -258,7 +307,8 @@ class Texture(Loadable):
       'disk_loaded': self.disk_loaded,
       'm_repeat': self.m_repeat,
       'i_format': self.i_format,
-      'free_after_load': self.free_after_load
+      'free_after_load': self.free_after_load,
+      'filter': self.filter
       }
 
 class TextureCache(object):
