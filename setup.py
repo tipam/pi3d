@@ -29,8 +29,14 @@ out the 'from distutils.core..' after. """
 from distutils.core import setup    
 from os import listdir
 
+with open('pi3d/constants/__init__.py', 'r') as f:
+  for l in f:
+    if l.find('__version__') == 0:
+      version = (l.split('=')[1]).strip().strip("\'\"")
+      break
+
 setup(name='pi3d',
-      version='2.9',
+      version=version,
       description='pi3d OpenGLES2 3D graphics library',
       author='Tim Skillman, Paddy Gaunt, Tom Ritchford',
       author_email='http://pi3d.github.com/html/index.html',

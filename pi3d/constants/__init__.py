@@ -4,7 +4,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 pi3d.constants contains constant values, mainly integers, from OpenGL ES 2.0.
 """
 
-VERSION = '2.9'
+__version__ = '2.10'
 
 STARTUP_MESSAGE = """
 
@@ -15,7 +15,7 @@ STARTUP_MESSAGE = """
   Copyright (c) Tom Ritchford, 2012-2015
 
   Updates available from www.github.com/tipam/pi3d
-""".format(VERSION)
+""".format(__version__)
 
 VERBOSE = False
 # TODO: get rid of verbose in favor of logging.

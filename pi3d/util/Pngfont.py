@@ -59,8 +59,7 @@ class Pngfont(Texture):
     draw.rectangle((0, 1, self.ix, self.iy), fill=color)
     self.im.putalpha(alph)
 
-    RGBs = 'RGBA' if self.alpha else 'RGB'
-    #self.image = self.im.convert(RGBs).tostring('raw', RGBs)
+    RGBs = 'RGBA'
     self.im = self.im.convert(RGBs)
     self.image = np.array(self.im)
     self._tex = ctypes.c_int()

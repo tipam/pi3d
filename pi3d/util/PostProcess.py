@@ -57,7 +57,6 @@ class PostProcess(OffScreenTexture):
       b.unib[7] = self.scale # vfact
       b.unib[9] = (1.0 - self.scale) * 0.5 # uoffset
       b.unib[10] = (1.0 - self.scale) * 0.5 # voffset
-    self.alpha = False
     self.blend = True
     self.mipmap = mipmap
     self.tex_list = [self] # TODO check if this self reference causes graphics memory leaks

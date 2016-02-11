@@ -56,7 +56,8 @@ class DisplayOpenGL(object):
                              EGL_DEPTH_SIZE, depth,
                              EGL_ALPHA_SIZE, 8,
                              EGL_BUFFER_SIZE, 32,
-                             EGL_SAMPLES, samples, 
+                             EGL_SAMPLES, samples,
+                             EGL_STENCIL_SIZE, 8,
                              EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
                              EGL_NONE))
     numconfig = c_int()

@@ -97,7 +97,6 @@ class FixedString(Texture):
     texture_hgt = int(nlines * height + 2 * margin)
     
     self.im = Image.new("RGBA", (texture_wid, texture_hgt), background_color)
-    self.alpha = True
     self.ix, self.iy = texture_wid, texture_hgt
     draw = ImageDraw.Draw(self.im)
     for i, line in enumerate(lines):

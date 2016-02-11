@@ -52,7 +52,7 @@ class Camera(DefaultInstance):
     self.mtrx = np.array(self.model_view, copy=True)
     # self.L_reflect = _LookAtMatrix(at,eye,[0,1,0],reflect=True)
     self.rtn = [0.0, 0.0, 0.0]
-
+    self.scale = scale
     self.was_moved = True
 
   @staticmethod
@@ -76,6 +76,7 @@ class Camera(DefaultInstance):
     # TODO some way of resetting to original matrix
     self.mtrx = np.copy(self.model_view)
     self.rtn = [0.0, 0.0, 0.0]
+    self.scale = scale
     self.was_moved = True
 
   def point_at(self, target=[0.0, 0.0, 10000.0]):

@@ -4,6 +4,19 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
+v2.10
+2016-02-11  Bug fixes: GL_STENCIL_SIZE explicitly set in DisplayOpenGL
+            Mouse wheel movement doesn't crash when using pygame input -
+            and is available within pi3d.
+            Improvements: Various enhancements using different images as
+            textures allowing image types: GL_ALPHA, GL_LUMINANCE,
+            GL_LUMINANCE_ALPHA, GL_RGB and GL_RGBA the most appropriate
+            setting will be chosen from the file type or it can be overridden
+            by an argument to the Texture.__init__() Also the mipmap code
+            has been moved to the correct location to drastically reduce
+            memory requirements with the mipmap=False. Thanks to @swehner for
+            all is work on this
+
 v2.9
 2016-01-16  Bug fixes: glReadPixels fixed on linux and windows so Screenshot 
             and ClashTest work. glBufferData ctypes pointer fixed explicitly 
