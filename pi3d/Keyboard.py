@@ -132,7 +132,7 @@ class x11Keyboard(object):
       self.display = Display.INSTANCE
     while len(self.display.event_list) > 0:
       e = self.display.event_list.pop(0)
-      if e.type == x.KeyPress:# and e.xkey.keycode < len(self.KEYBOARD):
+      if e.type == x.KeyPress and e.xkey.keycode < len(self.KEYBOARD):
         self.key_num = self.KEYBOARD[e.xkey.keycode][0]
         self.key_code = self.KEYBOARD[e.xkey.keycode][1]
         return True

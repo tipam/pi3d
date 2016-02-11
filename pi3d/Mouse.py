@@ -24,6 +24,8 @@ class _nixMouse(threading.Thread):
   RIGHT_BUTTON = 10 # 1010
   MIDDLE_BUTTON = 12 # 1100
   BUTTON_UP = 8 # 1000
+  MOUSE_WHEEL_UP = 13 # TODO way of setting IMPS/2 mouse to get scroll events
+  MOUSE_WHEEL_DOWN = 14 # would need 4 bytes rather than 3 in _check_event()
   BUTTONS = BUTTON_1 & BUTTON_2
   HEADER = 1 << 3
   XSIGN = 1 << 4
@@ -171,7 +173,10 @@ class _pygameMouse(object):
   RIGHT_BUTTON = 10 # 1010
   MIDDLE_BUTTON = 12 # 1100
   BUTTON_UP = 8 # 1000
-  BUTTON_MAP = {1:LEFT_BUTTON, 2:MIDDLE_BUTTON, 3:RIGHT_BUTTON}
+  MOUSE_WHEEL_UP = 13
+  MOUSE_WHEEL_DOWN = 14
+  BUTTON_MAP = {1:LEFT_BUTTON, 2:MIDDLE_BUTTON, 3:RIGHT_BUTTON,
+                4:MOUSE_WHEEL_UP, 5:MOUSE_WHEEL_DOWN}
   BUTTONS = BUTTON_1 & BUTTON_2
   HEADER = 1 << 3
   XSIGN = 1 << 4
@@ -227,12 +232,10 @@ class _pygameMouse(object):
         pygame.mouse.set_pos(self.centre)
     but_list = pygame.event.get(pygame.MOUSEBUTTONDOWN)
     if len(but_list) > 0:
-      print("down ", but_list)
       self._buttons = _pygameMouse.BUTTON_MAP[but_list[-1].button] # discard all but last button
     else:  
       but_list = pygame.event.get(pygame.MOUSEBUTTONUP)
       if len(but_list) > 0:
-        print("up ", but_list)
         self._buttons = _pygameMouse.BUTTON_UP
 
   def position(self):
