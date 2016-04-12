@@ -45,6 +45,14 @@ PLATFORM_ANDROID = 4
 # Force pygame if possible
 USE_PYGAME = False
 
+#Display 
+DISPLAY_CONFIG_DEFAULT = 0
+DISPLAY_CONFIG_NO_RESIZE = 1
+DISPLAY_CONFIG_NO_FRAME = 2
+DISPLAY_CONFIG_FULLSCREEN = 4
+DISPLAY_CONFIG_MAXIMIZED = 8
+
+
 # Lastly, load the libraries.
 def _load_library(name, dll_type="C"):
   """Try to load a shared library, report an error on failure."""
