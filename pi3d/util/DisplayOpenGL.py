@@ -9,6 +9,7 @@ import pi3d
 from pi3d.constants import *
 
 from pi3d.util.Ctypes import c_ints
+from pygame.constants import FULLSCREEN
 
 if pi3d.USE_PYGAME:
   import pygame
@@ -43,9 +44,11 @@ class DisplayOpenGL(object):
       self.screen = xlib.XDefaultScreenOfDisplay(self.d)
       self.width, self.height = xlib.XWidthOfScreen(self.screen), xlib.XHeightOfScreen(self.screen)
 
-  def create_display(self, x=0, y=0, w=0, h=0, depth=24, samples=4, layer=0):
+  def create_display(self, x=0, y=0, w=0, h=0, depth=24, samples=4, layer=0, display_config=DISPLAY_CONFIG_DEFAULT):
     self.display = openegl.eglGetDisplay(EGL_DEFAULT_DISPLAY)
     assert self.display != EGL_NO_DISPLAY
+    
+    self.display_config = display_config
 
     r = openegl.eglInitialize(self.display, 0, 0)
     #assert r == EGL_FALSE
@@ -132,11 +135,21 @@ class DisplayOpenGL(object):
 
     elif pi3d.USE_PYGAME:
       import pygame
-      flags = pygame.RESIZABLE | pygame.OPENGL
+      flags = pygame.OPENGL
       wsize = (w, h)
       if w == self.width and h == self.height: # i.e. full screen
-        flags = pygame.FULLSCREEN | pygame.OPENGL | pygame.NOFRAME
+        flags = pygame.FULLSCREEN | pygame.OPENGL
         wsize = (0, 0)
+      if self.display_config & DISPLAY_CONFIG_NO_RESIZE:
+        flags |= pygame.RESIZABLE
+      if self.display_config & DISPLAY_CONFIG_NO_FRAME:
+        flags |= pygame.NOFRAME
+      if self.display_config & DISPLAY_CONFIG_FULLSCREEN:
+        flags |= pygame.FULLSCREEN
+      elif self.display_config & DISPLAY_CONFIG_MAXIMIZED:
+        flags |= pygame.FULLSCREEN
+        wsize = (0, 0)
+        
       self.width, self.height = w, h
       self.d = pygame.display.set_mode(wsize, flags)
       self.window = pygame.display.get_wm_info()["window"]
