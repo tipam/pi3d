@@ -261,6 +261,11 @@ class Texture(Loadable):
     for t in [GL_TEXTURE_MIN_FILTER, GL_TEXTURE_MAG_FILTER]:
       opengles.glTexParameteri(GL_TEXTURE_2D, t, self._get_filter(t))
 
+    opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,
+                             self.m_repeat)
+    opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,
+                             self.m_repeat)
+
     iformat = self._get_format_from_array(self.image, self.i_format)
     opengles.glTexImage2D(GL_TEXTURE_2D, 0, iformat, self.ix, self.iy, 0, iformat,
                           GL_UNSIGNED_BYTE,
@@ -269,10 +274,6 @@ class Texture(Loadable):
     if self.mipmap:
       opengles.glGenerateMipmap(GL_TEXTURE_2D)
 
-    opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,
-                             self.m_repeat)
-    opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,
-                             self.m_repeat)
     if self.free_after_load:
         self.image = None
         self._loaded = False

@@ -1,6 +1,7 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import ctypes
+import numpy as np
 from PIL import Image
 
 from pi3d.constants import *
@@ -8,7 +9,7 @@ from pi3d.util import Log
 
 LOGGER = Log.logger(__name__)
 
-def screenshot(filestring):
+def screenshot(filestring=None):
   """
   Save whatever's in the display to a file.
 
@@ -22,11 +23,12 @@ def screenshot(filestring):
   LOGGER.info('Taking screenshot of "%s"', filestring)
 
   w, h = Display.INSTANCE.width, Display.INSTANCE.height
-  size = h * w * 4
-  img = (ctypes.c_char * size)()
-  opengles.glReadPixels(0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, ctypes.byref(img))
+  img = np.zeros((h, w, 4), dtype=np.uint8)
+  opengles.glReadPixels(0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, img.ctypes.data_as(ctypes.POINTER(ctypes.c_ubyte)))
+  img = img[::-1,:,:].copy()
+  if filestring is None:
+    return img
 
   im = Image.frombuffer('RGBA', (w, h), img, 'raw', 'RGBA', 0, 1)
-  im = im.transpose(Image.FLIP_TOP_BOTTOM)
-  im.save(filestring)
+  im.save(filestring, quality=90)
 
