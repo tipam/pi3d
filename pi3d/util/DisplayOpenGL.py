@@ -9,10 +9,10 @@ import pi3d
 from pi3d.constants import *
 
 from pi3d.util.Ctypes import c_ints
-from pygame.constants import FULLSCREEN
 
 if pi3d.USE_PYGAME:
   import pygame
+  from pygame.constants import FULLSCREEN
 elif PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
   from pyxlib import xlib
   from pyxlib.x import *

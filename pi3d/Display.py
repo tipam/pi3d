@@ -333,7 +333,6 @@ class Display(object):
     to_del = []
     for i in self.textures_dict:
       tex = self.textures_dict[i]
-      LOGGER.debug('tex0=%s tex1=%s',tex[0], tex[1])
       if tex[1] == 1:
         pi3d.opengles.glDeleteTextures(1, byref(tex[0]))
         to_del.append(i)

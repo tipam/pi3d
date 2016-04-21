@@ -12,8 +12,6 @@ from pi3d.util import Utility
 from pi3d.util.Loadable import Loadable
 from pi3d.util.Ctypes import c_floats, c_shorts
 
-LOGGER = Log.logger(__name__)
-
 class Buffer(Loadable):
   """Holds the vertex, normals, incices and tex_coords for each part of
   a Shape that needs to be rendered with a different material or texture
@@ -92,7 +90,6 @@ class Buffer(Loadable):
         self.array_buffer[:,6:8] = np.array(texcoords, dtype="float32")
       if bufw > 3:
         if normals is None: #i.e. normals will only be generated if explictly None
-          LOGGER.debug('Calculating normals ...')
           self.array_buffer[:,3:6] = self.calc_normals()
         else:
           self.array_buffer[:,3:6] = np.array(normals, dtype="float32")

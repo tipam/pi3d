@@ -7,8 +7,6 @@ from PIL import Image
 from pi3d.constants import *
 from pi3d.util import Log
 
-LOGGER = Log.logger(__name__)
-
 def screenshot(filestring=None):
   """
   Save whatever's in the display to a file.
@@ -20,7 +18,6 @@ def screenshot(filestring=None):
   """
 
   from pi3d.Display import Display
-  LOGGER.info('Taking screenshot of "%s"', filestring)
 
   w, h = Display.INSTANCE.width, Display.INSTANCE.height
   img = np.zeros((h, w, 4), dtype=np.uint8)
