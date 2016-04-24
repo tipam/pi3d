@@ -22,10 +22,10 @@ def screenshot(filestring=None):
   w, h = Display.INSTANCE.width, Display.INSTANCE.height
   img = np.zeros((h, w, 4), dtype=np.uint8)
   opengles.glReadPixels(0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, img.ctypes.data_as(ctypes.POINTER(ctypes.c_ubyte)))
-  img = img[::-1,:,:].copy()
+  img = img[::-1,:,:3].copy()
   if filestring is None:
     return img
 
-  im = Image.frombuffer('RGBA', (w, h), img, 'raw', 'RGBA', 0, 1)
+  im = Image.frombuffer('RGB', (w, h), img, 'raw', 'RGB', 0, 1)
   im.save(filestring, quality=90)
 
