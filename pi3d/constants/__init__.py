@@ -4,15 +4,15 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 pi3d.constants contains constant values, mainly integers, from OpenGL ES 2.0.
 """
 
-__version__ = '2.10'
+__version__ = '2.11'
 
 STARTUP_MESSAGE = """
 
   Pi3D module - version {}s
 
-  Copyright (c) Tim Skillman, 2012-2015
-  Copyright (c) Patrick Gaunt, 2012-2015
-  Copyright (c) Tom Ritchford, 2012-2015
+  Copyright (c) Tim Skillman, 2012-2016
+  Copyright (c) Patrick Gaunt, 2012-2016
+  Copyright (c) Tom Ritchford, 2012-2016
 
   Updates available from www.github.com/tipam/pi3d
 """.format(__version__)
@@ -44,6 +44,14 @@ PLATFORM_ANDROID = 4
 
 # Force pygame if possible
 USE_PYGAME = False
+
+#Display 
+DISPLAY_CONFIG_DEFAULT = 0
+DISPLAY_CONFIG_NO_RESIZE = 1
+DISPLAY_CONFIG_NO_FRAME = 2
+DISPLAY_CONFIG_FULLSCREEN = 4
+DISPLAY_CONFIG_MAXIMIZED = 8
+
 
 # Lastly, load the libraries.
 def _load_library(name, dll_type="C"):

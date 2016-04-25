@@ -69,7 +69,7 @@ class Shape(Loadable):
       11  light1 position, direction vector           33  35
       12  light1 strength per shade                   36  38
       13  light1 ambient values                       39  41
-      14  defocus dist, amount (only 2 used)          42  43 # also 2D x, y
+      14  defocus dist_from, dist_to, amount          42  43 # also 2D x, y
       15  defocus frame width, height (only 2 used)   45  46 # also 2D w, h, tot_ht
       16  custom data space                           48  50
       17  custom data space                           51  53

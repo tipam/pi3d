@@ -11,6 +11,7 @@ import platform
 import pi3d
 from pi3d.util import Log
 from pi3d.util.DisplayOpenGL import DisplayOpenGL
+from pi3d.constants import *
 
 if pi3d.PLATFORM == pi3d.PLATFORM_WINDOWS:
   import pygame
@@ -332,7 +333,6 @@ class Display(object):
     to_del = []
     for i in self.textures_dict:
       tex = self.textures_dict[i]
-      LOGGER.debug('tex0=%s tex1=%s',tex[0], tex[1])
       if tex[1] == 1:
         pi3d.opengles.glDeleteTextures(1, byref(tex[0]))
         to_del.append(i)
@@ -401,7 +401,8 @@ class Display(object):
 def create(x=None, y=None, w=None, h=None, near=None, far=None,
            fov=DEFAULT_FOV, depth=DEFAULT_DEPTH, background=None,
            tk=False, window_title='', window_parent=None, mouse=False,
-           frames_per_second=None, samples=DEFAULT_SAMPLES, use_pygame=False, layer=0):
+           frames_per_second=None, samples=DEFAULT_SAMPLES, use_pygame=False, layer=0, 
+           display_config=DISPLAY_CONFIG_DEFAULT):
   """
   Creates a pi3d Display.
 
@@ -441,8 +442,8 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
     To use pygame for display surface, mouse and keyboard - as per windows
     This almost certainly would conflict if attempting to use in combination
     with tk=True. Default False
-  *layer*
-    Dispmanx layer for Raspberry PI. Default 0
+  *display_config*
+    Configuration of display - See pi3d.constants for DISPLAY_CONFIG options
   """
   if tk: #NB this happens before Display created so use_pygame will not work on linux
     if pi3d.PLATFORM != pi3d.PLATFORM_PI and pi3d.PLATFORM != pi3d.PLATFORM_ANDROID:
@@ -538,7 +539,7 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
   display.right = x + w
   display.bottom = y + h
 
-  display.opengl.create_display(x, y, w, h, depth=depth, samples=samples, layer=layer)
+  display.opengl.create_display(x, y, w, h, depth=depth, samples=samples, layer=layer, display_config=display_config)
   if pi3d.PLATFORM == pi3d.PLATFORM_ANDROID:
     display.width = display.right = display.max_width = display.opengl.width #not available until after create_display
     display.height = display.bottom = display.max_height = display.opengl.height

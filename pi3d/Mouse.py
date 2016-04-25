@@ -14,8 +14,6 @@ elif pi3d.PLATFORM != pi3d.PLATFORM_PI and pi3d.PLATFORM != pi3d.PLATFORM_ANDROI
 
 from pi3d.util import Log
 
-LOGGER = Log.logger(__name__)
-
 class _nixMouse(threading.Thread):
   """holds Mouse object, see also (the preferred) events methods"""
   BUTTON_1 = 1 << 1

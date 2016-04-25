@@ -8,6 +8,7 @@ to drag in most of the important classes of pi3d.
 """
 
 from pi3d.constants import *
+from pi3d.constants import __version__
 
 from pi3d import Display
 

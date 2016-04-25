@@ -4,6 +4,13 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
+v2.11
+2016-04-25  Improvements: screenshot() can be used to capture rendered
+            image to a numpy array (and not written to file) for use with
+            gtk or pyqt display for instance. More control over window features
+            when using pygame, thanks to @crashmatt (who did the creative
+            work for PointText and TextBlock in v2.8)
+
 v2.10
 2016-02-11  Bug fixes: GL_STENCIL_SIZE explicitly set in DisplayOpenGL
             Mouse wheel movement doesn't crash when using pygame input -
@@ -15,7 +22,7 @@ v2.10
             by an argument to the Texture.__init__() Also the mipmap code
             has been moved to the correct location to drastically reduce
             memory requirements with the mipmap=False. Thanks to @swehner for
-            all is work on this
+            all his work on this
 
 v2.9
 2016-01-16  Bug fixes: glReadPixels fixed on linux and windows so Screenshot 
@@ -48,7 +55,6 @@ v2.7
             than y position. Texture reflection in shaders fixed. Normals
             in String fixed. Option to use pygame rather than X11 display,
             mouse and keyboard to avoid having to run as root on linux.
-            
 
 v2.6
 2015-07-02  Moved Shader specific code from Shape.draw() to Buffer.draw()
