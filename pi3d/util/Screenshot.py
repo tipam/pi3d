@@ -13,8 +13,12 @@ def screenshot(filestring=None):
 
   Will save whatever has been rendered since the last call to Display.clear().
 
-  The file will be saved in the top-level directory if you don't add a path
+  The file will be saved in the same directory as the app if you don't add a path
   to it!
+  
+  If this function is called without any argument then it will not save to
+  file and will return a numpy array of the screen. The array and file, if
+  saved, will have the alpha values removed.
   """
 
   from pi3d.Display import Display

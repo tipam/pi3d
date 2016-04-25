@@ -4,7 +4,7 @@ Introduction to pi3d
 .. image:: images/rpilogoshad128.png
    :align: left 
 
-**pi3d written by Tim Skillman, Paddy Gaunt, Tom Ritchford Copyright (c) 2015**
+**pi3d written by Tim Skillman, Paddy Gaunt, Tom Ritchford Copyright (c) 2012-2016**
 
 Here is a link to an excellent, self explanatory `YouTube`_ video made by 
 Peter Farrell that covers much of the content of this ReadMe.
