@@ -5,7 +5,7 @@ import pi3d
 import pickle
 import time
 from threading import Thread
-from six.moves import queue
+from six_mod.moves import queue
 
 #pi3d.Log.set_logs(file="/home/pi/pi3d_demos/templog.txt")
 #LOGGER = pi3d.Log.logger(__name__)

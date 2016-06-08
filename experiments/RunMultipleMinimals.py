@@ -3,7 +3,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import subprocess, time
 
-from six.moves import xrange
+from six_mod.moves import xrange
 
 for i in xrange(500):
   p = subprocess.Popen(["python", "/home/pi/pi3d/demos/Minimal.py"],

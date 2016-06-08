@@ -1,4 +1,4 @@
-from six.moves import xrange
+from six_mod.moves import xrange
 
 from ctypes import *
 from ctypes.util import find_library

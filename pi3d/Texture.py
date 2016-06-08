@@ -5,7 +5,7 @@ import ctypes
 import sys, os
 import numpy as np
 
-from six.moves import xrange
+from six_mod.moves import xrange
 
 from PIL import Image
 

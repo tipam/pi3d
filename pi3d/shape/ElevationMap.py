@@ -3,12 +3,12 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import math
 import sys, os
 
-from six.moves import xrange
+from six_mod.moves import xrange
 
 from PIL import Image, ImageOps
 
-from numpy import cross, dot, array, sum
-from math import atan2, asin, degrees, sqrt
+import math
+import numpy as np
 
 from pi3d import *
 from pi3d.Buffer import Buffer
@@ -180,7 +180,7 @@ class ElevationMap(Shape):
 
     return pixht + self.unif[1]
 
-  def calcHeight(self, px, pz, inc_normal=False):
+  def calcHeight_old(self, px, pz, inc_normal=False):
     """accurately return the height of the map at the point specified
 
     Arguments:
@@ -228,6 +228,27 @@ class ElevationMap(Shape):
       n /= ((n * n).sum()) ** 0.5 # normalise to unit len
       return (self.unif[1] + y, n)
     return self.unif[1] + y
+    
+  def calcHeight(self, px, pz, inc_normal=False):
+    f = self.buf[0].element_array_buffer # alias to faces array for readability!
+    v = self.buf[0].array_buffer # alias to vertices array for readability!
+    x0, z0 = v[f[:,0],0], v[f[:,0],2]
+    x1, z1 = v[f[:,1],0], v[f[:,1],2]
+    x2, z2 = v[f[:,2],0], v[f[:,2],2]
+
+    ix = np.where(((z1 - z0)*(px - x0) + (-x1 + x0)*(pz - z0) >= 0.0) &
+                  ((z2 - z1)*(px - x1) + (-x2 + x1)*(pz - z1) >= 0.0) &
+                  ((z0 - z2)*(px - x2) + (-x0 + x2)*(pz - z2) >= 0.0))
+    if len(ix[0]) == 0:
+      return None
+    else:
+      ix = ix[0][0]
+      y, n = self._intersect_face(ix, (px, 0.0, pz))
+    if inc_normal:
+      n /= ((n * n).sum()) ** 0.5 # normalise to unit len
+      return (self.unif[1] + y, n)
+    return self.unif[1] + y
+
 
   def clashTest(self, px, py, pz, rad):
     """Works out if an object at a given location and radius will overlap
@@ -281,7 +302,7 @@ class ElevationMap(Shape):
           minLoc = (i, j)
         #now find the distance between the point and the plane perpendicular
         #to the normal at this vertex
-        pDist = dot([px - vertp[0], py - vertp[1], pz - vertp[2]],
+        pDist = np.dot([px - vertp[0], py - vertp[1], pz - vertp[2]],
                     [-normp[0], -normp[1], -normp[2]])
         #and the position where the normal from point crosses the plane
         xIsect = px - normp[0]*pDist
@@ -340,16 +361,40 @@ class ElevationMap(Shape):
     z0 = int(math.floor((halfd + pz)/dz + 0.5))
     if z0 < 0: z0 = 0
     if z0 > self.iy-1: z0 = self.iy-1
-    normp = array(self.buf[0].array_buffer[z0*self.ix + x0,3:6])
+    normp = np.array(self.buf[0].array_buffer[z0*self.ix + x0,3:6])
     # slight simplification to working out cross products as dirctn always 0,0,1
-    #sidev = cross(normp, dirctn)
-    sidev = array([normp[1], -normp[0], 0.0])
-    sidev = sidev / sqrt(sidev.dot(sidev))
-    #forwd = cross(sidev, normp)
-    forwd = array([-normp[2]*normp[0], -normp[2]*normp[1],
+    #sidev = np.cross(normp, dirctn)
+    sidev = np.array([normp[1], -normp[0], 0.0])
+    sidev = sidev / math.sqrt(sidev.dot(sidev))
+    #forwd = np.cross(sidev, normp)
+    forwd = np.array([-normp[2]*normp[0], -normp[2]*normp[1],
                   normp[0]*normp[0] + normp[1]*normp[1]])
-    forwd = forwd / sqrt(forwd.dot(forwd))
-    return (degrees(asin(-forwd[1])), degrees(atan2(sidev[1], normp[1])))
+    forwd = forwd / math.sqrt(forwd.dot(forwd))
+    return (math.degrees(math.asin(-forwd[1])), math.degrees(math.atan2(sidev[1], normp[1])))
+
+  def _intersect_face(self, ix, pos):
+    '''calculates the y intersection of a point on a face and returns the y
+    value of the intersection of the line defined by x,z of pos through the
+    triange.
+    
+    **NB** it relies on Buffer.calc_normals() being called when the Buffer was
+    created as that writes values into the element_normals array. This will
+    be faster than working out the cross product of two sides of the face.
+
+    Arguments:
+      *ix*
+        is the index of a record in element_array_buffer and element_normals
+      *pos*
+        tuple (x, y, z) of point
+        
+    Returns:
+      tuple of y value, normal vector (xn, yn, zn)
+    '''
+    face = self.buf[0].element_array_buffer[ix] 
+    nVec = self.buf[0].element_normals[ix]
+    v = self.buf[0].array_buffer[face[0], 0:3]
+    kVal = np.dot(nVec, v)
+    return (kVal - nVec[0]*pos[0] - nVec[2]*pos[2]) / nVec[1], nVec
 
   def __getstate__(self): # to allow pickling
     self.childModel = None
@@ -381,8 +426,9 @@ def _intersect_triangle(v1, v2, v3, pos):
       tuple (x,y,z) defining the x,z of the vertical line intersecting triangle
   """
   #calc normal from two edge vectors v2-v1 and v3-v1
-  nVec = cross((v2 - v1), (v3 - v1))
+  nVec = np.cross((v2 - v1), (v3 - v1))
   #equation of plane: Ax + By + Cz = kVal where A,B,C are components of normal. x,y,z for point v1 to find kVal
-  kVal = dot(nVec, v1)
+  kVal = np.dot(nVec, v1)
   #return y val i.e. y = (kVal - Ax - Cz)/B also the normal vector seeing as this has been calculated
   return (kVal - nVec[0]*pos[0] - nVec[2]*pos[2]) / nVec[1], nVec
+

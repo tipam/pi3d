@@ -1,4 +1,4 @@
-import six
+import six_mod
 
 from pi3d.event import EventHandler
 from pi3d.event import Keys
@@ -13,7 +13,7 @@ for v in KEY_CODE:
   CODE_KEY[KEY_CODE[v]] = v
 
 def key_to_code(key):
-  return KEY_CODE.get(str(key), -1) if isinstance(key, six.string_types) else key
+  return KEY_CODE.get(str(key), -1) if isinstance(key, six_mod.string_types) else key
 
 def code_to_key(code):
   return CODE_KEY.get(code, '')
