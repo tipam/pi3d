@@ -6,6 +6,7 @@ from pi3d.Camera import Camera
 from pi3d.shape.Sprite import Sprite
 from pi3d.util.OffScreenTexture import OffScreenTexture
 from pi3d.Display import Display
+from pi3d import opengles
 
 class StereoCam(object):
   """For creating an apparatus with two sprites to hold left and right
@@ -83,6 +84,7 @@ void main(void) {{
       self.textures[i].blend = True
       self.textures[i].mipmap = mipmap
       self.tex_list.append(self.textures[i])
+    opengles.glColorMask(1, 1, 1, 1)
 
   def move_camera(self, position, rot, tilt):
     self.camera_3d.reset()
