@@ -32,6 +32,24 @@ def round_up_to_power_of_2(x):
     p += p
   return p
 
+def _normal_map(image, factor=1.0):
+  ''' takes a numpy array and returns a normal map (as np array using
+  lightness as height map. Argument factor can scale the effect
+  '''
+  if image.shape[2] > 2:
+    gray = (image[:,:,:3] * [0.2989, 0.5870, 0.1140]).sum(axis=2) # grayscale
+  else:
+    gray = image[:,:,0]
+  grdnt = np.gradient(gray) # a tuple of two arrays x and y gradients
+  grdnt[0] = 128.0 - grdnt[0] * 0.5 * factor # range -256 to +256 converted to
+  grdnt[1] = 128.0 + grdnt[1] * 0.5 * factor # 0-255. x swapped r to l
+  z = np.maximum(0, 65025 - grdnt[0]**2 - grdnt[1]**2) # ensure +ve for sqrt
+  n_map = np.zeros(image.shape[:2] + (3,), dtype=np.uint8) # RGB same size
+  n_map[:,:,0] = grdnt[0].astype(np.uint8) # R
+  n_map[:,:,1] = grdnt[1].astype(np.uint8) # G
+  n_map[:,:,2] = (z**0.5).astype(np.uint8) # B
+  return n_map
+
 class Texture(Loadable):
   """loads an image file from disk and converts it into an array that
   can be used by shaders. It inherits from Loadable in order that the
@@ -47,7 +65,8 @@ class Texture(Loadable):
   """
   def __init__(self, file_string, blend=False, flip=False, size=0,
                defer=DEFER_TEXTURE_LOADING, mipmap=True, m_repeat=False,
-               free_after_load=False, i_format=None, filter=None):
+               free_after_load=False, i_format=None, filter=None,
+               normal_map=-1.0):
     """
     Arguments:
       *file_string*
@@ -84,7 +103,11 @@ class Texture(Loadable):
       *filter*
         interpolation to use for for textures: GL_NEAREST or GL_LINEAR.
         if mipmap is true: NEAREST_MIPMAP_NEAREST or LINEAR_MIPMAP_NEAREST (default) will be used as minfilter 
-        if mipmap is false: NEAREST (default) or LINEAR will be used as filter 
+        if mipmap is false: NEAREST (default) or LINEAR will be used as filter
+      *normal_map*
+        if a value > 0.0 then the image file will be converted into a normal
+        map where Luminance value is proportional to height. The value of
+        nomral_map is used the scale the effect (see _normal_map())
     """
     super(Texture, self).__init__()
     try:
@@ -112,6 +135,7 @@ class Texture(Loadable):
     self.free_after_load = free_after_load
     self.i_format = i_format
     self.filter = filter
+    self.normal_map = normal_map
     self._loaded = False
     if defer:
       self.load_disk()
@@ -164,6 +188,9 @@ class Texture(Loadable):
       arr = np.array(rgba)[:,:,2:4].astype(np.uint8)
     else:
       arr = np.array(im)
+
+    if self.normal_map >= 0.0:
+      arr = _normal_map(arr, self.normal_map)
 
     return arr
 
