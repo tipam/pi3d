@@ -5,8 +5,8 @@ import re, os
 
 from pi3d import *
 from random import randint
-from six.moves import xrange
-from six import advance_iterator
+from six_mod.moves import xrange
+from six_mod import advance_iterator
 
 from pi3d.Texture import Texture
 from pi3d.Buffer import Buffer

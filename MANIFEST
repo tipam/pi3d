@@ -2,7 +2,7 @@
 ChangeLog.txt
 README
 setup.py
-six.py
+six_mod.py
 pi3d/Buffer.py
 pi3d/Camera.py
 pi3d/Display.py

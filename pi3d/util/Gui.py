@@ -1,6 +1,6 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-import six, sys, os, time
+import sys, os, time
 
 import pi3d
 

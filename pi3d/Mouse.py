@@ -1,7 +1,7 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import threading
-import six
+import six_mod
 import ctypes
 
 import pi3d
@@ -45,7 +45,7 @@ class _nixMouse(threading.Thread):
     super(_nixMouse, self).__init__()
     self.fd = open('/dev/input/' + mouse, 'rb')
     self.running = False
-    self.buffr = '' if six.PY3 else b''
+    self.buffr = '' if six_mod.PY3 else b''
     self.lock = threading.RLock()
     self.width = width
     self.height = height

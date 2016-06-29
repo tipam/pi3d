@@ -3,12 +3,12 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import math
 import sys, os
 
-from six.moves import xrange
+from six_mod.moves import xrange
 
 from PIL import Image, ImageOps
 
-from numpy import cross, dot, array, sum
-from math import atan2, asin, degrees, sqrt
+import math
+import numpy as np
 
 from pi3d import *
 from pi3d.Buffer import Buffer
@@ -32,7 +32,7 @@ class ElevationMap(Shape):
         only the first one will be used for elevation. jpg files will
         create slight errors that will cause mis-matching of edges for
         tiled maps (i.e. use png for these) NB also see divx, divy below
-        i.e. div=64x64 requires image 65x65 pixels 
+        i.e. div=64x64 requires image 65x65 pixels
 
     Keyword arguments:
       *width, depth, height*
@@ -58,7 +58,7 @@ class ElevationMap(Shape):
       divx = 200
       divy = 200
     #print(type(mapfile), type(""))
-    
+
     try:
       if '' + mapfile == mapfile: #HORRIBLE. Only way to cope with python2v3
         if mapfile[0] != '/':
@@ -91,15 +91,17 @@ class ElevationMap(Shape):
     self.ix = ix
     self.iy = iy
     self.ttype = GL_TRIANGLE_STRIP
+    self.ht_y = 0.0
+    self.ht_n = np.array([0.0, 1.0, 0.0])
 
     if VERBOSE:
       print("Creating Elevation Map ...", ix, iy)
 
-    wh = width * 0.5
-    hh = depth * 0.5
-    ws = width / (ix - 1.0)
-    hs = depth / (iy - 1.0)
-    ht = height / 255.0
+    self.wh = width * 0.5
+    self.hh = depth * 0.5
+    self.ws = width / (ix - 1.0)
+    self.hs = depth / (iy - 1.0)
+    self.ht = height / 255.0
     tx = 1.0 * ntiles / ix
     ty = 1.0 * ntiles / iy
 
@@ -112,42 +114,11 @@ class ElevationMap(Shape):
       for x in xrange(0, ix):
         pxl = self.pixels[x, y]
         hgt = pxl[0] if type(pxl) is tuple else pxl
-        hgt *= ht
-        this_x = -wh + x*ws
-        this_z = -hh + y*hs
-        if cubic:
-          """ this is a bit experimental. It tries to make the map either zero
-          or height high. Vertices are moved 'under' adjacent ones if there is
-          a step to make vertical walls. Goes wrong in places - mainly because
-          it doesn't check diagonals
-          """
-          if hgt > height / 2:
-            hgt = height
-          else:
-            hgt = 0.0
-          if hgt == 0 and y > 0 and y < iy-1 and x > 0 and x < ix-1:
-            if self.pixels[x-1, y] > 127:
-              this_x = -wh + (x-1)*ws
-            elif self.pixels[x+1, y] > 127:
-              this_x = -wh + (x+1)*ws
-            elif self.pixels[x, y-1] > 127:
-              this_z = -hh + (y-1)*hs
-            elif self.pixels[x, y+1] > 127:
-              this_z = -hh + (y+1)*hs
-            elif self.pixels[x-1, y-1] > 127:
-              this_x = -wh + (x-1)*ws
-              this_z = -hh + (y-1)*hs
-            elif self.pixels[x-1, y+1] > 127:
-              this_x = -wh + (x-1)*ws
-              this_z = -hh + (y+1)*hs
-            elif self.pixels[x+1, y-1] > 127:
-              this_x = -wh + (x+1)*ws
-              this_z = -hh + (y-1)*hs
-            elif self.pixels[x+1, y+1] > 127:
-              this_x = -wh + (x+1)*ws
-              this_z = -hh + (y+1)*hs
+        hgt *= self.ht
+        this_x = -self.wh + x * self.ws
+        this_z = -self.hh + y * self.hs
         verts.append((this_x, hgt, this_z))
-        tex_coords.append(((ix-x) * tx,(iy-y) * ty))
+        tex_coords.append(((ix - x) * tx, (iy - y) * ty))
 
     s = 0
     #create one long triangle_strip by alternating X directions
@@ -160,6 +131,7 @@ class ElevationMap(Shape):
 
     self.buf = []
     self.buf.append(Buffer(self, verts, tex_coords, idx, None, smooth))
+    print('----', self.wh)
 
   def dropOn(self, px, pz):
     """determines approximately how high an object is when dropped on the map
@@ -168,19 +140,22 @@ class ElevationMap(Shape):
     #adjust for map not set at origin
     px -= self.unif[0]
     pz -= self.unif[2]
-
+    '''
     wh = self.width * 0.5
     hh = self.depth * 0.5
     ws = self.width / (self.ix - 1.0)
     hs = self.depth / (self.iy - 1.0)
     ht = self.height / 255.0
-
-    if px > -wh and px < wh and pz > -hh and pz < hh:
-      pixht = self.pixels[(wh + px) / ws,(hh + pz) / hs] * ht
-
+    '''
+    if px > -self.wh and px < self.wh and pz > -self.hh and pz < self.hh:
+      pixht = self.pixels[int((self.wh + px) / self.ws),
+                          int((self.hh + pz) / self.hs)] * self.ht
+    else:
+      pixht = 0.0
     return pixht + self.unif[1]
 
-  def calcHeight(self, px, pz, inc_normal=False):
+
+  def calcHeight(self, px, pz, inc_normal=False, regular_map=True):
     """accurately return the height of the map at the point specified
 
     Arguments:
@@ -188,50 +163,48 @@ class ElevationMap(Shape):
         Location of the point in world coordinates to calculate height.
       *inc_normal*
         optionall return a tuple with height and normal vector (h, (nx,ny,nz))
+      *regular_map*
+        setting this to False allows the method to be used with maps constructed
+        with irregular vertex locations - i.e. increased vertex density
+        around areas of detail. TODO implement functionality to generate
+        this type of map.
     """
-    #adjust for map not set at origin
-    px -= self.unif[0]
+    px -= self.unif[0] # adjust p for locatoin of map
     pz -= self.unif[2]
-
-    wh = self.width * 0.5
-    hh = self.depth * 0.5
-    ws = self.width / (self.ix - 1.0)
-    hs = self.depth / (self.iy - 1.0)
-    ht = self.height / 255.0
-    #x, y integer index to vertices grid
-    x = math.floor((wh + px) / ws)
-    z = math.floor((hh + pz) / hs)
-    if x < 0:
-       x = 0
-    if x > (self.ix - 2):
-      x = self.ix - 2
-    if z < 0:
-      z = 0
-    if z > (self.iy - 2):
-      z = self.iy - 2
-    # use actual vertex location rather than recreate it from pixel*ht
-    p0 = int(z * self.ix + x) #offset 1 to get y values
-    p1 = p0 + 1
-    p2 = p0 + self.ix
-    p3 = p0 + self.ix + 1
-    v0 = self.buf[0].array_buffer[p0,0:3]
-    v1 = self.buf[0].array_buffer[p1,0:3]
-    v2 = self.buf[0].array_buffer[p2,0:3]
-    v3 = self.buf[0].array_buffer[p3,0:3]
-
-    if pz > (v0[2] + hs / ws * (px - v0[0])):
-    #opposite side of the diagonal so swap base corners
-      y, n = _intersect_triangle(v2, v3, v0, (px, 0, pz))
-    else:
-      y, n = _intersect_triangle(v1, v0, v3, (px, 0, pz))
+    f = self.buf[0].element_array_buffer # alias to faces array for readability!
+    v = self.buf[0].array_buffer # alias to vertices array for readability!
+    if regular_map: # for regular arrays of vertices this is quicker
+      if px > -self.wh and px < self.wh and pz > -self.hh and pz < self.hh:
+        ipx, ipz = int((self.wh + px) / self.ws), int((self.hh + pz) / self.hs)
+        ix = (ipx + ipz * (self.iy - 1)) * 2
+        if (pz - ipz * self.hs) < (px - ipx * self.ws):
+          ix += 1
+      else:
+        ix = 0
+    else: # but this is pretty quick
+      x0, z0 = v[f[:,0],0], v[f[:,0],2] # two 1D arrays of x,z coords of 1st corners of faces
+      x1, z1 = v[f[:,1],0], v[f[:,1],2] # ditto 2nd corner
+      x2, z2 = v[f[:,2],0], v[f[:,2],2] # ditto 3rd corner
+      # ix should be a tuple containing a list of face indexes where px,pz is
+      # a point inside the triangle formed by the three corners listed above
+      ix = np.where(((z1 - z0)*(px - x0) + (-x1 + x0)*(pz - z0) >= 0.0) &
+                    ((z2 - z1)*(px - x1) + (-x2 + x1)*(pz - z1) >= 0.0) &
+                    ((z0 - z2)*(px - x2) + (-x0 + x2)*(pz - z2) >= 0.0))
+      if len(ix[0]) > 0: # at least one face found
+        ix = ix[0][0] # should only have one but return the first anyway
+      else:
+         ix = 0
+    self.ht_y, self.ht_n = self._intersect_face(ix, (px, 0.0, pz))
     if inc_normal:
-      n /= ((n * n).sum()) ** 0.5 # normalise to unit len
-      return (self.unif[1] + y, n)
-    return self.unif[1] + y
+      self.ht_n /= ((self.ht_n ** 2).sum()) ** 0.5 # normalise to unit len
+      return (self.unif[1] + self.ht_y, self.ht_n)
+    return self.unif[1] + self.ht_y
 
-  def clashTest(self, px, py, pz, rad):
+
+  def clashTest(self, px, py, pz, rad, span=None):
     """Works out if an object at a given location and radius will overlap
-    with the map surface. Returns four values:
+    with the map surface. NB it is possible for tunnel through the mesh.
+    Returns four values:
 
     * boolean whether there is a clash
     * x, y, z components of the normal vector
@@ -242,79 +215,38 @@ class ElevationMap(Shape):
         Location of object to test in world coordinates.
       *rad*
         Radius of object to test.
+      *span*
+        size of the square around the point to select faces from - defaults
+        to 2 x rad
     """
-    radSq = rad**2
-    # adjust for map not set at origin
-    px -= self.unif[0]
-    py -= self.unif[1]
-    pz -= self.unif[2]
-    ht = self.height/255
-    halfw = self.width/2.0
-    halfd = self.depth/2.0
-    dx = self.width/self.ix
-    dz = self.depth/self.iy
+    f = self.buf[0].element_array_buffer # alias to faces array for readability!
+    v = self.buf[0].array_buffer # alias to vertices array for readability!
+    p = [[px, py, pz] - v[f[:,i],:3] - self.unif[0:3] for i in range(3)]  # vector from each corner to point
+    # reduce scope by only considering reasonably near vertices
+    span = 2.0 * rad if span is None else span / 2.0
+    ix = np.where((np.abs(p[0][:,0]) < span) | (np.abs(p[0][:,2]) < span) |
+                  (np.abs(p[0][:,0]) < span) | (np.abs(p[0][:,2]) < span) |
+                  (np.abs(p[0][:,0]) < span) | (np.abs(p[0][:,2]) < span))[0]
+    f = f[ix] # now only work with subset of faces
+    p = [p[i][ix] for i in range(3)] # reduce p list to mach subse
+    nVec = self.buf[0].element_normals[ix] # alias to normals for subse of faces
+    # cross product of each edge with normal is vector in plane of face
+    # at rt angle to edge pointing inwards, then dot product of these with
+    # vectors from corners to point.
+    a = [np.einsum('...j,...j', p[i], np.cross(nVec, v[f[:,i],:3] - v[f[:,(i-1)%3],:3])) for i in range(3)]
+    # if all are >= 0 then normal from plane to point passes through triangle
+    ix = np.where((a[0] >= 0.0) &
+                  (a[1] >= 0.0) &
+                  (a[2] >= 0.0))
+    if len(ix[0]) > 0: # at least one face found, but could be several in convex area
+      ix = ix[0]
+      dists = np.einsum('...j,...j', nVec[ix], [px, py, pz] - v[f[ix,0],:3])
+      dix = np.argmin(np.abs(dists))
+      if np.abs(dists[dix]) < rad: # TODO is there a more efficient way rather than doing abs() twice?
+        n = nVec[ix][dix] # alias for brevity
+        return True, n[0], n[1], n[2], rad - dists[dix]
+    return (False, 0, 0, 0, 0)
 
-    # work out x and z ranges to check, x0 etc correspond with vertex indices in grid
-    x0 = int(math.floor((halfw + px - rad)/dx + 0.5)) - 1
-    if x0 < 0: x0 = 0
-    x1 = int(math.floor((halfw + px + rad)/dx + 0.5)) + 1
-    if x1 > self.ix-1: x1 = self.ix-1
-    z0 = int(math.floor((halfd + pz - rad)/dz + 0.5)) - 1
-    if z0 < 0: z0 = 0
-    z1 = int(math.floor((halfd + pz + rad)/dz + 0.5)) + 1
-    if z1 > self.iy-1: z1 = self.iy-1
-    # go through grid around px, pz
-    minDist, minLoc = 1000000, (0, 0)
-    for i in range(x0+1, x1):
-      for j in range(z0+1, z1):
-        # use the locations stored in the one dimensional vertices matrix
-        #generated in __init__. 3 values for each location
-        p = j*self.ix + i # pointer to the start of xyz for i,j in the vertices array
-        p1 = j*self.ix + i - 1 # pointer to the start of xyz for i-1,j
-        p2 = (j-1)*self.ix + i # pointer to the start of xyz for i, j-1
-        vertp = self.buf[0].array_buffer[p,0:3]
-        normp = self.buf[0].array_buffer[p,3:6]
-        # work out distance squared from this vertex to the point
-        distSq = (px - vertp[0])**2 + (py - vertp[1])**2 + (pz - vertp[2])**2
-        if distSq < minDist: # this vertex is nearest so keep a record
-          minDist = distSq
-          minLoc = (i, j)
-        #now find the distance between the point and the plane perpendicular
-        #to the normal at this vertex
-        pDist = dot([px - vertp[0], py - vertp[1], pz - vertp[2]],
-                    [-normp[0], -normp[1], -normp[2]])
-        #and the position where the normal from point crosses the plane
-        xIsect = px - normp[0]*pDist
-        zIsect = pz - normp[2]*pDist
-
-        #if the intersection point is in this rectangle then the x,z values
-        #will lie between edges
-        if xIsect > self.buf[0].array_buffer[p1,0] and \
-           xIsect < self.buf[0].array_buffer[p,0] and \
-           zIsect > self.buf[0].array_buffer[p2,2] and \
-           zIsect < self.buf[0].array_buffer[p,2]:
-          pDistSq = pDist**2
-          # finally if the perpendicular distance is less than the nearest so far
-          #keep a record
-          if pDistSq < minDist:
-            minDist = pDistSq
-            minLoc = (i,j)
-
-    gLevel = self.calcHeight(px + self.unif[0], pz + self.unif[1]) #check it hasn't tunnelled through by going fast
-    if gLevel > (py-rad):
-      minDist = py - gLevel
-      minLoc = (int((x0+x1)/2), int((z0+z1)/2))
-
-    if minDist <= radSq: #i.e. near enough to clash so return normal
-      p = minLoc[1]*self.ix + minLoc[0]
-      normp = self.buf[0].array_buffer[p,3:6]
-      if minDist < 0:
-        jump = rad - minDist
-      else:
-        jump = 0
-      return(True, normp[0], normp[1], normp[2],  jump)
-    else:
-      return (False, 0, 0, 0, 0)
 
   def pitch_roll(self, px, pz):
     """works out the pitch (rx) and roll (rz) to apply to an object
@@ -328,28 +260,37 @@ class ElevationMap(Shape):
       *pz*
         z location
     """
-    px -= self.unif[0]
-    pz -= self.unif[2]
-    halfw = self.width/2.0
-    halfd = self.depth/2.0
-    dx = self.width/self.ix
-    dz = self.depth/self.iy
-    x0 = int(math.floor((halfw + px)/dx + 0.5))
-    if x0 < 0: x0 = 0
-    if x0 > self.ix-1: x0 = self.ix-1
-    z0 = int(math.floor((halfd + pz)/dz + 0.5))
-    if z0 < 0: z0 = 0
-    if z0 > self.iy-1: z0 = self.iy-1
-    normp = array(self.buf[0].array_buffer[z0*self.ix + x0,3:6])
-    # slight simplification to working out cross products as dirctn always 0,0,1
-    #sidev = cross(normp, dirctn)
-    sidev = array([normp[1], -normp[0], 0.0])
-    sidev = sidev / sqrt(sidev.dot(sidev))
-    #forwd = cross(sidev, normp)
-    forwd = array([-normp[2]*normp[0], -normp[2]*normp[1],
-                  normp[0]*normp[0] + normp[1]*normp[1]])
-    forwd = forwd / sqrt(forwd.dot(forwd))
-    return (degrees(asin(-forwd[1])), degrees(atan2(sidev[1], normp[1])))
+    y, n = self.calcHeight(px, pz, True)
+    sidev = np.array([n[1], -n[0], 0.0])
+    sidev /= ((sidev ** 2).sum()) ** 0.5
+    #forwd = np.cross(sidev, normp)
+    forwd = np.array([-n[2]*n[0], -n[2]*n[1], n[0]*n[0] + n[1]*n[1]])
+    forwd /= ((forwd ** 2).sum()) ** 0.5
+    return (math.degrees(math.asin(-forwd[1])), math.degrees(math.atan2(sidev[1], n[1])))
+
+  def _intersect_face(self, ix, pos):
+    '''calculates the y intersection of a point on a face and returns the y
+    value of the intersection of the line defined by x,z of pos through the
+    triange.
+
+    **NB** it relies on Buffer.calc_normals() being called when the Buffer was
+    created as that writes values into the element_normals array. This will
+    be faster than working out the cross product of two sides of the face.
+
+    Arguments:
+      *ix*
+        is the index of a record in element_array_buffer and element_normals
+      *pos*
+        tuple (x, y, z) of point
+
+    Returns:
+      tuple of y value, normal vector (xn, yn, zn)
+    '''
+    face = self.buf[0].element_array_buffer[ix]
+    nVec = self.buf[0].element_normals[ix]
+    v = self.buf[0].array_buffer[face[0], 0:3]
+    kVal = np.dot(nVec, v)
+    return (kVal - nVec[0]*pos[0] - nVec[2]*pos[2]) / nVec[1], nVec
 
   def __getstate__(self): # to allow pickling
     self.childModel = None
@@ -359,8 +300,12 @@ class ElevationMap(Shape):
     state['depth'] = self.depth
     state['ix'] = self.ix
     state['iy'] = self.iy
+    state['wh'] = self.wh
+    state['hh'] = self.hh
+    state['ws'] = self.ws
+    state['hs'] = self.hs
     return state
-  
+
   def __setstate__(self, state):
     super(ElevationMap, self).__setstate__(state)
     self.width = state['width']
@@ -368,6 +313,10 @@ class ElevationMap(Shape):
     self.depth = state['depth']
     self.ix = state['ix']
     self.iy = state['iy']
+    self.wh = state['wh']
+    self.hh = state['hh']
+    self.ws = state['ws']
+    self.hs = state['hs']
 
 def _intersect_triangle(v1, v2, v3, pos):
   """calculates the y intersection of a point on a triangle and returns the y
@@ -381,8 +330,9 @@ def _intersect_triangle(v1, v2, v3, pos):
       tuple (x,y,z) defining the x,z of the vertical line intersecting triangle
   """
   #calc normal from two edge vectors v2-v1 and v3-v1
-  nVec = cross((v2 - v1), (v3 - v1))
+  nVec = np.cross((v2 - v1), (v3 - v1))
   #equation of plane: Ax + By + Cz = kVal where A,B,C are components of normal. x,y,z for point v1 to find kVal
-  kVal = dot(nVec, v1)
+  kVal = np.dot(nVec, v1)
   #return y val i.e. y = (kVal - Ax - Cz)/B also the normal vector seeing as this has been calculated
   return (kVal - nVec[0]*pos[0] - nVec[2]*pos[2]) / nVec[1], nVec
+

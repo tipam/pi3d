@@ -1,8 +1,6 @@
 import ctypes
 import numpy as np
 
-from six.moves import xrange
-
 from PIL import Image
 
 from pi3d.constants import *

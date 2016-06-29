@@ -20,13 +20,12 @@ which really just does this:
   sys.append('/home/pi/pi3d')
 
 # see the pull request from stuaxo here https://github.com/tipam/pi3d/pull/183
-as to why you might want to uncomment the following four lines (and comment 
-out the 'from distutils.core..' after. """
-#try:
-#    from setuptools.commands import setup
-#except ImportError:
-#    from distutils.core import setup
-from distutils.core import setup    
+as to why you might want to use setuptools rather than distutils. Hopefull
+works ok this time... """
+try:
+    from setuptools.commands import setup
+except ImportError:
+    from distutils.core import setup
 from os import listdir
 
 with open('pi3d/constants/__init__.py', 'r') as f:
@@ -43,7 +42,7 @@ setup(name='pi3d',
       url='http://pi3d.github.com/html/index.html',
       packages=['pi3d','pyxlib','pi3d.constants','pi3d.shape','pi3d.util',
           'pi3d.event','pi3d.loader','pi3d.sprite','pi3d.'],
-      py_modules=['six'],
+      py_modules=['six_mod'],
       package_data={'pi3d': ['shaders/*', 'util/icons/*']},
       data_files=[('', ['ChangeLog.txt'])],
       license='MIT generally but see docstrings in specific files',

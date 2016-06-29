@@ -197,12 +197,12 @@ moves = sys.modules[__name__ + ".moves"] = _MovedItems("moves")
 
 
 def add_move(move):
-    """Add an item to six.moves."""
+    """Add an item to six_mod.moves."""
     setattr(_MovedItems, move.name, move)
 
 
 def remove_move(name):
-    """Remove item from six.moves."""
+    """Remove item from six_mod.moves."""
     try:
         delattr(_MovedItems, name)
     except AttributeError:

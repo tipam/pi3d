@@ -4,6 +4,19 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
+v2.12
+2016-06-29  Bug fixes: hacked six module renamed to six_mod to avoid conflict.
+            Checking if samples can be used (can't with ANGLE on windows)
+            using try block. Rendering OffscreenTexture onto background with
+            alpha 1.0 now doesn't become transparrent.
+            
+            Improvements: Buffer stores element_normals as well as smoothed
+            normals for quicker use in ElevationMap, in which class methods generally 
+            improved to use numpy more efficiently and allow maps to be created
+            with non-uniform vertices (TODO: nothing actually does this yet).
+            Method in Texture allows normal image to be converted into a
+            normal map where luminance is used as height.
+
 v2.11
 2016-04-25  Improvements: screenshot() can be used to capture rendered
             image to a numpy array (and not written to file) for use with

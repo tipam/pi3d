@@ -42,7 +42,7 @@ import os.path
 
 from pi3d.constants import *
 import math, random, sys
-from six.moves import filter
+from six_mod.moves import filter
 
 from PIL import ImageOps, ImageDraw, Image
 

@@ -71,6 +71,7 @@ class Buffer(Loadable):
     #self.indices = np.array(faces, dtype="short") # needed in calc_normals
     self.element_array_buffer = np.array(faces, dtype="short")
     self.ntris = len(self.element_array_buffer)
+    self.element_normals = None # filled by calc_normals() to speed up ElevationMap.calcHeight()
 
     n_verts = len(pts)
     if len(texcoords) != n_verts:
@@ -93,7 +94,7 @@ class Buffer(Loadable):
           self.array_buffer[:,3:6] = self.calc_normals()
         else:
           self.array_buffer[:,3:6] = np.array(normals, dtype="float32")
-      
+
     self.material = (0.5, 0.5, 0.5, 1.0)
     self.draw_method = GL_TRIANGLES
     from pi3d.Display import Display
@@ -104,11 +105,11 @@ class Buffer(Loadable):
     normals = np.zeros((len(self.array_buffer), 3), dtype="float32") #empty array rights size
     fv = self.array_buffer[self.element_array_buffer,0:3] #expand faces with x,y,z values for each vertex
     #cross product of two edges of triangles
-    fn = np.cross(fv[:,1] - fv[:,0], fv[:,2] - fv[:,0])
-    fn = Utility.normalize_v3(fn)
-    normals[self.element_array_buffer[:,0]] += fn #add up all normal vectors for a vertex
-    normals[self.element_array_buffer[:,1]] += fn
-    normals[self.element_array_buffer[:,2]] += fn
+    self.element_normals = np.cross(fv[:,1] - fv[:,0], fv[:,2] - fv[:,0])
+    self.element_normals = Utility.normalize_v3(self.element_normals)
+    normals[self.element_array_buffer[:,0]] += self.element_normals #add up all normal vectors for a vertex
+    normals[self.element_array_buffer[:,1]] += self.element_normals
+    normals[self.element_array_buffer[:,2]] += self.element_normals
     return Utility.normalize_v3(normals)
 
 
@@ -145,7 +146,7 @@ class Buffer(Loadable):
       if not (isinstance(pts, np.ndarray)):
         pts = np.array(pts)
       self.array_buffer[offset:(offset + n), 0:3] = pts[:,:]
-    if normals is not None: 
+    if normals is not None:
       n = len(normals)
       if not (isinstance(normals, np.ndarray)):
         normals = np.array(normals)
@@ -315,6 +316,7 @@ class Buffer(Loadable):
       'unib': list(self.unib),
       'array_buffer': self.array_buffer,
       'element_array_buffer': self.element_array_buffer,
+      'element_normals': self.element_normals,
       'material': self.material,
       'textures': self.textures,
       'draw_method': self.draw_method,
@@ -322,12 +324,13 @@ class Buffer(Loadable):
       'N_BYTES': self.N_BYTES
       }
 
-  
+
   def __setstate__(self, state):
     unib_tuple = tuple(state['unib'])
     self.unib = (ctypes.c_float * 12)(*unib_tuple)
     self.array_buffer = state['array_buffer']
     self.element_array_buffer = state['element_array_buffer']
+    self.element_normals = state['element_normals']
     self.material = state['material']
     self.textures = state['textures']
     self.draw_method = state['draw_method']

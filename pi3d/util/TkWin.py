@@ -1,7 +1,7 @@
 import os
 
 from pi3d import *
-from six.moves import tkinter
+from six_mod.moves import tkinter
 
 class TkWin(tkinter.Tk):
   """

@@ -3,7 +3,7 @@ import platform
 import time
 
 from ctypes import c_int, c_float
-from six.moves import xrange
+from six_mod.moves import xrange
 
 import pi3d
 from pi3d.constants import *
@@ -50,29 +50,31 @@ class DisplayOpenGL(object):
     
     self.display_config = display_config
 
-    r = openegl.eglInitialize(self.display, 0, 0)
-    #assert r == EGL_FALSE
+    for smpl in [samples, 0]: # try with samples first but ANGLE dll can't cope so drop to 0 for windows
+      r = openegl.eglInitialize(self.display, 0, 0)
 
-    attribute_list = c_ints((EGL_RED_SIZE, 8,
-                             EGL_GREEN_SIZE, 8,
-                             EGL_BLUE_SIZE, 8,
-                             EGL_DEPTH_SIZE, depth,
-                             EGL_ALPHA_SIZE, 8,
-                             EGL_BUFFER_SIZE, 32,
-                             EGL_SAMPLES, samples,
-                             EGL_STENCIL_SIZE, 8,
-                             EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
-                             EGL_NONE))
-    numconfig = c_int()
-    self.config = ctypes.c_void_p()
-    r = openegl.eglChooseConfig(self.display,
-                                ctypes.byref(attribute_list),
-                                ctypes.byref(self.config), 1,
-                                ctypes.byref(numconfig))
+      attribute_list = c_ints((EGL_RED_SIZE, 8,
+                               EGL_GREEN_SIZE, 8,
+                               EGL_BLUE_SIZE, 8,
+                               EGL_DEPTH_SIZE, depth,
+                               EGL_ALPHA_SIZE, 8,
+                               EGL_BUFFER_SIZE, 32,
+                               EGL_SAMPLES, smpl,
+                               EGL_STENCIL_SIZE, 8,
+                               EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
+                               EGL_NONE))
+      numconfig = c_int()
+      self.config = ctypes.c_void_p()
+      r = openegl.eglChooseConfig(self.display,
+                                  ctypes.byref(attribute_list),
+                                  ctypes.byref(self.config), 1,
+                                  ctypes.byref(numconfig))
 
-    context_attribs = c_ints((EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE))
-    self.context = openegl.eglCreateContext(self.display, self.config,
-                                            EGL_NO_CONTEXT, ctypes.byref(context_attribs) )
+      context_attribs = c_ints((EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE))
+      self.context = openegl.eglCreateContext(self.display, self.config,
+                                              EGL_NO_CONTEXT, ctypes.byref(context_attribs) )
+      if self.context != EGL_NO_CONTEXT:
+        break
     assert self.context != EGL_NO_CONTEXT
 
     self.create_surface(x, y, w, h, layer)

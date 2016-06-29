@@ -2,8 +2,6 @@ import fcntl
 import os
 import select
 
-from six.moves import filter
-
 from pi3d.event.Constants import *
 
 from pi3d.event import ioctl
