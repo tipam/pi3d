@@ -20,8 +20,8 @@ which really just does this:
   sys.append('/home/pi/pi3d')
 
 # see the pull request from stuaxo here https://github.com/tipam/pi3d/pull/183
-as to why you might want to uncomment the following four lines (and comment 
-out the 'from distutils.core..' after. """
+as to why you might want to use setuptools rather than distutils. Hopefull
+works ok this time... """
 try:
     from setuptools.commands import setup
 except ImportError:
