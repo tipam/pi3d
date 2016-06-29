@@ -22,11 +22,10 @@ which really just does this:
 # see the pull request from stuaxo here https://github.com/tipam/pi3d/pull/183
 as to why you might want to uncomment the following four lines (and comment 
 out the 'from distutils.core..' after. """
-#try:
-#    from setuptools.commands import setup
-#except ImportError:
-#    from distutils.core import setup
-from distutils.core import setup    
+try:
+    from setuptools.commands import setup
+except ImportError:
+    from distutils.core import setup
 from os import listdir
 
 with open('pi3d/constants/__init__.py', 'r') as f:
