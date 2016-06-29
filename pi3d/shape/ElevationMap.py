@@ -32,7 +32,7 @@ class ElevationMap(Shape):
         only the first one will be used for elevation. jpg files will
         create slight errors that will cause mis-matching of edges for
         tiled maps (i.e. use png for these) NB also see divx, divy below
-        i.e. div=64x64 requires image 65x65 pixels 
+        i.e. div=64x64 requires image 65x65 pixels
 
     Keyword arguments:
       *width, depth, height*
@@ -58,7 +58,7 @@ class ElevationMap(Shape):
       divx = 200
       divy = 200
     #print(type(mapfile), type(""))
-    
+
     try:
       if '' + mapfile == mapfile: #HORRIBLE. Only way to cope with python2v3
         if mapfile[0] != '/':
@@ -131,6 +131,7 @@ class ElevationMap(Shape):
 
     self.buf = []
     self.buf.append(Buffer(self, verts, tex_coords, idx, None, smooth))
+    print('----', self.wh)
 
   def dropOn(self, px, pz):
     """determines approximately how high an object is when dropped on the map
@@ -271,7 +272,7 @@ class ElevationMap(Shape):
     '''calculates the y intersection of a point on a face and returns the y
     value of the intersection of the line defined by x,z of pos through the
     triange.
-    
+
     **NB** it relies on Buffer.calc_normals() being called when the Buffer was
     created as that writes values into the element_normals array. This will
     be faster than working out the cross product of two sides of the face.
@@ -281,11 +282,11 @@ class ElevationMap(Shape):
         is the index of a record in element_array_buffer and element_normals
       *pos*
         tuple (x, y, z) of point
-        
+
     Returns:
       tuple of y value, normal vector (xn, yn, zn)
     '''
-    face = self.buf[0].element_array_buffer[ix] 
+    face = self.buf[0].element_array_buffer[ix]
     nVec = self.buf[0].element_normals[ix]
     v = self.buf[0].array_buffer[face[0], 0:3]
     kVal = np.dot(nVec, v)
@@ -299,8 +300,12 @@ class ElevationMap(Shape):
     state['depth'] = self.depth
     state['ix'] = self.ix
     state['iy'] = self.iy
+    state['wh'] = self.wh
+    state['hh'] = self.hh
+    state['ws'] = self.ws
+    state['hs'] = self.hs
     return state
-  
+
   def __setstate__(self, state):
     super(ElevationMap, self).__setstate__(state)
     self.width = state['width']
@@ -308,6 +313,10 @@ class ElevationMap(Shape):
     self.depth = state['depth']
     self.ix = state['ix']
     self.iy = state['iy']
+    self.wh = state['wh']
+    self.hh = state['hh']
+    self.ws = state['ws']
+    self.hs = state['hs']
 
 def _intersect_triangle(v1, v2, v3, pos):
   """calculates the y intersection of a point on a triangle and returns the y

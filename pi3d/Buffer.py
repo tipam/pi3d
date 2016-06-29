@@ -94,7 +94,7 @@ class Buffer(Loadable):
           self.array_buffer[:,3:6] = self.calc_normals()
         else:
           self.array_buffer[:,3:6] = np.array(normals, dtype="float32")
-      
+
     self.material = (0.5, 0.5, 0.5, 1.0)
     self.draw_method = GL_TRIANGLES
     from pi3d.Display import Display
@@ -146,7 +146,7 @@ class Buffer(Loadable):
       if not (isinstance(pts, np.ndarray)):
         pts = np.array(pts)
       self.array_buffer[offset:(offset + n), 0:3] = pts[:,:]
-    if normals is not None: 
+    if normals is not None:
       n = len(normals)
       if not (isinstance(normals, np.ndarray)):
         normals = np.array(normals)
@@ -316,6 +316,7 @@ class Buffer(Loadable):
       'unib': list(self.unib),
       'array_buffer': self.array_buffer,
       'element_array_buffer': self.element_array_buffer,
+      'element_normals': self.element_normals,
       'material': self.material,
       'textures': self.textures,
       'draw_method': self.draw_method,
@@ -323,12 +324,13 @@ class Buffer(Loadable):
       'N_BYTES': self.N_BYTES
       }
 
-  
+
   def __setstate__(self, state):
     unib_tuple = tuple(state['unib'])
     self.unib = (ctypes.c_float * 12)(*unib_tuple)
     self.array_buffer = state['array_buffer']
     self.element_array_buffer = state['element_array_buffer']
+    self.element_normals = state['element_normals']
     self.material = state['material']
     self.textures = state['textures']
     self.draw_method = state['draw_method']
