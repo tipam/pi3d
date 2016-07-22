@@ -133,7 +133,7 @@ Total zipped download from github c. 574 kB extracts to 1.2 MB
 #.  **images** To show in ReadMe on github 325 kB
 #.  **ReadMe** This file in markup and plain text 31 kB
 #.  **ChangeLog.txt** Latest changes of pi3d 19 kB
-#.  **six.py** utilities to help run under python2 and python3 13 kB
+#.  **six_mod.py** utilities to help run under python2 and python3 13 kB
 #.  **misc. others** 10 kB
 
 Setup on the Raspberry Pi
@@ -326,36 +326,27 @@ Windows
   Firefox browsers so you may have copies already on your machine but in
   my experience you will need to copy the files to your project location and
   existing copies  will be 32 bit versions so won't work with 64 bit python
-  - see notes below.
+  - see notes below. (If you manage to get 64 bit python working with pi3d
+  please let me know)
 
   There are the usual issues of 32v.64bit and python2v3. While
-  testing and developing I used python2.7 and 32 bits as this seemed to
-  be the most straightforward installation for pygame. However there are
-  resources and instructions for all the components in all flavours if you
-  search around on line! These were the steps I took::
+  testing and developing I used python2.7 and 32 bits, msi installing
+  python and pygame and pip installing numpy and Pillow as this seemed to
+  be the most straightforward. Subsequently I have installed various different
+  version of python both 32 and 64 bit and though I haven't managed to get
+  64 bit to work I have found the best method to use is to install python
+  using the standard windows install then install everything else from
+  Christoph Gohlke's site http://www.lfd.uci.edu/~gohlke/pythonlibs/::
 
-    1. download and run the msi for python2.7.9 from python.org. I had to
+    1. Install 32 bit python from python.org. I had to
     select the last option in the list of components to install
     ``..add python.exe to Path`` by selecting the option to install on
-    hard drive.
-
-    3. download and run the msi for pygame win32-py2.7 from pygame.org.
-    2. open command prompt window then
-    4. .. pip install numpy
-    5. .. pip install Pillow
-
-    Alternatively use windows installers or easy_install see some discussion
-    here https://groups.google.com/d/msg/pi3d/26I1m_BvVk8/XGfCiMbbAJAJ
-    
-    NB the easy_install routine takes a while for numpy but is pretty fast
-    for the Pillow module but it leaves the compiled files zipped inside an egg
-    file. This probably has an impact on start-up time when you first run
-    a program using pi3d. Apparently there is an option to force it to unzip
-
-    .. easy_install --always-unzip
-    or easy_install -Z
-
-    but neither were satisfactory when I tried.
+    hard drive. Also choose the option to install for all users
+    2. http://www.lfd.uci.edu/~gohlke/pythonlibs/#pygame
+    3. http://www.lfd.uci.edu/~gohlke/pythonlibs/#numpy
+    4. http://www.lfd.uci.edu/~gohlke/pythonlibs/#pillow
+    5. each then installed from the command line with
+    ``pip install numpy-1.11.1+mkl-cp35-cp35m-win32.whl`` and so on.
 
   As well as installing the python modules you also need to either find
   several ANGLE dll files on your system or download them from
@@ -383,10 +374,11 @@ Windows
   add the path to pi3d at the beginning of any files trying to import pi3d::
 
       import sys
-      sys.path.insert(1, "C:\Users\whoever\Documents\GitHub\pi3d")
+      sys.path.insert(1, "C:/Users/whoever/Documents/GitHub/pi3d")
 
   For convenience, in pi3d_demos this is included in a file ``demo.py``
-  which is imported at the start of each file.
+  which is imported at the start of each file. I have found it safer to use
+  generic forward ``/`` than windows ``\`` or ``\\`` in these paths.
 
   On windows the pi3d events system (as used by Silo and a couple of other
   demos) does not work as it uses fairly low level linux specific code.

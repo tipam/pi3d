@@ -3,7 +3,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import ctypes
 
 import numpy as np
-from math import tan, cos, sin, radians, degrees, atan2, sqrt
+import math
 
 from pi3d.constants import *
 from pi3d.util.Utility import vec_normal, vec_cross, vec_sub, vec_dot
@@ -14,7 +14,7 @@ class Camera(DefaultInstance):
   created if none specified in script prior to creating a Shape
   """
   def __init__(self, at=(0, 0, 0), eye=(0, 0, -0.1), lens=None,
-              is_3d=True, scale=1.0):
+              is_3d=True, scale=1.0, absolute=True):
     """Set up view matrix to look from eye to at including perspective
 
     Arguments:
@@ -31,6 +31,10 @@ class Camera(DefaultInstance):
       *scale*
         number of pixels per unit of size for orthographic camera or divisor
         for fov if perspective
+      *absolute*
+        when True (default) then all rotations are relative to the absolute
+        frame of reference. When False then rotations are relative to the
+        rotated position
     """
     super(Camera, self).__init__()
 
@@ -54,6 +58,16 @@ class Camera(DefaultInstance):
     self.rtn = [0.0, 0.0, 0.0]
     self.scale = scale
     self.was_moved = True
+    self.rotated = False
+    self.mtrx_made = True
+    self.absolute = absolute
+    self.r_mtrx = np.identity(4, dtype='float32') # rotation matrix for rotations relative to rotated frame of reference
+    self.rx = np.identity(4, dtype='float32') # hold rotation matrices for each axis
+    self.ry = np.identity(4, dtype='float32')
+    self.rz = np.identity(4, dtype='float32')
+    self.t1 = np.identity(4, dtype='float32') # translation applied prior to rotation i.e. for stereo effect
+    self.t2 = np.identity(4, dtype='float32') # translation applied after rotation i.e. actual position
+
 
   @staticmethod
   def _default_instance():
@@ -90,9 +104,9 @@ class Camera(DefaultInstance):
     if target[0] == self.eye[0] and target[1] == self.eye[1] and target[2] == self.eye[2]:
       return
     dx, dy, dz = target[0] - self.eye[0], target[1] - self.eye[1], target[2] - self.eye[2]
-    rot = -degrees(atan2(dx, dz))
+    rot = -math.degrees(math.atan2(dx, dz))
     horiz = (dx * dx + dz * dz) ** 0.5
-    tilt = degrees(atan2(dy, horiz))
+    tilt = math.degrees(math.atan2(dy, horiz))
     self.rotate(tilt, rot, 0)
     return tilt, rot
 
@@ -101,7 +115,9 @@ class Camera(DefaultInstance):
     vector [x,y,z] this can be used directly for positioning the view
     position without resorting to trig functions. Also see relocate()
     """
-    return self.mtrx[0:3,3]
+    if not self.rotated:
+      self._make_r_mtrx()
+    return self.r_mtrx[0:3,2]
 
   def relocate(self, rot=None, tilt=None, point=np.array([0.0, 0.0, 0.0]),
                 distance=np.array([0.0, 0.0, 0.0]), normal=None,
@@ -145,7 +161,9 @@ class Camera(DefaultInstance):
     if rot is not None:
       self.rotateY(rot)
 
-    direction = self.mtrx[0:3,3]
+    if not self.rotated:
+      self._make_r_mtrx()
+    direction = self.r_mtrx[0:3,2] # NB this is different from the direction vector in self.mtrx
     if crab:
       direction = np.cross(direction, [0.0, 1.0, 0.0]) # horizontal sideways
     if normal is None: # move the camera to new location now
@@ -168,10 +186,21 @@ class Camera(DefaultInstance):
         tuple (x, y, z) floats
     """
     self.eye = np.array(pt)
-    m = np.identity(4, dtype="float32")
-    m[3,:3] = -self.eye
-    self.mtrx = np.dot(m, self.mtrx)
+    self.t2[3,:3] = -self.eye
+    #self.mtrx = np.dot(m, self.mtrx)
     self.was_moved = True
+    self.mtrx_made = False
+
+  def _rotate_axis(self, angle, k0, k1, k2, k3):
+    ''' similar job needed for each axis but with different signs
+    '''
+    c = math.cos(math.radians(angle))
+    s = math.sin(math.radians(angle))
+    self.was_moved = True
+    self.mtrx_made = False
+    self.rotated = False
+    return [[k0 * c, k1 * s], 
+            [k2 * s, k3 * c]]
 
   def rotateZ(self, angle):
     """Rotate camera z axis
@@ -180,16 +209,8 @@ class Camera(DefaultInstance):
       *angle*
         in degrees
     """
-    if angle:
-      c = cos(radians(angle))
-      s = sin(radians(angle))
-      self.mtrx = np.dot([[c, s, 0, 0],
-                         [-s, c, 0, 0],
-                         [0, 0, 1, 0],
-                         [0, 0, 0, 1]],
-                      self.mtrx)
-      self.rtn[2] = angle
-      self.was_moved = True
+    self.rz[0:2,0:2] = self._rotate_axis(angle, 1, 1, -1, 1)
+    self.rtn[2] = angle
 
   def rotateY(self, angle):
     """Rotate camera y axis
@@ -198,16 +219,8 @@ class Camera(DefaultInstance):
       *angle*
         in degrees
     """
-    if angle:
-      c = cos(radians(angle))
-      s = sin(radians(angle))
-      self.mtrx = np.dot([[c, 0, -s, 0],
-                       [0, 1, 0, 0],
-                       [s, 0, c, 0],
-                       [0, 0, 0, 1]],
-                      self.mtrx)
-      self.rtn[1] = angle
-      self.was_moved = True
+    self.ry[0:3:2,0:3:2] = self._rotate_axis(angle, 1, -1, 1, 1)
+    self.rtn[1] = angle
 
   def rotateX(self, angle):
     """Rotate camera x axis
@@ -216,15 +229,8 @@ class Camera(DefaultInstance):
       *angle*
         in degrees
     """
-    if angle:
-      c = cos(radians(angle))
-      s = sin(radians(angle))
-      self.mtrx = np.dot([[1, 0, 0, 0],
-                       [0, c, s, 0],
-                       [0, -s, c, 0],
-                       [0, 0, 0, 1]], self.mtrx)
-      self.rtn[0] = angle
-      self.was_moved = True
+    self.rx[1:3,1:3] = self._rotate_axis(angle, 1, 1, -1, 1)
+    self.rtn[0] = angle
 
   def rotate(self, rx, ry, rz):
     """Rotate camera
@@ -240,6 +246,84 @@ class Camera(DefaultInstance):
     self.rotateZ(rz)
     self.rotateX(rx)
     self.rotateY(ry)
+
+  def offset(self, pt):
+    """position camera
+
+    Arguments:
+      *pt*
+        tuple (x, y, z) floats
+    """
+    self.t1[3,:3] = -np.array(pt)
+    self.was_moved = True
+    self.mtrx_made = False
+
+  def make_mtrx(self):
+    if not self.rotated:
+      self._make_r_mtrx()
+    self.mtrx = np.dot(self.t2,
+                    np.dot(self.r_mtrx,
+                        np.dot(self.t1, self.mtrx)))
+    self.mtrx_made = True
+
+  def _make_r_mtrx(self):
+    if self.absolute:
+      self.r_mtrx = np.identity(4, dtype='float32')
+    self.r_mtrx = np.dot(self.r_mtrx, 
+                      np.dot(self.ry,
+                          np.dot(self.rx, self.rz)))
+    self.rotated = True
+    
+  def euler_angles(self, matrix=None):
+    ''' Or more correctly Tait-Bryan angles. Argument
+    
+      *matrix*
+        can supply a rotation matrix to use (as generated by the following
+        method.) Defaults to using the Camera.r_mtrx
+        
+    in pi3d arrangement (C type and Z into screen)::
+    
+        cz.cx-sz.sx.sy  cy.sz+cz.sx.sy  -cx.sy
+        -cx.sz          cz.cx            sx
+        cz.sy+cy.sz.sx  sz.sy-cz.cy.sx   cx.cy``
+    '''
+    m = matrix if matrix is not None else self.r_mtrx # alias for clarity
+    rx = math.asin(m[1,2])
+    cx = math.cos(rx)
+    if cx != 0.0:
+      ry = math.atan2(-m[0,2], m[2,2])
+    else:
+      ry = math.pi / 2.0
+    rz = math.atan2(-m[1,0], m[1,1])
+    return math.degrees(rx), math.degrees(ry), math.degrees(rz)
+  
+  def matrix_from_two_vecors(self, start_vector, vector):
+    ''' uses two 3D vectors (arrays) to generate a rotation vector representing
+    the movement from one direction to another. NB because there are many
+    ways of doing this the z rotation may not match so this this method might
+    be best combined with the euler_angles system above. See the 
+    pi3d_demos/ForestStereo.py example - key press 'k'
+    '''
+    start_vector /= ((start_vector ** 2).sum()) ** 0.5 # convert to unit length
+    vector /= ((vector ** 2).sum()) ** 0.5
+    axis = np.cross(vector, start_vector)
+    axis /= ((axis ** 2).sum()) ** 0.5
+    # sine of angle, for some reason has to be assigned to cos value i.e.
+    # the angle is complementary to the expected one. Not really sure why this is!
+    c = np.dot(start_vector, vector)
+    angle = math.asin(c) # angle in radians
+    x, y, z = axis[0:3] # aliases for clarity in matrix below
+    s = math.cos(angle) # see comment above about using a = 90-a
+    t = 1.0 - c
+    return np.array([
+                     [t*x*x + c,   t*y*x + z*s, t*x*z - y*s, 0.0], # 1
+                     [t*x*y - z*s, t*y*y + c,   t*y*z + x*s, 0.0], # 2
+                     [t*x*z + y*s, t*y*z - x*s, t*z*z + c,   0.0], # 3
+                     [0.0,         0.0,         0.0,         1.0]], dtype='float')
+ 
+    
+#################################
+####### utility functions #######
 
 def _LookAtMatrix(at, eye, up=[0, 1, 0], reflect=False):
   """Define a matrix looking at.
@@ -286,7 +370,7 @@ def _ProjectionMatrix(near, far, fov, aspectRatio):
   """
   # Matrices are considered to be M[row][col]
   # Use DirectX convention, so need to do rowvec*Matrix to transform
-  size = 1 / tan(radians(fov)/2.0)
+  size = 1 / math.tan(math.radians(fov)/2.0)
   M = np.zeros((4, 4), dtype="float32")
   M[0,0] = size/aspectRatio
   M[1,1] = size  #negative value reflects scene on the Y axis

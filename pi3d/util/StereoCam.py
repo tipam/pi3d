@@ -1,4 +1,9 @@
+#!/usr/bin/python
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import ctypes
+import numpy as np
+import math
 
 from pi3d.constants import *
 from pi3d.Shader import Shader
@@ -62,6 +67,8 @@ void main(void) {{
     """.format(interlace * 2.0))
       #self.shader = Shader("2d_flat")
     self.camera_3d = Camera()
+    self.forMtrx = np.identity(4, dtype='float32') # initially not rotated
+    self.position = [0.0, 0.0, 0.0]
     self.camera_2d = Camera(is_3d=False)
     self.offs = separation / 2.0
     self.interlace = interlace
@@ -86,11 +93,25 @@ void main(void) {{
       self.tex_list.append(self.textures[i])
     opengles.glColorMask(1, 1, 1, 1)
 
-  def move_camera(self, position, rot, tilt):
-    self.camera_3d.reset()
-    self.camera_3d.rotate(tilt, rot, 0)
-    self.camera_3d.position(position)
+  def move_camera(self, position, rot, tilt, roll=0.0, absolute=True):
+    ''' Arguments:
+    
+      *position*
+        array [x,y,z]
 
+      *rot, tilt, roll*
+        rotations about y, x, z axis (yes it's not entirely logical for position
+        to be an array and orientation three values but it's too late to change!)
+
+      *absolute*
+        if set to False then the rotations are treated as relative to the
+        rotated frame of reference i.e. as if signals from VR headset 3
+        axis gyro.
+    '''
+    self.camera_3d.rotate(tilt, rot, roll)
+    self.camera_3d.position(position)
+    self.camera_3d.absolute = absolute
+    
   def start_capture(self, side):
     """ after calling this method all object.draw()s will rendered
     to this texture and not appear on the display.
@@ -98,9 +119,11 @@ void main(void) {{
       *side*
         Either 0 or 1 to determine stereoscopic view
     """
+    self.camera_3d.reset()
     offs = -self.offs if side == 0 else self.offs
-    self.camera_3d.position((self.camera_3d.mtrx[2,3] * offs, 0,
-                            -self.camera_3d.mtrx[0,3] * offs))
+    self.camera_3d.offset([offs, 0.0, 0.0])
+    #self.camera_3d.mtrx = np.dot(self.forMtrx, self.camera_3d.mtrx)
+    #self.camera_3d.position(self.position)
     tex = self.textures[side]
     tex._start()
     if self.interlace <= 0:
@@ -127,4 +150,7 @@ void main(void) {{
         self.sprites[i].draw(self.shader, [self.tex_list[i]], 0.0, 0.0, self.camera_2d)
     else:
       self.sprites[0].draw(self.shader, self.tex_list, 0.0, 0.0, self.camera_2d)
+      
+  def get_direction(self):
+    return self.camera_3d.get_direction()
 
