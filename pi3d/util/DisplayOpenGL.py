@@ -51,7 +51,7 @@ class DisplayOpenGL(object):
     self.display_config = display_config
 
     for smpl in [samples, 0]: # try with samples first but ANGLE dll can't cope so drop to 0 for windows
-      r = openegl.eglInitialize(self.display, 0, 0)
+      r = openegl.eglInitialize(self.display, None, None)
 
       attribute_list = c_ints((EGL_RED_SIZE, 8,
                                EGL_GREEN_SIZE, 8,
