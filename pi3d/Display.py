@@ -321,9 +321,13 @@ class Display(object):
 
     if MARK_CAMERA_CLEAN_ON_EACH_LOOP:
       from pi3d.Camera import Camera
-      camera = Camera.instance()
-      if camera is not None:
-        camera.was_moved = False
+      #camera = Camera.instance()
+      #if camera is not None:
+      #  camera.was_moved = False
+      cameras = Camera.all_instances()
+      if cameras is not None:
+        for camera in cameras:
+          camera.was_moved = False
 
     if self.tidy_needed:
       self._tidy()

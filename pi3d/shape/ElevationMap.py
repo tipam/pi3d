@@ -131,7 +131,6 @@ class ElevationMap(Shape):
 
     self.buf = []
     self.buf.append(Buffer(self, verts, tex_coords, idx, None, smooth))
-    print('----', self.wh)
 
   def dropOn(self, px, pz):
     """determines approximately how high an object is when dropped on the map

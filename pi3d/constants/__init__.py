@@ -4,11 +4,11 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 pi3d.constants contains constant values, mainly integers, from OpenGL ES 2.0.
 """
 
-__version__ = '2.12'
+__version__ = '2.13'
 
 STARTUP_MESSAGE = """
 
-  Pi3D module - version {}s
+  Pi3D module - version {}
 
   Copyright (c) Tim Skillman, 2012-2016
   Copyright (c) Patrick Gaunt, 2012-2016
@@ -126,8 +126,23 @@ def _windows():
   As above but you have to download 64 bit versions of the dll files from
   here http://github.com/paddywwoof/pi3d_windll
   """
+  import ctypes.wintypes as wt
+  from ctypes import POINTER, c_void_p, c_int32, c_uint, c_float
   opengles = _load_library("libglesv2.dll", "Win")
   openegl = _load_library("libegl.dll", "Win")
+
+  openegl.eglGetDisplay.argtypes = [wt.HDC]
+  openegl.eglGetDisplay.restype = c_void_p
+  openegl.eglInitialize.argtypes = [c_void_p, POINTER(c_int32), POINTER(c_int32)]
+  openegl.eglChooseConfig.argtypes = [c_void_p, c_void_p, c_void_p, c_int32, POINTER(c_int32)]
+  openegl.eglCreateContext.argtypes = [c_void_p, c_void_p, c_int32, c_void_p]
+  openegl.eglCreateContext.restype = c_void_p
+  openegl.eglCreateWindowSurface.argtypes = [c_void_p, c_void_p, c_void_p, c_int32]
+  openegl.eglCreateWindowSurface.restype = c_void_p
+  openegl.eglMakeCurrent.argtypes = [c_void_p, c_void_p, c_void_p, c_void_p]
+  openegl.eglSwapBuffers.argtypes = [c_void_p, c_void_p]
+
+  opengles.glUniformMatrix4fv.argtypes = [c_int32, c_int32, c_int32, c_void_p]
 
   return platform, bcm, openegl, opengles # opengles now determined by platform
 

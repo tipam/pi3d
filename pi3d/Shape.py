@@ -160,6 +160,11 @@ class Shape(Loadable):
     self.load_opengl() # really just to set the flag so _unload_opengl runs
 
     camera = camera or self._camera or Camera.instance()
+    
+    if not camera.mtrx_made:
+      camera.make_mtrx()
+    if light_camera and not light_camera.mtrx_made:
+      light_camera.make_mtrx()
 
     if self.MFlg or len(mlist) > 0 or len(self.children) > 0:
       # Calculate rotation and translation matrix for this model using numpy.
