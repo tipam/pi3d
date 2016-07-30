@@ -4,6 +4,22 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
+v2.13
+2016-07-30  Bug fixes: windows 64 bit now works after specifying argument
+            types for ctypes functions for libEGL.dll. NB only the functions
+            that caused an error in RunTests were fixed so there could be 
+            instances in future where others come back to bite.
+            
+            Improvements: Camera now has an ``absolute=True`` argument (and
+            settable attribute) that determines whether rotations are done
+            relative to the starting rotation (determined by ``eye`` and ``at``
+            position vectors) or relative to the position the Camera is
+            currently rotated to. There is also an ``offset`` method that
+            allows Camera translation before rotation so the Camera behaves
+            in a similar way to the Shape system with matrix multiplicaiton
+            delayed until the first Shape.draw() There are also convenience
+            methods for calculating euler angles and correction rotations.
+
 v2.12
 2016-06-29  Bug fixes: hacked six module renamed to six_mod to avoid conflict.
             Checking if samples can be used (can't with ANGLE on windows)

@@ -321,25 +321,26 @@ Windows
 
   In order for pi3d to run on windows you need to install python, Pillow
   and numpy (as above) but pi3d also requires pygame to provide the graphics
-  surface and UI, also ANGLE to provide the EGL and GLESv2 emulator libraries.
-  These files are used by some common applications such as the Chrome and
-  Firefox browsers so you may have copies already on your machine but in
+  surface and UI, also ANGLE has been used to provide the EGL and GLESv2 emulator
+  libraries. These dll files are used by some common applications such as the
+  Chrome and Firefox browsers so you may have copies already on your machine but in
   my experience you will need to copy the files to your project location and
-  existing copies  will be 32 bit versions so won't work with 64 bit python
-  - see notes below. (If you manage to get 64 bit python working with pi3d
-  please let me know)
+  existing copies will be 32 bit versions so won't work with 64 bit python
+  - see notes below.
 
-  There are the usual issues of 32v.64bit and python2v3. While
+  There are the usual issues of 32v.64bit and python2v3. Initially, while
   testing and developing I used python2.7 and 32 bits, msi installing
   python and pygame and pip installing numpy and Pillow as this seemed to
   be the most straightforward. Subsequently I have installed various different
-  version of python both 32 and 64 bit and though I haven't managed to get
-  64 bit to work I have found the best method to use is to install python
-  using the standard windows install then install everything else from
-  Christoph Gohlke's site http://www.lfd.uci.edu/~gohlke/pythonlibs/::
+  version of python both 32 and 64 bit and I have found the best and
+  quickest method by far is to install python using the standard windows
+  install (If you want the 64 bit version you have to avoid the obvious and look
+  at the list of all versions as the default download button will be 32 bit) **then
+  install everything else from Christoph Gohlke's site**
+  http://www.lfd.uci.edu/~gohlke/pythonlibs/::
 
-    1. Install 32 bit python from python.org. I had to
-    select the last option in the list of components to install
+    1. Install python from python.org. When running the installer I had
+    to select the last option in the list of components to install
     ``..add python.exe to Path`` by selecting the option to install on
     hard drive. Also choose the option to install for all users
     2. http://www.lfd.uci.edu/~gohlke/pythonlibs/#pygame
@@ -366,7 +367,9 @@ Windows
     mozglue.dll ## only for Firefox
 
   You might only need the first two files if your system has recent drivers
-  or GPU.
+  or GPU. When trying to get 64 bit python working I tried two different
+  options when compiling the dll files but they seem to be equivalent and
+  I will rationalize them when I get chance.
     
   You can install pi3d using the pip or easy_install methods but you can also
   either clone it with git or download the zip from github and extract
