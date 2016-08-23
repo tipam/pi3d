@@ -119,13 +119,14 @@ class DisplayOpenGL(object):
     elif PLATFORM == PLATFORM_PI:
       self.dispman_display = bcm.vc_dispmanx_display_open(0) #LCD setting
       self.dispman_update = bcm.vc_dispmanx_update_start(0)
+      alpha = c_ints((DISPMANX_FLAGS_ALPHA_PREMULT, 0, 0))
       self.dispman_element = bcm.vc_dispmanx_element_add(
         self.dispman_update,
         self.dispman_display,
         layer, ctypes.byref(dst_rect),
         0, ctypes.byref(src_rect),
         DISPMANX_PROTECTION_NONE,
-        0, 0, 0)
+        ctypes.byref(alpha), 0, 0)
 
       nativewindow = c_ints((self.dispman_element, w, h + 1))
       bcm.vc_dispmanx_update_submit_sync(self.dispman_update)
