@@ -44,8 +44,6 @@ from pi3d.shape.Torus import Torus
 from pi3d.shape.Triangle import Triangle
 from pi3d.shape.Tube import Tube
 
-from pi3d.sprite.Ball import Ball
-
 from pi3d.util import Log
 from pi3d.util import Utility
 
@@ -76,6 +74,7 @@ if PLATFORM != PLATFORM_ANDROID:
   from pi3d.util.StereoCam import StereoCam
   from pi3d.shape.EnvironmentCube import EnvironmentCube, loadECfiles
   from pi3d.shape.Sprite import Sprite, ImageSprite
+  from pi3d.sprite.Ball import Ball
   from pi3d.util.Gui import Button
   from pi3d.util.Gui import Gui
   from pi3d.util.Gui import Radio
