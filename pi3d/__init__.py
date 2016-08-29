@@ -21,8 +21,6 @@ from pi3d.Shape import Shape
 
 from pi3d.Light import Light
 
-from pi3d.shape.EnvironmentCube import EnvironmentCube, loadECfiles
-from pi3d.shape.Sprite import Sprite, ImageSprite
 
 if PLATFORM != PLATFORM_WINDOWS:
   from pi3d.event.Event import InputEvents
@@ -37,7 +35,6 @@ from pi3d.shape.Helix import Helix
 from pi3d.shape.Lathe import Lathe
 from pi3d.shape.MergeShape import MergeShape
 from pi3d.shape.Model import Model
-from pi3d.shape.MultiSprite import MultiSprite
 from pi3d.shape.Plane import Plane
 from pi3d.shape.Points import Points
 from pi3d.shape.Lines import Lines
@@ -59,14 +56,6 @@ from pi3d.util.TextBlock import TextBlock
 from pi3d.util.TextBlock import TextBlockColour
 from pi3d.util.TextBlock import TextBlockColourGradient
 
-from pi3d.util.Gui import Button
-from pi3d.util.Gui import Gui
-from pi3d.util.Gui import Radio
-from pi3d.util.Gui import Scrollbar
-from pi3d.util.Gui import MenuItem
-from pi3d.util.Gui import Menu
-from pi3d.util.Gui import TextBox
-
 ################################### while testing don't import these as PIL not working!
 if PLATFORM != PLATFORM_ANDROID:
   from pi3d.Texture import Texture
@@ -86,3 +75,15 @@ if PLATFORM != PLATFORM_ANDROID:
   from pi3d.shape.Building import Position
   from pi3d.shape.Building import SolidObject
   from pi3d.util.StereoCam import StereoCam
+  from pi3d.shape.EnvironmentCube import EnvironmentCube, loadECfiles
+  from pi3d.shape.Sprite import Sprite, ImageSprite
+  from pi3d.util.Gui import Button
+  from pi3d.util.Gui import Gui
+  from pi3d.util.Gui import Radio
+  from pi3d.util.Gui import Scrollbar
+  from pi3d.util.Gui import MenuItem
+  from pi3d.util.Gui import Menu
+  from pi3d.util.Gui import TextBox
+  from pi3d.shape.MultiSprite import MultiSprite
+else: # i.e. is android
+  from pi3d.Texture_android import Texture
