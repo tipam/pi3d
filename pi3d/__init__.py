@@ -34,7 +34,6 @@ from pi3d.shape.Extrude import Extrude
 from pi3d.shape.Helix import Helix
 from pi3d.shape.Lathe import Lathe
 from pi3d.shape.MergeShape import MergeShape
-from pi3d.shape.Model import Model
 from pi3d.shape.Plane import Plane
 from pi3d.shape.Points import Points
 from pi3d.shape.Lines import Lines
@@ -85,5 +84,6 @@ if PLATFORM != PLATFORM_ANDROID:
   from pi3d.util.Gui import Menu
   from pi3d.util.Gui import TextBox
   from pi3d.shape.MultiSprite import MultiSprite
+  from pi3d.shape.Model import Model
 else: # i.e. is android
   from pi3d.Texture_android import Texture
