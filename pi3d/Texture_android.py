@@ -214,7 +214,8 @@ class Texture(Loadable):
       s = self.file_string + ' '
       #im = Image.open(self.file_string)
       self.image = np.load(self.file_string)['arr_0'] # has to be saved with default key
-
+      self.iy, self.ix, mode = self.image.shape
+      self._loaded = True
     elif self.string_type == PIL_IMAGE: # won't work without PIL
       s = 'PIL.Image '
       im = self.file_string
