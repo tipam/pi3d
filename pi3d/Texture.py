@@ -7,7 +7,11 @@ import numpy as np
 
 from six_mod.moves import xrange
 
-from PIL import Image
+try:
+  from PIL import Image
+  PIL_OK = True
+except ImportError:
+  PIL_OK = False
 
 from pi3d.constants import *
 from pi3d.util.Ctypes import c_ints
@@ -204,16 +208,25 @@ class Texture(Loadable):
     if self._loaded:
       return
 
-    if self.string_type == FILE:
+    if self.string_type == FILE and PIL_OK:
       s = self.file_string + ' '
       im = Image.open(self.file_string)
-    elif self.string_type == PIL_IMAGE:
+    elif self.string_type == PIL_IMAGE and PIL_OK:
       s = 'PIL.Image '
       im = self.file_string
     else:
-      s = 'numpy.ndarray '
-      self.iy, self.ix, mode = self.file_string.shape
-      self.image = self.file_string
+      if self.string_type == NUMPY:
+        s = 'numpy.ndarray '
+        self.image = self.file_string
+      else: # i.e. FILE but not PIL_OK
+        ''' NB this has to be a compressed numpy array saved using something like
+              im = np.array(Image.open('{}.png'.format(FNAME)))
+              np.savez_compressed('{}'.format(FNAME), im)
+        which will produce a file with extension .npz '''
+        s = self.file_string + ' '
+        self.image = np.load(self.file_string)['arr_0'] # has to be saved with default key
+
+      self.iy, self.ix, mode = self.image.shape
       self._tex = ctypes.c_int()
       self._loaded = True
       return # skip the rest for numpy arrays - faster but no size checking

@@ -1,5 +1,4 @@
 import ctypes
-from PIL import Image
 
 from pi3d.constants import *
 from pi3d.Shader import Shader

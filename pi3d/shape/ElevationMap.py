@@ -5,7 +5,11 @@ import sys, os
 
 from six_mod.moves import xrange
 
-from PIL import Image, ImageOps
+try:
+  from PIL import Image
+  PIL_OK = True
+except ImportError:
+  PIL_OK = False
 
 import math
 import numpy as np
@@ -59,32 +63,43 @@ class ElevationMap(Shape):
       divy = 200
     #print(type(mapfile), type(""))
 
-    try:
-      if '' + mapfile == mapfile: #HORRIBLE. Only way to cope with python2v3
-        if mapfile[0] != '/':
-          for p in sys.path:
-            if os.path.isfile(p + '/' + mapfile): # this could theoretically get different files with same name
-              mapfile = p + '/' + mapfile
-              break
-        if VERBOSE:
-          print("Loading height map ...", mapfile)
+    if PIL_OK:
+      try:
+        if '' + mapfile == mapfile: #HORRIBLE. Only way to cope with python2v3
+          if mapfile[0] != '/':
+            for p in sys.path:
+              if os.path.isfile(p + '/' + mapfile): # this could theoretically get different files with same name
+                mapfile = p + '/' + mapfile
+                break
+          if VERBOSE:
+            print("Loading height map ...", mapfile)
 
-        im = Image.open(mapfile)
-      else:
-        im = mapfile #allow image files to be passed as mapfile
-    except:
-      im = mapfile
-    ix, iy = im.size
-    if (ix > 200 and divx == 0) or (ix != divx and iy != divy):
-      if divx == 0:
-        divx = 200
-        divy = 200
-      im = im.resize((divx, divy), Image.ANTIALIAS)
+          im = Image.open(mapfile)
+        else:
+          im = mapfile #allow image files to be passed as mapfile
+      except:
+        im = mapfile
       ix, iy = im.size
+      if (ix > 200 and divx == 0) or (ix != divx and iy != divy):
+        if divx == 0:
+          divx = 200
+          divy = 200
+        im = im.resize((divx, divy), Image.ANTIALIAS)
+        ix, iy = im.size
 
-    im = im.transpose(Image.FLIP_TOP_BOTTOM)
-    im = im.transpose(Image.FLIP_LEFT_RIGHT)
-    self.pixels = im.load()
+      im = im.transpose(Image.FLIP_TOP_BOTTOM)
+      im = im.transpose(Image.FLIP_LEFT_RIGHT)
+      self.pixels = im.load()
+    else: 
+      ''' images saved as compressed numpy npz file. No resizing so needs 
+      to be right size. TODO make this repeated code less WET'''
+      if mapfile[0] != '/':
+        for p in sys.path:
+          if os.path.isfile(p + '/' + mapfile): # this could theoretically get different files with same name
+            mapfile = p + '/' + mapfile
+            break
+      self.pixels = np.load(mapfile)['arr_0'][::-1,::-1] # has to be saved with default key
+      ix, iy = self.pixels.shape[:2]
     self.width = width
     self.depth = depth
     self.height = height
@@ -113,7 +128,7 @@ class ElevationMap(Shape):
     for y in xrange(0, iy):
       for x in xrange(0, ix):
         pxl = self.pixels[x, y]
-        hgt = pxl[0] if type(pxl) is tuple else pxl
+        hgt = pxl[0] if hasattr(pxl, '__iter__') else pxl
         hgt *= self.ht
         this_x = -self.wh + x * self.ws
         this_z = -self.hh + y * self.hs
