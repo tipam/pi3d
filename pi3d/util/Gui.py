@@ -8,7 +8,7 @@ DTK = 0.05 #minimum time between key strokes
 DTM = 0.15 #minimum time between mouse clicks
 
 class Gui(object):
-  def __init__(self, font):
+  def __init__(self, font, show_pointer=True):
     """hold information on all widgets and the pointer, creates a 2D Camera
     and uv_flat shader. Needs to have a Font object passed to it keeps track
     of when the last mouse click or key stroke to avoid double counting.
@@ -27,15 +27,17 @@ class Gui(object):
     self.font = font
     self.font.blend = True
     self.focus = None
+    self.show_pointer = show_pointer
     for p in sys.path:
       icon_path = p + '/pi3d/util/icons/'
       if os.path.exists(icon_path):
         self.icon_path = icon_path
         break
-    tex = pi3d.Texture(self.icon_path + "pointer.png", blend=True, mipmap=False)
-    self.pointer = pi3d.Sprite(camera=self.camera, w=tex.ix, h=tex.iy, z=0.5)
-    self.pointer.set_draw_details(self.shader, [tex])
-    self.p_dx, self.p_dy = tex.ix/2.0, -tex.iy/2.0
+    if self.show_pointer:
+      tex = pi3d.Texture(self.icon_path + "pointer.png", blend=True, mipmap=False)
+      self.pointer = pi3d.Sprite(camera=self.camera, w=tex.ix, h=tex.iy, z=0.5)
+      self.pointer.set_draw_details(self.shader, [tex])
+      self.p_dx, self.p_dy = tex.ix/2.0, -tex.iy/2.0
     self.next_tm = time.time() + DTM
 
   def draw(self, x, y):
@@ -44,8 +46,9 @@ class Gui(object):
     for w in self.widgets:
       if w.visible:
         w.draw()
-    self.pointer.position(x + self.p_dx, y + self.p_dy, 0.5)
-    self.pointer.draw()
+    if self.show_pointer:
+      self.pointer.position(x + self.p_dx, y + self.p_dy, 0.5)
+      self.pointer.draw()
 
   def check(self, x, y):
     tm = time.time()
