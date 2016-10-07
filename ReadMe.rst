@@ -26,7 +26,7 @@ or via mesa or ANGLE on 'big' machines. This makes it generally *faster*
 and opens up the world of *shaders* that allow effects such as normal and 
 reflection maps, blurring and many others. It has various demos of built-in
 shapes, landscapes, model loading, walk-about camera and much more! See the demos
-included with this code and experiment with them ..
+on github.com/pi3d/pi3d_demos and experiment with them ..
 
 If you are reading this document as the ReadMe in the repository then you
 can find the full version of the documentation here

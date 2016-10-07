@@ -150,10 +150,15 @@ class Font(Texture):
         xindex = 0
         yindex += 1
 
-    RGBs = 'RGBA' # if self.alpha else 'RGB' # always alpha
-    self.im = self.im.convert(RGBs)
+    #RGBs = 'RGBA' # if self.alpha else 'RGB' # always alpha
+    #self.im = self.im.convert(RGBs)
     self.image = np.array(self.im)
     self._tex = ctypes.c_int()
+    if background_color is None:
+      if isinstance(color, str):
+        from PIL import ImageColor
+        color = ImageColor.getrgb(color)
+      self.image[:,:,:3] = color[:3]
 
   def _load_disk(self):
     """
