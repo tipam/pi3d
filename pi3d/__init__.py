@@ -36,12 +36,13 @@ from pi3d.shape.ElevationMap import ElevationMap
 from pi3d.shape.Extrude import Extrude
 from pi3d.shape.Helix import Helix
 from pi3d.shape.Lathe import Lathe
-from pi3d.shape.MergeShape import MergeShape
-from pi3d.shape.Plane import Plane
-from pi3d.shape.Points import Points
 from pi3d.shape.Lines import Lines
+from pi3d.shape.LodSprite import LodSprite
+from pi3d.shape.MergeShape import MergeShape
 from pi3d.shape.Model import Model
 from pi3d.shape.MultiSprite import MultiSprite
+from pi3d.shape.Plane import Plane
+from pi3d.shape.Points import Points
 from pi3d.shape.Sphere import Sphere
 from pi3d.shape.Sprite import Sprite, ImageSprite
 from pi3d.shape.TCone import TCone
