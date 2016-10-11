@@ -70,7 +70,7 @@ class Texture(Loadable):
   def __init__(self, file_string, blend=False, flip=False, size=0,
                defer=DEFER_TEXTURE_LOADING, mipmap=True, m_repeat=False,
                free_after_load=False, i_format=None, filter=None,
-               normal_map=-1.0):
+               normal_map=None):
     """
     Arguments:
       *file_string*
@@ -109,9 +109,9 @@ class Texture(Loadable):
         if mipmap is true: NEAREST_MIPMAP_NEAREST or LINEAR_MIPMAP_NEAREST (default) will be used as minfilter 
         if mipmap is false: NEAREST (default) or LINEAR will be used as filter
       *normal_map*
-        if a value > 0.0 then the image file will be converted into a normal
-        map where Luminance value is proportional to height. The value of
-        nomral_map is used the scale the effect (see _normal_map())
+        if a value is not None then the image file will be converted into a 
+        normal map where Luminance value is proportional to height. The 
+        value of nomral_map is used the scale the effect (see _normal_map())
     """
     super(Texture, self).__init__()
     try:
@@ -193,7 +193,7 @@ class Texture(Loadable):
     else:
       arr = np.array(im)
 
-    if self.normal_map >= 0.0:
+    if self.normal_map is not None:
       arr = _normal_map(arr, self.normal_map)
 
     return arr
