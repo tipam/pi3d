@@ -36,7 +36,8 @@ class Font(Texture):
       File path/name to a TrueType font file.
 
     *color*:
-      Color in standard hex format #RRGGBB
+      Color in format '#RRGGBB', (255,0,0,255), 'orange' etc (as accepted 
+      by PIL.ImageDraw) default (255, 255, 255, 255) i.e. white 100% alpha
 
     *font_size*:
       Point size for drawing the letters on the internal Texture
@@ -74,6 +75,10 @@ class Font(Texture):
       value is 1.1; you can get a tighter bounding if you set this down
       closer to 1, but italics might get cut off at the right. Since PointText
       this isn't used.
+
+    *background_color*:
+      filled background in ImageDraw format as above. default None i.e.
+      transparent. 
     """
     super(Font, self).__init__(font, mipmap=mipmap)
     self.font = font

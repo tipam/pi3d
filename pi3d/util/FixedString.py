@@ -40,8 +40,8 @@ class FixedString(Texture):
       Camera object passed on to constructor of sprite
       
     *color*:
-      Color in format #RRGGBB, (255,0,0,255) etc (as accepted by PIL.ImageDraw)
-      default (255, 255, 255, 255) i.e. white 100% alpha
+      Color in format '#RRGGBB', (255,0,0,255), 'orange' etc (as accepted 
+      by PIL.ImageDraw) default (255, 255, 255, 255) i.e. white 100% alpha
 
     *font_size*:
       Point size for drawing the letters on the internal Texture. default 24
@@ -125,9 +125,14 @@ class FixedString(Texture):
         self.im = self.im.filter(ImageFilter.SMOOTH_MORE)
         
     #self.image = self.im.convert('RGBA').tostring('raw', 'RGBA')
-    self.im = self.im.convert('RGBA')
+    #self.im = self.im.convert('RGBA')
     self.image = np.array(self.im)
     self._tex = ctypes.c_int()
+    if background_color is None and not f_type == 'BUMP':
+      if isinstance(color, str):
+        from PIL import ImageColor
+        color = ImageColor.getrgb(color)
+      self.image[:,:,:3] = color[:3]
     
     bmedge = nlines * height + 2.0 * margin
     self.sprite = Sprite(camera=camera, w=maxwid, h=bmedge)
