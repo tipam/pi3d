@@ -4,6 +4,15 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
+v2.15
+2016-10-13  Bug fixes: Blending fonts with background pixels now doesn't
+v2.14       give darkening effect.
+2016-10-07
+            Improvements: Can be used without install PIL using compressed
+            numpy arrays for images. FixedString BUMP filter uses same code
+            as normal_map in Texture which also allows +ve or -ve factor
+            values
+
 v2.13
 2016-07-30  Bug fixes: windows 64 bit now works after specifying argument
             types for ctypes functions for libEGL.dll. NB only the functions

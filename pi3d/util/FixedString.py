@@ -8,10 +8,8 @@ import sys
 if sys.version_info[0] == 3:
   unichr = chr
 
-try:
-  from PIL import Image, ImageDraw, ImageFont
-except:
-  print('Unable to import libraries from PIL')
+# NB PIL must be available to use FixedString. Otherwise use Pngfont
+from PIL import Image, ImageDraw, ImageFont
 
 from pi3d.constants import *
 from pi3d.Texture import *
@@ -62,8 +60,9 @@ class FixedString(Texture):
       draw. default None
       
     *f_type*:
-      filter type. BUMP will generate a normal map (indented), EMBOSS,
-      CONTOUR, BLUR and SMOOTH do what they sound like they will do.
+      filter type. BUMP will generate a normal map (indented by default,
+      +BUMP or BUMP+ will make it stick out), EMBOSS, CONTOUR, BLUR and 
+      SMOOTH do what they sound like they will do.
     """
     super(FixedString, self).__init__(font, mipmap=mipmap)
     self.font = font
@@ -111,8 +110,9 @@ class FixedString(Texture):
 
     if f_type == '':
       pass
-    elif f_type == 'BUMP':
-      self.im = self.make_bump_map()
+    elif 'BUMP' in f_type:
+      amount = -1.0 if '+' in f_type else 1.0
+      self.image = self._normal_map(np.array(self.im, dtype=np.uint8), amount)
     else:
       from PIL import ImageFilter
       if f_type == 'EMBOSS':
@@ -123,16 +123,13 @@ class FixedString(Texture):
         self.im = self.im.filter(ImageFilter.BLUR)
       elif f_type == 'SMOOTH':
         self.im = self.im.filter(ImageFilter.SMOOTH_MORE)
-        
-    #self.image = self.im.convert('RGBA').tostring('raw', 'RGBA')
-    #self.im = self.im.convert('RGBA')
-    self.image = np.array(self.im)
+      self.image = np.array(self.im)
+      if background_color is None:
+        if isinstance(color, str):
+          from PIL import ImageColor
+          color = ImageColor.getrgb(color)
+        self.image[:,:,:3] = color[:3]
     self._tex = ctypes.c_int()
-    if background_color is None and not f_type == 'BUMP':
-      if isinstance(color, str):
-        from PIL import ImageColor
-        color = ImageColor.getrgb(color)
-      self.image[:,:,:3] = color[:3]
     
     bmedge = nlines * height + 2.0 * margin
     self.sprite = Sprite(camera=camera, w=maxwid, h=bmedge)
@@ -152,32 +149,6 @@ class FixedString(Texture):
     '''wrapper for Shape.draw()'''
     self.sprite.draw(shader, txtrs, ntl, shny, camera, mlist)
     
-  def make_bump_map(self):
-    """ essentially just blurs the image then allocates R or G values
-    according to the rate of change of grayscale in x and y directions
-    """
-    import numpy as np
-    a = np.array(self.im, dtype=np.uint8)
-    a = np.average(a, axis=2, weights=[1.0, 1.0, 1.0, 0.0]).astype(int)
-    b = [[0.01, 0.025, 0.05, 0.025, 0.01],
-         [0.025,0.05,  0.065,0.05,  0.025],
-         [0.05, 0.065, 0.1,  0.065, 0.05],
-         [0.025,0.05,  0.065,0.05,  0.025],
-         [0.01, 0.025, 0.05, 0.025, 0.01]]
-    c = np.zeros(a.shape, dtype=np.uint8)
-    steps = [i - 2 for i in range(5)]
-    for i, istep in enumerate(steps):
-      for j, jstep in enumerate(steps):
-        c += (np.roll(np.roll(a, istep, 0), jstep, 1) * b[i][j]).astype(np.uint8)
-    cx = np.roll(c, 1, 0)
-    cy = np.roll(c, 1, 1)
-    d = np.zeros((a.shape[0], a.shape[1], 4), dtype=np.uint8)
-    d[:, :, 0] = ((c - cy) + 127).astype(int)
-    d[:, :, 1] = ((c - cx) + 127).astype(int)
-    d[:, :, 2] = (np.clip((65025 - (127 - d[:, :, 0]) ** 2 - (127 - d[:, :, 1]) ** 2) ** 0.5, 0, 255)).astype(int)
-    d[:, :, 3] = 255
-    return Image.fromarray(d)
-
   def _load_disk(self):
     """
     we need to stop the normal file loading by overriding this method

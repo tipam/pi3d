@@ -7,15 +7,12 @@ import numpy as np
 
 from six_mod.moves import xrange
 
-try:
-  from PIL import Image
-  PIL_OK = True
-except ImportError:
-  PIL_OK = False
-
 from pi3d.constants import *
 from pi3d.util.Ctypes import c_ints
 from pi3d.util.Loadable import Loadable
+
+if PIL_OK:
+  from PIL import Image
 
 MAX_SIZE = 1920
 DEFER_TEXTURE_LOADING = True
@@ -36,23 +33,6 @@ def round_up_to_power_of_2(x):
     p += p
   return p
 
-def _normal_map(image, factor=1.0):
-  ''' takes a numpy array and returns a normal map (as np array using
-  lightness as height map. Argument factor can scale the effect
-  '''
-  if image.shape[2] > 2:
-    gray = (image[:,:,:3] * [0.2989, 0.5870, 0.1140]).sum(axis=2) # grayscale
-  else:
-    gray = image[:,:,0]
-  grdnt = np.gradient(gray) # a tuple of two arrays x and y gradients
-  grdnt[0] = 128.0 - grdnt[0] * 0.5 * factor # range -256 to +256 converted to
-  grdnt[1] = 128.0 + grdnt[1] * 0.5 * factor # 0-255. x swapped r to l
-  z = np.maximum(0, 65025 - grdnt[0]**2 - grdnt[1]**2) # ensure +ve for sqrt
-  n_map = np.zeros(image.shape[:2] + (3,), dtype=np.uint8) # RGB same size
-  n_map[:,:,0] = grdnt[0].astype(np.uint8) # R
-  n_map[:,:,1] = grdnt[1].astype(np.uint8) # G
-  n_map[:,:,2] = (z**0.5).astype(np.uint8) # B
-  return n_map
 
 class Texture(Loadable):
   """loads an image file from disk and converts it into an array that
@@ -194,7 +174,7 @@ class Texture(Loadable):
       arr = np.array(im)
 
     if self.normal_map is not None:
-      arr = _normal_map(arr, self.normal_map)
+      arr = self._normal_map(arr, self.normal_map)
 
     return arr
 
@@ -317,6 +297,24 @@ class Texture(Loadable):
     if self.free_after_load:
         self.image = None
         self._loaded = False
+
+  def _normal_map(self, image, factor=1.0):
+    ''' takes a numpy array and returns a normal map (as np array using
+    lightness as height map. Argument factor can scale the effect
+    '''
+    if image.shape[2] > 2:
+      gray = (image[:,:,:3] * [0.2989, 0.5870, 0.1140]).sum(axis=2) # grayscale
+    else:
+      gray = image[:,:,0]
+    grdnt = np.gradient(gray) # a tuple of two arrays x and y gradients
+    grdnt[0] = 128.0 - grdnt[0] * 0.5 * factor # range -256 to +256 converted to
+    grdnt[1] = 128.0 + grdnt[1] * 0.5 * factor # 0-255. x swapped r to l
+    z = np.maximum(0, 65025 - grdnt[0]**2 - grdnt[1]**2) # ensure +ve for sqrt
+    n_map = np.zeros(image.shape[:2] + (3,), dtype=np.uint8) # RGB same size
+    n_map[:,:,0] = grdnt[0].astype(np.uint8) # R
+    n_map[:,:,1] = grdnt[1].astype(np.uint8) # G
+    n_map[:,:,2] = (z**0.5).astype(np.uint8) # B
+    return n_map
 
 
   def _unload_opengl(self):

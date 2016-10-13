@@ -2,10 +2,12 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import ctypes
 import numpy as np
-from PIL import Image
 
 from pi3d.constants import *
 from pi3d.util import Log
+
+if PIL_OK:
+  from PIL import Image
 
 def screenshot(filestring=None):
   """
@@ -15,6 +17,11 @@ def screenshot(filestring=None):
 
   The file will be saved in the same directory as the app if you don't add a path
   to it!
+  
+  If PIL is not available then the screenshot will be saved as a compressed 
+  numpy array and '.npz' will be appended to the filestring you supply. 
+  The image can be extracted from the npz file using:
+    img = np.load('filestring.npz')['arr_0']
   
   If this function is called without any argument then it will not save to
   file and will return a numpy array of the screen. The array and file, if
@@ -30,6 +37,8 @@ def screenshot(filestring=None):
   if filestring is None:
     return img
 
-  im = Image.frombuffer('RGB', (w, h), img, 'raw', 'RGB', 0, 1)
-  im.save(filestring, quality=90)
-
+  if PIL_OK:
+    im = Image.frombuffer('RGB', (w, h), img, 'raw', 'RGB', 0, 1)
+    im.save(filestring, quality=90)
+  else:
+    np.savez_compressed('{}'.format(filestring), img)

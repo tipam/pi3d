@@ -8,10 +8,8 @@ import sys
 if sys.version_info[0] == 3:
   unichr = chr
 
-try:
-  from PIL import Image, ImageDraw, ImageFont
-except:
-  print('Unable to import libraries from PIL')
+# NB PIL must be available to use Font. Otherwise use Pngfont
+from PIL import Image, ImageDraw, ImageFont
 
 from pi3d.constants import *
 from pi3d.Texture import Texture

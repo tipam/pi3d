@@ -44,6 +44,7 @@ from pi3d.constants import *
 import math, random, sys
 from six_mod.moves import filter
 
+# NB PIL must be available to use Building
 from PIL import ImageOps, ImageDraw, Image
 
 from pi3d.shape.MergeShape import MergeShape

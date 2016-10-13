@@ -4,7 +4,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 pi3d.constants contains constant values, mainly integers, from OpenGL ES 2.0.
 """
 
-__version__ = '2.14'
+__version__ = '2.15'
 
 STARTUP_MESSAGE = """
 
@@ -53,6 +53,12 @@ DISPLAY_CONFIG_NO_FRAME = 2
 DISPLAY_CONFIG_FULLSCREEN = 4
 DISPLAY_CONFIG_MAXIMIZED = 8
 
+# PIL module available
+try:
+  from PIL import Image
+  PIL_OK = True
+except ImportError:
+  PIL_OK = False
 
 # Lastly, load the libraries.
 def _load_library(name, dll_type="C"):

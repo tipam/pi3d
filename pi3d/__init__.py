@@ -68,6 +68,7 @@ from pi3d.util.Gui import TextBox
 from pi3d.util.Pngfont import Pngfont
 from pi3d.util.PointText import PointText
 from pi3d.util.PostProcess import PostProcess
+from pi3d.util.Screenshot import screenshot
 from pi3d.util.ShadowCaster import ShadowCaster
 from pi3d.util.StereoCam import StereoCam
 from pi3d.util.String import String
@@ -75,16 +76,13 @@ from pi3d.util.TextBlock import TextBlock
 from pi3d.util.TextBlock import TextBlockColour
 from pi3d.util.TextBlock import TextBlockColourGradient
 
-################################### while testing don't import these as PIL not working!
-try:
-  from PIL import Image
+################################### only import these if PIL available
+if PIL_OK:
   from pi3d.util.FixedString import FixedString
   from pi3d.util.Font import Font
-  from pi3d.util.Screenshot import screenshot
   from pi3d.shape.Building import Building
   from pi3d.shape.Building import corridor
   from pi3d.shape.Building import Size
   from pi3d.shape.Building import Position
   from pi3d.shape.Building import SolidObject
-except ImportError:
-  print('not using PIL')
+

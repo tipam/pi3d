@@ -5,12 +5,6 @@ import sys, os
 
 from six_mod.moves import xrange
 
-try:
-  from PIL import Image
-  PIL_OK = True
-except ImportError:
-  PIL_OK = False
-
 import math
 import numpy as np
 
@@ -18,6 +12,9 @@ from pi3d import *
 from pi3d.Buffer import Buffer
 from pi3d.Shape import Shape
 from pi3d.util import Utility
+
+if PIL_OK:
+  from PIL import Image
 
 # a rectangular surface where elevation is defined by a greyscal image
 class ElevationMap(Shape):

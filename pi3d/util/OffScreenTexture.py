@@ -1,6 +1,5 @@
 import ctypes, time
 import numpy as np
-#from PIL import Image
 
 from pi3d.constants import *
 from pi3d.Texture import Texture
@@ -16,8 +15,6 @@ class OffScreenTexture(Texture):
     super(OffScreenTexture, self).__init__(name)
     from pi3d.Display import Display
     self.ix, self.iy = Display.INSTANCE.width, Display.INSTANCE.height
-    #self.im = Image.new("RGBA",(self.ix, self.iy))
-    #self.image = np.array(self.im)
     self.image = np.zeros((self.iy, self.ix, 4), dtype=np.uint8)
     self.blend = False
     self.mipmap = False

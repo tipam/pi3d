@@ -1,16 +1,12 @@
 import ctypes
 import numpy as np
 
-#from PIL import ImageDraw
-
 from pi3d.constants import *
 from pi3d.Texture import Texture
 import sys
 if  sys.version_info[0] == 3:
   unichr = chr
 
-# Text and fonts
-# TODO TEXTURES NEED CLEANING UP
 
 class Pngfont(Texture):
   def __init__(self, font, color=(255,255,255,255)):
