@@ -173,22 +173,17 @@ class EventStream(object):
         try:
           s = os.read(fd, Format.EventSize)
         except Exception as e:
-          failed = getattr(cls, 'failed', None)
-          if not failed:
-            failed = set()
-            setattr(cls, 'failed', failed)
-          if fd not in failed:
-            LOGGER.error("Couldn't read fd %d %s", fd, e)
-            failed.add(fd)
-          continue
+          LOGGER.error("Couldn't read fd %d %s", fd, e)
+          selectlist.remove(fd)
+          s = None
+        for x in streams:
+          if x.filehandle == fd:
+            stream = x
+            break
+        event = EventStruct.EventStruct(stream)
         if s:
-          for x in streams:
-            if x.filehandle == fd:
-              stream = x
-              break
-          event = EventStruct.EventStruct(stream)
           event.decode(s)
-          yield event
+        yield event
       ready = select.select(selectlist, [ ], [ ], 0)[0]
 
   def __enter__(self):
