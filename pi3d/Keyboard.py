@@ -1,6 +1,6 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-import pi3d
+import contextlib, pi3d
 
 if pi3d.USE_PYGAME:
   import pygame
@@ -186,13 +186,13 @@ class PygameKeyboard(object):
   """ In this case KEYBOARD maps pygame codes to the X11 codes used above
   """
   KEYBOARD = {282:[145, "F1"], 283:[146, "F2"], 284:[147, "F3"],
-            285:[148, "F4"], 286:[149, "F5"], 287:[150, "F6"], 288:[151, "F7"], 
+            285:[148, "F4"], 286:[149, "F5"], 287:[150, "F6"], 288:[151, "F7"],
             289:[152, "F8"], 290:[153, "F9"], 291:[154, "F10"], 60:[92, "\\"],
             292:[155, "F11"], 293:[156, "F12"], 271:[13, "KP_Enter"],
-            305:[0, "Control_R"], 306:[0, "Control_L"], 308:[0, "Alt_L"], 
-            307:[0, "Alt_R"], 278:[129, "Home"], 273:[134, "Up"], 
+            305:[0, "Control_R"], 306:[0, "Control_L"], 308:[0, "Alt_L"],
+            307:[0, "Alt_R"], 278:[129, "Home"], 273:[134, "Up"],
             280:[130, "Page_Up"], 276:[136, "Left"], 275:[137, "Right"],
-            279:[132, "End"], 274:[135, "Down"], 281:[133, "Page_Down"], 
+            279:[132, "End"], 274:[135, "Down"], 281:[133, "Page_Down"],
             277:[128, "Insert"], 127:[131, "DEL"], 304:[0,"Shift_L"],
             303:[0,"Shift_R"], 301:[0,"Caps"], 13:[0,"Return"], 8:[0,"BackSpace"]}
   def __init__(self):
@@ -247,3 +247,19 @@ def Keyboard(use_curses=USE_CURSES):
     return x11Keyboard()
   else:
     return CursesKeyboard() if use_curses else SysKeyboard()
+
+
+@contextlib.contextmanager
+def KeyboardContext(use_curses=USE_CURSES):
+    """Typical usage:
+        with KeyboardContext() as kbd:
+            while True:
+              ch = keyboard.read()
+              if ch > 0:
+                print(ch, chr(ch))
+                if ch == 17:
+                  break
+"""
+    keyboard = Keyboard(use_curses=use_curses)
+    yield keyboard
+    keyboard.close()
