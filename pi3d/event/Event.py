@@ -94,6 +94,10 @@ class InputEvents(object):
     Handle all events that have been triggered since the last call.
     """
     for event in EventStream.allNext(self.streams):
+      if event.eventType == None:
+        self.streams.remove(event.stream)
+        event.stream.release()
+        continue
       if self.handler.event(event) and self.unhandledHandler:
         self.unhandledHandler(event)
 
