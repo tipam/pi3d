@@ -251,15 +251,16 @@ def Keyboard(use_curses=USE_CURSES):
 
 @contextlib.contextmanager
 def KeyboardContext(use_curses=USE_CURSES):
-    """Typical usage:
-        with KeyboardContext() as kbd:
-            while True:
-              ch = keyboard.read()
-              if ch > 0:
-                print(ch, chr(ch))
-                if ch == 17:
-                  break
-"""
+    """ Using a context manager alows curses to restore the terminal to its
+    initial tidy state even if the program is quitted using Ctrl+c
+        Typical usage:
+
+        with KeyboardContext() as keys:
+          while DISPLAY.loop_running():
+            sprite.draw()
+            if keys.read() == 27:
+              break
+    """
     keyboard = Keyboard(use_curses=use_curses)
     yield keyboard
     keyboard.close()

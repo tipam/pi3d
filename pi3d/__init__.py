@@ -14,7 +14,7 @@ from pi3d import Display
 
 from pi3d.Buffer import Buffer
 from pi3d.Camera import Camera
-from pi3d.Keyboard import Keyboard
+from pi3d.Keyboard import Keyboard, KeyboardContext
 from pi3d.Mouse import Mouse
 from pi3d.Shader import Shader
 from pi3d.Shape import Shape
