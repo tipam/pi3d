@@ -133,6 +133,7 @@ class Display(object):
     self.last_shader = None
     self.last_textures = [None, None, None] # if more than 3 used this will break in Buffer.draw()
     self.external_mouse = None
+    self.offscreen_tex = False # used in Buffer.draw() to force reload of textures
 
     if (pi3d.PLATFORM != pi3d.PLATFORM_PI and pi3d.PLATFORM != pi3d.PLATFORM_ANDROID and
         not pi3d.USE_PYGAME):

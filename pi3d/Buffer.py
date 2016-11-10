@@ -283,8 +283,8 @@ class Buffer(Loadable):
 
     self.unib[2] = 0.6
     for t, texture in enumerate(textures):
-      if (self.disp.last_textures[t] != texture or
-            self.disp.last_shader != shader): # very slight speed increase for sprites
+      if (self.disp.last_textures[t] != texture or self.disp.last_shader != shader or
+            self.disp.offscreen_tex): # very slight speed increase for sprites
         opengles.glActiveTexture(GL_TEXTURE0 + t)
         assert texture.tex(), 'There was an empty texture in your Buffer.'
         opengles.glBindTexture(GL_TEXTURE_2D, texture.tex())
