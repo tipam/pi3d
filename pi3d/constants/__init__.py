@@ -21,6 +21,9 @@ VERBOSE = False
 # TODO: get rid of verbose in favor of logging.
 KIVYDEBUG = False
 
+import ctypes
+from ctypes import POINTER, c_void_p, c_int32, c_uint, c_float
+
 # Pick up our constants extracted from the header files with prepare_constants.py
 from pi3d.constants.egl import *
 from pi3d.constants.gl2 import *
@@ -65,7 +68,6 @@ def _load_library(name, dll_type="C"):
   """Try to load a shared library, report an error on failure."""
   if name:
     try:
-      import ctypes
       if dll_type == "Win":
         return ctypes.WinDLL(name)
       else:
@@ -134,23 +136,9 @@ def _windows():
   here http://github.com/paddywwoof/pi3d_windll
   """
   import ctypes.wintypes as wt
-  from ctypes import POINTER, c_void_p, c_int32, c_uint, c_float
   opengles = _load_library("libglesv2.dll", "Win")
   openegl = _load_library("libegl.dll", "Win")
-
   openegl.eglGetDisplay.argtypes = [wt.HDC]
-  openegl.eglGetDisplay.restype = c_void_p
-  openegl.eglInitialize.argtypes = [c_void_p, POINTER(c_int32), POINTER(c_int32)]
-  openegl.eglChooseConfig.argtypes = [c_void_p, c_void_p, c_void_p, c_int32, POINTER(c_int32)]
-  openegl.eglCreateContext.argtypes = [c_void_p, c_void_p, c_int32, c_void_p]
-  openegl.eglCreateContext.restype = c_void_p
-  openegl.eglCreateWindowSurface.argtypes = [c_void_p, c_void_p, c_void_p, c_int32]
-  openegl.eglCreateWindowSurface.restype = c_void_p
-  openegl.eglMakeCurrent.argtypes = [c_void_p, c_void_p, c_void_p, c_void_p]
-  openegl.eglSwapBuffers.argtypes = [c_void_p, c_void_p]
-
-  opengles.glUniformMatrix4fv.argtypes = [c_int32, c_int32, c_int32, c_void_p]
-
   return platform, bcm, openegl, opengles # opengles now determined by platform
 
 def _darwin():
@@ -169,7 +157,20 @@ def _detect_platform_and_load_libraries():
   loader = _PLATFORMS.get(platform_name, None)
   if not loader:
     raise Exception("Couldn't understand platform %s" % platform_name)
+  platform, bcm, openegl, opengles = loader()
+  openegl.eglGetDisplay.restype = c_void_p
+  openegl.eglInitialize.argtypes = [c_void_p, POINTER(c_int32), POINTER(c_int32)]
+  openegl.eglChooseConfig.argtypes = [c_void_p, c_void_p, c_void_p, c_int32, POINTER(c_int32)]
+  openegl.eglCreateContext.argtypes = [c_void_p, c_void_p, c_int32, c_void_p]
+  openegl.eglCreateContext.restype = c_void_p
+  openegl.eglCreateWindowSurface.argtypes = [c_void_p, c_void_p, c_void_p, c_int32]
+  openegl.eglCreateWindowSurface.restype = c_void_p
+  openegl.eglMakeCurrent.argtypes = [c_void_p, c_void_p, c_void_p, c_void_p]
+  openegl.eglSwapBuffers.argtypes = [c_void_p, c_void_p]
 
-  return loader()
+  opengles.glUniformMatrix4fv.argtypes = [c_int32, c_int32, c_int32, c_void_p]
+
+  return platform, bcm, openegl, opengles
+
 
 PLATFORM, bcm, openegl, opengles = _detect_platform_and_load_libraries()

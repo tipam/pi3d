@@ -139,7 +139,9 @@ class Buffer(Loadable):
           numpy 2D array or list of (x,y,z) tuples, default None
         *offset*
           number of vertices offset from the start of vertices, default 0
-      """
+    """
+    if self.disp is None:
+      return # can't re_init until after initial drawing!
     stride = int(self.N_BYTES / 4) #i.e. 3, 6 or 8 This can't change from init
     if pts is not None:
       n = len(pts)
