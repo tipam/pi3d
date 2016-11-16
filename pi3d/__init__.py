@@ -66,6 +66,7 @@ from pi3d.util.Gui import MenuItem
 from pi3d.util.Gui import Menu
 from pi3d.util.Gui import TextBox
 from pi3d.util.Pngfont import Pngfont
+from pi3d.util.PexParticles import PexParticles
 from pi3d.util.PointText import PointText
 from pi3d.util.PostProcess import PostProcess
 from pi3d.util.Screenshot import screenshot
