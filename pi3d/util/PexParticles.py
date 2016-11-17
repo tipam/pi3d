@@ -182,7 +182,7 @@ class PexParticles(Points):
     self.arr[ix,0:2] += self.arr[ix,8:10] * dt # location change
     self.arr[ix,8:10] += ([self.gravity['x'], self.gravity['y']] + # velocity change
                           radial_v * self.arr[ix,21].reshape(-1,1) + # radial and tang acc
-                          radial_v[::-1] * [1.0, -1.0] * self.arr[ix,22].reshape(-1,1)) * dt * self.scale
+                          radial_v[:,::-1] * [-1.0, 1.0] * self.arr[ix,22].reshape(-1,1)) * dt * self.scale
     self.arr[ix,4:6] = np.floor(999.0 * (self.arr[ix,12:15:2] - self.arr[ix,16:19:2] *
                           (self.arr[ix,11] / self.arr[ix,10]).reshape(-1,1)))# rb change
     self.arr[ix,4:6] += 0.99 * (self.arr[ix,13:16:2] - self.arr[ix,17:20:2] *
