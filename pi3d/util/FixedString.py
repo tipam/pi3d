@@ -109,7 +109,7 @@ class FixedString(Texture):
       draw.text((xoff, margin + i * height), line, font=imgfont, fill=color)
 
     if f_type == '':
-      pass
+      self.image = np.array(self.im)
     elif 'BUMP' in f_type:
       amount = -1.0 if '+' in f_type else 1.0
       self.image = self._normal_map(np.array(self.im, dtype=np.uint8), amount)
