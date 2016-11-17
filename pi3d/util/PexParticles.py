@@ -9,7 +9,8 @@ from pi3d.Texture import Texture
 import time
 
 class PexParticles(Points):
-  def __init__(self, pex_file, emission_rate=10, **kwargs):
+  def __init__(self, pex_file, emission_rate=10, scale=1.0, rot_rate=None,
+                                                rot_var=0.0, **kwargs):
     ''' has to be supplied with a pex xml type file to parse. The results
     are loaded into new attributes of the instance of this class with identifiers
     matching the Elements of the pex file. There is zero checking for the
@@ -75,6 +76,9 @@ class PexParticles(Points):
     self._emission_rate = emission_rate # particles per second
     self._last_emission_time = None
     self._last_time = None
+    self.scale = scale
+    self.rot_rate = rot_rate
+    self.rot_var = rot_var
     
     ''' make the numpy arrays to hold the particle info
     vertices[0]   x position of centre of point relative to centre of screen in pixels
@@ -105,7 +109,7 @@ class PexParticles(Points):
     super(PexParticles, self).__init__(vertices=self.arr[:,0:3], 
                             normals=self.arr[:,3:6], 
                             tex_coords=self.arr[:,6:8], 
-                            point_size=self.point_size, **kwargs) # pass to Points.__init__()
+                            point_size=self.point_size * self.scale, **kwargs) # pass to Points.__init__()
     shader = Shader('uv_pointsprite')
     try:
       tex = Texture(self.texture['name']) # obvious first!
@@ -150,20 +154,18 @@ class PexParticles(Points):
            self.startParticleSizeVariance, self.FinishParticleSizeVariance]) # NB capital F!
 
       # x, y locations
-      self.arr[-n_new:,0:2] = new_vals[:,0:2]
+      self.arr[-n_new:,0:2] = new_vals[:,0:2] * self.scale
       # velocities
-      self.arr[-n_new:,8] = new_vals[:,2] * np.cos(np.radians(new_vals[:,4]))
-      self.arr[-n_new:,9] = new_vals[:,2] * np.sin(np.radians(new_vals[:,4]))
+      self.arr[-n_new:,8] = new_vals[:,2] * np.cos(np.radians(new_vals[:,4])) * self.scale
+      self.arr[-n_new:,9] = new_vals[:,2] * np.sin(np.radians(new_vals[:,4])) * self.scale
       # lifeSpan
       self.arr[-n_new:,10] = new_vals[:,3]
       self.arr[-n_new:,11] = new_vals[:,3]
-      # rgba
-      self.arr[-n_new:,4:6] = (np.floor(new_vals[:,7:10:2] * 999.0) + 
-                                new_vals[:,8:11:2] * 0.999) # note stride to take alternate values 7,9 8,10
       # rgba target
-      self.arr[-n_new:,12:16] = new_vals[:,11:15] 
+      self.arr[-n_new:,12:16] = np.minimum(np.maximum(new_vals[:,11:15], 0.0), 0.999)
       # rgba difference
-      self.arr[-n_new:,16:20] = new_vals[:,11:15] - new_vals[:,7:11]
+      self.arr[-n_new:,16:20] = (np.minimum(np.maximum(new_vals[:,11:15], 0.0), 0.999) - 
+                                 np.minimum(np.maximum(new_vals[:,7:11], 0.0), 0.999))
       # size
       self.arr[-n_new:,2] = new_vals[:,15] * 0.999 / self.point_size # must not approx to 1.0 at medium precision
       # and reset the z distance part
@@ -180,15 +182,16 @@ class PexParticles(Points):
     self.arr[ix,0:2] += self.arr[ix,8:10] * dt # location change
     self.arr[ix,8:10] += ([self.gravity['x'], self.gravity['y']] + # velocity change
                           radial_v * self.arr[ix,21].reshape(-1,1) + # radial and tang acc
-                          radial_v[::-1] * [1.0, -1.0] * self.arr[ix,22].reshape(-1,1)) * dt
-    self.arr[ix,4:6] = np.floor((self.arr[ix,12:15:2] - self.arr[ix,16:19:2]) * 999.0 *
-                          (self.arr[ix,11] / self.arr[ix,10]).reshape(-1,1))# rb change
-    self.arr[ix,4:6] += ((self.arr[ix,13:16:2] - self.arr[ix,17:20:2]) * 0.99 *
+                          radial_v[::-1] * [1.0, -1.0] * self.arr[ix,22].reshape(-1,1)) * dt * self.scale
+    self.arr[ix,4:6] = np.floor(999.0 * (self.arr[ix,12:15:2] - self.arr[ix,16:19:2] *
+                          (self.arr[ix,11] / self.arr[ix,10]).reshape(-1,1)))# rb change
+    self.arr[ix,4:6] += 0.99 * (self.arr[ix,13:16:2] - self.arr[ix,17:20:2] *
                           (self.arr[ix,11] / self.arr[ix,10]).reshape(-1,1))# ga change
     self.arr[ix,2] += self.arr[ix,20] * dt # size change
     self.arr[ix,11] -= dt # lifespan remaining
+    if self.rot_rate is not None: # rotate if this is set
+      self.arr[ix,3] += (self.rot_rate + self.rot_var * 
+                          (np.random.random(ix.shape) * 2.0 - 1.0)) * dt
 
     self.re_init(pts=self.arr[:,0:3], normals=self.arr[:,3:6], 
                   texcoords=self.arr[:,6:8]) # re-init the buffers
-
-
