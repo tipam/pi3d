@@ -110,3 +110,31 @@ EGL_OPENGL_API = 0x30A2
 EGL_DRAW = 0x3059
 EGL_READ = 0x305A
 EGL_CORE_NATIVE_ENGINE = 0x305B
+
+def set_egl_function_args(egl):
+  '''
+  typedef int EGLBoolean;
+  typedef int32_t EGLint;
+  typedef void *EGLDisplay;
+  typedef void *EGLConfig;
+  typedef void *EGLSurface;
+  typedef void *EGLContext;
+  '''
+  from ctypes import POINTER, c_void_p, c_int32, c_uint, c_int, c_float
+
+  egl.eglChooseConfig.argtypes = [c_void_p, c_void_p, c_void_p, c_int32, POINTER(c_int32)]
+  egl.eglChooseConfig.restype = c_int #EGLBoolean
+  egl.eglCreateContext.argtypes = [c_void_p, c_void_p, c_int32, c_void_p]
+  egl.eglCreateContext.restype = c_void_p
+  egl.eglCreateWindowSurface.argtypes = [c_void_p, c_void_p, c_void_p, c_int32]
+  egl.eglCreateWindowSurface.restype = c_void_p
+  egl.eglDestroyContext.argtypes = [c_void_p, c_void_p]
+  egl.eglDestroySurface.argtypes = [c_void_p, c_void_p]
+  egl.eglGetCurrentSurface.argtypes = [c_int32]
+  egl.eglGetCurrentSurface.restype = c_void_p
+  egl.eglGetDisplay.restype = c_void_p
+  egl.eglInitialize.argtypes = [c_void_p, POINTER(c_int32), POINTER(c_int32)]
+  egl.eglMakeCurrent.argtypes = [c_void_p, c_void_p, c_void_p, c_void_p]
+  egl.eglSwapBuffers.argtypes = [c_void_p, c_void_p]
+  egl.eglQuerySurface.argtypes = [c_void_p, c_void_p, c_int32, POINTER(c_int32)]
+  egl.eglTerminate.argtypes = [c_void_p]

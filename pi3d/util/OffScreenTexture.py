@@ -20,10 +20,10 @@ class OffScreenTexture(Texture):
     self.blend = False
     self.mipmap = False
 
-    self._tex = ctypes.c_int()
-    self.framebuffer = (ctypes.c_int * 1)()
+    self._tex = ctypes.c_uint()
+    self.framebuffer = (ctypes.c_uint * 1)()
     opengles.glGenFramebuffers(1, self.framebuffer)
-    self.depthbuffer = (ctypes.c_int * 1)()
+    self.depthbuffer = (ctypes.c_uint * 1)()
     opengles.glGenRenderbuffers(1, self.depthbuffer)
 
   def _load_disk(self):

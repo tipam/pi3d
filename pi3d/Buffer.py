@@ -166,9 +166,9 @@ class Buffer(Loadable):
 
 
   def _load_opengl(self):
-    self.vbuf = c_int()
+    self.vbuf = c_uint()
     opengles.glGenBuffers(1, ctypes.byref(self.vbuf))
-    self.ebuf = c_int()
+    self.ebuf = c_uint()
     opengles.glGenBuffers(1, ctypes.byref(self.ebuf))
     self.disp.vbufs_dict[str(self.vbuf)] = [self.vbuf, 0]
     self.disp.ebufs_dict[str(self.ebuf)] = [self.ebuf, 0]
@@ -262,7 +262,7 @@ class Buffer(Loadable):
     shader = shader or self.shader or shape.shader or Shader.instance()
     shader.use()
     opengles.glUniformMatrix4fv(shader.unif_modelviewmatrix, 3,
-                                ctypes.c_int(0), M.ctypes.data)
+                                ctypes.c_ubyte(0), M.ctypes.data)
 
     opengles.glUniform3fv(shader.unif_unif, 20, ctypes.byref(unif))
     textures = textures or self.textures

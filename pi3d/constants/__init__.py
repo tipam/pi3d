@@ -158,17 +158,8 @@ def _detect_platform_and_load_libraries():
   if not loader:
     raise Exception("Couldn't understand platform %s" % platform_name)
   platform, bcm, openegl, opengles = loader()
-  openegl.eglGetDisplay.restype = c_void_p
-  openegl.eglInitialize.argtypes = [c_void_p, POINTER(c_int32), POINTER(c_int32)]
-  openegl.eglChooseConfig.argtypes = [c_void_p, c_void_p, c_void_p, c_int32, POINTER(c_int32)]
-  openegl.eglCreateContext.argtypes = [c_void_p, c_void_p, c_int32, c_void_p]
-  openegl.eglCreateContext.restype = c_void_p
-  openegl.eglCreateWindowSurface.argtypes = [c_void_p, c_void_p, c_void_p, c_int32]
-  openegl.eglCreateWindowSurface.restype = c_void_p
-  openegl.eglMakeCurrent.argtypes = [c_void_p, c_void_p, c_void_p, c_void_p]
-  openegl.eglSwapBuffers.argtypes = [c_void_p, c_void_p]
-
-  opengles.glUniformMatrix4fv.argtypes = [c_int32, c_int32, c_int32, c_void_p]
+  set_egl_function_args(openegl) # function defined in constants/elg.py
+  set_gles_function_args(opengles) #function defined in constants/gl.py
 
   return platform, bcm, openegl, opengles
 

@@ -129,7 +129,7 @@ class FixedString(Texture):
           from PIL import ImageColor
           color = ImageColor.getrgb(color)
         self.image[:,:,:3] = color[:3]
-    self._tex = ctypes.c_int()
+    self._tex = ctypes.c_uint()
     
     bmedge = nlines * height + 2.0 * margin
     self.sprite = Sprite(camera=camera, w=maxwid, h=bmedge)

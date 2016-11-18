@@ -207,7 +207,7 @@ class Texture(Loadable):
         self.image = np.load(self.file_string)['arr_0'] # has to be saved with default key
 
       self.iy, self.ix, mode = self.image.shape
-      self._tex = ctypes.c_int()
+      self._tex = ctypes.c_uint()
       self._loaded = True
       return # skip the rest for numpy arrays - faster but no size checking
 
@@ -242,7 +242,7 @@ class Texture(Loadable):
 
     #self.image = im.tostring('raw', RGBs) # TODO change to tobytes WHEN Pillow is default PIL in debian (jessie becomes current)
     self.image = self._img_to_array(im)
-    self._tex = ctypes.c_int()
+    self._tex = ctypes.c_uint()
     if self.string_type == FILE and 'fonts/' in self.file_string:
       self.im = im
       

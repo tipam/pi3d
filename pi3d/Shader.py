@@ -88,7 +88,8 @@ class Shader(DefaultInstance):
       src = src or self._load_shader(shfile + suffix)
       characters = ctypes.c_char_p(src.encode())
       shader = opengles.glCreateShader(shader_type)
-      src_len = (ctypes.c_int * 1)(len(src)) # array of just one c_int
+      #src_len = (ctypes.c_int * 1)(len(src)) # array of just one c_int
+      src_len = ctypes.c_int(len(src))
       opengles.glShaderSource(shader, 1, ctypes.byref(characters), ctypes.byref(src_len))
       opengles.glCompileShader(shader)
       self.showshaderlog(shader, src)
