@@ -133,8 +133,9 @@ class Texture(Loadable):
       if Display.INSTANCE is not None:
         Display.INSTANCE.textures_dict[str(self._tex)][1] = 1
         Display.INSTANCE.tidy_needed = True
-    except:
-      pass #many reasonable reasons why this might fail
+    except Exception as e:
+      print('Texture.__del__ failed with exception "{}" and OpenGL ES error={}'.format(
+                        e, opengles.glGetError())) #many reasonable reasons why this might fail
 
   def tex(self):
     """do the deferred opengl work and return texture"""
@@ -251,7 +252,7 @@ class Texture(Loadable):
   def _load_opengl(self):
     """overrides method of Loadable"""
     try:
-      opengles.glGenTextures(1, ctypes.byref(self._tex), 0)
+      opengles.glGenTextures(1, ctypes.byref(self._tex))
     except: # TODO windows throws exceptions just for this call!
       print("[warning glGenTextures() on windows only!]")
     from pi3d.Display import Display
