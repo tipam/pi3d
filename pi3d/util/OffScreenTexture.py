@@ -14,15 +14,16 @@ class OffScreenTexture(Texture):
     """
     super(OffScreenTexture, self).__init__(name)
     from pi3d.Display import Display
-    self.ix, self.iy = Display.INSTANCE.width, Display.INSTANCE.height
+    self.disp = Display.INSTANCE
+    self.ix, self.iy = self.disp.width, self.disp.height
     self.image = np.zeros((self.iy, self.ix, 4), dtype=np.uint8)
     self.blend = False
     self.mipmap = False
 
-    self._tex = ctypes.c_int()
-    self.framebuffer = (ctypes.c_int * 1)()
+    self._tex = ctypes.c_uint()
+    self.framebuffer = (ctypes.c_uint * 1)()
     opengles.glGenFramebuffers(1, self.framebuffer)
-    self.depthbuffer = (ctypes.c_int * 1)()
+    self.depthbuffer = (ctypes.c_uint * 1)()
     opengles.glGenRenderbuffers(1, self.depthbuffer)
 
   def _load_disk(self):
@@ -34,6 +35,7 @@ class OffScreenTexture(Texture):
     to this texture and not appear on the display. Large objects
     will obviously take a while to draw and re-draw
     """
+    self.disp.offscreen_tex = True # flag used in Buffer.draw()
     opengles.glBindFramebuffer(GL_FRAMEBUFFER, self.framebuffer[0])
     opengles.glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                 GL_TEXTURE_2D, self._tex.value, 0)
@@ -51,6 +53,7 @@ class OffScreenTexture(Texture):
   def _end(self):
     """ stop capturing to texture and resume normal rendering to default
     """
+    self.disp.offscreen_tex = False # flag used in Buffer.draw()
     opengles.glBindTexture(GL_TEXTURE_2D, 0)
     opengles.glBindFramebuffer(GL_FRAMEBUFFER, 0)
 

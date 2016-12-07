@@ -139,7 +139,9 @@ class Buffer(Loadable):
           numpy 2D array or list of (x,y,z) tuples, default None
         *offset*
           number of vertices offset from the start of vertices, default 0
-      """
+    """
+    if self.disp is None:
+      return # can't re_init until after initial drawing!
     stride = int(self.N_BYTES / 4) #i.e. 3, 6 or 8 This can't change from init
     if pts is not None:
       n = len(pts)
@@ -164,9 +166,9 @@ class Buffer(Loadable):
 
 
   def _load_opengl(self):
-    self.vbuf = c_int()
+    self.vbuf = c_uint()
     opengles.glGenBuffers(1, ctypes.byref(self.vbuf))
-    self.ebuf = c_int()
+    self.ebuf = c_uint()
     opengles.glGenBuffers(1, ctypes.byref(self.ebuf))
     self.disp.vbufs_dict[str(self.vbuf)] = [self.vbuf, 0]
     self.disp.ebufs_dict[str(self.ebuf)] = [self.ebuf, 0]
@@ -260,7 +262,7 @@ class Buffer(Loadable):
     shader = shader or self.shader or shape.shader or Shader.instance()
     shader.use()
     opengles.glUniformMatrix4fv(shader.unif_modelviewmatrix, 3,
-                                ctypes.c_int(0), M.ctypes.data)
+                                ctypes.c_ubyte(0), M.ctypes.data)
 
     opengles.glUniform3fv(shader.unif_unif, 20, ctypes.byref(unif))
     textures = textures or self.textures
@@ -283,8 +285,8 @@ class Buffer(Loadable):
 
     self.unib[2] = 0.6
     for t, texture in enumerate(textures):
-      if (self.disp.last_textures[t] != texture or
-            self.disp.last_shader != shader): # very slight speed increase for sprites
+      if (self.disp.last_textures[t] != texture or self.disp.last_shader != shader or
+            self.disp.offscreen_tex): # very slight speed increase for sprites
         opengles.glActiveTexture(GL_TEXTURE0 + t)
         assert texture.tex(), 'There was an empty texture in your Buffer.'
         opengles.glBindTexture(GL_TEXTURE_2D, texture.tex())

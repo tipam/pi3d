@@ -24,9 +24,7 @@ class StereoCam(object):
     texture generated from the framebuffer. Keyword Arguments:
 
       *shader*
-        to use when drawing sprite, defaults to post_base, a simple
-        3x3 convolution that does basic edge detection. Can be copied to
-        project directory and modified as required.
+        to use when drawing sprite, defaults to uv_flat.
 
       *mipmap*
         can be set to True with slight cost to speed, or use fxaa shader
@@ -40,7 +38,7 @@ class StereoCam(object):
         must be drawn with a special interlacing shader.
     """
     # load shader
-    if interlace <= 0:
+    if interlace <= 0: # i.e. default side by side behaviour
       self.shader = Shader(shader)
     else:
       self.shader = Shader(vshader_source = """
@@ -65,8 +63,8 @@ void main(void) {{
   gl_FragColor = mix(texc0, texc1, step(0.5, fract(coord.x / {:f})));
 }}
     """.format(interlace * 2.0))
-      #self.shader = Shader("2d_flat")
-    self.camera_3d = Camera()
+
+    self.camera_3d = Camera() # create 3d cam first so it becomes default instance
     self.forMtrx = np.identity(4, dtype='float32') # initially not rotated
     self.position = [0.0, 0.0, 0.0]
     self.camera_2d = Camera(is_3d=False)

@@ -2,6 +2,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import ctypes
 import sys, os
+from pkg_resources import resource_string
 
 from pi3d.constants import *
 from pi3d.util.Ctypes import c_chars
@@ -86,9 +87,11 @@ class Shader(DefaultInstance):
 
     def make_shader(src, suffix, shader_type):
       src = src or self._load_shader(shfile + suffix)
-      characters = ctypes.c_char_p(src.encode())
+      if type(src) != bytes: #if ..shader_source passed as a string to __init__
+        src = src.encode()
+      characters = ctypes.c_char_p(src)
       shader = opengles.glCreateShader(shader_type)
-      src_len = (ctypes.c_int * 1)(len(src)) # array of just one c_int
+      src_len = ctypes.c_int(len(src))
       opengles.glShaderSource(shader, 1, ctypes.byref(characters), ctypes.byref(src_len))
       opengles.glCompileShader(shader)
       self.showshaderlog(shader, src)
@@ -157,20 +160,24 @@ class Shader(DefaultInstance):
       shader, N, ctypes.byref(loglen), ctypes.byref(log))
 
   def _load_shader(self, sfile):
-    for p in sys.path:
-      for prest in ['/', '/shaders/', '/pi3d/shaders/']:
-        if os.path.isfile(p + prest + sfile):
-          return self._include_includes(p + prest, sfile)
-    if os.path.isfile(sfile):
-      return self._include_includes('', sfile)
-
-  def _include_includes(self, path, sfile):
-    new_text = ''
-    with open(path + sfile, 'r') as f:
-      for l in f:
-        if '#include' in l:
-          inc_file = l.split()[1]
-          new_text = new_text + self._include_includes(path, inc_file)
-        else:
-          new_text = new_text + l
+    ''' takes a file name as string, tries to find it then returns the
+    contents as a bytes object swapping out the #include statements recursively. 
+    This means that if you make your own shader with #includes, the names 
+    of the include files must be different from the standard pi3d ones unless 
+    you intend to use the standard ones.
+    '''
+    if type(sfile) == bytes: #annoyingly resource_string has string argument.
+      sfile = sfile.decode()
+    new_text = b'' #but then returns a bytes object so swap to bytes!
+    try:
+      st = resource_string('pi3d', 'shaders/' + sfile)
+    except:
+      LOGGER.info('no file shaders/' + sfile + ' in pkg_resources trying')
+      st = open(sfile, 'rb').read() #assume it's a non-standard shader in a file
+    for l in st.split(b'\n'):
+      if b'#include' in l:
+        inc_file = l.split()[1]
+        new_text = new_text + self._load_shader(inc_file) + b'\n'
+      else:
+        new_text = new_text + l + b'\n'
     return new_text

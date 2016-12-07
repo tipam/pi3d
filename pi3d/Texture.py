@@ -133,8 +133,9 @@ class Texture(Loadable):
       if Display.INSTANCE is not None:
         Display.INSTANCE.textures_dict[str(self._tex)][1] = 1
         Display.INSTANCE.tidy_needed = True
-    except:
-      pass #many reasonable reasons why this might fail
+    except Exception as e:
+      print('Texture.__del__ failed with exception "{}" and OpenGL ES error={}'.format(
+                        e, opengles.glGetError())) #many reasonable reasons why this might fail
 
   def tex(self):
     """do the deferred opengl work and return texture"""
@@ -207,7 +208,7 @@ class Texture(Loadable):
         self.image = np.load(self.file_string)['arr_0'] # has to be saved with default key
 
       self.iy, self.ix, mode = self.image.shape
-      self._tex = ctypes.c_int()
+      self._tex = ctypes.c_uint()
       self._loaded = True
       return # skip the rest for numpy arrays - faster but no size checking
 
@@ -242,7 +243,7 @@ class Texture(Loadable):
 
     #self.image = im.tostring('raw', RGBs) # TODO change to tobytes WHEN Pillow is default PIL in debian (jessie becomes current)
     self.image = self._img_to_array(im)
-    self._tex = ctypes.c_int()
+    self._tex = ctypes.c_uint()
     if self.string_type == FILE and 'fonts/' in self.file_string:
       self.im = im
       
@@ -251,7 +252,7 @@ class Texture(Loadable):
   def _load_opengl(self):
     """overrides method of Loadable"""
     try:
-      opengles.glGenTextures(1, ctypes.byref(self._tex), 0)
+      opengles.glGenTextures(1, ctypes.byref(self._tex))
     except: # TODO windows throws exceptions just for this call!
       print("[warning glGenTextures() on windows only!]")
     from pi3d.Display import Display

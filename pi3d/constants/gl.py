@@ -353,3 +353,102 @@ GL_POINT_SIZE_ARRAY_POINTER_OES = 0x898C
 GL_POINT_SIZE_ARRAY_BUFFER_BINDING_OES = 0x8B9F
 GL_POINT_SPRITE_OES = 0x8861
 GL_COORD_REPLACE_OES = 0x8862
+
+def set_gles_function_args(gles):
+  '''
+  typedef unsigned int GLenum;
+  typedef unsigned char GLboolean;
+  typedef unsigned int GLbitfield;
+  typedef signed char GLbyte;
+  typedef short GLshort;
+  typedef int GLint;
+  typedef int GLsizei;
+  typedef unsigned char GLubyte;
+  typedef unsigned short GLushort;
+  typedef unsigned int GLuint;
+  typedef float GLfloat;
+  typedef float GLclampf;
+  typedef void GLvoid;
+  typedef int GLintptrARB;
+  typedef int GLsizeiptrARB;
+  typedef int GLfixed;
+  typedef int GLclampx;
+  /* Internal convenience typedefs */
+  typedef void (*_GLfuncptr)();
+  '''
+  from ctypes import POINTER, c_void_p, c_int32, c_int, c_uint, c_float, c_char, c_char_p, c_ubyte
+
+  gles.glActiveTexture.argtypes = [c_uint] #GLenum
+  gles.glAttachShader.argtypes = [c_uint, c_uint] #GLuint, GLuint
+  gles.glBindBuffer.argtypes = [c_uint, c_uint] #GLenum, GLuint
+  gles.glBindFramebuffer.argtypes = [c_uint, c_uint] #GLenum, GLuint 
+  gles.glBindRenderbuffer.argtypes = [c_uint, c_uint] #GLenum, GLuint
+  gles.glBindTexture.argtypes = [c_uint, c_uint] #GLenum, GLuint
+  gles.glBlendFuncSeparate.argtypes = [c_uint, c_uint, c_uint, c_uint] #GLenum, GLenum, GLenum, GLenum
+  gles.glBufferData.argtypes = [c_uint, c_int, c_void_p, c_uint] #GLenum, GLsizeiptr, const GLvoid *, GLenum
+  gles.glBufferSubData.argtypes = [c_uint, c_int, c_uint, c_void_p] #GLenum, GLintptr, GLsizeiptr, const GLvoid *
+  gles.glCheckFramebufferStatus.argtypes = [c_uint] #GLenum
+  gles.glClear.argtypes = [c_uint] #GLbitfield
+  gles.glClearColor.argtypes = [c_float, c_float, c_float, c_float] #GLclampf, GLclampf, GLclampf, GLclampf 
+  gles.glColorMask.argtypes = [c_ubyte, c_ubyte, c_ubyte, c_ubyte] #GLboolean, GLboolean, GLboolean blue, GLboolean
+  gles.glCompileShader.argtypes = [c_uint] # GLuint
+  #gles.glCreateProgram.argtypes = [] # void
+  gles.glCreateProgram.restype = c_uint
+  gles.glCreateShader.argtypes = [c_uint] #GLenum
+  gles.glCreateShader.restype = c_uint
+  gles.glCullFace.argtypes = [c_uint] #GLenum
+  gles.glDeleteBuffers.argtypes = [c_int, POINTER(c_uint)] #GLsizei, const GLuint *
+  gles.glDeleteFramebuffers.argtypes = [c_int, POINTER(c_uint)] #GLsizei, const GLuint *
+  gles.glDeleteProgram.argtypes = [c_uint] #GLuint
+  gles.glDeleteRenderbuffers.argtypes = [c_int, POINTER(c_uint)] #GLsizei, const GLuint *
+  gles.glDeleteShader.argtypes = [c_uint] #GLuint
+  gles.glDeleteTextures.argtypes = [c_int, POINTER(c_uint)] #GLsizei, const GLuint *
+  gles.glDepthFunc.argtypes = [c_uint] #GLenum
+  gles.glDepthMask.argtypes = [c_ubyte] #GLboolean 
+  gles.glDepthRangef.argtypes = [c_float, c_float] #GLclampf, GLclampf 
+  gles.glDisable.argtypes = [c_uint] #GLenum 
+  gles.glDrawElements.argtypes = [c_uint, c_int, c_uint, c_void_p] #GLenum, GLsizei, GLenum, const GLvoid *
+  gles.glEnable.argtypes = [c_uint] #GLenum 
+  #gles.glEnableClientState.argtypes = [] #
+  gles.glEnableVertexAttribArray.argtypes = [c_uint] #GLuint 
+  #gles.glFinish.argtypes = [] #void
+  #gles.glFlush.argtypes = [] #void
+  gles.glFramebufferRenderbuffer.argtypes = [c_uint, c_uint, c_uint, c_uint] #GLenum, GLenum, GLenum, GLuint 
+  gles.glFramebufferTexture2D.argtypes = [c_uint, c_uint, c_uint, c_uint, c_int] #GLenum, GLenum, GLenum, GLuint, GLint 
+  gles.glGenBuffers.argtypes = [c_int, POINTER(c_uint)] #GLsizei, GLuint *
+  gles.glGenerateMipmap.argtypes = [c_uint] #GLenum
+  gles.glGenFramebuffers.argtypes = [c_int, POINTER(c_uint)] #GLsizei, GLuint *
+  gles.glGenRenderbuffers.argtypes = [c_int, POINTER(c_uint)] #GLsizei, GLuint *
+  gles.glGenTextures.argtypes = [c_int, POINTER(c_uint)] #GLsizei, GLuint *
+  gles.glGetAttribLocation.argtypes = [c_uint, POINTER(c_char)] #GLuint, const GLchar *
+  gles.glGetAttribLocation.restype = c_int
+  #gles.glGetError.argtypes = [] #void
+  gles.glGetProgramInfoLog.argtypes = [c_uint, c_int, POINTER(c_int), c_void_p] #GLuint, GLsizei, GLsizei *, GLchar *
+  gles.glGetShaderInfoLog.argtypes = [c_uint, c_int, POINTER(c_int), c_void_p] #GLuint, GLsizei, GLsizei *, GLchar *
+  gles.glGetUniformLocation.argtypes = [c_uint, POINTER(c_char)] #GLuint, const GLchar *
+  gles.glGetUniformLocation.restype = c_int
+  gles.glHint.argtypes = [c_uint, c_uint] #GLenum, GLenum
+  gles.glIsBuffer.argtypes = [c_uint] #GLuint
+  gles.glIsBuffer.restype = c_ubyte #GLboolean
+  gles.glIsProgram.argtypes = [c_uint] #GLuint
+  gles.glIsProgram.restype = c_ubyte #GLboolean
+  gles.glIsShader.argtypes = [c_uint] #GLuint
+  gles.glIsShader.restype = c_ubyte #GLboolean
+  gles.glIsTexture.argtypes = [c_uint] #GLuint
+  gles.glIsTexture.retype = c_ubyte #GLboolean
+  gles.glLinkProgram.argtypes = [c_uint] #GLuint
+  gles.glLineWidth.argtypes = [c_float] #GLfloat
+  #gles.glLoadIdentity.argtypes = [] #
+  gles.glReadPixels.argtypes = [c_int, c_int, c_int, c_int, c_uint, c_uint, c_void_p] #GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, GLvoid * 
+  gles.glRenderbufferStorage.argtypes = [c_uint, c_uint, c_int, c_int] #GLenum, GLenum, GLsizei, GLsizei
+  gles.glScissor.argtypes = [c_int, c_int, c_int, c_int] #GLint, GLint, GLsizei, GLsizei
+  gles.glShaderSource.argtypes = [c_uint, c_int, POINTER(c_char_p), POINTER(c_int)] #GLuint, GLsizei, const GLchar * const *, const GLint *
+  gles.glTexImage2D.argtypes = [c_uint, c_int, c_int, c_int, c_int, c_int, #GLenum, GLint, GLint, GLsizei, GLsizei, GLint,
+                                c_uint, c_uint, c_void_p] #GLenum, GLenum, const GLvoid * 
+  gles.glTexParameteri.argtypes = [c_uint, c_uint, c_int] #GLenum, GLenum, GLint
+  gles.glUniform1i.argtypes = [c_int, c_int] #GLint, GLint
+  gles.glUniform3fv.argtypes = [c_int, c_int, c_void_p] #GLint, GLsizei, const GLfloat * ## NB was c_void_p
+  gles.glUniformMatrix4fv.argtypes = [c_int, c_int, c_ubyte, c_void_p] #GLint, GLsizei, GLboolean, const GLfloat * ## NB was c_void_p
+  gles.glUseProgram.argtypes = [c_int] #GLuint
+  gles.glVertexAttribPointer.argtypes = [c_uint, c_int, c_uint, c_ubyte, c_int, c_void_p] #GLuint, GLint, GLenum, GLboolean, GLsizei, const GLvoid * 
+  gles.glViewport.argtypes = [c_int, c_int, c_int, c_int] #GLint, GLint, GLsizei, GLsizei

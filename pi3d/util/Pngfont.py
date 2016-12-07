@@ -72,4 +72,4 @@ class Pngfont(Texture):
     #RGBs = 'RGBA'
     #self.im = self.im.convert(RGBs)
     #self.image = np.array(self.im)
-    #self._tex = ctypes.c_int()
+    #self._tex = ctypes.c_uint()

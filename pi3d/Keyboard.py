@@ -238,6 +238,14 @@ class PygameKeyboard(object):
 
 
 def Keyboard(use_curses=USE_CURSES):
+  '''Wrapper for the various keyboards appropriate to the PLATFORM
+
+  argument:
+
+    *use_curses*
+      default True, use CursesKeyboard on raspberry pi rather than
+      SysKeyboard
+  '''
   if pi3d.PLATFORM == pi3d.PLATFORM_ANDROID:
     return AndroidKeyboard()
   #elif PLATFORM == PLATFORM_WINDOWS:
@@ -252,8 +260,8 @@ def Keyboard(use_curses=USE_CURSES):
 @contextlib.contextmanager
 def KeyboardContext(use_curses=USE_CURSES):
     """ Using a context manager alows curses to restore the terminal to its
-    initial tidy state even if the program is quitted using Ctrl+c
-        Typical usage:
+    initial tidy state even if the program is quitted using Ctrl+c.
+    Typical usage::
 
         with KeyboardContext() as keys:
           while DISPLAY.loop_running():

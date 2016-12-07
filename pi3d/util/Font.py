@@ -156,7 +156,7 @@ class Font(Texture):
     #RGBs = 'RGBA' # if self.alpha else 'RGB' # always alpha
     #self.im = self.im.convert(RGBs)
     self.image = np.array(self.im)
-    self._tex = ctypes.c_int()
+    self._tex = ctypes.c_uint()
     if background_color is None:
       if isinstance(color, str):
         from PIL import ImageColor
