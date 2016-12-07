@@ -2,6 +2,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import ctypes
 import sys, os
+from pkg_resources import resource_string
 
 from pi3d.constants import *
 from pi3d.util.Ctypes import c_chars
@@ -86,9 +87,8 @@ class Shader(DefaultInstance):
 
     def make_shader(src, suffix, shader_type):
       src = src or self._load_shader(shfile + suffix)
-      characters = ctypes.c_char_p(src.encode())
+      characters = ctypes.c_char_p(src)
       shader = opengles.glCreateShader(shader_type)
-      #src_len = (ctypes.c_int * 1)(len(src)) # array of just one c_int
       src_len = ctypes.c_int(len(src))
       opengles.glShaderSource(shader, 1, ctypes.byref(characters), ctypes.byref(src_len))
       opengles.glCompileShader(shader)
@@ -158,13 +158,35 @@ class Shader(DefaultInstance):
       shader, N, ctypes.byref(loglen), ctypes.byref(log))
 
   def _load_shader(self, sfile):
+    ''' takes a file name as string tries to find it then returns the contents
+    swapping out the #include statements recursively. This means that if
+    you make your own shader with includes the names of the include files
+    must be different fromt he standard pi3d ones.
+    '''
+    if type(sfile) == bytes: #annoyingly resource_string has to have a string fed to it.
+      sfile = sfile.decode()
+    new_text = b'' #have to do everything as bytes as resource_string returns bytes object
+    try:
+      st = resource_string('pi3d', 'shaders/' + sfile)
+    except:
+      LOGGER.info('no file shaders/' + sfile + ' in pkg_resources trying')
+      st = open(sfile, 'rb').read()
+    for l in st.split(b'\n'):
+      if b'#include' in l:
+        inc_file = l.split()[1]
+        new_text = new_text + self._load_shader(inc_file) + b'\n'
+      else:
+        new_text = new_text + l + b'\n'
+    return new_text
+    '''
     for p in sys.path:
       for prest in ['/', '/shaders/', '/pi3d/shaders/']:
         if os.path.isfile(p + prest + sfile):
           return self._include_includes(p + prest, sfile)
     if os.path.isfile(sfile):
       return self._include_includes('', sfile)
-
+    '''
+  '''
   def _include_includes(self, path, sfile):
     new_text = ''
     with open(path + sfile, 'r') as f:
@@ -175,3 +197,4 @@ class Shader(DefaultInstance):
         else:
           new_text = new_text + l
     return new_text
+    '''
