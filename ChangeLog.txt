@@ -4,11 +4,23 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
+v2.16
+2016-12-06  Bug fixes: pkg_resources.resource_string used for loading
+            shader instead (as well as) reading from file path. Handling
+            of detatched event streams. Context manager for Keyboard. Fix
+            for untextured Buffer.draw(). Wholesale specification of arg 
+            and return types for egl and gles ctypes functions in attempt
+            to fix new intermittent bug when running on windows (failed to fix)
+            
+            Improvements: PexParticles class added allowing pex files to
+            be read for rendering 2D particle effects using Points.
+            
 v2.15
 2016-10-13  Bug fixes: Blending fonts with background pixels now doesn't
-v2.14       give darkening effect.
-2016-10-07
-            Improvements: Can be used without install PIL using compressed
+            give darkening effect.
+       
+v2.14
+2016-10-07  Improvements: Can be used without install PIL using compressed
             numpy arrays for images. FixedString BUMP filter uses same code
             as normal_map in Texture which also allows +ve or -ve factor
             values
