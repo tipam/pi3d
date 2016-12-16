@@ -74,7 +74,7 @@ class Shader(DefaultInstance):
       *vshader_source*
         String with the code for the vertex shader.
 
-      *vshader_source*
+      *fshader_source*
         String with the code for the fragment shader.
     """
     assert Loadable.is_display_thread()
