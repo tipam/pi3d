@@ -26,10 +26,18 @@ class Log(object):
     (Note that the values for the format string, like "some_name", "error_code" or
     "msg" are passed in as arguments - that's so you never even construct the
     message if it isn't going to be displayed.)
-    
+    ********************************************************************
+    N.B. if name is not passed as an argument then this will set the root
+    logger properties (and all the pi3d module logging will also be logged.)
+    ********************************************************************
     The level, file, format arguments are passed on to set_logs() see below.
     """
-    self.logger = logging.getLogger(name or 'logging')
+    self.logger = logging.getLogger(name)
+    self.debug = self.logger.debug # to reference methods to those of the logger instance
+    self.info = self.logger.info
+    self.warning = self.logger.warning
+    self.error = self.logger.error
+    self.critical = self.logger.critical
     ''' pi3d only adds one handler for each instance of Log. self.HANDLER holds a 
     reference to it so that can be changed by subsequent calls to set_logs()
     '''
@@ -84,21 +92,3 @@ class Log(object):
     if format is None:
       format = '%(asctime)s %(levelname)s: %(name)s: %(message)s'
     self.HANDLER.setFormatter(logging.Formatter(format))
-
-  
-  def debug(self, msg, *args, **kwargs):
-    ''' these are wrappers for the logging.Logger methods
-    '''
-    self.logger.debug(msg, *args, **kwargs)
-
-  def info(self, msg, *args, **kwargs):
-    self.logger.info(msg, *args, **kwargs)
-
-  def warning(self, msg, *args, **kwargs):
-    self.logger.warning(msg, *args, **kwargs)
-
-  def error(self, msg, *args, **kwargs):
-    self.logger.error(msg, *args, **kwargs)    
-
-  def critical(self, msg, *args, **kwargs):
-    self.logger.critical(msg, *args, **kwargs)    
