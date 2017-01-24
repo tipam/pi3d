@@ -3,6 +3,9 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 from pi3d.constants import *
 from pi3d.Buffer import Buffer
 from pi3d.Shape import Shape
+import logging
+
+LOGGER = logging.getLogger(__name__)
 
 class Cuboid(Shape):
   """ 3d model inherits from Shape"""
@@ -31,8 +34,7 @@ class Cuboid(Shape):
     super(Cuboid, self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                 1.0, 1.0, 1.0, cx, cy, cz)
 
-    if VERBOSE:
-      print("Creating cuboid ...")
+    LOGGER.info("Creating cuboid ...")
 
     self.width = w
     self.height = h

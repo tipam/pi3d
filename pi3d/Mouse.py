@@ -3,6 +3,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import threading
 import six_mod
 import ctypes
+import logging
 
 import pi3d
 
@@ -12,7 +13,7 @@ elif pi3d.PLATFORM != pi3d.PLATFORM_PI and pi3d.PLATFORM != pi3d.PLATFORM_ANDROI
   from pyxlib import xlib
   from pyxlib.x import *
 
-from pi3d.util import Log
+LOGGER = logging.getLogger(__name__)
 
 class _nixMouse(threading.Thread):
   """holds Mouse object, see also (the preferred) events methods"""
@@ -156,7 +157,7 @@ class _nixMouse(threading.Thread):
         strn = self.fd.read(3).decode("latin-1")
         self.buffr += strn
       except Exception as e:
-        print("exception is: {}".format(e))
+        LOGGER.error("exception is: %s", e)
         self.stop()
         return
 

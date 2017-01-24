@@ -2,16 +2,16 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import ctypes
 import sys, os
+import logging
 from pkg_resources import resource_string
 
 from pi3d.constants import *
 from pi3d.util.Ctypes import c_chars
-from pi3d.util import Log
 from pi3d.util import Loadable
 from pi3d.util.DefaultInstance import DefaultInstance
 
 # This class based on Peter de Rivaz's mandlebrot example + Tim Skillman's work on pi3d2
-LOGGER = Log.logger(__name__)
+LOGGER = logging.getLogger(__name__)
 
 MAX_LOG_SIZE = 1024
 
@@ -74,7 +74,7 @@ class Shader(DefaultInstance):
       *vshader_source*
         String with the code for the vertex shader.
 
-      *vshader_source*
+      *fshader_source*
         String with the code for the fragment shader.
     """
     assert Loadable.is_display_thread()
@@ -149,7 +149,7 @@ class Shader(DefaultInstance):
     opengles.glGetShaderInfoLog(
       shader, N, ctypes.byref(loglen), ctypes.byref(log))
     if len(log.value) > 0:
-      print('shader({}) {}, {}'.format(shader, self.shfile, log.value))
+      LOGGER.info('shader(%s) %s, %s', shader, self.shfile, log.value)
 
   def showprogramlog(self, shader):
     """Prints the compile log for a program"""

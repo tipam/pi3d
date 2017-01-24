@@ -4,12 +4,12 @@ Introduction to pi3d
 .. image:: images/rpilogoshad128.png
    :align: left 
 
-**pi3d written by Tim Skillman, Paddy Gaunt, Tom Ritchford Copyright (c) 2012-2016**
+**pi3d written by Tim Skillman, Paddy Gaunt, Tom Ritchford** Copyright |copy| 2012 - |year|
 
 Here is a link to an excellent, self explanatory `YouTube`_ video made by 
 Peter Farrell that covers much of the content of this ReadMe.
 
-There's plenty of 3D code flying around at the moment for the Raspberry Pi,
+There's plenty of 3D code flying around for the Raspberry Pi,
 but much of it is rather complicated to understand and most of it can sit
 under the bonnet!
 
@@ -37,29 +37,35 @@ Demos on github.com/pi3d/pi3d_demos include
 
 #.  **ForestWalk.py** Walk about a forest on a landscape generated from a
     bitmap
+
       .. image:: images/forestwalk_sml.jpg
          :align: right
 
 #.  **Triceratops.py** Large model loading with several
     bitmaps
+
       .. image:: images/triceratops_sml.jpg
 
 #.  **BuckfastAbbey.py** Explore a model of the beautiful Buckfast Abbey in 
     Buckfastleigh, Devon, England
+
       .. image:: images/buckfast_sml.jpg
          :align: right
 
 #.  **Earth.py** Demonstrates semi-transparent clouds and hierarchical
     rotations
+
       .. image:: images/earth_sml.jpg
 
 #.  **Clouds3D.py** Blended sprites in
     perspective view
+
       .. image:: images/clouds3d_sml.jpg
          :align: right
 
 #.  **Raspberry_Rain.py** Raining Raspberries,  full-screen, over the
     desktop
+
       .. image:: images/raspberryrain_sml.jpg
 
 #.  **RobotWalkabout.py** Another off-planet example of a basic avatar robot
@@ -147,7 +153,7 @@ Setup on the Raspberry Pi
       $ cd ~
       $ sudo apt-get update
       $ sudo apt-get upgrade
-      $ sudo pip-3.2 install pi3d
+      $ sudo pip3 install pi3d
       $ sudo raspi-config # set gpu_mem=128
 
     (or ``sudo pip install`` if you want to use python 2 for some reason).
@@ -169,8 +175,8 @@ Setup on the Raspberry Pi
       $ sudo apt-get upgrade
       $ sudo apt-get install python3-dev python3-setuptools libjpeg-dev zlib1g-dev libpng12-dev libfreetype6-dev
       $ sudo apt-get install python3-pip
-      $ sudo pip-3.2 install pi3d
-      $ sudo pip-3.2 install Pillow
+      $ sudo pip3 install pi3d
+      $ sudo pip3 install Pillow
       $ sudo raspi-config # set gpu_mem=128
       
       ####### download demos in their latest form, quicker #######
@@ -194,9 +200,9 @@ Setup on the Raspberry Pi
 
       $ sudo pip install pi3d
         or for python3
-      $ sudo pip-3.2 install pi3d
+      $ sudo pip3 install pi3d
         
-    (or pip3 or whatever see below*) If you don't have pip installed
+    (or pip-3.2, pip3.4, pip or whatever see below*) If you don't have pip installed
     you probably should install it as described below under ``Python Imaging``
     as it's the easiest way to install Pillow prior to debian jessie based
     installations.  You can do the equivalent of ``pip install`` manually
@@ -249,11 +255,11 @@ Setup on the Raspberry Pi
 
       $ sudo apt-get install python3-dev python3-setuptools libjpeg-dev zlib1g-dev libpng12-dev libfreetype6-dev
       $ sudo apt-get install python3-pip
-      $ sudo pip-3.2 install Pillow
+      $ sudo pip3 install Pillow
       ...
 
     If you miss any of the dependent libraries and need to add them later
-    you will have to ``pip uninstall`` then re ``pip install``
+    you will have to ``pip3 uninstall`` then re ``pip3 install``
 
     For python2 support the first above will provide the required graphics
     libraries used by Pillow but you will need to swap to ``python-dev``
@@ -548,7 +554,8 @@ is going on.
 .. _`3D Graphics Explanation`: GPUexplain.html
 .. _Android: AndroidUse.html
 .. _YouTube: https://youtu.be/gXTU6x8dQJw
-
+.. |year| date:: %Y
+.. |copy| unicode:: 0xA9 .. copyright sign
 
 Documentation
 =============

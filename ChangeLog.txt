@@ -4,6 +4,15 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
+v2.17
+2017-01-24  Bug fixes: Logging system altered quite significantly. Within
+            the pi3d module logging is done using the 'vanilla' python
+            logging.getLogger(__name__) rather than the pi3d.Log system.
+            The handler is explicitly kept track of rather than letting
+            the basicConfig function generate a (potentially) duplicate
+            handler. Unfortunately this change will break existing code
+            that uses pi3d.Log
+
 v2.16
 2016-12-06  Bug fixes: pkg_resources.resource_string used for loading
             shader instead (as well as) reading from file path. Handling
@@ -14,11 +23,11 @@ v2.16
             
             Improvements: PexParticles class added allowing pex files to
             be read for rendering 2D particle effects using Points.
-            
+
 v2.15
 2016-10-13  Bug fixes: Blending fonts with background pixels now doesn't
             give darkening effect.
-       
+
 v2.14
 2016-10-07  Improvements: Can be used without install PIL using compressed
             numpy arrays for images. FixedString BUMP filter uses same code
@@ -30,7 +39,7 @@ v2.13
             types for ctypes functions for libEGL.dll. NB only the functions
             that caused an error in RunTests were fixed so there could be 
             instances in future where others come back to bite.
-            
+
             Improvements: Camera now has an ``absolute=True`` argument (and
             settable attribute) that determines whether rotations are done
             relative to the starting rotation (determined by ``eye`` and ``at``
@@ -46,7 +55,7 @@ v2.12
             Checking if samples can be used (can't with ANGLE on windows)
             using try block. Rendering OffscreenTexture onto background with
             alpha 1.0 now doesn't become transparrent.
-            
+
             Improvements: Buffer stores element_normals as well as smoothed
             normals for quicker use in ElevationMap, in which class methods generally 
             improved to use numpy more efficiently and allow maps to be created
@@ -200,7 +209,7 @@ v1.4
             bump mapping) Pillow has now been correctly fixed but the
             horrible fixes to get round the previous version will be left
             in for a while.
-            
+
 v1.3
 2013-09-19  Memory leak with Textures reappeared and fixed. Bug in Pillow
             looks like it will not be fixed for 2.2.0 so added a hack to

@@ -1,6 +1,7 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import numpy as np
+import logging
 from pi3d.shape.Points import Points
 from pi3d.Shader import Shader
 from pi3d.util.TextBlock import TextBlock
@@ -8,6 +9,7 @@ from pi3d.util.TextBlock import TextBlock
 import math
 import colorsys
 
+LOGGER = logging.getLogger(__name__)
 
 class PointText(object):
   def __init__(self, font, camera, max_chars=100, point_size=48):
@@ -73,7 +75,7 @@ class PointText(object):
     This is required for the text block to update the buffer allocated to
     it. Also tracks the next unallocated character in the buffer. '''
     if self._first_free_char + text_block.char_count >= self.max_chars:
-      print("failed to allocate space in characers for " + text_block.char_count + " characters")
+      LOGGER.error("failed to allocate space in characers for %s characters", text_block.char_count)
       return -1
     self.text_blocks.append(text_block)
     text_block.set_text_manager(self, self._first_free_char)

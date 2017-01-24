@@ -5,6 +5,9 @@ from pi3d.constants import *
 from pi3d.loader import loaderEgg
 from pi3d.loader import loaderObj
 from pi3d.Shape import Shape
+import logging
+
+LOGGER = logging.getLogger(__name__)
 
 class Model(Shape):
   """ 3d model inherits from Shape
@@ -27,15 +30,14 @@ class Model(Shape):
       # Creating a copy but with pointer to buf.
       return
     self.exf = file_string[-3:].lower()
-    if VERBOSE:
-      print("Loading ",file_string)
+    LOGGER.info("Loading ",file_string)
 
     if self.exf == 'egg':
       self.model = loaderEgg.loadFileEGG(self, file_string)
     elif self.exf == 'obj':
       self.model = loaderObj.loadFileOBJ(self, file_string)
     else:
-      print(self.exf, "file not supported")
+      LOGGER.error("%s file not supported", self.exf)
 
   def clone(self, camera = None, light = None):
     """create a new Model but buf points to same array of Buffers

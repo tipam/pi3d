@@ -3,21 +3,17 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import sys
 import re, os
 
-from pi3d import *
+import pi3d
 from random import randint
 from six_mod.moves import xrange
 from six_mod import advance_iterator
 
 from pi3d.Texture import Texture
 from pi3d.Buffer import Buffer
+import logging
 
-#########################################################################################
-#
-# this block added by paddy gaunt 15 June 2012
-# Copyright (c) Paddy Gaunt, 2012
-#
-#########################################################################################
-#######################################################################
+LOGGER = logging.getLogger(__name__)
+
 class vertex():
   def __init__(self, coords_in, UVcoords_in, normal_in):
     self.coords = coords_in
@@ -26,7 +22,6 @@ class vertex():
     # self.UVbinormal = UVbinormal_in
     self.normal = normal_in
 
-########################################################################
 class polygon():
   def __init__(self, normal_in, rgba_in, MRef_in, TRef_in, vertexRef_in, vpkey_in):
     self.normal = [] #should always be three
@@ -46,9 +41,6 @@ class polygon():
       self.vref.append(v)
 
     self.vpKey = vpkey_in
-
-########################################################################
-
 
 def loadFileEGG(model, fileName):
   """Loads an panda3d egg file to produce Buffer object
@@ -82,8 +74,7 @@ def loadFileEGG(model, fileName):
         fileName = p + '/' + fileName
         break
   filePath = os.path.split(os.path.abspath(fileName))[0]
-  if VERBOSE:
-    print(filePath)
+  LOGGER.info(filePath)
   f = open(fileName, 'r')
   l = f.read() # whole thing as a string in memory this will only work for reasonably small files!!!
 
@@ -239,7 +230,7 @@ def loadFileEGG(model, fileName):
 
       model.buf[n].indicesLen = ilen
       model.buf[n].material = (0.0, 0.0, 0.0, 0.0)
-      model.buf[n].ttype = GL_TRIANGLES
+      model.buf[n].ttype = pi3d.GL_TRIANGLES
 
       # load the texture file TODO check if same as previously loaded files (for other loadModel()s)
       if (gTRef in model.textureList):
@@ -270,8 +261,7 @@ def loadFileEGG(model, fileName):
       model.textureList[x[1]] = {}
       for i in xrange(len(x[3])): model.textureList[x[1]][x[3][i][1]] = x[3][i][2]
       model.textureList[x[1]]["filename"] = x[2].strip("\"")
-      if VERBOSE:
-        print(filePath, model.textureList[x[1]]["filename"])
+      LOGGER.info('path: %s, filename:%s', filePath, model.textureList[x[1]]["filename"])
       model.textureList[x[1]]["texID"] = Texture(os.path.join(filePath, model.textureList[x[1]]["filename"]), False, True) # load from file
     if "<CoordinateSystem>" in x[0]:
       model.coordinateSystem = x[2].lower()

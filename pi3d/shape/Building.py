@@ -53,10 +53,9 @@ from pi3d.shape.Plane import Plane
 from pi3d.Shape import Shape
 from pi3d.Buffer import Buffer
 from pi3d.Texture import Texture
+import logging
 
-from pi3d.util import Log
-
-LOGGER = Log.logger(__name__)
+LOGGER = logging.getLogger(__name__)
 
 rads = 0.017453292512 # degrees to radians
 
@@ -492,13 +491,13 @@ class Building (object):
         if os.path.isfile(p + '/' + mapfile): # this could theoretically get different files with same name
           mapfile = p + '/' + mapfile
           break
-    print("Loading building map ...", mapfile)
+    LOGGER.info("Loading building map ...%s", mapfile)
 
     im = Image.open(mapfile)
     im = ImageOps.invert(im)
     ix,iy = im.size
 
-    print("image size", ix, ",", iy)
+    LOGGER.info("image size %d, %d", ix, iy)
 
     startx = xpos - ix / 2 * width
     starty = zpos - ix / 2 * depth
@@ -512,7 +511,6 @@ class Building (object):
     pixels = im.load()
 
     for y in range(1,iy-1):
-      print(".", end='')
       for x in range(1,ix-1):
           colour = pixels[x,y]
 

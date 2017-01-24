@@ -3,22 +3,22 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 """
 pi3d.constants contains constant values, mainly integers, from OpenGL ES 2.0.
 """
+import time
 
-__version__ = '2.16'
+__version__ = '2.17'
+year = time.localtime().tm_year
 
 STARTUP_MESSAGE = """
 
-  Pi3D module - version {}
+  Pi3D module - version {0:}
 
-  Copyright (c) Tim Skillman, 2012-2016
-  Copyright (c) Patrick Gaunt, 2012-2016
-  Copyright (c) Tom Ritchford, 2012-2016
+  Copyright (c) Tim Skillman, 2012-{1:}
+  Copyright (c) Patrick Gaunt, 2012-{1:}
+  Copyright (c) Tom Ritchford, 2012-{1:}
 
   Updates available from www.github.com/tipam/pi3d
-""".format(__version__)
+""".format(__version__, year)
 
-VERBOSE = False
-# TODO: get rid of verbose in favor of logging.
 KIVYDEBUG = False
 
 import ctypes

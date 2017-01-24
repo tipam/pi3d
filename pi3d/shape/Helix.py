@@ -4,6 +4,9 @@ import math
 
 from pi3d.constants import *
 from pi3d.Shape import Shape
+import logging
+
+LOGGER = logging.getLogger(__name__)
 
 class Helix(Shape):
   """ 3d model inherits from Shape"""
@@ -28,8 +31,7 @@ class Helix(Shape):
     super(Helix, self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                 sx, sy, sz, cx, cy, cz)
 
-    if VERBOSE:
-      print("Creating Helix ...", radius, thickness, ringrots, sides)
+    LOGGER.info("Creating Helix ...", radius, thickness, ringrots, sides)
 
     path = []
     st = (math.pi * 2) / ringrots
@@ -37,8 +39,7 @@ class Helix(Shape):
     for r in range(ringrots + 1):
       path.append((radius + thickness * math.sin(r * st),
                    thickness * math.cos(r * st) - hr))
-      if VERBOSE:
-        print("path:", path[r][0], path[r][1])
+      LOGGER.info("path:", path[r][0], path[r][1])
 
     self.radius = radius
     self.thickness = thickness

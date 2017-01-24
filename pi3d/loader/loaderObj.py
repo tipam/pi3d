@@ -7,9 +7,9 @@ from pi3d.constants import *
 from pi3d.loader.parse_mtl import parse_mtl
 from pi3d.Texture import Texture
 from pi3d.Buffer import Buffer
-from pi3d.util import Log
+import logging
 
-LOGGER = Log.logger(__name__)
+LOGGER = logging.getLogger(__name__)
 
 #########################################################################################
 #
@@ -72,7 +72,7 @@ def loadFileOBJ(model, fileName):
         fileName = p + '/' + fileName
         break
   filePath = os.path.split(os.path.abspath(fileName))[0]
-  print(filePath)
+  LOGGER.info(filePath)
   f = open(fileName, 'r')
 
   vertices = []
@@ -196,9 +196,7 @@ def loadFileOBJ(model, fileName):
       if chunks[0] == "s" and len(chunks) == 2:
         smooth = chunks[1]
         
-  if VERBOSE:
-    print("materials:  ", materials)
-    print("numv: ", numv)
+  LOGGER.info("materials:  %s\nnumv:  %s", materials, numv)
     
   for g in faces:
     numv[g] -= 1
@@ -209,8 +207,7 @@ def loadFileOBJ(model, fileName):
     g_tex_coords = []
     g_indices = []
     i = 0 # vertex counter in this material
-    if VERBOSE:
-      print("len uv=", len(vertices))
+    LOGGER.info("len uv=", len(vertices))
     for f in faces[g]:
       iStart = i
       length = len(f['vertex'])
@@ -241,16 +238,13 @@ def loadFileOBJ(model, fileName):
     model.buf[n].material = (0.0, 0.0, 0.0, 0.0)
     model.buf[n].ttype = GL_TRIANGLES
 
-    if VERBOSE:
-      print()
-      print("indices=", len(model.buf[n].element_array_buffer))
-      print("vertices=", len(model.buf[n].array_buffer))
+    LOGGER.info("indices=%s\nvertices=%s", len(model.buf[n].element_array_buffer), 
+                                       len(model.buf[n].array_buffer))
 
   try:
     material_lib = parse_mtl(open(os.path.join(filePath, mtllib), 'r'))
     for m in materials:
-      if VERBOSE:
-        print(m)
+      LOGGER.info(m)
       if 'mapDiffuse' in material_lib[m]:
         tfileName = material_lib[m]['mapDiffuse']
         model.buf[model.vGroup[materials[m]]].texFile = tfileName
@@ -266,4 +260,4 @@ def loadFileOBJ(model, fileName):
           model.buf[model.vGroup[materials[m]]].material = (redVal, grnVal, bluVal, 1.0)
           model.buf[model.vGroup[materials[m]]].unib[3:6] = [redVal, grnVal, bluVal]
   except:
-    print('no material specified')
+    LOGGER.warning('no material specified')

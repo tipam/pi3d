@@ -1,9 +1,9 @@
-#from __future__ import absolute_import, division, print_function, unicode_literals
 from __future__ import print_function
 
 import ctypes
 import sys, os
 import numpy as np
+import logging
 
 from six_mod.moves import xrange
 
@@ -14,6 +14,7 @@ from pi3d.util.Loadable import Loadable
 if PIL_OK:
   from PIL import Image
 
+LOGGER = logging.getLogger(__name__)
 MAX_SIZE = 1920
 DEFER_TEXTURE_LOADING = True
 WIDTHS = [4, 8, 16, 32, 48, 64, 72, 96, 128, 144, 192, 256,
@@ -134,8 +135,10 @@ class Texture(Loadable):
         Display.INSTANCE.textures_dict[str(self._tex)][1] = 1
         Display.INSTANCE.tidy_needed = True
     except Exception as e:
-      print('Texture.__del__ failed with exception "{}" and OpenGL ES error={}'.format(
-                        e, opengles.glGetError())) #many reasonable reasons why this might fail
+      # possible for self to have already been deleted here, logger won't work!
+      #print('Texture.__del__ failed with exception "{}" and OpenGL ES error={}'.format(
+      #                  e, opengles.glGetError()))
+      pass
 
   def tex(self):
     """do the deferred opengl work and return texture"""
@@ -235,8 +238,7 @@ class Texture(Loadable):
         self.ix, self.iy = im.size
         break
 
-    if VERBOSE:
-      print('Loading ...{}'.format(s))
+    LOGGER.debug('Loading ...%s', s)
 
     if self.flip:
       im = im.transpose(Image.FLIP_TOP_BOTTOM)
@@ -254,7 +256,7 @@ class Texture(Loadable):
     try:
       opengles.glGenTextures(1, ctypes.byref(self._tex))
     except: # TODO windows throws exceptions just for this call!
-      print("[warning glGenTextures() on windows only!]")
+      LOGGER.debug("[warning glGenTextures() on windows only!]")
     from pi3d.Display import Display
     if Display.INSTANCE is not None:
       Display.INSTANCE.textures_dict[str(self._tex)] = [self._tex, 0]

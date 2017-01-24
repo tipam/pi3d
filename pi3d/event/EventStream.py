@@ -1,6 +1,7 @@
 import fcntl
 import os
 import select
+import logging
 
 from pi3d.event.Constants import *
 
@@ -8,9 +9,8 @@ from pi3d.event import ioctl
 from pi3d.event import AbsAxisScaling
 from pi3d.event import EventStruct
 from pi3d.event import Format
-from pi3d.util import Log
 
-LOGGER = Log.logger(__name__)
+LOGGER = logging.getLogger(__name__)
 
 EVIOCGRAB = ioctl._IOW(ord('E'), 0x90, "i")          # Grab/Release device
 

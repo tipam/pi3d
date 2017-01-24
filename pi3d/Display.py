@@ -6,9 +6,9 @@ import time
 import threading
 import traceback
 import platform
+import logging
 
 import pi3d
-from pi3d.util import Log
 from pi3d.util.DisplayOpenGL import DisplayOpenGL
 from pi3d.constants import *
 
@@ -18,7 +18,7 @@ elif pi3d.PLATFORM != pi3d.PLATFORM_PI and pi3d.PLATFORM != pi3d.PLATFORM_ANDROI
   from pyxlib.x import *
   from pyxlib import xlib
 
-LOGGER = Log.logger(__name__)
+LOGGER = logging.getLogger(__name__)
 
 ALLOW_MULTIPLE_DISPLAYS = False
 RAISE_EXCEPTIONS = True
@@ -396,7 +396,10 @@ class Display(object):
           raise
 
   def __del__(self):
-    self.destroy()
+    try:
+      self.destroy()
+    except:
+      pass # often something has already been deleted leading to various None objects
 
   def swap_buffers(self):
     self.opengl.swap_buffers()
