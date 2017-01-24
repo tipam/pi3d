@@ -11,7 +11,9 @@ import numpy as np
 from pi3d import *
 from pi3d.Buffer import Buffer
 from pi3d.Shape import Shape
-from pi3d.util import Utility
+import logging
+
+LOGGER = logging.getLogger(__name__)
 
 if PIL_OK:
   from PIL import Image
@@ -55,7 +57,7 @@ class ElevationMap(Shape):
     divx += 1 # one more vertex in each direction than number of divisions
     divy += 1
     if divx > 200 or divy > 200:
-      print("... Map size can't be bigger than 199x199 divisions")
+      LOGGER.warning("... Map size can't be bigger than 199x199 divisions")
       divx = 200
       divy = 200
     #print(type(mapfile), type(""))
@@ -68,8 +70,7 @@ class ElevationMap(Shape):
               if os.path.isfile(p + '/' + mapfile): # this could theoretically get different files with same name
                 mapfile = p + '/' + mapfile
                 break
-          if VERBOSE:
-            print("Loading height map ...", mapfile)
+          LOGGER.info("Loading height map ...%s", mapfile)
 
           im = Image.open(mapfile)
         else:
@@ -106,8 +107,7 @@ class ElevationMap(Shape):
     self.ht_y = 0.0
     self.ht_n = np.array([0.0, 1.0, 0.0])
 
-    if VERBOSE:
-      print("Creating Elevation Map ...", ix, iy)
+    LOGGER.info("Creating Elevation Map ...%d x %d", ix, iy)
 
     self.wh = width * 0.5
     self.hh = depth * 0.5

@@ -1,9 +1,10 @@
 from collections import namedtuple
 
-from pi3d.util import Log
+import logging
+
+LOGGER = logging.getLogger(__name__)
 
 RAISE_EXCEPTION_ON_ERROR = True
-LOGGER = Log.logger(__name__)
 
 def _error(args, exception=None):
   LOGGER.error(*args)

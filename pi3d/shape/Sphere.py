@@ -5,6 +5,9 @@ import math
 from pi3d.constants import *
 from pi3d.util import Utility
 from pi3d.Shape import Shape
+import logging
+
+LOGGER = logging.getLogger(__name__)
 
 class Sphere(Shape):
   """ 3d model inherits from Shape"""
@@ -28,8 +31,7 @@ class Sphere(Shape):
     super(Sphere, self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                 sx, sy, sz, cx, cy, cz)
 
-    if VERBOSE:
-      print("Creating sphere ...")
+    LOGGER.info("Creating sphere ...")
 
     path = []
     #extra points added at poles to reduce distortion (mainly normals)

@@ -51,7 +51,7 @@ from pi3d.shape.Torus import Torus
 from pi3d.shape.Triangle import Triangle
 from pi3d.shape.Tube import Tube
 
-from pi3d.util import Log
+from pi3d.util.Log import Log
 from pi3d.util import Utility
 
 from pi3d.sprite.Ball import Ball

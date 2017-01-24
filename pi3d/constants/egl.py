@@ -120,6 +120,7 @@ def set_egl_function_args(egl):
   typedef void *EGLSurface;
   typedef void *EGLContext;
   '''
+
   from ctypes import POINTER, c_void_p, c_int32, c_uint, c_int, c_float
 
   egl.eglChooseConfig.argtypes = [c_void_p, c_void_p, c_void_p, c_int32, POINTER(c_int32)]

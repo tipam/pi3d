@@ -2,8 +2,10 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 from pi3d.constants import *
 from pi3d.Buffer import Buffer
-
 from pi3d.Shape import Shape
+import logging
+
+LOGGER = logging.getLogger(__name__)
 
 class Extrude(Shape):
   """ 3d model inherits from Shape
@@ -23,8 +25,7 @@ class Extrude(Shape):
     super(Extrude, self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                   sx, sy, sz, cx, cy, cz)
 
-    if VERBOSE:
-      print("Creating Extrude ...")
+    LOGGER.info("Creating Extrude ...")
 
     s = len(path) if path != None else 0
     ht = height * 0.5

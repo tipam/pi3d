@@ -6,6 +6,7 @@ if sys.version_info[0] == 3:
   text_type = str
 else:
   text_type = unicode
+import logging
 
 from pi3d import *
 
@@ -13,6 +14,7 @@ from pi3d.Buffer import Buffer
 from pi3d.Shape import Shape
 from pi3d.util import Utility
 
+LOGGER = logging.getLogger(__name__)
 DOTS_PER_INCH = 72.0
 DEFAULT_FONT_SIZE = 0.24
 DEFAULT_FONT_SCALE = DEFAULT_FONT_SIZE / DOTS_PER_INCH
@@ -53,8 +55,7 @@ class String(Shape):
     super(String, self).__init__(camera, light, "", x, y, z,
                                  rx, ry, rz,  1.0, 1.0, 1.0,  0.0, 0.0, 0.0)
 
-    if VERBOSE:
-      print("Creating string ...")
+    LOGGER.info("Creating string ...")
 
     self.verts = []
     self.texcoords = []

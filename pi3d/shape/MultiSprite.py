@@ -2,6 +2,9 @@ from pi3d.constants import *
 from pi3d.Texture import Texture
 from pi3d.Buffer import Buffer
 from pi3d.Shape import Shape
+import logging
+
+LOGGER = logging.getLogger(__name__)
 
 class MultiSprite(Shape):
   """ 3d model inherits from Shape, this is a series of Sprites
@@ -68,5 +71,4 @@ class MultiSprite(Shape):
       self.set_shader(shader)
       self.set_2d_size() # method in Shape, default full window size
     except IndexError:
-      print('Must supply a list of lists of Textures or strings')
-      return
+      LOGGER.error('Must supply a list of lists of Textures or strings')

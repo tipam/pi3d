@@ -1,4 +1,5 @@
 import six_mod
+import logging
 
 from pi3d.event import EventHandler
 from pi3d.event import Keys
@@ -6,6 +7,7 @@ from pi3d.event.FindDevices import find_devices
 from pi3d.event.Constants import *
 from pi3d.event.EventStream import EventStream
 
+LOGGER = logging.getLogger(__name__)
 _KEYS = (k for k in vars(Keys) if not k.startswith('_'))
 KEY_CODE = dict((k, getattr(Keys, k)) for k in _KEYS)
 CODE_KEY = {}
@@ -70,19 +72,19 @@ class InputEvents(object):
         self.streams.append(EventStream(x, "keyboard"))
     else:
       keyboards = [ ]
-    print("keyboards =", keyboards)
+    LOGGER.info("keyboards = %s", keyboards)
     if wantMouse:
       mice = find_devices("mouse", butNot=keyboards)
       for x in mice:
         self.streams.append(EventStream(x, "mouse"))
-      print("mice = ", mice)
+      LOGGER.info("mice = %s", mice)
     else:
       mice = [ ]
     if wantJoystick:
       joysticks = find_devices("js", butNot=keyboards+mice)
       for x in joysticks:
         self.streams.append(EventStream(x, "joystick"))
-      print("joysticks =", joysticks)
+      LOGGER.info("joysticks = %s", joysticks)
     for x in self.streams:
       x.acquire_abs_info()
 

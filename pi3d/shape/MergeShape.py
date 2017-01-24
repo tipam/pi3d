@@ -7,9 +7,11 @@ import numpy as np
 
 from pi3d.constants import *
 from pi3d.Buffer import Buffer
-
 from pi3d.Shape import Shape
 from pi3d.util.RotateVec import rotate_vec
+import logging
+
+LOGGER = logging.getLogger(__name__)
 
 class MergeShape(Shape):
   """ 3d model inherits from Shape. As there is quite a time penalty for
@@ -31,8 +33,7 @@ class MergeShape(Shape):
     super(MergeShape, self).__init__(camera, light, name, x, y, z,
                                    rx, ry, rz, sx, sy, sz, cx, cy, cz)
 
-    if VERBOSE:
-      print("Creating Merge Shape ...")
+    LOGGER.info("Creating Merge Shape ...")
 
     self.vertices = []
     self.normals = []
@@ -80,8 +81,7 @@ class MergeShape(Shape):
 
       n = len(bufr.array_buffer)
 
-      if VERBOSE:
-        print("Merging", bufr.name)
+      LOGGER.info("Merging Buffer %s", bufr)
 
       original_vertex_count = len(vertices)
 
@@ -189,7 +189,7 @@ class MergeShape(Shape):
 
     blist = []
     for r in range(int(st)):
-      print("merging ", r)
+      LOGGER.info("merging %d", r)
       ca = math.cos(math.radians(sta))
       sa = math.sin(math.radians(sta))
       sta += step
@@ -198,4 +198,4 @@ class MergeShape(Shape):
                 0, sta, 0, 1.0, 1.0, 1.0])
 
     self.merge(blist)
-    print("merged all")
+    LOGGER.info("merged all")

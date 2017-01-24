@@ -1,11 +1,11 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import threading
+import logging
 
 from pi3d import Display
-from pi3d.util import Log
 
-LOGGER = Log.logger(__name__)
+LOGGER = logging.getLogger(__name__)
 
 CHECK_IF_DISPLAY_THREAD = True
 DISPLAY_THREAD = threading.current_thread()

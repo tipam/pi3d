@@ -52,17 +52,18 @@ class Buffer(Loadable):
                                0.0, 0.0, 1.0)
     """ pass to shader array of vec3 uniform variables:
 
-    ===== ============================ ==== ==
-    vec3        description            python
-    ----- ---------------------------- -------
-    index                              from to
-    ===== ============================ ==== ==
-        0  ntile, shiny, blend           0   2
-        1  material                      3   5
-        2  umult, vmult, point_size      6   8
-        3  u_off, v_off, line_width/bump 9  10 #NB line width and bump factor
-    ===== ============================ ==== ==  clash but shouldn't be an issue
+    ===== ============================== ==== ==
+    vec3        description              python
+    ----- ------------------------------ -------
+    index                                from to
+    ===== ============================== ==== ==
+        0  ntile, shiny, blend             0   2
+        1  material                        3   5
+        2  umult, vmult, point_size        6   8
+        3  u_off, v_off, line_width/bump   9  10
+    ===== ============================== ==== ==
 
+    NB line width and bump factor clash but shouldn't be an issue
     """
     #self.shape = shape
     self.textures = []
