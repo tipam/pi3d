@@ -8,7 +8,7 @@ import os.path
 
 class Log(object):
   def __init__(self, name=None, level='WARNING', file=None, format=None):
-    """
+    '''
     The typical usage of the Log module has a single LOGGER per Python file.
 
     At the top of the file is typically:
@@ -26,26 +26,27 @@ class Log(object):
     (Note that the values for the format string, like "some_name", "error_code" or
     "msg" are passed in as arguments - that's so you never even construct the
     message if it isn't going to be displayed.)
-    ********************************************************************
-    N.B. if name is not passed as an argument then this will set the root
-    logger properties (and all the pi3d module logging will also be logged.)
-    ********************************************************************
+
+    ***N.B. if name is not passed as an argument then this will set the root
+    logger properties (and all the pi3d module logging will also be logged.)***
+
     The level, file, format arguments are passed on to set_logs() see below.
-    """
+    '''
+
     self.logger = logging.getLogger(name)
     self.debug = self.logger.debug # to reference methods to those of the logger instance
     self.info = self.logger.info
     self.warning = self.logger.warning
     self.error = self.logger.error
     self.critical = self.logger.critical
-    ''' pi3d only adds one handler for each instance of Log. self.HANDLER holds a 
-    reference to it so that can be changed by subsequent calls to set_logs()
-    '''
+
+    # pi3d only adds one handler for each instance of Log. self.HANDLER holds a 
+    # reference to it so that can be changed by subsequent calls to set_logs()
     self.HANDLER = None
     self.set_logs(level, file, format)
 
   def set_logs(self, level=None, file=None, format=None):
-    """
+    '''
     You can redirect, filter or reformat your logging by calling Log.set_logs().
     Log.set_logs() has three optional parameters:
 
@@ -65,7 +66,8 @@ class Log(object):
          controls what information is in the output messages.  The default is
            `'%(asctime)s %(levelname)s: %(name)s: %(message)s'`
          which results in output looking like this:
-          `time LEVEL: filename: Your Message Here.`"""
+          `time LEVEL: filename: Your Message Here.`'''
+
     if level is not None:
       self.logger.setLevel(level.upper())
 

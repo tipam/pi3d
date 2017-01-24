@@ -9,7 +9,7 @@ Introduction to pi3d
 Here is a link to an excellent, self explanatory `YouTube`_ video made by 
 Peter Farrell that covers much of the content of this ReadMe.
 
-There's plenty of 3D code flying around at the moment for the Raspberry Pi,
+There's plenty of 3D code flying around for the Raspberry Pi,
 but much of it is rather complicated to understand and most of it can sit
 under the bonnet!
 
