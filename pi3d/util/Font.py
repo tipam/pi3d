@@ -28,7 +28,9 @@ class Font(Texture):
 
   def __init__(self, font, color=(255,255,255,255), codepoints=None,
                add_codepoints=None, font_size=42, image_size=512,
-               italic_adjustment=1.1, background_color=None, mipmap=True):
+               italic_adjustment=1.1, background_color=None,
+               shadow=(0,0,0,255), shadow_radius=0,
+               mipmap=True, filter=None):
     """Arguments:
     *font*:
       File path/name to a TrueType font file.
@@ -77,8 +79,20 @@ class Font(Texture):
     *background_color*:
       filled background in ImageDraw format as above. default None i.e.
       transparent. 
+
+    *shadow*:
+      Color of shadow, default black.
+
+    *shadow_radius*:
+      Gaussian blur radius applied to shadow layer, default 0 (no shadow)
+
+    *mipmap*:
+      Resulting texture mipmap option, default true
+
+    *filter*:
+      Resulting texture filter option, default None
     """
-    super(Font, self).__init__(font, mipmap=mipmap)
+    super(Font, self).__init__(font, mipmap=mipmap, filter=filter)
     self.font = font
     try:
       imgfont = ImageFont.truetype(font, font_size)
@@ -106,7 +120,15 @@ class Font(Texture):
         codepoints = codepoints[:(256 - len(add_codepoints))]
       codepoints += add_codepoints
 
-    self.im = Image.new("RGBA", (image_size, image_size), background_color)
+    is_draw_shadows = shadow_radius > 0
+    is_text_transparent = is_draw_shadows or (background_color == None)
+    
+    self.im = Image.new("RGBA", (image_size, image_size), (0, 0, 0, 0) if is_text_transparent else background_color)
+
+    if is_draw_shadows:
+      shadow_img = Image.new("RGBA", (image_size, image_size), background_color)
+      shadow_draw = ImageDraw.Draw(shadow_img)
+      
     self.ix, self.iy = image_size, image_size
 
     self.glyph_table = {}
@@ -132,6 +154,8 @@ class Font(Texture):
 
       offset = (self.spacing - chwidth)  / 2.0
       draw.text((curX + offset, curY), ch, font=imgfont, fill=color)
+      if is_draw_shadows:
+        shadow_draw.text((curX + offset, curY), ch, font=imgfont, fill=shadow)
       x = (curX + offset + 0.0) / self.ix
       y = (curY + self.height + 0.0) / self.iy
       tw = (chwidth + 0.0) / self.ix
@@ -153,16 +177,33 @@ class Font(Texture):
         xindex = 0
         yindex += 1
 
-    #RGBs = 'RGBA' # if self.alpha else 'RGB' # always alpha
-    #self.im = self.im.convert(RGBs)
+    if is_text_transparent:
+      self.im = self._force_color(self.im, color)
+        
+    if is_draw_shadows:
+      from PIL import ImageFilter
+      if background_color == None:
+        shadow_img = self._force_color(shadow_img, shadow)
+        
+      shadow_img = shadow_img.filter(ImageFilter.GaussianBlur(radius=shadow_radius))
+
+      self.im = Image.alpha_composite(shadow_img, self.im)
+
     self.image = np.array(self.im)
     self._tex = ctypes.c_uint()
-    if background_color is None:
-      if isinstance(color, str):
-        from PIL import ImageColor
-        color = ImageColor.getrgb(color)
-      self.image[:,:,:3] = color[:3]
 
+  def _force_color(self, img, color):
+    """
+    Overwrite color of all pixels as PIL renders text incorrectly when drawing on transparent backgrounds
+    http://nedbatchelder.com/blog/200801/truly_transparent_text_with_pil.html
+    """
+    img = np.array(img)
+    if isinstance(color, str):
+      from PIL import ImageColor
+      color = ImageColor.getrgb(color)
+    img[:,:,:3] = color[:3]
+    return Image.fromarray(img)
+    
   def _load_disk(self):
     """
     we need to stop the normal file loading by overriding this method
