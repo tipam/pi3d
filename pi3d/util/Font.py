@@ -105,7 +105,7 @@ class Font(Texture):
       raise Exception(msg)
 
     ascent, descent = imgfont.getmetrics()
-    self.height = ascent + descent
+    self.height = ascent + descent + 3 # allow a few more pixels for bottom of g,y etc
     self.spacing = 64
 
     image_size = self.spacing  * 16  # or 1024 TODO this may go wrong if self.height != 64
@@ -156,16 +156,19 @@ class Font(Texture):
       draw.text((curX + offset, curY), ch, font=imgfont, fill=color)
       if is_draw_shadows:
         shadow_draw.text((curX + offset, curY), ch, font=imgfont, fill=shadow)
-      x = (curX + offset + 0.0) / self.ix
-      y = (curY + self.height + 0.0) / self.iy
-      tw = (chwidth + 0.0) / self.ix
-      th = (self.height + 0.0) / self.iy
+      chwidth += 6 # make a little more room (for w for instance)
+      offset -= 3
+      
+      x = float(curX + offset) / self.ix
+      y = float(curY + self.height) / self.iy
+      tw = float(chwidth) / self.ix
+      th = float(self.height) / self.iy
 
       table_entry = [
         chwidth,
         chheight,
-        [[x + tw, y - th], [x, y - th], [x, y], [x + tw, y]],
-        [[chwidth, 0, 0], [0, 0, 0], [0, -self.height, 0], [chwidth, -self.height, 0]],
+        [[x + tw, y - th], [x, y - th], [x, y], [x + tw, y]], # UV texture coordinates
+        [[chwidth, 0, 0], [0, 0, 0], [0, -self.height, 0], [chwidth, -self.height, 0]], # xyz vertex coordinates of corners
         float(curX) / self.ix,
         float(curY) / self.iy
         ]
