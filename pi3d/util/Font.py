@@ -29,7 +29,7 @@ class Font(Texture):
   def __init__(self, font, color=(255,255,255,255), codepoints=None,
                add_codepoints=None, font_size=42, image_size=512,
                italic_adjustment=1.1, background_color=None,
-               shadow=(0,0,0,255), shadow_radius=0,
+               shadow=(0,0,0,255), shadow_radius=0, spacing=None,
                mipmap=True, filter=None):
     """Arguments:
     *font*:
@@ -86,6 +86,11 @@ class Font(Texture):
     *shadow_radius*:
       Gaussian blur radius applied to shadow layer, default 0 (no shadow)
 
+    *spacing*:
+      Extra spacing between letters to allow for shadow. The default value
+      None will add spacing equal to the shadow_radius, this will be overridden
+      by any value supplied.
+
     *mipmap*:
       Resulting texture mipmap option, default true
 
@@ -105,7 +110,9 @@ class Font(Texture):
       raise Exception(msg)
 
     ascent, descent = imgfont.getmetrics()
-    self.height = ascent + descent + 3 # allow a few more pixels for bottom of g,y etc
+    if spacing is None:
+      spacing = shadow_radius
+    self.height = ascent + descent + spacing # allow extra pixels if shadow or for certain fonts
     self.spacing = 64
 
     image_size = self.spacing  * 16  # or 1024 TODO this may go wrong if self.height != 64
@@ -156,8 +163,8 @@ class Font(Texture):
       draw.text((curX + offset, curY), ch, font=imgfont, fill=color)
       if is_draw_shadows:
         shadow_draw.text((curX + offset, curY), ch, font=imgfont, fill=shadow)
-      chwidth += 6 # make a little more room (for w for instance)
-      offset -= 3
+      chwidth += spacing * 2 # make a little more room (for w for instance)
+      offset -= spacing
       
       x = float(curX + offset) / self.ix
       y = float(curY + self.height) / self.iy
