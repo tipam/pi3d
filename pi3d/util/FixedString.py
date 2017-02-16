@@ -24,6 +24,7 @@ class FixedString(Texture):
   rather than two triangles for each letter."""
 
   def __init__(self, font, string, camera=None, color=(255,255,255,255),
+               shadow=(0,0,0,255), shadow_radius=0,
                font_size=24, margin=5.0, justify='C',
                background_color=None, shader=None, f_type='', mipmap=True):
     """Arguments:
@@ -40,6 +41,12 @@ class FixedString(Texture):
     *color*:
       Color in format '#RRGGBB', (255,0,0,255), 'orange' etc (as accepted 
       by PIL.ImageDraw) default (255, 255, 255, 255) i.e. white 100% alpha
+
+    *shadow*:
+      Color of shadow, default black.
+
+    *shadow_radius*:
+      Gaussian blur radius applied to shadow layer, default 0 (no shadow)
 
     *font_size*:
       Point size for drawing the letters on the internal Texture. default 24
@@ -98,21 +105,25 @@ class FixedString(Texture):
     self.im = Image.new("RGBA", (texture_wid, texture_hgt), background_color)
     self.ix, self.iy = texture_wid, texture_hgt
     draw = ImageDraw.Draw(self.im)
-    for i, line in enumerate(lines):
-      line_len = imgfont.getsize(line)[0] 
-      if justify == "C":
-        xoff = (maxwid - line_len) / 2.0
-      elif justify == "L":
-        xoff = margin
-      else:
-        xoff = maxwid - line_len
-      draw.text((xoff, margin + i * height), line, font=imgfont, fill=color)
+    if shadow_radius > 0:
+      from PIL import ImageFilter
+      self._render_text(lines, justify, margin, imgfont, maxwid, height, shadow, draw)
+      self.im = self.im.filter(ImageFilter.GaussianBlur(radius=shadow_radius))
+      if background_color == None:
+        self.im = Image.fromarray(self._force_color(np.array(self.im), shadow))
+        
+      draw = ImageDraw.Draw(self.im)
 
+    self._render_text(lines, justify, margin, imgfont, maxwid, height, color, draw)
+
+    force_color = background_color is None and shadow_radius == 0
     if f_type == '':
       self.image = np.array(self.im)
     elif 'BUMP' in f_type:
       amount = -1.0 if '+' in f_type else 1.0
       self.image = self._normal_map(np.array(self.im, dtype=np.uint8), amount)
+      force_color = False
+
     else:
       from PIL import ImageFilter
       if f_type == 'EMBOSS':
@@ -124,11 +135,10 @@ class FixedString(Texture):
       elif f_type == 'SMOOTH':
         self.im = self.im.filter(ImageFilter.SMOOTH_MORE)
       self.image = np.array(self.im)
-      if background_color is None:
-        if isinstance(color, str):
-          from PIL import ImageColor
-          color = ImageColor.getrgb(color)
-        self.image[:,:,:3] = color[:3]
+
+    if force_color:
+      self.image = self._force_color(self.image, color)
+
     self._tex = ctypes.c_uint()
     
     bmedge = nlines * height + 2.0 * margin
@@ -140,6 +150,19 @@ class FixedString(Texture):
       buf.shader = shader
     buf.unib[6] = float(maxwid / texture_wid) #scale to fit
     buf.unib[7] = float(bmedge / texture_hgt)
+
+  def _render_text(self, lines, justify, margin, imgfont, maxwid, height, color, draw):
+    for i, line in enumerate(lines):
+      line_len = imgfont.getsize(line)[0] 
+      if justify == "C":
+        xoff = (maxwid - line_len) / 2.0
+      elif justify == "L":
+        xoff = margin
+      else:
+        xoff = maxwid - line_len
+
+      draw.text((xoff, margin + i * height), line, font=imgfont, fill=color)
+
     
   def set_shader(self, shader):
     ''' wrapper for Shape.set_shader'''
@@ -149,6 +172,17 @@ class FixedString(Texture):
     '''wrapper for Shape.draw()'''
     self.sprite.draw(shader, txtrs, ntl, shny, camera, mlist)
     
+  def _force_color(self, im_array, color):
+    """
+    Overwrite color of all pixels as PIL renders text incorrectly when drawing on transparent backgrounds
+    http://nedbatchelder.com/blog/200801/truly_transparent_text_with_pil.html
+    """
+    if isinstance(color, str):
+      from PIL import ImageColor
+      color = ImageColor.getrgb(color)
+    im_array[:,:,:3] = color[:3]
+    return im_array
+
   def _load_disk(self):
     """
     we need to stop the normal file loading by overriding this method
