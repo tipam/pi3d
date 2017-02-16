@@ -4,6 +4,11 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
+v2.18
+2017-02-16  Improvements: Shadow system for Font and FixedString to allow
+            text to show up against variable backgrounds. Effectively adds
+            an outline.
+
 v2.17
 2017-01-24  Bug fixes: Logging system altered quite significantly. Within
             the pi3d module logging is done using the 'vanilla' python
