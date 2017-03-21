@@ -122,7 +122,8 @@ class Shader(DefaultInstance):
     opengles.glEnableVertexAttribArray(self.attr_texcoord)
     self.unif_tex = []
     self.textures = []
-    for s in [b'tex0', b'tex1', b'tex2']:
+    for i in range(8):
+      s = 'tex{}'.format(i).encode() 
       self.unif_tex.append(opengles.glGetUniformLocation(self.program, s))
       self.textures.append(None)
       """

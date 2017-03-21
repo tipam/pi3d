@@ -131,7 +131,7 @@ class Display(object):
     self.vbufs_dict = {}
     self.ebufs_dict = {}
     self.last_shader = None
-    self.last_textures = [None, None, None] # if more than 3 used this will break in Buffer.draw()
+    self.last_textures = [None for i in range(8)] # 8 is max no. texture2D on broadcom GPU
     self.external_mouse = None
     self.offscreen_tex = False # used in Buffer.draw() to force reload of textures
 

@@ -293,11 +293,16 @@ Setup on desktop and laptop machines
 
   The machine will need to have a gpu that runs OpenGL2+ and obviously
   it will need to have python installed. Setting up in a Linux environment
-  is most similar to the procedure for the Raspberry Pi. Linux can be set
+  is most similar to the procedure for the Raspberry Pi. In fact by far the
+  most staightforward route is to make a Raspbian Pixel USB stick following
+  the instructions here https://www.raspberrypi.org/blog/pixel-pc-mac/ 
+  After that your PC will behave pretty much like the Raspberry Pi and pi3d
+  will work after a simple ``sudo pip3 install pi3d`` The USB isn't as fast
+  as a hard drive but everything else will run at PC speed. Linux can be set
   up in its own boot partition or in vmware (eg Player which is free, you
   will also need to ``enable 3d acceleration``.)
 
-  You need to install libraries
+  For non Pixel linux you will need to install libraries
   that emulate OpenGLES behaviour for the gpu::
 
     $ sudo apt-get install mesa-utils-extra

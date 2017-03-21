@@ -18,6 +18,14 @@ LOGGER = logging.getLogger(__name__)
 if PIL_OK:
   from PIL import Image
 
+def file_pathify(file_path):
+  if file_path[0] != '/':
+    for p in sys.path:
+      if os.path.isfile(p + '/' + file_path): # this could theoretically get different files with same name
+        file_path = p + '/' + file_path
+        break
+  return file_path
+
 # a rectangular surface where elevation is defined by a greyscal image
 class ElevationMap(Shape):
   """ 3d model inherits from Shape
@@ -26,7 +34,8 @@ class ElevationMap(Shape):
                width=100.0, depth=100.0, height=10.0,
                divx=0, divy=0, ntiles=1.0, name="",
                x=0.0, y=0.0, z=0.0, rx=0.0, ry=0.0, rz=0.0,
-               sx=1.0, sy=1.0, sz=1.0, cx=0.0, cy=0.0, cz=0.0, smooth=True, cubic=False):
+               sx=1.0, sy=1.0, sz=1.0, cx=0.0, cy=0.0, cz=0.0, smooth=True, 
+               cubic=False, texmap=None):
     """uses standard constructor for Shape
 
     Arguments:
@@ -65,11 +74,7 @@ class ElevationMap(Shape):
     if PIL_OK:
       try:
         if '' + mapfile == mapfile: #HORRIBLE. Only way to cope with python2v3
-          if mapfile[0] != '/':
-            for p in sys.path:
-              if os.path.isfile(p + '/' + mapfile): # this could theoretically get different files with same name
-                mapfile = p + '/' + mapfile
-                break
+          mapfile = file_pathify(mapfile)
           LOGGER.info("Loading height map ...%s", mapfile)
 
           im = Image.open(mapfile)
@@ -84,20 +89,28 @@ class ElevationMap(Shape):
           divy = 200
         im = im.resize((divx, divy), Image.ANTIALIAS)
         ix, iy = im.size
-
+      im = im.convert('L')
       im = im.transpose(Image.FLIP_TOP_BOTTOM)
       im = im.transpose(Image.FLIP_LEFT_RIGHT)
       self.pixels = im.load()
+      if texmap is not None:
+        try:
+          texmap = file_pathify(texmap)
+          tm = Image.open(texmap)
+        except:
+          tm = texmap
+        tm = tm.convert('L')
+        tm = tm.resize((ix, iy))
+        tm = np.array(tm)
+        tm = np.floor(tm * 3.99 / (tm.max() - tm.min()))
+
     else: 
       ''' images saved as compressed numpy npz file. No resizing so needs 
-      to be right size. TODO make this repeated code less WET'''
-      if mapfile[0] != '/':
-        for p in sys.path:
-          if os.path.isfile(p + '/' + mapfile): # this could theoretically get different files with same name
-            mapfile = p + '/' + mapfile
-            break
+      to be right size.'''
+      mapfile = file_pathify(mapfile)
       self.pixels = np.load(mapfile)['arr_0'][::-1,::-1] # has to be saved with default key
       ix, iy = self.pixels.shape[:2]
+    
     self.width = width
     self.depth = depth
     self.height = height
@@ -124,13 +137,15 @@ class ElevationMap(Shape):
 
     for y in xrange(0, iy):
       for x in xrange(0, ix):
-        pxl = self.pixels[x, y]
-        hgt = pxl[0] if hasattr(pxl, '__iter__') else pxl
-        hgt *= self.ht
-        this_x = -self.wh + x * self.ws
-        this_z = -self.hh + y * self.hs
-        verts.append((this_x, hgt, this_z))
-        tex_coords.append(((ix - x) * tx, (iy - y) * ty))
+        hgt = self.pixels[x, y] * self.ht
+        verts.append((-self.wh + x * self.ws, 
+                      hgt, 
+                      -self.hh + y * self.hs))
+        if texmap is not None:
+          tex_n = tm[x, y]
+        else:
+          tex_n = 0.0
+        tex_coords.append((tex_n + (ix - x) * tx, (iy - y) * ty))
 
     s = 0
     #create one long triangle_strip by alternating X directions
