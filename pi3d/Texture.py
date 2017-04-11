@@ -64,9 +64,9 @@ class Texture(Loadable):
         by the shader. If set to true then this texture needs to be
         drawn AFTER other objects that are FURTHER AWAY
       *flip*
-        flips the image [not used for numpy arrays]. If flip is 1 works like
-        True, but if flip is 2 flips the image left to right and is 3, then
-        flips both horizontal and vertical
+        flips the image [not used for numpy arrays]. Now this parameter could
+        be an integer value. If bit #0 is 1, a up-down flip is perfomed,
+        also if bit #1 is set, a left-right flip occurs
 
       *size*
         to resize image to [not used for numpy arrays]
@@ -244,7 +244,9 @@ class Texture(Loadable):
     LOGGER.debug('Loading ...%s', s)
 
     if isinstance(self.flip, bool):
-      im = im.transpose(Image.FLIP_TOP_BOTTOM)
+      # Old behaviour
+      if self.flip:
+        im = im.transpose(Image.FLIP_TOP_BOTTOM)
     else:
       if self.flip & 1:
         im = im.transpose(Image.FLIP_TOP_BOTTOM)
