@@ -64,7 +64,10 @@ class Texture(Loadable):
         by the shader. If set to true then this texture needs to be
         drawn AFTER other objects that are FURTHER AWAY
       *flip*
-        flips the image [not used for numpy arrays]
+        flips the image [not used for numpy arrays]. If flip is 1 works like
+        True, but if flip is 2 flips the image left to right and is 3, then
+        flips both horizontal and vertical
+
       *size*
         to resize image to [not used for numpy arrays]
       *defer*
@@ -240,8 +243,13 @@ class Texture(Loadable):
 
     LOGGER.debug('Loading ...%s', s)
 
-    if self.flip:
+    if isinstance(self.flip, bool):
       im = im.transpose(Image.FLIP_TOP_BOTTOM)
+    else:
+      if self.flip & 1:
+        im = im.transpose(Image.FLIP_TOP_BOTTOM)
+      if self.flip & 2:
+        im = im.transpose(Image.FLIP_LEFT_RIGHT)
 
     #self.image = im.tostring('raw', RGBs) # TODO change to tobytes WHEN Pillow is default PIL in debian (jessie becomes current)
     self.image = self._img_to_array(im)
