@@ -20,20 +20,20 @@ class EventHandler(object):
 
     self.mutex = threading.Lock()
 
-    self.absx = [0.0]*4
-    self.absy = [0.0]*4
-    self.absz = [0.0]*4
-    self.absx2 = [0.0]*4
-    self.absy2 = [0.0]*4
-    self.absz2 = [0.0]*4
-    self.abshatx = [0.0]*4
-    self.abshaty = [0.0]*4
+    self.absx = [0.0]*16
+    self.absy = [0.0]*16
+    self.absz = [0.0]*16
+    self.absx2 = [0.0]*16
+    self.absy2 = [0.0]*16
+    self.absz2 = [0.0]*16
+    self.abshatx = [0.0]*16
+    self.abshaty = [0.0]*16
 
-    self.relx = [0]*4
-    self.rely = [0]*4
-    self.relv = [0]*4
-    self.relh = [0]*4
-    self.reld = [0]*4
+    self.relx = [0]*16
+    self.rely = [0]*16
+    self.relv = [0]*16
+    self.relh = [0]*16
+    self.reld = [0]*16
 
   def event(self, event):
     """

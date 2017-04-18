@@ -191,7 +191,7 @@ def find_devices(identifier, butNot= [ ]):
               else:
                 pass
                 # print "No need to remove", old[1]
-            else:
+            else: # i.e. there was no break from above for loop (horrible for-else syntax!)
               ret.append((index, int(eventindex)))
               index += 1
 
