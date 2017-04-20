@@ -4,6 +4,13 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
+v2.19
+2017-04-20  Improvements: Multiple Textures can be used for ElevationMap,
+            Texture flip can do vertical, horizontal or both.
+            Bug fixes: event system limit of four devices in category kbd,
+            mouse or js increased to sixteen as it's possible to exceed
+            previous limit.
+
 v2.18
 2017-02-16  Improvements: Shadow system for Font and FixedString to allow
             text to show up against variable backgrounds. Effectively adds
