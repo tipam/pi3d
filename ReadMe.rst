@@ -132,15 +132,16 @@ pi3d with different levels of complexity.
 Files and folders in this repository
 ====================================
 
-Total zipped download from github c. 574 kB extracts to 1.2 MB
+Installation tar.gz on python.pypi.org is c.190kB extracts to 770kB. Total 
+zipped download from github is c.600 kB extracts to c.1100kB
 
-#.  **pi3d** The main pi3d module files 446 kB
-#.  **pyxlib** Library to enable use on general linux machines 209 kB
-#.  **images** To show in ReadMe on github 325 kB
-#.  **ReadMe** This file in markup and plain text 31 kB
-#.  **ChangeLog.txt** Latest changes of pi3d 19 kB
-#.  **six_mod.py** utilities to help run under python2 and python3 13 kB
-#.  **misc. others** 10 kB
+#.  **pi3d** The main pi3d module files 517kB
+#.  **pyxlib** Library to enable use on general linux machines 209kB
+#.  **images** To show in ReadMe on github 325kB
+#.  **ReadMe** This file in markup and plain text 27kB
+#.  **ChangeLog.txt** Latest changes of pi3d 16kB
+#.  **six_mod.py** utilities to help run under python2 and python3 13kB
+#.  **misc. others** 10kB
 
 Setup on the Raspberry Pi
 =========================
@@ -293,11 +294,16 @@ Setup on desktop and laptop machines
 
   The machine will need to have a gpu that runs OpenGL2+ and obviously
   it will need to have python installed. Setting up in a Linux environment
-  is most similar to the procedure for the Raspberry Pi. Linux can be set
+  is most similar to the procedure for the Raspberry Pi. In fact by far the
+  most staightforward route is to make a Raspbian Pixel USB stick following
+  the instructions here https://www.raspberrypi.org/blog/pixel-pc-mac/ 
+  After that your PC will behave pretty much like the Raspberry Pi and pi3d
+  will work after a simple ``sudo pip3 install pi3d`` The USB isn't as fast
+  as a hard drive but everything else will run at PC speed. Linux can be set
   up in its own boot partition or in vmware (eg Player which is free, you
   will also need to ``enable 3d acceleration``.)
 
-  You need to install libraries
+  For non Pixel linux you will need to install libraries
   that emulate OpenGLES behaviour for the gpu::
 
     $ sudo apt-get install mesa-utils-extra
