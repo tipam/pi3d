@@ -132,15 +132,16 @@ pi3d with different levels of complexity.
 Files and folders in this repository
 ====================================
 
-Total zipped download from github c. 574 kB extracts to 1.2 MB
+Installation tar.gz on python.pypi.org is c.190kB extracts to 770kB. Total 
+zipped download from github is c.600 kB extracts to c.1100kB
 
-#.  **pi3d** The main pi3d module files 446 kB
-#.  **pyxlib** Library to enable use on general linux machines 209 kB
-#.  **images** To show in ReadMe on github 325 kB
-#.  **ReadMe** This file in markup and plain text 31 kB
-#.  **ChangeLog.txt** Latest changes of pi3d 19 kB
-#.  **six_mod.py** utilities to help run under python2 and python3 13 kB
-#.  **misc. others** 10 kB
+#.  **pi3d** The main pi3d module files 517kB
+#.  **pyxlib** Library to enable use on general linux machines 209kB
+#.  **images** To show in ReadMe on github 325kB
+#.  **ReadMe** This file in markup and plain text 27kB
+#.  **ChangeLog.txt** Latest changes of pi3d 16kB
+#.  **six_mod.py** utilities to help run under python2 and python3 13kB
+#.  **misc. others** 10kB
 
 Setup on the Raspberry Pi
 =========================

@@ -60,6 +60,13 @@ class ElevationMap(Shape):
       *smooth*
         Calculate normals with averaging rather than pointing
         straight up, slightly faster if false.
+      *texmap*
+        Image file path or PIL.Image to be used to represent each of four
+        textures and normals using the uv_elev_map shader. The image is
+        converted to greyscale and apportioned between darkest (first and
+        second entries in Buffer.textures list) and lightest (seventh and
+        eighth entries). The resulting 0.0, 1.0, 2.0 or 3.0 is added to the
+        uv texture coordinate i.e. Buffer.array_buffer[:,6:8]
     """
     super(ElevationMap, self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                        sx, sy, sz, cx, cy, cz)
