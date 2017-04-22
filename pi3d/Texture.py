@@ -303,6 +303,8 @@ class Texture(Loadable):
     opengles.glTexImage2D(GL_TEXTURE_2D, 0, iformat, self.ix, self.iy, 0, iformat,
                           GL_UNSIGNED_BYTE,
                           self.image.ctypes.data_as(ctypes.POINTER(ctypes.c_ubyte)))
+    if opengles.glGetError() == GL_OUT_OF_MEMORY:
+      LOGGER.critical('Out of GPU memory')
     opengles.glEnable(GL_TEXTURE_2D)
     if self.mipmap:
       opengles.glGenerateMipmap(GL_TEXTURE_2D)

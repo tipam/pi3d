@@ -32,8 +32,8 @@ class Log(object):
 
     The level, file, format arguments are passed on to set_logs() see below.
     '''
+    self.logger = logging.getLogger() # make this the root logger with no argument
 
-    self.logger = logging.getLogger(name)
     self.debug = self.logger.debug # to reference methods to those of the logger instance
     self.info = self.logger.info
     self.warning = self.logger.warning
