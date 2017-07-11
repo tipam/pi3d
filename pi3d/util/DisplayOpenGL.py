@@ -183,6 +183,7 @@ class DisplayOpenGL(object):
 
       xlib.XSelectInput(self.d, self.window, KeyPressMask | KeyReleaseMask)
       xlib.XMapWindow(self.d, self.window)
+      #xlib.XMoveWindow(self.d, self.window, x, y)
       self.surface = openegl.eglCreateWindowSurface(self.display, self.config, self.window, 0)
 
     assert self.surface != EGL_NO_SURFACE

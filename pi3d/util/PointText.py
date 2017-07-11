@@ -75,7 +75,8 @@ class PointText(object):
     This is required for the text block to update the buffer allocated to
     it. Also tracks the next unallocated character in the buffer. '''
     if self._first_free_char + text_block.char_count >= self.max_chars:
-      LOGGER.error("failed to allocate space in characers for %s characters", text_block.char_count)
+      LOGGER.error("failed to allocate space in characers for %s characters. Max set to %s",
+                      text_block.char_count, self.max_chars)
       return -1
     self.text_blocks.append(text_block)
     text_block.set_text_manager(self, self._first_free_char)
