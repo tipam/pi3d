@@ -35,8 +35,3 @@ void main(void) {
     // set the new color
     gl_FragColor = vec4(col,1.0);
 }
-
-// removeme:  vec2 p = -1.0 + 2.0 * gl_FragCoord.xy / resolution.xy;
-// removeme:  shotten muster vec2 p = texcoordout.xy * 10.0; <- 10 ist die Anzahl der Wellen (Scalierung???)
-// removeme:  Pfauenfedern 2 vec2 p = gl_FragCoord.xy / texcoordout.xy;
-// removeme:  Pfauenfedern vec2 p = -1.0 + 2.0 * gl_FragCoord.xy / texcoordout.xy;

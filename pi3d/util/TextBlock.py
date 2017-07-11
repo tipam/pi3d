@@ -5,6 +5,9 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import numpy as np
 import math
 import colorsys
+import logging
+
+LOGGER = logging.getLogger(__name__)
 
 def getattra(obj, attr, default):
     if("[" in attr):
@@ -220,8 +223,11 @@ class TextBlock(object):
       self.last_value = value
     else:
       strval = self.text_format
-    self._string_length =len(strval)
-
+    self._string_length = len(strval)
+    if self._string_length > self.char_count:
+      LOGGER.error("'%s' needs %s characters but only space for %s",
+                      strval, self._string_length, self.char_count)
+      return -1
     pos = 0.0
     index = 0
     #Now the string is updated set the correct glyphs and calculate the
