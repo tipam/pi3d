@@ -66,13 +66,13 @@ class DisplayOpenGL(object):
       numconfig = c_int()
       self.config = ctypes.c_void_p()
       r = openegl.eglChooseConfig(self.display,
-                                  ctypes.byref(attribute_list),
+                                  attribute_list,
                                   ctypes.byref(self.config), 1,
                                   ctypes.byref(numconfig))
 
       context_attribs = c_ints((EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE))
       self.context = openegl.eglCreateContext(self.display, self.config,
-                                              EGL_NO_CONTEXT, ctypes.byref(context_attribs) )
+                                              EGL_NO_CONTEXT, context_attribs)
       if self.context != EGL_NO_CONTEXT:
         break
     assert self.context != EGL_NO_CONTEXT
@@ -123,10 +123,10 @@ class DisplayOpenGL(object):
       self.dispman_element = bcm.vc_dispmanx_element_add(
         self.dispman_update,
         self.dispman_display,
-        layer, ctypes.byref(dst_rect),
-        0, ctypes.byref(src_rect),
+        layer, dst_rect,
+        0, src_rect,
         DISPMANX_PROTECTION_NONE,
-        ctypes.byref(alpha), 0, 0)
+        alpha, 0, 0)
 
       nativewindow = c_ints((self.dispman_element, w, h + 1))
       bcm.vc_dispmanx_update_submit_sync(self.dispman_update)
@@ -172,7 +172,7 @@ class DisplayOpenGL(object):
       #self.window.set_wm_icon_name('pi3d')
       #self.window.set_wm_class('draw', 'XlibExample')
 
-      xlib.XSetWMProtocols(self.d, self.window, ctypes.byref(self.WM_DELETE_WINDOW), 1)
+      xlib.XSetWMProtocols(self.d, self.window, self.WM_DELETE_WINDOW, 1)
       #self.window.set_wm_hints(flags = Xutil.StateHint,
       #                         initial_state = Xutil.NormalState)
 

@@ -2,6 +2,7 @@
 This module contains integer constants from a C header file named something
 like gl.h.
 """
+import numpy as np
 
 GL_DEPTH_BUFFER_BIT = 0x00000100
 GL_STENCIL_BUFFER_BIT = 0x00000400
@@ -447,7 +448,7 @@ def set_gles_function_args(gles):
                                 c_uint, c_uint, c_void_p] #GLenum, GLenum, const GLvoid * 
   gles.glTexParameteri.argtypes = [c_uint, c_uint, c_int] #GLenum, GLenum, GLint
   gles.glUniform1i.argtypes = [c_int, c_int] #GLint, GLint
-  gles.glUniform3fv.argtypes = [c_int, c_int, c_void_p] #GLint, GLsizei, const GLfloat * ## NB was c_void_p
+  gles.glUniform3fv.argtypes = [c_int, c_int, np.ctypeslib.ndpointer('f', 1)] #GLint, GLsizei, const GLfloat * ## NB was c_void_p
   gles.glUniformMatrix4fv.argtypes = [c_int, c_int, c_ubyte, c_void_p] #GLint, GLsizei, GLboolean, const GLfloat * ## NB was c_void_p
   gles.glUseProgram.argtypes = [c_int] #GLuint
   gles.glVertexAttribPointer.argtypes = [c_uint, c_int, c_uint, c_ubyte, c_int, c_void_p] #GLuint, GLint, GLenum, GLboolean, GLsizei, const GLvoid * 

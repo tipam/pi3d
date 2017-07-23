@@ -49,10 +49,11 @@ class Buffer(Loadable):
     super(Buffer, self).__init__()
 
     # Uniform variables all in one array!
-    self.unib = (c_float * 12)(0.0, 0.0, 0.0,
+    #self.unib = (c_float * 12)(0.0, 0.0, 0.0,
+    self.unib = np.array([0.0, 0.0, 0.0,
                                0.5, 0.5, 0.5,
                                1.0, 1.0, 0.0,
-                               0.0, 0.0, 1.0)
+                               0.0, 0.0, 1.0], dtype=np.float32)
     """ pass to shader array of vec3 uniform variables:
 
     ===== ============================== ==== ==
@@ -270,7 +271,7 @@ class Buffer(Loadable):
     opengles.glUniformMatrix4fv(shader.unif_modelviewmatrix, 3,
                                 ctypes.c_ubyte(0), M.ctypes.data)
 
-    opengles.glUniform3fv(shader.unif_unif, 20, ctypes.byref(unif))
+    opengles.glUniform3fv(shader.unif_unif, 20, unif)
     textures = textures or self.textures
     if ntl is not None:
       self.unib[0] = ntl
@@ -311,7 +312,7 @@ class Buffer(Loadable):
 
     self.disp.last_shader = shader
 
-    opengles.glUniform3fv(shader.unif_unib, 4, ctypes.byref(self.unib))
+    opengles.glUniform3fv(shader.unif_unib, 4, self.unib)
 
     opengles.glEnable(GL_DEPTH_TEST) # TODO find somewhere more efficient to do this
 
