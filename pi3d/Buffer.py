@@ -49,11 +49,10 @@ class Buffer(Loadable):
     super(Buffer, self).__init__()
 
     # Uniform variables all in one array!
-    #self.unib = (c_float * 12)(0.0, 0.0, 0.0,
-    self.unib = np.array([0.0, 0.0, 0.0,
+    self.unib = (c_float * 12)(0.0, 0.0, 0.0,
                                0.5, 0.5, 0.5,
                                1.0, 1.0, 0.0,
-                               0.0, 0.0, 1.0], dtype=np.float32)
+                               0.0, 0.0, 1.0)
     """ pass to shader array of vec3 uniform variables:
 
     ===== ============================== ==== ==

@@ -37,8 +37,7 @@ class Shape(Loadable):
     self.name = name
     light = light if light is not None else Light.instance()
     # uniform variables all in one array (for Shape and one for Buffer)
-    #self.unif =  (ctypes.c_float * 60)(
-    self.unif = np.array([
+    self.unif =  (ctypes.c_float * 60)(
       x, y, z, rx, ry, rz,
       sx, sy, sz, cx, cy, cz,
       0.5, 0.5, 0.5, 5000.0, 0.8, 1.0,
@@ -48,7 +47,7 @@ class Shape(Loadable):
       light.lightamb[0], light.lightamb[1], light.lightamb[2],
       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], dtype=np.float32)
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
     """ pass to shader array of vec3 uniform variables:
 
     ===== ========================================== ==== ==
