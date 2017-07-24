@@ -29,11 +29,11 @@ class TextBlockColour(object):
 
   def recolour(self):
     self.set_colour()
-    
+
   def set_colour(self, colour=None, alpha=None):
     if colour is not None:
       self.colour[0:2] = colour[0:2]
-    
+
     if alpha is not None:
       self.colour[3] = alpha
 
@@ -44,14 +44,14 @@ class TextBlockColour(object):
     end = st + textBlock.char_count
     #Reset alpha to zero for all characters.  Prevents displaying old chars from longer strings
     manager.normals[st:end, 2] = 0
-        
+
     #Fill an array with the colour to copy to the manager normals
     #rotation is included for efficiency
     normal = np.zeros((3), dtype=np.float)
     normal[0] = textBlock.rot + textBlock.char_rot
     normal[1] = (self.colour[1] * 0.999) + (math.floor(self.colour[0] * 999))
     normal[2] = (self.colour[3] * 0.999) + (math.floor(self.colour[2] * 999))
-    
+
     #Only set colour alpha for string length. Zero for non displayed characters
     manager.normals[st:mid, :] = normal
 
@@ -61,7 +61,7 @@ class TextBlockColourGradient(TextBlockColour):
     self.colour1 = colour1
     self.colour2 = colour2
     self.textBlock = textBlock
-  
+
   def set_colour(self, colour1=None, colour2=None):
     ''' Colour each character with a gradient from colour1 to colour2
     Interpolate hsv instead of rgb since it is a more natural change.
@@ -70,33 +70,35 @@ class TextBlockColourGradient(TextBlockColour):
       self.colour1 = colour1
     if colour2 is not None:
       self.colour2 = colour2
-      
+
     if self.textBlock is None:
       return
-      
+
     colour1 = self.colour1
     colour2 = self.colour2
 
     textBlock = self.textBlock    
     manager = textBlock._text_manager
-      
+
     hsv1 = colorsys.rgb_to_hsv(colour1[0], colour1[1], colour1[2])
     hsv2 = colorsys.rgb_to_hsv(colour2[0], colour2[1], colour2[2])
       
     normal = np.zeros((3), dtype=np.float)
     normal[0] = textBlock.rot + textBlock.char_rot
-        
-    for index in range(0,textBlock._string_length):
-      h = np.interp(index, [0,textBlock._string_length], [hsv1[0], hsv2[0]])
-      s = np.interp(index, [0,textBlock._string_length], [hsv1[1], hsv2[1]])
-      v = np.interp(index, [0,textBlock._string_length], [hsv1[2], hsv2[2]])
-      a = np.interp(index, [0,textBlock._string_length], [colour1[3], colour2[3]])
+
+    tlen = textBlock._string_length # alias for brevity below
+    for i in range(tlen):
+      h = hsv1[0] + (hsv2[0] - hsv1[0]) * i / tlen
+      s = hsv1[1] + (hsv2[1] - hsv1[1]) * i / tlen
+      v = hsv1[2] + (hsv2[2] - hsv1[2]) * i / tlen
+      a = colour1[3] + (colour2[3] - colour1[3]) * i / tlen
+
       rgb = colorsys.hsv_to_rgb(h, s, v)
       normal[1] = (rgb[1] * 0.999) + math.floor((rgb[0] * 999))
       normal[2] = (a * 0.999) + math.floor((rgb[2] * 999))
-      
+
       #Only set colour alpha for string length. Zero for non displayed characters
-      manager.normals[textBlock._buffer_index + index, :] = normal
+      manager.normals[textBlock._buffer_index + i, :] = normal
 
 
 class TextBlock(object):
@@ -141,7 +143,7 @@ class TextBlock(object):
     self.spacing = spacing
     self.space = space
     self.point_size = 48
-    
+
     #If the colour is a tuple initialize it a plain colour
     #Otherwise use a TextBlockColour object and its textBlock reference to this TextBlock
     if isinstance(colour, tuple):
@@ -256,7 +258,7 @@ class TextBlock(object):
       spacing = (glyph[0] * g_scale * vari_width) + const_width
       pos += spacing
       index += 1
-    
+
     #Justification
     self.char_offsets = np.add(self.char_offsets, (pos - spacing) * -self.justify)     
     if set_pos:
