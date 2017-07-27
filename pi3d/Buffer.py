@@ -2,6 +2,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import ctypes, itertools
 import numpy as np
+import logging
 
 from ctypes import c_float, c_int, c_short
 
@@ -11,6 +12,8 @@ from pi3d.util import Log
 from pi3d.util import Utility
 from pi3d.util.Loadable import Loadable
 from pi3d.util.Ctypes import c_floats, c_shorts
+
+LOGGER = logging.getLogger(__name__)
 
 class Buffer(Loadable):
   """Holds the vertex, normals, incices and tex_coords for each part of
@@ -182,6 +185,8 @@ class Buffer(Loadable):
                           self.element_array_buffer.nbytes,
                           self.element_array_buffer.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
                           GL_STATIC_DRAW)
+    if opengles.glGetError() == GL_OUT_OF_MEMORY:
+      LOGGER.critical('Out of GPU memory')
 
 
   def _unload_opengl(self):
@@ -265,7 +270,7 @@ class Buffer(Loadable):
     opengles.glUniformMatrix4fv(shader.unif_modelviewmatrix, 3,
                                 ctypes.c_ubyte(0), M.ctypes.data)
 
-    opengles.glUniform3fv(shader.unif_unif, 20, ctypes.byref(unif))
+    opengles.glUniform3fv(shader.unif_unif, 20, unif)
     textures = textures or self.textures
     if ntl is not None:
       self.unib[0] = ntl
@@ -306,7 +311,7 @@ class Buffer(Loadable):
 
     self.disp.last_shader = shader
 
-    opengles.glUniform3fv(shader.unif_unib, 4, ctypes.byref(self.unib))
+    opengles.glUniform3fv(shader.unif_unib, 4, self.unib)
 
     opengles.glEnable(GL_DEPTH_TEST) # TODO find somewhere more efficient to do this
 

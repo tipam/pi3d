@@ -212,7 +212,12 @@ class Font(Texture):
       from PIL import ImageColor
       color = ImageColor.getrgb(color)
     img[:,:,:3] = color[:3]
-    return Image.fromarray(img)
+    try: # numpy not quite working fully in pypy so have to convert tobytes
+      return Image.fromarray(img)
+    except:
+      h, w, c = img.shape
+      rgb = 'RGB' if c == 3 else 'RGBA'
+      return Image.frombytes(rgb, (w, h), img.tobytes())
     
   def _load_disk(self):
     """

@@ -110,7 +110,13 @@ class FixedString(Texture):
       self._render_text(lines, justify, margin, imgfont, maxwid, height, shadow, draw)
       self.im = self.im.filter(ImageFilter.GaussianBlur(radius=shadow_radius))
       if background_color == None:
-        self.im = Image.fromarray(self._force_color(np.array(self.im), shadow))
+        im_arr = self._force_color(np.array(self.im), shadow)
+        try: # numpy not quite working fully in pypy so have to convert tobytes
+          self.im = Image.fromarray(im_arr)
+        except:
+          h, w, c = im_arr.shape
+          rgb = 'RGB' if c == 3 else 'RGBA'
+          self.im = Image.frombytes(rgb, (w, h), im_arr.tobytes())
         
       draw = ImageDraw.Draw(self.im)
 

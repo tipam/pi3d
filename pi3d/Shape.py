@@ -2,7 +2,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import ctypes
 
-from numpy import array, dot, savez, load, zeros
+import numpy as np
 from math import radians, pi, sin, cos
 
 from pi3d.constants import *
@@ -96,14 +96,14 @@ class Shape(Loadable):
     Shape holds matrices that are updated each time it is moved or rotated
     this saves time recalculating them each frame as the Shape is drawn
     """
-    self.tr1 = array([[1.0, 0.0, 0.0, 0.0],
+    self.tr1 = np.array([[1.0, 0.0, 0.0, 0.0],
                       [0.0, 1.0, 0.0, 0.0],
                       [0.0, 0.0, 1.0, 0.0],
                       [self.unif[0] - self.unif[9], self.unif[1] - self.unif[10], self.unif[2] - self.unif[11], 1.0]])
     """translate to position - offset"""
 
     s, c = sin(radians(self.unif[3])), cos(radians(self.unif[3]))
-    self.rox = array([[1.0, 0.0, 0.0, 0.0],
+    self.rox = np.array([[1.0, 0.0, 0.0, 0.0],
                       [0.0, c, s, 0.0],
                       [0.0, -s, c, 0.0],
                       [0.0, 0.0, 0.0, 1.0]])
@@ -111,7 +111,7 @@ class Shape(Loadable):
     """rotate about x axis"""
 
     s, c = sin(radians(self.unif[4])), cos(radians(self.unif[4]))
-    self.roy = array([[c, 0.0, -s, 0.0],
+    self.roy = np.array([[c, 0.0, -s, 0.0],
                       [0.0, 1.0, 0.0, 0.0],
                       [s, 0.0, c, 0.0],
                       [0.0, 0.0, 0.0, 1.0]])
@@ -119,14 +119,14 @@ class Shape(Loadable):
     """rotate about y axis"""
 
     s, c = sin(radians(self.unif[5])), cos(radians(self.unif[5]))
-    self.roz = array([[c, s, 0.0, 0.0],
+    self.roz = np.array([[c, s, 0.0, 0.0],
                       [-s, c, 0.0, 0.0],
                       [0.0, 0.0, 1.0, 0.0],
                       [0.0, 0.0, 0.0, 1.0]])
     self.rozflg = True if self.unif[5] != 0.0 else False
     """rotate about z axis"""
 
-    self.scl = array([[self.unif[6], 0.0, 0.0, 0.0],
+    self.scl = np.array([[self.unif[6], 0.0, 0.0, 0.0],
                       [0.0, self.unif[7], 0.0, 0.0],
                       [0.0, 0.0, self.unif[8], 0.0],
                       [0.0, 0.0, 0.0, 1.0]])
@@ -136,7 +136,7 @@ class Shape(Loadable):
       self.sclflg = False
     """scale"""
 
-    self.tr2 = array([[1.0, 0.0, 0.0, 0.0],
+    self.tr2 = np.array([[1.0, 0.0, 0.0, 0.0],
                       [0.0, 1.0, 0.0, 0.0],
                       [0.0, 0.0, 1.0, 0.0],
                       [self.unif[9], self.unif[10], self.unif[11], 1.0]])
@@ -147,8 +147,8 @@ class Shape(Loadable):
     """translate to offset"""
 
     self.MFlg = True
-    #self.M = zeros(32, dtype="float32").reshape(2,4,4)
-    self.M = zeros(48, dtype="float32").reshape(3,4,4) # 3rd matrix added for casting shadows v2.7
+    #self.M = np.zeros(32, dtype="float32").reshape(2,4,4)
+    self.M = np.zeros(48, dtype="float32").reshape(3,4,4) # 3rd matrix added for casting shadows v2.7
 
 
   def draw(self, shader=None, txtrs=None, ntl=None, shny=None, camera=None, mlist=[], light_camera=None):
@@ -170,15 +170,15 @@ class Shape(Loadable):
       # Calculate rotation and translation matrix for this model using numpy.
       self.MRaw = self.tr1
       if self.rozflg:
-        self.MRaw = dot(self.roz, self.MRaw)
+        self.MRaw = np.dot(self.roz, self.MRaw)
       if self.roxflg:
-        self.MRaw = dot(self.rox, self.MRaw)
+        self.MRaw = np.dot(self.rox, self.MRaw)
       if self.royflg:
-        self.MRaw = dot(self.roy, self.MRaw)
+        self.MRaw = np.dot(self.roy, self.MRaw)
       if self.sclflg:
-        self.MRaw = dot(self.scl, self.MRaw)
+        self.MRaw = np.dot(self.scl, self.MRaw)
       if self.tr2flg:
-        self.MRaw = dot(self.tr2, self.MRaw)
+        self.MRaw = np.dot(self.tr2, self.MRaw)
 
       # child drawing addition #############
       newmlist = [m for m in mlist]
@@ -187,21 +187,21 @@ class Shape(Loadable):
         for c in self.children:
           c.draw(shader, txtrs, ntl, shny, camera, newmlist, light_camera) # TODO issues where child doesn't use same shader 
       for m in mlist[-1::-1]:
-        self.MRaw = dot(self.MRaw, m)
+        self.MRaw = np.dot(self.MRaw, m)
       ######################################
       self.M[0,:,:] = self.MRaw[:,:]
       #self.M[0:16] = c_floats(self.MRaw.reshape(-1).tolist()) #pypy version
-      self.M[1,:,:] = dot(self.MRaw, camera.mtrx)[:,:]
-      #self.M[16:32] = c_floats(dot(self.MRaw, camera.mtrx).reshape(-1).tolist()) #pypy
+      self.M[1,:,:] = np.dot(self.MRaw, camera.mtrx)[:,:]
+      #self.M[16:32] = c_floats(np.dot(self.MRaw, camera.mtrx).reshape(-1).tolist()) #pypy
       if light_camera is not None:
-        self.M[2,:,:] = dot(self.MRaw, light_camera.mtrx)[:,:]
+        self.M[2,:,:] = np.dot(self.MRaw, light_camera.mtrx)[:,:]
       self.MFlg = False
 
     elif camera.was_moved:
       # Only do this if it's not done because model moved.
-      self.M[1,:,:] = dot(self.MRaw, camera.mtrx)[:,:]
+      self.M[1,:,:] = np.dot(self.MRaw, camera.mtrx)[:,:]
       if light_camera is not None:
-        self.M[2,:,:] = dot(self.MRaw, light_camera.mtrx)[:,:]
+        self.M[2,:,:] = np.dot(self.MRaw, light_camera.mtrx)[:,:]
 
     if camera.was_moved:
       self.unif[18:21] = camera.eye[0:3]

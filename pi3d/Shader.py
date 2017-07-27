@@ -18,7 +18,7 @@ MAX_LOG_SIZE = 1024
 def _opengl_log(shader, function, caption):
   log = c_chars(MAX_LOG_SIZE)
   loglen = ctypes.c_int()
-  function(shader, MAX_LOG_SIZE, ctypes.byref(loglen), ctypes.byref(log))
+  function(shader, MAX_LOG_SIZE, ctypes.byref(loglen), log)
   LOGGER.info('%s: %s', caption, log.value)
 
 class Shader(DefaultInstance):
@@ -92,7 +92,7 @@ class Shader(DefaultInstance):
       characters = ctypes.c_char_p(src)
       shader = opengles.glCreateShader(shader_type)
       src_len = ctypes.c_int(len(src))
-      opengles.glShaderSource(shader, 1, ctypes.byref(characters), ctypes.byref(src_len))
+      opengles.glShaderSource(shader, 1, characters, ctypes.byref(src_len))
       opengles.glCompileShader(shader)
       self.showshaderlog(shader, src)
       opengles.glAttachShader(self.program, shader)
@@ -148,7 +148,7 @@ class Shader(DefaultInstance):
     log = (ctypes.c_char * N)()
     loglen = ctypes.c_int()
     opengles.glGetShaderInfoLog(
-      shader, N, ctypes.byref(loglen), ctypes.byref(log))
+      shader, N, ctypes.byref(loglen), log)
     if len(log.value) > 0:
       LOGGER.info('shader(%s) %s, %s', shader, self.shfile, log.value)
 
@@ -158,7 +158,7 @@ class Shader(DefaultInstance):
     log = (ctypes.c_char * N)()
     loglen = ctypes.c_int()
     opengles.glGetProgramInfoLog(
-      shader, N, ctypes.byref(loglen), ctypes.byref(log))
+      shader, N, ctypes.byref(loglen), log)
 
   def _load_shader(self, sfile):
     ''' takes a file name as string, tries to find it then returns the

@@ -13,7 +13,7 @@ class Log(object):
 
     At the top of the file is typically:
 
-      LOGGER = pi3d.Log(__name__, level='INFO')
+      LOGGER = pi3d.Log(level='INFO', file='error.log')
 
     and then later on you can do things like:
 
@@ -28,12 +28,13 @@ class Log(object):
     message if it isn't going to be displayed.)
 
     ***N.B. if name is not passed as an argument then this will set the root
-    logger properties (and all the pi3d module logging will also be logged.)***
+    logger properties (and all the pi3d module logging will also be logged,
+    which is what you usually want.)***
 
     The level, file, format arguments are passed on to set_logs() see below.
     '''
+    self.logger = logging.getLogger(name) # NB overriding default None will stop module logging!
 
-    self.logger = logging.getLogger(name)
     self.debug = self.logger.debug # to reference methods to those of the logger instance
     self.info = self.logger.info
     self.warning = self.logger.warning

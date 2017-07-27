@@ -4,6 +4,11 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
+v2.20
+2017-07-27  Bug fixes: Removed use of numpy functions not yet available
+            in numpypy (pypy version). Some corrections of Log. Removal
+            of ctypes.byref() where passing an array (as already a pointer).
+            Some out of memory checking in Buffer.
 v2.19
 2017-04-20  Improvements: Multiple Textures can be used for ElevationMap,
             Texture flip can do vertical, horizontal or both.
