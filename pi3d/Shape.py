@@ -107,7 +107,7 @@ class Shape(Loadable):
                       [0.0, c, s, 0.0],
                       [0.0, -s, c, 0.0],
                       [0.0, 0.0, 0.0, 1.0]])
-    self.roxflg = True if self.unif[3] != 0.0 else False
+    self.roxflg = self.unif[3] != 0.0
     """rotate about x axis"""
 
     s, c = sin(radians(self.unif[4])), cos(radians(self.unif[4]))
@@ -115,7 +115,7 @@ class Shape(Loadable):
                       [0.0, 1.0, 0.0, 0.0],
                       [s, 0.0, c, 0.0],
                       [0.0, 0.0, 0.0, 1.0]])
-    self.royflg = True if self.unif[4] != 0.0 else False
+    self.royflg = self.unif[4] != 0.0
     """rotate about y axis"""
 
     s, c = sin(radians(self.unif[5])), cos(radians(self.unif[5]))
@@ -123,7 +123,7 @@ class Shape(Loadable):
                       [-s, c, 0.0, 0.0],
                       [0.0, 0.0, 1.0, 0.0],
                       [0.0, 0.0, 0.0, 1.0]])
-    self.rozflg = True if self.unif[5] != 0.0 else False
+    self.rozflg = self.unif[5] != 0.0
     """rotate about z axis"""
 
     self.scl = np.array([[self.unif[6], 0.0, 0.0, 0.0],
