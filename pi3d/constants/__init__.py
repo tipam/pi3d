@@ -69,12 +69,13 @@ def _load_library(name, dll_type="C"):
   if name:
     try:
       if dll_type == "Win":
-        return ctypes.WinDLL(name)
+        return ctypes.WinDLL(str(name))
       else:
         return ctypes.CDLL(name)
     except:
-      from pi3d.util import Log
-      Log.logger(__name__).error("Couldn't load library %s", name)
+      import logging
+      LOGGER = logging.getLogger(__name__)
+      LOGGER.error("Couldn't load library %s", name)
 
 def _linux():
   platform = PLATFORM_LINUX
