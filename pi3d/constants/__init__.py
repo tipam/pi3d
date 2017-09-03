@@ -95,9 +95,12 @@ def _linux():
     openegl = _load_library('/system/lib/libEGL.so')
   else:
     import os
-    if os.path.isfile('/opt/vc/lib/libGLESv2.so'): # raspbian
+    if os.path.isfile('/opt/vc/lib/libGLESv2.so'): # raspbian before stretch release
       opengles = _load_library('/opt/vc/lib/libGLESv2.so')
       openegl = _load_library('/opt/vc/lib/libEGL.so')
+    elif os.path.isfile('/opt/vc/lib/libbrcmGLESv2.so'): # raspbian after stretch release
+      opengles = _load_library('/opt/vc/lib/libbrcmGLESv2.so')
+      openegl = _load_library('/opt/vc/lib/libbrcmEGL.so')
     elif os.path.isfile('/usr/lib/libGLESv2.so'): # ubuntu MATE (but may catch others - monitor problems)
       opengles = _load_library('/usr/lib/libGLESv2.so')
       openegl = _load_library('/usr/lib/libEGL.so')
