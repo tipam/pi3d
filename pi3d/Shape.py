@@ -130,20 +130,14 @@ class Shape(Loadable):
                       [0.0, self.unif[7], 0.0, 0.0],
                       [0.0, 0.0, self.unif[8], 0.0],
                       [0.0, 0.0, 0.0, 1.0]])
-    if self.unif[6] != 1.0 or self.unif[7] != 1.0 or self.unif[8] != 1.0:
-      self.sclflg = True 
-    else:
-      self.sclflg = False
+    self.sclflg = (self.unif[6] != 1.0) or (self.unif[7] != 1.0) or (self.unif[8] != 1.0)
     """scale"""
 
     self.tr2 = np.array([[1.0, 0.0, 0.0, 0.0],
                       [0.0, 1.0, 0.0, 0.0],
                       [0.0, 0.0, 1.0, 0.0],
                       [self.unif[9], self.unif[10], self.unif[11], 1.0]])
-    if self.unif[9] != 0.0 or self.unif[10] != 0.0 or self.unif[11] != 0.0:
-      self.tr2flg = True 
-    else:
-      self.tr2flg = False
+    self.tr2flg = (self.unif[9] != 0.0) or (self.unif[10] != 0.0) or (self.unif[11] != 0.0)
     """translate to offset"""
 
     self.MFlg = True
@@ -517,14 +511,15 @@ class Shape(Loadable):
         y position
       *z*
         z position
-    """
+
     self.tr1[3, 0] = x - self.unif[9]
     self.tr1[3, 1] = y - self.unif[10]
     self.tr1[3, 2] = z - self.unif[11]
     self.unif[0] = x
     self.unif[1] = y
     self.unif[2] = z
-    self.MFlg = True
+    self.MFlg = True"""
+    self.xyz = x, y, z
 
   def positionX(self, v):
     """Arguments:
@@ -688,6 +683,48 @@ class Shape(Loadable):
     self.MFlg = True
     self.rozflg = True
 
+  # propteries and setters for the 3D vectors pos, rot, scale, offset
+  @property
+  def xyz(self):
+    return self.unif[0:3]
+
+  @xyz.setter
+  def xyz(self, val):
+    self.tr1[3, 0:3] = [val[i] - self.unif[9 + i] for i in range(3)]
+    self.unif[0:3] = val
+    self.MFlg = True
+
+  @property
+  def rxryrz(self):
+    return self.unif[3:6]
+
+  @rxryrz.setter
+  def rxryrz(self, val):
+    self.rotateToX(val[0])
+    self.rotateToY(val[1])
+    self.rotateToZ(val[2])
+
+  @property
+  def sxsysz(self):
+    return self.unif[0:3]
+
+  @sxsysz.setter
+  def sxsysz(self, val):
+    self.scl[[0,1,2],[0,1,2]] = val
+    self.unif[6:9] = val
+    self.MFlg = True
+    self.sclflg = True
+
+  @property
+  def cxcycz(self):
+    return self.unif[0:3]
+
+  @cxcycz.setter
+  def cxcycz(self, val):
+    self.tr2[3, 0:3] = val
+    self.unif[9:12] = val
+    self.MFlg = True
+
   def _lathe(self, path, sides=12, rise=0.0, loops=1.0):
     """Returns a Buffer object by rotating the points defined in path.
 
@@ -776,7 +813,6 @@ class Shape(Loadable):
       'buf': self.buf,
       'textures': self.textures,
       'shader': self.shader
-
       }
   
   def __setstate__(self, state):
