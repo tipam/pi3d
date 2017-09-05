@@ -5,7 +5,7 @@ pi3d.constants contains constant values, mainly integers, from OpenGL ES 2.0.
 """
 import time
 
-__version__ = '2.20'
+__version__ = '2.21'
 year = time.localtime().tm_year
 
 STARTUP_MESSAGE = """
@@ -69,12 +69,13 @@ def _load_library(name, dll_type="C"):
   if name:
     try:
       if dll_type == "Win":
-        return ctypes.WinDLL(name)
+        return ctypes.WinDLL(str(name))
       else:
         return ctypes.CDLL(name)
     except:
-      from pi3d.util import Log
-      Log.logger(__name__).error("Couldn't load library %s", name)
+      import logging
+      LOGGER = logging.getLogger(__name__)
+      LOGGER.error("Couldn't load library %s", name)
 
 def _linux():
   platform = PLATFORM_LINUX
@@ -95,9 +96,12 @@ def _linux():
     openegl = _load_library('/system/lib/libEGL.so')
   else:
     import os
-    if os.path.isfile('/opt/vc/lib/libGLESv2.so'): # raspbian
+    if os.path.isfile('/opt/vc/lib/libGLESv2.so'): # raspbian before stretch release
       opengles = _load_library('/opt/vc/lib/libGLESv2.so')
       openegl = _load_library('/opt/vc/lib/libEGL.so')
+    elif os.path.isfile('/opt/vc/lib/libbrcmGLESv2.so'): # raspbian after stretch release
+      opengles = _load_library('/opt/vc/lib/libbrcmGLESv2.so')
+      openegl = _load_library('/opt/vc/lib/libbrcmEGL.so')
     elif os.path.isfile('/usr/lib/libGLESv2.so'): # ubuntu MATE (but may catch others - monitor problems)
       opengles = _load_library('/usr/lib/libGLESv2.so')
       openegl = _load_library('/usr/lib/libEGL.so')
