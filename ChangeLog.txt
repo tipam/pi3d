@@ -4,6 +4,15 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
+v2.21
+2017-09-05  Bug fixes: Rasbian stretch has renamed libGLES and libEGL so
+            this is now checked for in constants/__init__.py A change in
+            ctypes.WinDLL between python 2.7.12 and 2.7.13 means unicode
+            arguments have to be converted to str (patched back for 2.7.14!)
+            Improvements: Setting up Shape rotation matrix flags tidier.
+            properties Shape.xyz rxryrz sxsysz cxcycz added with setters
+            and getters.
+
 v2.20
 2017-07-27  Bug fixes: Removed use of numpy functions not yet available
             in numpypy (pypy version). Some corrections of Log. Removal
