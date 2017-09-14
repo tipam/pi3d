@@ -46,7 +46,7 @@ class DisplayOpenGL(object):
 
   def create_display(self, x=0, y=0, w=0, h=0, depth=24, samples=4, layer=0, display_config=DISPLAY_CONFIG_DEFAULT):
     self.display = openegl.eglGetDisplay(EGL_DEFAULT_DISPLAY)
-    assert self.display != EGL_NO_DISPLAY
+    assert self.display != EGL_NO_DISPLAY and self.display is not None
     
     self.display_config = display_config
 
@@ -75,7 +75,7 @@ class DisplayOpenGL(object):
                                               EGL_NO_CONTEXT, context_attribs)
       if self.context != EGL_NO_CONTEXT:
         break
-    assert self.context != EGL_NO_CONTEXT
+    assert self.context != EGL_NO_CONTEXT and self.context is not None
 
     self.create_surface(x, y, w, h, layer)
 
@@ -186,7 +186,7 @@ class DisplayOpenGL(object):
       #xlib.XMoveWindow(self.d, self.window, x, y)
       self.surface = openegl.eglCreateWindowSurface(self.display, self.config, self.window, 0)
 
-    assert self.surface != EGL_NO_SURFACE
+    assert self.surface != EGL_NO_SURFACE and self.surface is not None
     r = openegl.eglMakeCurrent(self.display, self.surface, self.surface,
                                self.context)
     assert r

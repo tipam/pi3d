@@ -79,6 +79,10 @@ class PexParticles(Points):
     self.scale = scale
     self.rot_rate = rot_rate
     self.rot_var = rot_var
+    # make a flag to avoid this expensive operation if no accelerators
+    self.any_acceleration = (self.gravity['x'] != 0.0 or 
+                             self.radialAcceleration != 0.0 or
+                             self.tangentialAcceleration != 0.0)
     
     ''' Buffer.array_buffer holds
     [0] vertices[0] x position of centre of point relative to centre of screen in pixels
@@ -184,7 +188,8 @@ class PexParticles(Points):
                                   self.sourcePosition['y']] # vector from emitter
     radial_v /= ((radial_v ** 2).sum()) ** 0.5 # normalise
     b[ix,0:2] += self.arr[ix,0:2] * dt # location change
-    self.arr[ix,0:2] += ([self.gravity['x'], self.gravity['y']] + # velocity change
+    if self.any_acceleration:
+      self.arr[ix,0:2] += ([self.gravity['x'], self.gravity['y']] + # velocity change
                           radial_v * self.arr[ix,13].reshape(-1,1) + # radial and tang acc
                           radial_v[:,::-1] * [-1.0, 1.0] * self.arr[ix,14].reshape(-1,1)) * dt * self.scale
     b[ix,4:6] = np.floor(999.0 * (self.arr[ix,4:7:2] - self.arr[ix,8:11:2] *
