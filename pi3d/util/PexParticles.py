@@ -10,7 +10,7 @@ import time
 
 class PexParticles(Points):
   def __init__(self, pex_file, emission_rate=10, scale=1.0, rot_rate=None,
-                                                rot_var=0.0, **kwargs):
+                                  rot_var=0.0, new_batch=0.1, **kwargs):
     ''' has to be supplied with a pex xml type file to parse. The results
     are loaded into new attributes of the instance of this class with identifiers
     matching the Elements of the pex file. There is zero checking for the
@@ -76,6 +76,7 @@ class PexParticles(Points):
     self._emission_rate = emission_rate # particles per second
     self._last_emission_time = None
     self._last_time = None
+    self._new_batch = emission_rate * new_batch # to clump new particles
     self.scale = scale
     self.rot_rate = rot_rate
     self.rot_var = rot_var
@@ -137,7 +138,7 @@ class PexParticles(Points):
       n_new = self._emission_rate
     else:
       n_new = int(self._emission_rate * (tm - self._last_emission_time))
-    if n_new > 0:
+    if n_new > self._new_batch:
       self._last_emission_time = tm
       self.arr[:-n_new] = self.arr[n_new:] # 'age' by moving along
       b[:-n_new] = b[n_new:]
