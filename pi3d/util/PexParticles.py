@@ -84,7 +84,8 @@ class PexParticles(Points):
     self.any_acceleration = (self.gravity['x'] != 0.0 or self.gravity['y'] != 0.0 or
                              self.radialAcceleration != 0.0 or
                              self.tangentialAcceleration != 0.0)
-    print(self.any_acceleration)
+    self.any_colorchange = any(self.startColor[i] != self.finishColor[i]
+                               for i in ('red','green','blue','alpha'))
     ''' Buffer.array_buffer holds
     [0] vertices[0] x position of centre of point relative to centre of screen in pixels
     [1] vertices[1] y position
@@ -175,6 +176,7 @@ class PexParticles(Points):
       # rgba difference
       self.arr[-n_new:,8:12] = (np.minimum(np.maximum(new_vals[:,11:15], 0.0), 0.999) - 
                                  np.minimum(np.maximum(new_vals[:,7:11], 0.0), 0.999))
+      b[-n_new:,4:6] = np.floor(999.0 * self.arr[-n_new,4:7:2]) + 0.99 * self.arr[-n_new,5:8:2]
       # size
       b[-n_new:,2] = new_vals[:,15] * 0.999 / self.point_size # must not approx to 1.0 at medium precision
       # and reset the z distance part
@@ -193,9 +195,10 @@ class PexParticles(Points):
       self.arr[ix,0:2] += ([self.gravity['x'], self.gravity['y']] + # velocity change
                           radial_v * self.arr[ix,13].reshape(-1,1) + # radial and tang acc
                           radial_v[:,::-1] * [-1.0, 1.0] * self.arr[ix,14].reshape(-1,1)) * dt * self.scale
-    b[ix,4:6] = np.floor(999.0 * (self.arr[ix,4:7:2] - self.arr[ix,8:11:2] *
+    if self.any_colorchange:
+      b[ix,4:6] = np.floor(999.0 * (self.arr[ix,4:7:2] - self.arr[ix,8:11:2] *
                           (self.arr[ix,3] / self.arr[ix,2]).reshape(-1,1)))# rb change
-    b[ix,4:6] += 0.99 * (self.arr[ix,5:8:2] - self.arr[ix,9:12:2] *
+      b[ix,4:6] += 0.99 * (self.arr[ix,5:8:2] - self.arr[ix,9:12:2] *
                           (self.arr[ix,3] / self.arr[ix,2]).reshape(-1,1))# ga change
     b[ix,2] += self.arr[ix,12] * dt # size change
     self.arr[ix,3] -= dt # lifespan remaining
