@@ -10,11 +10,24 @@ import time
 
 class PexParticles(Points):
   def __init__(self, pex_file, emission_rate=10, scale=1.0, rot_rate=None,
-                                  rot_var=0.0, new_batch=0.1, **kwargs):
+                        rot_var=0.0, new_batch=0.1, hardness=2.0, **kwargs):
     ''' has to be supplied with a pex xml type file to parse. The results
     are loaded into new attributes of the instance of this class with identifiers
     matching the Elements of the pex file. There is zero checking for the
-    correct file format:
+    correct file format.
+
+      pex_file:       file name. if "circle" then lite option doesn't
+                      use texture lookup and used mat_pointsprite shader
+      emission_rate:  new particles per second
+      scale:          scale the point size and location
+      rot_rate:       UV mapping rotates
+      rot_var:        variance in rotation rate
+      new_batch:      proportion of emission_rate to batch (for efficiency)
+      hardness:       for lite version
+
+    The following attributes are created from the pex file and can be subsequently
+    altered. i.e. self.sourcePosition['x'] += 2.0
+
       self.texture={name:'particle.png'}
       self.sourcePosition={x:160.00,y:369.01}
       self.sourcePositionVariance={x:60.00,y:0.00}
@@ -99,6 +112,8 @@ class PexParticles(Points):
     [6] tex_coords[0] distance of left side of sprite square from left side of
                     texture in uv scale 0.0 to 1.0
     [7] tex_coords[1] distance of top of sprite square from top of texture
+       for lite version using the mat_pointsprite shader
+    [3:7] hold RGBA in simple float form
 
        make additional numpy array to hold the particle info
     arr[0]          x velocity
@@ -118,15 +133,22 @@ class PexParticles(Points):
                             normals=np.zeros((self.maxParticles, 3), dtype='float32'), 
                             tex_coords=np.zeros((self.maxParticles, 2), dtype='float32'), 
                             point_size=self.point_size * self.scale, **kwargs) # pass to Points.__init__()
-    shader = Shader('uv_pointsprite')
-    try:
-      tex = Texture(self.texture['name']) # obvious first!
-    except:
-      import os
-      tex = Texture(os.path.join(
-                      os.path.split(pex_file)[0], self.texture['name']))
-    self.set_draw_details(shader, [tex])
-    self.unif[48] = 1.0 # sprite uses whole image
+    if self.texture['name'] == 'circle': # TODO alternative geometries
+      self.lite = True
+      shader = Shader('mat_pointsprite')
+      self.set_shader(shader)
+      self.buf[0].unib[0] = hardness
+    else:
+      self.lite = False
+      shader = Shader('uv_pointsprite')
+      try:
+        tex = Texture(self.texture['name']) # obvious first!
+      except:
+        import os
+        tex = Texture(os.path.join(
+                        os.path.split(pex_file)[0], self.texture['name']))
+      self.set_draw_details(shader, [tex])
+      self.unif[48] = 1.0 # sprite uses whole image
 
   def update(self):
     b = self.buf[0].array_buffer # shortcut to change Buffer.array_buffer in place
@@ -176,7 +198,10 @@ class PexParticles(Points):
       # rgba difference
       self.arr[-n_new:,8:12] = (np.minimum(np.maximum(new_vals[:,11:15], 0.0), 0.999) - 
                                  np.minimum(np.maximum(new_vals[:,7:11], 0.0), 0.999))
-      b[-n_new:,4:6] = np.floor(999.0 * self.arr[-n_new,4:7:2]) + 0.99 * self.arr[-n_new,5:8:2]
+      if self.lite:
+        b[-n_new:,3:7] = new_vals[:,7:11]
+      else:
+        b[-n_new:,4:6] = np.floor(999.0 * self.arr[-n_new,4:7:2]) + 0.99 * self.arr[-n_new,5:8:2]
       # size
       b[-n_new:,2] = new_vals[:,15] * 0.999 / self.point_size # must not approx to 1.0 at medium precision
       # and reset the z distance part
@@ -185,7 +210,8 @@ class PexParticles(Points):
       self.arr[-n_new:,12] = 0.95 * (new_vals[:,16] - new_vals[:,15]) / self.point_size / self.arr[-n_new:,2]
       # radial and tangential acc
       self.arr[-n_new:,13:15] = new_vals[:,5:7]
-    b[self.arr[:,3] <= 0.0, 5] = 0.0 # make alpha 0 for dead particles
+    alph_i = 6 if self.lite else 5 # see next line
+    b[self.arr[:,3] <= 0.0, alph_i] = 0.0 # make alpha 0 for dead particles
     ix = np.where(self.arr[:,3] > 0.0)[0] # index of live particles
     radial_v = b[ix,0:2] - [self.sourcePosition['x'],
                                   self.sourcePosition['y']] # vector from emitter
@@ -196,10 +222,14 @@ class PexParticles(Points):
                           radial_v * self.arr[ix,13].reshape(-1,1) + # radial and tang acc
                           radial_v[:,::-1] * [-1.0, 1.0] * self.arr[ix,14].reshape(-1,1)) * dt * self.scale
     if self.any_colorchange:
-      b[ix,4:6] = np.floor(999.0 * (self.arr[ix,4:7:2] - self.arr[ix,8:11:2] *
-                          (self.arr[ix,3] / self.arr[ix,2]).reshape(-1,1)))# rb change
-      b[ix,4:6] += 0.99 * (self.arr[ix,5:8:2] - self.arr[ix,9:12:2] *
-                          (self.arr[ix,3] / self.arr[ix,2]).reshape(-1,1))# ga change
+      if self.lite:
+        b[ix,3:7] = self.arr[ix,4:8] - (self.arr[ix,8:12] *
+                          (self.arr[ix,3] / self.arr[ix,2]).reshape(-1,1))# colour change
+      else:
+        b[ix,4:6] = np.floor(999.0 * (self.arr[ix,4:7:2] - self.arr[ix,8:11:2] *
+                            (self.arr[ix,3] / self.arr[ix,2]).reshape(-1,1)))# rb change
+        b[ix,4:6] += 0.99 * (self.arr[ix,5:8:2] - self.arr[ix,9:12:2] *
+                            (self.arr[ix,3] / self.arr[ix,2]).reshape(-1,1))# ga change
     b[ix,2] += self.arr[ix,12] * dt # size change
     self.arr[ix,3] -= dt # lifespan remaining
     if self.rot_rate is not None: # rotate if this is set
