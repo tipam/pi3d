@@ -204,8 +204,8 @@ class PexParticles(Points):
         b[-n_new:,4:6] = np.floor(999.0 * self.arr[-n_new,4:7:2]) + 0.99 * self.arr[-n_new,5:8:2]
       # size
       b[-n_new:,2] = new_vals[:,15] * 0.999 / self.point_size # must not approx to 1.0 at medium precision
-      # and reset the z distance part
-      b[:,2] = np.floor(np.linspace(999.0, 0.0, self.maxParticles)) + b[:,2] % 1.0
+      # and reset the z distance part (unif[2] hold Shape z value)
+      b[:,2] = np.arange(self.maxParticles + self.unif[2], self.unif[2], -1.0) + b[:,2] % 1.0
       # size delta
       self.arr[-n_new:,12] = 0.95 * (new_vals[:,16] - new_vals[:,15]) / self.point_size / self.arr[-n_new:,2]
       # radial and tangential acc
