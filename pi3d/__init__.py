@@ -33,6 +33,7 @@ from pi3d.shape.Cuboid import Cuboid
 from pi3d.shape.Cylinder import Cylinder
 from pi3d.shape.Disk import Disk
 from pi3d.shape.ElevationMap import ElevationMap
+from pi3d.shape.EnvironmentCube import EnvironmentCube, loadECfiles
 from pi3d.shape.Extrude import Extrude
 from pi3d.shape.Helix import Helix
 from pi3d.shape.Lathe import Lathe
@@ -51,13 +52,10 @@ from pi3d.shape.Torus import Torus
 from pi3d.shape.Triangle import Triangle
 from pi3d.shape.Tube import Tube
 
-from pi3d.util.Log import Log
-from pi3d.util import Utility
-
 from pi3d.sprite.Ball import Ball
 from pi3d.util.Clashtest import Clashtest
 from pi3d.util.Defocus import Defocus
-from pi3d.shape.EnvironmentCube import EnvironmentCube, loadECfiles
+from pi3d.util.Graph import Graph
 from pi3d.util.Gui import Button
 from pi3d.util.Gui import Gui
 from pi3d.util.Gui import Radio
@@ -65,6 +63,7 @@ from pi3d.util.Gui import Scrollbar
 from pi3d.util.Gui import MenuItem
 from pi3d.util.Gui import Menu
 from pi3d.util.Gui import TextBox
+from pi3d.util.Log import Log
 from pi3d.util.Pngfont import Pngfont
 from pi3d.util.PexParticles import PexParticles
 from pi3d.util.PointText import PointText
@@ -76,6 +75,7 @@ from pi3d.util.String import String
 from pi3d.util.TextBlock import TextBlock
 from pi3d.util.TextBlock import TextBlockColour
 from pi3d.util.TextBlock import TextBlockColourGradient
+from pi3d.util import Utility
 
 ################################### only import these if PIL available
 if PIL_OK:
