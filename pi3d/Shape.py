@@ -76,6 +76,10 @@ class Shape(Loadable):
       18  custom data space                           54  56
       19  custom data space                           57  59
     ===== ========================================== ==== ==
+    Note: the fractional part of fog distance (i.e. 0.95 in 200.95) is
+    interpretted as the start of fogging (i.e. start 190.90.. full by 200.95)
+    If fog distance is a whole number then a value of 0.333 will be used
+    (200 -> start 66.6.. full by 200.0)
     """
     self.shader = None
     self.textures = []

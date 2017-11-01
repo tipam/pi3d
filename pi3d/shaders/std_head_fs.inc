@@ -9,3 +9,6 @@ uniform vec3 unib[4];
 // see docstring Buffer
 uniform vec3 unif[20];
 // see docstring Shape
+
+varying float dist;
+varying float fog_start;

@@ -2,7 +2,6 @@
 
 varying vec2 texcoordout;
 varying vec2 bumpcoordout;
-varying float dist;
 varying vec3 lightVector;
 varying vec3 normout;
 varying vec3 inray;
@@ -18,5 +17,6 @@ void main(void) {
 
   gl_Position = modelviewmatrix[1] * vec4(vertex,1.0);
   dist = gl_Position.z;
+#include std_fog_start.inc
   gl_PointSize = unib[2][2] / dist;
 }

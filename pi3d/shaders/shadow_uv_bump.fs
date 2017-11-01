@@ -3,7 +3,6 @@
 varying vec2 texcoordout;
 varying vec2 bumpcoordout;
 varying vec3 lightVector;
-varying float dist;
 varying float lightFactor;
 
 varying vec4 shadowposn;

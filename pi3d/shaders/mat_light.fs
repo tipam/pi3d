@@ -1,7 +1,6 @@
 #include std_head_fs.inc
 
 varying vec3 lightVector;
-varying float dist;
 varying float lightFactor;
 
 void main(void) {

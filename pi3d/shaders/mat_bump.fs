@@ -2,7 +2,6 @@
 
 varying vec2 bumpcoordout;
 varying vec3 lightVector;
-varying float dist;
 varying float lightFactor;
 
 void main(void) {

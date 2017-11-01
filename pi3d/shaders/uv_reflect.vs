@@ -4,7 +4,6 @@ varying vec2 texcoordout;
 varying vec2 bumpcoordout;
 varying vec3 inray;
 varying vec3 normout;
-varying float dist;
 varying vec3 lightVector;
 varying float lightFactor;
 
@@ -14,6 +13,7 @@ void main(void) {
 
   inray = vec3(relPosn - vec4(unif[6], 0.0)); // ----- vector from the camera to this vertex
   dist = length(inray);
+#include std_fog_start.inc
   inray = normalize(inray);
 
   texcoordout = texcoord * unib[2].xy + unib[3].xy;

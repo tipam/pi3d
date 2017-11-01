@@ -14,3 +14,6 @@ uniform vec3 unib[4];
 uniform vec3 unif[20];
 //uniform vec3 eye > unif[6]
 //uniform vec3 lightpos > unif[8]
+
+varying float dist;
+varying float fog_start;
