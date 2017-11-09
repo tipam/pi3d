@@ -1,7 +1,6 @@
 #include std_head_vs.inc
 
 varying vec2 texcoordout;
-varying float dist;
 
 void main(void) {
   texcoordout = texcoord * unib[2].xy + unib[3].xy;

@@ -2,7 +2,6 @@
 
 varying vec2 texcoordout;
 varying vec2 bumpcoordout;
-varying float dist;
 varying vec3 lightVector;
 varying float lightFactor;
 
@@ -15,6 +14,7 @@ void main(void) {
 
   vec3 inray = vec3(relPosn - vec4(unif[6], 0.0)); // ----- vector from the camera to this vertex
   dist = length(inray);
+#include std_fog_start.inc
 
   texcoordout = texcoord * unib[2].xy + unib[3].xy;
   shadowposn = modelviewmatrix[2] * vec4(vertex, 1.0);

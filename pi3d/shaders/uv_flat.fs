@@ -1,7 +1,6 @@
 #include std_head_fs.inc
 
 varying vec2 texcoordout;
-varying float dist;
 
 void main(void) {
 #include std_main_uv.inc
