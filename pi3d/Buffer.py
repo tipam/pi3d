@@ -231,6 +231,7 @@ class Buffer(Loadable):
     self.unib[6] = umult
     self.unib[7] = vmult
     self.unib[11] = bump_factor
+    print(self.unib[6:8])
 
 
   def set_material(self, mtrl):
@@ -303,7 +304,7 @@ class Buffer(Loadable):
         # i.e. if any of the textures set to blend then all will for this shader.
         self.unib[2] = 0.05
 
-    if self.unib[2] != 0.6 or shape.unif[5,2] < 1.0 or shape.unif[5,1] < 1.0:
+    if self.unib[2] != 0.6 or shape.unif[13] < 1.0 or shape.unif[14] < 1.0:
       #use unib[2] as flag to indicate if any Textures to be blended
       #needs to be done outside for..textures so materials can be transparent
         opengles.glEnable(GL_BLEND)
