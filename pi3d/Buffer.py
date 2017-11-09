@@ -231,7 +231,6 @@ class Buffer(Loadable):
     self.unib[6] = umult
     self.unib[7] = vmult
     self.unib[11] = bump_factor
-    print(self.unib[6:8])
 
 
   def set_material(self, mtrl):
