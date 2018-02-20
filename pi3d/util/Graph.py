@@ -20,9 +20,12 @@ class Graph(object):
         *x_values*
           1D numpy array
         *y_values*
-          1 or 2D numpy array with size same as x_values in last D
+          1 or 2D numpy array with size same as x_values in 2nd D draws
+          a line graph
+          or 3D numpy array with size same as x along axis=1 and last axis
+          has 2 values. In this case the graph is drawn as vertical lines
         *width, height*
-          as ecpected
+          as expected
         *font*
           pi3d.Font instance
         *title, line_width*
@@ -42,7 +45,7 @@ class Graph(object):
     '''
     if len(y_values.shape) < 2:
       y_values.shape = (1,) + y_values.shape
-    if x_values.shape[-1] != y_values.shape[-1]:
+    if x_values.shape[0] != y_values.shape[1]:
       LOGGER.error('mismatched array lengths')
       return
     if camera is None:
@@ -82,9 +85,17 @@ class Graph(object):
     for i in range(y_values.shape[0]):
       data = np.zeros((n, 3))
       data[:,0] = (x_values - x_offset) * x_factor - axex + xpos
-      data[:,1] = (y_values[i] - y_offset) * y_factor - axey + ypos
-      data[:,2] = 4.0
-      line = pi3d.Lines(vertices=data, line_width=line_width)
+      if len(y_values[i].shape) == 1: # i.e. normal line graph
+        data[:,1] = (y_values[i] - y_offset) * y_factor - axey + ypos
+        strip = True
+      else: # has to be pairs of values for separate line segments
+        xx_vals = np.stack([data[:,0], data[:,0]], axis=1).flatten() # make x into pairs
+        data = np.zeros((n * 2, 3))
+        data[:,0] = xx_vals
+        data[:,1] = (y_values[i].flatten() - y_offset) * y_factor - axey + ypos
+        strip = False
+      data[:,2] = 4.0 # z value
+      line = pi3d.Lines(vertices=data, line_width=line_width, strip=strip)
       line.set_shader(shader)
       j = i + 1
       rgb_val = (0.913 * j % 1.0, 0.132 * j % 1.0, 0.484 * j % 1.0)
@@ -146,7 +157,7 @@ class Graph(object):
     if len(y_values.shape) < 2: # in case single line
       y_values.shape = (1,) + y_values.shape
     for i in range(y_values.shape[0]):
-      self.lines[i].buf[0].array_buffer[:,1] = (y_values[i] - self.y_offset) * self.y_factor - self.axey + self.ypos
+      self.lines[i].buf[0].array_buffer[:,1] = (y_values[i].flatten() - self.y_offset) * self.y_factor - self.axey + self.ypos
       self.lines[i].re_init()
 
   def tick_pos(self, minv, maxv, num=3):

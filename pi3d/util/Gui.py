@@ -8,7 +8,7 @@ DTK = 0.05 #minimum time between key strokes
 DTM = 0.15 #minimum time between mouse clicks
 
 class Gui(object):
-  def __init__(self, font, show_pointer=True):
+  def __init__(self, font, show_pointer=True, fontscale=0.24):
     """hold information on all widgets and the pointer, creates a 2D Camera
     and uv_flat shader. Needs to have a Font object passed to it keeps track
     of when the last mouse click or key stroke to avoid double counting.
@@ -28,6 +28,7 @@ class Gui(object):
     self.font.blend = True
     self.focus = None
     self.show_pointer = show_pointer
+    self.fontscale = fontscale
     for p in sys.path:
       icon_path = p + '/pi3d/util/icons/'
       if os.path.exists(icon_path):
@@ -103,7 +104,7 @@ class Widget(object):
     self.label_pos = label_pos
     if label is not None:
       self.labelobj = pi3d.String(font=gui.font, string=label, is_3d=False,
-                              camera=gui.camera, justify='L')
+                              camera=gui.camera, justify='L', size=gui.fontscale)
       self.labelobj.set_shader(gui.shader)
     else:
       self.labelobj = None
