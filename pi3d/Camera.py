@@ -297,7 +297,7 @@ class Camera(DefaultInstance):
     rz = math.atan2(-m[1,0], m[1,1])
     return math.degrees(rx), math.degrees(ry), math.degrees(rz)
   
-  def matrix_from_two_vecors(self, start_vector, vector):
+  def matrix_from_two_vectors(self, start_vector, vector):
     ''' uses two 3D vectors (arrays) to generate a rotation vector representing
     the movement from one direction to another. NB because there are many
     ways of doing this the z rotation may not match so this this method might
@@ -307,7 +307,11 @@ class Camera(DefaultInstance):
     start_vector /= ((start_vector ** 2).sum()) ** 0.5 # convert to unit length
     vector /= ((vector ** 2).sum()) ** 0.5
     axis = np.cross(vector, start_vector)
-    axis /= ((axis ** 2).sum()) ** 0.5
+    l_axis = ((axis ** 2).sum()) ** 0.5
+    if l_axis == 0: # might be zero if coincident vectors
+      axis = np.array([0.0, 1.0, 0.0])
+    else:
+      axis /= l_axis
     # sine of angle, for some reason has to be assigned to cos value i.e.
     # the angle is complementary to the expected one. Not really sure why this is!
     c = np.dot(start_vector, vector)
@@ -320,8 +324,9 @@ class Camera(DefaultInstance):
                      [t*x*y - z*s, t*y*y + c,   t*y*z + x*s, 0.0], # 2
                      [t*x*z + y*s, t*y*z - x*s, t*z*z + c,   0.0], # 3
                      [0.0,         0.0,         0.0,         1.0]], dtype='float')
- 
-    
+  
+  matrix_from_two_vecors = matrix_from_two_vectors # original had typo!
+
 #################################
 ####### utility functions #######
 
