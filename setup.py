@@ -4,9 +4,13 @@ a terminal cd to the pi3d directory with this file in:
 
   $ python setup.py sdist
   
-and, as the now preferred, wheel format
+and, as the now preferred, wheel format.
   
   $ python setup.py bdist_wheel --universal
+
+[for uploading to pypi then:
+
+  $ twine upload dist/pi3d-1.10* #or whatever version it's up to]
 
 this will create the directory 'dist' containing pi3d-1.10.tar.gz (and wheel)
 this can then be extracted somewhere and in that directory run (probably sudo):
