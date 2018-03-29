@@ -5,6 +5,15 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 Date        Amends
 
 v2.22
+2018-03-29  Bug fix: Camera.matrix_from_two_vectors() was mispelt, now has
+            alias from wrong spelling for backwards compatibility. Logging
+            gives reason for assertion failure if trying to do opengles
+            function not on main thread.
+            Improvements: Shape has utility functions rotate_to_direction()
+            transform_direction() and shallow_clone() allowing easier
+            manipulation of articulated parent-child arrangements.
+
+v2.22
 2017-11-09  Improvements: Slight speed improvements for PexParticles,
             util/Graph class handles some work of creating fast graphs,
             fog start distance can be controlled, MergeShape can create
