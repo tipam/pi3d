@@ -77,7 +77,11 @@ class Shader(DefaultInstance):
       *fshader_source*
         String with the code for the fragment shader.
     """
-    assert Loadable.is_display_thread()
+    try:
+      assert Loadable.is_display_thread()
+    except AssertionError as err:
+      LOGGER.error('load_opengl must be called on main thread for %s', self)
+      raise err
 
     # TODO: the rest of the constructor should be split into load_disk
     # and load_opengl so that we can delete that assert.

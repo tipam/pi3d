@@ -728,6 +728,54 @@ class Shape(Loadable):
     self.tr2[3, 0:3] = val
     self.unif[9:12] = val
     self.MFlg = True
+    
+  def rotate_to_direction(self, direction, forward=[0.0, 0.0, 1.0]):
+    """ works out the XYZ euler rotations to rotate this shape from
+    forward to direction vectors
+    
+    Arguments:
+      *direction*
+        3vector tuple, array or numpy array
+      *forward*
+        3vector, usually +ve z direction
+    """
+    if type(direction) is not np.ndarray:
+      direction = np.array(direction)
+    if type(forward) is not np.ndarray:
+      forward = np.array(forward)
+    """ TODO self._camera might not be instantiated when this method is called
+    for some reason so these calls pass None for self in static style calls
+    on the Camera class itself """
+    rot_mtrix = Camera.matrix_from_two_vectors(None, forward, direction)
+    rot_euler = Camera.euler_angles(None, rot_mtrix)
+    self.rotateToX(-rot_euler[0]) # unclear why x and y need to be -ve
+    self.rotateToY(-rot_euler[1]) # something to do with sense of rotation of camera
+    self.rotateToZ(rot_euler[2])
+
+  def transform_direction(self, direction, origin=[0.0, 0.0, 0.0]):
+    """Returns a tuple of two 3D numpy arrays representing the transformed
+    origin of this Shape and the transformed direction vector
+    
+    Arguments:
+      *direction*
+        3vector tuple, array or numpy array
+      *origin*
+        3D point to use as origin of direction vector (i.e. if displaced
+        from origin of shape)
+    """
+    tip_pt = np.dot(self.MRaw.T, np.append(direction, 1.0))[:3]
+    root_pt = np.dot(self.MRaw.T, np.append(origin, 1.0))[:3]
+    return (root_pt, tip_pt - root_pt)
+
+  def shallow_clone(self):
+    """Returns a copy of this shape with its own transform details, location,
+    rotation etc but textures and buf arrays point to the existing objects
+    without copying them.
+    """
+    state = self.__getstate__()
+    clone = Shape(None, None, '', 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0)
+    clone.__setstate__(state) # everything is overwritten here
+    return clone
 
   def _lathe(self, path, sides=12, rise=0.0, loops=1.0):
     """Returns a Buffer object by rotating the points defined in path.
@@ -807,7 +855,7 @@ class Shape(Loadable):
       opy = py
 
     return Buffer(self, verts, tex_coords, idx, norms)
-  
+
   def __getstate__(self):
     return {
       'unif': list(self.unif),
@@ -818,7 +866,7 @@ class Shape(Loadable):
       'textures': self.textures,
       'shader': self.shader
       }
-  
+
   def __setstate__(self, state):
     unif_tuple = tuple(state['unif'])
     self.unif = (ctypes.c_float * 60)(*unif_tuple)
