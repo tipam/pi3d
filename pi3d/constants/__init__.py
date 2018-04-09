@@ -5,7 +5,7 @@ pi3d.constants contains constant values, mainly integers, from OpenGL ES 2.0.
 """
 import time
 
-__version__ = '2.23'
+__version__ = '2.24'
 year = time.localtime().tm_year
 
 STARTUP_MESSAGE = """

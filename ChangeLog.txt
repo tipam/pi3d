@@ -4,7 +4,11 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
-v2.22
+v2.24
+2018-04-09  Bug fix: Shape.rotate_to_direction() could occasionally not
+            work in python2
+
+v2.23
 2018-03-29  Bug fix: Camera.matrix_from_two_vectors() was mispelt, now has
             alias from wrong spelling for backwards compatibility. Logging
             gives reason for assertion failure if trying to do opengles
