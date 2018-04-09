@@ -109,7 +109,8 @@ class ElevationMap(Shape):
         tm = tm.convert('L')
         tm = tm.resize((ix, iy))
         tm = np.array(tm)
-        tm = np.floor(tm * 3.99 / (tm.max() - tm.min()))
+        tm = np.floor(tm * 3.99 / (tm.max() - tm.min())) # set to 0.0, 1.0, 2.0, 3.0
+        tm = tm[::-1,::-1].T # effectively reflect and rotate to match mapping of elevation
 
     else: 
       ''' images saved as compressed numpy npz file. No resizing so needs 

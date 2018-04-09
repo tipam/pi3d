@@ -76,6 +76,7 @@ class Shape(Loadable):
       18  custom data space                           54  56
       19  custom data space                           57  59
     ===== ========================================== ==== ==
+
     Note: the fractional part of fog distance (i.e. 0.95 in 200.95) is
     interpretted as the start of fogging (i.e. start 190.90.. full by 200.95)
     If fog distance is a whole number then a value of 0.333 will be used
@@ -275,6 +276,17 @@ class Shape(Loadable):
         Shader object
       *textures*
         array of Texture objects
+
+    Keyword arguments:
+      *ntiles*
+        multiple for tiling normal map which can be less than or greater
+        than 1.0. 0.0 disables the normal mapping, float
+      *shiny*
+        how strong to make the reflection 0.0 to 1.0, float
+      *umult,vmult*
+        multipliers for tiling the texture in the u,v directions
+      *bump_factor*
+        multiplier for the normal map surface distortion effect
     """
     self.shader = shader
     for b in self.buf:
@@ -318,14 +330,17 @@ class Shape(Loadable):
 
 
   def set_fog(self, fogshade, fogdist):
-    """Set fog for this Shape only, it uses the shader smoothblend function from
-    1/3 fogdist to fogdist.
+    """Set fog for this Shape only, it uses the shader smoothblend function
+    over a variable proportion of fogdist (defaulting to 33.33% -> 100%).
 
     Arguments:
       *fogshade*
         tuple (rgba)
       *fogdist*
-        distance from Camera at which Shape is 100% fogshade
+        distance from Camera at which Shape is 100% fogshade. The start of
+        the fog depends on the decimal part of this value. i.e. 100.5 would
+        start at 50, 100.9 would start at 90. If the decimal is 0 then the
+        default start distance is 1/3 of fogdist i.e. 100 would start at 33
     """
     self.unif[12:15] = fogshade[0:3]
     self.unif[15] = fogdist
@@ -416,7 +431,8 @@ class Shape(Loadable):
     self.unif[index_from:(index_from + len(data))] = data
 
   def set_point_size(self, point_size=1.0):
-    """This will set the draw_method in all Buffers of this Shape"""
+    """This will set the draw_method in all Buffers of this Shape. point_size
+    less than or equal 0.0 will switch back to GL_TRIANGLES"""
     for b in self.buf:
       b.unib[8] = point_size
       b.draw_method = GL_POINTS if point_size > 0.0 else GL_TRIANGLES
@@ -425,10 +441,16 @@ class Shape(Loadable):
     """This will set the draw_method in all Buffers of this Shape
 
       *line-width*
-        line width default 1
-
+        line width default 1. If set to <= 0.0 this will switch back to
+        GL_TRIANGLES
+      *strip*
+        If True (default) then the line is drawn continuously from one
+        point to the next i.e. each line after the first one is defined
+        by a single addtional point. If false then each line is defined by
+        pairs of points.
       *closed*
-        if set to True then the last leg will be filled in. ie polygon
+        if set to True then the last leg will be filled in. ie polygon.
+        This only has any effect if *strip* is True
     
     NB it differs from point size in that glLineWidth() is called here
     and that line width will be used for all subsequent draw() operations
@@ -455,7 +477,7 @@ class Shape(Loadable):
     self.buf[0].re_init(pts, texcoords, normals, offset)
     
   def add_child(self, child):
-    """puts a Shape into the children list"""
+    """puts a Shape into the Shape.children list"""
     self.children.append(child)
 
   def x(self):
@@ -743,11 +765,10 @@ class Shape(Loadable):
       direction = np.array(direction)
     if type(forward) is not np.ndarray:
       forward = np.array(forward)
-    """ TODO self._camera might not be instantiated when this method is called
-    for some reason so these calls pass None for self in static style calls
-    on the Camera class itself """
-    rot_mtrix = Camera.matrix_from_two_vectors(None, forward, direction)
-    rot_euler = Camera.euler_angles(None, rot_mtrix)
+    if self._camera is None:
+      self._camera = Camera.instance() # TODO may be issues doing this not in main thread (otherwise why not in Shape.__init__()?)
+    rot_mtrix = self._camera.matrix_from_two_vectors(forward, direction)
+    rot_euler = self._camera.euler_angles(rot_mtrix)
     self.rotateToX(-rot_euler[0]) # unclear why x and y need to be -ve
     self.rotateToY(-rot_euler[1]) # something to do with sense of rotation of camera
     self.rotateToZ(rot_euler[2])
