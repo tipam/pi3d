@@ -24,7 +24,7 @@ def getattra(obj, attr, default):
 
 class TextBlockColour(object):
   def __init__(self, colour=(1.0, 1.0, 1.0, 1.0), textBlock=None):
-    self.colour = [colour[0],colour[1],colour[2],colour[3]]
+    self.colour = [colour[0], colour[1], colour[2], colour[3]]
     self.textBlock = textBlock
 
   def recolour(self):
@@ -32,7 +32,7 @@ class TextBlockColour(object):
 
   def set_colour(self, colour=None, alpha=None):
     if colour is not None:
-      self.colour[0:2] = colour[0:2]
+      self.colour[0:len(colour)] = colour[:] # could be 3 or 4, ambiguous
 
     if alpha is not None:
       self.colour[3] = alpha

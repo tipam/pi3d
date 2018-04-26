@@ -304,10 +304,10 @@ class Camera(DefaultInstance):
     be best combined with the euler_angles system above. See the 
     pi3d_demos/ForestStereo.py example - key press 'k'
     '''
-    start_vector /= ((start_vector ** 2).sum()) ** 0.5 # convert to unit length
-    vector /= ((vector ** 2).sum()) ** 0.5
+    start_vector /= np.linalg.norm(start_vector) # convert to unit length
+    vector /= np.linalg.norm(vector)
     axis = np.cross(vector, start_vector)
-    l_axis = ((axis ** 2).sum()) ** 0.5
+    l_axis = np.linalg.norm(axis)
     if l_axis == 0: # might be zero if coincident vectors
       axis = np.array([0.0, 1.0, 0.0])
     else:
