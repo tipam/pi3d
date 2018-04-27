@@ -842,20 +842,10 @@ class Shape(Loadable):
 
     tcy = 0.0
     for p in range(s):
-
-      px = path[p][0] * 1.0
-      py = path[p][1] * 1.0
-
+      px, py = path[p][0], path[p][1] # for brevity
       if p > 0:
-        tcy += ((path[p][0] - path[p-1][0])**2 +
-                (path[p][1] - path[p-1][1])**2)**0.5 / path_len
-
-      # Normalized 2D vector between path points
-      if p == 0:
-        ipx, ipy = path[1][0] * 1.0, path[1][1] * 1.0
-      else:
-        ipx, ipy = px, py
-      dx, dy = Utility.vec_normal(Utility.vec_sub((ipx, ipy), (opx, opy)))
+        tcy += ((px - opx) ** 2 + (py - opy) ** 2) ** 0.5 / path_len
+      dx, dy = Utility.vec_normal(Utility.vec_sub((px, py), (opx, opy)))
 
       for r in range (0, rl + 1):
         sinr = sin(pr * r)

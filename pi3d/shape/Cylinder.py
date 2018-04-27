@@ -7,7 +7,11 @@ import logging
 LOGGER = logging.getLogger(__name__)
 
 class Cylinder(Shape):
-  """ 3d model inherits from Shape"""
+  """ 3d model inherits from Shape. This class uses the Shape._lathe()
+  method to 'wrap' the texture around the cylinder in a similar way to
+  the Sphere. If the texture mapping on the top and bottom need to be
+  flat, or different from the sides, then the pi3d.Extrude class should
+  be used"""
   def __init__(self, camera=None, light=None, radius=1.0, height=2.0,
                sides=12, name="",
                x=0.0, y=0.0, z=0.0, rx=0.0, ry=0.0, rz=0.0,
