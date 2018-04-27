@@ -230,7 +230,7 @@ class ElevationMap(Shape):
          ix = 0
     self.ht_y, self.ht_n = self._intersect_face(ix, (px, 0.0, pz))
     if inc_normal:
-      self.ht_n /= ((self.ht_n ** 2).sum()) ** 0.5 # normalise to unit len
+      self.ht_n /= np.linalg.norm(self.ht_n) # normalise to unit len
       return (self.unif[1] + self.ht_y, self.ht_n)
     return self.unif[1] + self.ht_y
 
@@ -296,10 +296,10 @@ class ElevationMap(Shape):
     """
     y, n = self.calcHeight(px, pz, True)
     sidev = np.array([n[1], -n[0], 0.0])
-    sidev /= ((sidev ** 2).sum()) ** 0.5
+    sidev /= np.linalg.norm(sidev)
     #forwd = np.cross(sidev, normp)
     forwd = np.array([-n[2]*n[0], -n[2]*n[1], n[0]*n[0] + n[1]*n[1]])
-    forwd /= ((forwd ** 2).sum()) ** 0.5
+    forwd /= np.linalg.norm(forwd)
     return (math.degrees(math.asin(-forwd[1])), math.degrees(math.atan2(sidev[1], n[1])))
 
   def _intersect_face(self, ix, pos):

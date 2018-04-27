@@ -215,7 +215,7 @@ class PexParticles(Points):
     ix = np.where(self.arr[:,3] > 0.0)[0] # index of live particles
     radial_v = b[ix,0:2] - [self.sourcePosition['x'],
                                   self.sourcePosition['y']] # vector from emitter
-    radial_v /= ((radial_v ** 2).sum()) ** 0.5 # normalise
+    radial_v /= np.linalg.norm(radial_v, axis=1)[:, np.newaxis] # normalise
     b[ix,0:2] += self.arr[ix,0:2] * dt # location change
     if self.any_acceleration:
       self.arr[ix,0:2] += ([self.gravity['x'], self.gravity['y']] + # velocity change
