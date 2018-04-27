@@ -4,6 +4,12 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
+v2.25
+2018-04-29  Bug fix: TextBlockColour.set_colour() not updating blue or alpha
+            values. Additional argument to Tube to allow it to not use
+            Shape._lathe() but make cylindrical uv mapping on outside and
+            inside and flat uv mappin on top and bottom. 
+
 v2.24
 2018-04-09  Bug fix: Shape.rotate_to_direction() could occasionally not
             work in python2
