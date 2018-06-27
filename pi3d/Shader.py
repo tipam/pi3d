@@ -116,8 +116,6 @@ class Shader(DefaultInstance):
 
     self.unif_modelviewmatrix = opengles.glGetUniformLocation(
       self.program, b'modelviewmatrix')
-    self.unif_cameraviewmatrix = opengles.glGetUniformLocation(
-      self.program, b'cameraviewmatrix')
 
     self.unif_unif = opengles.glGetUniformLocation(self.program, b'unif')
     self.unif_unib = opengles.glGetUniformLocation(self.program, b'unib')

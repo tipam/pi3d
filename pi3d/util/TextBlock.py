@@ -234,15 +234,13 @@ class TextBlock(object):
     index = 0
     #Now the string is updated set the correct glyphs and calculate the
     #character offset positions. This is not the same as the final char positions.
-    const_width = 0.0
+    const_width = 64.0 * self.size * self.space
     vari_width = 0.0
-    if self.spacing == "C":
-      const_width = 64.0 * self.size * self.space
     if self.spacing == "M":
+      const_width = 0.0
       vari_width = self.size * self.space
     if self.spacing == "F":
       vari_width = self.size
-      const_width =  (64.0 * self.space * self.size)    
 
     for char in strval:
       glyph = self._text_manager.font.glyph_table[char]

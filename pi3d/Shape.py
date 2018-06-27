@@ -150,7 +150,7 @@ class Shape(Loadable):
     self.M = np.zeros(48, dtype="float32").reshape(3,4,4) # 3rd matrix added for casting shadows v2.7
 
 
-  def draw(self, shader=None, txtrs=None, ntl=None, shny=None, camera=None, mlist=[], light_camera=None):
+  def draw(self, shader=None, txtrs=None, ntl=None, shny=None, camera=None, next_m=None, light_camera=None):
     """If called without parameters, there has to have been a previous call to
     set_draw_details() for each Buffer in buf[].
     NB there is no facility for setting umult and vmult with draw: they must be
@@ -165,7 +165,7 @@ class Shape(Loadable):
     if light_camera and not light_camera.mtrx_made:
       light_camera.make_mtrx()
 
-    if self.MFlg or len(mlist) > 0 or len(self.children) > 0:
+    if self.MFlg or next_m is not None or len(self.children) > 0:
       # Calculate rotation and translation matrix for this model using numpy.
       self.MRaw = self.tr1
       if self.rozflg:
@@ -180,18 +180,14 @@ class Shape(Loadable):
         self.MRaw = np.dot(self.tr2, self.MRaw)
 
       # child drawing addition #############
-      newmlist = [m for m in mlist]
-      newmlist.append(self.MRaw)
+      if next_m is not None:
+          self.MRaw = np.dot(self.MRaw, next_m)
       if len(self.children) > 0:
         for c in self.children:
-          c.draw(shader, txtrs, ntl, shny, camera, newmlist, light_camera) # TODO issues where child doesn't use same shader 
-      for m in mlist[-1::-1]:
-        self.MRaw = np.dot(self.MRaw, m)
+          c.draw(shader, txtrs, ntl, shny, camera, self.MRaw, light_camera) # TODO issues where child doesn't use same shader
       ######################################
       self.M[0,:,:] = self.MRaw[:,:]
-      #self.M[0:16] = c_floats(self.MRaw.reshape(-1).tolist()) #pypy version
       self.M[1,:,:] = np.dot(self.MRaw, camera.mtrx)[:,:]
-      #self.M[16:32] = c_floats(np.dot(self.MRaw, camera.mtrx).reshape(-1).tolist()) #pypy
       if light_camera is not None:
         self.M[2,:,:] = np.dot(self.MRaw, light_camera.mtrx)[:,:]
       self.MFlg = False
