@@ -1,6 +1,5 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-from pi3d.constants import *
 from pi3d.Buffer import Buffer
 from pi3d.Shape import Shape
 import logging
@@ -31,18 +30,14 @@ class Lines(Shape):
 
     LOGGER.info("Creating Lines ...")
 
-    self.vertices = vertices
-    self.normals = []
     n_v = len(vertices)
-    self.indices = [[a, a + 1, a + 2] for a in range(0, n_v, 3)]
+    indices = [[a, a + 1, a + 2] for a in range(0, n_v, 3)]
     for i in range(1,3):
-      last = self.indices[-1]
+      last = indices[-1]
       if last[i] >= n_v:
         last[i] = n_v - 1
-    self.tex_coords = []
 
-    self.buf = [Buffer(self, self.vertices, self.tex_coords, self.indices,
-                self.normals, smooth=False)]
+    self.buf = [Buffer(self, vertices, [], indices, [], smooth=False)]
 
     if line_width < 1:
       self.set_line_width(1, closed)

@@ -5,7 +5,6 @@ import math
 import random
 import numpy as np
 
-from pi3d.constants import *
 from pi3d.Buffer import Buffer
 from pi3d.Shape import Shape
 from pi3d.util.RotateVec import rotate_vec
@@ -191,7 +190,7 @@ class MergeShape(Shape):
     """
     #create a cluster of shapes on an elevation map
     blist = []
-    for v in range(count):
+    for _ in range(count):
       x = xpos + random.random() * w - w * 0.5
       z = zpos + random.random() * d - d * 0.5
       rh = random.random() * (maxscl - minscl) + minscl

@@ -7,7 +7,11 @@ import logging
 
 from six_mod.moves import xrange
 
-from pi3d.constants import *
+from pi3d.constants import (opengles, PIL_OK, GL_ALPHA, GL_LUMINANCE,
+          GL_LUMINANCE_ALPHA, GL_RGB, GL_RGBA, GL_MIRRORED_REPEAT, GL_REPEAT,
+          GL_LINEAR, GL_NEAREST, GL_LINEAR_MIPMAP_NEAREST, GL_NEAREST_MIPMAP_NEAREST,
+          GL_TEXTURE_MIN_FILTER, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_TEXTURE_WRAP_T,
+          GL_TEXTURE_MAG_FILTER, GL_UNSIGNED_BYTE, GL_OUT_OF_MEMORY)
 from pi3d.util.Ctypes import c_ints
 from pi3d.util.Loadable import Loadable
 
@@ -137,10 +141,10 @@ class Texture(Loadable):
       if Display.INSTANCE is not None:
         Display.INSTANCE.textures_dict[str(self._tex)][1] = 1
         Display.INSTANCE.tidy_needed = True
-    except Exception as e:
+    except Exception as _e:
       # possible for self to have already been deleted here, logger won't work!
       #print('Texture.__del__ failed with exception "{}" and OpenGL ES error={}'.format(
-      #                  e, opengles.glGetError()))
+      #                  _e, opengles.glGetError()))
       pass
 
   def tex(self):
@@ -213,7 +217,7 @@ class Texture(Loadable):
         s = self.file_string + ' '
         self.image = np.load(self.file_string)['arr_0'] # has to be saved with default key
 
-      self.iy, self.ix, mode = self.image.shape
+      self.iy, self.ix, _mode = self.image.shape
       self._tex = ctypes.c_uint()
       self._loaded = True
       return # skip the rest for numpy arrays - faster but no size checking

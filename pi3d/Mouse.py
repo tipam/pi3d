@@ -11,7 +11,7 @@ if pi3d.USE_PYGAME:
   import pygame
 elif pi3d.PLATFORM != pi3d.PLATFORM_PI and pi3d.PLATFORM != pi3d.PLATFORM_ANDROID:
   from pyxlib import xlib
-  from pyxlib.x import *
+  #from pyxlib.x import FocusChangeMask
 
 LOGGER = logging.getLogger(__name__)
 
@@ -100,7 +100,7 @@ class _nixMouse(threading.Thread):
                         ctypes.byref(self.rootx), ctypes.byref(self.rooty),
                         ctypes.byref(self.x),ctypes.byref(self.y),
                         self.mask)
-      return self.x.value - self.x_offset, -self.y.value + self.y_offset
+      return self.x.value - self.x_offset, self.y_offset - self.y.value
     else:
       with self.lock:
         return self._x, self._y

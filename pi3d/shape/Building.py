@@ -40,7 +40,6 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 # It merely aims to demonstrate a working concept in simplfying 3D programming on the Pi
 import os.path
 
-from pi3d.constants import *
 import math, random, sys
 from six_mod.moves import filter
 

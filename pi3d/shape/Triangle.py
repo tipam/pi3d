@@ -1,4 +1,3 @@
-from pi3d.constants import *
 from pi3d.Buffer import Buffer
 from pi3d.Shape import Shape
 
@@ -20,18 +19,12 @@ class Triangle(Shape):
     """
     super(Triangle, self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                 sx, sy, sz, cx, cy, cz)
-    self.ttype = GL_TRIANGLES
-    self.verts = []
-    self.norms = []
-    self.texcoords = []
-    self.inds = []
     c = corners # alias for convenience
 
-    self.verts = ((c[0][0], c[0][1], 0.0), (c[1][0], c[1][1], 0.0), (c[2][0], c[2][1], 0.0))
-    self.norms = ((0, 0, -1), (0, 0, -1),  (0, 0, -1))
-    self.texcoords = ((0.0, 0.0), (0.5, 0.86603), (1.0, 0.0))
+    verts = ((c[0][0], c[0][1], 0.0), (c[1][0], c[1][1], 0.0), (c[2][0], c[2][1], 0.0))
+    norms = ((0, 0, -1), (0, 0, -1),  (0, 0, -1))
+    texcoords = ((0.0, 0.0), (0.5, 0.86603), (1.0, 0.0))
 
-    self.inds = ((0, 1, 2), ) #python quirk: comma for tuple with only one val
+    inds = ((0, 1, 2), ) #python quirk: comma for tuple with only one val
 
-    self.buf = []
-    self.buf.append(Buffer(self, self.verts, self.texcoords, self.inds, self.norms))
+    self.buf = [Buffer(self, verts, texcoords, inds, norms)]

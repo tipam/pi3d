@@ -1,6 +1,5 @@
 import os.path
 
-from pi3d import *
 from pi3d.Buffer import Buffer
 from pi3d.Shape import Shape
 from pi3d.Texture import Texture
@@ -53,7 +52,6 @@ class EnvironmentCube(Shape):
     self.height = size
     self.depth = size
     self.ssize = 36
-    self.ttype = GL_TRIANGLES
     self.nobottom = nobottom
 
     ww = size / 2.0
@@ -86,8 +84,7 @@ class EnvironmentCube(Shape):
         (0.0, 0.661), (0.25, 0.661), (0.25, 0.34), (0.0, 0.34), #left
         (0.25, 0.34), (0.5, 0.34), (0.5, 0.661), (0.25, 0.661)) #back
 
-      self.buf = []
-      self.buf.append(Buffer(self, self.vertices, self.tex_coords, self.indices, self.normals))
+      self.buf = [Buffer(self, self.vertices, self.tex_coords, self.indices, self.normals)]
 
     elif maptype == "HALFCROSS":
       self.tex_coords = ((0.25, 0.25), (0.25, 0.75), (-0.25, 0.75), (-0.25, 0.25), #front
@@ -97,8 +94,7 @@ class EnvironmentCube(Shape):
         (0.25, -0.25), (0.75, -0.25), (0.75, 0.25), (0.25, 0.25), #left
         (0.75, 0.25), (0.75, 0.75), (1.25, 0.75), (1.25, 0.25)) #back
 
-      self.buf = []
-      self.buf.append(Buffer(self, self.vertices, self.tex_coords, self.indices, self.normals))
+      self.buf = [Buffer(self, self.vertices, self.tex_coords, self.indices, self.normals)]
 
     elif maptype == "BLENDER":
       self.tex_coords = ((0.999, 0.502), (0.668, 0.502), (0.668, 0.999), (0.999, 0.999), #front
@@ -108,8 +104,7 @@ class EnvironmentCube(Shape):
         (0.668, 0.499), (0.999, 0.499), (0.999, 0.001), (0.668, 0.001), #left
         (0.335, 0.001), (0.666, 0.001), (0.666, 0.499), (0.335, 0.499)) #back
 
-      self.buf = []
-      self.buf.append(Buffer(self, self.vertices, self.tex_coords, self.indices, self.normals))
+      self.buf = [Buffer(self, self.vertices, self.tex_coords, self.indices, self.normals)]
 
     else:
       self.tex_coords = ((0.002, 0.002), (0.998, 0.002), (0.998, 0.998),(0.002, 0.998),

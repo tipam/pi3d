@@ -3,12 +3,10 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import math
 import sys, os
 
-from six_mod.moves import xrange
-
 import math
 import numpy as np
 
-from pi3d import *
+from pi3d import PIL_OK
 from pi3d.Buffer import Buffer
 from pi3d.Shape import Shape
 import logging
@@ -124,7 +122,6 @@ class ElevationMap(Shape):
     self.height = height
     self.ix = ix
     self.iy = iy
-    self.ttype = GL_TRIANGLE_STRIP
     self.ht_y = 0.0
     self.ht_n = np.array([0.0, 1.0, 0.0])
 
@@ -139,12 +136,11 @@ class ElevationMap(Shape):
     ty = 1.0 * ntiles / iy
 
     verts = []
-    norms = []
     tex_coords = []
     idx = []
 
-    for y in xrange(0, iy):
-      for x in xrange(0, ix):
+    for y in range(iy):
+      for x in range(ix):
         hgt = self.pixels[x, y] * self.ht
         verts.append((-self.wh + x * self.ws, 
                       hgt, 
@@ -164,8 +160,7 @@ class ElevationMap(Shape):
         idx.append((i+ix+1, i+1, i))
         s += 2
 
-    self.buf = []
-    self.buf.append(Buffer(self, verts, tex_coords, idx, None, smooth))
+    self.buf = [Buffer(self, verts, tex_coords, idx, None, smooth)]
 
   def dropOn(self, px, pz):
     """determines approximately how high an object is when dropped on the map
@@ -294,7 +289,7 @@ class ElevationMap(Shape):
       *pz*
         z location
     """
-    y, n = self.calcHeight(px, pz, True)
+    _, n = self.calcHeight(px, pz, True)
     sidev = np.array([n[1], -n[0], 0.0])
     sidev /= np.linalg.norm(sidev)
     #forwd = np.cross(sidev, normp)

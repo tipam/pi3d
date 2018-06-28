@@ -1,7 +1,5 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-from pi3d.constants import *
-
 from pi3d.loader import loaderEgg
 from pi3d.loader import loaderObj
 from pi3d.Shape import Shape
@@ -30,12 +28,12 @@ class Model(Shape):
       # Creating a copy but with pointer to buf.
       return
     self.exf = file_string[-3:].lower()
-    LOGGER.info("Loading ",file_string)
+    LOGGER.info("Loading {}".format(file_string))
 
     if self.exf == 'egg':
-      self.model = loaderEgg.loadFileEGG(self, file_string)
+      loaderEgg.loadFileEGG(self, file_string)
     elif self.exf == 'obj':
-      self.model = loaderObj.loadFileOBJ(self, file_string)
+      loaderObj.loadFileOBJ(self, file_string)
     else:
       LOGGER.error("%s file not supported", self.exf)
 

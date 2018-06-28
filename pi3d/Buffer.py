@@ -6,7 +6,9 @@ import logging
 
 from ctypes import c_float, c_int, c_short
 
-from pi3d.constants import *
+from pi3d.constants import (opengles, GL_ARRAY_BUFFER, GL_BLEND, GL_DEPTH_TEST,
+               GL_ELEMENT_ARRAY_BUFFER, GL_FLOAT, GL_OUT_OF_MEMORY, GL_STATIC_DRAW,
+               GL_TEXTURE0, GL_TEXTURE_2D, GL_TRIANGLES, GL_UNSIGNED_SHORT, c_uint)
 from pi3d.Shader import Shader
 from pi3d.util import Log
 from pi3d.util import Utility
@@ -146,7 +148,6 @@ class Buffer(Loadable):
     """
     if self.disp is None:
       return # can't re_init until after initial drawing!
-    stride = int(self.N_BYTES / 4) #i.e. 3, 6 or 8 This can't change from init
     if pts is not None:
       n = len(pts)
       if not (isinstance(pts, np.ndarray)):

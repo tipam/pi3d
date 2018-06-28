@@ -376,7 +376,7 @@ def set_gles_function_args(gles):
   /* Internal convenience typedefs */
   typedef void (*_GLfuncptr)();
   '''
-  from ctypes import POINTER, c_void_p, c_int32, c_int, c_uint, c_float, c_char, c_char_p, c_ubyte
+  from ctypes import POINTER, c_void_p, c_int, c_uint, c_float, c_char, c_char_p, c_ubyte
 
   gles.glActiveTexture.argtypes = [c_uint] #GLenum
   gles.glAttachShader.argtypes = [c_uint, c_uint] #GLuint, GLuint

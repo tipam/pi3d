@@ -2,7 +2,6 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import math
 
-from pi3d.constants import *
 from pi3d.util import Utility
 from pi3d.Shape import Shape
 import logging
@@ -41,7 +40,5 @@ class Torus(Shape):
     self.radius = radius
     self.thickness = thickness
     self.ringrots = ringrots
-    self.ttype = GL_TRIANGLES
 
-    self.buf = []
-    self.buf.append(self._lathe(path, sides))
+    self.buf = [self._lathe(path, sides)]

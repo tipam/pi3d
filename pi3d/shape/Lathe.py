@@ -1,6 +1,5 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-from pi3d.constants import *
 from pi3d.Shape import Shape
 import logging
 
@@ -30,10 +29,8 @@ class Lathe(Shape):
     LOGGER.info("Creating lathe ...")
 
     self.path = path if path != None else []
-    self.ttype = GL_TRIANGLES
 
-    self.buf = []
-    self.buf.append(self._lathe(path, sides))
+    self.buf = [self._lathe(path, sides)]
 
   # TODO intervene in call to Buffer.draw() so that face culling can be disabled
   #this draw method disables face culling which allows the backs of faces to show,

@@ -5,7 +5,6 @@ import ctypes
 import numpy as np
 import math
 
-from pi3d.constants import *
 from pi3d.util.Utility import vec_normal, vec_cross, vec_sub, vec_dot
 from pi3d.util.DefaultInstance import DefaultInstance
 
@@ -186,7 +185,7 @@ class Camera(DefaultInstance):
         tuple (x, y, z) floats
     """
     self.eye = np.array(pt)
-    self.t2[3,:3] = -self.eye
+    self.t2[3,:3] = self.eye * -1.0
     #self.mtrx = np.dot(m, self.mtrx)
     self.was_moved = True
     self.mtrx_made = False
@@ -254,7 +253,7 @@ class Camera(DefaultInstance):
       *pt*
         tuple (x, y, z) floats
     """
-    self.t1[3,:3] = -np.array(pt)
+    self.t1[3,:3] = np.array(pt) * -1.0
     self.was_moved = True
     self.mtrx_made = False
 
@@ -347,7 +346,7 @@ def _LookAtMatrix(at, eye, up=[0, 1, 0], reflect=False):
   """
   # If reflect, then reflect in plane -20.0 (water depth)
   if reflect:
-    depth = -20.0 # Shallower to avoid edge effects
+    #depth = -20.0 # Shallower to avoid edge effects
     eye[1] *= -1
     at[1] *= -1
   zaxis = vec_normal(vec_sub(at, eye))

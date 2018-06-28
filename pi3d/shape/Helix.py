@@ -2,7 +2,6 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import math
 
-from pi3d.constants import *
 from pi3d.Shape import Shape
 import logging
 
@@ -31,7 +30,7 @@ class Helix(Shape):
     super(Helix, self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                 sx, sy, sz, cx, cy, cz)
 
-    LOGGER.info("Creating Helix ...", radius, thickness, ringrots, sides)
+    LOGGER.info("Creating Helix r{}, t{}, rr{}, s{}".format(radius, thickness, ringrots, sides))
 
     path = []
     st = (math.pi * 2) / ringrots
@@ -39,12 +38,10 @@ class Helix(Shape):
     for r in range(ringrots + 1):
       path.append((radius + thickness * math.sin(r * st),
                    thickness * math.cos(r * st) - hr))
-      LOGGER.info("path:", path[r][0], path[r][1])
+      LOGGER.info("path: {} {}".format(path[r][0], path[r][1]))
 
     self.radius = radius
     self.thickness = thickness
     self.ringrots = ringrots
-    self.ttype = GL_TRIANGLES
-
-    self.buf = []
-    self.buf.append(self._lathe(path, sides, rise=rise, loops=loops))
+ 
+    self.buf = [self._lathe(path, sides, rise=rise, loops=loops)]

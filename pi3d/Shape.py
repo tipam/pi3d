@@ -5,7 +5,7 @@ import ctypes
 import numpy as np
 from math import radians, pi, sin, cos
 
-from pi3d.constants import *
+from pi3d.constants import opengles, GL_LINE_LOOP, GL_LINE_STRIP, GL_LINES, GL_POINTS, GL_TRIANGLES
 from pi3d.Buffer import Buffer
 from pi3d.Light import Light
 from pi3d.Camera import Camera
