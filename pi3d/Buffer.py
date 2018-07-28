@@ -51,10 +51,11 @@ class Buffer(Loadable):
     super(Buffer, self).__init__()
 
     # Uniform variables all in one array!
-    self.unib = (c_float * 12)(0.0, 0.0, 0.0,
+    self.unib = (c_float * 15)(0.0, 0.0, 0.0,
                                0.5, 0.5, 0.5,
                                1.0, 1.0, 0.0,
-                               0.0, 0.0, 1.0)
+                               0.0, 0.0, 1.0,
+                               0.5, 0.5, 0.5)
     """ pass to shader array of vec3 uniform variables:
 
     ===== ============================== ==== ==
@@ -66,6 +67,7 @@ class Buffer(Loadable):
         1  material                        3   5
         2  umult, vmult, point_size        6   8
         3  u_off, v_off, line_width/bump   9  10
+        4  specular RGB value *_reflect   11  14 
     ===== ============================== ==== ==
 
     NB line width and bump factor clash but shouldn't be an issue
@@ -315,7 +317,7 @@ class Buffer(Loadable):
 
     self.disp.last_shader = shader
 
-    opengles.glUniform3fv(shader.unif_unib, 4, self.unib)
+    opengles.glUniform3fv(shader.unif_unib, 5, self.unib)
 
     opengles.glEnable(GL_DEPTH_TEST) # TODO find somewhere more efficient to do this
 
@@ -339,7 +341,7 @@ class Buffer(Loadable):
 
   def __setstate__(self, state):
     unib_tuple = tuple(state['unib'])
-    self.unib = (ctypes.c_float * 12)(*unib_tuple)
+    self.unib = (ctypes.c_float * 15)(*unib_tuple)
     self.array_buffer = state['array_buffer']
     self.element_array_buffer = state['element_array_buffer']
     self.element_normals = state['element_normals']

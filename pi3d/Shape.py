@@ -308,6 +308,15 @@ class Shape(Loadable):
     for b in self.buf:
       b.set_textures(textures)
 
+  def set_specular(self, rgb):
+    """
+    Arguments:
+      *rgb*
+        tuple of red, green, blue values for Phong specular effect
+    """
+    for b in self.buf:
+      b.unib[12:15] = rgb
+
   def set_offset(self, offset):
     """Wrapper for setting uv texture offset in each Buffer object.
 
