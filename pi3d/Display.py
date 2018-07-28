@@ -8,10 +8,10 @@ import traceback
 import platform
 import logging
 
-#import pi3d
+import pi3d
 from pi3d.util.DisplayOpenGL import DisplayOpenGL
 from pi3d.constants import (openegl, opengles, PLATFORM, PLATFORM_ANDROID,
-          PLATFORM_PI, PLATFORM_WINDOWS, STARTUP_MESSAGE, USE_PYGAME, DISPLAY_CONFIG_DEFAULT,
+          PLATFORM_PI, PLATFORM_WINDOWS, STARTUP_MESSAGE, DISPLAY_CONFIG_DEFAULT,
 GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT,)
 if PLATFORM == PLATFORM_WINDOWS:
   import pygame
@@ -121,7 +121,7 @@ class Display(object):
         LOGGER.warning('Do you need to install pygame?')
         use_pygame = False
 
-    USE_PYGAME = use_pygame
+    pi3d.USE_PYGAME = use_pygame
 
     self.sprites = []
     self.sprites_to_load = set()
@@ -137,7 +137,7 @@ class Display(object):
     self.offscreen_tex = False # used in Buffer.draw() to force reload of textures
 
     if (PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID and
-        not USE_PYGAME):
+        not pi3d.USE_PYGAME):
       self.event_list = []
       self.ev = xlib.XEvent()
     elif PLATFORM == PLATFORM_ANDROID:
@@ -302,7 +302,7 @@ class Display(object):
   def _loop_begin(self):
     # TODO(rec):  check if the window was resized and resize it, removing
     # code from MegaStation to here.
-    if USE_PYGAME:
+    if pi3d.USE_PYGAME:
       import pygame # although done in __init__ ...python namespaces aarg!!!
       if pygame.event.get(pygame.QUIT):
         self.destroy()
@@ -362,7 +362,7 @@ class Display(object):
     self.tidy_needed = False
 
   def _loop_end(self):
-    if USE_PYGAME:
+    if pi3d.USE_PYGAME:
       import pygame
       pygame.event.clear()
       
@@ -467,7 +467,7 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
           self.event_list = []
 
         def update(self):
-          if PLATFORM == PLATFORM_WINDOWS or USE_PYGAME: #uses pygame UI
+          if PLATFORM == PLATFORM_WINDOWS or pi3d.USE_PYGAME: #uses pygame UI
             k = self.tkKeyboard.read()
             if k == -1:
               self.key = ""
