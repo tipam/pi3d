@@ -1,4 +1,3 @@
-from pi3d.constants import *
 from pi3d.Buffer import Buffer
 from pi3d.Shape import Shape
 
@@ -24,15 +23,13 @@ class Tetrahedron(Shape):
     """
     super(Tetrahedron, self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                 sx, sy, sz, cx, cy, cz)
-    self.ttype = GL_TRIANGLES
     c = corners # alias
-    self.verts = (c[0], c[3], c[1], c[2], c[3], c[0],
+    verts = (c[0], c[3], c[1], c[2], c[3], c[0],
                   c[1], c[3], c[2], c[0], c[1], c[2])
-    self.texcoords = ((0.0, 0.0), (0.0, 0.57735), (0.5, 0.288675),
+    texcoords = ((0.0, 0.0), (0.0, 0.57735), (0.5, 0.288675),
                       (0.0, 0.57735), (0.5, 0.866025), (0.5, 0.288675),
                       (0.5, 0.866025), (1.0, 0.57735), (0.5, 0.288675),
                       (0.5, 0.288675), (1.0, 0.57735), (1.0, 0.0))
-    self.inds = ((0, 1, 2), (3, 4, 5), (6, 7, 8), (9, 10, 11))
+    inds = ((0, 1, 2), (3, 4, 5), (6, 7, 8), (9, 10, 11))
 
-    self.buf = []
-    self.buf.append(Buffer(self, self.verts, self.texcoords, self.inds, normals=None, smooth=False))
+    self.buf = [Buffer(self, verts, texcoords, inds, normals=None, smooth=False)]

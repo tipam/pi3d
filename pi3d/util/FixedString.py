@@ -174,9 +174,9 @@ class FixedString(Texture):
     ''' wrapper for Shape.set_shader'''
     self.sprite.set_shader(shader)
     
-  def draw(self, shader=None, txtrs=None, ntl=None, shny=None, camera=None, mlist=[]):
+  def draw(self, shader=None, txtrs=None, ntl=None, shny=None, camera=None):
     '''wrapper for Shape.draw()'''
-    self.sprite.draw(shader, txtrs, ntl, shny, camera, mlist)
+    self.sprite.draw(shader, txtrs, ntl, shny, camera)
     
   def _force_color(self, im_array, color):
     """

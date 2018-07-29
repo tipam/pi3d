@@ -6,7 +6,9 @@ import logging
 
 from ctypes import c_float, c_int, c_short
 
-from pi3d.constants import *
+from pi3d.constants import (opengles, GL_ARRAY_BUFFER, GL_BLEND, GL_DEPTH_TEST,
+               GL_ELEMENT_ARRAY_BUFFER, GL_FLOAT, GL_OUT_OF_MEMORY, GL_STATIC_DRAW,
+               GL_TEXTURE0, GL_TEXTURE_2D, GL_TRIANGLES, GL_UNSIGNED_SHORT, c_uint)
 from pi3d.Shader import Shader
 from pi3d.util import Log
 from pi3d.util import Utility
@@ -49,10 +51,11 @@ class Buffer(Loadable):
     super(Buffer, self).__init__()
 
     # Uniform variables all in one array!
-    self.unib = (c_float * 12)(0.0, 0.0, 0.0,
+    self.unib = (c_float * 15)(0.0, 0.0, 0.0,
                                0.5, 0.5, 0.5,
                                1.0, 1.0, 0.0,
-                               0.0, 0.0, 1.0)
+                               0.0, 0.0, 1.0,
+                               0.5, 0.5, 0.5)
     """ pass to shader array of vec3 uniform variables:
 
     ===== ============================== ==== ==
@@ -64,6 +67,7 @@ class Buffer(Loadable):
         1  material                        3   5
         2  umult, vmult, point_size        6   8
         3  u_off, v_off, line_width/bump   9  10
+        4  specular RGB value *_reflect   11  14 
     ===== ============================== ==== ==
 
     NB line width and bump factor clash but shouldn't be an issue
@@ -146,7 +150,6 @@ class Buffer(Loadable):
     """
     if self.disp is None:
       return # can't re_init until after initial drawing!
-    stride = int(self.N_BYTES / 4) #i.e. 3, 6 or 8 This can't change from init
     if pts is not None:
       n = len(pts)
       if not (isinstance(pts, np.ndarray)):
@@ -162,7 +165,10 @@ class Buffer(Loadable):
       if not (isinstance(texcoords, np.ndarray)):
         texcoords = np.array(texcoords)
       self.array_buffer[offset:(offset + n), 6:8] = texcoords[:,:]
-    self.load_opengl() # has to be called prior to _select
+    try:
+        getattr(self, "vbuf")
+    except:
+        self.load_opengl() # vbuf and ebuf need to exist prior to _select()
     self._select()
     opengles.glBufferSubData(GL_ARRAY_BUFFER, 0,
                       self.array_buffer.nbytes,
@@ -311,7 +317,7 @@ class Buffer(Loadable):
 
     self.disp.last_shader = shader
 
-    opengles.glUniform3fv(shader.unif_unib, 4, self.unib)
+    opengles.glUniform3fv(shader.unif_unib, 5, self.unib)
 
     opengles.glEnable(GL_DEPTH_TEST) # TODO find somewhere more efficient to do this
 
@@ -335,7 +341,7 @@ class Buffer(Loadable):
 
   def __setstate__(self, state):
     unib_tuple = tuple(state['unib'])
-    self.unib = (ctypes.c_float * 12)(*unib_tuple)
+    self.unib = (ctypes.c_float * 15)(*unib_tuple)
     self.array_buffer = state['array_buffer']
     self.element_array_buffer = state['element_array_buffer']
     self.element_normals = state['element_normals']

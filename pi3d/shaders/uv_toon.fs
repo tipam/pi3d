@@ -10,7 +10,7 @@ varying float lightFactor;
 
 uniform sampler2D tex0;
 uniform sampler2D tex1;
-uniform vec3 unib[4];
+uniform vec3 unib[5];
 //uniform float ntiles ===> unib[0][0]
 //uniform float shiny ====> unib[0][1]
 //uniform vec4 material ==> unib[1]
@@ -46,7 +46,7 @@ void main(void) {
     if (r > dist) fact = 2.0;
     texc.rgb = (texc.rgb - 1.0 + fact) / fact;
   }
-  gl_FragColor =  (1.0 - ffact) * texc + ffact * vec4(unif[4], unif[5][1]); // ------ combine using factors
+  gl_FragColor = mix(texc, vec4(unif[4], unif[5][1]), ffact); // ------ combine using factors
   gl_FragColor = floor(gl_FragColor * 8.0 + 0.5) / 8.0;
   gl_FragColor.a *= unif[5][2];
 }

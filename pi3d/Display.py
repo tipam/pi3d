@@ -10,12 +10,13 @@ import logging
 
 import pi3d
 from pi3d.util.DisplayOpenGL import DisplayOpenGL
-from pi3d.constants import *
-
-if pi3d.PLATFORM == pi3d.PLATFORM_WINDOWS:
+from pi3d.constants import (openegl, opengles, PLATFORM, PLATFORM_ANDROID,
+          PLATFORM_PI, PLATFORM_WINDOWS, STARTUP_MESSAGE, DISPLAY_CONFIG_DEFAULT,
+GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT,)
+if PLATFORM == PLATFORM_WINDOWS:
   import pygame
-elif pi3d.PLATFORM != pi3d.PLATFORM_PI and pi3d.PLATFORM != pi3d.PLATFORM_ANDROID:
-  from pyxlib.x import *
+elif PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
+  from pyxlib.x import KeyPress, KeyRelease, ClientMessage
   from pyxlib import xlib
 
 LOGGER = logging.getLogger(__name__)
@@ -32,7 +33,7 @@ DEFAULT_FAR = 1000.0
 WIDTH = 0
 HEIGHT = 0
 
-if pi3d.PLATFORM == pi3d.PLATFORM_ANDROID:
+if PLATFORM == PLATFORM_ANDROID:
   from kivy.app import App
   from kivy.uix.floatlayout import FloatLayout
   from kivy.clock import Clock
@@ -110,9 +111,9 @@ class Display(object):
       Display.INSTANCE = self
 
     self.tkwin = tkwin
-    if pi3d.PLATFORM == pi3d.PLATFORM_PI:
+    if PLATFORM == PLATFORM_PI:
       use_pygame = False
-    elif use_pygame or pi3d.PLATFORM == pi3d.PLATFORM_WINDOWS:
+    elif use_pygame or PLATFORM == PLATFORM_WINDOWS:
       try:
         import pygame
         use_pygame = True # for Windows
@@ -131,15 +132,15 @@ class Display(object):
     self.vbufs_dict = {}
     self.ebufs_dict = {}
     self.last_shader = None
-    self.last_textures = [None for i in range(8)] # 8 is max no. texture2D on broadcom GPU
+    self.last_textures = [None for _ in range(8)] # 8 is max no. texture2D on broadcom GPU
     self.external_mouse = None
     self.offscreen_tex = False # used in Buffer.draw() to force reload of textures
 
-    if (pi3d.PLATFORM != pi3d.PLATFORM_PI and pi3d.PLATFORM != pi3d.PLATFORM_ANDROID and
+    if (PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID and
         not pi3d.USE_PYGAME):
       self.event_list = []
       self.ev = xlib.XEvent()
-    elif pi3d.PLATFORM == pi3d.PLATFORM_ANDROID:
+    elif PLATFORM == PLATFORM_ANDROID:
       self.android = Pi3dApp()
 
     self.opengl = DisplayOpenGL()
@@ -148,7 +149,7 @@ class Display(object):
     self.is_running = True
     self.lock = threading.RLock()
 
-    LOGGER.debug(pi3d.STARTUP_MESSAGE)
+    LOGGER.debug(STARTUP_MESSAGE)
 
   def loop_running(self):
     """*loop_running* is the main event loop for the Display.
@@ -250,7 +251,7 @@ class Display(object):
       try:
         self.external_mouse.stop()
       except:
-        pass_
+        pass
     try:
       self.mouse.stop()
     except:
@@ -269,7 +270,7 @@ class Display(object):
   def clear(self):
     """Clear the Display."""
     # opengles.glBindFramebuffer(GL_FRAMEBUFFER,0)
-    pi3d.opengles.glClear(pi3d.GL_COLOR_BUFFER_BIT | pi3d.GL_DEPTH_BUFFER_BIT)
+    opengles.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
   def set_background(self, r, g, b, alpha):
     """Set the Display background. **NB the actual drawing of the background
@@ -284,8 +285,8 @@ class Display(object):
       Opacity of the color.  An alpha of 0 means a transparent background,
       an alpha of 1 means full opaque.
     """
-    pi3d.opengles.glClearColor(c_float(r), c_float(g), c_float(b), c_float(alpha))
-    pi3d.opengles.glColorMask(1, 1, 1, int(alpha < 1.0))
+    opengles.glClearColor(c_float(r), c_float(g), c_float(b), c_float(alpha))
+    opengles.glColorMask(1, 1, 1, int(alpha < 1.0))
     # Switches off alpha blending with desktop (is there a bug in the driver?)
 
   def mouse_position(self):
@@ -305,9 +306,9 @@ class Display(object):
       import pygame # although done in __init__ ...python namespaces aarg!!!
       if pygame.event.get(pygame.QUIT):
         self.destroy()
-    elif pi3d.PLATFORM != pi3d.PLATFORM_PI and pi3d.PLATFORM != pi3d.PLATFORM_ANDROID:
+    elif PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
       n = xlib.XEventsQueued(self.opengl.d, xlib.QueuedAfterFlush)
-      for i in range(n):
+      for _ in range(n):
           xlib.XNextEvent(self.opengl.d, self.ev)
           if self.ev.type == KeyPress or self.ev.type == KeyRelease:
               self.event_list.append(self.ev)
@@ -338,7 +339,7 @@ class Display(object):
     for i in self.textures_dict:
       tex = self.textures_dict[i]
       if tex[1] == 1:
-        pi3d.opengles.glDeleteTextures(1, byref(tex[0]))
+        opengles.glDeleteTextures(1, byref(tex[0]))
         to_del.append(i)
     for i in to_del:
       del self.textures_dict[i]
@@ -346,7 +347,7 @@ class Display(object):
     for i in self.vbufs_dict:
       vbuf = self.vbufs_dict[i]
       if vbuf[1] == 1:
-        pi3d.opengles.glDeleteBuffers(1, byref(vbuf[0]))
+        opengles.glDeleteBuffers(1, byref(vbuf[0]))
         to_del.append(i)
     for i in to_del:
       del self.vbufs_dict[i]
@@ -354,7 +355,7 @@ class Display(object):
     for i in self.ebufs_dict:
       ebuf = self.ebufs_dict[i]
       if ebuf[1] == 1:
-        pi3d.opengles.glDeleteBuffers(1, byref(ebuf[0]))
+        opengles.glDeleteBuffers(1, byref(ebuf[0]))
         to_del.append(i)
     for i in to_del:
       del self.ebufs_dict[i]
@@ -453,7 +454,7 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
     Configuration of display - See pi3d.constants for DISPLAY_CONFIG options
   """
   if tk: #NB this happens before Display created so use_pygame will not work on linux
-    if pi3d.PLATFORM != pi3d.PLATFORM_PI and pi3d.PLATFORM != pi3d.PLATFORM_ANDROID:
+    if PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
       #just use python-xlib same as non-tk but need dummy behaviour
       from pi3d.Keyboard import Keyboard
       class DummyTkWin(object):
@@ -466,7 +467,7 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
           self.event_list = []
 
         def update(self):
-          if pi3d.PLATFORM == pi3d.PLATFORM_WINDOWS or pi3d.USE_PYGAME: #uses pygame UI
+          if PLATFORM == PLATFORM_WINDOWS or pi3d.USE_PYGAME: #uses pygame UI
             k = self.tkKeyboard.read()
             if k == -1:
               self.key = ""
@@ -547,7 +548,7 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
   display.bottom = y + h
 
   display.opengl.create_display(x, y, w, h, depth=depth, samples=samples, layer=layer, display_config=display_config)
-  if pi3d.PLATFORM == pi3d.PLATFORM_ANDROID:
+  if PLATFORM == PLATFORM_ANDROID:
     display.width = display.right = display.max_width = display.opengl.width #not available until after create_display
     display.height = display.bottom = display.max_height = display.opengl.height
     display.top = display.bottom = 0

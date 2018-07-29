@@ -1,6 +1,5 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-from pi3d.constants import *
 from pi3d.Buffer import Buffer
 from pi3d.Shape import Shape
 import logging
@@ -40,7 +39,6 @@ class Cuboid(Shape):
     self.height = h
     self.depth = d
     self.ssize = 36
-    self.ttype = GL_TRIANGLES
 
     ww = w / 2.0
     hh = h / 2.0

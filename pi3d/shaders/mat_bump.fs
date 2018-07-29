@@ -9,7 +9,7 @@ void main(void) {
   vec3 bump = normalize(texture2D(tex0, bumpcoordout).rgb * 2.0 - 1.0);
 #include std_bump.inc
 
-  gl_FragColor =  (1.0 - ffact) * texc + ffact * vec4(unif[4], unif[5][1]); // ------ combine using factors
+  gl_FragColor = mix(texc, vec4(unif[4], unif[5][1]), ffact); // ------ combine using factors
   gl_FragColor.a *= unif[5][2];
 }
 

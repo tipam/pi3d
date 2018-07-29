@@ -1,4 +1,3 @@
-from pi3d.constants import *
 from pi3d.Buffer import Buffer
 from pi3d.Shape import Shape
 
@@ -19,24 +18,17 @@ class Canvas(Shape):
     super(Canvas, self).__init__(camera, light, name, x=0.0, y=0.0, z=0.0,
                                 rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0,
                                 cx=0.0, cy=0.0, cz=0.0)
-    self.ttype = GL_TRIANGLES
-    self.verts = []
-    self.norms = []
-    self.texcoords = []
-    self.inds = []
-    self.depth = z
 
     ww = 20.0
     hh = 20.0
 
-    self.verts = ((-ww, -hh, z), (0.0, hh, z), (ww, -hh, z))
-    self.norms = ((0, 0, -1), (0, 0, -1),  (0, 0, -1))
-    self.texcoords = ((0.0, 0.0), (0.5, 1.0), (1.0, 0.0))
+    verts = ((-ww, -hh, z), (0.0, hh, z), (ww, -hh, z))
+    norms = ((0, 0, -1), (0, 0, -1),  (0, 0, -1))
+    texcoords = ((0.0, 0.0), (0.5, 1.0), (1.0, 0.0))
 
-    self.inds = ((0, 1, 2), ) #python quirk: comma for tuple with only one val
+    inds = ((0, 1, 2), ) #python quirk: comma for tuple with only one val
 
-    self.buf = []
-    self.buf.append(Buffer(self, self.verts, self.texcoords, self.inds, self.norms))
+    self.buf = [Buffer(self, verts, texcoords, inds, norms)]
 
   def set_texture(self, tex):
     self.buf[0].textures = [tex]

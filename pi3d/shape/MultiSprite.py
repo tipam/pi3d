@@ -1,4 +1,3 @@
-from pi3d.constants import *
 from pi3d.Texture import Texture
 from pi3d.Buffer import Buffer
 from pi3d.Shape import Shape
@@ -41,12 +40,6 @@ class MultiSprite(Shape):
                                    sx, sy, sz, cx, cy, cz)
       self.width = w
       self.height = h
-      self.ttype = GL_TRIANGLES
-      self.verts = []
-      self.norms = []
-      self.texcoords = []
-      self.inds = []
-
       ww = w / 2.0 / nw
       hh = h / 2.0 / nh
       self.buf = []
@@ -54,16 +47,16 @@ class MultiSprite(Shape):
         for j in range(nh):
           offw = w * ((1.0 - nw) / 2.0 + i) / nw
           offh = -h * ((1.0 - nh) / 2.0 + j) / nh
-          self.verts = ((-ww + offw, hh + offh, 0.0), 
+          verts = ((-ww + offw, hh + offh, 0.0), 
                         (ww + offw, hh + offh, 0.0), 
                         (ww + offw, -hh + offh, 0.0), 
                         (-ww + offw, -hh + offh, 0.0))
-          self.norms = ((0, 0, -1), (0, 0, -1),  (0, 0, -1), (0, 0, -1))
-          self.texcoords = ((0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0 , 1.0))
+          norms = ((0, 0, -1), (0, 0, -1),  (0, 0, -1), (0, 0, -1))
+          texcoords = ((0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0 , 1.0))
 
-          self.inds = ((0, 1, 3), (1, 2, 3))
+          inds = ((0, 1, 3), (1, 2, 3))
 
-          thisbuf = Buffer(self, self.verts, self.texcoords, self.inds, self.norms)
+          thisbuf = Buffer(self, verts, texcoords, inds, norms)
           if not isinstance(textures[j][i], Texture): # i.e. can load from file name
             textures[j][i] = Texture(textures[j][i])
           thisbuf.textures = [textures[j][i]]

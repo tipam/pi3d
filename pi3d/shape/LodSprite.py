@@ -1,4 +1,3 @@
-from pi3d.constants import *
 from pi3d.Texture import Texture
 from pi3d.Buffer import Buffer
 from pi3d.Shape import Shape
@@ -25,11 +24,10 @@ class LodSprite(Shape):
                                  sx, sy, sz, cx, cy, cz)
     self.width = w
     self.height = h
-    self.ttype = GL_TRIANGLES
-    self.verts = []
-    self.norms = []
-    self.texcoords = []
-    self.inds = []
+    verts = []
+    norms = []
+    texcoords = []
+    inds = []
 
     ww = w / 2.0
     hh = h / 2.0
@@ -42,23 +40,22 @@ class LodSprite(Shape):
             [(i + 1.0) / n, (n - j) / n],
             [(i + 1.0) / n, (n - 1.0 - j) / n],
             [i / n, (n - 1.0 - j) / n]]
-        self.verts.extend([[-ww + c[0][0] * w, -hh + c[0][1] * h, 0.0],
+        verts.extend([[-ww + c[0][0] * w, -hh + c[0][1] * h, 0.0],
                           [-ww + c[1][0] * w, -hh + c[1][1] * h, 0.0],
                           [-ww + c[2][0] * w, -hh + c[2][1] * h, 0.0],
                           [-ww + c[3][0] * w, -hh + c[3][1] * h, 0.0]])
-        self.norms.extend([[0.0, 0.0, -1.0],
+        norms.extend([[0.0, 0.0, -1.0],
                           [0.0, 0.0, -1.0],
                           [0.0, 0.0, -1.0],
                           [0.0, 0.0, -1.0]])
-        self.texcoords.extend([[c[0][0], 1.0 - c[0][1]],
+        texcoords.extend([[c[0][0], 1.0 - c[0][1]],
                           [c[1][0], 1.0 - c[1][1]],
                           [c[2][0], 1.0 - c[2][1]],
                           [c[3][0], 1.0 - c[3][1]]])
         tri_n = (a * n + b) * 4 # integers
-        self.inds.extend([[tri_n , tri_n + 1, tri_n + 3],
+        inds.extend([[tri_n , tri_n + 1, tri_n + 3],
                           [tri_n + 1, tri_n + 2, tri_n + 3]])
-    self.buf = []
-    self.buf.append(Buffer(self, self.verts, self.texcoords, self.inds, self.norms))
+    self.buf = [Buffer(self, verts, texcoords, inds, norms)]
 
   def repaint(self, t):
     self.draw()

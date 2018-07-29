@@ -1,4 +1,3 @@
-from pi3d.constants import *
 from pi3d.Texture import Texture
 from pi3d.Buffer import Buffer
 from pi3d.Shape import Shape
@@ -23,23 +22,17 @@ class Sprite(Shape):
                                  sx, sy, sz, cx, cy, cz)
     self.width = w
     self.height = h
-    self.ttype = GL_TRIANGLES
-    self.verts = []
-    self.norms = []
-    self.texcoords = []
-    self.inds = []
 
     ww = w / 2.0
     hh = h / 2.0 if not flip else -h / 2.0
 
-    self.verts = ((-ww, hh, 0.0), (ww, hh, 0.0), (ww, -hh, 0.0), (-ww, -hh, 0.0))
-    self.norms = ((0, 0, -1), (0, 0, -1),  (0, 0, -1), (0, 0, -1))
-    self.texcoords = ((0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0 , 1.0))
+    verts = ((-ww, hh, 0.0), (ww, hh, 0.0), (ww, -hh, 0.0), (-ww, -hh, 0.0))
+    norms = ((0, 0, -1), (0, 0, -1),  (0, 0, -1), (0, 0, -1))
+    texcoords = ((0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0 , 1.0))
 
-    self.inds = ((3, 0, 1), (1, 2, 3)) if not flip else ((0, 3, 2), (2, 1, 0))
+    inds = ((3, 0, 1), (1, 2, 3)) if not flip else ((0, 3, 2), (2, 1, 0))
 
-    self.buf = []
-    self.buf.append(Buffer(self, self.verts, self.texcoords, self.inds, self.norms))
+    self.buf = [Buffer(self, verts, texcoords, inds, norms)]
 
   def repaint(self, t):
     self.draw()

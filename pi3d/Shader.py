@@ -5,7 +5,7 @@ import sys, os
 import logging
 from pkg_resources import resource_string
 
-from pi3d.constants import *
+from pi3d.constants import opengles, GL_FRAGMENT_SHADER, GL_VERTEX_SHADER
 from pi3d.util.Ctypes import c_chars
 from pi3d.util import Loadable
 from pi3d.util.DefaultInstance import DefaultInstance
@@ -116,8 +116,6 @@ class Shader(DefaultInstance):
 
     self.unif_modelviewmatrix = opengles.glGetUniformLocation(
       self.program, b'modelviewmatrix')
-    self.unif_cameraviewmatrix = opengles.glGetUniformLocation(
-      self.program, b'cameraviewmatrix')
 
     self.unif_unif = opengles.glGetUniformLocation(self.program, b'unif')
     self.unif_unib = opengles.glGetUniformLocation(self.program, b'unib')

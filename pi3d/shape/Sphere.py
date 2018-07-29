@@ -2,7 +2,6 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import math
 
-from pi3d.constants import *
 from pi3d.util import Utility
 from pi3d.Shape import Shape
 import logging
@@ -48,7 +47,5 @@ class Sphere(Shape):
     self.radius = radius
     self.slices = slices
     self.hemi = hemi
-    self.ttype = GL_TRIANGLES
 
-    self.buf = []
-    self.buf.append(self._lathe(path, sides))
+    self.buf = [self._lathe(path, sides)]

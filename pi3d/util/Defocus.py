@@ -1,6 +1,5 @@
 import ctypes
 
-from pi3d.constants import *
 from pi3d.Shader import Shader
 from pi3d.util.OffScreenTexture import OffScreenTexture
 

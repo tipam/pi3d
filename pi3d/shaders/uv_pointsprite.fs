@@ -1,7 +1,7 @@
 precision mediump float;
 
 uniform sampler2D tex0;
-uniform vec3 unib[4];
+uniform vec3 unib[5];
 
 varying float dist;
 varying mat2 rotn;

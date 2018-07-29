@@ -3,7 +3,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import sys
 import os
 
-from pi3d.constants import *
+from pi3d.constants import GL_TRIANGLES
 from pi3d.loader.parse_mtl import parse_mtl
 from pi3d.Texture import Texture
 from pi3d.Buffer import Buffer
@@ -207,7 +207,7 @@ def loadFileOBJ(model, fileName):
     g_tex_coords = []
     g_indices = []
     i = 0 # vertex counter in this material
-    LOGGER.info("len uv=", len(vertices))
+    LOGGER.info("len uv={}".format(len(vertices)))
     for f in faces[g]:
       iStart = i
       length = len(f['vertex'])
@@ -236,7 +236,7 @@ def loadFileOBJ(model, fileName):
 
     model.buf[n].indicesLen = len(model.buf[n].element_array_buffer)
     model.buf[n].material = (0.0, 0.0, 0.0, 0.0)
-    model.buf[n].ttype = GL_TRIANGLES
+    model.buf[n].draw_method = GL_TRIANGLES
 
     LOGGER.info("indices=%s\nvertices=%s", len(model.buf[n].element_array_buffer), 
                                        len(model.buf[n].array_buffer))

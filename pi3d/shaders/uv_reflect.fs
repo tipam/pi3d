@@ -13,9 +13,10 @@ void main(void) {
 #include std_bump.inc
 #include std_shine.inc
   shinec = texture2D(tex2, shinecoord); // ------ get the reflection for this pixel
+  shinec += vec4(max(pow(dot(refl, -inray), 4.0), 0.0) * unib[4], 1.0); // Phong specular
   float shinefact = clamp(unib[0][1]*length(shinec)/length(texc), 0.0, unib[0][1]);// ------ reduce the reflection where the ground texture is lighter than it
 
-  gl_FragColor = (1.0 - ffact) * ((1.0 - shinefact) * texc + shinefact * shinec) + ffact * vec4(unif[4], unif[5][1]); // ------ combine using factors
+  gl_FragColor = mix(mix(texc, shinec, shinefact), vec4(unif[4], unif[5][1]), ffact); // ------ combine using factors
   gl_FragColor.a *= unif[5][2];
 }
 

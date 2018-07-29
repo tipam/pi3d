@@ -1,6 +1,5 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-from pi3d.constants import *
 from pi3d.Shape import Shape
 from pi3d.Buffer import Buffer
 import logging

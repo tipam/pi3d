@@ -2,7 +2,6 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 from math import pi
 
-from pi3d.constants import *
 from pi3d.Buffer import Buffer
 from pi3d.util import Utility
 from pi3d.Shape import Shape
@@ -27,29 +26,27 @@ class Disk(Shape):
 
     LOGGER.info("Creating disk ...")
 
-    self.verts = []
-    self.norms = []
-    self.inds = []
-    self.texcoords = []
-    self.ttype = GL_TRIANGLES
+    verts = []
+    norms = []
+    inds = []
+    texcoords = []
     self.sides = sides
 
     st = 2 * pi / sides
     for j in range(-1, 1):
-      self.verts.append((0.0, -0.1*j, 0.0))
-      self.norms.append((0.0, -j, 0.0))
-      self.texcoords.append((0.5, 0.5))
+      verts.append((0.0, -0.1*j, 0.0))
+      norms.append((0.0, -j, 0.0))
+      texcoords.append((0.5, 0.5))
       for r in range(sides+1):
         ca, sa = Utility.from_polar_rad(r * st)
-        self.verts.append((radius * sa, 0.0, radius * ca))
-        self.norms.append((0.0, -j - 0.1*j, 0.0))
-        self.texcoords.append((sa * 0.5 + 0.5, ca * 0.5 + 0.5))
+        verts.append((radius * sa, 0.0, radius * ca))
+        norms.append((0.0, -j - 0.1*j, 0.0))
+        texcoords.append((sa * 0.5 + 0.5, ca * 0.5 + 0.5))
       if j == -1:
         v0, v1, v2 = 0, 1, 2
       else:
         v0, v1, v2 = sides + 2, sides + 4, sides + 3 # i.e. reverse direction to show on back
       for r in range(sides):
-        self.inds.append((v0, r + v1, r + v2))
+        inds.append((v0, r + v1, r + v2))
 
-    self.but = []
-    self.buf.append(Buffer(self, self.verts, self.texcoords, self.inds, self.norms))
+    self.buf = [Buffer(self, verts, texcoords, inds, norms)]
