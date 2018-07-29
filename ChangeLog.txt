@@ -4,11 +4,19 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
+v2.26
+2018-07-29  Bug fix: Error (probably harmless) due to glEnable being used
+            with invalid GL_TEXTURE_2D argument.
+            Improvements: Phong type brightening added to uv and mat _reflect
+            shaders. Built-in mix() function used in fragment shaders (as opposed
+            to DIY formula). Places where import * used converted to explicitly
+            import the required tokens.
+
 v2.25
 2018-04-29  Bug fix: TextBlockColour.set_colour() not updating blue or alpha
             values. Additional argument to Tube to allow it to not use
             Shape._lathe() but make cylindrical uv mapping on outside and
-            inside and flat uv mappin on top and bottom. 
+            inside and flat uv mapping on top and bottom. 
 
 v2.24
 2018-04-09  Bug fix: Shape.rotate_to_direction() could occasionally not
