@@ -85,8 +85,8 @@ def loadFileOBJ(model, fileName):
   material = ""
   mcounter = 0
   mcurrent = 0
-  numv = [] #number of vertices for each material (nb each vertex will have three coords)
-  numi = [] #number of indices (triangle corners) for each material
+  #numv = [] #number of vertices for each material (nb each vertex will have three coords)
+  #numi = [] #number of indices (triangle corners) for each material
 
   mtllib = ""
 
@@ -135,12 +135,12 @@ def loadFileOBJ(model, fileName):
         normlen = len(normals) + 1
         uvlen = len(uvs) + 1
 
-        if len(numv) < (mcurrent+1): numv.append(0)
-        if len(numi) < (mcurrent+1): numi.append(0)
+        #if len(numv) < (mcurrent+1): numv.append(0)
+        #if len(numi) < (mcurrent+1): numi.append(0)
 
         for v in chunks[1:]:
-          numv[mcurrent] += 1
-          numi[mcurrent] += 3
+          #numv[mcurrent] += 1
+          #numi[mcurrent] += 3
           vertex = parse_vertex(v)
           if vertex['v']:
             if vertex['v'] < 0:
@@ -154,7 +154,7 @@ def loadFileOBJ(model, fileName):
             if vertex['n'] < 0:
               vertex['n'] += normlen
             normal_index.append(vertex['n'])
-        numi[mcurrent] -= 6 # number of corners of triangle = (n-2)*3 where n is the number of corners of face
+        #numi[mcurrent] -= 6 # number of corners of triangle = (n-2)*3 where n is the number of corners of face
         if not mcurrent in faces: faces[mcurrent] = []
 
         faces[mcurrent].append({
@@ -196,11 +196,11 @@ def loadFileOBJ(model, fileName):
       if chunks[0] == "s" and len(chunks) == 2:
         smooth = chunks[1]
         
-  LOGGER.info("materials:  %s\nnumv:  %s", materials, numv)
+  #LOGGER.info("materials:  %s\nnumv:  %s", materials, numv)
     
-  for g in faces:
-    numv[g] -= 1
-    numi[g] -= 1
+  for g in faces: # make each of these into an array_buffer with its own material
+    #numv[g] -= 1
+    #numi[g] -= 1
 
     g_vertices = []
     g_normals = []
@@ -208,26 +208,29 @@ def loadFileOBJ(model, fileName):
     g_indices = []
     i = 0 # vertex counter in this material
     LOGGER.info("len uv={}".format(len(vertices)))
+    vec_dict = {} # hold unique combinations of v/u/n
     for f in faces[g]:
-      iStart = i
+      vec_list = [] # hold index vals for each array_buffer entry for this face
       length = len(f['vertex'])
       length_n = len(f['normal'])
-      #for component in 'normal', 'uv':
-      #  if length > len(f[component]):
-      #    LOGGER.error('There were more vertices than %ss: %d > %d',
-      #                 component, length, len(f[component]))
-      #    length = len(f[component])
-
+      length_uv = len(f['uv'])
       for v in range(length):
-        g_vertices.append(vertices[f['vertex'][v] - 1])
-        if length_n == length: #only use normals if there is one for each vertex
-          g_normals.append(normals[f['normal'][v] - 1])
-        if (len(f['uv']) > 0 and len(uvs[f['uv'][v] - 1]) == 2):
-          g_tex_coords.append(uvs[f['uv'][v] - 1])
-        i += 1
-      n = i - iStart - 1
-      for t in range(1, n):
-        g_indices.append((iStart, iStart + t + 1, iStart + t))
+        vec_tuple = (f['vertex'][v],
+                    f['uv'][v] if length_uv > 0 else -1,
+                    f['normal'][v] if length_n == length else -1)
+        if vec_tuple in vec_dict: #already exists don't duplicate
+          vec_list.append(vec_dict[vec_tuple])
+        else:
+          g_vertices.append(vertices[vec_tuple[0] - 1])
+          if length_n == length: #only use normals if there is one for each vertex
+            g_normals.append(normals[vec_tuple[2] - 1])
+          if (length_uv > 0 and len(uvs[vec_tuple[1] - 1]) == 2):
+            g_tex_coords.append(uvs[vec_tuple[1] - 1])
+          vec_dict[vec_tuple] = i
+          vec_list.append(i)
+          i += 1
+      for t in range(len(vec_list) - 2):
+        g_indices.append((vec_list[0], vec_list[t + 2], vec_list[t + 1]))
     if len(g_normals) != len(g_vertices):
       g_normals = None # force Buffer.__init__() to generate normals
     model.buf.append(Buffer(model, g_vertices, g_tex_coords, g_indices, g_normals))
