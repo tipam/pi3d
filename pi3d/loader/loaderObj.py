@@ -85,9 +85,6 @@ def loadFileOBJ(model, fileName):
   material = ""
   mcounter = 0
   mcurrent = 0
-  #numv = [] #number of vertices for each material (nb each vertex will have three coords)
-  #numi = [] #number of indices (triangle corners) for each material
-
   mtllib = ""
 
   # current face state
@@ -135,12 +132,7 @@ def loadFileOBJ(model, fileName):
         normlen = len(normals) + 1
         uvlen = len(uvs) + 1
 
-        #if len(numv) < (mcurrent+1): numv.append(0)
-        #if len(numi) < (mcurrent+1): numi.append(0)
-
         for v in chunks[1:]:
-          #numv[mcurrent] += 1
-          #numi[mcurrent] += 3
           vertex = parse_vertex(v)
           if vertex['v']:
             if vertex['v'] < 0:
@@ -154,8 +146,8 @@ def loadFileOBJ(model, fileName):
             if vertex['n'] < 0:
               vertex['n'] += normlen
             normal_index.append(vertex['n'])
-        #numi[mcurrent] -= 6 # number of corners of triangle = (n-2)*3 where n is the number of corners of face
-        if not mcurrent in faces: faces[mcurrent] = []
+        if not mcurrent in faces:
+          faces[mcurrent] = []
 
         faces[mcurrent].append({
           'vertex':vertex_index,
@@ -195,13 +187,8 @@ def loadFileOBJ(model, fileName):
       # Smooth shading
       if chunks[0] == "s" and len(chunks) == 2:
         smooth = chunks[1]
-        
-  #LOGGER.info("materials:  %s\nnumv:  %s", materials, numv)
     
   for g in faces: # make each of these into an array_buffer with its own material
-    #numv[g] -= 1
-    #numi[g] -= 1
-
     g_vertices = []
     g_normals = []
     g_tex_coords = []
