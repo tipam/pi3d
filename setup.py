@@ -10,7 +10,7 @@ and, as the now preferred, wheel format.
 
 [for uploading to pypi then:
 
-  $ twine upload dist/pi3d-1.10* #or whatever version it's up to]
+  $ twine upload dist/pi3d-2.27* -u USERNAME -p PASSWORD #or whatever version it's up to]
 
 this will create the directory 'dist' containing pi3d-1.10.tar.gz (and wheel)
 this can then be extracted somewhere and in that directory run (probably sudo):
