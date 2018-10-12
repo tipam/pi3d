@@ -4,13 +4,14 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
-v2.27
+v2.28
 2018-10-12  Improvement: The model loader for wavefront obj files now doesn't
             load duplicate vertices as it would have to if glDrawArrays was
             being used for rendering. glDrawElements is supposed to be faster
             but the change is not measurable. It will reduce GPU memory by about
             half.
 
+v2.27 - no change from 2.26
 v2.26
 2018-07-29  Bug fix: Error (probably harmless) due to glEnable being used
             with invalid GL_TEXTURE_2D argument.
