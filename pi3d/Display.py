@@ -223,7 +223,11 @@ class Display(object):
     self.top = y
     self.right = x + w
     self.bottom = y + h
-    self.opengl.resize(x, y, w, h)
+    self.opengl.resize(x, y, w, h, self.layer)
+
+  def change_layer(self, layer=0):
+    self.layer = layer
+    self.opengl.change_layer(layer)
 
   def add_sprites(self, *sprites):
     """Add one or more sprites to this Display."""
@@ -450,6 +454,9 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
     To use pygame for display surface, mouse and keyboard - as per windows
     This almost certainly would conflict if attempting to use in combination
     with tk=True. Default False
+  *layer*
+    display layer height - used by dispmanx on Raspberry Pi only. -128 will move the
+    pi3d window behind the X11 desktop
   *display_config*
     Configuration of display - See pi3d.constants for DISPLAY_CONFIG options
   """
@@ -546,6 +553,7 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
   display.top = y
   display.right = x + w
   display.bottom = y + h
+  display.layer = layer
 
   display.opengl.create_display(x, y, w, h, depth=depth, samples=samples, layer=layer, display_config=display_config)
   if PLATFORM == PLATFORM_ANDROID:

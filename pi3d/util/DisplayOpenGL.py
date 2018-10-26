@@ -194,7 +194,7 @@ class DisplayOpenGL(object):
     #Create viewport
     opengles.glViewport(0, 0, w, h)
 
-  def resize(self, x=0, y=0, w=0, h=0):
+  def resize(self, x=0, y=0, w=0, h=0, layer=0):
     # Destroy current surface and native window
     openegl.eglSwapBuffers(self.display, self.surface)
     if PLATFORM == PLATFORM_PI:
@@ -207,9 +207,16 @@ class DisplayOpenGL(object):
       bcm.vc_dispmanx_display_close(self.dispman_display)
 
       #Now recreate the native window and surface
-      self.create_surface(x, y, w, h)
+      self.create_surface(x, y, w, h, layer)
     elif PLATFORM == PLATFORM_ANDROID:
       pass #TODO something here
+
+  def change_layer(self, layer=0):
+    if PLATFORM == PLATFORM_PI:
+      self.dispman_update = bcm.vc_dispmanx_update_start(0)
+      bcm.vc_dispmanx_element_change_layer(self.dispman_update,
+                                     self.dispman_element, layer)
+      bcm.vc_dispmanx_update_submit_sync(self.dispman_update)
 
 
   def destroy(self, display=None):
