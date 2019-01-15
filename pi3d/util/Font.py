@@ -27,10 +27,10 @@ class Font(Texture):
   then creates a table mapping codepoints to subrectangles of that Texture."""
 
   def __init__(self, font, color=(255,255,255,255), codepoints=None,
-               add_codepoints=None, font_size=42, image_size=512,
+               add_codepoints=None, font_size=42, image_size=1024,
                italic_adjustment=1.1, background_color=None,
                shadow=(0,0,0,255), shadow_radius=0, spacing=None,
-               mipmap=True, filter=None):
+               mipmap=True, filter=None, grid_size=16):
     """Arguments:
     *font*:
       File path/name to a TrueType font file.
@@ -96,6 +96,10 @@ class Font(Texture):
 
     *filter*:
       Resulting texture filter option, default None
+
+    *grid_size*
+      number rows and cols to divide 1024 pixels. For high res fonts this can be
+      changed 4 -> 16chars, 8 -> 64chars, 10 -> 100chars etc.
     """
     super(Font, self).__init__(font, mipmap=mipmap, filter=filter)
     self.font = font
@@ -113,18 +117,19 @@ class Font(Texture):
     if spacing is None:
       spacing = shadow_radius
     self.height = ascent + descent + spacing # allow extra pixels if shadow or for certain fonts
-    self.spacing = 64
-
-    image_size = self.spacing  * 16  # or 1024 TODO this may go wrong if self.height != 64
+    self.grid_size = grid_size
+    num_char = self.grid_size ** 2
+    image_size = 1024 # fixed value despite having as argument! TODO allow variable size now grid_size variable
+    self.spacing = image_size / self.grid_size
 
     if codepoints is not None:
-      codepoints = list(codepoints)
+      codepoints = list(codepoints)[:num_char]
     else:
-      codepoints = list(range(256))
+      codepoints = list(range(num_char))
     if add_codepoints is not None:
       add_codepoints = list(add_codepoints)
-      if (len(codepoints) + len(add_codepoints)) > 256: # make room at end
-        codepoints = codepoints[:(256 - len(add_codepoints))]
+      if (len(codepoints) + len(add_codepoints)) > num_char: # make room at end
+        codepoints = codepoints[:(num_char - len(add_codepoints))]
       codepoints += add_codepoints
 
     is_draw_shadows = shadow_radius > 0
@@ -183,7 +188,7 @@ class Font(Texture):
       self.glyph_table[ch] = table_entry
 
       xindex += 1
-      if xindex >= 16:
+      if xindex >= self.grid_size:
         xindex = 0
         yindex += 1
 

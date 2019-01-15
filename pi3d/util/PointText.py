@@ -51,7 +51,7 @@ class PointText(object):
     self.text = Points(camera=camera, vertices=self.locations, normals=self.normals,
                        tex_coords=self.uv, point_size=self.point_size)
     self.text.set_draw_details(self.shader, [self.font])
-    self.text.unif[48] = 0.058  # used to hold "patch size" passed to shader
+    self.text.unif[48] = 0.928 / self.font.grid_size  # used to hold "patch size" passed to shader - margin to allow rotating
     #Reset all characters to space so there are no false character shadows
     try:
       glyph = self.font.glyph_table[' '] #u' ' doesn't work on python3.2!!
