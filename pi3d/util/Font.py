@@ -16,6 +16,11 @@ from pi3d.Texture import Texture
 
 MAX_SIZE = 1920
 
+def _strengthen(x):
+  # used if shadow required to slightly harden edges
+  F = 0.5
+  return int(x * (1 + F - F * x / 256))
+
 class Font(Texture):
   """
   A Font contains a TrueType font ready to be rendered in OpenGL.
@@ -27,7 +32,7 @@ class Font(Texture):
   then creates a table mapping codepoints to subrectangles of that Texture."""
 
   def __init__(self, font, color=(255,255,255,255), codepoints=None,
-               add_codepoints=None, font_size=42, image_size=1024,
+               add_codepoints=None, font_size=None, image_size=1024,
                italic_adjustment=1.1, background_color=None,
                shadow=(0,0,0,255), shadow_radius=0, spacing=None,
                mipmap=True, filter=None, grid_size=16):
@@ -103,6 +108,8 @@ class Font(Texture):
     """
     super(Font, self).__init__(font, mipmap=mipmap, filter=filter)
     self.font = font
+    if font_size is None:
+      font_size = int(672 / grid_size) # i.e. 16x16 has font size 42
     try:
       imgfont = ImageFont.truetype(font, font_size)
     except IOError:
@@ -201,6 +208,7 @@ class Font(Texture):
         shadow_img = self._force_color(shadow_img, shadow)
         
       shadow_img = shadow_img.filter(ImageFilter.GaussianBlur(radius=shadow_radius))
+      shadow_img = Image.eval(shadow_img, _strengthen) # slightly sharpen edge of blur - see func def at top
 
       self.im = Image.alpha_composite(shadow_img, self.im)
 
