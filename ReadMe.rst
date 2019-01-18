@@ -155,7 +155,7 @@ Setup on the Raspberry Pi
       $ sudo apt-get update
       $ sudo apt-get upgrade
       $ sudo pip3 install pi3d
-      $ sudo raspi-config # set gpu_mem=128
+      $ sudo raspi-config # set gpu_mem=128 - keep the 'legacy' graphics driver
 
     (or ``sudo pip install`` if you want to use python 2 for some reason).
     
@@ -178,7 +178,7 @@ Setup on the Raspberry Pi
       $ sudo apt-get install python3-pip
       $ sudo pip3 install pi3d
       $ sudo pip3 install Pillow
-      $ sudo raspi-config # set gpu_mem=128
+      $ sudo raspi-config # set gpu_mem=128 - keep the 'legacy' graphics driver
       
       ####### download demos in their latest form, quicker #######
       $ wget https://github.com/pi3d/pi3d_demos/archive/master.zip
@@ -190,6 +190,10 @@ Setup on the Raspberry Pi
       
       $ cd ~/pi3d_demos
       $ python3 Earth.py
+
+    **NB pi3d uses the original broadcom OpenGLES2 drivers** (as that's what the GPU hardware
+    actually runs) so if you use ``raspi-config`` to swap to the emulated
+    OpenGL driver it will give errors.
       
 #.  **Download, Extract and install**
 
@@ -245,9 +249,9 @@ Setup on the Raspberry Pi
     doesn't run on python_3. The better equivalent replacement is Pillow.
     
     As of raspbian jessie Pillow is the default imaging library. It's already
-    installed on the ``fully featured`` SD image, but if it's left off the
-    jessie lite image (rumoured to be in the pipeline) it can be installed
-    using the debian package manager::
+    installed on the ``fully featured`` SD image, but it's left off the
+    lite image it can be installed using the debian package manager
+    (for lite image you also need numpy)::
 
       $ sudo apt-get install python3-pil
 
