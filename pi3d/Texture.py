@@ -55,7 +55,7 @@ class Texture(Loadable):
   def __init__(self, file_string, blend=False, flip=False, size=0,
                defer=DEFER_TEXTURE_LOADING, mipmap=True, m_repeat=False,
                free_after_load=False, i_format=None, filter=None,
-               normal_map=None):
+               normal_map=None, automatic_resize=True):
     """
     Arguments:
       *file_string*
@@ -100,6 +100,10 @@ class Texture(Loadable):
         if a value is not None then the image file will be converted into a 
         normal map where Luminance value is proportional to height. The 
         value of nomral_map is used the scale the effect (see _normal_map())
+      *automatic_resize*
+        default to True, this can be overridden if running on a machine other than
+        the RPi where the GPU can cope with any image dimension - or alternatively
+        where you know that the images will comply and don't need to check.
     """
     super(Texture, self).__init__()
     try:
@@ -129,6 +133,7 @@ class Texture(Loadable):
     self.filter = filter
     self.normal_map = normal_map
     self._loaded = False
+    self.automatic_resize = automatic_resize
     if defer:
       self.load_disk()
     else:
@@ -232,18 +237,19 @@ class Texture(Loadable):
       resize_type = Image.NEAREST
 
     # work out if sizes > MAX_SIZE or coerce to golden values in WIDTHS
-    if self.iy > self.ix and self.iy > MAX_SIZE: # fairly rare circumstance
-      im = im.resize((int((MAX_SIZE * self.ix) / self.iy), MAX_SIZE))
-      self.ix, self.iy = im.size
-    n = len(WIDTHS)
-    for i in xrange(n-1, 0, -1):
-      if self.ix == WIDTHS[i]:
-        break # no need to resize as already a golden size
-      if self.ix > WIDTHS[i]:
-        im = im.resize((WIDTHS[i], int((WIDTHS[i] * self.iy) / self.ix)),
-                        resize_type)
+    if self.automatic_resize: # default True
+      if self.iy > self.ix and self.iy > MAX_SIZE: # fairly rare circumstance
+        im = im.resize((int((MAX_SIZE * self.ix) / self.iy), MAX_SIZE))
         self.ix, self.iy = im.size
-        break
+      n = len(WIDTHS)
+      for i in xrange(n-1, 0, -1):
+        if self.ix == WIDTHS[i]:
+          break # no need to resize as already a golden size
+        if self.ix > WIDTHS[i]:
+          im = im.resize((WIDTHS[i], int((WIDTHS[i] * self.iy) / self.ix)),
+                          resize_type)
+          self.ix, self.iy = im.size
+          break
 
     LOGGER.debug('Loading ...%s', s)
 

@@ -4,6 +4,12 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
+v2.29
+2019-01-19  Improvement: Display.change_layer() function added and the layer
+            ref held in Display instance. This allows Display.resize() to work
+            correctly. Font now has grid_size argument to allow a smaller number
+            of larger format characters.
+
 v2.28
 2018-10-12  Improvement: The model loader for wavefront obj files now doesn't
             load duplicate vertices as it would have to if glDrawArrays was
