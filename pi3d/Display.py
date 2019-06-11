@@ -555,7 +555,7 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
   display.bottom = y + h
   display.layer = layer
 
-  display.opengl.create_display(x, y, w, h, depth=depth, samples=samples, layer=layer, display_config=display_config)
+  display.opengl.create_display(x, y, w, h, depth=depth, samples=samples, layer=layer, display_config=display_config, window_title=window_title)
   if PLATFORM == PLATFORM_ANDROID:
     display.width = display.right = display.max_width = display.opengl.width #not available until after create_display
     display.height = display.bottom = display.max_height = display.opengl.height
