@@ -11,7 +11,7 @@ from pi3d.constants import (opengles, PIL_OK, GL_ALPHA, GL_LUMINANCE,
           GL_LUMINANCE_ALPHA, GL_RGB, GL_RGBA, GL_MIRRORED_REPEAT, GL_REPEAT,
           GL_LINEAR, GL_NEAREST, GL_LINEAR_MIPMAP_NEAREST, GL_NEAREST_MIPMAP_NEAREST,
           GL_TEXTURE_MIN_FILTER, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_TEXTURE_WRAP_T,
-          GL_TEXTURE_MAG_FILTER, GL_UNSIGNED_BYTE, GL_OUT_OF_MEMORY)
+          GL_TEXTURE_MAG_FILTER, GL_UNSIGNED_BYTE, GL_OUT_OF_MEMORY, GL_TEXTURE0)
 from pi3d.util.Ctypes import c_ints
 from pi3d.util.Loadable import Loadable
 
@@ -294,11 +294,24 @@ class Texture(Loadable):
 
     return f
 
-  def update_ndarray(self, new_array=None):
+  def update_ndarray(self, new_array=None, texture_num=None):
     """to allow numpy arrays to be patched in to textures without regenerating
-    new glTextureBuffers i.e. for movie textures"""
+    new glTextureBuffers i.e. for movie textures
+    
+      *new_array*
+        ndarray, if supplied this will be the pixel data for the new
+        Texture2D
+        
+      *texture_num*
+        int, if supplied this will make the update effective for a specific
+        sampler number i.e. as held in the Buffer.textures array. This
+        will be required where multiple textures are used on some of the
+        Buffers being drawn in the scene"""
+
     if new_array is not None:
       self.image = new_array
+    if texture_num is not None:
+      opengles.glActiveTexture(GL_TEXTURE0 + texture_num)
     opengles.glBindTexture(GL_TEXTURE_2D, self._tex)
     # set filters according to mipmap and filter request
     for t in [GL_TEXTURE_MIN_FILTER, GL_TEXTURE_MAG_FILTER]:
