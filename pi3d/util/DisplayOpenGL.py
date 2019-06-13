@@ -172,7 +172,7 @@ class DisplayOpenGL(object):
 
       # set window title
       title = ctypes.c_char_p(self.window_title)
-      title_length = ctypes.c_long(len(self.window_title))
+      title_length = ctypes.c_int(len(self.window_title))
       wm_name_atom = ctypes.c_ulong(xlib.XInternAtom(self.d, ctypes.create_string_buffer(b'WM_NAME'), 0))
       string_atom = ctypes.c_ulong(xlib.XInternAtom(self.d, ctypes.create_string_buffer(b'STRING'), 0))
       xlib.XChangeProperty(self.d, self.window, wm_name_atom, string_atom, 8, xlib.PropModeReplace, title, title_length)
