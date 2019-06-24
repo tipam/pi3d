@@ -82,9 +82,17 @@ def _linux():
   
   from ctypes.util import find_library
   from os import environ
+  import subprocess
+  acc = False
+  try:
+    txt = subprocess.check_output(['glxinfo']) # check if accelerated driver enabled
+    if b'Accelerated: yes' in txt:
+      acc = True
+  except Exception as e:
+    pass # many reasons why this might fail, all imply GL driver not to be used
   
   bcm_name = find_library('bcm_host')
-  if bcm_name:
+  if bcm_name and not acc:
     platform = PLATFORM_PI
     bcm = _load_library(bcm_name)
   else:
@@ -96,13 +104,13 @@ def _linux():
     openegl = _load_library('/system/lib/libEGL.so')
   else:
     import os
-    if os.path.isfile('/opt/vc/lib/libGLESv2.so'): # raspbian before stretch release
+    if not acc and os.path.isfile('/opt/vc/lib/libGLESv2.so'): # raspbian before stretch release
       opengles = _load_library('/opt/vc/lib/libGLESv2.so')
       openegl = _load_library('/opt/vc/lib/libEGL.so')
-    elif os.path.isfile('/opt/vc/lib/libbrcmGLESv2.so'): # raspbian after stretch release
+    elif not acc and os.path.isfile('/opt/vc/lib/libbrcmGLESv2.so'): # raspbian after stretch release
       opengles = _load_library('/opt/vc/lib/libbrcmGLESv2.so')
       openegl = _load_library('/opt/vc/lib/libbrcmEGL.so')
-    elif os.path.isfile('/usr/lib/libGLESv2.so'): # ubuntu MATE (but may catch others - monitor problems)
+    elif not acc and os.path.isfile('/usr/lib/libGLESv2.so'): # ubuntu MATE (but may catch others - monitor problems)
       opengles = _load_library('/usr/lib/libGLESv2.so')
       openegl = _load_library('/usr/lib/libEGL.so')
     else:
