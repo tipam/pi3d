@@ -44,11 +44,13 @@ class DisplayOpenGL(object):
       self.screen = xlib.XDefaultScreenOfDisplay(self.d)
       self.width, self.height = xlib.XWidthOfScreen(self.screen), xlib.XHeightOfScreen(self.screen)
 
-  def create_display(self, x=0, y=0, w=0, h=0, depth=24, samples=4, layer=0, display_config=DISPLAY_CONFIG_DEFAULT):
+  def create_display(self, x=0, y=0, w=0, h=0, depth=24, samples=4, layer=0, display_config=DISPLAY_CONFIG_DEFAULT, window_title=''):
     self.display = openegl.eglGetDisplay(EGL_DEFAULT_DISPLAY)
     assert self.display != EGL_NO_DISPLAY and self.display is not None
-    
+
     self.display_config = display_config
+
+    self.window_title = window_title.encode()
 
     for smpl in [samples, 0]: # try with samples first but ANGLE dll can't cope so drop to 0 for windows
       r = openegl.eglInitialize(self.display, None, None)
@@ -167,6 +169,14 @@ class DisplayOpenGL(object):
 
       s = ctypes.create_string_buffer(b'WM_DELETE_WINDOW')
       self.WM_DELETE_WINDOW = ctypes.c_ulong(xlib.XInternAtom(self.d, s, 0))
+
+      # set window title
+      title = ctypes.c_char_p(self.window_title)
+      title_length = ctypes.c_int(len(self.window_title))
+      wm_name_atom = ctypes.c_ulong(xlib.XInternAtom(self.d, ctypes.create_string_buffer(b'WM_NAME'), 0))
+      string_atom = ctypes.c_ulong(xlib.XInternAtom(self.d, ctypes.create_string_buffer(b'STRING'), 0))
+      xlib.XChangeProperty(self.d, self.window, wm_name_atom, string_atom, 8, xlib.PropModeReplace, title, title_length)
+
       #TODO add functions to xlib for these window manager libx11 functions
       #self.window.set_wm_name('pi3d xlib window')
       #self.window.set_wm_icon_name('pi3d')

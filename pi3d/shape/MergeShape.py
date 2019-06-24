@@ -35,6 +35,7 @@ class MergeShape(Shape):
     LOGGER.info("Creating Merge Shape ...")
 
     self.buf = [Buffer(self, [], [], [], [])] # create single empty buffer in case draw() before first merge()
+    self.billboard_array = [np.zeros((0, 6), dtype='float32')] # list of arrays holding x0, z0, x, z, nx, nz for each vert
     self.childModel = None #unused but asked for by pickle
 
   def merge(self, bufr, x=0.0, y=0.0, z=0.0,
@@ -89,12 +90,12 @@ class MergeShape(Shape):
       textures_list.append(b.textures[:])
       draw_method_list.append(b.draw_method)
       unib_list.append(b.unib[:])
-
     for b in buflist:
-      if len(b) < 11:
+      if len(b) < 11: # no buffer number specified - use 0
         b.append(0)
-      if b[10] >= len(vertices): #add buffers if needed
-        for i in range(b[10] - len(vertices) + 1):
+      b_id = b[10] # alias for brevity and clarity below
+      if b_id >= len(vertices): #add buffers if needed
+        for i in range(b_id - len(vertices) + 1):
           vertices.append(np.zeros((0, 3), dtype='float32'))
           tex_coords.append(np.zeros((0, 2), dtype='float32'))
           indices.append(np.zeros((0, 3), dtype='float32'))
@@ -104,6 +105,7 @@ class MergeShape(Shape):
           textures_list.append([])
           draw_method_list.append(None)
           unib_list.append([])
+          self.billboard_array.append(np.zeros((0, 6), dtype='float32'))
       if not(type(b[0]) is Buffer): #deal with being passed a Shape
         bufr = b[0].buf[0]
       else:
@@ -113,7 +115,7 @@ class MergeShape(Shape):
 
       LOGGER.info("Merging Buffer %s", bufr)
 
-      original_vertex_count = len(vertices[b[10]])
+      original_vertex_count = len(vertices[b_id])
 
       vrot = rotate_vec(b[4], b[5], b[6], np.array(bufr.array_buffer[:,0:3]))
       vrot[:,0] = vrot[:,0] * b[7] + b[1]
@@ -124,30 +126,38 @@ class MergeShape(Shape):
       else:
         nrot = np.zeros((n, 3))
 
-      vertices[b[10]] = np.append(vertices[b[10]], vrot)
-      normals[b[10]] = np.append(normals[b[10]], nrot)
+      vertices[b_id] = np.append(vertices[b_id], vrot)
+      normals[b_id] = np.append(normals[b_id], nrot)
       if bufr.array_buffer.shape[1] == 8:
-        tex_coords[b[10]] = np.append(tex_coords[b[10]], bufr.array_buffer[:,6:8])
+        tex_coords[b_id] = np.append(tex_coords[b_id], bufr.array_buffer[:,6:8])
       else:
-        tex_coords[b[10]] = np.append(tex_coords[b[10]], np.zeros((n, 2)))
+        tex_coords[b_id] = np.append(tex_coords[b_id], np.zeros((n, 2)))
 
-      n = int(len(vertices[b[10]]) / 3)
-      vertices[b[10]].shape = (n, 3)
-      normals[b[10]].shape = (n, 3)
-      tex_coords[b[10]].shape = (n, 2)
+      nv = vrot.shape[0]
+      ba = self.billboard_array[b_id] # aliases for brevity below
+      ba = np.append(ba, np.zeros((nv, 6), dtype='float32')).reshape(-1, 6) # as append flattens array
+      ba[-nv:,2:4] = vrot[:,::2] - [b[1], b[3]] # only holds x and z values
+      ba[-nv:,0:2] = [b[1], b[3]] # offset of rotation centre from centre of MergeShape
+      ba[-nv:,4:6] = nrot[:,::2] # step 2 to get x and z but not y
+      self.billboard_array[b_id] = ba
+
+      n = int(len(vertices[b_id]) / 3)
+      vertices[b_id].shape = (n, 3)
+      normals[b_id].shape = (n, 3)
+      tex_coords[b_id].shape = (n, 2)
 
       #ctypes.restype = ctypes.c_short  # TODO: remove this side-effect.
       faces = bufr.element_array_buffer + original_vertex_count
-      indices[b[10]] = np.append(indices[b[10]], faces)
+      indices[b_id] = np.append(indices[b_id], faces)
 
-      n = int(len(indices[b[10]]) / 3)
-      indices[b[10]].shape = (n, 3)
+      n = int(len(indices[b_id]) / 3)
+      indices[b_id].shape = (n, 3)
 
-      shader_list[b[10]] = bufr.shader
-      material_list[b[10]] = bufr.material[:]
-      textures_list[b[10]] = bufr.textures[:]
-      draw_method_list[b[10]] = bufr.draw_method
-      unib_list[b[10]] = bufr.unib[:]
+      shader_list[b_id] = bufr.shader
+      material_list[b_id] = bufr.material[:]
+      textures_list[b_id] = bufr.textures[:]
+      draw_method_list[b_id] = bufr.draw_method
+      unib_list[b_id] = bufr.unib[:]
 
     self.buf = []
     for i in range(len(vertices)):
@@ -166,7 +176,7 @@ class MergeShape(Shape):
     """wrapper to alias merge method"""
     self.merge(bufr, x, y, z, rx, ry, rz, sx, sy, sz, bufnum)
 
-  def cluster(self, bufr, elevmap, xpos, zpos, w, d, count, options, minscl, maxscl, bufnum=0):
+  def cluster(self, bufr, elevmap, xpos, zpos, w, d, count, options, minscl, maxscl, bufnum=0, billboard=False):
     """generates a random cluster on an ElevationMap.
 
     Arguments:
@@ -187,6 +197,9 @@ class MergeShape(Shape):
         The minimum scale value for random selection.
       *maxscl*
         The maximum scale value for random selection.
+      *billboard*
+        If True then all Buffers are set rotated 180 degrees so that they turn to face
+        Camera location when billboard() called
     """
     #create a cluster of shapes on an elevation map
     blist = []
@@ -194,7 +207,10 @@ class MergeShape(Shape):
       x = xpos + random.random() * w - w * 0.5
       z = zpos + random.random() * d - d * 0.5
       rh = random.random() * (maxscl - minscl) + minscl
-      rt = random.random() * 360.0
+      if billboard:
+        rt = 180.0
+      else:
+        rt = random.random() * 360.0
       y = elevmap.calcHeight(self.unif[0] + x, self.unif[2] + z) + rh * 2
       blist.append([bufr, x, y, z, 0.0, rt, 0.0, rh, rh, rh, bufnum])
     self.merge(blist)
@@ -239,3 +255,19 @@ class MergeShape(Shape):
 
     self.merge(blist)
     LOGGER.info("merged all")
+  
+  def billboard(self, cam_location):
+    ''' rotates all merged shapes to face camera
+    
+      *cam_location*
+        tuple of x,y,z location of camera'''
+    for i, b in enumerate(self.buf):
+      offset = self.billboard_array[i][:,:2] + [self.unif[0], self.unif[2]]- cam_location[::2] # 
+      inv_len = 1.0 / ((offset ** 2).sum(axis=1)) ** 0.5 # marginal saving by only doing one divide operation
+      s = offset[:,0] * inv_len
+      c = -offset[:,1] * inv_len # z direction reversed for rotation using standard [[c,-s],[s,c]]
+      b.array_buffer[:,0] = self.billboard_array[i][:,0] + self.billboard_array[i][:,2] * c - self.billboard_array[i][:,3] * s
+      b.array_buffer[:,2] = self.billboard_array[i][:,1] + self.billboard_array[i][:,2] * s + self.billboard_array[i][:,3] * c
+      b.array_buffer[:,3] = self.billboard_array[i][:,4] * c - self.billboard_array[i][:,5] * s # rotate normals too
+      b.array_buffer[:,4] = self.billboard_array[i][:,4] * s + self.billboard_array[i][:,5] * c
+      b.re_init()
