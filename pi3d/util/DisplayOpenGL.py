@@ -41,8 +41,13 @@ class DisplayOpenGL(object):
 
     else: # use libX11
       self.d = xlib.XOpenDisplay(None)
-      self.screen = xlib.XDefaultScreenOfDisplay(self.d)
-      self.width, self.height = xlib.XWidthOfScreen(self.screen), xlib.XHeightOfScreen(self.screen)
+      if self.d:
+        self.screen = xlib.XDefaultScreenOfDisplay(self.d)
+        self.width, self.height = xlib.XWidthOfScreen(self.screen), xlib.XHeightOfScreen(self.screen)
+      else:
+        print('************************\nX11 needs to be running\n************************')
+        assert False
+
 
   def create_display(self, x=0, y=0, w=0, h=0, depth=24, samples=4, layer=0, display_config=DISPLAY_CONFIG_DEFAULT, window_title=''):
     self.display = openegl.eglGetDisplay(EGL_DEFAULT_DISPLAY)
@@ -154,12 +159,12 @@ class DisplayOpenGL(object):
       elif self.display_config & DISPLAY_CONFIG_MAXIMIZED:
         flags |= pygame.FULLSCREEN
         wsize = (0, 0)
-        
+
       self.width, self.height = w, h
       self.d = pygame.display.set_mode(wsize, flags)
       self.window = pygame.display.get_wm_info()["window"]
       self.surface = openegl.eglCreateWindowSurface(self.display, self.config, self.window, 0)
-      
+
     else:
       self.width, self.height = w, h
 
