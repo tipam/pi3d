@@ -4,8 +4,9 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 pi3d.constants contains constant values, mainly integers, from OpenGL ES 2.0.
 """
 import time
+import logging
 
-__version__ = '2.30'
+__version__ = '2.31'
 year = time.localtime().tm_year
 
 STARTUP_MESSAGE = """
@@ -29,6 +30,8 @@ from pi3d.constants.egl import *
 from pi3d.constants.gl2 import *
 from pi3d.constants.gl2ext import *
 from pi3d.constants.gl import *
+
+LOGGER = logging.getLogger(__name__)
 
 # Define some extra constants that the automatic extraction misses.
 EGL_DEFAULT_DISPLAY = 0
@@ -73,8 +76,6 @@ def _load_library(name, dll_type="C"):
       else:
         return ctypes.CDLL(name)
     except:
-      import logging
-      LOGGER = logging.getLogger(__name__)
       LOGGER.error("Couldn't load library %s", name)
 
 def _linux():
@@ -82,14 +83,15 @@ def _linux():
   
   from ctypes.util import find_library
   from os import environ
-  import subprocess
   acc = False
   try:
-    txt = subprocess.check_output(['glxinfo']) # check if accelerated driver enabled
-    if b'Accelerated: yes' in txt:
-      acc = True
-  except Exception as e:
-    pass # many reasons why this might fail, all imply GL driver not to be used
+    with open('/proc/modules', 'r') as f:
+      for l in f.readlines():
+        if l.startswith('vc4'):
+          acc = True
+          break
+  except:
+    pass # main reason to fail is /proc/modules not there so acc False
   
   bcm_name = find_library('bcm_host')
   if bcm_name and not acc:

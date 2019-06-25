@@ -4,6 +4,10 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
+v2.31
+2019-06-25  Improvement: Checking for new GL driver now not dependent on
+            glxinfo (mesa-utils)
+
 v2.30
 2019-06-24  Bug fix: New version of Raspbian no longer supports broadcom bcm_host
             GL driver which is now detected and correct drivers loaded.
