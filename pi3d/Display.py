@@ -383,11 +383,13 @@ class Display(object):
     for sprite in to_unload:
       sprite.unload_opengl()
 
-    if getattr(self, 'frames_per_second', 0):
-      self.time += 1.0 / self.frames_per_second
-      delta = self.time - time.time()
+    if self.frames_per_second:
+      now = time.time()
+      delta = 1. / self.frames_per_second - (now - self.time)
       if delta > 0:
         time.sleep(delta)
+
+    self.time = time.time()
 
   def _for_each_sprite(self, function, sprites=None):
     if sprites is None:
