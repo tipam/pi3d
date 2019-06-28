@@ -384,8 +384,7 @@ class Display(object):
       sprite.unload_opengl()
 
     if self.frames_per_second:
-      now = time.time()
-      delta = 1. / self.frames_per_second - (now - self.time)
+      delta = 1. / self.frames_per_second - (time.time() - self.time)
       if delta > 0:
         time.sleep(delta)
 
