@@ -1,6 +1,6 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-from ctypes import c_float, byref
+from ctypes import c_int, c_float, byref
 
 import time
 import threading
@@ -16,8 +16,9 @@ GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT,)
 if PLATFORM == PLATFORM_WINDOWS:
   import pygame
 elif PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
-  from pyxlib.x import KeyPress, KeyRelease, ClientMessage
-  from pyxlib import xlib
+  #from pyxlib.x import KeyPress, KeyRelease, ClientMessage
+  #from pyxlib import xlib
+  import sdl2
 
 LOGGER = logging.getLogger(__name__)
 
@@ -134,12 +135,16 @@ class Display(object):
     self.last_shader = None
     self.last_textures = [None for _ in range(8)] # 8 is max no. texture2D on broadcom GPU
     self.external_mouse = None
+    self._mouse_relative = False #TODO set this with init or method - see SetRelativeMouseMode below
+    self._mouse_x, self._mouse_y, self._mouse_dx, self._mouse_dy = 0.0, 0.0, 0.0, 0.0
     self.offscreen_tex = False # used in Buffer.draw() to force reload of textures
 
     if (PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID and
         not pi3d.USE_PYGAME):
-      self.event_list = []
-      self.ev = xlib.XEvent()
+      self.keys_pressed = {}
+      self.button_pressed = {}
+      #self.ev = xlib.XEvent()
+      self.ev = sdl2.SDL_Event()
     elif PLATFORM == PLATFORM_ANDROID:
       self.android = Pi3dApp()
 
@@ -147,6 +152,7 @@ class Display(object):
     self.max_width, self.max_height = self.opengl.width, self.opengl.height
     self.first_time = True
     self.is_running = True
+    self.resized = False
     self.lock = threading.RLock()
 
     LOGGER.debug(STARTUP_MESSAGE)
@@ -224,6 +230,8 @@ class Display(object):
     self.right = x + w
     self.bottom = y + h
     self.opengl.resize(x, y, w, h, self.layer)
+    self.resized = True
+
 
   def change_layer(self, layer=0):
     self.layer = layer
@@ -311,14 +319,46 @@ class Display(object):
       if pygame.event.get(pygame.QUIT):
         self.destroy()
     elif PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
-      n = xlib.XEventsQueued(self.opengl.d, xlib.QueuedAfterFlush)
+      '''n = xlib.XEventsQueued(self.opengl.d, xlib.QueuedAfterFlush)
       for _ in range(n):
           xlib.XNextEvent(self.opengl.d, self.ev)
           if self.ev.type == KeyPress or self.ev.type == KeyRelease:
-              self.event_list.append(self.ev)
+              self.keys_pressed.append(self.ev)
           elif self.ev.type == ClientMessage:
             if (self.ev.xclient.data.l[0] == self.opengl.WM_DELETE_WINDOW.value):
-              self.destroy()
+              self.destroy()'''
+
+      while sdl2.SDL_PollEvent(byref(self.ev)) != 0:
+        if self.ev.type == sdl2.SDL_QUIT:
+          self.destroy()
+        elif self.ev.type == sdl2.SDL_KEYDOWN:
+          keysym = self.ev.key.keysym # alias for brevity below 
+          if keysym.sym == sdl2.SDLK_ESCAPE:
+            self.destroy()
+          self.keys_pressed[keysym.sym] = [keysym.scancode, keysym.mod] # i.e. overwrite if already exists
+          #elif self.ev.key.keysym.sym == sdl2.SDLK_m: #TODO put a fullscreen function in somewhere
+          #  sdl2.SDL_SetWindowFullscreen(self.opengl.window, sdl2.SDL_WINDOW_FULLSCREEN_DESKTOP)
+        elif self.ev.type == sdl2.SDL_KEYUP:
+          self.keys_pressed.pop(self.ev.key.keysym.sym, None) # remove key from dict if it's there
+        elif self.ev.type == sdl2.SDL_MOUSEMOTION:
+          if self._mouse_relative: # default
+            self._mouse_x += self.ev.motion.xrel
+            self._mouse_y -= self.ev.motion.yrel
+          else:
+            self._mouse_x = self.ev.motion.x
+            self._mouse_y = -self.ev.motion.y
+          self._mouse_dx = self.ev.motion.xrel
+          self._mouse_dy = -self.ev.motion.yrel
+        elif self.ev.type == sdl2.SDL_MOUSEBUTTONDOWN:
+          self.button_pressed[self.ev.button.button] = [self.ev.button.x, self.ev.button.y, self.ev.button.clicks, self.ev.button.timestamp]
+        elif self.ev.type == sdl2.SDL_MOUSEBUTTONUP:
+          self.button_pressed.pop(self.ev.button.button, None) # TODO this removes the button - maybe flag for removal after reading
+        elif self.ev.type == sdl2.SDL_WINDOWEVENT:
+          w, h = c_int(0), c_int(0)
+          sdl2.SDL_GL_GetDrawableSize(self.opengl.window, byref(w), byref(h))
+          if w.value != self.width or h.value != self.height:
+            self.resize(w=w.value, h=h.value)
+
     self.clear()
     with self.lock:
       self.sprites_to_load, to_load = set(), self.sprites_to_load
@@ -471,7 +511,7 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
           self.key = ""
           self.winx, self.winy = 0, 0
           self.width, self.height = 1920, 1180
-          self.event_list = []
+          self.keys_pressed = {}
 
         def update(self):
           if PLATFORM == PLATFORM_WINDOWS or pi3d.USE_PYGAME: #uses pygame UI
