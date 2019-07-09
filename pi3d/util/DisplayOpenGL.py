@@ -168,8 +168,6 @@ class DisplayOpenGL(object):
       self.surface = openegl.eglCreateWindowSurface(self.display, self.config, self.window, 0)
 
     else:
-      self.width, self.height = w, h
-
       # Set some WM info
       root = xlib.XRootWindowOfScreen(self.screen)
       self.window = xlib.XCreateSimpleWindow(self.d, root, x, y, w, h, 1, 0, 0)
@@ -183,6 +181,16 @@ class DisplayOpenGL(object):
       wm_name_atom = ctypes.c_ulong(xlib.XInternAtom(self.d, ctypes.create_string_buffer(b'WM_NAME'), 0))
       string_atom = ctypes.c_ulong(xlib.XInternAtom(self.d, ctypes.create_string_buffer(b'STRING'), 0))
       xlib.XChangeProperty(self.d, self.window, wm_name_atom, string_atom, 8, xlib.PropModeReplace, title, title_length)
+
+      if (w == self.width and h == self.height) or self.display_config & DISPLAY_CONFIG_FULLSCREEN:
+        # set full-screen. Messy c function calls!
+        wm_state = ctypes.c_ulong(xlib.XInternAtom(self.d, b'_NET_WM_STATE', 0))
+        fullscreen = ctypes.c_ulong(xlib.XInternAtom(self.d, b'_NET_WM_STATE_FULLSCREEN', 0))
+        XA_ATOM = 4
+        xlib.XChangeProperty(self.d, self.window, wm_state, XA_ATOM, 32, xlib.PropModeReplace,
+                            ctypes.cast(ctypes.pointer(fullscreen), ctypes.c_char_p), 1)
+
+      self.width, self.height = w, h
 
       #TODO add functions to xlib for these window manager libx11 functions
       #self.window.set_wm_name('pi3d xlib window')
