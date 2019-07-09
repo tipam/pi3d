@@ -87,6 +87,7 @@ class Shader(DefaultInstance):
     # and load_opengl so that we can delete that assert.
 
     self.program = opengles.glCreateProgram()
+    print('=>', opengles.glGetError())
     self.shfile = shfile
 
     def make_shader(src, suffix, shader_type):
@@ -110,7 +111,7 @@ class Shader(DefaultInstance):
 
     opengles.glLinkProgram(self.program)
     self.showprogramlog(self.program)
-
+    print(self.vshader, self.fshader, self.program)
     self.attr_vertex = opengles.glGetAttribLocation(self.program, b'vertex')
     self.attr_normal = opengles.glGetAttribLocation(self.program, b'normal')
 

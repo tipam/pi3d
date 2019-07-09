@@ -42,7 +42,7 @@ class StereoCam(object):
       self.shader = Shader(shader)
     else:
       self.shader = Shader(vshader_source = """
-precision mediump float;
+//precision mediump float;
 attribute vec3 vertex;
 attribute vec2 texcoord;
 uniform mat4 modelviewmatrix[2];
@@ -52,7 +52,7 @@ void main(void) {
   gl_Position = modelviewmatrix[1] * vec4(vertex,1.0);
 }
     """, fshader_source = """
-precision mediump float;
+//precision mediump float;
 uniform sampler2D tex0;
 uniform sampler2D tex1;
 varying vec2 texcoordout;

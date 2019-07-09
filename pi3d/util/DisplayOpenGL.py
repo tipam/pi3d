@@ -200,7 +200,7 @@ class DisplayOpenGL(object):
       assert self.window, sdl2.SDL_GetError()
       # Force OpenGL 2.1 'core' context.
       # Must set *before* creating GL context!
-      sdl2.video.SDL_GL_SetAttribute(sdl2.video.SDL_GL_CONTEXT_MAJOR_VERSION, 3)
+      sdl2.video.SDL_GL_SetAttribute(sdl2.video.SDL_GL_CONTEXT_MAJOR_VERSION, 2)
       sdl2.video.SDL_GL_SetAttribute(sdl2.video.SDL_GL_CONTEXT_MINOR_VERSION, 1)
       sdl2.video.SDL_GL_SetAttribute(sdl2.video.SDL_GL_CONTEXT_PROFILE_MASK, sdl2.video.SDL_GL_CONTEXT_PROFILE_CORE)
       self.context = sdl2.SDL_GL_CreateContext(self.window)

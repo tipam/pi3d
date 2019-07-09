@@ -273,11 +273,12 @@ class Display(object):
     except:
       pass
     Display.INSTANCE = None
-    try:
-      import pygame # NB seems to be needed on some setups (64 bit anaconda windows!)
-      pygame.quit()
-    except:
-      pass
+    if pi3d.USE_PYGAME:
+      try:
+        import pygame # NB seems to be needed on some setups (64 bit anaconda windows!)
+        pygame.quit()
+      except:
+        pass
 
   def clear(self):
     """Clear the Display."""

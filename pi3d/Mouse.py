@@ -106,7 +106,6 @@ class _sdl2Mouse():
     '''
     dx, dy = self.display._mouse_dx, self.display._mouse_dy
     self.display._mouse_dx, self.display._mouse_dy = 0.0, 0.0
-    #print(self.display._mouse_x, " ", end="")
     return dx, dy
 
   def button_status(self):
