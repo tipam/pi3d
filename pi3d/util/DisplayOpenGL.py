@@ -40,13 +40,15 @@ class DisplayOpenGL(object):
       self.width, self.height = info.current_w, info.current_h
 
     else: # use libX11
-      self.d = xlib.XOpenDisplay(None)
+      import subprocess # default name using XOpenDisplay(None) doesn't work on RPi4
+      display_name = subprocess.check_output(['printenv', 'DISPLAY']).split()[0]
+      self.d = xlib.XOpenDisplay(display_name)
       if self.d:
         self.screen = xlib.XDefaultScreenOfDisplay(self.d)
         self.width, self.height = xlib.XWidthOfScreen(self.screen), xlib.XHeightOfScreen(self.screen)
       else:
         print('************************\nX11 needs to be running\n************************')
-        assert False
+        assert False, 'Couldnt open DISPLAY {}'.format(display_name)
 
 
   def create_display(self, x=0, y=0, w=0, h=0, depth=24, samples=4, layer=0, display_config=DISPLAY_CONFIG_DEFAULT, window_title=''):
