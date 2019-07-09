@@ -118,6 +118,8 @@ def _linux():
     else:
       opengles = _load_library(find_library('GLESv2')) # has to happen first
       openegl = _load_library(find_library('EGL')) # otherwise missing symbol on pi loading egl
+      #from OpenGL import GL as opengles
+      #openegl = None
   
   return platform, bcm, openegl, opengles # opengles now determined by platform
 

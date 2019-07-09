@@ -46,7 +46,6 @@ class Camera(DefaultInstance):
       lens = [self.display.near, self.display.far, self.display.fov,
                   self.display.width / float(self.display.height)]
     self.lens = lens
-    print(lens, self.display.width)
     self.view = self._LookAtMatrix(at, eye, [0, 1, 0])
     if is_3d:
       self.projection = self._ProjectionMatrix(lens[0], lens[1], lens[2] / scale, lens[3])

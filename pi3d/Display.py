@@ -273,11 +273,12 @@ class Display(object):
     except:
       pass
     Display.INSTANCE = None
-    try:
-      import pygame # NB seems to be needed on some setups (64 bit anaconda windows!)
-      pygame.quit()
-    except:
-      pass
+    if pi3d.USE_PYGAME:
+      try:
+        import pygame # NB seems to be needed on some setups (64 bit anaconda windows!)
+        pygame.quit()
+      except:
+        pass
 
   def clear(self):
     """Clear the Display."""
@@ -359,7 +360,7 @@ class Display(object):
           if w.value != self.width or h.value != self.height:
             self.resize(w=w.value, h=h.value)
 
-    self.clear()
+    #self.clear()
     with self.lock:
       self.sprites_to_load, to_load = set(), self.sprites_to_load
       self.sprites.extend(to_load)
@@ -419,6 +420,7 @@ class Display(object):
     self._for_each_sprite(lambda s: s.repaint(t))
 
     self.swap_buffers()
+    self.clear()
 
     for sprite in to_unload:
       sprite.unload_opengl()

@@ -284,13 +284,13 @@ class Buffer(Loadable):
       self.unib[1] = shny
     self._select()
 
-    opengles.glVertexAttribPointer(shader.attr_vertex, 3, GL_FLOAT, 0, self.N_BYTES, 0)
+    opengles.glVertexAttribPointer(shader.attr_vertex, 3, GL_FLOAT, 0, self.N_BYTES, ctypes.c_void_p(0))
     opengles.glEnableVertexAttribArray(shader.attr_vertex)
     if self.N_BYTES > 12:
-      opengles.glVertexAttribPointer(shader.attr_normal, 3, GL_FLOAT, 0, self.N_BYTES, 12)
+      opengles.glVertexAttribPointer(shader.attr_normal, 3, GL_FLOAT, 0, self.N_BYTES, ctypes.c_void_p(12))
       opengles.glEnableVertexAttribArray(shader.attr_normal)
       if self.N_BYTES > 24:
-        opengles.glVertexAttribPointer(shader.attr_texcoord, 2, GL_FLOAT, 0, self.N_BYTES, 24)
+        opengles.glVertexAttribPointer(shader.attr_texcoord, 2, GL_FLOAT, 0, self.N_BYTES, ctypes.c_void_p(24))
         opengles.glEnableVertexAttribArray(shader.attr_texcoord)
 
     opengles.glDisable(GL_BLEND)

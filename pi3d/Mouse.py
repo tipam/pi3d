@@ -13,6 +13,8 @@ elif pi3d.PLATFORM != pi3d.PLATFORM_PI and pi3d.PLATFORM != pi3d.PLATFORM_ANDROI
   #from pyxlib import xlib
   #from pyxlib.x import FocusChangeMask
   import sdl2
+else:
+  import sdl2
 
 LOGGER = logging.getLogger(__name__)
 

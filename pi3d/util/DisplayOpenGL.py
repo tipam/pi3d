@@ -59,12 +59,11 @@ class DisplayOpenGL(object):
 
 
   def create_display(self, x=0, y=0, w=0, h=0, depth=24, samples=4, layer=0, display_config=DISPLAY_CONFIG_DEFAULT, window_title=''):
-    self.display = openegl.eglGetDisplay(EGL_DEFAULT_DISPLAY)
+    self.display_config = display_config
+    self.window_title = window_title.encode()
+    '''self.display = openegl.eglGetDisplay(EGL_DEFAULT_DISPLAY)
     assert self.display != EGL_NO_DISPLAY and self.display is not None
 
-    self.display_config = display_config
-
-    self.window_title = window_title.encode()
 
     for smpl in [samples, 0]: # try with samples first but ANGLE dll can't cope so drop to 0 for windows
       r = openegl.eglInitialize(self.display, None, None)
@@ -91,7 +90,7 @@ class DisplayOpenGL(object):
                                               EGL_NO_CONTEXT, context_attribs)
       if self.context != EGL_NO_CONTEXT:
         break
-    assert self.context != EGL_NO_CONTEXT and self.context is not None
+    assert self.context != EGL_NO_CONTEXT and self.context is not None'''
 
     self.create_surface(x, y, w, h, layer)
 
@@ -200,10 +199,17 @@ class DisplayOpenGL(object):
       assert self.window, sdl2.SDL_GetError()
       # Force OpenGL 2.1 'core' context.
       # Must set *before* creating GL context!
-      sdl2.video.SDL_GL_SetAttribute(sdl2.video.SDL_GL_CONTEXT_MAJOR_VERSION, 3)
+      sdl2.video.SDL_GL_SetAttribute(sdl2.video.SDL_GL_CONTEXT_MAJOR_VERSION, 2)
       sdl2.video.SDL_GL_SetAttribute(sdl2.video.SDL_GL_CONTEXT_MINOR_VERSION, 1)
-      sdl2.video.SDL_GL_SetAttribute(sdl2.video.SDL_GL_CONTEXT_PROFILE_MASK, sdl2.video.SDL_GL_CONTEXT_PROFILE_CORE)
-      self.context = sdl2.SDL_GL_CreateContext(self.window)
+      '''sdl2.video.SDL_GL_SetAttribute(sdl2.video.SDL_GL_CONTEXT_PROFILE_MASK, sdl2.video.SDL_GL_CONTEXT_PROFILE_CORE)
+      sdl2.video.SDL_GL_SetAttribute(sdl2.video.SDL_GL_RED_SIZE, 8)
+      sdl2.video.SDL_GL_SetAttribute(sdl2.video.SDL_GL_GREEN_SIZE, 8)
+      sdl2.video.SDL_GL_SetAttribute(sdl2.video.SDL_GL_BLUE_SIZE, 8)
+      sdl2.video.SDL_GL_SetAttribute(sdl2.video.SDL_GL_DEPTH_SIZE, 24)
+      sdl2.video.SDL_GL_SetAttribute(sdl2.video.SDL_GL_ALPHA_SIZE, 8)
+      sdl2.video.SDL_GL_SetAttribute(sdl2.video.SDL_GL_BUFFER_SIZE, 32)'''
+      sdl2.video.SDL_GL_SetAttribute(sdl2.video.SDL_GL_DOUBLEBUFFER, True)
+      self.sld_context = sdl2.SDL_GL_CreateContext(self.window)
 
       # Set some WM info
       #root = xlib.XRootWindowOfScreen(self.screen)
