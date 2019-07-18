@@ -101,8 +101,8 @@ class DisplayOpenGL(object):
     #Setup default hints
     opengles.glEnable(GL_CULL_FACE)
     opengles.glEnable(GL_DEPTH_TEST)
-    opengles.glDepthFunc(GL_LESS);
-    opengles.glDepthMask(1);
+    opengles.glDepthFunc(GL_LESS)
+    opengles.glDepthMask(1)
     opengles.glCullFace(GL_FRONT)
     opengles.glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST)
     opengles.glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, 
