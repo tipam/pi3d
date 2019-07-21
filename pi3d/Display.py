@@ -12,7 +12,7 @@ import pi3d
 from pi3d.util.DisplayOpenGL import DisplayOpenGL
 from pi3d.constants import (openegl, opengles, PLATFORM, PLATFORM_ANDROID,
           PLATFORM_PI, PLATFORM_WINDOWS, STARTUP_MESSAGE, DISPLAY_CONFIG_DEFAULT,
-GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT,)
+          GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT, GLclampf, GLboolean, GLsizei)
 if PLATFORM == PLATFORM_WINDOWS:
   import pygame
 elif PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
@@ -290,8 +290,8 @@ class Display(object):
       Opacity of the color.  An alpha of 0 means a transparent background,
       an alpha of 1 means full opaque.
     """
-    opengles.glClearColor(c_float(r), c_float(g), c_float(b), c_float(alpha))
-    opengles.glColorMask(1, 1, 1, int(alpha < 1.0))
+    opengles.glClearColor(GLclampf(r), GLclampf(g), GLclampf(b), GLclampf(alpha))
+    opengles.glColorMask(GLboolean(1), GLboolean(1), GLboolean(1), GLboolean(alpha < 1.0))
     # Switches off alpha blending with desktop (is there a bug in the driver?)
 
   def mouse_position(self):
@@ -344,7 +344,7 @@ class Display(object):
     for i in self.textures_dict:
       tex = self.textures_dict[i]
       if tex[1] == 1:
-        opengles.glDeleteTextures(1, byref(tex[0]))
+        opengles.glDeleteTextures(GLsizei(1), byref(tex[0]))
         to_del.append(i)
     for i in to_del:
       del self.textures_dict[i]
@@ -352,7 +352,7 @@ class Display(object):
     for i in self.vbufs_dict:
       vbuf = self.vbufs_dict[i]
       if vbuf[1] == 1:
-        opengles.glDeleteBuffers(1, byref(vbuf[0]))
+        opengles.glDeleteBuffers(GLsizei(1), byref(vbuf[0]))
         to_del.append(i)
     for i in to_del:
       del self.vbufs_dict[i]
@@ -360,7 +360,7 @@ class Display(object):
     for i in self.ebufs_dict:
       ebuf = self.ebufs_dict[i]
       if ebuf[1] == 1:
-        opengles.glDeleteBuffers(1, byref(ebuf[0]))
+        opengles.glDeleteBuffers(GLsizei(1), byref(ebuf[0]))
         to_del.append(i)
     for i in to_del:
       del self.ebufs_dict[i]

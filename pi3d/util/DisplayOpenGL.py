@@ -94,24 +94,27 @@ class DisplayOpenGL(object):
 
     self.create_surface(x, y, w, h, layer)
 
-    opengles.glDepthRangef(c_float(0.0), c_float(1.0))
-    opengles.glClearColor (c_float(0.3), c_float(0.3), c_float(0.7), c_float(1.0))
-    opengles.glBindFramebuffer(GL_FRAMEBUFFER, 0)
+    opengles.glDepthRangef(GLfloat(0.0), GLfloat(1.0))
+    opengles.glClearColor (GLfloat(0.3), GLfloat(0.3), GLfloat(0.7), GLfloat(1.0))
+    opengles.glBindFramebuffer(GL_FRAMEBUFFER, GLuint(0))
 
     #Setup default hints
     opengles.glEnable(GL_CULL_FACE)
+    opengles.glCullFace(GL_BACK)
+    opengles.glFrontFace(GL_CW)
     opengles.glEnable(GL_DEPTH_TEST)
+    opengles.glEnable(GL_PROGRAM_POINT_SIZE);
+    opengles.glEnable(GL_POINT_SPRITE);
     opengles.glDepthFunc(GL_LESS);
-    opengles.glDepthMask(1);
-    opengles.glCullFace(GL_FRONT)
+    opengles.glDepthMask(GLboolean(True));
     opengles.glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST)
     opengles.glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, 
-                                            1, GL_ONE_MINUS_SRC_ALPHA)
+                                       1, GL_ONE_MINUS_SRC_ALPHA)
 
     # Switches off alpha blending problem with desktop - is there a bug in the
     # driver?
     # Thanks to Roland Humphries who sorted this one!!
-    opengles.glColorMask(1, 1, 1, 0)
+    opengles.glColorMask(GLboolean(True), GLboolean(True), GLboolean(True), GLboolean(False))
 
     #opengles.glEnableClientState(GL_VERTEX_ARRAY)
     #opengles.glEnableClientState(GL_NORMAL_ARRAY)
@@ -223,7 +226,7 @@ class DisplayOpenGL(object):
     assert r
 
     #Create viewport
-    opengles.glViewport(0, 0, w, h)
+    opengles.glViewport(GLint(0), GLint(0), GLsizei(w), GLsizei(h))
 
   def resize(self, x=0, y=0, w=0, h=0, layer=0):
     # Destroy current surface and native window

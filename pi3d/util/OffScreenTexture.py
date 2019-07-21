@@ -4,7 +4,7 @@ import numpy as np
 import pi3d
 from pi3d.constants import (GL_FRAMEBUFFER, GL_RENDERBUFFER, GL_COLOR_ATTACHMENT0,
                     GL_TEXTURE_2D, GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT,
-                    GL_DEPTH_BUFFER_BIT, GL_COLOR_BUFFER_BIT)
+                    GL_DEPTH_BUFFER_BIT, GL_COLOR_BUFFER_BIT, GLuint, GLsizei)
 from pi3d.Texture import Texture
 
 class OffScreenTexture(Texture):
@@ -23,11 +23,11 @@ class OffScreenTexture(Texture):
     self.blend = False
     self.mipmap = False
 
-    self._tex = ctypes.c_uint()
-    self.framebuffer = (ctypes.c_uint * 1)()
-    pi3d.opengles.glGenFramebuffers(1, self.framebuffer)
-    self.depthbuffer = (ctypes.c_uint * 1)()
-    pi3d.opengles.glGenRenderbuffers(1, self.depthbuffer)
+    self._tex = GLuint()
+    self.framebuffer = (GLuint * 1)()
+    pi3d.opengles.glGenFramebuffers(GLsizei(1), self.framebuffer)
+    self.depthbuffer = (GLuint * 1)()
+    pi3d.opengles.glGenRenderbuffers(GLsizei(1), self.depthbuffer)
 
   def _load_disk(self):
     """ have to override this
@@ -62,6 +62,6 @@ class OffScreenTexture(Texture):
 
     
   def delete_buffers(self):
-    pi3d.opengles.glDeleteFramebuffers(1, self.framebuffer)
-    pi3d.opengles.glDeleteRenderbuffers(1, self.depthbuffer)
+    pi3d.opengles.glDeleteFramebuffers(GLsizei(1), self.framebuffer)
+    pi3d.opengles.glDeleteRenderbuffers(GLsizei(1), self.depthbuffer)
 
