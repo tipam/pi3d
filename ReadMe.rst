@@ -6,7 +6,8 @@ Introduction to pi3d
 
 **pi3d written by Tim Skillman, Paddy Gaunt, Tom Ritchford** Copyright |copy| 2012 - |year|
 
-Here is a link to an excellent, self explanatory `YouTube`_ video made by 
+`RunTests`_ is a video of the standard tests, giving an idea of what
+pi3d does, also here's an excellent, self explanatory `YouTube`_ video made by 
 Peter Farrell that covers much of the content of this ReadMe.
 
 There's plenty of 3D code flying around for the Raspberry Pi,
@@ -564,6 +565,7 @@ is going on.
 .. _`3D Graphics Explanation`: GPUexplain.html
 .. _Android: AndroidUse.html
 .. _YouTube: https://youtu.be/gXTU6x8dQJw
+.. _RunTests: https://youtu.be/TGGmnG_hrz4
 .. |year| date:: %Y
 .. |copy| unicode:: 0xA9 .. copyright sign
 
