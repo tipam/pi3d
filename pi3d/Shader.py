@@ -5,7 +5,7 @@ import sys, os
 import logging
 from pkg_resources import resource_string
 
-from pi3d.constants import opengles, GL_FRAGMENT_SHADER, GL_VERTEX_SHADER
+from pi3d.constants import opengles, GL_FRAGMENT_SHADER, GL_VERTEX_SHADER, GLsizei, GLint
 from pi3d.util.Ctypes import c_chars
 from pi3d.util import Loadable
 from pi3d.util.DefaultInstance import DefaultInstance
@@ -95,7 +95,7 @@ class Shader(DefaultInstance):
         src = src.encode()
       characters = ctypes.c_char_p(src)
       shader = opengles.glCreateShader(shader_type)
-      src_len = ctypes.c_int(len(src))
+      src_len = GLint(len(src))
       opengles.glShaderSource(shader, 1, characters, ctypes.byref(src_len))
       opengles.glCompileShader(shader)
       self.showshaderlog(shader, src)
@@ -148,7 +148,7 @@ class Shader(DefaultInstance):
     """Prints the compile log for a shader"""
     N = 1024
     log = (ctypes.c_char * N)()
-    loglen = ctypes.c_int()
+    loglen = GLsizei()
     opengles.glGetShaderInfoLog(
       shader, N, ctypes.byref(loglen), log)
     if len(log.value) > 0:
@@ -158,7 +158,7 @@ class Shader(DefaultInstance):
     """Prints the compile log for a program"""
     N = 1024
     log = (ctypes.c_char * N)()
-    loglen = ctypes.c_int()
+    loglen = GLsizei()
     opengles.glGetProgramInfoLog(
       shader, N, ctypes.byref(loglen), log)
 

@@ -1,7 +1,8 @@
 import ctypes
 import numpy as np
 
-from pi3d.constants import *
+from pi3d.constants import (opengles, GL_SCISSOR_TEST, GLint, GLsizei, GL_RGBA,
+                GLubyte, GL_UNSIGNED_BYTE)
 
 from pi3d.Shader import Shader
 from pi3d.util.OffScreenTexture import OffScreenTexture
@@ -29,8 +30,8 @@ class Clashtest(OffScreenTexture):
     """
     if not self.s_flg:
       opengles.glEnable(GL_SCISSOR_TEST)
-      opengles.glScissor(ctypes.c_int(int(0)), ctypes.c_int(self.y0),
-                    ctypes.c_int(self.ix), ctypes.c_int(1))
+      opengles.glScissor(GLint(0), GLint(self.y0),
+                    GLsizei(self.ix), GLsizei(1))
       self.s_flg = True
     shape.draw(shader=self.shader)
 
@@ -48,9 +49,9 @@ class Clashtest(OffScreenTexture):
     opengles.glDisable(GL_SCISSOR_TEST)
     self.s_flg = False
     img = self.img # alias to make code a bit less bulky!
-    opengles.glReadPixels(0, self.y0, self.ix, 1,
+    opengles.glReadPixels(GLint(0), GLint(self.y0), GLsizei(self.ix), GLsizei(1),
                           GL_RGBA, GL_UNSIGNED_BYTE,
-                          img.ctypes.data_as(ctypes.POINTER(ctypes.c_ubyte)))
+                          img.ctypes.data_as(ctypes.POINTER(GLubyte)))
 
     if  (np.any(img[::self.step,0] != img[0,0]) or 
          np.any(img[::self.step,1] != img[0,1]) or 

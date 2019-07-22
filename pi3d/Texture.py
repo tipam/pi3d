@@ -11,7 +11,7 @@ from pi3d.constants import (opengles, PIL_OK, GL_ALPHA, GL_LUMINANCE,
           GL_LUMINANCE_ALPHA, GL_RGB, GL_RGBA, GL_MIRRORED_REPEAT, GL_REPEAT,
           GL_LINEAR, GL_NEAREST, GL_LINEAR_MIPMAP_NEAREST, GL_NEAREST_MIPMAP_NEAREST,
           GL_TEXTURE_MIN_FILTER, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_TEXTURE_WRAP_T,
-          GL_TEXTURE_MAG_FILTER, GL_UNSIGNED_BYTE, GL_OUT_OF_MEMORY, GL_TEXTURE0)
+          GL_TEXTURE_MAG_FILTER, GL_UNSIGNED_BYTE, GL_OUT_OF_MEMORY, GL_TEXTURE0, GLuint)
 from pi3d.util.Ctypes import c_ints
 from pi3d.util.Loadable import Loadable
 
@@ -223,7 +223,7 @@ class Texture(Loadable):
         self.image = np.load(self.file_string)['arr_0'] # has to be saved with default key
 
       self.iy, self.ix, _mode = self.image.shape
-      self._tex = ctypes.c_uint()
+      self._tex = GLuint()
       self._loaded = True
       return # skip the rest for numpy arrays - faster but no size checking
 
@@ -265,7 +265,7 @@ class Texture(Loadable):
 
     #self.image = im.tostring('raw', RGBs) # TODO change to tobytes WHEN Pillow is default PIL in debian (jessie becomes current)
     self.image = self._img_to_array(im)
-    self._tex = ctypes.c_uint()
+    self._tex = GLuint()
     if self.string_type == FILE and 'fonts/' in self.file_string:
       self.im = im
       

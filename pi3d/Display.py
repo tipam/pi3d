@@ -12,7 +12,7 @@ import pi3d
 from pi3d.util.DisplayOpenGL import DisplayOpenGL
 from pi3d.constants import (openegl, opengles, PLATFORM, PLATFORM_ANDROID,
           PLATFORM_PI, PLATFORM_WINDOWS, STARTUP_MESSAGE, DISPLAY_CONFIG_DEFAULT,
-GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT,)
+          GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT, GLclampf, GLboolean, GLsizei)
 if PLATFORM == PLATFORM_WINDOWS:
   import pygame
 elif PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
@@ -265,11 +265,12 @@ class Display(object):
     except:
       pass
     Display.INSTANCE = None
-    try:
-      import pygame # NB seems to be needed on some setups (64 bit anaconda windows!)
-      pygame.quit()
-    except:
-      pass
+    if pi3d.USE_PYGAME:
+      try:
+        import pygame # NB seems to be needed on some setups (64 bit anaconda windows!)
+        pygame.quit()
+      except:
+        pass
 
   def clear(self):
     """Clear the Display."""
@@ -289,8 +290,8 @@ class Display(object):
       Opacity of the color.  An alpha of 0 means a transparent background,
       an alpha of 1 means full opaque.
     """
-    opengles.glClearColor(c_float(r), c_float(g), c_float(b), c_float(alpha))
-    opengles.glColorMask(1, 1, 1, int(alpha < 1.0))
+    opengles.glClearColor(GLclampf(r), GLclampf(g), GLclampf(b), GLclampf(alpha))
+    opengles.glColorMask(GLboolean(1), GLboolean(1), GLboolean(1), GLboolean(alpha < 1.0))
     # Switches off alpha blending with desktop (is there a bug in the driver?)
 
   def mouse_position(self):
@@ -343,7 +344,7 @@ class Display(object):
     for i in self.textures_dict:
       tex = self.textures_dict[i]
       if tex[1] == 1:
-        opengles.glDeleteTextures(1, byref(tex[0]))
+        opengles.glDeleteTextures(GLsizei(1), byref(tex[0]))
         to_del.append(i)
     for i in to_del:
       del self.textures_dict[i]
@@ -351,7 +352,7 @@ class Display(object):
     for i in self.vbufs_dict:
       vbuf = self.vbufs_dict[i]
       if vbuf[1] == 1:
-        opengles.glDeleteBuffers(1, byref(vbuf[0]))
+        opengles.glDeleteBuffers(GLsizei(1), byref(vbuf[0]))
         to_del.append(i)
     for i in to_del:
       del self.vbufs_dict[i]
@@ -359,7 +360,7 @@ class Display(object):
     for i in self.ebufs_dict:
       ebuf = self.ebufs_dict[i]
       if ebuf[1] == 1:
-        opengles.glDeleteBuffers(1, byref(ebuf[0]))
+        opengles.glDeleteBuffers(GLsizei(1), byref(ebuf[0]))
         to_del.append(i)
     for i in to_del:
       del self.ebufs_dict[i]
@@ -383,11 +384,12 @@ class Display(object):
     for sprite in to_unload:
       sprite.unload_opengl()
 
-    if getattr(self, 'frames_per_second', 0):
-      self.time += 1.0 / self.frames_per_second
-      delta = self.time - time.time()
+    if self.frames_per_second:
+      delta = 1.0 / self.frames_per_second - (time.time() - self.time)
       if delta > 0:
         time.sleep(delta)
+
+    self.time = time.time()
 
   def _for_each_sprite(self, function, sprites=None):
     if sprites is None:
@@ -536,7 +538,7 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
 
   LOGGER.debug('Display size is w=%d, h=%d', w, h)
 
-  display.frames_per_second = frames_per_second
+  display.frames_per_second = frames_per_second or 0
 
   if near is None:
     near = DEFAULT_NEAR
@@ -560,10 +562,10 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
     display.width = display.right = display.max_width = display.opengl.width #not available until after create_display
     display.height = display.bottom = display.max_height = display.opengl.height
     display.top = display.bottom = 0
-    if frames_per_second is not None:
+    if frames_per_second:
       display.android.frames_per_second = frames_per_second
-      display.frames_per_second = None #to avoid clash between two systems!
-    
+      display.frames_per_second = 0 #to avoid clash between two systems!
+
   display.mouse = None
 
   if mouse:

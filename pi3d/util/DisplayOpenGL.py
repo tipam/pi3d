@@ -40,13 +40,21 @@ class DisplayOpenGL(object):
       self.width, self.height = info.current_w, info.current_h
 
     else: # use libX11
-      self.d = xlib.XOpenDisplay(None)
+      #import subprocess # default name using XOpenDisplay(None) doesn't work on RPi4
+      #display_name = subprocess.check_output(['printenv', 'DISPLAY']).split()[0]
+      #display_name = b':' + subprocess.check_output([b'ls', b'/tmp/.X11-unix']).split(b'X')[1].trim()
+      import os
+      display_name = None
+      for f in os.listdir('/tmp/.X11-unix'):
+        display_name = b':' + f[1:].encode('utf-8')
+        break # just use the first one in the list if more than one
+      self.d = xlib.XOpenDisplay(display_name)
       if self.d:
         self.screen = xlib.XDefaultScreenOfDisplay(self.d)
         self.width, self.height = xlib.XWidthOfScreen(self.screen), xlib.XHeightOfScreen(self.screen)
       else:
         print('************************\nX11 needs to be running\n************************')
-        assert False
+        assert False, 'Couldnt open DISPLAY {}'.format(display_name)
 
 
   def create_display(self, x=0, y=0, w=0, h=0, depth=24, samples=4, layer=0, display_config=DISPLAY_CONFIG_DEFAULT, window_title=''):
@@ -86,24 +94,27 @@ class DisplayOpenGL(object):
 
     self.create_surface(x, y, w, h, layer)
 
-    opengles.glDepthRangef(c_float(0.0), c_float(1.0))
-    opengles.glClearColor (c_float(0.3), c_float(0.3), c_float(0.7), c_float(1.0))
-    opengles.glBindFramebuffer(GL_FRAMEBUFFER, 0)
+    opengles.glDepthRangef(GLfloat(0.0), GLfloat(1.0))
+    opengles.glClearColor (GLfloat(0.3), GLfloat(0.3), GLfloat(0.7), GLfloat(1.0))
+    opengles.glBindFramebuffer(GL_FRAMEBUFFER, GLuint(0))
 
     #Setup default hints
     opengles.glEnable(GL_CULL_FACE)
+    opengles.glCullFace(GL_BACK)
+    opengles.glFrontFace(GL_CW)
     opengles.glEnable(GL_DEPTH_TEST)
-    opengles.glDepthFunc(GL_LESS);
-    opengles.glDepthMask(1);
-    opengles.glCullFace(GL_FRONT)
+    opengles.glEnable(GL_PROGRAM_POINT_SIZE)
+    opengles.glEnable(GL_POINT_SPRITE)
+    opengles.glDepthFunc(GL_LESS)
+    opengles.glDepthMask(GLboolean(True))
     opengles.glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST)
     opengles.glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, 
-                                            1, GL_ONE_MINUS_SRC_ALPHA)
+                                       1, GL_ONE_MINUS_SRC_ALPHA)
 
     # Switches off alpha blending problem with desktop - is there a bug in the
     # driver?
     # Thanks to Roland Humphries who sorted this one!!
-    opengles.glColorMask(1, 1, 1, 0)
+    opengles.glColorMask(GLboolean(True), GLboolean(True), GLboolean(True), GLboolean(False))
 
     #opengles.glEnableClientState(GL_VERTEX_ARRAY)
     #opengles.glEnableClientState(GL_NORMAL_ARRAY)
@@ -166,8 +177,6 @@ class DisplayOpenGL(object):
       self.surface = openegl.eglCreateWindowSurface(self.display, self.config, self.window, 0)
 
     else:
-      self.width, self.height = w, h
-
       # Set some WM info
       root = xlib.XRootWindowOfScreen(self.screen)
       self.window = xlib.XCreateSimpleWindow(self.d, root, x, y, w, h, 1, 0, 0)
@@ -181,6 +190,16 @@ class DisplayOpenGL(object):
       wm_name_atom = ctypes.c_ulong(xlib.XInternAtom(self.d, ctypes.create_string_buffer(b'WM_NAME'), 0))
       string_atom = ctypes.c_ulong(xlib.XInternAtom(self.d, ctypes.create_string_buffer(b'STRING'), 0))
       xlib.XChangeProperty(self.d, self.window, wm_name_atom, string_atom, 8, xlib.PropModeReplace, title, title_length)
+
+      if (w == self.width and h == self.height) or self.display_config & DISPLAY_CONFIG_FULLSCREEN:
+        # set full-screen. Messy c function calls!
+        wm_state = ctypes.c_ulong(xlib.XInternAtom(self.d, b'_NET_WM_STATE', 0))
+        fullscreen = ctypes.c_ulong(xlib.XInternAtom(self.d, b'_NET_WM_STATE_FULLSCREEN', 0))
+        XA_ATOM = 4
+        xlib.XChangeProperty(self.d, self.window, wm_state, XA_ATOM, 32, xlib.PropModeReplace,
+                            ctypes.cast(ctypes.pointer(fullscreen), ctypes.c_char_p), 1)
+
+      self.width, self.height = w, h
 
       #TODO add functions to xlib for these window manager libx11 functions
       #self.window.set_wm_name('pi3d xlib window')
@@ -207,7 +226,7 @@ class DisplayOpenGL(object):
     assert r
 
     #Create viewport
-    opengles.glViewport(0, 0, w, h)
+    opengles.glViewport(GLint(0), GLint(0), GLsizei(w), GLsizei(h))
 
   def resize(self, x=0, y=0, w=0, h=0, layer=0):
     # Destroy current surface and native window
