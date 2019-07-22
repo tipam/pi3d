@@ -1,6 +1,7 @@
 import ctypes
 
-from pi3d.constants import *
+from pi3d.constants import (opengles, GL_SCISSOR_TEST, GLint, GLsizei, GL_RGBA,
+                GLubyte, GL_UNSIGNED_BYTE)
 from pi3d.Shader import Shader
 from pi3d.Camera import Camera
 from pi3d.shape.LodSprite import LodSprite
@@ -69,13 +70,12 @@ class PostProcess(OffScreenTexture):
     """
     super(PostProcess, self)._start(clear=clear)
     from pi3d.Display import Display
-    xx = Display.INSTANCE.width / 2.0 * (1.0 - self.scale)
-    yy = Display.INSTANCE.height / 2.0 * (1.0 - self.scale)
-    ww = Display.INSTANCE.width * self.scale
-    hh = Display.INSTANCE.height * self.scale
+    xx = int(Display.INSTANCE.width / 2.0 * (1.0 - self.scale))
+    yy = int(Display.INSTANCE.height / 2.0 * (1.0 - self.scale))
+    ww = int(Display.INSTANCE.width * self.scale)
+    hh = int(Display.INSTANCE.height * self.scale)
     opengles.glEnable(GL_SCISSOR_TEST)
-    opengles.glScissor(ctypes.c_int(int(xx)), ctypes.c_int(int(yy)),
-                  ctypes.c_int(int(ww)), ctypes.c_int(int(hh)))
+    opengles.glScissor(GLint(xx), GLint(yy), GLsizei(ww), GLsizei(hh))
 
   def end_capture(self):
     """ stop capturing to texture and resume normal rendering to default

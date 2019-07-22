@@ -5,7 +5,8 @@ import ctypes
 import numpy as np
 from math import radians, pi, sin, cos
 
-from pi3d.constants import opengles, GL_LINE_LOOP, GL_LINE_STRIP, GL_LINES, GL_POINTS, GL_TRIANGLES
+from pi3d.constants import (opengles, GL_LINE_LOOP, GL_LINE_STRIP,
+                    GL_LINES, GL_POINTS, GL_TRIANGLES, GLfloat)
 from pi3d.Buffer import Buffer
 from pi3d.Light import Light
 from pi3d.Camera import Camera
@@ -469,7 +470,7 @@ class Shape(Loadable):
     anti aliased which is done by Display.create(samples=4) """
     for b in self.buf:
       b.unib[11] = line_width
-      opengles.glLineWidth(ctypes.c_float(line_width))
+      opengles.glLineWidth(GLfloat(line_width))
       if strip:
         draw_method = GL_LINE_LOOP if closed else GL_LINE_STRIP
       else:
