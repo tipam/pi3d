@@ -4,6 +4,14 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
+v2.32
+2019-07-22  Bug fix: points and lines now render on RPi4 along with utilities
+            that relied on this.
+            Improvement: The setting of the front face of the polygons to be
+            defined as clockwise now makes it clearer that the backs of faces
+            are culled by default. Also the OpenGL function call argumentss have
+            been explicitly made using ctypes aliases to avoid confusion.
+
 v2.31
 2019-06-25  Improvement: Checking for new GL driver now not dependent on
             glxinfo (mesa-utils)
