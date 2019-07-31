@@ -71,52 +71,63 @@ Demos on github.com/pi3d/pi3d_demos include
 
 #.  **RobotWalkabout.py** Another off-planet example of a basic avatar robot
     drifting about
+
       .. image:: images/walkabout_sml.jpg
          :align: right
 
 #.  **EnvironmentCube.py** New environment cubes to try out in texture/ecubes -
     some high quality ones!
+
       .. image:: images/envcube_sml.jpg
 
 #.  **Shapes.py** Demos available shapes and text
     in a 3D context
+
       .. image:: images/shapes_sml.jpg
          :align: right
 
 #.  **MarsStation.py** Navigate around an abandoned Mars base-station with
     open/shut doors. Implements a new Level-Of-Detail (LOD) feature and TKwindow
     interface
+
       .. image:: images/marsstation_sml.jpg
 
 #.  **Amazing.py** Can you find yourself around the
     amazing maze?
+
       .. image:: images/amazing_sml.jpg
          :align: right
 
 #.  **TigerTank.py** Ever played World Of Tanks (WOT)? This tank emulates
     how a WOT tank works. Uses realistic modelling in a TKwindow
+
       .. image:: images/tigertank_sml.jpg
 
 #.  **Pong.py**  A snazzy 3D version of landscape pinball and pong
     against a Raspberry!
+
       .. image:: images/pong_sml.jpg
          :align: right
 
 #.  **Blur.py** Simulates giving the camera a focal distance and blurs
     nearer and further objects
+
       .. image:: images/blur_sml.jpg
 
 #.  **LoadModelObj.py** Loads a model from obj file (quicker) and applies
     a normal map and relfection map
+
       .. image:: images/teapot_sml.jpg
          :align: right
 
 #.  **Silo.py** Uses the Building class to create a claustrophobic maze
     set in the desert.
+
       .. image:: images/silo_sml.jpg
 
 #.  **Water.py** A series of wave normal maps are used to animate a surface
     and produce a realistic moving reflection.
+
       .. image:: images/water_sml.jpg
         :align: right
      
@@ -149,37 +160,38 @@ Setup on the Raspberry Pi
 
 #.  **Qick Start Guide, NB take the time to read the paragraphs below too**
 
-    As of 2015/09/24 there is a raspbian jessie SD image which already has
-    the relevant dependencies installed. You then just need to::
+    From 2015 raspbian has the relevant dependencies installed so you just
+    need to::
 
-      $ cd ~
-      $ sudo apt-get update
-      $ sudo apt-get upgrade
       $ sudo pip3 install pi3d
-      $ sudo raspi-config # set gpu_mem=128 - keep the 'legacy' graphics driver
+      $ sudo raspi-config # set gpu_mem=128 - see comments below about graphics driver choice
 
-    (or ``sudo pip install`` if you want to use python 2 for some reason).
-    
+    *Raspberry Pi v4 and later* **require** the new FAKE KMS (mesa-v3d-VC6..) driver and
+    pi3d will rely on having the X11 server running. (X11 is what supports the desktop
+    GUI so if you want to run pi3d applications from the command line, without the
+    overhead of the desktop you will need to start the X11 server first; see the FAQs
+    for more details but along the lines of ``sudo xinit /usr/bin/python3 /home/pi/pi3d_demos/Earth.py -display :0``
+    run from /home/pi/pi3d_demos)
+
+    *Older Raspberry Pi versions* will run python applications using pi3d from the
+    command line using the 'legacy' drivers but can also run using the new drivers so
+    long as X11 server is running (as with RPi4).
+
     Although you can ``git clone`` pi3d_demos  as in the recipe below this
     will include quite a bit of extra history so it is quicker to download
     the zip from github.com/pi3d/pi3d_demos and extract it on your system,
     either using browser and desktop or wget and unzip.
 
     Here's a list of commands that have definitely worked on a couple of
-    fresh rasbpian wheezy installs. Please take time to check out the paragraphs below
+    fresh stretch or buster installs. Please take time to check out the paragraphs below
     even if you use either of these quick start recipes... *certainly* if
     have any non-standard aspirations or set-up. The long
     list of dependencies (3rd apt-get line) may take a while to run as well
     as the install Pillow. Both will create hundreds of lines of messages::
 
       $ cd ~
-      $ sudo apt-get update
-      $ sudo apt-get upgrade
-      $ sudo apt-get install python3-dev python3-setuptools libjpeg-dev zlib1g-dev libpng12-dev libfreetype6-dev
-      $ sudo apt-get install python3-pip
       $ sudo pip3 install pi3d
-      $ sudo pip3 install Pillow
-      $ sudo raspi-config # set gpu_mem=128 - keep the 'legacy' graphics driver
+      $ sudo raspi-config # set gpu_mem=128 - see graphics driver comment above
       
       ####### download demos in their latest form, quicker #######
       $ wget https://github.com/pi3d/pi3d_demos/archive/master.zip
@@ -190,23 +202,15 @@ Setup on the Raspberry Pi
       $ git clone https://github.com/pi3d/pi3d_demos.git
       
       $ cd ~/pi3d_demos
-      $ python3 Earth.py
-
-    **NB pi3d uses the original broadcom OpenGLES2 drivers** (as that's what the GPU hardware
-    actually runs) so if you use ``raspi-config`` to swap to the emulated
-    OpenGL driver it will give errors.
+      $ python3 RunTests.py
       
-#.  **Download, Extract and install**
+#.  **Download source, Extract and install**
 
     There are various possibilities depending on the machine, what's already
     installed and whether you want to work with some of the latest additions.
 
     If you have pip installed you should be able to open a terminal and
-    type::
-
-      $ sudo pip install pi3d
-        or for python3
-      $ sudo pip3 install pi3d
+    use ``pip3 install`` as above
         
     (or pip-3.2, pip3.4, pip or whatever see below*) If you don't have pip installed
     you probably should install it as described below under ``Python Imaging``
@@ -215,8 +219,6 @@ Setup on the Raspberry Pi
     by downloading from https://pypi.python.org/pypi/pi3d and extracting
     the package, then in a terminal::
 
-      $ sudo python setup.py install
-        or for python3
       $ sudo python3 setup.py install
 
     This will put the package into the
@@ -229,8 +231,17 @@ Setup on the Raspberry Pi
     https://github.com/tipam/pi3d/ where there is a ``Download ZIP`` link,
     or you can install git (bundled in raspbian) then clone using ``git
     clone https://github.com/tipam/pi3d.git`` this git method will give
-    you the option to update the code by running, from the pi3d directory
-    ``git pull origin master``
+    you the option to use the develop branch ``git checkout develop`` and
+    update the code by running, from the pi3d directory::
+
+      $ git checkout develop
+      $ git pull origin develop
+      # the master branch should always be the same as you get with pip3 install
+
+    But to pick up this version of pi3d you will need tell python where to look.
+    In the pi3d_demos directory there is a file called demo.py which is imported just
+    before pi3d. Basically it just does ``sys.path.insert(1, '/home/pi/pi3d')`` so
+    while that line is there your program will use the cloned repository version of pi3d.
 
 #.  **Memory Split setup**
 
@@ -252,11 +263,11 @@ Setup on the Raspberry Pi
     As of raspbian jessie Pillow is the default imaging library. It's already
     installed on the ``fully featured`` SD image, but it's left off the
     lite image it can be installed using the debian package manager
-    (for lite image you also need numpy)::
+    (for lite image you also need ``sudo apt-get install python3-numpy``)::
 
       $ sudo apt-get install python3-pil
 
-    (or ``python-pil`` if using python2, but prior
+    (NB ``python-pil`` will install for python2), but prior
     to jessie you needed to::
 
       $ sudo apt-get install python3-dev python3-setuptools libjpeg-dev zlib1g-dev libpng12-dev libfreetype6-dev
@@ -266,13 +277,6 @@ Setup on the Raspberry Pi
 
     If you miss any of the dependent libraries and need to add them later
     you will have to ``pip3 uninstall`` then re ``pip3 install``
-
-    For python2 support the first above will provide the required graphics
-    libraries used by Pillow but you will need to swap to ``python-dev``
-    and ``python-setuptools`` also pip is different::
-
-      $ sudo apt-get install python-pip
-      $ sudo pip install Pillow
 
     (*on ubuntu and jessie ``pip3`` should work, could be other names,
     google for help or search::
@@ -285,13 +289,11 @@ Setup on the Raspberry Pi
 
     To run on Arch linux you will need to install::
 
-      $ pacman -S python2
-      $ pacman -S python2-pillow
-      $ pacman -S python2-numpy
+      $ pacman -S python
+      $ pacman -S python-pillow
+      $ pacman -S python-numpy
 
-    this worked for me. You could install python2-imaging rather than pillow
-    but that's probably a retrograde step. The Arch repository doesn't seem
-    to have python3-pillow or python3-pip etc. See `FAQ`_ for a description
+    python2 has to be explicitly asked for. See `FAQ`_ for a description
     of all the steps to get a quick loading stand-alone pi3d SD card.
 
 Setup on desktop and laptop machines
@@ -326,8 +328,7 @@ Setup on desktop and laptop machines
   relative to the window so limits movement for steering as used in the demos.
 
   The installation of PIL or Pillow should be the same as for the Raspberry
-  Pi above but you are more likely to need to manually install python3-numpy
-  (or python-numpy)
+  Pi above but you are more likely to need to manually install python3-numpy.
 
   It is likely that pi3d will run on OSX but you might have to compile
   your own mesa libraries (though some seem to be available) Pi3d has
