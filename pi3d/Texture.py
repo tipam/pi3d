@@ -11,7 +11,8 @@ from pi3d.constants import (opengles, PIL_OK, GL_ALPHA, GL_LUMINANCE,
           GL_LUMINANCE_ALPHA, GL_RGB, GL_RGBA, GL_MIRRORED_REPEAT, GL_REPEAT,
           GL_LINEAR, GL_NEAREST, GL_LINEAR_MIPMAP_NEAREST, GL_NEAREST_MIPMAP_NEAREST,
           GL_TEXTURE_MIN_FILTER, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_TEXTURE_WRAP_T,
-          GL_TEXTURE_MAG_FILTER, GL_UNSIGNED_BYTE, GL_OUT_OF_MEMORY, GL_TEXTURE0, GLuint)
+          GL_TEXTURE_MAG_FILTER, GL_UNSIGNED_BYTE, GL_OUT_OF_MEMORY, GL_TEXTURE0,
+          PLATFORM, PLATFORM_PI, GLuint)
 from pi3d.util.Ctypes import c_ints
 from pi3d.util.Loadable import Loadable
 
@@ -55,7 +56,7 @@ class Texture(Loadable):
   def __init__(self, file_string, blend=False, flip=False, size=0,
                defer=DEFER_TEXTURE_LOADING, mipmap=True, m_repeat=False,
                free_after_load=False, i_format=None, filter=None,
-               normal_map=None, automatic_resize=True):
+               normal_map=None, automatic_resize=None):
     """
     Arguments:
       *file_string*
@@ -101,9 +102,11 @@ class Texture(Loadable):
         normal map where Luminance value is proportional to height. The 
         value of nomral_map is used the scale the effect (see _normal_map())
       *automatic_resize*
-        default to True, this can be overridden if running on a machine other than
-        the RPi where the GPU can cope with any image dimension - or alternatively
-        where you know that the images will comply and don't need to check.
+        default to None, if this has not been overridden and you are running on a
+        RPi before v4 then the width will be coerced to one of the 'standard'
+        WIDTHs. Otherwise, where the GPU can cope with any image dimension -
+        or alternatively where you know that the images will comply and don't
+        need to check, no resizing will take place.
     """
     super(Texture, self).__init__()
     try:
@@ -237,7 +240,8 @@ class Texture(Loadable):
       resize_type = Image.NEAREST
 
     # work out if sizes > MAX_SIZE or coerce to golden values in WIDTHS
-    if self.automatic_resize: # default True
+    if (self.automatic_resize or # default None which evaluates as boolean True
+        self.automatic_resize is None and PLATFORM == PLATFORM_PI):
       if self.iy > self.ix and self.iy > MAX_SIZE: # fairly rare circumstance
         im = im.resize((int((MAX_SIZE * self.ix) / self.iy), MAX_SIZE))
         self.ix, self.iy = im.size
