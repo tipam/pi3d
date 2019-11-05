@@ -7,15 +7,15 @@ from six_mod.moves import xrange
 
 import pi3d
 from pi3d.constants import *
+from pyxlib import xlib
+from pyxlib.x import *
+from pyxlib import glx
 
 from pi3d.util.Ctypes import c_ints
 
 if pi3d.USE_PYGAME:
   import pygame
   from pygame.constants import FULLSCREEN
-elif PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
-  from pyxlib import xlib
-  from pyxlib.x import *
 
 class DisplayOpenGL(object):
   def __init__(self):
@@ -189,7 +189,6 @@ class DisplayOpenGL(object):
       # Set some WM info
       self.root = xlib.XRootWindowOfScreen(self.screen)
       if self.use_glx: # For drawing on X window with transparent background
-        from pyxlib import glx
         numfbconfigs = c_int()
         VisData = c_ints((
           glx.GLX_RENDER_TYPE, glx.GLX_RGBA_BIT,
@@ -379,7 +378,6 @@ class DisplayOpenGL(object):
     #opengles.glFlush()
     #opengles.glFinish()
     if self.use_glx:
-      from pyxlib import glx
       glx.glXSwapBuffers(self.d, self.window);
     else:
       openegl.eglSwapBuffers(self.display, self.surface)
