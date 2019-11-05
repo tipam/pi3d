@@ -2,6 +2,8 @@
 
 varying vec2 pix_inv;
 
+//fragcolor
+
 void main(void) {
   vec2 coord = vec2(gl_FragCoord);
   //coord.y += 0.5;

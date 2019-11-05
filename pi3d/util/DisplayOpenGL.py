@@ -20,6 +20,7 @@ elif PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
 class DisplayOpenGL(object):
   def __init__(self):
     self.d = None # display if x11 window or pygame used
+    self.gl_id = "GL" # default. Needed for converting shaders
     if PLATFORM == PLATFORM_ANDROID:
       self.width, self.height = 320, 480 # put in some non-zero place-holders
     elif PLATFORM == PLATFORM_PI:
@@ -29,7 +30,7 @@ class DisplayOpenGL(object):
       # Get the width and height of the screen
       w = c_int()
       h = c_int()
-      s = bcm.graphics_get_display_size(0, ctypes.byref(w), ctypes.byref(h))
+      s = bcm.graphics_get_display_size(0, byref(w), byref(h))
       assert s >= 0
       self.width, self.height = w.value, h.value
     elif pi3d.USE_PYGAME:
@@ -84,8 +85,8 @@ class DisplayOpenGL(object):
         self.config = ctypes.c_void_p()
         r = openegl.eglChooseConfig(self.display,
                                     attribute_list,
-                                    ctypes.byref(self.config), 1,
-                                    ctypes.byref(numconfig))
+                                    byref(self.config), 1,
+                                    byref(numconfig))
 
         context_attribs = c_ints((EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE))
         self.context = openegl.eglCreateContext(self.display, self.config,
@@ -120,6 +121,13 @@ class DisplayOpenGL(object):
     #opengles.glEnableClientState(GL_VERTEX_ARRAY)
     #opengles.glEnableClientState(GL_NORMAL_ARRAY)
     self.active = True
+    # get GL v GLES and version num for shader translation
+    version = ctypes.c_char_p(opengles.glGetString(GL_VERSION)).value
+    if b"ES" in version:
+      for s in version.split():
+        if b'.' in s:
+          self.gl_id = b"GLES" + s.split(b'.')[0]
+          break
 
   def create_surface(self, x=0, y=0, w=0, h=0, layer=0):
     #Set the viewport position and size
@@ -132,8 +140,8 @@ class DisplayOpenGL(object):
       time.sleep(0.2) #give it a chance to find out the dimensions
       w = c_int()
       h = c_int()
-      openegl.eglQuerySurface(self.display, self.surface, EGL_WIDTH, ctypes.byref(w))
-      openegl.eglQuerySurface(self.display, self.surface, EGL_HEIGHT, ctypes.byref(h))
+      openegl.eglQuerySurface(self.display, self.surface, EGL_WIDTH, byref(w))
+      openegl.eglQuerySurface(self.display, self.surface, EGL_HEIGHT, byref(h))
       self.width, self.height = w.value, h.value
     elif PLATFORM == PLATFORM_PI:
       self.dispman_display = bcm.vc_dispmanx_display_open(0) #LCD setting
@@ -180,7 +188,7 @@ class DisplayOpenGL(object):
     else: # work on basis it's X11
       # Set some WM info
       self.root = xlib.XRootWindowOfScreen(self.screen)
-      if self.use_glx:
+      if self.use_glx: # For drawing on X window with transparent background
         from pyxlib import glx
         numfbconfigs = c_int()
         VisData = c_ints((
@@ -223,7 +231,7 @@ class DisplayOpenGL(object):
           CWColormap | CWBorderPixel | CWEventMask)
         self.window = xlib.XCreateWindow(self.d, self.root, x, y, w, h, 0,
           visual.depth, 1, visual.visual, attr_mask, byref(attr))
-      else:
+      else: # normal EGL created context
         self.window = xlib.XCreateSimpleWindow(self.d, self.root, x, y, w, h, 1, 0, 0)
 
       s = ctypes.create_string_buffer(b'WM_DELETE_WINDOW')
@@ -236,7 +244,7 @@ class DisplayOpenGL(object):
       string_atom = ctypes.c_ulong(xlib.XInternAtom(self.d, ctypes.create_string_buffer(b'STRING'), 0))
       xlib.XChangeProperty(self.d, self.window, wm_name_atom, string_atom, 8, xlib.PropModeReplace, title, title_length)
 
-      if (w == self.width and h == self.height) or self.display_config & DISPLAY_CONFIG_FULLSCREEN:
+      if (w == self.width and h == self.height) or (self.display_config & DISPLAY_CONFIG_FULLSCREEN):
         # set full-screen. Messy c function calls!
         wm_state = ctypes.c_ulong(xlib.XInternAtom(self.d, b'_NET_WM_STATE', 0))
         fullscreen = ctypes.c_ulong(xlib.XInternAtom(self.d, b'_NET_WM_STATE_FULLSCREEN', 0))  
@@ -273,7 +281,7 @@ class DisplayOpenGL(object):
 
       xlib.XSelectInput(self.d, self.window, KeyPressMask | KeyReleaseMask)
       xlib.XMapWindow(self.d, self.window)
-      #xlib.XMoveWindow(self.d, self.window, x, y)
+      #xlib.XMoveWindow(self.d, self.window, x, y) #TODO this has to happen later. Works after rendering first frame. Check when
       if self.use_glx:
         dummy = c_int()
         if not glx.glXQueryExtension(self.d, byref(dummy), byref(dummy)):
@@ -338,12 +346,12 @@ class DisplayOpenGL(object):
           if func[2]: # list to work through
             for i in func[2]:
               if func[0](func[2][i][0]) == 1: #check if i exists as a name
-                func[1](1, ctypes.byref(func[2][i][0]))
+                func[1](1, byref(func[2][i][0]))
           else: # just do sequential numbers
             for i in xrange(10000):
               if func[0](i) == 1: #check if i exists as a name
                 i_ct[0] = i #convoluted 1
-                func[1](ctypes.byref(i_ct))
+                func[1](byref(i_ct))
                 streak_start = i
               elif i > (streak_start + 100):
                 break
