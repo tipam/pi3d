@@ -8,14 +8,19 @@ from six_mod.moves import xrange
 import pi3d
 from pi3d.constants import *
 
+if not (pi3d.USE_PYGAME or PLATFORM in (PLATFORM_ANDROID, PLATFORM_PI, PLATFORM_WINDOWS)):
+  from pyxlib import xlib
+  from pyxlib.x import *
+  from pyxlib import glx
+  X_WINDOW = True
+else:
+  X_WINDOW = False # use this for verifications involveing xlib and glx
+
 from pi3d.util.Ctypes import c_ints
 
 if pi3d.USE_PYGAME:
   import pygame
   from pygame.constants import FULLSCREEN
-elif PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
-  from pyxlib import xlib
-  from pyxlib.x import *
 
 class DisplayOpenGL(object):
   def __init__(self):
@@ -61,7 +66,7 @@ class DisplayOpenGL(object):
 
   def create_display(self, x=0, y=0, w=0, h=0, depth=24, samples=4, layer=0,
                      display_config=DISPLAY_CONFIG_DEFAULT, window_title='', use_glx=False):
-    self.use_glx = use_glx and (type(self.d) == POINTER(xlib.Display)) # only use glx if x11 window
+    self.use_glx = use_glx and (X_WINDOW and hasattr(glx, 'glXChooseFBConfig')) # only use glx if x11 window and glx available
     self.display_config = display_config
     self.window_title = window_title.encode()
     if not self.use_glx:
@@ -189,7 +194,6 @@ class DisplayOpenGL(object):
       # Set some WM info
       self.root = xlib.XRootWindowOfScreen(self.screen)
       if self.use_glx: # For drawing on X window with transparent background
-        from pyxlib import glx
         numfbconfigs = c_int()
         VisData = c_ints((
           glx.GLX_RENDER_TYPE, glx.GLX_RGBA_BIT,
@@ -379,7 +383,6 @@ class DisplayOpenGL(object):
     #opengles.glFlush()
     #opengles.glFinish()
     if self.use_glx:
-      from pyxlib import glx
       glx.glXSwapBuffers(self.d, self.window);
     else:
       openegl.eglSwapBuffers(self.display, self.surface)
