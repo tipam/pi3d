@@ -1,5 +1,7 @@
 #include std_head_fs.inc
 
+//fragcolor
+
 void main(void) {
 #include std_main_mat.inc
   //if (distance(gl_PointCoord, vec2(0.5)) > 0.5) discard; //circular points

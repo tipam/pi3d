@@ -5,6 +5,8 @@ varying vec2 texcoordout;
 varying vec3 lightVector;
 varying float lightFactor;
 
+//fragcolor
+
 void main(void) {
 #include std_main_uv.inc
 #include std_light.inc

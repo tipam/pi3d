@@ -338,6 +338,11 @@ glXCreateNewContext = libGLX.glXCreateNewContext
 glXCreateNewContext.restype = GLXContext
 glXCreateNewContext.argtypes = [POINTER(xlib.Display), GLXFBConfig, c_int, GLXContext, xlib.Bool]
 
+'''glXCreateContextAttribsARB = libGLX.glXCreateContextAttribsARB
+glXCreateContextAttribsARB.restype = GLXContext
+glXCreateContextAttribsARB.argtypes = [POINTER(xlib.Display), GLXFBConfig, GLXContext, xlib.Bool,
+                                       POINTER(c_int)]'''
+
 glXQueryExtension = libGLX.glXQueryExtension
 glXQueryExtension.restype = xlib.Bool
 glXQueryExtension.argtypes = [POINTER(xlib.Display), POINTER(c_int), POINTER(c_int)]
@@ -350,7 +355,8 @@ glXSwapBuffers = libGLX.glXSwapBuffers
 glXSwapBuffers.restype = None
 glXSwapBuffers.argtypes = [POINTER(xlib.Display), GLXDrawable]
 
-## Xrender extension ################
+#####################################
+####### Xrender extension ###########
 xrender_name = find_library('Xrender')
 libXrender = CDLL(xrender_name)
 

@@ -1,9 +1,12 @@
-precision mediump float;
+#version 120
+//precision mediump float;
 
 varying vec2 texcoordout;
 varying float dist;
 
 uniform sampler2D tex0;
+
+//fragcolor
 
 void main(void) {
   vec4 texc = texture2D(tex0, texcoordout); // ------ material or basic colour from texture

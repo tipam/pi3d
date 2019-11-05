@@ -12,6 +12,8 @@ varying vec3 lightVector;
 varying float lightFactor;
 varying float texFactor;
 
+//fragcolor
+
 void main(void) {
   vec4 texc = mix(
                   mix(texture2D(tex0, texcoordout), texture2D(tex2, texcoordout), clamp(texFactor, 0.0, 1.0)),
