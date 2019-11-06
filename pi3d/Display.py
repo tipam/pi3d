@@ -291,7 +291,7 @@ class Display(object):
       an alpha of 1 means full opaque.
     """
     if alpha < 1.0 and (not self.opengl.use_glx) and (not PLATFORM == PLATFORM_PI):
-      LOGGER.warning("create Display with (...use_glx=True) for transparent background on x11 window")
+      LOGGER.warning("create Display with (...use_glx=True) for transparent background on x11 window. libGLX needs to be available")
     opengles.glClearColor(GLclampf(r), GLclampf(g), GLclampf(b), GLclampf(alpha))
     opengles.glColorMask(GLboolean(1), GLboolean(1), GLboolean(1), GLboolean(alpha < 1.0))
     # Switches off alpha blending with desktop (is there a bug in the driver?)

@@ -61,7 +61,8 @@ class DisplayOpenGL(object):
 
   def create_display(self, x=0, y=0, w=0, h=0, depth=24, samples=4, layer=0,
                      display_config=DISPLAY_CONFIG_DEFAULT, window_title='', use_glx=False):
-    self.use_glx = use_glx and (type(self.d) == POINTER(xlib.Display)) # only use glx if x11 window
+    self.use_glx = use_glx and (type(self.d) == POINTER(xlib.Display) and
+                                hasattr(glx, 'glXGetConfig')) # only use glx if x11 window and glx available
     self.display_config = display_config
     self.window_title = window_title.encode()
     if not self.use_glx:

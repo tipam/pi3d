@@ -326,34 +326,35 @@ class GLXHyperpipeConfigSGIX( Structure ):
         ('timeSlice',c_int),
     ]
 
-glXChooseFBConfig = libGLX.glXChooseFBConfig
-glXChooseFBConfig.restype = POINTER(GLXFBConfig)
-glXChooseFBConfig.argtypes = [POINTER(xlib.Display), c_int, POINTER(c_int), POINTER(c_int)]
+if glx_name:
+    glXChooseFBConfig = libGLX.glXChooseFBConfig
+    glXChooseFBConfig.restype = POINTER(GLXFBConfig)
+    glXChooseFBConfig.argtypes = [POINTER(xlib.Display), c_int, POINTER(c_int), POINTER(c_int)]
 
-glXGetVisualFromFBConfig = libGLX.glXGetVisualFromFBConfig
-glXGetVisualFromFBConfig.restype = POINTER(XVisualInfo)
-glXGetVisualFromFBConfig.argtypes = [POINTER(xlib.Display), GLXFBConfig]
+    glXGetVisualFromFBConfig = libGLX.glXGetVisualFromFBConfig
+    glXGetVisualFromFBConfig.restype = POINTER(XVisualInfo)
+    glXGetVisualFromFBConfig.argtypes = [POINTER(xlib.Display), GLXFBConfig]
 
-glXCreateNewContext = libGLX.glXCreateNewContext
-glXCreateNewContext.restype = GLXContext
-glXCreateNewContext.argtypes = [POINTER(xlib.Display), GLXFBConfig, c_int, GLXContext, xlib.Bool]
+    glXCreateNewContext = libGLX.glXCreateNewContext
+    glXCreateNewContext.restype = GLXContext
+    glXCreateNewContext.argtypes = [POINTER(xlib.Display), GLXFBConfig, c_int, GLXContext, xlib.Bool]
 
-'''glXCreateContextAttribsARB = libGLX.glXCreateContextAttribsARB
-glXCreateContextAttribsARB.restype = GLXContext
-glXCreateContextAttribsARB.argtypes = [POINTER(xlib.Display), GLXFBConfig, GLXContext, xlib.Bool,
-                                       POINTER(c_int)]'''
+    '''glXCreateContextAttribsARB = libGLX.glXCreateContextAttribsARB
+    glXCreateContextAttribsARB.restype = GLXContext
+    glXCreateContextAttribsARB.argtypes = [POINTER(xlib.Display), GLXFBConfig, GLXContext, xlib.Bool,
+                                        POINTER(c_int)]'''
 
-glXQueryExtension = libGLX.glXQueryExtension
-glXQueryExtension.restype = xlib.Bool
-glXQueryExtension.argtypes = [POINTER(xlib.Display), POINTER(c_int), POINTER(c_int)]
+    glXQueryExtension = libGLX.glXQueryExtension
+    glXQueryExtension.restype = xlib.Bool
+    glXQueryExtension.argtypes = [POINTER(xlib.Display), POINTER(c_int), POINTER(c_int)]
 
-glXMakeContextCurrent = libGLX.glXMakeContextCurrent
-glXMakeContextCurrent.restype = xlib.Bool
-glXMakeContextCurrent.argtypes = [POINTER(xlib.Display), GLXDrawable, GLXDrawable, GLXContext]
+    glXMakeContextCurrent = libGLX.glXMakeContextCurrent
+    glXMakeContextCurrent.restype = xlib.Bool
+    glXMakeContextCurrent.argtypes = [POINTER(xlib.Display), GLXDrawable, GLXDrawable, GLXContext]
 
-glXSwapBuffers = libGLX.glXSwapBuffers
-glXSwapBuffers.restype = None
-glXSwapBuffers.argtypes = [POINTER(xlib.Display), GLXDrawable]
+    glXSwapBuffers = libGLX.glXSwapBuffers
+    glXSwapBuffers.restype = None
+    glXSwapBuffers.argtypes = [POINTER(xlib.Display), GLXDrawable]
 
 #####################################
 ####### Xrender extension ###########
@@ -402,6 +403,7 @@ _XRenderPictFormat._fields_ = [
 ]
 XRenderPictFormat = _XRenderPictFormat
 
-XRenderFindVisualFormat = libXrender.XRenderFindVisualFormat
-XRenderFindVisualFormat.restype = POINTER(XRenderPictFormat)
-XRenderFindVisualFormat.argtypes = [POINTER(xlib.Display), POINTER(xlib.Visual)]
+if xrender_name:
+    XRenderFindVisualFormat = libXrender.XRenderFindVisualFormat
+    XRenderFindVisualFormat.restype = POINTER(XRenderPictFormat)
+    XRenderFindVisualFormat.argtypes = [POINTER(xlib.Display), POINTER(xlib.Visual)]
