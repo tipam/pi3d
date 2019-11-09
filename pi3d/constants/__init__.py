@@ -35,9 +35,9 @@ LOGGER = logging.getLogger(__name__)
 
 # Define some extra constants that the automatic extraction misses.
 EGL_DEFAULT_DISPLAY = 0
-EGL_NO_CONTEXT = 0
-EGL_NO_DISPLAY = 0
-EGL_NO_SURFACE = 0
+EGL_NO_CONTEXT = ctypes.cast(0, EGLContext)
+EGL_NO_DISPLAY = ctypes.cast(0, EGLDisplay)
+EGL_NO_SURFACE = ctypes.cast(0, EGLSurface)
 EGL_FALSE = 0
 DISPMANX_PROTECTION_NONE = 0
 DISPMANX_FLAGS_ALPHA_PREMULT = 1 << 16

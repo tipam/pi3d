@@ -72,7 +72,6 @@ class DisplayOpenGL(object):
     if not self.use_glx:
       self.display = openegl.eglGetDisplay(EGL_DEFAULT_DISPLAY)
       assert self.display != EGL_NO_DISPLAY and self.display is not None
-
       for smpl in [samples, 0]: # try with samples first but ANGLE dll can't cope so drop to 0 for windows
         r = openegl.eglInitialize(self.display, None, None)
 
@@ -87,7 +86,7 @@ class DisplayOpenGL(object):
                                 EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
                                 EGL_NONE))
         numconfig = c_int()
-        self.config = ctypes.c_void_p()
+        self.config = EGLConfig()
         r = openegl.eglChooseConfig(self.display,
                                     attribute_list,
                                     byref(self.config), 1,
