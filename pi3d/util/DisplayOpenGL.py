@@ -72,7 +72,6 @@ class DisplayOpenGL(object):
     if not self.use_glx:
       self.display = openegl.eglGetDisplay(EGL_DEFAULT_DISPLAY)
       assert self.display != EGL_NO_DISPLAY and self.display is not None
-
       for smpl in [samples, 0]: # try with samples first but ANGLE dll can't cope so drop to 0 for windows
         r = openegl.eglInitialize(self.display, None, None)
 
@@ -87,7 +86,7 @@ class DisplayOpenGL(object):
                                 EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
                                 EGL_NONE))
         numconfig = c_int()
-        self.config = ctypes.c_void_p()
+        self.config = EGLConfig()
         r = openegl.eglChooseConfig(self.display,
                                     attribute_list,
                                     byref(self.config), 1,
@@ -310,7 +309,10 @@ class DisplayOpenGL(object):
 
   def resize(self, x=0, y=0, w=0, h=0, layer=0):
     # Destroy current surface and native window
-    openegl.eglSwapBuffers(self.display, self.surface)
+    if self.use_glx:
+      glx.glXSwapBuffers(self.d, self.window)
+    else:
+      openegl.eglSwapBuffers(self.display, self.surface)
     if PLATFORM == PLATFORM_PI:
       openegl.eglDestroySurface(self.display, self.surface)
 
@@ -324,6 +326,8 @@ class DisplayOpenGL(object):
       self.create_surface(x, y, w, h, layer)
     elif PLATFORM == PLATFORM_ANDROID:
       pass #TODO something here
+    elif X_WINDOW:
+      xlib.XMoveResizeWindow(self.d, self.window, x, y, w, h)
 
   def change_layer(self, layer=0):
     if PLATFORM == PLATFORM_PI:
@@ -383,6 +387,6 @@ class DisplayOpenGL(object):
     #opengles.glFlush()
     #opengles.glFinish()
     if self.use_glx:
-      glx.glXSwapBuffers(self.d, self.window);
+      glx.glXSwapBuffers(self.d, self.window)
     else:
       openegl.eglSwapBuffers(self.display, self.surface)
