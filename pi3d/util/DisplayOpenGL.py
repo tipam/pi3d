@@ -159,12 +159,15 @@ class DisplayOpenGL(object):
         DISPMANX_PROTECTION_NONE,
         alpha, 0, 0)
 
-      nativewindow = c_ints((self.dispman_element, w, h + 1))
+      nativewindow = (GLint * 3)(self.dispman_element, w, h + 1)
       bcm.vc_dispmanx_update_submit_sync(self.dispman_update)
 
-      nw_p = ctypes.pointer(nativewindow)
-      self.nw_p = nw_p
-
+      self.nw_p = ctypes.pointer(nativewindow)
+      ### NB changing the argtypes to allow passing of bcm native window is
+      ### deeply unsatisfactory. But xlib defines Window as c_ulong and ctypes
+      ### isn't happy about a pointer being cast to an int
+      openegl.eglCreateWindowSurface.argtypes = [EGLDisplay, EGLConfig,
+          POINTER((GLint * 3)), EGLint]
       self.surface = openegl.eglCreateWindowSurface(self.display, self.config, self.nw_p, 0)
 
     elif pi3d.USE_PYGAME:
