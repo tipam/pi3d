@@ -74,8 +74,7 @@ class DisplayOpenGL(object):
       assert self.display != EGL_NO_DISPLAY and self.display is not None
       for smpl in [samples, 0]: # try with samples first but ANGLE dll can't cope so drop to 0 for windows
         r = openegl.eglInitialize(self.display, None, None)
-
-        attribute_list = c_ints((EGL_RED_SIZE, 8,
+        attribute_list = (EGLint * 19)(EGL_RED_SIZE, 8,
                                 EGL_GREEN_SIZE, 8,
                                 EGL_BLUE_SIZE, 8,
                                 EGL_DEPTH_SIZE, depth,
@@ -84,19 +83,22 @@ class DisplayOpenGL(object):
                                 EGL_SAMPLES, smpl,
                                 EGL_STENCIL_SIZE, 8,
                                 EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
-                                EGL_NONE))
-        numconfig = c_int()
-        self.config = EGLConfig()
+                                EGL_NONE)
+        numconfig = EGLint(0)
+        poss_configs = (EGLConfig * 5)(*(EGLConfig() for _ in range(5)))
+
         r = openegl.eglChooseConfig(self.display,
                                     attribute_list,
-                                    byref(self.config), 1,
+                                    poss_configs, EGLint(len(poss_configs)),
                                     byref(numconfig))
-
-        context_attribs = c_ints((EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE))
-        self.context = openegl.eglCreateContext(self.display, self.config,
-                                                EGL_NO_CONTEXT, context_attribs)
-        if self.context != EGL_NO_CONTEXT:
-          break
+        
+        context_attribs = (EGLint * 3)(EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE)
+        if numconfig.value > 0:
+          self.config = poss_configs[0]
+          self.context = openegl.eglCreateContext(self.display, self.config,
+                                                  EGL_NO_CONTEXT, context_attribs)
+          if self.context != EGL_NO_CONTEXT:
+            break
       assert self.context != EGL_NO_CONTEXT and self.context is not None
 
     self.create_surface(x, y, w, h, layer)
@@ -116,17 +118,15 @@ class DisplayOpenGL(object):
     opengles.glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST)
     opengles.glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, 
                                        1, GL_ONE_MINUS_SRC_ALPHA)
-
-    # Switches off alpha blending problem with desktop - is there a bug in the
-    # driver?
-    # Thanks to Roland Humphries who sorted this one!!
     opengles.glColorMask(GLboolean(True), GLboolean(True), GLboolean(True), GLboolean(False))
-
     #opengles.glEnableClientState(GL_VERTEX_ARRAY)
     #opengles.glEnableClientState(GL_NORMAL_ARRAY)
+
     self.active = True
+
     # get GL v GLES and version num for shader translation
-    version = ctypes.c_char_p(opengles.glGetString(GL_VERSION)).value
+    version = opengles.glGetString(GL_VERSION)
+    version = ctypes.cast(version, c_char_p).value
     if b"ES" in version:
       for s in version.split():
         if b'.' in s:
