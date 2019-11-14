@@ -7,8 +7,6 @@ varying vec3 normout;
 varying vec3 lightVector;
 varying float lightFactor;
 
-//fragcolor
-
 void main(void) {
 #include std_main_uv.inc
   vec3 bump = normalize(texture2D(tex1, bumpcoordout).rgb * 2.0 - 1.0);
@@ -21,5 +19,3 @@ void main(void) {
   gl_FragColor = mix(mix(texc, shinec, shinefact), vec4(unif[4], unif[5][1]), ffact); // ------ combine using factors
   gl_FragColor.a *= unif[5][2];
 }
-
-

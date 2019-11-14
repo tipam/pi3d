@@ -2,8 +2,6 @@
 
 varying vec2 texcoordout;
 
-//fragcolor
-
 void main(void) {
   ///////////////////////////////////////////////////////////////////
   // you can do processing on the texture (or utilise other textures)
@@ -37,5 +35,3 @@ void main(void) {
   
   gl_FragColor = texc;
 }
-
-
