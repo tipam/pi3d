@@ -21,6 +21,8 @@ uniform vec3 unif[16];
 //uniform vec3 lightcol => unif[9]
 //uniform vec3 lightamb => unif[10]
 
+//fragcolor
+
 void main(void) {
   float ffact = smoothstep(unif[5][0]/3.0, unif[5][0], dist); // ------ smoothly increase fog between 1/3 and full fogdist
   vec4 texc = vec4(0.0, 0.0, 0.0, 1.0);

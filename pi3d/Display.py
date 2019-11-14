@@ -290,6 +290,8 @@ class Display(object):
       Opacity of the color.  An alpha of 0 means a transparent background,
       an alpha of 1 means full opaque.
     """
+    if alpha < 1.0 and (not self.opengl.use_glx) and (not PLATFORM == PLATFORM_PI):
+      LOGGER.warning("create Display with (...use_glx=True) for transparent background on x11 window. libGLX needs to be available")
     opengles.glClearColor(GLclampf(r), GLclampf(g), GLclampf(b), GLclampf(alpha))
     opengles.glColorMask(GLboolean(1), GLboolean(1), GLboolean(1), GLboolean(alpha < 1.0))
     # Switches off alpha blending with desktop (is there a bug in the driver?)
@@ -416,7 +418,7 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
            fov=DEFAULT_FOV, depth=DEFAULT_DEPTH, background=None,
            tk=False, window_title='', window_parent=None, mouse=False,
            frames_per_second=None, samples=DEFAULT_SAMPLES, use_pygame=False, layer=0, 
-           display_config=DISPLAY_CONFIG_DEFAULT):
+           display_config=DISPLAY_CONFIG_DEFAULT, use_glx=False):
   """
   Creates a pi3d Display.
 
@@ -557,7 +559,8 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
   display.bottom = y + h
   display.layer = layer
 
-  display.opengl.create_display(x, y, w, h, depth=depth, samples=samples, layer=layer, display_config=display_config, window_title=window_title)
+  display.opengl.create_display(x, y, w, h, depth=depth, samples=samples, layer=layer,
+                            display_config=display_config, window_title=window_title, use_glx=use_glx)
   if PLATFORM == PLATFORM_ANDROID:
     display.width = display.right = display.max_width = display.opengl.width #not available until after create_display
     display.height = display.bottom = display.max_height = display.opengl.height

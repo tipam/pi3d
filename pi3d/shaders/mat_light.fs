@@ -3,6 +3,8 @@
 varying vec3 lightVector;
 varying float lightFactor;
 
+//fragcolor
+
 void main(void) {
 #include std_main_mat.inc
 #include std_light.inc

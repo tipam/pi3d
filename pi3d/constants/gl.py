@@ -431,6 +431,8 @@ def set_gles_function_args(gles):
   gles.glGetError.argtypes = [] #void
   gles.glGetProgramInfoLog.argtypes = [GLuint, GLsizei, POINTER(GLsizei), c_void_p] #GLuint, GLsizei, GLsizei *, GLchar *
   gles.glGetShaderInfoLog.argtypes = [GLuint, GLsizei, POINTER(GLsizei), c_void_p] #GLuint, GLsizei, GLsizei *, GLchar *
+  gles.glGetString.argtypes = [GLenum]
+  gles.glGetString.restype = c_void_p
   gles.glGetUniformLocation.argtypes = [GLuint, POINTER(c_char)] #GLuint, const GLchar *
   gles.glGetUniformLocation.restype = GLint
   gles.glHint.argtypes = [GLenum, GLenum] #GLenum, GLenum

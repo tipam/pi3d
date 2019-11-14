@@ -2,6 +2,8 @@
 
 varying vec2 texcoordout;
 
+//fragcolor
+
 void main(void) {
 #include std_main_uv.inc
   gl_FragColor = mix(texc, vec4(unif[4], unif[5][1]), ffact); // ------ combine using factors

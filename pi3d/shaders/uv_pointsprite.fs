@@ -1,4 +1,5 @@
-precision mediump float;
+#version 120
+//precision mediump float;
 
 uniform sampler2D tex0;
 uniform vec3 unib[5];
@@ -12,6 +13,8 @@ varying vec4 colour;
 
 const vec2 p_centre = vec2(0.5);
 const vec2 limit = vec2(0.6);
+
+//fragcolor
 
 void main(void) {
   vec2 rot_coord = rotn * (gl_PointCoord - p_centre);

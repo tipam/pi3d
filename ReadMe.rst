@@ -1,10 +1,10 @@
 Introduction to pi3d
 ====================
 
-.. image:: images/rpilogoshad128.png
-   :align: left 
-
 **pi3d written by Tim Skillman, Paddy Gaunt, Tom Ritchford** Copyright |copy| 2012 - |year|
+
+.. image:: images/pi3dlogo128.png
+   :align: left
 
 `RunTests`_ is a video of the standard tests, giving an idea of what
 pi3d does, also here's an excellent, self explanatory `YouTube`_ video made by 
@@ -278,7 +278,7 @@ Setup on the Raspberry Pi
     If you miss any of the dependent libraries and need to add them later
     you will have to ``pip3 uninstall`` then re ``pip3 install``
 
-    (*on ubuntu and jessie ``pip3`` should work, could be other names,
+    (on ubuntu and jessie ``pip3`` should work, could be other names,
     google for help or search::
     
       $ sudo find /usr/bin/ -name pip*

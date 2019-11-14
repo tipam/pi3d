@@ -321,7 +321,8 @@ class Buffer(Loadable):
     opengles.glUniform3fv(shader.unif_unib, GLsizei(5), self.unib)
 
     opengles.glEnable(GL_DEPTH_TEST) # TODO find somewhere more efficient to do this
-
+    if self.draw_method != GL_TRIANGLES:
+      opengles.glLineWidth(GLfloat(self.unib[11]))
     opengles.glDrawElements(self.draw_method, GLsizei(self.ntris * 3), GL_UNSIGNED_SHORT, 0)
 
 

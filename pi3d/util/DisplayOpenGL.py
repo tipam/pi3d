@@ -2,23 +2,30 @@ import ctypes
 import platform
 import time
 
-from ctypes import c_int, c_float
+from ctypes import c_int, c_uint, c_float, byref
 from six_mod.moves import xrange
 
 import pi3d
 from pi3d.constants import *
+
+if not (pi3d.USE_PYGAME or PLATFORM in (PLATFORM_ANDROID, PLATFORM_PI, PLATFORM_WINDOWS)):
+  from pyxlib import xlib
+  from pyxlib.x import *
+  from pyxlib import glx
+  X_WINDOW = True
+else:
+  X_WINDOW = False # use this for verifications involveing xlib and glx
 
 from pi3d.util.Ctypes import c_ints
 
 if pi3d.USE_PYGAME:
   import pygame
   from pygame.constants import FULLSCREEN
-elif PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
-  from pyxlib import xlib
-  from pyxlib.x import *
 
 class DisplayOpenGL(object):
   def __init__(self):
+    self.d = None # display if x11 window or pygame used
+    self.gl_id = "GL" # default. Needed for converting shaders
     if PLATFORM == PLATFORM_ANDROID:
       self.width, self.height = 320, 480 # put in some non-zero place-holders
     elif PLATFORM == PLATFORM_PI:
@@ -28,7 +35,7 @@ class DisplayOpenGL(object):
       # Get the width and height of the screen
       w = c_int()
       h = c_int()
-      s = bcm.graphics_get_display_size(0, ctypes.byref(w), ctypes.byref(h))
+      s = bcm.graphics_get_display_size(0, byref(w), byref(h))
       assert s >= 0
       self.width, self.height = w.value, h.value
     elif pi3d.USE_PYGAME:
@@ -57,43 +64,44 @@ class DisplayOpenGL(object):
         assert False, 'Couldnt open DISPLAY {}'.format(display_name)
 
 
-  def create_display(self, x=0, y=0, w=0, h=0, depth=24, samples=4, layer=0, display_config=DISPLAY_CONFIG_DEFAULT, window_title=''):
-    self.display = openegl.eglGetDisplay(EGL_DEFAULT_DISPLAY)
-    assert self.display != EGL_NO_DISPLAY and self.display is not None
-
+  def create_display(self, x=0, y=0, w=0, h=0, depth=24, samples=4, layer=0,
+                     display_config=DISPLAY_CONFIG_DEFAULT, window_title='', use_glx=False):
+    self.use_glx = use_glx and (X_WINDOW and hasattr(glx, 'glXChooseFBConfig')) # only use glx if x11 window and glx available
     self.display_config = display_config
-
     self.window_title = window_title.encode()
+    if not self.use_glx:
+      self.display = openegl.eglGetDisplay(EGL_DEFAULT_DISPLAY)
+      assert self.display != EGL_NO_DISPLAY and self.display is not None
+      for smpl in [samples, 0]: # try with samples first but ANGLE dll can't cope so drop to 0 for windows
+        r = openegl.eglInitialize(self.display, None, None)
+        attribute_list = (EGLint * 19)(EGL_RED_SIZE, 8,
+                                EGL_GREEN_SIZE, 8,
+                                EGL_BLUE_SIZE, 8,
+                                EGL_DEPTH_SIZE, depth,
+                                EGL_ALPHA_SIZE, 8,
+                                EGL_BUFFER_SIZE, 32,
+                                EGL_SAMPLES, smpl,
+                                EGL_STENCIL_SIZE, 8,
+                                EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
+                                EGL_NONE)
+        numconfig = EGLint(0)
+        poss_configs = (EGLConfig * 5)(*(EGLConfig() for _ in range(5)))
 
-    for smpl in [samples, 0]: # try with samples first but ANGLE dll can't cope so drop to 0 for windows
-      r = openegl.eglInitialize(self.display, None, None)
-
-      attribute_list = c_ints((EGL_RED_SIZE, 8,
-                               EGL_GREEN_SIZE, 8,
-                               EGL_BLUE_SIZE, 8,
-                               EGL_DEPTH_SIZE, depth,
-                               EGL_ALPHA_SIZE, 8,
-                               EGL_BUFFER_SIZE, 32,
-                               EGL_SAMPLES, smpl,
-                               EGL_STENCIL_SIZE, 8,
-                               EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
-                               EGL_NONE))
-      numconfig = c_int()
-      self.config = ctypes.c_void_p()
-      r = openegl.eglChooseConfig(self.display,
-                                  attribute_list,
-                                  ctypes.byref(self.config), 1,
-                                  ctypes.byref(numconfig))
-
-      context_attribs = c_ints((EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE))
-      self.context = openegl.eglCreateContext(self.display, self.config,
-                                              EGL_NO_CONTEXT, context_attribs)
-      if self.context != EGL_NO_CONTEXT:
-        break
-    assert self.context != EGL_NO_CONTEXT and self.context is not None
+        r = openegl.eglChooseConfig(self.display,
+                                    attribute_list,
+                                    poss_configs, EGLint(len(poss_configs)),
+                                    byref(numconfig))
+        
+        context_attribs = (EGLint * 3)(EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE)
+        if numconfig.value > 0:
+          self.config = poss_configs[0]
+          self.context = openegl.eglCreateContext(self.display, self.config,
+                                                  EGL_NO_CONTEXT, context_attribs)
+          if self.context != EGL_NO_CONTEXT:
+            break
+      assert self.context != EGL_NO_CONTEXT and self.context is not None
 
     self.create_surface(x, y, w, h, layer)
-
     opengles.glDepthRangef(GLfloat(0.0), GLfloat(1.0))
     opengles.glClearColor (GLfloat(0.3), GLfloat(0.3), GLfloat(0.7), GLfloat(1.0))
     opengles.glBindFramebuffer(GL_FRAMEBUFFER, GLuint(0))
@@ -110,15 +118,20 @@ class DisplayOpenGL(object):
     opengles.glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST)
     opengles.glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, 
                                        1, GL_ONE_MINUS_SRC_ALPHA)
-
-    # Switches off alpha blending problem with desktop - is there a bug in the
-    # driver?
-    # Thanks to Roland Humphries who sorted this one!!
     opengles.glColorMask(GLboolean(True), GLboolean(True), GLboolean(True), GLboolean(False))
-
     #opengles.glEnableClientState(GL_VERTEX_ARRAY)
     #opengles.glEnableClientState(GL_NORMAL_ARRAY)
+
     self.active = True
+
+    # get GL v GLES and version num for shader translation
+    version = opengles.glGetString(GL_VERSION)
+    version = ctypes.cast(version, c_char_p).value
+    if b"ES" in version:
+      for s in version.split():
+        if b'.' in s:
+          self.gl_id = b"GLES" + s.split(b'.')[0]
+          break
 
   def create_surface(self, x=0, y=0, w=0, h=0, layer=0):
     #Set the viewport position and size
@@ -131,8 +144,8 @@ class DisplayOpenGL(object):
       time.sleep(0.2) #give it a chance to find out the dimensions
       w = c_int()
       h = c_int()
-      openegl.eglQuerySurface(self.display, self.surface, EGL_WIDTH, ctypes.byref(w))
-      openegl.eglQuerySurface(self.display, self.surface, EGL_HEIGHT, ctypes.byref(h))
+      openegl.eglQuerySurface(self.display, self.surface, EGL_WIDTH, byref(w))
+      openegl.eglQuerySurface(self.display, self.surface, EGL_HEIGHT, byref(h))
       self.width, self.height = w.value, h.value
     elif PLATFORM == PLATFORM_PI:
       self.dispman_display = bcm.vc_dispmanx_display_open(0) #LCD setting
@@ -146,12 +159,15 @@ class DisplayOpenGL(object):
         DISPMANX_PROTECTION_NONE,
         alpha, 0, 0)
 
-      nativewindow = c_ints((self.dispman_element, w, h + 1))
+      nativewindow = (GLint * 3)(self.dispman_element, w, h + 1)
       bcm.vc_dispmanx_update_submit_sync(self.dispman_update)
 
-      nw_p = ctypes.pointer(nativewindow)
-      self.nw_p = nw_p
-
+      self.nw_p = ctypes.pointer(nativewindow)
+      ### NB changing the argtypes to allow passing of bcm native window is
+      ### deeply unsatisfactory. But xlib defines Window as c_ulong and ctypes
+      ### isn't happy about a pointer being cast to an int
+      openegl.eglCreateWindowSurface.argtypes = [EGLDisplay, EGLConfig,
+          POINTER((GLint * 3)), EGLint]
       self.surface = openegl.eglCreateWindowSurface(self.display, self.config, self.nw_p, 0)
 
     elif pi3d.USE_PYGAME:
@@ -176,10 +192,53 @@ class DisplayOpenGL(object):
       self.window = pygame.display.get_wm_info()["window"]
       self.surface = openegl.eglCreateWindowSurface(self.display, self.config, self.window, 0)
 
-    else:
+    else: # work on basis it's X11
       # Set some WM info
-      root = xlib.XRootWindowOfScreen(self.screen)
-      self.window = xlib.XCreateSimpleWindow(self.d, root, x, y, w, h, 1, 0, 0)
+      self.root = xlib.XRootWindowOfScreen(self.screen)
+      if self.use_glx: # For drawing on X window with transparent background
+        numfbconfigs = c_int()
+        VisData = c_ints((
+          glx.GLX_RENDER_TYPE, glx.GLX_RGBA_BIT,
+          glx.GLX_DRAWABLE_TYPE, glx.GLX_WINDOW_BIT,
+          glx.GLX_DOUBLEBUFFER, True,
+          glx.GLX_RED_SIZE, 8,
+          glx.GLX_GREEN_SIZE, 8,
+          glx.GLX_BLUE_SIZE, 8,
+          glx.GLX_ALPHA_SIZE, 8,
+          glx.GLX_DEPTH_SIZE, 16,
+          0))
+        glx_screen = xlib.XDefaultScreen(self.d)
+        fbconfigs = glx.glXChooseFBConfig(self.d, glx_screen, VisData, byref(numfbconfigs))
+        fbconfig = 0
+        for i in range(numfbconfigs.value):
+          visual = glx.glXGetVisualFromFBConfig(self.d, fbconfigs[i]).contents
+          if not visual:
+            continue
+          pict_format = glx.XRenderFindVisualFormat(self.d, visual.visual).contents
+          if not pict_format:
+            continue
+
+          fbconfig = fbconfigs[i]
+          if pict_format.direct.alphaMask > 0:
+            break
+
+        if not fbconfig:
+          print("No matching FB config found")
+        #/* Create a colormap - only needed on some X clients, eg. IRIX */
+        cmap = xlib.XCreateColormap(self.d, self.root, visual.visual, AllocNone);
+        attr = xlib.XSetWindowAttributes()
+        attr.colormap = cmap
+        attr.background_pixmap = 0
+        attr.border_pixmap = 0
+        attr.border_pixel = 0
+        attr.event_mask = (StructureNotifyMask | EnterWindowMask | LeaveWindowMask | ExposureMask |
+                           ButtonPressMask | ButtonReleaseMask | OwnerGrabButtonMask | KeyPressMask | KeyReleaseMask)
+        attr_mask = (#  CWBackPixmap|
+          CWColormap | CWBorderPixel | CWEventMask)
+        self.window = xlib.XCreateWindow(self.d, self.root, x, y, w, h, 0,
+          visual.depth, 1, visual.visual, attr_mask, byref(attr))
+      else: # normal EGL created context
+        self.window = xlib.XCreateSimpleWindow(self.d, self.root, x, y, w, h, 1, 0, 0)
 
       s = ctypes.create_string_buffer(b'WM_DELETE_WINDOW')
       self.WM_DELETE_WINDOW = ctypes.c_ulong(xlib.XInternAtom(self.d, s, 0))
@@ -191,15 +250,26 @@ class DisplayOpenGL(object):
       string_atom = ctypes.c_ulong(xlib.XInternAtom(self.d, ctypes.create_string_buffer(b'STRING'), 0))
       xlib.XChangeProperty(self.d, self.window, wm_name_atom, string_atom, 8, xlib.PropModeReplace, title, title_length)
 
-      if (w == self.width and h == self.height) or self.display_config & DISPLAY_CONFIG_FULLSCREEN:
+      if (w == self.width and h == self.height) or (self.display_config & DISPLAY_CONFIG_FULLSCREEN):
         # set full-screen. Messy c function calls!
         wm_state = ctypes.c_ulong(xlib.XInternAtom(self.d, b'_NET_WM_STATE', 0))
-        fullscreen = ctypes.c_ulong(xlib.XInternAtom(self.d, b'_NET_WM_STATE_FULLSCREEN', 0))
+        fullscreen = ctypes.c_ulong(xlib.XInternAtom(self.d, b'_NET_WM_STATE_FULLSCREEN', 0))  
+        fullscreen = ctypes.cast(ctypes.pointer(fullscreen), ctypes.c_char_p)
         XA_ATOM = 4
-        xlib.XChangeProperty(self.d, self.window, wm_state, XA_ATOM, 32, xlib.PropModeReplace,
-                            ctypes.cast(ctypes.pointer(fullscreen), ctypes.c_char_p), 1)
+        xlib.XChangeProperty(self.d, self.window, wm_state, XA_ATOM, 32, xlib.PropModeReplace, fullscreen, 1)
 
       self.width, self.height = w, h
+
+      if self.display_config & DISPLAY_CONFIG_HIDE_CURSOR:
+        black = xlib.XColor()
+        black.red = 0
+        black.green = 0
+        black.blue = 0
+        noData = ctypes.c_char_p(bytes([0, 0, 0, 0, 0, 0, 0, 0]))
+        bitmapNoData = xlib.XCreateBitmapFromData(self.d, self.window, noData, 8, 8)
+        invisibleCursor = xlib.XCreatePixmapCursor(self.d, bitmapNoData, bitmapNoData, 
+                                                black, black, 0, 0)
+        xlib.XDefineCursor(self.d, self.window, invisibleCursor)
 
       #TODO add functions to xlib for these window manager libx11 functions
       #self.window.set_wm_name('pi3d xlib window')
@@ -217,20 +287,35 @@ class DisplayOpenGL(object):
 
       xlib.XSelectInput(self.d, self.window, KeyPressMask | KeyReleaseMask)
       xlib.XMapWindow(self.d, self.window)
-      #xlib.XMoveWindow(self.d, self.window, x, y)
-      self.surface = openegl.eglCreateWindowSurface(self.display, self.config, self.window, 0)
+      #xlib.XMoveWindow(self.d, self.window, x, y) #TODO this has to happen later. Works after rendering first frame. Check when
+      if self.use_glx:
+        dummy = c_int()
+        if not glx.glXQueryExtension(self.d, byref(dummy), byref(dummy)):
+          print("OpenGL not supported by X server\n")
+        dummy_glx_context = ctypes.cast(0, glx.GLXContext)
+        self.render_context = glx.glXCreateNewContext(self.d, fbconfig, glx.GLX_RGBA_TYPE, dummy_glx_context, True)
+        if not self.render_context:
+          print("Failed to create a GL context\n")
+        if not glx.glXMakeContextCurrent(self.d, self.window, self.window, self.render_context):
+          print("glXMakeCurrent failed for window\n")
+      else:
+        self.surface = openegl.eglCreateWindowSurface(self.display, self.config, self.window, 0)
 
-    assert self.surface != EGL_NO_SURFACE and self.surface is not None
-    r = openegl.eglMakeCurrent(self.display, self.surface, self.surface,
-                               self.context)
-    assert r
+    if not self.use_glx:
+      assert self.surface != EGL_NO_SURFACE and self.surface is not None
+      r = openegl.eglMakeCurrent(self.display, self.surface, self.surface,
+                                self.context)
+      assert r
 
     #Create viewport
     opengles.glViewport(GLint(0), GLint(0), GLsizei(w), GLsizei(h))
 
   def resize(self, x=0, y=0, w=0, h=0, layer=0):
     # Destroy current surface and native window
-    openegl.eglSwapBuffers(self.display, self.surface)
+    if self.use_glx:
+      glx.glXSwapBuffers(self.d, self.window)
+    else:
+      openegl.eglSwapBuffers(self.display, self.surface)
     if PLATFORM == PLATFORM_PI:
       openegl.eglDestroySurface(self.display, self.surface)
 
@@ -244,6 +329,8 @@ class DisplayOpenGL(object):
       self.create_surface(x, y, w, h, layer)
     elif PLATFORM == PLATFORM_ANDROID:
       pass #TODO something here
+    elif X_WINDOW:
+      xlib.XMoveResizeWindow(self.d, self.window, x, y, w, h)
 
   def change_layer(self, layer=0):
     if PLATFORM == PLATFORM_PI:
@@ -270,12 +357,12 @@ class DisplayOpenGL(object):
           if func[2]: # list to work through
             for i in func[2]:
               if func[0](func[2][i][0]) == 1: #check if i exists as a name
-                func[1](1, ctypes.byref(func[2][i][0]))
+                func[1](1, byref(func[2][i][0]))
           else: # just do sequential numbers
             for i in xrange(10000):
               if func[0](i) == 1: #check if i exists as a name
                 i_ct[0] = i #convoluted 1
-                func[1](ctypes.byref(i_ct))
+                func[1](byref(i_ct))
                 streak_start = i
               elif i > (streak_start + 100):
                 break
@@ -302,5 +389,7 @@ class DisplayOpenGL(object):
   def swap_buffers(self):
     #opengles.glFlush()
     #opengles.glFinish()
-    openegl.eglSwapBuffers(self.display, self.surface)
-
+    if self.use_glx:
+      glx.glXSwapBuffers(self.d, self.window)
+    else:
+      openegl.eglSwapBuffers(self.display, self.surface)

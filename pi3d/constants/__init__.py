@@ -6,7 +6,7 @@ pi3d.constants contains constant values, mainly integers, from OpenGL ES 2.0.
 import time
 import logging
 
-__version__ = '2.32'
+__version__ = '2.33'
 year = time.localtime().tm_year
 
 STARTUP_MESSAGE = """
@@ -35,9 +35,9 @@ LOGGER = logging.getLogger(__name__)
 
 # Define some extra constants that the automatic extraction misses.
 EGL_DEFAULT_DISPLAY = 0
-EGL_NO_CONTEXT = 0
-EGL_NO_DISPLAY = 0
-EGL_NO_SURFACE = 0
+EGL_NO_CONTEXT = ctypes.cast(0, EGLContext)
+EGL_NO_DISPLAY = ctypes.cast(0, EGLDisplay)
+EGL_NO_SURFACE = ctypes.cast(0, EGLSurface)
 EGL_FALSE = 0
 DISPMANX_PROTECTION_NONE = 0
 DISPMANX_FLAGS_ALPHA_PREMULT = 1 << 16
@@ -58,6 +58,7 @@ DISPLAY_CONFIG_NO_RESIZE = 1
 DISPLAY_CONFIG_NO_FRAME = 2
 DISPLAY_CONFIG_FULLSCREEN = 4
 DISPLAY_CONFIG_MAXIMIZED = 8
+DISPLAY_CONFIG_HIDE_CURSOR = 16
 
 # PIL module available
 try:

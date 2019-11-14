@@ -5,6 +5,8 @@ varying vec2 bumpcoordout;
 varying vec3 lightVector;
 varying float lightFactor;
 
+//fragcolor
+
 void main(void) {
  #include std_main_uv.inc
   vec3 bump = normalize(texture2D(tex1, bumpcoordout).rgb * 2.0 - 1.0);
