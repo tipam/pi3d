@@ -4,6 +4,10 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
+v2.34
+2019-11-16  Bug fix: move the changes in fragment shaders into the include file in
+            pi3d so minimise breaking shaders in pi3d_demos.
+
 v2.33
 2019-11-13  Improvement: use_glx argument for Display.create() allows X windows
             to have transparent backgrounds. EGL function call arguments and
