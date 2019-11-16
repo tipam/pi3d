@@ -1,7 +1,5 @@
 #include std_head_fs.inc
 
-//fragcolor
-
 void main(void) {
   vec4 texc = vec4(0.0, 0.0, 0.0, 1.0); // we don't save the alpha value of the rendering so set this here to 1.0
   vec2 fcoord = vec2(0.0, 0.0);
@@ -17,5 +15,3 @@ void main(void) {
   gl_FragColor = texc * 0.04;
   gl_FragColor.a = unif[5][2];
 }
-
-

@@ -12,8 +12,6 @@ varying vec3 lightVector;
 varying float lightFactor;
 varying float texFactor;
 
-//fragcolor
-
 void main(void) {
   vec4 texc = mix(
                   mix(texture2D(tex0, texcoordout), texture2D(tex2, texcoordout), clamp(texFactor, 0.0, 1.0)),
@@ -30,5 +28,3 @@ void main(void) {
   gl_FragColor = mix(texc, vec4(unif[4], unif[5][1]), ffact); // ------ combine using factors
   gl_FragColor.a *= unif[5][2];
 }
-
-

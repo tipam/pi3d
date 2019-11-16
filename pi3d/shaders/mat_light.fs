@@ -3,8 +3,6 @@
 varying vec3 lightVector;
 varying float lightFactor;
 
-//fragcolor
-
 void main(void) {
 #include std_main_mat.inc
 #include std_light.inc
@@ -12,5 +10,3 @@ void main(void) {
   gl_FragColor = mix(texc, vec4(unif[4], unif[5][1]), ffact); // ------ combine using factors
   gl_FragColor.a *= unif[5][2];
 }
-
-
