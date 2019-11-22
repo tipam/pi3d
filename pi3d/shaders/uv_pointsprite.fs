@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 #version 120
->>>>>>> master
 //precision mediump float;
 
 uniform sampler2D tex0;

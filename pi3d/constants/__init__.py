@@ -49,8 +49,8 @@ PLATFORM_WINDOWS = 2
 PLATFORM_LINUX = 3
 PLATFORM_ANDROID = 4
 
-# Force sdl2 if possible
-USE_SDL2 = False
+# Force pygame if possible
+USE_PYGAME = False
 
 #Display 
 DISPLAY_CONFIG_DEFAULT = 0
@@ -123,9 +123,9 @@ def _linux():
   return platform, bcm, openegl, opengles # opengles now determined by platform
 
 def _windows():
-  global USE_SDL2
+  global USE_PYGAME
   platform = PLATFORM_WINDOWS
-  USE_SDL2 = True
+  USE_PYGAME = True
   bcm = None
   """ NB You will need to copy the relevant dll files for ANGLE into the
   starting directory for the python file you are running. i.e. .../pi3d_demos

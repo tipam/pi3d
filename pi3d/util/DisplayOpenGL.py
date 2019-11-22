@@ -8,7 +8,7 @@ from six_mod.moves import xrange
 import pi3d
 from pi3d.constants import *
 
-if pi3d.PLATFORM != pi3d.PLATFORM_PI and pi3d.PLATFORM != pi3d.PLATFORM_ANDROID:
+if not PLATFORM in (PLATFORM_ANDROID, PLATFORM_PI, PLATFORM_WINDOWS):
   from pyxlib import xlib
   from pyxlib.x import *
   from pyxlib import glx
@@ -20,7 +20,7 @@ from pi3d.util.Ctypes import c_ints
 
 class DisplayOpenGL(object):
   def __init__(self):
-    self.d = None # display if x11 window, sdl2 window doesn't use display TODO how to use with GLX for transparent background
+    self.d = None # display if x11 window or pygame used
     self.gl_id = "GL" # default. Needed for converting shaders
     if PLATFORM == PLATFORM_ANDROID:
       self.width, self.height = 320, 480 # put in some non-zero place-holders
@@ -41,12 +41,6 @@ class DisplayOpenGL(object):
       rect = sdl2.SDL_Rect()
       if sdl2.SDL_GetDisplayBounds(0, byref(rect)) == 0:
         self.width, self.height = rect.w, rect.h
-      '''
-      pygame.init()
-      self.d = pygame.display.set_mode((0, 0), 
-                      pygame.DOUBLEBUF | pygame.RESIZABLE | pygame.OPENGL)
-      info = pygame.display.Info()
-      self.width, self.height = info.current_w, info.current_h'''
 
     else: # use libX11
       #import subprocess # default name using XOpenDisplay(None) doesn't work on RPi4
@@ -135,7 +129,7 @@ class DisplayOpenGL(object):
         if b'.' in s:
           self.gl_id = b"GLES" + s.split(b'.')[0]
           break
-    print("======", self.gl_id)
+    print("gl_id ", self.gl_id)
 
   def create_surface(self, x=0, y=0, w=0, h=0, layer=0):
     #Set the viewport position and size
@@ -191,31 +185,10 @@ class DisplayOpenGL(object):
       sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_DEPTH_SIZE, 24)
       self.context = sdl2.SDL_GL_CreateContext(self.window)
 
-      '''import pygame
-      flags = pygame.OPENGL
-      wsize = (w, h)
-      if w == self.width and h == self.height: # i.e. full screen
-        flags = pygame.FULLSCREEN | pygame.OPENGL
-        wsize = (0, 0)
-      if self.display_config & DISPLAY_CONFIG_NO_RESIZE:
-        flags |= pygame.RESIZABLE
-      if self.display_config & DISPLAY_CONFIG_NO_FRAME:
-        flags |= pygame.NOFRAME
-      if self.display_config & DISPLAY_CONFIG_FULLSCREEN:
-        flags |= pygame.FULLSCREEN
-      elif self.display_config & DISPLAY_CONFIG_MAXIMIZED:
-        flags |= pygame.FULLSCREEN
-        wsize = (0, 0)
-
-      self.width, self.height = w, h
-      self.d = pygame.display.set_mode(wsize, flags)
-      self.window = pygame.display.get_wm_info()["window"]
-      self.surface = openegl.eglCreateWindowSurface(self.display, self.config, self.window, 0)'''
-
     else: # work on basis it's X11
       # Set some WM info
       self.root = xlib.XRootWindowOfScreen(self.screen)
-      if self.use_glx: # For drawing on X window with transparent background TODO split out so can be used with SDL2 too?
+      if self.use_glx: # For drawing on X window with transparent background
         numfbconfigs = c_int()
         VisData = c_ints((
           glx.GLX_RENDER_TYPE, glx.GLX_RGBA_BIT,
@@ -260,15 +233,15 @@ class DisplayOpenGL(object):
       else: # normal EGL created context
         self.window = xlib.XCreateSimpleWindow(self.d, self.root, x, y, w, h, 1, 0, 0)
 
-      #s = ctypes.create_string_buffer(b'WM_DELETE_WINDOW')
-      #self.WM_DELETE_WINDOW = ctypes.c_ulong(xlib.XInternAtom(self.d, s, 0))
+      s = ctypes.create_string_buffer(b'WM_DELETE_WINDOW')
+      self.WM_DELETE_WINDOW = ctypes.c_ulong(xlib.XInternAtom(self.d, s, 0))
 
       # set window title
-      #title = ctypes.c_char_p(self.window_title)
-      #title_length = ctypes.c_int(len(self.window_title))
-      #wm_name_atom = ctypes.c_ulong(xlib.XInternAtom(self.d, ctypes.create_string_buffer(b'WM_NAME'), 0))
-      #string_atom = ctypes.c_ulong(xlib.XInternAtom(self.d, ctypes.create_string_buffer(b'STRING'), 0))
-      #xlib.XChangeProperty(self.d, self.window, wm_name_atom, string_atom, 8, xlib.PropModeReplace, title, title_length)
+      title = ctypes.c_char_p(self.window_title)
+      title_length = ctypes.c_int(len(self.window_title))
+      wm_name_atom = ctypes.c_ulong(xlib.XInternAtom(self.d, ctypes.create_string_buffer(b'WM_NAME'), 0))
+      string_atom = ctypes.c_ulong(xlib.XInternAtom(self.d, ctypes.create_string_buffer(b'STRING'), 0))
+      xlib.XChangeProperty(self.d, self.window, wm_name_atom, string_atom, 8, xlib.PropModeReplace, title, title_length)
 
       if (w == self.width and h == self.height) or (self.display_config & DISPLAY_CONFIG_FULLSCREEN):
         # set full-screen. Messy c function calls!
@@ -296,7 +269,7 @@ class DisplayOpenGL(object):
       #self.window.set_wm_icon_name('pi3d')
       #self.window.set_wm_class('draw', 'XlibExample')
 
-      #xlib.XSetWMProtocols(self.d, self.window, self.WM_DELETE_WINDOW, 1)
+      xlib.XSetWMProtocols(self.d, self.window, self.WM_DELETE_WINDOW, 1)
       #self.window.set_wm_hints(flags = Xutil.StateHint,
       #                         initial_state = Xutil.NormalState)
 
@@ -337,7 +310,6 @@ class DisplayOpenGL(object):
     else:
       openegl.eglSwapBuffers(self.display, self.surface)
     if PLATFORM == PLATFORM_PI:
-      openegl.eglSwapBuffers(self.display, self.surface)
       openegl.eglDestroySurface(self.display, self.surface)
 
       self.dispman_update = bcm.vc_dispmanx_update_start(0)
@@ -373,22 +345,23 @@ class DisplayOpenGL(object):
             [opengles.glIsShader, opengles.glDeleteShader, 0]]
         i_ct = (ctypes.c_int * 1)(0) #convoluted 0
         for func in func_list:
-          max_streak = 20
+          max_streak = 100
           streak_start = 0
           if func[2]: # list to work through
             for i in func[2]:
               if func[0](func[2][i][0]) == 1: #check if i exists as a name
                 func[1](1, byref(func[2][i][0]))
-          '''else: # just do sequential numbers
-            for i in xrange(100):
+          else: # just do sequential numbers
+            for i in xrange(10000):
               if func[0](i) == 1: #check if i exists as a name
                 i_ct[0] = i #convoluted 1
                 func[1](byref(i_ct))
                 streak_start = i
               elif i > (streak_start + 100):
-                break'''
+                break
+
       ##################################################################
-      if not pi3d.USE_SDL2 and not self.use_glx:
+      if not self.use_glx and not pi3d.USE_SDL2:
         openegl.eglSwapBuffers(self.display, self.surface)
         openegl.eglMakeCurrent(self.display, EGL_NO_SURFACE, EGL_NO_SURFACE,
                               EGL_NO_CONTEXT)
@@ -403,9 +376,9 @@ class DisplayOpenGL(object):
 
       self.active = False
       if pi3d.USE_SDL2:
-        import sdl2
-        sdl2.SDL_GL_DeleteContext(self.context)
-        sdl2.SDL_DestroyWindow(self.window)
+        import sdl2 # NB seems to be needed on some setups (64 bit anaconda windows!)
+        sdl2.SDL_GL_DeleteContext(self.opengl.context)
+        sdl2.SDL_DestroyWindow(self.opengl.window)
         sdl2.SDL_Quit()
       elif PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
         xlib.XCloseDisplay(self.d)
@@ -413,10 +386,10 @@ class DisplayOpenGL(object):
   def swap_buffers(self):
     #opengles.glFlush()
     #opengles.glFinish()
-    if self.use_glx:
-      glx.glXSwapBuffers(self.d, self.window)
-    elif pi3d.USE_SDL2:
+    if pi3d.USE_SDL2:
       import sdl2
       sdl2.SDL_GL_SwapWindow(self.window)
+    elif self.use_glx:
+      glx.glXSwapBuffers(self.d, self.window)
     else:
       openegl.eglSwapBuffers(self.display, self.surface)

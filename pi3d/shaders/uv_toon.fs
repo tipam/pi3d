@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-//precision mediump float;
-=======
 #include std_head_fs.inc
->>>>>>> master
 
 varying vec2 texcoordout;
 varying vec2 bumpcoordout;

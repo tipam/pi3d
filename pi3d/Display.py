@@ -14,7 +14,7 @@ from pi3d.constants import (openegl, opengles, PLATFORM, PLATFORM_ANDROID,
           PLATFORM_PI, PLATFORM_WINDOWS, STARTUP_MESSAGE, DISPLAY_CONFIG_DEFAULT,
           GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT, GLclampf, GLboolean, GLsizei)
 if PLATFORM == PLATFORM_WINDOWS:
-  import sdl2 #TODO set pi3d.USE_SDL here?
+  import sdl2
 elif PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
   from pyxlib.x import KeyPress, KeyRelease, ClientMessage
   from pyxlib import xlib
@@ -112,13 +112,13 @@ class Display(object):
 
     self.tkwin = tkwin
     if PLATFORM == PLATFORM_PI:
-      use_sdl2 = False # TODO allow sdl2 on rpi
+      use_sdl2 = False
     elif use_sdl2 or PLATFORM == PLATFORM_WINDOWS:
       try:
         import sdl2
         use_sdl2 = True # for Windows
       except ImportError:
-        LOGGER.warning('Do you need to install sdl2 (used by pygame)?')
+        LOGGER.warning('Do you need to install sdl2?')
         use_sdl2 = False
 
     pi3d.USE_SDL2 = use_sdl2
@@ -137,13 +137,14 @@ class Display(object):
     self._mouse_relative = False #TODO set this with init or method - see SetRelativeMouseMode below
     self._mouse_x, self._mouse_y, self._mouse_dx, self._mouse_dy = 0.0, 0.0, 0.0, 0.0
     self.offscreen_tex = False # used in Buffer.draw() to force reload of textures
+    self.event_list = []
 
     self.keys_pressed = {}
     self.button_pressed = {}
     if pi3d.USE_SDL2:
+      import sdl2
       self.ev = sdl2.SDL_Event()
-    elif (PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID): #TODO SDL2 and GLX
-      self.event_list = []
+    elif PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID: # i.e. X11
       self.ev = xlib.XEvent()
     elif PLATFORM == PLATFORM_ANDROID:
       self.android = Pi3dApp()
@@ -152,7 +153,6 @@ class Display(object):
     self.max_width, self.max_height = self.opengl.width, self.opengl.height
     self.first_time = True
     self.is_running = True
-    self.resized = False
     self.lock = threading.RLock()
 
     LOGGER.debug(STARTUP_MESSAGE)
@@ -230,8 +230,6 @@ class Display(object):
     self.right = x + w
     self.bottom = y + h
     self.opengl.resize(x, y, w, h, self.layer)
-    self.resized = True
-
 
   def change_layer(self, layer=0):
     self.layer = layer
@@ -321,7 +319,6 @@ class Display(object):
     # code from MegaStation to here.
     if pi3d.USE_SDL2:
       import sdl2 # although done in __init__ ...python namespaces aarg!!!
-      kill_flag = False
       while sdl2.SDL_PollEvent(byref(self.ev)) == 1:
         if self.ev.type == sdl2.SDL_QUIT:
           self.destroy()
@@ -330,8 +327,6 @@ class Display(object):
           if keysym.sym == sdl2.SDLK_ESCAPE:
             self.destroy()
           self.keys_pressed[keysym.sym] = [keysym.scancode, keysym.mod] # i.e. overwrite if already exists
-          #elif self.ev.key.keysym.sym == sdl2.SDLK_m: #TODO put a fullscreen function in somewhere
-          #  sdl2.SDL_SetWindowFullscreen(self.opengl.window, sdl2.SDL_WINDOW_FULLSCREEN_DESKTOP)
         elif self.ev.type == sdl2.SDL_KEYUP:
           self.keys_pressed.pop(self.ev.key.keysym.sym, None) # remove key from dict if it's there
         elif self.ev.type == sdl2.SDL_MOUSEMOTION:
@@ -362,7 +357,6 @@ class Display(object):
           elif self.ev.type == ClientMessage:
             if (self.ev.xclient.data.l[0] == self.opengl.WM_DELETE_WINDOW.value):
               self.destroy()
-              
     self.clear()
     with self.lock:
       self.sprites_to_load, to_load = set(), self.sprites_to_load
@@ -410,12 +404,6 @@ class Display(object):
     self.tidy_needed = False
 
   def _loop_end(self):
-    '''if pi3d.USE_SDL2:
-      import sdl2
-      sdl2.SDL_GL_DeleteContext(self.opengl.context)
-      sdl2.SDL_DestroyWindow(self.opengl.window)
-      sdl2.SDL_Quit()'''
-        
     with self.lock:
       self.sprites_to_unload, to_unload = set(), self.sprites_to_unload
       if to_unload:
@@ -518,7 +506,7 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
           self.key = ""
           self.winx, self.winy = 0, 0
           self.width, self.height = 1920, 1180
-          self.keys_pressed = {}
+          self.event_list = []
 
         def update(self):
           if PLATFORM == PLATFORM_WINDOWS or pi3d.USE_SDL2: #uses sdl2 UI
@@ -603,8 +591,7 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
   display.layer = layer
 
   display.opengl.create_display(x, y, w, h, depth=depth, samples=samples, layer=layer,
-                            display_config=display_config, window_title=window_title,
-                            use_glx=use_glx)
+                            display_config=display_config, window_title=window_title, use_glx=use_glx)
   if PLATFORM == PLATFORM_ANDROID:
     display.width = display.right = display.max_width = display.opengl.width #not available until after create_display
     display.height = display.bottom = display.max_height = display.opengl.height
