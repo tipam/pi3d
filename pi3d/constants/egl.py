@@ -2,6 +2,8 @@
 This module contains integer constants from a C header file named something
 like egl.h.
 """
+from ctypes import Structure, POINTER, c_void_p, c_int32, c_int, c_int64
+from pyxlib.x import Window
 
 EGL_SUCCESS = 0x3000
 EGL_NOT_INITIALIZED = 0x3001
@@ -111,6 +113,40 @@ EGL_DRAW = 0x3059
 EGL_READ = 0x305A
 EGL_CORE_NATIVE_ENGINE = 0x305B
 
+EGLint = c_int
+
+class _EGLDisplay(Structure):
+    __slots__ = [
+    ]
+_EGLDisplay._fields_ = [
+    ('_opaque_struct', EGLint)
+]
+EGLDisplay = POINTER(_EGLDisplay)
+
+class _EGLConfig(Structure):
+    __slots__ = [
+    ]
+_EGLConfig._fields_ = [
+    ('_opaque_struct', EGLint)
+]
+EGLConfig = POINTER(_EGLConfig)
+
+class _EGLSurface(Structure):
+    __slots__ = [
+    ]
+_EGLSurface._fields_ = [
+    ('_opaque_struct', EGLint)
+]
+EGLSurface = POINTER(_EGLSurface)
+
+class _EGLContext(Structure):
+    __slots__ = [
+    ]
+_EGLContext._fields_ = [
+    ('_opaque_struct', EGLint)
+]
+EGLContext = POINTER(_EGLContext)
+
 def set_egl_function_args(egl):
   '''
   typedef int EGLBoolean;
@@ -121,21 +157,29 @@ def set_egl_function_args(egl):
   typedef void *EGLContext;
   '''
 
-  from ctypes import POINTER, c_void_p, c_int32, c_int
+  egl.eglChooseConfig.argtypes = [EGLDisplay, POINTER(EGLint), c_void_p, EGLint, POINTER(EGLint)]
+  egl.eglChooseConfig.restype = EGLint #EGLBoolean
 
-  egl.eglChooseConfig.argtypes = [c_void_p, c_void_p, c_void_p, c_int32, POINTER(c_int32)]
-  egl.eglChooseConfig.restype = c_int #EGLBoolean
-  egl.eglCreateContext.argtypes = [c_void_p, c_void_p, c_int32, c_void_p]
-  egl.eglCreateContext.restype = c_void_p
-  egl.eglCreateWindowSurface.argtypes = [c_void_p, c_void_p, c_void_p, c_int32]
-  egl.eglCreateWindowSurface.restype = c_void_p
-  egl.eglDestroyContext.argtypes = [c_void_p, c_void_p]
-  egl.eglDestroySurface.argtypes = [c_void_p, c_void_p]
-  egl.eglGetCurrentSurface.argtypes = [c_int32]
-  egl.eglGetCurrentSurface.restype = c_void_p
-  egl.eglGetDisplay.restype = c_void_p
-  egl.eglInitialize.argtypes = [c_void_p, POINTER(c_int32), POINTER(c_int32)]
-  egl.eglMakeCurrent.argtypes = [c_void_p, c_void_p, c_void_p, c_void_p]
-  egl.eglSwapBuffers.argtypes = [c_void_p, c_void_p]
-  egl.eglQuerySurface.argtypes = [c_void_p, c_void_p, c_int32, POINTER(c_int32)]
-  egl.eglTerminate.argtypes = [c_void_p]
+  egl.eglCreateContext.argtypes = [EGLDisplay, EGLConfig, EGLContext, POINTER(EGLint)]
+  egl.eglCreateContext.restype = EGLContext
+
+  egl.eglCreateWindowSurface.argtypes = [EGLDisplay, EGLConfig, Window, EGLint]
+  egl.eglCreateWindowSurface.restype = EGLSurface
+
+  egl.eglDestroyContext.argtypes = [EGLDisplay, EGLContext]
+  egl.eglDestroySurface.argtypes = [EGLDisplay, EGLSurface]
+
+  egl.eglGetCurrentSurface.argtypes = [EGLint]
+  egl.eglGetCurrentSurface.restype = EGLSurface
+
+  egl.eglGetDisplay.restype = EGLDisplay
+
+  egl.eglInitialize.argtypes = [EGLDisplay, POINTER(EGLint), POINTER(EGLint)]
+
+  egl.eglMakeCurrent.argtypes = [EGLDisplay, EGLSurface, EGLSurface, EGLContext]
+
+  egl.eglSwapBuffers.argtypes = [EGLDisplay, EGLSurface]
+
+  egl.eglQuerySurface.argtypes = [EGLDisplay, EGLSurface, EGLint, POINTER(EGLint)]
+
+  egl.eglTerminate.argtypes = [EGLDisplay]

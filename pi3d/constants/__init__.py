@@ -6,7 +6,7 @@ pi3d.constants contains constant values, mainly integers, from OpenGL ES 2.0.
 import time
 import logging
 
-__version__ = '2.31'
+__version__ = '2.34'
 year = time.localtime().tm_year
 
 STARTUP_MESSAGE = """
@@ -35,9 +35,9 @@ LOGGER = logging.getLogger(__name__)
 
 # Define some extra constants that the automatic extraction misses.
 EGL_DEFAULT_DISPLAY = 0
-EGL_NO_CONTEXT = 0
-EGL_NO_DISPLAY = 0
-EGL_NO_SURFACE = 0
+EGL_NO_CONTEXT = ctypes.cast(0, EGLContext)
+EGL_NO_DISPLAY = ctypes.cast(0, EGLDisplay)
+EGL_NO_SURFACE = ctypes.cast(0, EGLSurface)
 EGL_FALSE = 0
 DISPMANX_PROTECTION_NONE = 0
 DISPMANX_FLAGS_ALPHA_PREMULT = 1 << 16
@@ -49,8 +49,8 @@ PLATFORM_WINDOWS = 2
 PLATFORM_LINUX = 3
 PLATFORM_ANDROID = 4
 
-# Force pygame if possible
-USE_PYGAME = False
+# Force sdl2 if possible
+USE_SDL2 = False
 
 #Display 
 DISPLAY_CONFIG_DEFAULT = 0
@@ -58,6 +58,7 @@ DISPLAY_CONFIG_NO_RESIZE = 1
 DISPLAY_CONFIG_NO_FRAME = 2
 DISPLAY_CONFIG_FULLSCREEN = 4
 DISPLAY_CONFIG_MAXIMIZED = 8
+DISPLAY_CONFIG_HIDE_CURSOR = 16
 
 # PIL module available
 try:
@@ -122,9 +123,9 @@ def _linux():
   return platform, bcm, openegl, opengles # opengles now determined by platform
 
 def _windows():
-  global USE_PYGAME
+  global USE_SDL2
   platform = PLATFORM_WINDOWS
-  USE_PYGAME = True
+  USE_SDL2 = True
   bcm = None
   """ NB You will need to copy the relevant dll files for ANGLE into the
   starting directory for the python file you are running. i.e. .../pi3d_demos

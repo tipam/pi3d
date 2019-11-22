@@ -4,8 +4,11 @@ import numpy as np
 import pi3d
 from pi3d.constants import (GL_FRAMEBUFFER, GL_RENDERBUFFER, GL_COLOR_ATTACHMENT0,
                     GL_TEXTURE_2D, GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT,
-                    GL_DEPTH_BUFFER_BIT, GL_COLOR_BUFFER_BIT)
+                    GL_DEPTH_BUFFER_BIT, GL_COLOR_BUFFER_BIT, GLuint, GLsizei)
 from pi3d.Texture import Texture
+
+
+OFFSCREEN_QUEUE = []
 
 class OffScreenTexture(Texture):
   """For creating special effect after rendering to texture rather than
@@ -23,11 +26,11 @@ class OffScreenTexture(Texture):
     self.blend = False
     self.mipmap = False
 
-    self._tex = ctypes.c_uint()
-    self.framebuffer = (ctypes.c_uint * 1)()
-    pi3d.opengles.glGenFramebuffers(1, self.framebuffer)
-    self.depthbuffer = (ctypes.c_uint * 1)()
-    pi3d.opengles.glGenRenderbuffers(1, self.depthbuffer)
+    self._tex = GLuint()
+    self.framebuffer = (GLuint * 1)()
+    pi3d.opengles.glGenFramebuffers(GLsizei(1), self.framebuffer)
+    self.depthbuffer = (GLuint * 1)()
+    pi3d.opengles.glGenRenderbuffers(GLsizei(1), self.depthbuffer)
 
   def _load_disk(self):
     """ have to override this
@@ -38,6 +41,7 @@ class OffScreenTexture(Texture):
     to this texture and not appear on the display. Large objects
     will obviously take a while to draw and re-draw
     """
+
     self.disp.offscreen_tex = True # flag used in Buffer.draw()
     pi3d.opengles.glBindFramebuffer(GL_FRAMEBUFFER, self.framebuffer[0])
     pi3d.opengles.glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
@@ -53,6 +57,10 @@ class OffScreenTexture(Texture):
 
     #assert opengles.glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE
 
+    global OFFSCREEN_QUEUE
+    if self not in OFFSCREEN_QUEUE:
+        OFFSCREEN_QUEUE.append(self)
+
   def _end(self):
     """ stop capturing to texture and resume normal rendering to default
     """
@@ -60,8 +68,13 @@ class OffScreenTexture(Texture):
     pi3d.opengles.glBindTexture(GL_TEXTURE_2D, 0)
     pi3d.opengles.glBindFramebuffer(GL_FRAMEBUFFER, 0)
 
-    
+    global OFFSCREEN_QUEUE
+    del OFFSCREEN_QUEUE[-1]
+    if OFFSCREEN_QUEUE:
+        # resume previously active offscreen texture if any
+        OFFSCREEN_QUEUE[-1]._start(clear=False)
+
   def delete_buffers(self):
-    pi3d.opengles.glDeleteFramebuffers(1, self.framebuffer)
-    pi3d.opengles.glDeleteRenderbuffers(1, self.depthbuffer)
+    pi3d.opengles.glDeleteFramebuffers(GLsizei(1), self.framebuffer)
+    pi3d.opengles.glDeleteRenderbuffers(GLsizei(1), self.depthbuffer)
 

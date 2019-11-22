@@ -20,5 +20,3 @@ void main(void) {
   gl_FragColor = pack(normPosn);
   gl_FragColor.a = 1.0;
 }
-
-

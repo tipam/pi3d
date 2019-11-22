@@ -130,8 +130,8 @@ void main(void) {{
       ww = tex.ix / 2.0
       hh = tex.iy
       opengles.glEnable(GL_SCISSOR_TEST)
-      opengles.glScissor(ctypes.c_int(int(xx)), ctypes.c_int(int(yy)),
-                    ctypes.c_int(int(ww)), ctypes.c_int(int(hh)))
+      opengles.glScissor(GLint(int(xx)), GLint(int(yy)),
+                    GLsizei(int(ww)), GLsizei(int(hh)))
 
   def end_capture(self, side):
     """ stop capturing to texture and resume normal rendering to default

@@ -8,7 +8,8 @@ from ctypes import c_float, c_int, c_short
 
 from pi3d.constants import (opengles, GL_ARRAY_BUFFER, GL_BLEND, GL_DEPTH_TEST,
                GL_ELEMENT_ARRAY_BUFFER, GL_FLOAT, GL_OUT_OF_MEMORY, GL_STATIC_DRAW,
-               GL_TEXTURE0, GL_TEXTURE_2D, GL_TRIANGLES, GL_UNSIGNED_SHORT, c_uint)
+               GL_TEXTURE0, GL_TEXTURE_2D, GL_TRIANGLES, GL_UNSIGNED_SHORT,
+               GLint, GLuint, GLfloat, GLsizei, GLboolean, GLintptr)
 from pi3d.Shader import Shader
 from pi3d.util import Log
 from pi3d.util import Utility
@@ -170,26 +171,26 @@ class Buffer(Loadable):
     except:
         self.load_opengl() # vbuf and ebuf need to exist prior to _select()
     self._select()
-    opengles.glBufferSubData(GL_ARRAY_BUFFER, 0,
+    opengles.glBufferSubData(GL_ARRAY_BUFFER, GLintptr(0),
                       self.array_buffer.nbytes,
-                      self.array_buffer.ctypes.data_as(ctypes.POINTER(ctypes.c_float)))
+                      self.array_buffer.ctypes.data_as(ctypes.POINTER(GLfloat)))
 
 
   def _load_opengl(self):
-    self.vbuf = c_uint()
-    opengles.glGenBuffers(1, ctypes.byref(self.vbuf))
-    self.ebuf = c_uint()
-    opengles.glGenBuffers(1, ctypes.byref(self.ebuf))
+    self.vbuf = GLuint()
+    opengles.glGenBuffers(GLsizei(1), ctypes.byref(self.vbuf))
+    self.ebuf = GLuint()
+    opengles.glGenBuffers(GLsizei(1), ctypes.byref(self.ebuf))
     self.disp.vbufs_dict[str(self.vbuf)] = [self.vbuf, 0]
     self.disp.ebufs_dict[str(self.ebuf)] = [self.ebuf, 0]
     self._select()
     opengles.glBufferData(GL_ARRAY_BUFFER,
                           self.array_buffer.nbytes,
-                          self.array_buffer.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+                          self.array_buffer.ctypes.data_as(ctypes.POINTER(GLfloat)),
                           GL_STATIC_DRAW)
     opengles.glBufferData(GL_ELEMENT_ARRAY_BUFFER,
                           self.element_array_buffer.nbytes,
-                          self.element_array_buffer.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+                          self.element_array_buffer.ctypes.data_as(ctypes.POINTER(GLfloat)),
                           GL_STATIC_DRAW)
     if opengles.glGetError() == GL_OUT_OF_MEMORY:
       LOGGER.critical('Out of GPU memory')
@@ -273,10 +274,10 @@ class Buffer(Loadable):
 
     shader = shader or self.shader or shape.shader or Shader.instance()
     shader.use()
-    opengles.glUniformMatrix4fv(shader.unif_modelviewmatrix, 3,
-                                ctypes.c_ubyte(0), M.ctypes.data)
+    opengles.glUniformMatrix4fv(shader.unif_modelviewmatrix, GLsizei(3),
+                                GLboolean(0), M.ctypes.data)
 
-    opengles.glUniform3fv(shader.unif_unif, 20, unif)
+    opengles.glUniform3fv(shader.unif_unif, GLsizei(20), unif)
     textures = textures or self.textures
     if ntl is not None:
       self.unib[0] = ntl
@@ -284,13 +285,13 @@ class Buffer(Loadable):
       self.unib[1] = shny
     self._select()
 
-    opengles.glVertexAttribPointer(shader.attr_vertex, 3, GL_FLOAT, 0, self.N_BYTES, ctypes.c_void_p(0))
+    opengles.glVertexAttribPointer(shader.attr_vertex, GLint(3), GL_FLOAT, GLboolean(0), self.N_BYTES, 0)
     opengles.glEnableVertexAttribArray(shader.attr_vertex)
     if self.N_BYTES > 12:
-      opengles.glVertexAttribPointer(shader.attr_normal, 3, GL_FLOAT, 0, self.N_BYTES, ctypes.c_void_p(12))
+      opengles.glVertexAttribPointer(shader.attr_normal, GLint(3), GL_FLOAT, GLboolean(0), self.N_BYTES, 12)
       opengles.glEnableVertexAttribArray(shader.attr_normal)
       if self.N_BYTES > 24:
-        opengles.glVertexAttribPointer(shader.attr_texcoord, 2, GL_FLOAT, 0, self.N_BYTES, ctypes.c_void_p(24))
+        opengles.glVertexAttribPointer(shader.attr_texcoord, GLint(2), GL_FLOAT, GLboolean(0), self.N_BYTES, 24)
         opengles.glEnableVertexAttribArray(shader.attr_texcoord)
 
     opengles.glDisable(GL_BLEND)
@@ -302,7 +303,7 @@ class Buffer(Loadable):
         opengles.glActiveTexture(GL_TEXTURE0 + t)
         assert texture.tex(), 'There was an empty texture in your Buffer.'
         opengles.glBindTexture(GL_TEXTURE_2D, texture.tex())
-        opengles.glUniform1i(shader.unif_tex[t], t)
+        opengles.glUniform1i(shader.unif_tex[t], GLint(t))
         self.disp.last_textures[t] = texture
 
       if texture.blend:
@@ -317,11 +318,12 @@ class Buffer(Loadable):
 
     self.disp.last_shader = shader
 
-    opengles.glUniform3fv(shader.unif_unib, 5, self.unib)
+    opengles.glUniform3fv(shader.unif_unib, GLsizei(5), self.unib)
 
     opengles.glEnable(GL_DEPTH_TEST) # TODO find somewhere more efficient to do this
-
-    opengles.glDrawElements(self.draw_method, self.ntris * 3, GL_UNSIGNED_SHORT, 0)
+    if self.draw_method != GL_TRIANGLES:
+      opengles.glLineWidth(GLfloat(self.unib[11]))
+    opengles.glDrawElements(self.draw_method, GLsizei(self.ntris * 3), GL_UNSIGNED_SHORT, 0)
 
 
   # Implement pickle/unpickle support

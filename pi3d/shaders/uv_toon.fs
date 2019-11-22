@@ -1,25 +1,15 @@
+<<<<<<< HEAD
 //precision mediump float;
+=======
+#include std_head_fs.inc
+>>>>>>> master
 
 varying vec2 texcoordout;
 varying vec2 bumpcoordout;
 varying vec3 lightVector;
-varying float dist;
 varying vec3 normout;
 varying vec3 inray;
 varying float lightFactor;
-
-uniform sampler2D tex0;
-uniform sampler2D tex1;
-uniform vec3 unib[5];
-//uniform float ntiles ===> unib[0][0]
-//uniform float shiny ====> unib[0][1]
-//uniform vec4 material ==> unib[1]
-uniform vec3 unif[16];
-//uniform vec3 fogshade ==> unif[4]
-//uniform float fogdist ==> unif[5][0]
-//uniform float fogalpha => unif[5][1]
-//uniform vec3 lightcol => unif[9]
-//uniform vec3 lightamb => unif[10]
 
 void main(void) {
   float ffact = smoothstep(unif[5][0]/3.0, unif[5][0], dist); // ------ smoothly increase fog between 1/3 and full fogdist

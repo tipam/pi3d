@@ -32,7 +32,7 @@ def screenshot(filestring=None):
 
   w, h = Display.INSTANCE.width, Display.INSTANCE.height
   img = np.zeros((h, w, 4), dtype=np.uint8)
-  opengles.glReadPixels(0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, img.ctypes.data_as(ctypes.POINTER(ctypes.c_ubyte)))
+  opengles.glReadPixels(GLint(0), GLint(0), GLsizei(w), GLsizei(h), GL_RGBA, GL_UNSIGNED_BYTE, img.ctypes.data_as(ctypes.POINTER(GLubyte)))
   img = img[::-1,:,:3].copy()
   if filestring is None:
     return img
