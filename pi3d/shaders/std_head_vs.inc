@@ -1,5 +1,5 @@
 // ----- boiler-plate code for vertex shader variable definition
-
+#version 120
 //precision mediump float;
 
 attribute vec3 vertex;

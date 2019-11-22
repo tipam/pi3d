@@ -12,13 +12,12 @@ import pi3d
 from pi3d.util.DisplayOpenGL import DisplayOpenGL
 from pi3d.constants import (openegl, opengles, PLATFORM, PLATFORM_ANDROID,
           PLATFORM_PI, PLATFORM_WINDOWS, STARTUP_MESSAGE, DISPLAY_CONFIG_DEFAULT,
-GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT,)
+          GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT, GLclampf, GLboolean, GLsizei)
 if PLATFORM == PLATFORM_WINDOWS:
-  import pygame
-elif PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
-  #from pyxlib.x import KeyPress, KeyRelease, ClientMessage
-  #from pyxlib import xlib
   import sdl2
+elif PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
+  from pyxlib.x import KeyPress, KeyRelease, ClientMessage
+  from pyxlib import xlib
 
 LOGGER = logging.getLogger(__name__)
 
@@ -94,15 +93,15 @@ class Display(object):
   INSTANCE = None
   """The current unique instance of Display."""
 
-  def __init__(self, tkwin=None, use_pygame=False):
+  def __init__(self, tkwin=None, use_sdl2=False):
     """
     Constructs a raw Display.  Use pi3d.Display.create to create an initialized
     Display.
 
     *tkwin*
       An optional Tk window.
-    *use_pygame*
-      Flag to opt for pygame
+    *use_sdl2*
+      Flag to opt for sdl2
 
     """
     if Display.INSTANCE is not None:
@@ -113,16 +112,16 @@ class Display(object):
 
     self.tkwin = tkwin
     if PLATFORM == PLATFORM_PI:
-      use_pygame = False
-    elif use_pygame or PLATFORM == PLATFORM_WINDOWS:
+      use_sdl2 = False
+    elif use_sdl2 or PLATFORM == PLATFORM_WINDOWS:
       try:
-        import pygame
-        use_pygame = True # for Windows
+        import sdl2
+        use_sdl2 = True # for Windows
       except ImportError:
-        LOGGER.warning('Do you need to install pygame?')
-        use_pygame = False
+        LOGGER.warning('Do you need to install sdl2?')
+        use_sdl2 = False
 
-    pi3d.USE_PYGAME = use_pygame
+    pi3d.USE_SDL2 = use_sdl2
 
     self.sprites = []
     self.sprites_to_load = set()
@@ -138,13 +137,15 @@ class Display(object):
     self._mouse_relative = False #TODO set this with init or method - see SetRelativeMouseMode below
     self._mouse_x, self._mouse_y, self._mouse_dx, self._mouse_dy = 0.0, 0.0, 0.0, 0.0
     self.offscreen_tex = False # used in Buffer.draw() to force reload of textures
+    self.event_list = []
 
-    if (PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID and
-        not pi3d.USE_PYGAME):
-      self.keys_pressed = {}
-      self.button_pressed = {}
-      #self.ev = xlib.XEvent()
+    self.keys_pressed = {}
+    self.button_pressed = {}
+    if pi3d.USE_SDL2:
+      import sdl2
       self.ev = sdl2.SDL_Event()
+    elif PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID: # i.e. X11
+      self.ev = xlib.XEvent()
     elif PLATFORM == PLATFORM_ANDROID:
       self.android = Pi3dApp()
 
@@ -152,7 +153,6 @@ class Display(object):
     self.max_width, self.max_height = self.opengl.width, self.opengl.height
     self.first_time = True
     self.is_running = True
-    self.resized = False
     self.lock = threading.RLock()
 
     LOGGER.debug(STARTUP_MESSAGE)
@@ -230,8 +230,6 @@ class Display(object):
     self.right = x + w
     self.bottom = y + h
     self.opengl.resize(x, y, w, h, self.layer)
-    self.resized = True
-
 
   def change_layer(self, layer=0):
     self.layer = layer
@@ -273,10 +271,12 @@ class Display(object):
     except:
       pass
     Display.INSTANCE = None
-    if pi3d.USE_PYGAME:
+    if pi3d.USE_SDL2:
       try:
-        import pygame # NB seems to be needed on some setups (64 bit anaconda windows!)
-        pygame.quit()
+        import sdl2 # NB seems to be needed on some setups (64 bit anaconda windows!)
+        sdl2.SDL_GL_DeleteContext(self.opengl.context)
+        sdl2.SDL_DestroyWindow(self.opengl.window)
+        sdl2.SDL_Quit()
       except:
         pass
 
@@ -298,8 +298,10 @@ class Display(object):
       Opacity of the color.  An alpha of 0 means a transparent background,
       an alpha of 1 means full opaque.
     """
-    opengles.glClearColor(c_float(r), c_float(g), c_float(b), c_float(alpha))
-    opengles.glColorMask(1, 1, 1, int(alpha < 1.0))
+    if alpha < 1.0 and (not self.opengl.use_glx) and (not PLATFORM == PLATFORM_PI):
+      LOGGER.warning("create Display with (...use_glx=True) for transparent background on x11 window. libGLX needs to be available")
+    opengles.glClearColor(GLclampf(r), GLclampf(g), GLclampf(b), GLclampf(alpha))
+    opengles.glColorMask(GLboolean(1), GLboolean(1), GLboolean(1), GLboolean(alpha < 1.0))
     # Switches off alpha blending with desktop (is there a bug in the driver?)
 
   def mouse_position(self):
@@ -315,21 +317,9 @@ class Display(object):
   def _loop_begin(self):
     # TODO(rec):  check if the window was resized and resize it, removing
     # code from MegaStation to here.
-    if pi3d.USE_PYGAME:
-      import pygame # although done in __init__ ...python namespaces aarg!!!
-      if pygame.event.get(pygame.QUIT):
-        self.destroy()
-    elif PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
-      '''n = xlib.XEventsQueued(self.opengl.d, xlib.QueuedAfterFlush)
-      for _ in range(n):
-          xlib.XNextEvent(self.opengl.d, self.ev)
-          if self.ev.type == KeyPress or self.ev.type == KeyRelease:
-              self.keys_pressed.append(self.ev)
-          elif self.ev.type == ClientMessage:
-            if (self.ev.xclient.data.l[0] == self.opengl.WM_DELETE_WINDOW.value):
-              self.destroy()'''
-
-      while sdl2.SDL_PollEvent(byref(self.ev)) != 0:
+    if pi3d.USE_SDL2:
+      import sdl2 # although done in __init__ ...python namespaces aarg!!!
+      while sdl2.SDL_PollEvent(byref(self.ev)) == 1:
         if self.ev.type == sdl2.SDL_QUIT:
           self.destroy()
         elif self.ev.type == sdl2.SDL_KEYDOWN:
@@ -337,8 +327,6 @@ class Display(object):
           if keysym.sym == sdl2.SDLK_ESCAPE:
             self.destroy()
           self.keys_pressed[keysym.sym] = [keysym.scancode, keysym.mod] # i.e. overwrite if already exists
-          #elif self.ev.key.keysym.sym == sdl2.SDLK_m: #TODO put a fullscreen function in somewhere
-          #  sdl2.SDL_SetWindowFullscreen(self.opengl.window, sdl2.SDL_WINDOW_FULLSCREEN_DESKTOP)
         elif self.ev.type == sdl2.SDL_KEYUP:
           self.keys_pressed.pop(self.ev.key.keysym.sym, None) # remove key from dict if it's there
         elif self.ev.type == sdl2.SDL_MOUSEMOTION:
@@ -360,7 +348,16 @@ class Display(object):
           if w.value != self.width or h.value != self.height:
             self.resize(w=w.value, h=h.value)
 
-    #self.clear()
+    elif PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
+      n = xlib.XEventsQueued(self.opengl.d, xlib.QueuedAfterFlush)
+      for _ in range(n):
+          xlib.XNextEvent(self.opengl.d, self.ev)
+          if self.ev.type == KeyPress or self.ev.type == KeyRelease:
+              self.event_list.append(self.ev)
+          elif self.ev.type == ClientMessage:
+            if (self.ev.xclient.data.l[0] == self.opengl.WM_DELETE_WINDOW.value):
+              self.destroy()
+    self.clear()
     with self.lock:
       self.sprites_to_load, to_load = set(), self.sprites_to_load
       self.sprites.extend(to_load)
@@ -384,7 +381,7 @@ class Display(object):
     for i in self.textures_dict:
       tex = self.textures_dict[i]
       if tex[1] == 1:
-        opengles.glDeleteTextures(1, byref(tex[0]))
+        opengles.glDeleteTextures(GLsizei(1), byref(tex[0]))
         to_del.append(i)
     for i in to_del:
       del self.textures_dict[i]
@@ -392,7 +389,7 @@ class Display(object):
     for i in self.vbufs_dict:
       vbuf = self.vbufs_dict[i]
       if vbuf[1] == 1:
-        opengles.glDeleteBuffers(1, byref(vbuf[0]))
+        opengles.glDeleteBuffers(GLsizei(1), byref(vbuf[0]))
         to_del.append(i)
     for i in to_del:
       del self.vbufs_dict[i]
@@ -400,17 +397,13 @@ class Display(object):
     for i in self.ebufs_dict:
       ebuf = self.ebufs_dict[i]
       if ebuf[1] == 1:
-        opengles.glDeleteBuffers(1, byref(ebuf[0]))
+        opengles.glDeleteBuffers(GLsizei(1), byref(ebuf[0]))
         to_del.append(i)
     for i in to_del:
       del self.ebufs_dict[i]
     self.tidy_needed = False
 
   def _loop_end(self):
-    if pi3d.USE_PYGAME:
-      import pygame
-      pygame.event.clear()
-      
     with self.lock:
       self.sprites_to_unload, to_unload = set(), self.sprites_to_unload
       if to_unload:
@@ -425,11 +418,12 @@ class Display(object):
     for sprite in to_unload:
       sprite.unload_opengl()
 
-    if getattr(self, 'frames_per_second', 0):
-      self.time += 1.0 / self.frames_per_second
-      delta = self.time - time.time()
+    if self.frames_per_second:
+      delta = 1.0 / self.frames_per_second - (time.time() - self.time)
       if delta > 0:
         time.sleep(delta)
+
+    self.time = time.time()
 
   def _for_each_sprite(self, function, sprites=None):
     if sprites is None:
@@ -455,8 +449,8 @@ class Display(object):
 def create(x=None, y=None, w=None, h=None, near=None, far=None,
            fov=DEFAULT_FOV, depth=DEFAULT_DEPTH, background=None,
            tk=False, window_title='', window_parent=None, mouse=False,
-           frames_per_second=None, samples=DEFAULT_SAMPLES, use_pygame=False, layer=0, 
-           display_config=DISPLAY_CONFIG_DEFAULT):
+           frames_per_second=None, samples=DEFAULT_SAMPLES, use_sdl2=False, layer=0, 
+           display_config=DISPLAY_CONFIG_DEFAULT, use_glx=False):
   """
   Creates a pi3d Display.
 
@@ -492,8 +486,8 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
     Maximum frames per second to render (None means "free running").
   *samples*
     EGL_SAMPLES default 0, set to 4 for improved anti-aliasing
-  *use_pygame*
-    To use pygame for display surface, mouse and keyboard - as per windows
+  *use_sdl2*
+    To use sdl2 for display surface, mouse and keyboard - as per windows
     This almost certainly would conflict if attempting to use in combination
     with tk=True. Default False
   *layer*
@@ -502,7 +496,7 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
   *display_config*
     Configuration of display - See pi3d.constants for DISPLAY_CONFIG options
   """
-  if tk: #NB this happens before Display created so use_pygame will not work on linux
+  if tk: #NB this happens before Display created so use_sdl2 will not work on linux
     if PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
       #just use python-xlib same as non-tk but need dummy behaviour
       from pi3d.Keyboard import Keyboard
@@ -513,10 +507,10 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
           self.key = ""
           self.winx, self.winy = 0, 0
           self.width, self.height = 1920, 1180
-          self.keys_pressed = {}
+          self.event_list = []
 
         def update(self):
-          if PLATFORM == PLATFORM_WINDOWS or pi3d.USE_PYGAME: #uses pygame UI
+          if PLATFORM == PLATFORM_WINDOWS or pi3d.USE_SDL2: #uses sdl2 UI
             k = self.tkKeyboard.read()
             if k == -1:
               self.key = ""
@@ -566,7 +560,7 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
     x = x or 0
     y = y or 0
 
-  display = Display(tkwin, use_pygame)
+  display = Display(tkwin, use_sdl2)
   if (w or 0) <= 0:
     w = display.max_width - 2 * x
     if w <= 0:
@@ -578,7 +572,7 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
 
   LOGGER.debug('Display size is w=%d, h=%d', w, h)
 
-  display.frames_per_second = frames_per_second
+  display.frames_per_second = frames_per_second or 0
 
   if near is None:
     near = DEFAULT_NEAR
@@ -597,15 +591,16 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
   display.bottom = y + h
   display.layer = layer
 
-  display.opengl.create_display(x, y, w, h, depth=depth, samples=samples, layer=layer, display_config=display_config, window_title=window_title)
+  display.opengl.create_display(x, y, w, h, depth=depth, samples=samples, layer=layer,
+                            display_config=display_config, window_title=window_title, use_glx=use_glx)
   if PLATFORM == PLATFORM_ANDROID:
     display.width = display.right = display.max_width = display.opengl.width #not available until after create_display
     display.height = display.bottom = display.max_height = display.opengl.height
     display.top = display.bottom = 0
-    if frames_per_second is not None:
+    if frames_per_second:
       display.android.frames_per_second = frames_per_second
-      display.frames_per_second = None #to avoid clash between two systems!
-    
+      display.frames_per_second = 0 #to avoid clash between two systems!
+
   display.mouse = None
 
   if mouse:

@@ -4,6 +4,29 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
+v2.34
+2019-11-16  Bug fix: move the changes in fragment shaders into the include file in
+            pi3d so minimise breaking shaders in pi3d_demos.
+
+v2.33
+2019-11-13  Improvement: use_glx argument for Display.create() allows X windows
+            to have transparent backgrounds. EGL function call arguments and
+            return types have been made more explicit. The shaders now have a
+            mechanism to convert the code into a form compatible with GL2.1,
+            GLES2.0 and GLES3.0 Display.create() detects the OpenGL/ES type and
+            version and saves this in Display.opengl.gl_id
+            This will probably be the last v2 release. v3 will use SDL2 as the
+            default window system rather than X directly. bcm will still be
+            enabled for Raspberry Pi without X desktop running.
+
+v2.32
+2019-07-22  Bug fix: points and lines now render on RPi4 along with utilities
+            that relied on this.
+            Improvement: The setting of the front face of the polygons to be
+            defined as clockwise now makes it clearer that the backs of faces
+            are culled by default. Also the OpenGL function call arguments have
+            been explicitly made using ctypes aliases to avoid confusion.
+
 v2.31
 2019-06-25  Improvement: Checking for new GL driver now not dependent on
             glxinfo (mesa-utils)

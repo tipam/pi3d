@@ -2,26 +2,26 @@ import ctypes
 import platform
 import time
 
-from ctypes import c_int, c_float
+from ctypes import c_int, c_uint, c_float, byref
 from six_mod.moves import xrange
 
 import pi3d
 from pi3d.constants import *
 
-from pi3d.util.Ctypes import c_ints
+if not PLATFORM in (PLATFORM_ANDROID, PLATFORM_PI, PLATFORM_WINDOWS):
+  from pyxlib import xlib
+  from pyxlib.x import *
+  from pyxlib import glx
+  X_WINDOW = True
+else:
+  X_WINDOW = False # use this for verifications involveing xlib and glx
 
-if pi3d.USE_PYGAME:
-  import pygame
-  from pygame.constants import FULLSCREEN
-elif PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
-  #from pyxlib import xlib
-  #from pyxlib.x import *
-  import sdl2
-  import sdl2.ext
-  import sdl2.video
+from pi3d.util.Ctypes import c_ints
 
 class DisplayOpenGL(object):
   def __init__(self):
+    self.d = None # display if x11 window or pygame used
+    self.gl_id = "GL" # default. Needed for converting shaders
     if PLATFORM == PLATFORM_ANDROID:
       self.width, self.height = 320, 480 # put in some non-zero place-holders
     elif PLATFORM == PLATFORM_PI:
@@ -31,95 +31,105 @@ class DisplayOpenGL(object):
       # Get the width and height of the screen
       w = c_int()
       h = c_int()
-      s = bcm.graphics_get_display_size(0, ctypes.byref(w), ctypes.byref(h))
+      s = bcm.graphics_get_display_size(0, byref(w), byref(h))
       assert s >= 0
       self.width, self.height = w.value, h.value
-    elif pi3d.USE_PYGAME:
-      import pygame
-      pygame.init()
-      self.d = pygame.display.set_mode((0, 0), 
-                      pygame.DOUBLEBUF | pygame.RESIZABLE | pygame.OPENGL)
-      info = pygame.display.Info()
-      self.width, self.height = info.current_w, info.current_h
+    elif pi3d.USE_SDL2:
+      import sdl2
+      stat = sdl2.SDL_Init(sdl2.SDL_INIT_VIDEO)
+      assert (stat == 0), 'failed to init sdl2: {}'.format(sdl2.SDL_GetError())
+      rect = sdl2.SDL_Rect()
+      if sdl2.SDL_GetDisplayBounds(0, byref(rect)) == 0:
+        self.width, self.height = rect.w, rect.h
 
     else: # use libX11
-      #self.d = xlib.XOpenDisplay(None)
-      flags = sdl2.SDL_WINDOW_OPENGL | sdl2.SDL_WINDOW_RESIZABLE
-      stat = sdl2.SDL_Init(sdl2.SDL_INIT_VIDEO, flags)
-      assert (stat == 0), 'failed to init sdl2: {}'.format(sdl2.SDL_GetError())
-      mode = sdl2.SDL_DisplayMode()
-      sdl2.SDL_GetCurrentDisplayMode(0, ctypes.byref(mode))
-      self.width, self.height = mode.w, mode.h
-      #if self.d:
-      #  self.screen = xlib.XDefaultScreenOfDisplay(self.d)
-      #  self.width, self.height = xlib.XWidthOfScreen(self.screen), xlib.XHeightOfScreen(self.screen)
-      #else:
-      #  print('************************\nX11 needs to be running\n************************')
-      #  assert False
+      #import subprocess # default name using XOpenDisplay(None) doesn't work on RPi4
+      #display_name = subprocess.check_output(['printenv', 'DISPLAY']).split()[0]
+      #display_name = b':' + subprocess.check_output([b'ls', b'/tmp/.X11-unix']).split(b'X')[1].trim()
+      import os
+      display_name = None
+      for f in os.listdir('/tmp/.X11-unix'):
+        display_name = b':' + f[1:].encode('utf-8')
+        break # just use the first one in the list if more than one
+      self.d = xlib.XOpenDisplay(display_name)
+      if self.d:
+        self.screen = xlib.XDefaultScreenOfDisplay(self.d)
+        self.width, self.height = xlib.XWidthOfScreen(self.screen), xlib.XHeightOfScreen(self.screen)
+      else:
+        print('************************\nX11 needs to be running\n************************')
+        assert False, 'Couldnt open DISPLAY {}'.format(display_name)
 
 
-  def create_display(self, x=0, y=0, w=0, h=0, depth=24, samples=4, layer=0, display_config=DISPLAY_CONFIG_DEFAULT, window_title=''):
+  def create_display(self, x=0, y=0, w=0, h=0, depth=24, samples=4, layer=0,
+                     display_config=DISPLAY_CONFIG_DEFAULT, window_title='',
+                     use_glx=False, use_sdl2=False):
+    self.use_glx = use_glx and (X_WINDOW and hasattr(glx, 'glXChooseFBConfig')) # only use glx if x11 window and glx available
     self.display_config = display_config
     self.window_title = window_title.encode()
-    '''self.display = openegl.eglGetDisplay(EGL_DEFAULT_DISPLAY)
-    assert self.display != EGL_NO_DISPLAY and self.display is not None
+    if not self.use_glx and not use_sdl2: #TODO way to use SDL2 with GLX for transparent background
+      self.display = openegl.eglGetDisplay(EGL_DEFAULT_DISPLAY)
+      assert self.display != EGL_NO_DISPLAY and self.display is not None
+      for smpl in [samples, 0]: # try with samples first but ANGLE dll can't cope so drop to 0 for windows
+        r = openegl.eglInitialize(self.display, None, None)
+        attribute_list = (EGLint * 19)(EGL_RED_SIZE, 8,
+                                EGL_GREEN_SIZE, 8,
+                                EGL_BLUE_SIZE, 8,
+                                EGL_DEPTH_SIZE, depth,
+                                EGL_ALPHA_SIZE, 8,
+                                EGL_BUFFER_SIZE, 32,
+                                EGL_SAMPLES, smpl,
+                                EGL_STENCIL_SIZE, 8,
+                                EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
+                                EGL_NONE)
+        numconfig = EGLint(0)
+        poss_configs = (EGLConfig * 5)(*(EGLConfig() for _ in range(5)))
 
-
-    for smpl in [samples, 0]: # try with samples first but ANGLE dll can't cope so drop to 0 for windows
-      r = openegl.eglInitialize(self.display, None, None)
-
-      attribute_list = c_ints((EGL_RED_SIZE, 8,
-                               EGL_GREEN_SIZE, 8,
-                               EGL_BLUE_SIZE, 8,
-                               EGL_DEPTH_SIZE, depth,
-                               EGL_ALPHA_SIZE, 8,
-                               EGL_BUFFER_SIZE, 32,
-                               EGL_SAMPLES, smpl,
-                               EGL_STENCIL_SIZE, 8,
-                               EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
-                               EGL_NONE))
-      numconfig = c_int()
-      self.config = ctypes.c_void_p()
-      r = openegl.eglChooseConfig(self.display,
-                                  attribute_list,
-                                  ctypes.byref(self.config), 1,
-                                  ctypes.byref(numconfig))
-
-      context_attribs = c_ints((EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE))
-      self.context = openegl.eglCreateContext(self.display, self.config,
-                                              EGL_NO_CONTEXT, context_attribs)
-      if self.context != EGL_NO_CONTEXT:
-        break
-    assert self.context != EGL_NO_CONTEXT and self.context is not None'''
+        r = openegl.eglChooseConfig(self.display,
+                                    attribute_list,
+                                    poss_configs, EGLint(len(poss_configs)),
+                                    byref(numconfig))
+        
+        context_attribs = (EGLint * 3)(EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE)
+        if numconfig.value > 0:
+          self.config = poss_configs[0]
+          self.context = openegl.eglCreateContext(self.display, self.config,
+                                                  EGL_NO_CONTEXT, context_attribs)
+          if self.context != EGL_NO_CONTEXT:
+            break
+      assert self.context != EGL_NO_CONTEXT and self.context is not None
 
     self.create_surface(x, y, w, h, layer)
+    opengles.glDepthRangef(GLfloat(0.0), GLfloat(1.0))
+    opengles.glClearColor (GLfloat(0.3), GLfloat(0.3), GLfloat(0.7), GLfloat(1.0))
+    opengles.glBindFramebuffer(GL_FRAMEBUFFER, GLuint(0))
 
-    opengles.glDepthRangef(c_float(0.0), c_float(1.0))
-    opengles.glClearColor (c_float(0.3), c_float(0.3), c_float(0.7), c_float(1.0))
-    opengles.glBindFramebuffer(GL_FRAMEBUFFER, 0)
     #Setup default hints
     opengles.glEnable(GL_CULL_FACE)
+    opengles.glCullFace(GL_BACK)
+    opengles.glFrontFace(GL_CW)
     opengles.glEnable(GL_DEPTH_TEST)
-    # these three required by some drivers
-    opengles.glEnable(GL_VERTEX_PROGRAM_POINT_SIZE)
     opengles.glEnable(GL_PROGRAM_POINT_SIZE)
     opengles.glEnable(GL_POINT_SPRITE)
-    
     opengles.glDepthFunc(GL_LESS)
-    opengles.glDepthMask(1)
-    opengles.glCullFace(GL_FRONT)
+    opengles.glDepthMask(GLboolean(True))
     opengles.glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST)
     opengles.glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, 
-                                            1, GL_ONE_MINUS_SRC_ALPHA)
-
-    # Switches off alpha blending problem with desktop - is there a bug in the
-    # driver?
-    # Thanks to Roland Humphries who sorted this one!!
-    opengles.glColorMask(1, 1, 1, 0)
-
+                                       1, GL_ONE_MINUS_SRC_ALPHA)
+    opengles.glColorMask(GLboolean(True), GLboolean(True), GLboolean(True), GLboolean(False))
     #opengles.glEnableClientState(GL_VERTEX_ARRAY)
     #opengles.glEnableClientState(GL_NORMAL_ARRAY)
+
     self.active = True
+
+    # get GL v GLES and version num for shader translation
+    version = opengles.glGetString(GL_VERSION)
+    version = ctypes.cast(version, c_char_p).value
+    if b"ES" in version:
+      for s in version.split():
+        if b'.' in s:
+          self.gl_id = b"GLES" + s.split(b'.')[0]
+          break
+    print("gl_id ", self.gl_id)
 
   def create_surface(self, x=0, y=0, w=0, h=0, layer=0):
     #Set the viewport position and size
@@ -132,8 +142,8 @@ class DisplayOpenGL(object):
       time.sleep(0.2) #give it a chance to find out the dimensions
       w = c_int()
       h = c_int()
-      openegl.eglQuerySurface(self.display, self.surface, EGL_WIDTH, ctypes.byref(w))
-      openegl.eglQuerySurface(self.display, self.surface, EGL_HEIGHT, ctypes.byref(h))
+      openegl.eglQuerySurface(self.display, self.surface, EGL_WIDTH, byref(w))
+      openegl.eglQuerySurface(self.display, self.surface, EGL_HEIGHT, byref(h))
       self.width, self.height = w.value, h.value
     elif PLATFORM == PLATFORM_PI:
       self.dispman_display = bcm.vc_dispmanx_display_open(0) #LCD setting
@@ -147,90 +157,119 @@ class DisplayOpenGL(object):
         DISPMANX_PROTECTION_NONE,
         alpha, 0, 0)
 
-      nativewindow = c_ints((self.dispman_element, w, h + 1))
+      nativewindow = (GLint * 3)(self.dispman_element, w, h + 1)
       bcm.vc_dispmanx_update_submit_sync(self.dispman_update)
 
-      nw_p = ctypes.pointer(nativewindow)
-      self.nw_p = nw_p
-
+      self.nw_p = ctypes.pointer(nativewindow)
+      ### NB changing the argtypes to allow passing of bcm native window is
+      ### deeply unsatisfactory. But xlib defines Window as c_ulong and ctypes
+      ### isn't happy about a pointer being cast to an int
+      openegl.eglCreateWindowSurface.argtypes = [EGLDisplay, EGLConfig,
+          POINTER((GLint * 3)), EGLint]
       self.surface = openegl.eglCreateWindowSurface(self.display, self.config, self.nw_p, 0)
 
-    elif pi3d.USE_PYGAME:
-      import pygame
-      flags = pygame.OPENGL
-      wsize = (w, h)
-      if w == self.width and h == self.height: # i.e. full screen
-        flags = pygame.FULLSCREEN | pygame.OPENGL
-        wsize = (0, 0)
-      if self.display_config & DISPLAY_CONFIG_NO_RESIZE:
-        flags |= pygame.RESIZABLE
-      if self.display_config & DISPLAY_CONFIG_NO_FRAME:
-        flags |= pygame.NOFRAME
-      if self.display_config & DISPLAY_CONFIG_FULLSCREEN:
-        flags |= pygame.FULLSCREEN
-      elif self.display_config & DISPLAY_CONFIG_MAXIMIZED:
-        flags |= pygame.FULLSCREEN
-        wsize = (0, 0)
-
-      self.width, self.height = w, h
-      self.d = pygame.display.set_mode(wsize, flags)
-      self.window = pygame.display.get_wm_info()["window"]
-      self.surface = openegl.eglCreateWindowSurface(self.display, self.config, self.window, 0)
-
-    else:
-      flags = sdl2.SDL_WINDOW_OPENGL
-      if ((w == self.width and h == self.height) or
-          (self.display_config & DISPLAY_CONFIG_FULLSCREEN)): # i.e. full screen
-        flags |= sdl2.SDL_WINDOW_FULLSCREEN_DESKTOP
-        mode = sdl2.SDL_DisplayMode()
-        sdl2.SDL_GetCurrentDisplayMode(0, ctypes.byref(mode))
-        w, h = mode.w, mode.h
-        x, y = sdl2.SDL_WINDOWPOS_CENTERED, sdl2.SDL_WINDOWPOS_CENTERED
-      if not (self.display_config & DISPLAY_CONFIG_NO_RESIZE): # sdl2 defaults to not resizable
-        flags |= sdl2.SDL_WINDOW_RESIZABLE
-      if self.display_config & DISPLAY_CONFIG_NO_FRAME:
-        flags |= sdl2.SDL_WINDOW_BORDERLESS
-      if self.display_config & DISPLAY_CONFIG_MAXIMIZED:
-        flags |= sdl2.SDL_WINDOW_MAXIMIZED
-      self.width, self.height = w, h
-      self.window = sdl2.SDL_CreateWindow(self.window_title,
-                                   x, y, w, h,
-                                   flags)
+    elif pi3d.USE_SDL2:
+      import sdl2
+      mode = sdl2.SDL_DisplayMode()
+      sdl2.SDL_GetCurrentDisplayMode(0, byref(mode))
+      flags = sdl2.SDL_WINDOW_OPENGL | sdl2.SDL_WINDOW_RESIZABLE
+      self.window = sdl2.SDL_CreateWindow(b'hello world',
+                                    0, 0, w, h,
+                                    flags)
       assert self.window, sdl2.SDL_GetError()
-      # Force OpenGL 2.1 'core' context.
-      # Must set *before* creating GL context!
-      sdl2.video.SDL_GL_SetAttribute(sdl2.video.SDL_GL_CONTEXT_MAJOR_VERSION, 2)
-      sdl2.video.SDL_GL_SetAttribute(sdl2.video.SDL_GL_CONTEXT_MINOR_VERSION, 1)
-      '''sdl2.video.SDL_GL_SetAttribute(sdl2.video.SDL_GL_CONTEXT_PROFILE_MASK, sdl2.video.SDL_GL_CONTEXT_PROFILE_CORE)
-      sdl2.video.SDL_GL_SetAttribute(sdl2.video.SDL_GL_RED_SIZE, 8)
-      sdl2.video.SDL_GL_SetAttribute(sdl2.video.SDL_GL_GREEN_SIZE, 8)
-      sdl2.video.SDL_GL_SetAttribute(sdl2.video.SDL_GL_BLUE_SIZE, 8)
-      sdl2.video.SDL_GL_SetAttribute(sdl2.video.SDL_GL_DEPTH_SIZE, 24)
-      sdl2.video.SDL_GL_SetAttribute(sdl2.video.SDL_GL_ALPHA_SIZE, 8)
-      sdl2.video.SDL_GL_SetAttribute(sdl2.video.SDL_GL_BUFFER_SIZE, 32)'''
-      sdl2.video.SDL_GL_SetAttribute(sdl2.video.SDL_GL_DOUBLEBUFFER, True)
-      self.sld_context = sdl2.SDL_GL_CreateContext(self.window)
+      #sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_CONTEXT_PROFILE_MASK, sdl2.SDL_GL_CONTEXT_PROFILE_ES);
+      sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_CONTEXT_PROFILE_MASK, sdl2.SDL_GL_CONTEXT_PROFILE_COMPATIBILITY)
+      sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_CONTEXT_MAJOR_VERSION, 2)
+      sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_CONTEXT_MINOR_VERSION, 0)
+      sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_DOUBLEBUFFER, 1)
+      sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_DEPTH_SIZE, 24)
+      self.context = sdl2.SDL_GL_CreateContext(self.window)
 
+    else: # work on basis it's X11
       # Set some WM info
-      #root = xlib.XRootWindowOfScreen(self.screen)
-      #self.window = xlib.XCreateSimpleWindow(self.d, root, x, y, w, h, 1, 0, 0)
+      self.root = xlib.XRootWindowOfScreen(self.screen)
+      if self.use_glx: # For drawing on X window with transparent background
+        numfbconfigs = c_int()
+        VisData = c_ints((
+          glx.GLX_RENDER_TYPE, glx.GLX_RGBA_BIT,
+          glx.GLX_DRAWABLE_TYPE, glx.GLX_WINDOW_BIT,
+          glx.GLX_DOUBLEBUFFER, True,
+          glx.GLX_RED_SIZE, 8,
+          glx.GLX_GREEN_SIZE, 8,
+          glx.GLX_BLUE_SIZE, 8,
+          glx.GLX_ALPHA_SIZE, 8,
+          glx.GLX_DEPTH_SIZE, 16,
+          0))
+        glx_screen = xlib.XDefaultScreen(self.d)
+        fbconfigs = glx.glXChooseFBConfig(self.d, glx_screen, VisData, byref(numfbconfigs))
+        fbconfig = 0
+        for i in range(numfbconfigs.value):
+          visual = glx.glXGetVisualFromFBConfig(self.d, fbconfigs[i]).contents
+          if not visual:
+            continue
+          pict_format = glx.XRenderFindVisualFormat(self.d, visual.visual).contents
+          if not pict_format:
+            continue
 
-      #s = ctypes.create_string_buffer(b'WM_DELETE_WINDOW')
-      #self.WM_DELETE_WINDOW = ctypes.c_ulong(xlib.XInternAtom(self.d, s, 0))
+          fbconfig = fbconfigs[i]
+          if pict_format.direct.alphaMask > 0:
+            break
+
+        if not fbconfig:
+          print("No matching FB config found")
+        #/* Create a colormap - only needed on some X clients, eg. IRIX */
+        cmap = xlib.XCreateColormap(self.d, self.root, visual.visual, AllocNone);
+        attr = xlib.XSetWindowAttributes()
+        attr.colormap = cmap
+        attr.background_pixmap = 0
+        attr.border_pixmap = 0
+        attr.border_pixel = 0
+        attr.event_mask = (StructureNotifyMask | EnterWindowMask | LeaveWindowMask | ExposureMask |
+                           ButtonPressMask | ButtonReleaseMask | OwnerGrabButtonMask | KeyPressMask | KeyReleaseMask)
+        attr_mask = (#  CWBackPixmap|
+          CWColormap | CWBorderPixel | CWEventMask)
+        self.window = xlib.XCreateWindow(self.d, self.root, x, y, w, h, 0,
+          visual.depth, 1, visual.visual, attr_mask, byref(attr))
+      else: # normal EGL created context
+        self.window = xlib.XCreateSimpleWindow(self.d, self.root, x, y, w, h, 1, 0, 0)
+
+      s = ctypes.create_string_buffer(b'WM_DELETE_WINDOW')
+      self.WM_DELETE_WINDOW = ctypes.c_ulong(xlib.XInternAtom(self.d, s, 0))
 
       # set window title
-      #title = ctypes.c_char_p(self.window_title)
-      #title_length = ctypes.c_int(len(self.window_title))
-      #wm_name_atom = ctypes.c_ulong(xlib.XInternAtom(self.d, ctypes.create_string_buffer(b'WM_NAME'), 0))
-      #string_atom = ctypes.c_ulong(xlib.XInternAtom(self.d, ctypes.create_string_buffer(b'STRING'), 0))
-      #xlib.XChangeProperty(self.d, self.window, wm_name_atom, string_atom, 8, xlib.PropModeReplace, title, title_length)
+      title = ctypes.c_char_p(self.window_title)
+      title_length = ctypes.c_int(len(self.window_title))
+      wm_name_atom = ctypes.c_ulong(xlib.XInternAtom(self.d, ctypes.create_string_buffer(b'WM_NAME'), 0))
+      string_atom = ctypes.c_ulong(xlib.XInternAtom(self.d, ctypes.create_string_buffer(b'STRING'), 0))
+      xlib.XChangeProperty(self.d, self.window, wm_name_atom, string_atom, 8, xlib.PropModeReplace, title, title_length)
+
+      if (w == self.width and h == self.height) or (self.display_config & DISPLAY_CONFIG_FULLSCREEN):
+        # set full-screen. Messy c function calls!
+        wm_state = ctypes.c_ulong(xlib.XInternAtom(self.d, b'_NET_WM_STATE', 0))
+        fullscreen = ctypes.c_ulong(xlib.XInternAtom(self.d, b'_NET_WM_STATE_FULLSCREEN', 0))  
+        fullscreen = ctypes.cast(ctypes.pointer(fullscreen), ctypes.c_char_p)
+        XA_ATOM = 4
+        xlib.XChangeProperty(self.d, self.window, wm_state, XA_ATOM, 32, xlib.PropModeReplace, fullscreen, 1)
+
+      self.width, self.height = w, h
+
+      if self.display_config & DISPLAY_CONFIG_HIDE_CURSOR:
+        black = xlib.XColor()
+        black.red = 0
+        black.green = 0
+        black.blue = 0
+        noData = ctypes.c_char_p(bytes([0, 0, 0, 0, 0, 0, 0, 0]))
+        bitmapNoData = xlib.XCreateBitmapFromData(self.d, self.window, noData, 8, 8)
+        invisibleCursor = xlib.XCreatePixmapCursor(self.d, bitmapNoData, bitmapNoData, 
+                                                black, black, 0, 0)
+        xlib.XDefineCursor(self.d, self.window, invisibleCursor)
 
       #TODO add functions to xlib for these window manager libx11 functions
       #self.window.set_wm_name('pi3d xlib window')
       #self.window.set_wm_icon_name('pi3d')
       #self.window.set_wm_class('draw', 'XlibExample')
 
-      #xlib.XSetWMProtocols(self.d, self.window, self.WM_DELETE_WINDOW, 1)
+      xlib.XSetWMProtocols(self.d, self.window, self.WM_DELETE_WINDOW, 1)
       #self.window.set_wm_hints(flags = Xutil.StateHint,
       #                         initial_state = Xutil.NormalState)
 
@@ -239,23 +278,38 @@ class DisplayOpenGL(object):
       #                                min_width = 20,
       #                                min_height = 20)
 
-      #xlib.XSelectInput(self.d, self.window, KeyPressMask | KeyReleaseMask)
-      #xlib.XMapWindow(self.d, self.window)
-      #xlib.XMoveWindow(self.d, self.window, x, y)
-      #self.surface = openegl.eglCreateWindowSurface(self.display, self.config, ctypes.byref(self.window.window), 0)
-      #self.surface = self.window.get_surface()
+      xlib.XSelectInput(self.d, self.window, KeyPressMask | KeyReleaseMask)
+      xlib.XMapWindow(self.d, self.window)
+      #xlib.XMoveWindow(self.d, self.window, x, y) #TODO this has to happen later. Works after rendering first frame. Check when
+      if self.use_glx:
+        dummy = c_int()
+        if not glx.glXQueryExtension(self.d, byref(dummy), byref(dummy)):
+          print("OpenGL not supported by X server\n")
+        dummy_glx_context = ctypes.cast(0, glx.GLXContext)
+        self.render_context = glx.glXCreateNewContext(self.d, fbconfig, glx.GLX_RGBA_TYPE, dummy_glx_context, True)
+        if not self.render_context:
+          print("Failed to create a GL context\n")
+        if not glx.glXMakeContextCurrent(self.d, self.window, self.window, self.render_context):
+          print("glXMakeCurrent failed for window\n")
+      else:
+        self.surface = openegl.eglCreateWindowSurface(self.display, self.config, self.window, 0)
 
-    #assert self.surface != EGL_NO_SURFACE and self.surface is not None
-    #r = openegl.eglMakeCurrent(self.display, self.surface, self.surface, self.context)
-    #assert r
+    if not self.use_glx and not pi3d.USE_SDL2:
+      assert self.surface != EGL_NO_SURFACE and self.surface is not None
+      r = openegl.eglMakeCurrent(self.display, self.surface, self.surface,
+                                self.context)
+      assert r
 
     #Create viewport
-    opengles.glViewport(0, 0, w, h)
+    opengles.glViewport(GLint(0), GLint(0), GLsizei(w), GLsizei(h))
 
   def resize(self, x=0, y=0, w=0, h=0, layer=0):
     # Destroy current surface and native window
-    if PLATFORM == PLATFORM_PI:
+    if self.use_glx:
+      glx.glXSwapBuffers(self.d, self.window)
+    else:
       openegl.eglSwapBuffers(self.display, self.surface)
+    if PLATFORM == PLATFORM_PI:
       openegl.eglDestroySurface(self.display, self.surface)
 
       self.dispman_update = bcm.vc_dispmanx_update_start(0)
@@ -268,8 +322,8 @@ class DisplayOpenGL(object):
       self.create_surface(x, y, w, h, layer)
     elif PLATFORM == PLATFORM_ANDROID:
       pass #TODO something here
-    opengles.glViewport(0, 0, w, h)
-
+    elif X_WINDOW:
+      xlib.XMoveResizeWindow(self.d, self.window, x, y, w, h)
 
   def change_layer(self, layer=0):
     if PLATFORM == PLATFORM_PI:
@@ -284,7 +338,7 @@ class DisplayOpenGL(object):
       ###### brute force tidying experiment TODO find nicer way ########
       if display:
         func_list = [[opengles.glIsBuffer, opengles.glDeleteBuffers,
-            dict(display.vbufs_dict.items() + display.ebufs_dict.items())],
+            dict(list(display.vbufs_dict.items()) + list(display.ebufs_dict.items()))],
             [opengles.glIsTexture, opengles.glDeleteTextures,
             display.textures_dict],
             [opengles.glIsProgram, opengles.glDeleteProgram, 0],
@@ -296,22 +350,24 @@ class DisplayOpenGL(object):
           if func[2]: # list to work through
             for i in func[2]:
               if func[0](func[2][i][0]) == 1: #check if i exists as a name
-                func[1](1, ctypes.byref(func[2][i][0]))
+                func[1](1, byref(func[2][i][0]))
           else: # just do sequential numbers
             for i in xrange(10000):
               if func[0](i) == 1: #check if i exists as a name
                 i_ct[0] = i #convoluted 1
-                func[1](ctypes.byref(i_ct))
+                func[1](byref(i_ct))
                 streak_start = i
               elif i > (streak_start + 100):
                 break
+
       ##################################################################
-      openegl.eglSwapBuffers(self.display, self.surface)
-      openegl.eglMakeCurrent(self.display, EGL_NO_SURFACE, EGL_NO_SURFACE,
-                             EGL_NO_CONTEXT)
-      openegl.eglDestroySurface(self.display, self.surface)
-      openegl.eglDestroyContext(self.display, self.context)
-      openegl.eglTerminate(self.display)
+      if not self.use_glx and not pi3d.USE_SDL2:
+        openegl.eglSwapBuffers(self.display, self.surface)
+        openegl.eglMakeCurrent(self.display, EGL_NO_SURFACE, EGL_NO_SURFACE,
+                              EGL_NO_CONTEXT)
+        openegl.eglDestroySurface(self.display, self.surface)
+        openegl.eglDestroyContext(self.display, self.context)
+        openegl.eglTerminate(self.display)
       if PLATFORM == PLATFORM_PI:
         self.dispman_update = bcm.vc_dispmanx_update_start(0)
         bcm.vc_dispmanx_element_remove(self.dispman_update, self.dispman_element)
@@ -319,18 +375,21 @@ class DisplayOpenGL(object):
         bcm.vc_dispmanx_display_close(self.dispman_display)
 
       self.active = False
-      if pi3d.USE_PYGAME:
-        import pygame
-        pygame.display.quit()
-      elif PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
-        #xlib.XCloseDisplay(self.d)
-        sdl2.SDL_GL_DeleteContext(self.context)
-        sdl2.SDL_DestroyWindow(self.window)
+      if pi3d.USE_SDL2:
+        import sdl2 # NB seems to be needed on some setups (64 bit anaconda windows!)
+        sdl2.SDL_GL_DeleteContext(self.opengl.context)
+        sdl2.SDL_DestroyWindow(self.opengl.window)
         sdl2.SDL_Quit()
+      elif PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
+        xlib.XCloseDisplay(self.d)
 
   def swap_buffers(self):
     #opengles.glFlush()
     #opengles.glFinish()
-    #openegl.eglSwapBuffers(self.display, self.surface)
-    sdl2.SDL_GL_SwapWindow(self.window)
-
+    if pi3d.USE_SDL2:
+      import sdl2
+      sdl2.SDL_GL_SwapWindow(self.window)
+    elif self.use_glx:
+      glx.glXSwapBuffers(self.d, self.window)
+    else:
+      openegl.eglSwapBuffers(self.display, self.surface)

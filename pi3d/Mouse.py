@@ -10,31 +10,15 @@ import pi3d
 if pi3d.USE_PYGAME:
   import pygame
 elif pi3d.PLATFORM != pi3d.PLATFORM_PI and pi3d.PLATFORM != pi3d.PLATFORM_ANDROID:
-  #from pyxlib import xlib
+  from pyxlib import xlib
   #from pyxlib.x import FocusChangeMask
-  import sdl2
-else:
-  import sdl2
 
 LOGGER = logging.getLogger(__name__)
 
-
 class _sdl2Mouse():
   """holds Mouse object, see also (the preferred) events methods"""
-  BUTTON_1 = sdl2.SDL_BUTTON_X1
-  BUTTON_2 = sdl2.SDL_BUTTON_X2
-  LEFT_BUTTON = sdl2.SDL_BUTTON_LEFT
-  RIGHT_BUTTON = sdl2.SDL_BUTTON_RIGHT
-  MIDDLE_BUTTON = sdl2.SDL_BUTTON_MIDDLE
-  BUTTON_UP = -1
-  MOUSE_WHEEL_UP = 13 # TODO way of setting IMPS/2 mouse to get scroll events
-  MOUSE_WHEEL_DOWN = 14 # would need 4 bytes rather than 3 in _check_event()
-  BUTTONS = BUTTON_1 & BUTTON_2
-  HEADER = 1 << 3
-  XSIGN = 1 << 4
-  YSIGN = 1 << 5
   INSTANCE = None
-
+  
   def __init__(self, mouse='mice', restrict=True, width=1920, height=1200, use_x=False):
     """
     Arguments:
@@ -47,7 +31,20 @@ class _sdl2Mouse():
       *height*
         mouse y limit
     """
-    super(_sdl2Mouse, self).__init__()
+    import sdl2
+    self.BUTTON_1 = sdl2.SDL_BUTTON_X1
+    self.BUTTON_2 = sdl2.SDL_BUTTON_X2
+    self.LEFT_BUTTON = sdl2.SDL_BUTTON_LEFT
+    self.RIGHT_BUTTON = sdl2.SDL_BUTTON_RIGHT
+    self.MIDDLE_BUTTON = sdl2.SDL_BUTTON_MIDDLE
+    self.BUTTON_UP = -1
+    self.MOUSE_WHEEL_UP = 13 # TODO way of setting IMPS/2 mouse to get scroll events
+    self.MOUSE_WHEEL_DOWN = 14 # would need 4 bytes rather than 3 in _check_event()
+    self.BUTTONS = self.BUTTON_1 & self.BUTTON_2
+    self.HEADER = 1 << 3
+    self.XSIGN = 1 << 4
+    self.YSIGN = 1 << 5
+
     self.running = False
     self.buffr = '' if six_mod.PY3 else b''
     self.lock = threading.RLock()
@@ -62,42 +59,6 @@ class _sdl2Mouse():
     self.display._mouse_relative = False if restrict else True
     sdl2.SDL_SetRelativeMouseMode(self.display._mouse_relative)
 
-    '''self.use_x = False
-    if use_x: # version as argument to __init__
-      if pi3d.PLATFORM != pi3d.PLATFORM_ANDROID and pi3d.PLATFORM != pi3d.PLATFORM_PI:
-        self.d = Display.INSTANCE.opengl.d
-        self.window = Display.INSTANCE.opengl.window
-        self.root = ctypes.c_ulong(0)
-        self.child = ctypes.c_ulong(0)
-        self.x = ctypes.c_int(0)
-        self.y = ctypes.c_int(0)
-        self.rootx = ctypes.c_int(0)
-        self.rooty = ctypes.c_int(0)
-        self.mask = ctypes.c_uint(0)
-        self.use_x = True
-        self.x_offset = Display.INSTANCE.width // 2 + 1
-        self.y_offset = Display.INSTANCE.height // 2
-
-    self.daemon = True # to kill app rather than waiting for mouse event
-    self.reset()'''
-
-  def reset(self):
-    with self.lock:
-      self._x = self._y = self._dx = self._dy = 0
-    self.button = False
-    self._buttons = 0
-
-  def start(self):
-    '''if not self.running:
-      self.running = True
-      super(_sdl2Mouse, self).start()'''
-    pass # function for compatibility
-
-  def run(self):
-    while self.running:
-      self._check_event()
-    self.fd.close()
-
   def position(self):
     ''' returns x, y tuple
     '''
@@ -108,7 +69,6 @@ class _sdl2Mouse():
     '''
     dx, dy = self.display._mouse_dx, self.display._mouse_dy
     self.display._mouse_dx, self.display._mouse_dy = 0.0, 0.0
-    #print(self.display._mouse_x, " ", end="")
     return dx, dy
 
   def button_status(self):
@@ -118,45 +78,17 @@ class _sdl2Mouse():
       return b # TODO use x, y, clicks etc
     return self.BUTTON_UP # all buttons up
 
+  # functions for compatibility
+  def reset(self):
+    pass
+  def start(self):
+    pass
+  def run(self):
+    pass
   def _check_event(self):
-
-    if len(self.buffr) >= 3:
-      buttons = [ord(c) for c in self.buffr]
-      if buttons[0] in [8, 9, 10, 12]:
-        self._buttons = buttons[0]
-      #else:
-      #  self._buttons = 0
-      buttons = buttons[0]
-      self.buffr = self.buffr[1:]
-      if (buttons & _nixMouse.HEADER) > 0:
-        dx, dy = map(ord, self.buffr[0:2])
-        self.buffr = self.buffr[2:]
-        self.button = buttons & _nixMouse.BUTTONS
-        if (buttons & _nixMouse.XSIGN) > 0:
-          dx -= 256
-        if (buttons & _nixMouse.YSIGN) > 0:
-          dy -= 256
-
-        x = self._x + dx
-        y = self._y + dy
-        if self.restrict:
-          x = min(max(x, 0), self.width - 1)
-          y = min(max(y, 0), self.height - 1)
-
-        with self.lock:
-          self._x, self._y, self._dx, self._dy = x, y, dx, dy
-
-    else:
-      try:
-        strn = self.fd.read(3).decode("latin-1")
-        self.buffr += strn
-      except Exception as e:
-        LOGGER.error("exception is: %s", e)
-        self.stop()
-        return
-
+    pass
   def stop(self):
-    self.running = False
+    pass
 
 class _nixMouse(threading.Thread):
   """holds Mouse object, see also (the preferred) events methods"""
@@ -306,9 +238,9 @@ class _nixMouse(threading.Thread):
 
   def stop(self):
     self.running = False
-
+'''
 class _pygameMouse(object):
-  """holds Mouse object, see also (the preferred) events methods"""
+  #holds Mouse object, see also (the preferred) events methods
   BUTTON_1 = 1 << 1
   BUTTON_2 = 1 << 2
   LEFT_BUTTON = 9 # 1001
@@ -326,17 +258,17 @@ class _pygameMouse(object):
   INSTANCE = None
 
   def __init__(self, restrict=True, width=1920, height=1200, use_x=False):
-    """
-    Arguments:
-      *mouse*
-        /dev/input/ device name
-      *restrict*
-        stops or allows the mouse x and y values to carry on going beyond:
-      *width*
-        mouse x limit
-      *height*
-        mouse y limit
-    """
+    #
+    #Arguments:
+    #  *mouse*
+    #    /dev/input/ device name
+    #  *restrict*
+    #    stops or allows the mouse x and y values to carry on going beyond:
+    #  *width*
+    #    mouse x limit
+    #  *height*
+    #    mouse y limit
+    #
     self._x = self._y = self._dx = self._dy = 0
     from pi3d.Display import Display
     self.centre = (Display.INSTANCE.width / 2, Display.INSTANCE.height / 2)
@@ -381,42 +313,42 @@ class _pygameMouse(object):
         self._buttons = _pygameMouse.BUTTON_UP
 
   def position(self):
-    ''' returns x, y tuple
-    '''
+    # returns x, y tuple
+    #
     self._check_event()
     return self._x, self._y
 
   def velocity(self):
-    ''' returns dx, dy tuple of distance moved since last reading
-    '''
+    # returns dx, dy tuple of distance moved since last reading
+    #
     self._check_event()
     dx, dy = self._dx, self._dy
     self._dx, self._dy = 0, 0 # need resetting after a read as no event will do this
     return dx, dy
     
   def button_status(self):
-    '''return the button status - use events system for capturing button
-    events more scientifically.
-    in _check_event self.buffr returns the following values:
-    Mouse.LEFT_BUTTON 9
-    Mouse.RIGHT_BUTTON 10
-    Mouse.MIDDLE_BUTTON 12
-    Mouse.BUTTONUP 8
-    '''
+    #return the button status - use events system for capturing button
+    #events more scientifically.
+    #in _check_event self.buffr returns the following values:
+    #Mouse.LEFT_BUTTON 9
+    #Mouse.RIGHT_BUTTON 10
+    #Mouse.MIDDLE_BUTTON 12
+    #Mouse.BUTTONUP 8
+
     self._check_event()
     b_val = self._buttons
     #self._buttons = _pygameMouse.BUTTON_UP
     return b_val
 
   def stop(self):
-    pass
+    pass'''
 
 def Mouse(*args, **kwds):
-  if pi3d.USE_PYGAME:
-    if not _pygameMouse.INSTANCE:
-      _pygameMouse.INSTANCE = _pygameMouse(*args, **kwds)
-    return _pygameMouse.INSTANCE
-  else:
+  if pi3d.USE_SDL2:
     if not _sdl2Mouse.INSTANCE:
       _sdl2Mouse.INSTANCE = _sdl2Mouse(*args, **kwds)
     return _sdl2Mouse.INSTANCE
+  else:
+    if not _nixMouse.INSTANCE:
+      _nixMouse.INSTANCE = _nixMouse(*args, **kwds)
+    return _nixMouse.INSTANCE

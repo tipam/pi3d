@@ -40,21 +40,20 @@ class Camera(DefaultInstance):
     self.at = at
     self.start_eye = eye # for reset with different lens settings
     self.eye = np.array(eye)
-    from pi3d.Display import Display
-    self.display = Display.INSTANCE
     if lens is None:
-      lens = [self.display.near, self.display.far, self.display.fov,
-                  self.display.width / float(self.display.height)]
+      from pi3d.Display import Display
+      lens = [Display.INSTANCE.near, Display.INSTANCE.far, Display.INSTANCE.fov,
+                  Display.INSTANCE.width / float(Display.INSTANCE.height)]
     self.lens = lens
-    self.view = self._LookAtMatrix(at, eye, [0, 1, 0])
+    self.view = _LookAtMatrix(at, eye, [0, 1, 0])
     if is_3d:
-      self.projection = self._ProjectionMatrix(lens[0], lens[1], lens[2] / scale, lens[3])
+      self.projection = _ProjectionMatrix(lens[0], lens[1], lens[2] / scale, lens[3])
     else:
-      self.projection = self._OrthographicMatrix(scale=scale)
+      self.projection = _OrthographicMatrix(scale=scale)
     self.model_view = np.dot(self.view, self.projection)
     # Apply transform/rotation first, then shift into perspective space.
     self.mtrx = np.array(self.model_view, copy=True)
-    # self.L_reflect = self._LookAtMatrix(at,eye,[0,1,0],reflect=True)
+    # self.L_reflect = _LookAtMatrix(at,eye,[0,1,0],reflect=True)
     self.rtn = [0.0, 0.0, 0.0]
     self.scale = scale
     self.was_moved = True
@@ -71,21 +70,21 @@ class Camera(DefaultInstance):
 
   @staticmethod
   def _default_instance():
-    return Camera()
+    from pi3d.Display import Display
+
+    return Camera((0, 0, 0), (0, 0, -0.1),
+                  [Display.INSTANCE.near, Display.INSTANCE.far, Display.INSTANCE.fov,
+                  Display.INSTANCE.width / float(Display.INSTANCE.height)])
 
   def reset(self, lens=None, is_3d=True, scale=1.0):
     """Has to be called each loop if the camera position or rotation changes"""
-    if self.display.resized:
-      lens = [self.display.near, self.display.far, self.display.fov,
-                  self.display.width / float(self.display.height)]
-      self.display.resized = False
     if lens is not None:
-      view = self._LookAtMatrix(self.at, self.start_eye, [0, 1, 0])
-      projection = self._ProjectionMatrix(lens[0], lens[1], lens[2] / scale, lens[3])
+      view = _LookAtMatrix(self.at, self.start_eye, [0, 1, 0])
+      projection = _ProjectionMatrix(lens[0], lens[1], lens[2] / scale, lens[3])
       self.model_view = np.dot(view, projection)
     elif not is_3d:
-      view = self._LookAtMatrix(self.at, self.start_eye, [0, 1, 0])
-      projection = self._OrthographicMatrix(scale=scale)
+      view = _LookAtMatrix(self.at, self.start_eye, [0, 1, 0])
+      projection = _OrthographicMatrix(scale=scale)
       self.model_view = np.dot(view, projection)
     # TODO some way of resetting to original matrix
     self.mtrx = np.copy(self.model_view)
@@ -327,77 +326,78 @@ class Camera(DefaultInstance):
   
   matrix_from_two_vecors = matrix_from_two_vectors # original had typo!
 
-  #################################
-  ####### utility functions #######
+#################################
+####### utility functions #######
 
-  def _LookAtMatrix(self, at, eye, up=[0, 1, 0], reflect=False):
-    """Define a matrix looking at.
+def _LookAtMatrix(at, eye, up=[0, 1, 0], reflect=False):
+  """Define a matrix looking at.
 
-    Arguments:
-      *at*
-        tuple (x,y,z) of point camera pointed at, floats
-      *eye*
-        matrix [x,y,z] position of camera, floats
+  Arguments:
+    *at*
+      tuple (x,y,z) of point camera pointed at, floats
+    *eye*
+      matrix [x,y,z] position of camera, floats
 
-    Keyword arguments:
-      *up*
-        array vector of up direction
-      *eflect*
-        boolean if matrix is reflected
-    """
-    # If reflect, then reflect in plane -20.0 (water depth)
-    if reflect:
-      #depth = -20.0 # Shallower to avoid edge effects
-      eye[1] *= -1
-      at[1] *= -1
-    zaxis = vec_normal(vec_sub(at, eye))
-    xaxis = vec_normal(vec_cross(up, zaxis))
-    yaxis = vec_cross(zaxis, xaxis)
-    xaxis.append(-vec_dot(xaxis, eye))
-    yaxis.append(-vec_dot(yaxis, eye))
-    zaxis.append(-vec_dot(zaxis, eye))
-    z = [0, 0, 0, 1.0]
-    return np.array([[xaxis[a], yaxis[a], zaxis[a], z[a]] for a in range(4)],
-                dtype="float32")
+  Keyword arguments:
+    *up*
+      array vector of up direction
+    *eflect*
+      boolean if matrix is reflected
+  """
+  # If reflect, then reflect in plane -20.0 (water depth)
+  if reflect:
+    #depth = -20.0 # Shallower to avoid edge effects
+    eye[1] *= -1
+    at[1] *= -1
+  zaxis = vec_normal(vec_sub(at, eye))
+  xaxis = vec_normal(vec_cross(up, zaxis))
+  yaxis = vec_cross(zaxis, xaxis)
+  xaxis.append(-vec_dot(xaxis, eye))
+  yaxis.append(-vec_dot(yaxis, eye))
+  zaxis.append(-vec_dot(zaxis, eye))
+  z = [0, 0, 0, 1.0]
+  return np.array([[xaxis[a], yaxis[a], zaxis[a], z[a]] for a in range(4)],
+               dtype="float32")
 
-  def _ProjectionMatrix(self, near, far, fov, aspectRatio):
-    """Set up perspective projection matrix
+def _ProjectionMatrix(near, far, fov, aspectRatio):
+  """Set up perspective projection matrix
 
-    Keyword arguments:
-      *near*
-        distance to near plane, float
-      *far*
-        distance to far plane, float
-      *fov*
-        **VERTICAL** field of view in degrees, float
-      *aspectRatio*
-        aspect ratio = width / height of the scene, float
-    """
-    # Matrices are considered to be M[row][col]
-    # Use DirectX convention, so need to do rowvec*Matrix to transform
-    size = 1 / math.tan(math.radians(fov)/2.0)
-    M = np.zeros((4, 4), dtype="float32")
-    M[0,0] = size/aspectRatio
-    M[1,1] = size  #negative value reflects scene on the Y axis
-    M[2,2] = (far + near) / (far - near)
-    M[2,3] = 1
-    M[3,2] = -(2 * far * near)/(far - near)
-    return M
+  Keyword arguments:
+    *near*
+      distance to near plane, float
+    *far*
+      distance to far plane, float
+    *fov*
+      **VERTICAL** field of view in degrees, float
+    *aspectRatio*
+      aspect ratio = width / height of the scene, float
+  """
+  # Matrices are considered to be M[row][col]
+  # Use DirectX convention, so need to do rowvec*Matrix to transform
+  size = 1 / math.tan(math.radians(fov)/2.0)
+  M = np.zeros((4, 4), dtype="float32")
+  M[0,0] = size/aspectRatio
+  M[1,1] = size  #negative value reflects scene on the Y axis
+  M[2,2] = (far + near) / (far - near)
+  M[2,3] = 1
+  M[3,2] = -(2 * far * near)/(far - near)
+  return M
 
-  def _OrthographicMatrix(self, scale=1.0):
-    """Set up orthographic projection matrix
+def _OrthographicMatrix(scale=1.0):
+  """Set up orthographic projection matrix
 
-    Keyword argument:
-      *scale*
-        number of pixels per unit of size
+  Keyword argument:
+    *scale*
+      number of pixels per unit of size
 
-    """
-    M = np.zeros((4, 4), dtype="float32")
-    M[0,0] = 2.0 * scale / self.display.width
-    M[1,1] = 2.0 * scale / self.display.height
-    #M[2,2] = 2.0 / self.display.width
-    M[2,2] = 2.0 / 10000.0
-    M[3,2] = -1
-    M[3,3] = 1
-    return M
+  """
+  from pi3d.Display import Display
+  M = np.zeros((4, 4), dtype="float32")
+  M[0,0] = 2.0 * scale / Display.INSTANCE.width
+  M[1,1] = 2.0 * scale / Display.INSTANCE.height
+  #M[2,2] = 2.0 / Display.INSTANCE.width
+  M[2,2] = 2.0 / 10000.0
+  M[3,2] = -1
+  M[3,3] = 1
+  return M
 

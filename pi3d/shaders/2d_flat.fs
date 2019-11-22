@@ -16,5 +16,3 @@ void main(void) {
   gl_FragColor = texc;
   gl_FragColor.a *= unif[5][2];
 }
-
-

@@ -1,5 +1,5 @@
 // ----- boiler-plate code for fragment shader variable definition
-
+#version 120
 //precision mediump float;
 
 uniform sampler2D tex0;
@@ -12,3 +12,5 @@ uniform vec3 unif[20];
 
 varying float dist;
 varying float fog_start;
+
+//fragcolor

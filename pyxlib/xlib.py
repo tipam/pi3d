@@ -1,5 +1,3 @@
-from six_mod.moves import xrange
-
 from ctypes import *
 from ctypes.util import find_library
 from .x import *
@@ -581,7 +579,7 @@ _XImage._fields_ = [
   ('height', c_int),
   ('xoffset', c_int),
   ('format', c_int),
-  ('data', c_char_p),
+  ('data', c_void_p),
   ('byte_order', c_int),
   ('bitmap_unit', c_int),
   ('bitmap_bit_order', c_int),
@@ -1985,7 +1983,7 @@ XOrientation = c_int
   XOMOrientation_TTB_LTR,
   XOMOrientation_TTB_RTL,
   XOMOrientation_Context
-) = map(c_int, xrange(5))
+) = map(c_int, range(5))
 
 #~ typedef struct {
     #~ int num_orientation;
@@ -2267,7 +2265,7 @@ XIMCaretDirection = c_int
   XIMLineEnd,
   XIMAbsolutePosition,
   XIMDontChange
-) = map(c_int, xrange(12))
+) = map(c_int, range(12))
 
 #~ typedef struct _XIMStringConversionCallbackStruct {
     #~ XIMStringConversionPosition position;
@@ -2311,7 +2309,7 @@ XIMCaretStyle = c_int
   XIMIsInvisible,
   XIMIsPrimary,
   XIMIsSecondary
-) = map(c_int, xrange(3))
+) = map(c_int, range(3))
 
 #~ typedef struct _XIMPreeditCaretCallbackStruct {
     #~ int position;     /* Caret offset within pre-edit string */
@@ -2334,7 +2332,7 @@ XIMStatusDataType = c_int
 (
   XIMTextType,
   XIMBitmapType
-) = map(c_int, xrange(2))
+) = map(c_int, range(2))
 
 
 #~ typedef struct _XIMStatusDrawCallbackStruct {
@@ -2504,7 +2502,7 @@ XInitImage.argtypes = [POINTER(XImage)]
 #~ );
 XGetImage = libX11.XGetImage
 XGetImage.restype = POINTER(XImage)
-XGetImage.argtypes = [POINTER(Display), Drawable, c_int, c_int, c_uint, c_uint, c_ulong, c_int]
+XGetImage.argtypes = [POINTER(Display), POINTER(Display), c_int, c_int, c_uint, c_uint, c_ulong, c_int]
 
 #~ extern XImage *XGetSubImage(
     #~ Display*    /* display */,
@@ -2606,7 +2604,7 @@ XKeysymToString.argtypes = [KeySym]
 XSynchronize = c_void_p
 
 #~ extern int (*XSetAfterFunction(
-    #~ Display*    /* display */,
+    #~ Display*    /* display */
     #~ int (*) (
        #~ Display*  /* display */
             #~ )    /* procedure */

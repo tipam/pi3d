@@ -1,4 +1,5 @@
-precision mediump float;
+#version 120
+//precision mediump float;
 
 uniform sampler2D tex0;
 uniform vec3 unib[5];
@@ -8,6 +9,8 @@ uniform vec3 unif[20];
 //uniform vec3(w, h, full_h) => unif[15]
 
 varying vec2 pix_inv;
+
+//fragcolor
 
 void main(void) {
   vec2 coord = vec2(gl_FragCoord); //pixel position

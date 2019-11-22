@@ -5,10 +5,11 @@ import sys, os
 import logging
 from pkg_resources import resource_string
 
-from pi3d.constants import opengles, GL_FRAGMENT_SHADER, GL_VERTEX_SHADER
+from pi3d.constants import opengles, GL_FRAGMENT_SHADER, GL_VERTEX_SHADER, GLsizei, GLint
 from pi3d.util.Ctypes import c_chars
 from pi3d.util import Loadable
 from pi3d.util.DefaultInstance import DefaultInstance
+from pi3d.Display import Display # needed for gl_id
 
 # This class based on Peter de Rivaz's mandlebrot example + Tim Skillman's work on pi3d2
 LOGGER = logging.getLogger(__name__)
@@ -77,6 +78,7 @@ class Shader(DefaultInstance):
       *fshader_source*
         String with the code for the fragment shader.
     """
+    self.gl_id = Display.INSTANCE.opengl.gl_id
     try:
       assert Loadable.is_display_thread()
     except AssertionError as err:
@@ -90,12 +92,12 @@ class Shader(DefaultInstance):
     self.shfile = shfile
 
     def make_shader(src, suffix, shader_type):
-      src = src or self._load_shader(shfile + suffix)
+      src = src or self._load_shader(shfile + suffix, shader_type)
       if type(src) != bytes: #if ..shader_source passed as a string to __init__
         src = src.encode()
       characters = ctypes.c_char_p(src)
       shader = opengles.glCreateShader(shader_type)
-      src_len = ctypes.c_int(len(src))
+      src_len = GLint(len(src))
       opengles.glShaderSource(shader, 1, characters, ctypes.byref(src_len))
       opengles.glCompileShader(shader)
       self.showshaderlog(shader, src)
@@ -148,7 +150,7 @@ class Shader(DefaultInstance):
     """Prints the compile log for a shader"""
     N = 1024
     log = (ctypes.c_char * N)()
-    loglen = ctypes.c_int()
+    loglen = GLsizei()
     opengles.glGetShaderInfoLog(
       shader, N, ctypes.byref(loglen), log)
     if len(log.value) > 0:
@@ -158,11 +160,11 @@ class Shader(DefaultInstance):
     """Prints the compile log for a program"""
     N = 1024
     log = (ctypes.c_char * N)()
-    loglen = ctypes.c_int()
+    loglen = GLsizei()
     opengles.glGetProgramInfoLog(
       shader, N, ctypes.byref(loglen), log)
 
-  def _load_shader(self, sfile):
+  def _load_shader(self, sfile, shader_type):
     ''' takes a file name as string, tries to find it then returns the
     contents as a bytes object swapping out the #include statements recursively. 
     This means that if you make your own shader with #includes, the names 
@@ -180,7 +182,21 @@ class Shader(DefaultInstance):
     for l in st.split(b'\n'):
       if b'#include' in l:
         inc_file = l.split()[1]
-        new_text = new_text + self._load_shader(inc_file) + b'\n'
+        new_text = new_text + self._load_shader(inc_file, shader_type) + b'\n'
       else:
+        if self.gl_id == b"GLES2":
+            l = l.replace(b"//precision", b"precision")
+            l = l.replace(b"version 120", b"version 100")
+        elif self.gl_id == b"GLES3":
+          l = l.replace(b"version 120", b"version 300 es")
+          l = l.replace(b"//precision", b"precision")
+          l = l.replace(b"attribute", b"in")
+          l = l.replace(b"texture2D", b"texture")
+          l = l.replace(b"//fragcolor", b"out vec4 fragColor;")
+          l = l.replace(b"gl_FragColor", b"fragColor")
+          if shader_type == GL_VERTEX_SHADER:
+            l = l.replace(b"varying", b"out")
+          else:
+            l = l.replace(b"varying", b"in")
         new_text = new_text + l + b'\n'
     return new_text
