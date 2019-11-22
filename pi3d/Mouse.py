@@ -19,7 +19,7 @@ class _sdl2Mouse():
   """holds Mouse object, see also (the preferred) events methods"""
   INSTANCE = None
   
-  def __init__(self, mouse='mice', restrict=True, width=1920, height=1200, use_x=False):
+  def __init__(self, mouse='mice', restrict=None, width=1920, height=1200, use_x=False):
     """
     Arguments:
       *mouse*
@@ -50,13 +50,14 @@ class _sdl2Mouse():
     self.lock = threading.RLock()
     self.width = width
     self.height = height
-    self.restrict = restrict
 
-    #create a pointer to this so Display.destroy can stop the thread
-    from pi3d.Display import Display
-    self.display = Display.INSTANCE
+    self.display = pi3d.Display.Display.INSTANCE
     self.display.external_mouse = self #TODO check how copes with circular refs
-    self.display._mouse_relative = False if restrict else True
+    if restrict is None: # not specified in arguments
+      if self.display._mouse_relative is None: # not set with Display.create()
+        self.display._mouse_relative = False # default
+    else:
+      self.display._mouse_relative = not restrict # set with mouse argument
     sdl2.SDL_SetRelativeMouseMode(self.display._mouse_relative)
 
   def position(self):

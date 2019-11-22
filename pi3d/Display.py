@@ -134,7 +134,7 @@ class Display(object):
     self.last_shader = None
     self.last_textures = [None for _ in range(8)] # 8 is max no. texture2D on broadcom GPU
     self.external_mouse = None
-    self._mouse_relative = False #TODO set this with init or method - see SetRelativeMouseMode below
+    self._mouse_relative = None
     self._mouse_x, self._mouse_y, self._mouse_dx, self._mouse_dy = 0.0, 0.0, 0.0, 0.0
     self.offscreen_tex = False # used in Buffer.draw() to force reload of textures
     self.event_list = []
@@ -592,7 +592,8 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
   display.layer = layer
 
   display.opengl.create_display(x, y, w, h, depth=depth, samples=samples, layer=layer,
-                            display_config=display_config, window_title=window_title, use_glx=use_glx)
+                            display_config=display_config, window_title=window_title,
+                            use_glx=use_glx, use_sdl2=use_sdl2)
   if PLATFORM == PLATFORM_ANDROID:
     display.width = display.right = display.max_width = display.opengl.width #not available until after create_display
     display.height = display.bottom = display.max_height = display.opengl.height

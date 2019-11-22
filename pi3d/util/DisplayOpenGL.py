@@ -173,17 +173,20 @@ class DisplayOpenGL(object):
       mode = sdl2.SDL_DisplayMode()
       sdl2.SDL_GetCurrentDisplayMode(0, byref(mode))
       flags = sdl2.SDL_WINDOW_OPENGL | sdl2.SDL_WINDOW_RESIZABLE
-      self.window = sdl2.SDL_CreateWindow(b'hello world',
-                                    0, 0, w, h,
-                                    flags)
+      self.window = sdl2.SDL_CreateWindow(b'hello world', x, y, w, h, flags)
       assert self.window, sdl2.SDL_GetError()
-      #sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_CONTEXT_PROFILE_MASK, sdl2.SDL_GL_CONTEXT_PROFILE_ES);
       sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_CONTEXT_PROFILE_MASK, sdl2.SDL_GL_CONTEXT_PROFILE_COMPATIBILITY)
       sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_CONTEXT_MAJOR_VERSION, 2)
       sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_CONTEXT_MINOR_VERSION, 0)
       sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_DOUBLEBUFFER, 1)
       sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_DEPTH_SIZE, 24)
       self.context = sdl2.SDL_GL_CreateContext(self.window)
+      if (w == self.width and h == self.height) or (self.display_config & DISPLAY_CONFIG_FULLSCREEN):
+        sdl2.SDL_SetWindowFullscreen(self.window, sdl2.SDL_WINDOW_FULLSCREEN)
+      if self.display_config & DISPLAY_CONFIG_HIDE_CURSOR:
+        disp = pi3d.Display.Display.INSTANCE
+        disp._mouse_relative = True
+        sdl2.SDL_SetRelativeMouseMode(True) #TODO this will be overidden by creation Mouse
 
     else: # work on basis it's X11
       # Set some WM info
@@ -307,6 +310,9 @@ class DisplayOpenGL(object):
     # Destroy current surface and native window
     if self.use_glx:
       glx.glXSwapBuffers(self.d, self.window)
+    elif pi3d.USE_SDL2:
+      import sdl2
+      sdl2.SDL_GL_SwapWindow(self.window)
     else:
       openegl.eglSwapBuffers(self.display, self.surface)
     if PLATFORM == PLATFORM_PI:
@@ -322,11 +328,14 @@ class DisplayOpenGL(object):
       self.create_surface(x, y, w, h, layer)
     elif PLATFORM == PLATFORM_ANDROID:
       pass #TODO something here
+    elif pi3d.USE_SDL2:
+      sdl2.SDL_SetWindowPosition(self.window, x, y)
+      sdl2.SDL_SetWindowSize(self.window, w, h)
     elif X_WINDOW:
       xlib.XMoveResizeWindow(self.d, self.window, x, y, w, h)
 
   def change_layer(self, layer=0):
-    if PLATFORM == PLATFORM_PI:
+    if PLATFORM == PLATFORM_PI: # only works with dispmanx on RPi
       self.dispman_update = bcm.vc_dispmanx_update_start(0)
       bcm.vc_dispmanx_element_change_layer(self.dispman_update,
                                      self.dispman_element, layer)
