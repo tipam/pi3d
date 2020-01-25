@@ -47,4 +47,5 @@ class ShadowCaster(OffScreenTexture):
 
 
   def draw_tree(self, tree, shader):
-    tree.draw(shader, [self])
+    tree.draw(shader, [self.color])
+

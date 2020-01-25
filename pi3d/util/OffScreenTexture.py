@@ -4,54 +4,91 @@ import numpy as np
 import pi3d
 from pi3d.constants import (GL_FRAMEBUFFER, GL_RENDERBUFFER, GL_COLOR_ATTACHMENT0,
                     GL_TEXTURE_2D, GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT,
-                    GL_DEPTH_BUFFER_BIT, GL_COLOR_BUFFER_BIT, GLuint, GLsizei)
-from pi3d.Texture import Texture
-
+                    GL_DEPTH_BUFFER_BIT, GL_COLOR_BUFFER_BIT, GL_TEXTURE_MIN_FILTER,
+                    GL_TEXTURE_MAG_FILTER, GL_TEXTURE_WRAP_S, GL_TEXTURE_WRAP_T, GL_NEAREST,
+                    GL_LINEAR, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE, GL_RGBA, GL_DEPTH_COMPONENT,
+                    GL_UNSIGNED_SHORT, GLuint, GLsizei)
 
 OFFSCREEN_QUEUE = []
 
-class OffScreenTexture(Texture):
-  """For creating special effect after rendering to texture rather than
-  onto the display. Used by Defocus, ShadowCaster, Clashtest etc
+class TextureShell():
+  """ Allows OffscreenTexture to hold a color texture and a depth texture that can be
+  added to Buffer.texture allowing it to have tex() function called as with a normal Texture
   """
-  def __init__(self, name):
-    """ calls Texture.__init__ but doesn't need to set file name as
-    texture generated from the framebuffer
-    """
-    super(OffScreenTexture, self).__init__(name)
-    from pi3d.Display import Display
-    self.disp = Display.INSTANCE
-    self.ix, self.iy = self.disp.width, self.disp.height
-    self.image = np.zeros((self.iy, self.ix, 4), dtype=np.uint8)
+  def __init__(self, _tex, ix, iy, blend, mipmap):
+    self._tex = _tex
+    self.ix = ix
+    self.iy = iy
     self.blend = False
     self.mipmap = False
 
-    self._tex = GLuint()
+  def tex(self):
+    return self._tex
+
+class OffScreenTexture(object):
+  """For creating special effect after rendering to texture rather than
+  onto the display. Used by Defocus, ShadowCaster, Clashtest etc
+  """
+  def __init__(self, name=""):
+    """ new system doesn't use Texture
+    """
+    from pi3d.Display import Display
+    self.disp = Display.INSTANCE
+    self.ix, self.iy = self.disp.width, self.disp.height
+    self.blend = False
+    self.mipmap = False
+
+    color = GLuint()
+    depth = GLuint()
     self.framebuffer = (GLuint * 1)()
     pi3d.opengles.glGenFramebuffers(GLsizei(1), self.framebuffer)
     self.depthbuffer = (GLuint * 1)()
     pi3d.opengles.glGenRenderbuffers(GLsizei(1), self.depthbuffer)
 
-  def _load_disk(self):
-    """ have to override this
-    """
+    pi3d.opengles.glGenTextures(1, ctypes.byref(color))
+    pi3d.opengles.glBindTexture(GL_TEXTURE_2D, color)
+    pi3d.opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+    pi3d.opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+    pi3d.opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
+    pi3d.opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
+    pi3d.opengles.glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, self.ix,
+                    self.iy, 0, GL_RGBA, GL_UNSIGNED_BYTE, None)
+    pi3d.opengles.glGenerateMipmap(GL_TEXTURE_2D)
+    pi3d.opengles.glBindTexture(GL_TEXTURE_2D, 0)
+
+    pi3d.opengles.glGenTextures(1, ctypes.byref(depth))
+    pi3d.opengles.glBindTexture(GL_TEXTURE_2D, depth)
+    pi3d.opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+    pi3d.opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+    pi3d.opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
+    pi3d.opengles.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
+    pi3d.opengles.glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, self.ix,
+                    self.iy, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT, None)
+    pi3d.opengles.glGenerateMipmap(GL_TEXTURE_2D)
+    pi3d.opengles.glBindTexture(GL_TEXTURE_2D, 0)
+    pi3d.opengles.glEnable(GL_TEXTURE_2D)
+
+    self.color = TextureShell(color, self.ix, self.iy, self.blend, self.mipmap)
+    self.depth = TextureShell(depth, self.ix, self.iy, self.blend, self.mipmap)
 
   def _start(self, clear=True):
     """ after calling this method all object.draw()s will rendered
     to this texture and not appear on the display. Large objects
     will obviously take a while to draw and re-draw
     """
-
     self.disp.offscreen_tex = True # flag used in Buffer.draw()
     pi3d.opengles.glBindFramebuffer(GL_FRAMEBUFFER, self.framebuffer[0])
-    pi3d.opengles.glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-                GL_TEXTURE_2D, self._tex.value, 0)
     #thanks to PeterO c.o. RPi forum for pointing out missing depth attchmnt
     pi3d.opengles.glBindRenderbuffer(GL_RENDERBUFFER, self.depthbuffer[0])
     pi3d.opengles.glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16,
                 self.ix, self.iy)
     pi3d.opengles.glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
                 GL_RENDERBUFFER, self.depthbuffer[0])
+    pi3d.opengles.glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+                GL_TEXTURE_2D, self.color._tex.value, 0)
+    pi3d.opengles.glBindTexture(GL_TEXTURE_2D, 0) # this seems to be needed here
+    pi3d.opengles.glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+                GL_TEXTURE_2D, self.depth._tex.value, 0)
     if clear: # TODO allow just depth or just color clearing?
       pi3d.opengles.glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT)
 
@@ -77,4 +114,3 @@ class OffScreenTexture(Texture):
   def delete_buffers(self):
     pi3d.opengles.glDeleteFramebuffers(GLsizei(1), self.framebuffer)
     pi3d.opengles.glDeleteRenderbuffers(GLsizei(1), self.depthbuffer)
-

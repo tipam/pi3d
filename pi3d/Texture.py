@@ -272,6 +272,8 @@ class Texture(Loadable):
     self._tex = GLuint()
     if self.string_type == FILE and 'fonts/' in self.file_string:
       self.im = im
+    else:
+      self.im = None
       
     self._loaded = True
 

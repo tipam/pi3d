@@ -145,9 +145,9 @@ void main(void) {{
     """
     if self.interlace <= 0:
       for i in range(2):
-        self.sprites[i].draw(self.shader, [self.tex_list[i]], 0.0, 0.0, self.camera_2d)
+        self.sprites[i].draw(self.shader, [self.tex_list[i].color], 0.0, 0.0, self.camera_2d)
     else:
-      self.sprites[0].draw(self.shader, self.tex_list, 0.0, 0.0, self.camera_2d)
+      self.sprites[0].draw(self.shader, [t.color for t in self.tex_list], 0.0, 0.0, self.camera_2d)
       
   def get_direction(self):
     return self.camera_3d.get_direction()

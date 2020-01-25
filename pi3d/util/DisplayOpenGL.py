@@ -285,7 +285,7 @@ class DisplayOpenGL(object):
       #                                min_width = 20,
       #                                min_height = 20)
 
-      xlib.XSelectInput(self.d, self.window, KeyPressMask | KeyReleaseMask)
+      xlib.XSelectInput(self.d, self.window, KeyPressMask | KeyReleaseMask | ResizeRedirectMask)
       xlib.XMapWindow(self.d, self.window)
       #xlib.XMoveWindow(self.d, self.window, x, y) #TODO this has to happen later. Works after rendering first frame. Check when
       if self.use_glx:

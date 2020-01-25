@@ -31,14 +31,18 @@ def screenshot(filestring=None):
   from pi3d.Display import Display
 
   w, h = Display.INSTANCE.width, Display.INSTANCE.height
-  img = np.zeros((h, w, 4), dtype=np.uint8)
-  opengles.glReadPixels(GLint(0), GLint(0), GLsizei(w), GLsizei(h), GL_RGBA, GL_UNSIGNED_BYTE, img.ctypes.data_as(ctypes.POINTER(GLubyte)))
-  img = img[::-1,:,:3].copy()
+  #img = np.zeros((h, w, 4), dtype=np.uint8)
+  #opengles.glReadPixels(GLint(0), GLint(0), GLsizei(w), GLsizei(h), GL_RGBA, GL_UNSIGNED_BYTE, img.ctypes.data_as(ctypes.POINTER(GLubyte)))
+  img = np.zeros((h, w, 2), dtype=np.uint8)
+  opengles.glReadPixels(GLint(0), GLint(0), GLsizei(w), GLsizei(h), GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT, img.ctypes.data_as(ctypes.POINTER(GLubyte)))
+  rgbimg = np.zeros((h, w, 3), dtype=np.uint8)
+  rgbimg[:,:,2] = (img[:,:,1] * 256 + img[:,:,0]) // 256
+  rgbimg[:,:,0] = img[:,:,0]
   if filestring is None:
-    return img
+    return rgbimg
 
   if PIL_OK:
-    im = Image.frombuffer('RGB', (w, h), img, 'raw', 'RGB', 0, 1)
+    im = Image.frombuffer('RGB', (w, h), rgbimg, 'raw', 'RGB', 0, 1)
     im.save(filestring, quality=90)
   else:
-    np.savez_compressed('{}'.format(filestring), img)
+    np.savez_compressed('{}'.format(filestring), rgbimg)
