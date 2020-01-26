@@ -35,8 +35,6 @@ class OffScreenTexture(object):
     from pi3d.Display import Display
     self.disp = Display.INSTANCE
     self.ix, self.iy = self.disp.width, self.disp.height
-    self.blend = False
-    self.mipmap = False
 
     color = GLuint()
     depth = GLuint()
@@ -68,8 +66,8 @@ class OffScreenTexture(object):
     pi3d.opengles.glBindTexture(GL_TEXTURE_2D, 0)
     pi3d.opengles.glEnable(GL_TEXTURE_2D)
 
-    self.color = TextureShell(color, self.ix, self.iy, self.blend, self.mipmap)
-    self.depth = TextureShell(depth, self.ix, self.iy, self.blend, self.mipmap)
+    self.color = TextureShell(color, self.ix, self.iy, False, True)
+    self.depth = TextureShell(depth, self.ix, self.iy, False, True)
 
   def _start(self, clear=True):
     """ after calling this method all object.draw()s will rendered
@@ -110,6 +108,23 @@ class OffScreenTexture(object):
     if OFFSCREEN_QUEUE:
         # resume previously active offscreen texture if any
         OFFSCREEN_QUEUE[-1]._start(clear=False)
+
+  def tex(self):
+    return self.color.tex()
+
+  @property
+  def blend(self):
+    return self.color.blend
+  @blend.setter
+  def blend(self, val):
+    self.color.blend = val
+
+  @property
+  def mipmap(self):
+    return self.color.mipmap
+  @mipmap.setter
+  def mipmap(self, val):
+    self.color.mipmap = val
 
   def delete_buffers(self):
     pi3d.opengles.glDeleteFramebuffers(GLsizei(1), self.framebuffer)
