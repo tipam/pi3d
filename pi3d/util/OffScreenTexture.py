@@ -7,7 +7,7 @@ from pi3d.constants import (GL_FRAMEBUFFER, GL_RENDERBUFFER, GL_COLOR_ATTACHMENT
                     GL_DEPTH_BUFFER_BIT, GL_COLOR_BUFFER_BIT, GL_TEXTURE_MIN_FILTER,
                     GL_TEXTURE_MAG_FILTER, GL_TEXTURE_WRAP_S, GL_TEXTURE_WRAP_T, GL_NEAREST,
                     GL_LINEAR, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE, GL_RGBA, GL_DEPTH_COMPONENT,
-                    GL_UNSIGNED_SHORT, GLuint, GLsizei)
+                    GL_UNSIGNED_SHORT, GLuint, GLsizei, PLATFORM, PLATFORM_PI)
 
 OFFSCREEN_QUEUE = []
 
@@ -85,8 +85,9 @@ class OffScreenTexture(object):
     pi3d.opengles.glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                 GL_TEXTURE_2D, self.color._tex.value, 0)
     pi3d.opengles.glBindTexture(GL_TEXTURE_2D, 0) # this seems to be needed here
-    pi3d.opengles.glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
-                GL_TEXTURE_2D, self.depth._tex.value, 0)
+    if PLATFORM != PLATFORM_PI: # depth capture this way doesn't work with bcm
+      pi3d.opengles.glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+                  GL_TEXTURE_2D, self.depth._tex.value, 0)
     if clear: # TODO allow just depth or just color clearing?
       pi3d.opengles.glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT)
 
