@@ -37,7 +37,18 @@ class Lines(Shape):
       if last[i] >= n_v:
         last[i] = n_v - 1
 
-    self.buf = [Buffer(self, vertices, [], indices, [], smooth=False)]
+    # UV mapped to vertex locations
+    min_x = min((i[0] for i in vertices))
+    max_x = max((i[0] for i in vertices))
+    min_y = min((i[1] for i in vertices))
+    max_y = max((i[1] for i in vertices))
+    x_range = max_x - min_x
+    y_range = max_y - min_y
+    texcoords = [[(i[0] - min_x) / x_range, 1.0 - (i[1] - min_y) / y_range] for i in vertices]
+    # need normals if using texcoords
+    normals = [[0.0, 0.0, -1.0] for i in range(len(vertices))]
+
+    self.buf = [Buffer(self, vertices, texcoords, indices, normals, smooth=False)]
 
     if line_width < 1:
       self.set_line_width(1, closed)

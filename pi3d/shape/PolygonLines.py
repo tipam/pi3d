@@ -79,12 +79,23 @@ class PolygonLines(Shape):
         n = len(new_verts) - 2
         indices = [[i+u, i+v, i+w] for i in range(0, n, 2)
                                     for (u, v, w) in [(0, 1, 3), (3, 2, 0)]]
-    else:
+    else: # simpler for non-strip
         new_verts = []
         for seg in segs:
             new_verts.extend([seg.r, seg.s, seg.t, seg.u])
         indices = [[i+u, i+v, i+w] for i in range(0, len(new_verts), 4)
                                      for (u, v, w) in [(0,1,3), (3,2,0)]]
 
-    self.buf = [Buffer(self, new_verts, [], indices, [], smooth=False)]
+    # UV mapped to vertex locations
+    min_x = min((i[0] for i in new_verts))
+    max_x = max((i[0] for i in new_verts))
+    min_y = min((i[1] for i in new_verts))
+    max_y = max((i[1] for i in new_verts))
+    x_range = max_x - min_x
+    y_range = max_y - min_y
+    texcoords = [[(i[0] - min_x) / x_range, 1.0 - (i[1] - min_y) / y_range] for i in new_verts]
+    # need normals if using texcoords
+    normals = [[0.0, 0.0, -1.0] for i in range(len(new_verts))]
+
+    self.buf = [Buffer(self, new_verts, texcoords, indices, normals, smooth=False)]
     self.set_material(material)
