@@ -7,7 +7,9 @@ import logging
 LOGGER = logging.getLogger(__name__)
 
 class Lines(Shape):
-  """ 3d model inherits from Shape"""
+  """ 3d model inherits from Shape.
+  The ends of these lines are either horizontal or vertical (switching over as the line passes
+  45 degrees. For thick lines it might be better to use PolygonLines."""
   def __init__(self,  camera=None, light=None, vertices=[], material=(1.0,1.0,1.0),
                line_width=1, closed=False, name="", x=0.0, y=0.0, z=0.0,
                sx=1.0, sy=1.0, sz=1.0, rx=0.0, ry=0.0, rz=0.0,
