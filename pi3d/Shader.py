@@ -66,6 +66,8 @@ class Shader(DefaultInstance):
   do everything is that 'if' statements within the shader language are **very**
   time consuming.
   """
+  shader_list = {}
+
   def __init__(self, shfile=None, vshader_source=None, fshader_source=None):
     """
     Arguments:
@@ -78,6 +80,11 @@ class Shader(DefaultInstance):
       *fshader_source*
         String with the code for the fragment shader.
     """
+    if shfile is not None and shfile in Shader.shader_list:
+      LOGGER.debug("re-using shader {}".format(shfile))
+      self = Shader.shader_list[shfile]
+      return
+
     self.gl_id = Display.INSTANCE.opengl.gl_id
     try:
       assert Loadable.is_display_thread()
@@ -137,6 +144,9 @@ class Shader(DefaultInstance):
         for *mat* shaders tex0=normal map tex1=reflection
       """
     self.use()
+    if shfile is not None and shfile not in Shader.shader_list:
+      LOGGER.debug("saving shader {}".format(shfile))
+      Shader.shader_list[shfile] = self
 
   @staticmethod
   def _default_instance():

@@ -48,13 +48,12 @@ class DisplayOpenGL(object):
 
     else: # use libX11
       #import subprocess # default name using XOpenDisplay(None) doesn't work on RPi4
-      #display_name = subprocess.check_output(['printenv', 'DISPLAY']).split()[0]
-      #display_name = b':' + subprocess.check_output([b'ls', b'/tmp/.X11-unix']).split(b'X')[1].trim()
       import os
-      display_name = None
+      display_name = None #previous to RPi4 this worked but now problems..
       for f in os.listdir('/tmp/.X11-unix'):
         display_name = b':' + f[1:].encode('utf-8')
-        break # just use the first one in the list if more than one
+        if display_name == b':0':
+          break # use X0 if this exist, else use last in list (which might work!)
       self.d = xlib.XOpenDisplay(display_name)
       if self.d:
         self.screen = xlib.XDefaultScreenOfDisplay(self.d)
