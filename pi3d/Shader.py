@@ -82,7 +82,10 @@ class Shader(DefaultInstance):
     """
     if shfile is not None and shfile in Shader.shader_list:
       LOGGER.debug("re-using shader {}".format(shfile))
-      self = Shader.shader_list[shfile]
+      sh = Shader.shader_list[shfile]
+      for attr in dir(sh): #TODO this is a bit horrible - needs proper factory
+        if attr[0] != "_":
+          setattr(self, attr, getattr(sh, attr))
       return
 
     self.gl_id = Display.INSTANCE.opengl.gl_id
