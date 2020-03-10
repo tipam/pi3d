@@ -47,7 +47,7 @@ class PostProcess(OffScreenTexture):
     if type(shader) == Shader:
       self.shader = shader
     else:
-      self.shader = Shader(shader)
+      self.shader = Shader.create(shader)
     if camera is None:
       self.viewcam = Camera.instance() # in case this is prior to one being created
     else:

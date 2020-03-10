@@ -6,11 +6,29 @@ from ctypes import c_int, c_uint, c_float, byref
 from six_mod.moves import xrange
 
 import pi3d
-from pi3d.constants import *
+from pi3d.constants import (bcm, openegl, opengles,
+    GLfloat, GLint, GLuint, GLboolean, GLsizei,
+    DISPLAY_CONFIG_DEFAULT, DISPLAY_CONFIG_FULLSCREEN, DISPLAY_CONFIG_HIDE_CURSOR,
+    DISPLAY_CONFIG_MAXIMIZED, DISPLAY_CONFIG_NO_FRAME, DISPLAY_CONFIG_NO_RESIZE,
+    DISPMANX_FLAGS_ALPHA_PREMULT, DISPMANX_PROTECTION_NONE, EGLConfig,
+    EGLDisplay, EGL_ALPHA_SIZE, EGL_BLUE_SIZE, EGL_BUFFER_SIZE,
+    EGL_CONTEXT_CLIENT_VERSION, EGL_DEFAULT_DISPLAY, EGL_DEPTH_SIZE,
+    EGL_DRAW, EGL_GREEN_SIZE, EGL_HEIGHT, EGL_NONE, EGL_NO_CONTEXT,
+    EGL_NO_DISPLAY, EGL_NO_SURFACE, EGL_RED_SIZE, EGL_SAMPLES,
+    EGL_STENCIL_SIZE, EGL_SURFACE_TYPE, EGL_WIDTH, EGL_WINDOW_BIT,
+    EGLint, GL_BACK, GL_CULL_FACE, GL_CW, GL_DEPTH_TEST, GL_FRAMEBUFFER,
+    GL_GENERATE_MIPMAP_HINT, GL_LESS, GL_NICEST, GL_ONE_MINUS_SRC_ALPHA,
+    GL_POINT_SPRITE, GL_PROGRAM_POINT_SIZE, GL_SRC_ALPHA, GL_VERSION,
+    PLATFORM, PLATFORM_ANDROID, PLATFORM_PI, PLATFORM_WINDOWS)
 
 if not (pi3d.USE_PYGAME or PLATFORM in (PLATFORM_ANDROID, PLATFORM_PI, PLATFORM_WINDOWS)):
   from pyxlib import xlib
-  from pyxlib.x import *
+  from pyxlib.x import (AllocNone, ButtonPressMask, ButtonReleaseMask, CWBackPixmap,
+    CWBorderPixel, CWColormap, CWEventMask, EnterWindowMask, ExposureMask,
+    KeyPressMask, KeyReleaseMask, LeaveWindowMask, OwnerGrabButtonMask, POINTER,
+    ResizeRedirectMask, StructureNotifyMask, c_char_p)
+
+
   from pyxlib import glx
   X_WINDOW = True
 else:

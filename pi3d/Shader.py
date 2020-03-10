@@ -80,14 +80,6 @@ class Shader(DefaultInstance):
       *fshader_source*
         String with the code for the fragment shader.
     """
-    if shfile is not None and shfile in Shader.shader_list:
-      LOGGER.debug("re-using shader {}".format(shfile))
-      sh = Shader.shader_list[shfile]
-      for attr in dir(sh): #TODO this is a bit horrible - needs proper factory
-        if attr[0] != "_":
-          setattr(self, attr, getattr(sh, attr))
-      return
-
     self.gl_id = Display.INSTANCE.opengl.gl_id
     try:
       assert Loadable.is_display_thread()
@@ -147,9 +139,18 @@ class Shader(DefaultInstance):
         for *mat* shaders tex0=normal map tex1=reflection
       """
     self.use()
+
+  @staticmethod
+  def create(shfile=None, vshader_source=None, fshader_source=None):
+    if shfile is not None and shfile in Shader.shader_list:
+      LOGGER.debug("re-using shader {}".format(shfile))
+      shader = Shader.shader_list[shfile]
+    else:
+      shader = Shader(shfile, vshader_source, fshader_source)
     if shfile is not None and shfile not in Shader.shader_list:
       LOGGER.debug("saving shader {}".format(shfile))
-      Shader.shader_list[shfile] = self
+      Shader.shader_list[shfile] = shader
+    return shader
 
   @staticmethod
   def _default_instance():

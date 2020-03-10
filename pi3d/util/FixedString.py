@@ -11,8 +11,7 @@ if sys.version_info[0] == 3:
 # NB PIL must be available to use FixedString. Otherwise use Pngfont
 from PIL import Image, ImageDraw, ImageFont
 
-from pi3d.constants import *
-from pi3d.Texture import *
+from pi3d.Texture import Texture, WIDTHS
 from pi3d.shape.Sprite import Sprite
 
 class FixedString(Texture):

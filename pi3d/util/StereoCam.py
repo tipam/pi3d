@@ -5,7 +5,7 @@ import ctypes
 import numpy as np
 import math
 
-from pi3d.constants import *
+from pi3d.constants import GL_SCISSOR_TEST, GLint, GLsizei
 from pi3d.Shader import Shader
 from pi3d.Camera import Camera
 from pi3d.shape.Sprite import Sprite
@@ -39,7 +39,7 @@ class StereoCam(object):
     """
     # load shader
     if interlace <= 0: # i.e. default side by side behaviour
-      self.shader = Shader(shader)
+      self.shader = Shader.create(shader)
     else:
       self.shader = Shader(vshader_source = """
 precision mediump float;

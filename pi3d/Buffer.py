@@ -193,7 +193,7 @@ class Buffer(Loadable):
                           self.element_array_buffer.ctypes.data_as(ctypes.POINTER(GLfloat)),
                           GL_STATIC_DRAW)
     if opengles.glGetError() == GL_OUT_OF_MEMORY:
-      LOGGER.critical('Out of GPU memory')
+      LOGGER.critical('Out of GPU memory in Buffer._load_opengl')
 
 
   def _unload_opengl(self):

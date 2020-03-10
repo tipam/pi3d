@@ -11,7 +11,6 @@ if sys.version_info[0] == 3:
 # NB PIL must be available to use Font. Otherwise use Pngfont
 from PIL import Image, ImageDraw, ImageFont
 
-from pi3d.constants import *
 from pi3d.Texture import Texture
 
 MAX_SIZE = 1920

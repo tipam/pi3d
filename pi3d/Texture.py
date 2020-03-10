@@ -333,7 +333,7 @@ class Texture(Loadable):
                           GL_UNSIGNED_BYTE,
                           self.image.ctypes.data_as(ctypes.POINTER(ctypes.c_ubyte)))
     if opengles.glGetError() == GL_OUT_OF_MEMORY:
-      LOGGER.critical('Out of GPU memory')
+      LOGGER.critical('Out of GPU memory in Texture.update_ndarray')
     #opengles.glEnable(GL_TEXTURE_2D) # invalid in OpenGLES 2
     if self.mipmap:
       opengles.glGenerateMipmap(GL_TEXTURE_2D)

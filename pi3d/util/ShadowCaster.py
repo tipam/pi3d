@@ -1,6 +1,5 @@
 import ctypes
 
-from pi3d.constants import *
 from pi3d.Shader import Shader
 from pi3d.util.OffScreenTexture import OffScreenTexture
 from pi3d.Camera import Camera
@@ -41,7 +40,7 @@ class ShadowCaster(OffScreenTexture):
   def end_cast(self):
     super(ShadowCaster, self)._end()
 
-    
+
   def draw_shadow(self):
     self.emap.draw(shader=self.dshader)
 

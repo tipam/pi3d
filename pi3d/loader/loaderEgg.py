@@ -230,7 +230,7 @@ def loadFileEGG(model, fileName):
 
       model.buf[n].indicesLen = ilen
       model.buf[n].material = (0.0, 0.0, 0.0, 0.0)
-      model.buf[n].ttype = pi3d.GL_TRIANGLES
+      model.buf[n].ttype = pi3d.constants.GL_TRIANGLES
 
       # load the texture file TODO check if same as previously loaded files (for other loadModel()s)
       if (gTRef in model.textureList):

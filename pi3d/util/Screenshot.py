@@ -3,7 +3,10 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import ctypes
 import numpy as np
 
-from pi3d.constants import *
+from pi3d.constants import (opengles, GLint, GLsizei, GLubyte, GL_DEPTH_COMPONENT, 
+                            GL_UNSIGNED_SHORT, PIL_OK)
+ 
+
 from pi3d.util import Log
 
 if PIL_OK:

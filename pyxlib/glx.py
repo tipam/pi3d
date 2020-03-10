@@ -1,4 +1,4 @@
-from ctypes import *
+#from ctypes import *
 from ctypes.util import find_library
 from .x import *
 from pyxlib import xlib

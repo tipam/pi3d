@@ -46,6 +46,10 @@ class Lines(Shape):
     max_y = max((i[1] for i in vertices))
     x_range = max_x - min_x
     y_range = max_y - min_y
+    if abs(x_range) < 0.00001:
+        x_range = 0.00001
+    if abs(y_range) < 0.00001:
+        y_range = 0.00001
     texcoords = [[(i[0] - min_x) / x_range, 1.0 - (i[1] - min_y) / y_range] for i in vertices]
     # need normals if using texcoords
     normals = [[0.0, 0.0, -1.0] for i in range(len(vertices))]
