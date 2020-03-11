@@ -1,7 +1,6 @@
 import ctypes
 import numpy as np
 
-from pi3d.constants import *
 from pi3d.Texture import Texture
 import sys
 if  sys.version_info[0] == 3:

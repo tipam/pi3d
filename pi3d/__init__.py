@@ -7,8 +7,12 @@ Allows the use of:
 to drag in most of the important classes of pi3d.
 """
 
-from pi3d.constants import *
-from pi3d.constants import __version__
+from pi3d.constants import (USE_PYGAME, PIL_OK,
+    PLATFORM, PLATFORM_ANDROID, PLATFORM_PI, PLATFORM_WINDOWS,
+    DISPLAY_CONFIG_DEFAULT, DISPLAY_CONFIG_FULLSCREEN, DISPLAY_CONFIG_HIDE_CURSOR,
+    DISPLAY_CONFIG_MAXIMIZED, DISPLAY_CONFIG_NO_FRAME, DISPLAY_CONFIG_NO_RESIZE,
+    GL_CULL_FACE,
+    openegl, opengles, __version__)
 
 from pi3d import Display
 
@@ -16,7 +20,8 @@ from pi3d.Buffer import Buffer
 from pi3d.Camera import Camera
 from pi3d.Keyboard import Keyboard, KeyboardContext
 from pi3d.Mouse import Mouse
-from pi3d.Shader import Shader
+from pi3d.Shader import Shader as _sh_tmp # private name so create() is used by default
+Shader = _sh_tmp.create #TODO patching over name might have bad side-effects!
 from pi3d.Shape import Shape
 from pi3d.Texture import Texture
 from pi3d.Texture import TextureCache
@@ -45,6 +50,7 @@ from pi3d.shape.MultiSprite import MultiSprite
 from pi3d.shape.Plane import Plane
 from pi3d.shape.Points import Points
 from pi3d.shape.Polygon import Polygon
+from pi3d.shape.PolygonLines import PolygonLines
 from pi3d.shape.Sphere import Sphere
 from pi3d.shape.Sprite import Sprite, ImageSprite
 from pi3d.shape.TCone import TCone

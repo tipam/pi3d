@@ -44,14 +44,21 @@ class PostProcess(OffScreenTexture):
     super(PostProcess, self).__init__("postprocess")
     self.scale = scale
     # load shader
-    self.shader = Shader(shader)
+    if type(shader) == Shader:
+      self.shader = shader
+    else:
+      self.shader = Shader.create(shader)
     if camera is None:
       self.viewcam = Camera.instance() # in case this is prior to one being created
     else:
       self.viewcam = camera
     self.camera = Camera(is_3d=False)
-    self.sprite = LodSprite(z=20.0, w=self.ix, h=self.iy, n=divide)
+    self.sprite = LodSprite(camera=self.camera, z=20.0, w=self.ix, h=self.iy, n=divide)
     self.sprite.set_2d_size(w=self.ix, h=self.iy)
+    self.tex_list = [self.color, self.depth] # TODO check if this self reference causes graphics memory leaks
+    if add_tex:
+      self.tex_list.extend(add_tex)
+    self.sprite.set_draw_details(self.shader, self.tex_list, 0.0, 0.0)
     for b in self.sprite.buf:
       b.unib[6] = self.scale # ufact
       b.unib[7] = self.scale # vfact
@@ -59,9 +66,6 @@ class PostProcess(OffScreenTexture):
       b.unib[10] = (1.0 - self.scale) * 0.5 # voffset
     self.blend = True
     self.mipmap = mipmap
-    self.tex_list = [self] # TODO check if this self reference causes graphics memory leaks
-    if add_tex:
-      self.tex_list.extend(add_tex)
 
   def start_capture(self, clear=True):
     """ after calling this method all object.draw()s will rendered
@@ -97,5 +101,4 @@ class PostProcess(OffScreenTexture):
     if unif_vals:
       for i in unif_vals:
         self.sprite.unif[i] = unif_vals[i]
-    self.sprite.draw(self.shader, self.tex_list, 0.0, 0.0, self.camera)
-
+    self.sprite.draw()

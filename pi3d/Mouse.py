@@ -6,10 +6,11 @@ import ctypes
 import logging
 
 import pi3d
+from pi3d.constants import PLATFORM_PI, PLATFORM_ANDROID
 
 if pi3d.USE_PYGAME:
   import pygame
-elif pi3d.PLATFORM != pi3d.PLATFORM_PI and pi3d.PLATFORM != pi3d.PLATFORM_ANDROID:
+elif pi3d.PLATFORM != PLATFORM_PI and pi3d.PLATFORM != PLATFORM_ANDROID:
   from pyxlib import xlib
   #from pyxlib.x import FocusChangeMask
 

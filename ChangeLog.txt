@@ -4,6 +4,15 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
+v2.35
+2020-03-11  Improvement: OffscreenTexture saves distance texture as well as colour
+            which works on RPi4 and bigger computers but old versions have to use
+            Blur_legacy.py technique. Shader.create() checks for existing instances
+            of shaders with same name so saves recompiling on complicated set-ups.
+            PolygonLines creates lines from triangles giving neater ends and corners.
+            Reduced wildcard imports.
+            Bug fix: display picks up non-default :0 on some ubuntu.
+
 v2.34
 2019-11-16  Bug fix: move the changes in fragment shaders into the include file in
             pi3d so minimise breaking shaders in pi3d_demos.

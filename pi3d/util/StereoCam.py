@@ -5,7 +5,7 @@ import ctypes
 import numpy as np
 import math
 
-from pi3d.constants import *
+from pi3d.constants import GL_SCISSOR_TEST, GLint, GLsizei
 from pi3d.Shader import Shader
 from pi3d.Camera import Camera
 from pi3d.shape.Sprite import Sprite
@@ -39,7 +39,7 @@ class StereoCam(object):
     """
     # load shader
     if interlace <= 0: # i.e. default side by side behaviour
-      self.shader = Shader(shader)
+      self.shader = Shader.create(shader)
     else:
       self.shader = Shader(vshader_source = """
 precision mediump float;
@@ -145,9 +145,9 @@ void main(void) {{
     """
     if self.interlace <= 0:
       for i in range(2):
-        self.sprites[i].draw(self.shader, [self.tex_list[i]], 0.0, 0.0, self.camera_2d)
+        self.sprites[i].draw(self.shader, [self.tex_list[i].color], 0.0, 0.0, self.camera_2d)
     else:
-      self.sprites[0].draw(self.shader, self.tex_list, 0.0, 0.0, self.camera_2d)
+      self.sprites[0].draw(self.shader, [t.color for t in self.tex_list], 0.0, 0.0, self.camera_2d)
       
   def get_direction(self):
     return self.camera_3d.get_direction()

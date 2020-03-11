@@ -66,6 +66,8 @@ class Shader(DefaultInstance):
   do everything is that 'if' statements within the shader language are **very**
   time consuming.
   """
+  shader_list = {}
+
   def __init__(self, shfile=None, vshader_source=None, fshader_source=None):
     """
     Arguments:
@@ -137,6 +139,18 @@ class Shader(DefaultInstance):
         for *mat* shaders tex0=normal map tex1=reflection
       """
     self.use()
+
+  @staticmethod
+  def create(shfile=None, vshader_source=None, fshader_source=None):
+    if shfile is not None and shfile in Shader.shader_list:
+      LOGGER.debug("re-using shader {}".format(shfile))
+      shader = Shader.shader_list[shfile]
+    else:
+      shader = Shader(shfile, vshader_source, fshader_source)
+    if shfile is not None and shfile not in Shader.shader_list:
+      LOGGER.debug("saving shader {}".format(shfile))
+      Shader.shader_list[shfile] = shader
+    return shader
 
   @staticmethod
   def _default_instance():

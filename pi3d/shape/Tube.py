@@ -77,4 +77,4 @@ class Tube(Shape):
             f_off = i * 8
             faces += [(a + f_off, b + f_off, c + f_off)]
 
-        self.buf = [Buffer(self, verts, uvs, faces, norms)]
+      self.buf = [Buffer(self, verts, uvs, faces, norms)]

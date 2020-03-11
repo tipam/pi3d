@@ -8,7 +8,7 @@ else:
   text_type = unicode
 import logging
 
-from pi3d import *
+from pi3d.constants import opengles, GL_ARRAY_BUFFER
 
 from pi3d.Buffer import Buffer
 from pi3d.Shape import Shape

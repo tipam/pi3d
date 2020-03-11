@@ -2,15 +2,33 @@ import ctypes
 import platform
 import time
 
-from ctypes import c_int, c_uint, c_float, byref
+from ctypes import c_int, c_uint, c_float, byref, POINTER, c_char_p
 from six_mod.moves import xrange
 
 import pi3d
-from pi3d.constants import *
+from pi3d.constants import (bcm, openegl, opengles,
+    GLfloat, GLint, GLuint, GLboolean, GLsizei,
+    DISPLAY_CONFIG_DEFAULT, DISPLAY_CONFIG_FULLSCREEN, DISPLAY_CONFIG_HIDE_CURSOR,
+    DISPLAY_CONFIG_MAXIMIZED, DISPLAY_CONFIG_NO_FRAME, DISPLAY_CONFIG_NO_RESIZE,
+    DISPMANX_FLAGS_ALPHA_PREMULT, DISPMANX_PROTECTION_NONE, EGLConfig,
+    EGLDisplay, EGL_ALPHA_SIZE, EGL_BLUE_SIZE, EGL_BUFFER_SIZE,
+    EGL_CONTEXT_CLIENT_VERSION, EGL_DEFAULT_DISPLAY, EGL_DEPTH_SIZE,
+    EGL_DRAW, EGL_GREEN_SIZE, EGL_HEIGHT, EGL_NONE, EGL_NO_CONTEXT,
+    EGL_NO_DISPLAY, EGL_NO_SURFACE, EGL_RED_SIZE, EGL_SAMPLES,
+    EGL_STENCIL_SIZE, EGL_SURFACE_TYPE, EGL_WIDTH, EGL_WINDOW_BIT,
+    EGLint, GL_BACK, GL_CULL_FACE, GL_CW, GL_DEPTH_TEST, GL_FRAMEBUFFER,
+    GL_GENERATE_MIPMAP_HINT, GL_LESS, GL_NICEST, GL_ONE_MINUS_SRC_ALPHA,
+    GL_POINT_SPRITE, GL_PROGRAM_POINT_SIZE, GL_SRC_ALPHA, GL_VERSION,
+    PLATFORM, PLATFORM_ANDROID, PLATFORM_PI, PLATFORM_WINDOWS)
 
 if not (pi3d.USE_PYGAME or PLATFORM in (PLATFORM_ANDROID, PLATFORM_PI, PLATFORM_WINDOWS)):
   from pyxlib import xlib
-  from pyxlib.x import *
+  from pyxlib.x import (AllocNone, ButtonPressMask, ButtonReleaseMask, CWBackPixmap,
+    CWBorderPixel, CWColormap, CWEventMask, EnterWindowMask, ExposureMask,
+    KeyPressMask, KeyReleaseMask, LeaveWindowMask, OwnerGrabButtonMask,
+    ResizeRedirectMask, StructureNotifyMask)
+
+
   from pyxlib import glx
   X_WINDOW = True
 else:
@@ -48,13 +66,12 @@ class DisplayOpenGL(object):
 
     else: # use libX11
       #import subprocess # default name using XOpenDisplay(None) doesn't work on RPi4
-      #display_name = subprocess.check_output(['printenv', 'DISPLAY']).split()[0]
-      #display_name = b':' + subprocess.check_output([b'ls', b'/tmp/.X11-unix']).split(b'X')[1].trim()
       import os
-      display_name = None
+      display_name = None #previous to RPi4 this worked but now problems..
       for f in os.listdir('/tmp/.X11-unix'):
         display_name = b':' + f[1:].encode('utf-8')
-        break # just use the first one in the list if more than one
+        if display_name == b':0':
+          break # use X0 if this exist, else use last in list (which might work!)
       self.d = xlib.XOpenDisplay(display_name)
       if self.d:
         self.screen = xlib.XDefaultScreenOfDisplay(self.d)
@@ -225,7 +242,7 @@ class DisplayOpenGL(object):
         if not fbconfig:
           print("No matching FB config found")
         #/* Create a colormap - only needed on some X clients, eg. IRIX */
-        cmap = xlib.XCreateColormap(self.d, self.root, visual.visual, AllocNone);
+        cmap = xlib.XCreateColormap(self.d, self.root, visual.visual, AllocNone)
         attr = xlib.XSetWindowAttributes()
         attr.colormap = cmap
         attr.background_pixmap = 0
@@ -285,7 +302,7 @@ class DisplayOpenGL(object):
       #                                min_width = 20,
       #                                min_height = 20)
 
-      xlib.XSelectInput(self.d, self.window, KeyPressMask | KeyReleaseMask)
+      xlib.XSelectInput(self.d, self.window, KeyPressMask | KeyReleaseMask | ResizeRedirectMask)
       xlib.XMapWindow(self.d, self.window)
       #xlib.XMoveWindow(self.d, self.window, x, y) #TODO this has to happen later. Works after rendering first frame. Check when
       if self.use_glx:
@@ -352,14 +369,13 @@ class DisplayOpenGL(object):
             [opengles.glIsShader, opengles.glDeleteShader, 0]]
         i_ct = (ctypes.c_int * 1)(0) #convoluted 0
         for func in func_list:
-          max_streak = 100
           streak_start = 0
           if func[2]: # list to work through
             for i in func[2]:
               if func[0](func[2][i][0]) == 1: #check if i exists as a name
                 func[1](1, byref(func[2][i][0]))
           else: # just do sequential numbers
-            for i in xrange(10000):
+            for i in range(10000):
               if func[0](i) == 1: #check if i exists as a name
                 i_ct[0] = i #convoluted 1
                 func[1](byref(i_ct))

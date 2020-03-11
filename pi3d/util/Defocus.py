@@ -45,5 +45,5 @@ class Defocus(OffScreenTexture):
     shape.unif[44] = amount
     shape.unif[45] = 1.0/self.ix # shader unif[15]
     shape.unif[46] = 1.0/self.iy
-    shape.draw(self.shader, [self], 0.0, 0.0)
+    shape.draw(self.shader, [self.color], 0.0, 0.0)
 
