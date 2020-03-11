@@ -2,7 +2,7 @@ import ctypes
 import platform
 import time
 
-from ctypes import c_int, c_uint, c_float, byref
+from ctypes import c_int, c_uint, c_float, byref, POINTER, c_char_p
 from six_mod.moves import xrange
 
 import pi3d
@@ -25,8 +25,8 @@ if not (pi3d.USE_PYGAME or PLATFORM in (PLATFORM_ANDROID, PLATFORM_PI, PLATFORM_
   from pyxlib import xlib
   from pyxlib.x import (AllocNone, ButtonPressMask, ButtonReleaseMask, CWBackPixmap,
     CWBorderPixel, CWColormap, CWEventMask, EnterWindowMask, ExposureMask,
-    KeyPressMask, KeyReleaseMask, LeaveWindowMask, OwnerGrabButtonMask, POINTER,
-    ResizeRedirectMask, StructureNotifyMask, c_char_p)
+    KeyPressMask, KeyReleaseMask, LeaveWindowMask, OwnerGrabButtonMask,
+    ResizeRedirectMask, StructureNotifyMask)
 
 
   from pyxlib import glx
@@ -242,7 +242,7 @@ class DisplayOpenGL(object):
         if not fbconfig:
           print("No matching FB config found")
         #/* Create a colormap - only needed on some X clients, eg. IRIX */
-        cmap = xlib.XCreateColormap(self.d, self.root, visual.visual, AllocNone);
+        cmap = xlib.XCreateColormap(self.d, self.root, visual.visual, AllocNone)
         attr = xlib.XSetWindowAttributes()
         attr.colormap = cmap
         attr.background_pixmap = 0
@@ -369,14 +369,13 @@ class DisplayOpenGL(object):
             [opengles.glIsShader, opengles.glDeleteShader, 0]]
         i_ct = (ctypes.c_int * 1)(0) #convoluted 0
         for func in func_list:
-          max_streak = 100
           streak_start = 0
           if func[2]: # list to work through
             for i in func[2]:
               if func[0](func[2][i][0]) == 1: #check if i exists as a name
                 func[1](1, byref(func[2][i][0]))
           else: # just do sequential numbers
-            for i in xrange(10000):
+            for i in range(10000):
               if func[0](i) == 1: #check if i exists as a name
                 i_ct[0] = i #convoluted 1
                 func[1](byref(i_ct))

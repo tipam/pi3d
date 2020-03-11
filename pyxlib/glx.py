@@ -1,6 +1,7 @@
-#from ctypes import *
+from ctypes import (CDLL, Structure, Union, c_char, c_short, c_int, c_int64, c_uint,
+    c_long, c_ulong, CFUNCTYPE, POINTER)
 from ctypes.util import find_library
-from .x import *
+from .x import XID, VisualID, Colormap
 from pyxlib import xlib
 
 glx_name = find_library('GLX')
