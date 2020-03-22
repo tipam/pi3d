@@ -25,7 +25,7 @@ class TCone(Shape):
     super(TCone, self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                 sx, sy, sz, cx, cy, cz)
 
-    LOGGER.info("Creating Truncated Cone ...")
+    LOGGER.debug("Creating Truncated Cone ...")
 
     path = [(0, height * 0.5),
             (radiusTop * 0.999, height * 0.5),

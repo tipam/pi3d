@@ -38,7 +38,7 @@ class PolygonLines(Shape):
     super(PolygonLines, self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                 sx, sy, sz, cx, cy, cz)
 
-    LOGGER.info("Creating PolygonLines ...")
+    LOGGER.debug("Creating PolygonLines ...")
 
     segs = []
     hw = line_width * 0.5 # half width
@@ -65,12 +65,13 @@ class PolygonLines(Shape):
         for i in range(n_s): # calculate intersection points for extension
             i_next = (i + 1) % len(segs) # i.e. wrap for closed
             da = segs[i].a - segs[i_next].a
-            if da == 0:
-                da = 0.000001
-            dc = segs[i_next].cr - segs[i].cr # far end right
-            new_verts.append([dc / da, segs[i].a * dc / da + segs[i].cr, segs[i].t[2]])
-            dc = segs[i_next].cs - segs[i].cs # far end left
-            new_verts.append([dc / da, segs[i].a * dc / da + segs[i].cs, segs[i].u[2]])
+            if abs(da) < 0.0001: # either straight or doubling back
+                new_verts.extend([segs[i].t, segs[i].u])
+            else:
+                dc = segs[i_next].cr - segs[i].cr # far end right
+                new_verts.append([dc / da, segs[i].a * dc / da + segs[i].cr, segs[i].t[2]])
+                dc = segs[i_next].cs - segs[i].cs # far end left
+                new_verts.append([dc / da, segs[i].a * dc / da + segs[i].cs, segs[i].u[2]])
         if not closed:
             new_verts.extend([segs[-1].t, segs[-1].u]) # last pair vertex
         else:

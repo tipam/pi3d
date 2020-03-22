@@ -56,7 +56,7 @@ class Polygon(Shape):
     super(Polygon, self).__init__(camera, light, name, x, y, z, rx, ry, rz, sx, sy, sz,
                                cx, cy, cz)
 
-    LOGGER.info("Creating disk ...")
+    LOGGER.debug("Creating disk ...")
 
     path = list(path) # in case fed a tuple rather than a list
     verts = np.zeros((len(path), 3))

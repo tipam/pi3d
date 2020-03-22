@@ -28,7 +28,7 @@ class Tube(Shape):
     """
     super(Tube, self).__init__(camera, light, name, x, y, z, rx, ry, rz, sx, sy, sz, cx, cy, cz)
 
-    LOGGER.info("Creating Tube ...")
+    LOGGER.debug("Creating Tube ...")
 
     if use_lathe:
       t = thickness * 0.5

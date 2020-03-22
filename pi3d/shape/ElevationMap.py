@@ -80,7 +80,7 @@ class ElevationMap(Shape):
       try:
         if '' + mapfile == mapfile: #HORRIBLE. Only way to cope with python2v3
           mapfile = file_pathify(mapfile)
-          LOGGER.info("Loading height map ...%s", mapfile)
+          LOGGER.debug("Loading height map ...%s", mapfile)
 
           im = Image.open(mapfile)
         else:
@@ -125,7 +125,7 @@ class ElevationMap(Shape):
     self.ht_y = 0.0
     self.ht_n = np.array([0.0, 1.0, 0.0])
 
-    LOGGER.info("Creating Elevation Map ...%d x %d", ix, iy)
+    LOGGER.debug("Creating Elevation Map ...%d x %d", ix, iy)
 
     self.wh = width * 0.5
     self.hh = depth * 0.5

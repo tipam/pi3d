@@ -72,19 +72,19 @@ class InputEvents(object):
         self.streams.append(EventStream(x, "keyboard"))
     else:
       keyboards = [ ]
-    LOGGER.info("keyboards = %s", keyboards)
+    LOGGER.debug("keyboards = %s", keyboards)
     if wantMouse:
       mice = find_devices("mouse", butNot=keyboards)
       for x in mice:
         self.streams.append(EventStream(x, "mouse"))
-      LOGGER.info("mice = %s", mice)
+      LOGGER.debug("mice = %s", mice)
     else:
       mice = [ ]
     if wantJoystick:
       joysticks = find_devices("js", butNot=keyboards+mice)
       for x in joysticks:
         self.streams.append(EventStream(x, "joystick"))
-      LOGGER.info("joysticks = %s", joysticks)
+      LOGGER.debug("joysticks = %s", joysticks)
     for x in self.streams:
       x.acquire_abs_info()
 

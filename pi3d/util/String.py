@@ -55,7 +55,7 @@ class String(Shape):
     super(String, self).__init__(camera, light, "", x, y, z,
                                  rx, ry, rz,  1.0, 1.0, 1.0,  0.0, 0.0, 0.0)
 
-    LOGGER.info("Creating string ...")
+    LOGGER.debug("Creating string ...")
 
     self.verts = []
     self.texcoords = []

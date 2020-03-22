@@ -27,7 +27,7 @@ class Torus(Shape):
     super(Torus,self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                sx, sy, sz, cx, cy, cz)
 
-    LOGGER.info("Creating Torus ...")
+    LOGGER.debug("Creating Torus ...")
 
     #path = []
     st = (math.pi * 2)/ringrots

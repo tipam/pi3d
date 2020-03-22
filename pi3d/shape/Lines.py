@@ -30,7 +30,7 @@ class Lines(Shape):
     super(Lines, self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                 sx, sy, sz, cx, cy, cz)
 
-    LOGGER.info("Creating Lines ...")
+    LOGGER.debug("Creating Lines ...")
 
     n_v = len(vertices)
     indices = [[a, a + 1, a + 2] for a in range(0, n_v, 3)]

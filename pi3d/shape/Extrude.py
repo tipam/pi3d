@@ -24,7 +24,7 @@ class Extrude(Shape):
     super(Extrude, self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                   sx, sy, sz, cx, cy, cz)
 
-    LOGGER.info("Creating Extrude ...")
+    LOGGER.debug("Creating Extrude ...")
 
     s = len(path) if path != None else 0
     ht = height * 0.5

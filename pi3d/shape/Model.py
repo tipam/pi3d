@@ -28,7 +28,7 @@ class Model(Shape):
       # Creating a copy but with pointer to buf.
       return
     self.exf = file_string[-3:].lower()
-    LOGGER.info("Loading {}".format(file_string))
+    LOGGER.debug("Loading {}".format(file_string))
 
     if self.exf == 'egg':
       loaderEgg.loadFileEGG(self, file_string)
