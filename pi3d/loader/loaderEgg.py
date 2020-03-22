@@ -74,7 +74,7 @@ def loadFileEGG(model, fileName):
         fileName = p + '/' + fileName
         break
   filePath = os.path.split(os.path.abspath(fileName))[0]
-  LOGGER.info(filePath)
+  LOGGER.debug(filePath)
   f = open(fileName, 'r')
   l = f.read() # whole thing as a string in memory this will only work for reasonably small files!!!
 
@@ -261,7 +261,7 @@ def loadFileEGG(model, fileName):
       model.textureList[x[1]] = {}
       for i in xrange(len(x[3])): model.textureList[x[1]][x[3][i][1]] = x[3][i][2]
       model.textureList[x[1]]["filename"] = x[2].strip("\"")
-      LOGGER.info('path: %s, filename:%s', filePath, model.textureList[x[1]]["filename"])
+      LOGGER.debug('path: %s, filename:%s', filePath, model.textureList[x[1]]["filename"])
       model.textureList[x[1]]["texID"] = Texture(os.path.join(filePath, model.textureList[x[1]]["filename"]), False, True) # load from file
     if "<CoordinateSystem>" in x[0]:
       model.coordinateSystem = x[2].lower()

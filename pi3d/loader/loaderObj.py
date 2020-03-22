@@ -72,7 +72,7 @@ def loadFileOBJ(model, fileName):
         fileName = p + '/' + fileName
         break
   filePath = os.path.split(os.path.abspath(fileName))[0]
-  LOGGER.info(filePath)
+  LOGGER.debug(filePath)
   f = open(fileName, 'r')
 
   vertices = []
@@ -194,7 +194,7 @@ def loadFileOBJ(model, fileName):
     g_tex_coords = []
     g_indices = []
     i = 0 # vertex counter in this material
-    LOGGER.info("len uv={}".format(len(vertices)))
+    LOGGER.debug("len uv={}".format(len(vertices)))
     vec_dict = {} # hold unique combinations of v/u/n
     for f in faces[g]:
       vec_list = [] # hold index vals for each array_buffer entry for this face
@@ -228,13 +228,13 @@ def loadFileOBJ(model, fileName):
     model.buf[n].material = (0.0, 0.0, 0.0, 0.0)
     model.buf[n].draw_method = GL_TRIANGLES
 
-    LOGGER.info("indices=%s\nvertices=%s", len(model.buf[n].element_array_buffer), 
+    LOGGER.debug("indices=%s\nvertices=%s", len(model.buf[n].element_array_buffer), 
                                        len(model.buf[n].array_buffer))
 
   try:
     material_lib = parse_mtl(open(os.path.join(filePath, mtllib), 'r'))
     for m in materials:
-      LOGGER.info(m)
+      LOGGER.debug(m)
       if 'mapDiffuse' in material_lib[m]:
         tfileName = material_lib[m]['mapDiffuse']
         model.buf[model.vGroup[materials[m]]].texFile = tfileName

@@ -22,7 +22,7 @@ class Cone(Shape):
     super(Cone, self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                sx, sy, sz, cx, cy, cz)
 
-    LOGGER.info("Creating Cone ...")
+    LOGGER.debug("Creating Cone ...")
 
     path = [(0.0, height * 0.5),
             (radius * 0.999, -height * 0.499),

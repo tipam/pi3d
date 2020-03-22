@@ -38,7 +38,7 @@ class PolygonLines(Shape):
     super(PolygonLines, self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                 sx, sy, sz, cx, cy, cz)
 
-    LOGGER.info("Creating PolygonLines ...")
+    LOGGER.debug("Creating PolygonLines ...")
 
     segs = []
     hw = line_width * 0.5 # half width

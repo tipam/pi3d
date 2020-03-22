@@ -490,13 +490,13 @@ class Building (object):
         if os.path.isfile(p + '/' + mapfile): # this could theoretically get different files with same name
           mapfile = p + '/' + mapfile
           break
-    LOGGER.info("Loading building map ...%s", mapfile)
+    LOGGER.debug("Loading building map ...%s", mapfile)
 
     im = Image.open(mapfile)
     im = ImageOps.invert(im)
     ix,iy = im.size
 
-    LOGGER.info("image size %d, %d", ix, iy)
+    LOGGER.debug("image size %d, %d", ix, iy)
 
     startx = xpos - ix / 2 * width
     starty = zpos - ix / 2 * depth
