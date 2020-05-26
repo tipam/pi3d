@@ -15,8 +15,8 @@ class Slice(Shape):
                rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0,
                cx=0.0, cy=0.0, cz=0.0):
     """Slice with outer and inner radius. NB this is in the xy plane rather than the
-    xz plane that Disk produces. It uses standard constructor for Shape extra with
-    following Keyword arguments:
+    xz plane that Disk produces and is only one sided. It uses standard constructor
+    for Shape extra with the following Keyword arguments:
 
       *inner*
         Inner radius of slice.
