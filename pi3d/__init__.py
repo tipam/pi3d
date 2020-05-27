@@ -51,6 +51,7 @@ from pi3d.shape.Plane import Plane
 from pi3d.shape.Points import Points
 from pi3d.shape.Polygon import Polygon
 from pi3d.shape.PolygonLines import PolygonLines
+from pi3d.shape.Slice import Slice
 from pi3d.shape.Sphere import Sphere
 from pi3d.shape.Sprite import Sprite, ImageSprite
 from pi3d.shape.TCone import TCone
