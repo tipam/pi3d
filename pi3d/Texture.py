@@ -340,6 +340,7 @@ class Texture(Loadable):
 
     if self.free_after_load:
         self.image = None
+        self.file_string = None
         self._loaded = False
 
   def _normal_map(self, image, factor=1.0):

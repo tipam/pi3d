@@ -4,6 +4,14 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
+v2.37
+2020-05-27  Bug fix: clear Texture.file_string as well as image if free_after_load
+            is set True. Also import of egl that was dragging in xlib functions and
+            stopped pi3d working on windows.
+            Improvement: Slice primitive in pi3d/shape which is like a slice of
+            a pie-chart. If colours specified with rgb values greater than 1.0 they
+            are treated as u8 0-255 values.
+
 v2.36
 2020-03-22  Bug fix: screen capture utility was incorrectly left in the form
             used for debugging the distance texture mod. Also the general use of
