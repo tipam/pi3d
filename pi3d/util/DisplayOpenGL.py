@@ -361,24 +361,38 @@ class DisplayOpenGL(object):
     if self.active:
       ###### brute force tidying experiment TODO find nicer way ########
       if display:
+
         func_list = [[opengles.glIsBuffer, opengles.glDeleteBuffers,
-            dict(display.vbufs_dict.items() + display.ebufs_dict.items())],
+            display.vbufs_dict.update(display.ebufs_dict)], # merge two dictionaries with update()
             [opengles.glIsTexture, opengles.glDeleteTextures,
             display.textures_dict],
             [opengles.glIsProgram, opengles.glDeleteProgram, 0],
             [opengles.glIsShader, opengles.glDeleteShader, 0]]
+
         i_ct = (ctypes.c_int * 1)(0) #convoluted 0
-        for func in func_list:
+        for fi, func in enumerate(func_list):
           streak_start = 0
           if func[2]: # list to work through
             for i in func[2]:
               if func[0](func[2][i][0]) == 1: #check if i exists as a name
-                func[1](1, byref(func[2][i][0]))
+                try:
+                  func[1](1, byref(func[2][i][0]))
+                except:
+                  pass # TODO find why this might fail (maybe race condition)
           else: # just do sequential numbers
-            for i in range(10000):
+            for i in range(1, 10000): # name 0 not to be deleted
               if func[0](i) == 1: #check if i exists as a name
-                i_ct[0] = i #convoluted 1
-                func[1](byref(i_ct))
+                if fi < 2: # buffers or textures needs number to delete
+                  i_ct[0] = i # pass as pointer to array of uint
+                  try:
+                    func[1](1, byref(i_ct))
+                  except:
+                    pass # TODO not sure why this silently fails and prevents the rest of the tidy up
+                else: # program and shader just one arg
+                  try:
+                    func[1](i)
+                  except:
+                    pass # TODO see above
                 streak_start = i
               elif i > (streak_start + 100):
                 break
