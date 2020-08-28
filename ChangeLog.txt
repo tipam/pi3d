@@ -4,6 +4,12 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
+v2.38
+2020-08-28  Bug fix: Display.destroy() now doesn't get in a tangle trying to free
+            OpenGL textures, programs, buffers (i.e. it actually completes)
+            Improvement: masked_screenshot() can grab pixels from a rectangle of
+            the screen as a numpy array.
+
 v2.37
 2020-05-27  Bug fix: clear Texture.file_string as well as image if free_after_load
             is set True. Also import of egl that was dragging in xlib functions and
