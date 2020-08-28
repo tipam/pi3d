@@ -53,7 +53,7 @@ from pi3d.shape.Polygon import Polygon
 from pi3d.shape.PolygonLines import PolygonLines
 from pi3d.shape.Slice import Slice
 from pi3d.shape.Sphere import Sphere
-from pi3d.shape.Sprite import Sprite, ImageSprite
+from pi3d.shape.Sprite import Sprite, ImageSprite, ButtonSprite
 from pi3d.shape.TCone import TCone
 from pi3d.shape.Tetrahedron import Tetrahedron
 from pi3d.shape.Torus import Torus
@@ -77,6 +77,7 @@ from pi3d.util.PexParticles import PexParticles
 from pi3d.util.PointText import PointText
 from pi3d.util.PostProcess import PostProcess
 from pi3d.util.Screenshot import screenshot
+from pi3d.util.Screenshot import masked_screenshot
 from pi3d.util.ShadowCaster import ShadowCaster
 from pi3d.util.StereoCam import StereoCam
 from pi3d.util.String import String
