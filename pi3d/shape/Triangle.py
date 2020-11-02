@@ -11,8 +11,8 @@ class Triangle(Shape):
                 rx=0.0, ry=0.0, rz=0.0, cx=0.0, cy=0.0, cz=0.0):
     """Uses standard constructor for Shape with ability to position corners.
     The corners must be arranged clockwise (for the Triangle to face -z direction)
-    The uv mapping is taken from an equilateral triangles base 0,0 to 1,0
-    peak at 0.5, 0.86603 Keyword argument:
+
+    Keyword argument:
 
       *corners*
         A tuple of three (xy) tuples defining the corners
@@ -23,7 +23,13 @@ class Triangle(Shape):
 
     verts = ((c[0][0], c[0][1], 0.0), (c[1][0], c[1][1], 0.0), (c[2][0], c[2][1], 0.0))
     norms = ((0, 0, -1), (0, 0, -1),  (0, 0, -1))
-    texcoords = ((0.0, 0.0), (0.5, 0.86603), (1.0, 0.0))
+    maxx = max(v[0] for v in corners) # u,v to match vertex locations
+    minx = min(v[0] for v in corners)
+    xscale = 1.0 / (maxx - minx)
+    maxy = max(v[1] for v in corners)
+    miny = min(v[1] for v in corners)
+    yscale = 1.0 / (maxy - miny)
+    texcoords = [((v[0] - minx) * xscale, 1.0 - (v[1] - miny) * yscale) for v in verts]
 
     inds = ((0, 1, 2), ) #python quirk: comma for tuple with only one val
 
