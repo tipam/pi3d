@@ -5,6 +5,10 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 Date        Amends
 
 v2.38
+2020-12-01  Bug fix: PointText checks if char in Font rather than crashing
+            as it did previously.
+
+v2.38
 2020-08-28  Bug fix: Display.destroy() now doesn't get in a tangle trying to free
             OpenGL textures, programs, buffers (i.e. it actually completes)
             Improvement: masked_screenshot() can grab pixels from a rectangle of
