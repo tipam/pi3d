@@ -74,10 +74,10 @@ class PostProcess(OffScreenTexture):
     """
     super(PostProcess, self)._start(clear=clear)
     from pi3d.Display import Display
-    xx = int(Display.INSTANCE.width / 2.0 * (1.0 - self.scale))
-    yy = int(Display.INSTANCE.height / 2.0 * (1.0 - self.scale))
-    ww = int(Display.INSTANCE.width * self.scale)
-    hh = int(Display.INSTANCE.height * self.scale)
+    xx = int(Display.INSTANCE.width / 2.0 * (1.0 - self.scale)) - 1
+    yy = int(Display.INSTANCE.height / 2.0 * (1.0 - self.scale)) - 1
+    ww = int(Display.INSTANCE.width * self.scale) + 2
+    hh = int(Display.INSTANCE.height * self.scale) + 2
     opengles.glEnable(GL_SCISSOR_TEST)
     opengles.glScissor(GLint(xx), GLint(yy), GLsizei(ww), GLsizei(hh))
 
