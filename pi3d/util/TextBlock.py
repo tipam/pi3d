@@ -243,19 +243,20 @@ class TextBlock(object):
       vari_width = self.size
 
     for char in strval:
-      glyph = self._text_manager.font.glyph_table[char]
-      self._text_manager.uv[index+self._buffer_index] = glyph[4:]
-      """scale is needed if pointsize is different in Points from Font which is
-      needed to avoid clipping or overlap of corners when rotation some truetype fonts"""
-      g_scale = float(self._text_manager.point_size) / self._text_manager.font.height
-      char_offset = pos
-      if self.spacing == "F":
-        #center character to the right 
-        char_offset += float(glyph[0]) * g_scale * self.size * 0.5
-      self.char_offsets[index] = char_offset
-      spacing = (glyph[0] * g_scale * vari_width) + const_width
-      pos += spacing
-      index += 1
+      if char in self._text_manager.font.glyph_table: # skip chars not in font
+        glyph = self._text_manager.font.glyph_table[char]
+        self._text_manager.uv[index+self._buffer_index] = glyph[4:]
+        """scale is needed if pointsize is different in Points from Font which is
+        needed to avoid clipping or overlap of corners when rotation some truetype fonts"""
+        g_scale = float(self._text_manager.point_size) / self._text_manager.font.height
+        char_offset = pos
+        if self.spacing == "F":
+            #center character to the right 
+            char_offset += float(glyph[0]) * g_scale * self.size * 0.5
+        self.char_offsets[index] = char_offset
+        spacing = (glyph[0] * g_scale * vari_width) + const_width
+        pos += spacing
+        index += 1
 
     #Justification
     self.char_offsets = np.add(self.char_offsets, (pos - spacing) * -self.justify)     
