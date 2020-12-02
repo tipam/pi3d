@@ -4,7 +4,11 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
-v2.38
+v2.40
+2020-12-02  Bug fix: PointText needs to write over previous characters if the
+            string reduces in length (set uv to [0.0, 0.0])
+
+v2.39
 2020-12-01  Bug fix: PointText checks if char in Font rather than crashing
             as it did previously.
 
