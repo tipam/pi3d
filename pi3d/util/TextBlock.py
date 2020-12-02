@@ -231,6 +231,7 @@ class TextBlock(object):
                       strval, self._string_length, self.char_count)
       return -1
     pos = 0.0
+    spacing = 0.0 #to stop crash if zero length string
     index = 0
     #Now the string is updated set the correct glyphs and calculate the
     #character offset positions. This is not the same as the final char positions.
@@ -257,9 +258,11 @@ class TextBlock(object):
         spacing = (glyph[0] * g_scale * vari_width) + const_width
         pos += spacing
         index += 1
+    for i in range(self._string_length, self.char_count): # if text re-used with shorter string
+      self._text_manager.uv[i + self._buffer_index] = [0.0, 0.0]
 
     #Justification
-    self.char_offsets = np.add(self.char_offsets, (pos - spacing) * -self.justify)     
+    self.char_offsets = np.add(self.char_offsets, (pos - spacing) * -self.justify)
     if set_pos:
       self.set_position()
     if set_colour:
