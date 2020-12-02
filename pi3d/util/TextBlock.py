@@ -258,7 +258,7 @@ class TextBlock(object):
         spacing = (glyph[0] * g_scale * vari_width) + const_width
         pos += spacing
         index += 1
-    for i in range(self._string_length, self.char_count): # if text re-used with shorter string
+    for i in range(index, self.char_count): # if text re-used with shorter string
       self._text_manager.uv[i + self._buffer_index] = [0.0, 0.0]
 
     #Justification
