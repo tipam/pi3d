@@ -195,9 +195,7 @@ class TextBlock(object):
     (c, s) = (np.cos(self.rot), np.sin(self.rot))
     matrix = np.array([[c, -s], [s, c]])
     locations[:,:2] = matrix.dot(self.char_offsets.T).T
-    #locations[:, 0] = np.multiply(self.char_offsets, math.cos(self.rot))
-    #locations[:, 1] = np.multiply(self.char_offsets, math.sin(self.rot))
-    locations = np.add(locations, pos)
+    locations += pos
     st = self._buffer_index
     mid = st + self._string_length
     end = st + self.char_count
@@ -211,7 +209,26 @@ class TextBlock(object):
 
   def set_text(self, text_format=None, size=None, spacing=None, space=None,
               char_rot=None, set_pos=True, set_colour=True, wrap=None, line_space=1.0):
-    #TODO docstring for function arguments
+    """ Arguments:
+      *text_format*:
+        text to display or a format string for displaying value from data_obj
+      *size*:
+        size of text 0.0 to 0.9999
+      *spacing*:
+        'C', 'M' or 'F'
+      *space*:
+        additional space between character
+      *char_rot*:
+        character rotation in degrees
+      *set_pos*:
+        control whether set_position() is called - default True
+      *set_colour*:
+        control whether set_colour() is called - default True
+      *wrap*:
+        if set then line breaks insterted to wrap at this number of characters
+      *line_space*:
+        multiplier for line spacing if multiline TextBlock
+    """
     if text_format is not None:
       self.text_format = text_format
     if size is not None:
@@ -282,7 +299,6 @@ class TextBlock(object):
 
     #Justification
     for (i, line) in enumerate(lines):
-      #adjust = self.size * 0.5
       self.char_offsets[line[0]:line[1], 0] += line[2] * -self.justify
     if set_pos:
       self.set_position()
