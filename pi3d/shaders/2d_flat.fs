@@ -12,7 +12,7 @@ void main(void) {
   coord -= unif[14].xy; // offset
   coord *=  pix_inv; // really dividing to scale 0-1 i.e. (x/w, y/h)
   vec4 texc = texture2D(tex0, coord);
-  if (texc.a < unib[0][2]) discard; // ------ to allow rendering behind the transparent parts of this object
+  if (texc.a <= unib[0][2]) discard; // ------ to allow rendering behind the transparent parts of this object
   gl_FragColor = texc;
   gl_FragColor.a *= unif[5][2];
 }

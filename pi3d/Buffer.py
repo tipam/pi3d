@@ -308,13 +308,13 @@ class Buffer(Loadable):
 
       if texture.blend:
         # i.e. if any of the textures set to blend then all will for this shader.
-        self.unib[2] = 0.05
+        self.unib[2] = 0.0035 # i.e. alpha byte in image 0b00000001 is 0.00392
 
     if self.unib[2] != 0.6 or shape.unif[16] < 1.0 or shape.unif[17] < 1.0:
       #use unib[2] as flag to indicate if any Textures to be blended
       #needs to be done outside for..textures so materials can be transparent
         opengles.glEnable(GL_BLEND)
-        self.unib[2] = 0.05
+        self.unib[2] = 0.0035
 
     self.disp.last_shader = shader
 

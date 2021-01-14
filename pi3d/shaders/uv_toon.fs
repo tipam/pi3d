@@ -19,7 +19,7 @@ void main(void) {
     float bfact = 1.0 - smoothstep(30.0, 100.0, dist); // ------ attenuate smoothly between 30 and 100 units
 
     float intensity = clamp(dot(lightVector, normalize(vec3(0.0, 0.0, 1.0) + bump * bfact)) * lightFactor, 0.0, 1.0); // ------ adjustment of colour according to combined normal
-    if (texc.a < unib[0][2]) discard; // ------ to allow rendering behind the transparent parts of this object
+    if (texc.a <= unib[0][2]) discard; // ------ to allow rendering behind the transparent parts of this object
     texc.rgb = (texc.rgb * unif[9]) * intensity + (texc.rgb * unif[10]); // ------ directional lightcol * intensity + ambient lightcol
 
     float d = 5.0;
