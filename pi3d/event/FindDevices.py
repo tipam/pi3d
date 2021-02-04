@@ -2,7 +2,7 @@ import re
 from .Constants import *
 
 def test_bit(nlst, b):
-  index = b / 32
+  index = b // 32
   bit = b % 32
   if len(nlst) <= index:
     return False
