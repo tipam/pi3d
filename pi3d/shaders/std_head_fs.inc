@@ -12,5 +12,6 @@ uniform vec3 unif[20];
 
 varying float dist;
 varying float fog_start;
+varying float is_3d;
 
 //fragcolor
