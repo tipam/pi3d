@@ -4,6 +4,11 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
+v2.42
+2021-02-09  Bug fix: bump shaders work with orthographic cameras, integer
+            division in find devices corrected to //. Alpha value for discarding
+            fragments reduced to 1 part in 255 to avoid 'edges'
+
 v2.41
 2020-12-04  Bug fix: PointText now copes with multi-line strings and
             can insert new lines at a given width
