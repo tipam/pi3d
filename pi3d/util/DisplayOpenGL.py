@@ -43,7 +43,7 @@ if pi3d.USE_PYGAME:
 class DisplayOpenGL(object):
   def __init__(self):
     self.d = None # display if x11 window or pygame used
-    self.gl_id = "GL" # default. Needed for converting shaders
+    self.gl_id = b"GL" # default. Needed for converting shaders
     if PLATFORM == PLATFORM_ANDROID:
       self.width, self.height = 320, 480 # put in some non-zero place-holders
     elif PLATFORM == PLATFORM_PI:
