@@ -8,6 +8,7 @@ import colorsys
 import logging
 
 LOGGER = logging.getLogger(__name__)
+WRAP_ON = [" ", "-", "_"]
 
 def getattra(obj, attr, default):
     if("[" in attr):
@@ -158,7 +159,7 @@ class TextBlock(object):
     self._buffer_index = 0
     self._text_manager = None
     self._string_length = 0
-    self.char_offsets = np.zeros((char_count, 2))
+    self.char_offsets = np.zeros((char_count, 3)) # x, y, char width for wrapping alignment
     self._string_length = len(self.get_string(self.get_value()))
 
   def set_text_manager(self, manager, buffer_index):
@@ -194,7 +195,7 @@ class TextBlock(object):
     locations = np.zeros((self.char_count, 3), dtype=np.float)
     (c, s) = (np.cos(self.rot), np.sin(self.rot))
     matrix = np.array([[c, -s], [s, c]])
-    locations[:,:2] = matrix.dot(self.char_offsets.T).T
+    locations[:,:2] = matrix.dot(self.char_offsets[:,:2].T).T
     locations += pos
     st = self._buffer_index
     mid = st + self._string_length
@@ -208,7 +209,8 @@ class TextBlock(object):
     self.colouring.recolour()
 
   def set_text(self, text_format=None, size=None, spacing=None, space=None,
-              char_rot=None, set_pos=True, set_colour=True, wrap=None, line_space=1.0):
+              char_rot=None, set_pos=True, set_colour=True, wrap=None, line_space=1.0,
+              wrap_pixels=None):
     """ Arguments:
       *text_format*:
         text to display or a format string for displaying value from data_obj
@@ -228,6 +230,9 @@ class TextBlock(object):
         if set then line breaks insterted to wrap at this number of characters
       *line_space*:
         multiplier for line spacing if multiline TextBlock
+      *wrap_pixels*
+        if set to value then lines will be wrapped to new line at this distance
+        TODO only aligns accurately with spacing type F
     """
     if text_format is not None:
       self.text_format = text_format
@@ -275,6 +280,7 @@ class TextBlock(object):
       line_ht = glyph[1] * g_scale
       break
 
+    last_space = None # [index, pos]
     for char in strval:
       if char == '\n': ## new line
         lines.append([index, index, 0.0])
@@ -285,15 +291,29 @@ class TextBlock(object):
         glyph = self._text_manager.font.glyph_table[char]
         self._text_manager.uv[index+self._buffer_index] = glyph[4:]
         char_offset = pos
+        char_width = glyph[0] * g_scale * vari_width
         if self.spacing == "F":
-            #center character to the right 
-            char_offset += glyph[0] * g_scale * self.size * 0.5
-        self.char_offsets[index] = [char_offset, -line_space * line_n * line_ht]
-        spacing = (glyph[0] * g_scale * vari_width) + const_width
+          #center character to the right 
+          char_offset += char_width * 0.5
+        self.char_offsets[index] = [char_offset, -line_space * line_n * line_ht, char_width]
+        spacing = char_width + const_width
         index += 1
         lines[line_n][1] = index
         lines[line_n][2] = pos
         pos += spacing
+        if char in WRAP_ON and wrap_pixels is not None:
+          if last_space is not None and pos > wrap_pixels: # wrap to new line
+            start_c = last_space[0]
+            offset = (self.char_offsets[start_c - 1, 0] - self.char_offsets[0, 0]
+                    + 0.5 * (self.char_offsets[start_c - 1, 2] + self.char_offsets[0, 2]))
+            self.char_offsets[start_c:index,:2] -= [offset, line_space * line_ht]
+            lines[line_n][1:] = last_space # revise end of line
+            lines.append([start_c, start_c, 0.0])
+            pos = self.char_offsets[index - 1, 0]
+            line_n += 1
+            last_space = None
+          else:
+            last_space = [index, pos]
     for i in range(index, self.char_count): # if text re-used with shorter string
       self._text_manager.uv[i + self._buffer_index] = [0.0, 0.0]
 
