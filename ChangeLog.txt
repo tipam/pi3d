@@ -4,6 +4,15 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
+v2.43
+2021-03-06  Bug fix: glGetError message cleaned up. Missing dependencies in setup.py
+            Improvement: PointText wrapping on pixel widths for accurate fitting
+            on screen
+
+v2.42
+2020-12-04  Bug fix: Only apply bump reduction with distance if Camera(is_3d=True
+            explicit int division on python3
+
 v2.41
 2020-12-04  Bug fix: PointText now copes with multi-line strings and
             can insert new lines at a given width
