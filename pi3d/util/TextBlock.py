@@ -307,9 +307,11 @@ class TextBlock(object):
             offset = (self.char_offsets[start_c - 1, 0] - self.char_offsets[0, 0]
                     + 0.5 * (self.char_offsets[start_c - 1, 2] + self.char_offsets[0, 2]))
             self.char_offsets[start_c:index,:2] -= [offset, line_space * line_ht]
-            lines[line_n][1:] = last_space # revise end of line
+            lines[line_n][1:] = last_space # revise end of line to before this space
+            space_width = self.char_offsets[last_space[0] + 1, 2] # adjust line end pos for justifying
+            lines[line_n][2] -= space_width
             lines.append([start_c, start_c, 0.0])
-            pos = self.char_offsets[index - 1, 0]
+            pos = self.char_offsets[index - 1, 0] + self.char_offsets[index - 1, 2]
             line_n += 1
             last_space = None
           else:
