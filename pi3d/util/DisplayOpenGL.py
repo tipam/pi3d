@@ -43,7 +43,7 @@ if pi3d.USE_PYGAME:
 class DisplayOpenGL(object):
   def __init__(self):
     self.d = None # display if x11 window or pygame used
-    self.gl_id = "GL" # default. Needed for converting shaders
+    self.gl_id = b"GL" # default. Needed for converting shaders
     if PLATFORM == PLATFORM_ANDROID:
       self.width, self.height = 320, 480 # put in some non-zero place-holders
     elif PLATFORM == PLATFORM_PI:
@@ -123,13 +123,26 @@ class DisplayOpenGL(object):
     opengles.glClearColor (GLfloat(0.3), GLfloat(0.3), GLfloat(0.7), GLfloat(1.0))
     opengles.glBindFramebuffer(GL_FRAMEBUFFER, GLuint(0))
 
+    # get GL v GLES and version num for shader translation
+    version = opengles.glGetString(GL_VERSION)
+    version = ctypes.cast(version, c_char_p).value
+    if b"ES" in version:
+      for s in version.split():
+        if b'.' in s:
+          self.gl_id = b"GLES" + s.split(b'.')[0]
+          break
+
     #Setup default hints
     opengles.glEnable(GL_CULL_FACE)
     opengles.glCullFace(GL_BACK)
     opengles.glFrontFace(GL_CW)
     opengles.glEnable(GL_DEPTH_TEST)
-    opengles.glEnable(GL_PROGRAM_POINT_SIZE)
-    opengles.glEnable(GL_POINT_SPRITE)
+    if b"GLES" not in self.gl_id:
+      if b"2" in self.gl_id:
+        opengles.glEnable(GL_VERTEX_PROGRAM_POINT_SIZE)
+      else:
+        opengles.glEnable(GL_PROGRAM_POINT_SIZE) # only in > GL3
+      opengles.glEnable(GL_POINT_SPRITE)
     opengles.glDepthFunc(GL_LESS)
     opengles.glDepthMask(GLboolean(True))
     opengles.glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST)
@@ -140,15 +153,6 @@ class DisplayOpenGL(object):
     #opengles.glEnableClientState(GL_NORMAL_ARRAY)
 
     self.active = True
-
-    # get GL v GLES and version num for shader translation
-    version = opengles.glGetString(GL_VERSION)
-    version = ctypes.cast(version, c_char_p).value
-    if b"ES" in version:
-      for s in version.split():
-        if b'.' in s:
-          self.gl_id = b"GLES" + s.split(b'.')[0]
-          break
 
   def create_surface(self, x=0, y=0, w=0, h=0, layer=0):
     #Set the viewport position and size
