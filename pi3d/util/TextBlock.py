@@ -270,7 +270,7 @@ class TextBlock(object):
       vari_width = self.size * self.space
     if self.spacing == "F":
       vari_width = self.size
-    lines = [[0, 0, 0.0]] # [start slice, end slice, last char offset]
+    lines = [[0, 0]] # [start slice, end slice]
     line_n = 0
     """scale is needed if pointsize is different in Points from Font which is
     needed to avoid clipping or overlap of corners when rotation some truetype fonts"""
@@ -280,10 +280,10 @@ class TextBlock(object):
       line_ht = glyph[1] * g_scale
       break
 
-    last_space = None # [index, pos]
+    last_space = None # index of last space on this line
     for char in strval:
       if char == '\n': ## new line
-        lines.append([index, index, 0.0])
+        lines.append([index, index])
         pos = 0.0
         line_n += 1
 
@@ -299,29 +299,32 @@ class TextBlock(object):
         spacing = char_width + const_width
         index += 1
         lines[line_n][1] = index
-        lines[line_n][2] = pos
         pos += spacing
-        if char in WRAP_ON and wrap_pixels is not None:
+        if wrap_pixels is not None and (char in WRAP_ON or index == len(strval)): # check if last word needs wrapping
           if last_space is not None and pos > wrap_pixels: # wrap to new line
-            start_c = last_space[0]
+            start_c = last_space
             offset = (self.char_offsets[start_c - 1, 0] - self.char_offsets[0, 0]
                     + 0.5 * (self.char_offsets[start_c - 1, 2] + self.char_offsets[0, 2]))
             self.char_offsets[start_c:index,:2] -= [offset, line_space * line_ht]
-            lines[line_n][1:] = last_space # revise end of line to before this space
-            space_width = self.char_offsets[last_space[0] + 1, 2] # adjust line end pos for justifying
-            lines[line_n][2] -= space_width
-            lines.append([start_c, start_c, 0.0])
+            lines[line_n][1] = last_space # revise end of line to before this space
+            last_c = (index - 2) if char == " " else index
+            lines.append([start_c, last_c])
             pos = self.char_offsets[index - 1, 0] + self.char_offsets[index - 1, 2]
             line_n += 1
             last_space = None
           else:
-            last_space = [index, pos]
+            last_space = index
     for i in range(index, self.char_count): # if text re-used with shorter string
       self._text_manager.uv[i + self._buffer_index] = [0.0, 0.0]
 
     #Justification
-    for (i, line) in enumerate(lines):
-      self.char_offsets[line[0]:line[1], 0] += line[2] * -self.justify
+    if len(strval) > 0: # could be passed zero length string to blank previous contents of TextBlock
+      for (i, line) in enumerate(lines):
+        last_c = line[1] - (2 if strval[line[1] - 1] == " " else 1)
+        last_offs = self.char_offsets[last_c]
+        adjust_len = last_offs[0] + 0.5 * last_offs[2]
+        self.char_offsets[line[0]:line[1], 0] += adjust_len * -self.justify
+
     if set_pos:
       self.set_position()
     if set_colour:

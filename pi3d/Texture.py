@@ -20,10 +20,10 @@ if PIL_OK:
   from PIL import Image
 
 LOGGER = logging.getLogger(__name__)
-MAX_SIZE = 1920
 DEFER_TEXTURE_LOADING = True
 WIDTHS = [4, 8, 16, 32, 48, 64, 72, 96, 128, 144, 192, 256,
            288, 384, 512, 576, 640, 720, 768, 800, 960, 1024, 1080, 1920]
+MAX_SIZE = max(WIDTHS)
 FILE = 0
 PIL_IMAGE = 1
 NUMPY = 2
@@ -56,7 +56,7 @@ class Texture(Loadable):
   def __init__(self, file_string, blend=False, flip=False, size=0,
                defer=DEFER_TEXTURE_LOADING, mipmap=True, m_repeat=False,
                free_after_load=False, i_format=None, filter=None,
-               normal_map=None, automatic_resize=None):
+               normal_map=None, automatic_resize=True):
     """
     Arguments:
       *file_string*
@@ -240,17 +240,23 @@ class Texture(Loadable):
       resize_type = Image.NEAREST
 
     # work out if sizes > MAX_SIZE or coerce to golden values in WIDTHS
-    if (self.automatic_resize or # default None which evaluates as boolean True
-        self.automatic_resize is None and PLATFORM == PLATFORM_PI):
-      if self.iy > self.ix and self.iy > MAX_SIZE: # fairly rare circumstance
-        im = im.resize((int((MAX_SIZE * self.ix) / self.iy), MAX_SIZE))
+    if (self.automatic_resize): # have to explicitly turn off as can cause image scrambling
+      widths = WIDTHS
+      from pi3d.Display import Display
+      if Display.INSTANCE is not None:
+        max_texture_size = Display.INSTANCE.opengl.max_texture_size.value
+        if max_texture_size > widths[-1]:
+          widths.append(max_texture_size)
+      max_size = max(widths)
+      if self.iy > self.ix and self.iy > max_size: # fairly rare circumstance
+        im = im.resize((int((max_size * self.ix) / self.iy), max_size))
         self.ix, self.iy = im.size
-      n = len(WIDTHS)
+      n = len(widths)
       for i in xrange(n-1, 0, -1):
-        if self.ix == WIDTHS[i]:
+        if self.ix == widths[i]:
           break # no need to resize as already a golden size
-        if self.ix > WIDTHS[i]:
-          im = im.resize((WIDTHS[i], int((WIDTHS[i] * self.iy) / self.ix)),
+        if self.ix > widths[i]:
+          im = im.resize((widths[i], int((widths[i] * self.iy) / self.ix)),
                           resize_type)
           self.ix, self.iy = im.size
           break
