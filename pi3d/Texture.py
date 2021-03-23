@@ -102,11 +102,8 @@ class Texture(Loadable):
         normal map where Luminance value is proportional to height. The 
         value of nomral_map is used the scale the effect (see _normal_map())
       *automatic_resize*
-        default to None, if this has not been overridden and you are running on a
-        RPi before v4 then the width will be coerced to one of the 'standard'
-        WIDTHs. Otherwise, where the GPU can cope with any image dimension -
-        or alternatively where you know that the images will comply and don't
-        need to check, no resizing will take place.
+        default to True, only set to False if you have ensured that any image
+        dimensions match ones that the GPU can cope with, no resizing will take place.
     """
     super(Texture, self).__init__()
     try:
@@ -202,7 +199,7 @@ class Texture(Loadable):
     Pngfont, Font, Defocus and ShadowCaster inherit from Texture but
     don't do all this so have to override this
     """
-    
+
     # If already loaded, abort
     if self._loaded:
       return
@@ -250,7 +247,6 @@ class Texture(Loadable):
           last_pwr = int(np.log(widths[-1]) / np.log(2))
           extend_list = [2 ** i for i in range(last_pwr + 1, pwr + 1)]
           widths.extend(extend_list)
-          print(widths)
       max_size = max(widths)
       if self.iy > self.ix and self.iy > max_size: # fairly rare circumstance
         im = im.resize((int((max_size * self.ix) / self.iy), max_size))
@@ -284,7 +280,7 @@ class Texture(Loadable):
       self.im = im
     else:
       self.im = None
-      
+
     self._loaded = True
 
   def _load_opengl(self):
@@ -313,11 +309,11 @@ class Texture(Loadable):
   def update_ndarray(self, new_array=None, texture_num=None):
     """to allow numpy arrays to be patched in to textures without regenerating
     new glTextureBuffers i.e. for movie textures
-    
+
       *new_array*
         ndarray, if supplied this will be the pixel data for the new
         Texture2D
-        
+
       *texture_num*
         int, if supplied this will make the update effective for a specific
         sampler number i.e. as held in the Buffer.textures array. This
@@ -376,13 +372,13 @@ class Texture(Loadable):
     """clear it out"""
     opengles.glDeleteTextures(1, ctypes.byref(self._tex))
 
-    
+
   # Implement pickle/unpickle support
   def __getstate__(self):
     # Make sure the image is actually loaded
     if not self._loaded:
       self._load_disk()
-      
+
     return {
       'blend': self.blend,
       'flip': self.flip,
