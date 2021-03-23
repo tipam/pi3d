@@ -245,8 +245,12 @@ class Texture(Loadable):
       from pi3d.Display import Display
       if Display.INSTANCE is not None:
         max_texture_size = Display.INSTANCE.opengl.max_texture_size.value
-        if max_texture_size > widths[-1]:
-          widths.append(max_texture_size)
+        if max_texture_size > widths[-1]: # OpenGL size is greater than last in list so add powers of two up to this
+          pwr = int(np.log(max_texture_size) / np.log(2)) # use np seeing as it's already imported!
+          last_pwr = int(np.log(widths[-1]) / np.log(2))
+          extend_list = [2 ** i for i in range(last_pwr + 1, pwr + 1)]
+          widths.extend(extend_list)
+          print(widths)
       max_size = max(widths)
       if self.iy > self.ix and self.iy > max_size: # fairly rare circumstance
         im = im.resize((int((max_size * self.ix) / self.iy), max_size))
