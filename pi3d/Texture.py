@@ -250,7 +250,6 @@ class Texture(Loadable):
           last_pwr = int(np.log(widths[-1]) / np.log(2))
           extend_list = [2 ** i for i in range(last_pwr + 1, pwr + 1)]
           widths.extend(extend_list)
-          print(widths)
       max_size = max(widths)
       if self.iy > self.ix and self.iy > max_size: # fairly rare circumstance
         im = im.resize((int((max_size * self.ix) / self.iy), max_size))

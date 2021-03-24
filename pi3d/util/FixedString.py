@@ -25,18 +25,18 @@ class FixedString(Texture):
   def __init__(self, font, string, camera=None, color=(255,255,255,255),
                shadow=(0,0,0,255), shadow_radius=0,
                font_size=24, margin=5.0, justify='C',
-               background_color=None, shader=None, f_type='', mipmap=True):
+               background_color=None, shader=None, f_type='', mipmap=True, width=None):
     """Arguments:
-    
+
     *font*:
       File path/name to a TrueType font file.
 
     *string*:
       String to write.
-      
+
     *camera*:
       Camera object passed on to constructor of sprite
-      
+
     *color*:
       Color in format '#RRGGBB', (255,0,0,255), 'orange' etc (as accepted 
       by PIL.ImageDraw) default (255, 255, 255, 255) i.e. white 100% alpha
@@ -53,18 +53,18 @@ class FixedString(Texture):
     *margin*:
       Offsets from the top left corner for the text and space on right
       and bottom. default 5.0
-      
+
     *justify*:
       L(eft), C(entre), R(ight) default C
 
     *background_color*:
       filled background in ImageDraw format as above. default None i.e.
       transparent. 
-      
+
     *shader*:
       can be passed to init otherwise needs to be set in set_shader or
       draw. default None
-      
+
     *f_type*:
       filter type. BUMP will generate a normal map (indented by default,
       +BUMP or BUMP+ will make it stick out), EMBOSS, CONTOUR, BLUR and 
@@ -86,21 +86,48 @@ class FixedString(Texture):
     ascent, descent = imgfont.getmetrics()
     height = ascent + descent
     lines = string.split('\n')
-    nlines = len(lines)
+    new_lines = []
     maxwid = 0
+    for l in lines:
+      line_wid = imgfont.getsize(l)[0]
+      if width is not None and line_wid > width:
+        new_line = ""
+        space = ""
+        words = l.split(" ")
+        for word in words:
+          check_line = "{}{}{}".format(new_line, space, word)
+          if imgfont.getsize(check_line)[0] <= width:
+            new_line = check_line
+          else: # wrap before this word TODO cope with lines with no spaces
+            if "-" in word: # TODO make this a function to split first on " " then "-" then on
+              split_word = word.split("-")
+              pre = split_word[0]
+              post = "-".join(split_word[1:])
+              check_line = "{} {}-".format(new_line, pre)
+              if imgfont.getsize(check_line)[0] <= width:
+                new_line = check_line
+                word = post
+            new_lines.append(new_line)
+            new_line = word
+          space = " "
+        new_lines.append(new_line)
+      else:
+        new_lines.append(l)
+    lines = new_lines
     for l in lines:
       line_wid = imgfont.getsize(l)[0]
       if line_wid > maxwid:
         maxwid = line_wid
     maxwid += 2.0 * margin
-    texture_wid = WIDTHS[0]
+    texture_wid = WIDTHS[-1]
+    nlines = len(lines)
+
     for l in WIDTHS:
       if l > maxwid:
         texture_wid = l
         break
-      texture_wid = l
     texture_hgt = int(nlines * height + 2 * margin)
-    
+
     self.im = Image.new("RGBA", (texture_wid, texture_hgt), background_color)
     self.ix, self.iy = texture_wid, texture_hgt
     draw = ImageDraw.Draw(self.im)
@@ -145,7 +172,7 @@ class FixedString(Texture):
       self.image = self._force_color(self.image, color)
 
     self._tex = ctypes.c_uint()
-    
+
     bmedge = nlines * height + 2.0 * margin
     self.sprite = Sprite(camera=camera, w=maxwid, h=bmedge)
     buf = self.sprite.buf[0] #convenience alias
@@ -158,7 +185,7 @@ class FixedString(Texture):
 
   def _render_text(self, lines, justify, margin, imgfont, maxwid, height, color, draw):
     for i, line in enumerate(lines):
-      line_len = imgfont.getsize(line)[0] 
+      line_len = imgfont.getsize(line)[0]
       if justify == "C":
         xoff = (maxwid - line_len) / 2.0
       elif justify == "L":
@@ -168,15 +195,15 @@ class FixedString(Texture):
 
       draw.text((xoff, margin + i * height), line, font=imgfont, fill=color)
 
-    
+
   def set_shader(self, shader):
     ''' wrapper for Shape.set_shader'''
     self.sprite.set_shader(shader)
-    
+
   def draw(self, shader=None, txtrs=None, ntl=None, shny=None, camera=None):
     '''wrapper for Shape.draw()'''
     self.sprite.draw(shader, txtrs, ntl, shny, camera)
-    
+
   def _force_color(self, im_array, color):
     """
     Overwrite color of all pixels as PIL renders text incorrectly when drawing on transparent backgrounds
