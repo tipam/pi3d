@@ -18,7 +18,7 @@ from pi3d.constants import (bcm, openegl, opengles,
     EGL_STENCIL_SIZE, EGL_SURFACE_TYPE, EGL_WIDTH, EGL_WINDOW_BIT,
     EGLint, GL_BACK, GL_CULL_FACE, GL_CW, GL_DEPTH_TEST, GL_FRAMEBUFFER,
     GL_GENERATE_MIPMAP_HINT, GL_LESS, GL_NICEST, GL_ONE_MINUS_SRC_ALPHA,
-    GL_POINT_SPRITE, GL_PROGRAM_POINT_SIZE, GL_SRC_ALPHA, GL_VERSION,
+    GL_POINT_SPRITE, GL_PROGRAM_POINT_SIZE, GL_SRC_ALPHA, GL_VERSION, GL_MAX_TEXTURE_SIZE,
     PLATFORM, PLATFORM_ANDROID, PLATFORM_PI, PLATFORM_WINDOWS)
 
 if not (pi3d.USE_PYGAME or PLATFORM in (PLATFORM_ANDROID, PLATFORM_PI, PLATFORM_WINDOWS)):
@@ -151,6 +151,8 @@ class DisplayOpenGL(object):
     opengles.glColorMask(GLboolean(True), GLboolean(True), GLboolean(True), GLboolean(False))
     #opengles.glEnableClientState(GL_VERTEX_ARRAY)
     #opengles.glEnableClientState(GL_NORMAL_ARRAY)
+    self.max_texture_size = GLint(0)
+    opengles.glGetIntegerv(GL_MAX_TEXTURE_SIZE, byref(self.max_texture_size))
 
     self.active = True
 
