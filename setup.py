@@ -51,7 +51,7 @@ setup(name='pi3d',
       packages=['pi3d','pyxlib','pi3d.constants','pi3d.shape','pi3d.util',
           'pi3d.event','pi3d.loader','pi3d.sprite','pi3d.'],
       package_requires=['Pillow',
-                        'numpy']
+                        'numpy'],
       py_modules=['six_mod'],
       package_data={'pi3d': ['shaders/*', 'util/icons/*']},
       data_files=[('', ['ChangeLog.txt'])],

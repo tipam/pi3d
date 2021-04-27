@@ -119,13 +119,8 @@ class FixedString(Texture):
       if line_wid > maxwid:
         maxwid = line_wid
     maxwid += 2.0 * margin
-    texture_wid = WIDTHS[-1]
+    texture_wid = min(int(maxwid / 4) * 4, 2048)
     nlines = len(lines)
-
-    for l in WIDTHS:
-      if l > maxwid:
-        texture_wid = l
-        break
     texture_hgt = int(nlines * height + 2 * margin)
 
     self.im = Image.new("RGBA", (texture_wid, texture_hgt), background_color)
