@@ -151,8 +151,8 @@ def _windows():
   here http://github.com/paddywwoof/pi3d_windll
   """
   import ctypes.wintypes as wt
-  opengles = _load_library("libglesv2.dll", "Win")
-  openegl = _load_library("libegl.dll", "Win")
+  opengles = _load_library("./libglesv2.dll", "Win")
+  openegl = _load_library("./libegl.dll", "Win")
   openegl.eglGetDisplay.argtypes = [wt.HDC]
   return platform, bcm, openegl, opengles # opengles now determined by platform
 
