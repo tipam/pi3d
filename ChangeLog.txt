@@ -4,6 +4,10 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
+v2.45
+2021-04-30  Improvement: Found that texture widths can be any multiple of four
+            up to GL_MAX_TEXTURE_SIZE
+
 v2.44
 2021-03-30  Improvement: FixedString wrapping on pixel widths for accurate fitting
             on screen

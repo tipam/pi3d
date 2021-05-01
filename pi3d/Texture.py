@@ -21,9 +21,10 @@ if PIL_OK:
 
 LOGGER = logging.getLogger(__name__)
 DEFER_TEXTURE_LOADING = True
+# from v.2.45 WIDTHS is deprecated but left in for backward compatibility
 WIDTHS = [4, 8, 16, 32, 48, 64, 72, 96, 128, 144, 192, 256,
-           288, 384, 512, 576, 640, 720, 768, 800, 960, 1024, 1080, 1920]
-MAX_SIZE = max(WIDTHS)
+           288, 384, 512, 576, 640, 720, 768, 800, 960, 1024, 1080, 1920, 2048]
+MAX_SIZE = max(WIDTHS) # also deprecated from v2.45
 FILE = 0
 PIL_IMAGE = 1
 NUMPY = 2
@@ -102,6 +103,7 @@ class Texture(Loadable):
         normal map where Luminance value is proportional to height. The 
         value of nomral_map is used the scale the effect (see _normal_map())
       *automatic_resize*
+        deprecated from v2.45 - has no effect
         default to True, only set to False if you have ensured that any image
         dimensions match ones that the GPU can cope with, no resizing will take place.
     """
@@ -236,30 +238,21 @@ class Texture(Loadable):
     else:
       resize_type = Image.NEAREST
 
-    # work out if sizes > MAX_SIZE or coerce to golden values in WIDTHS
-    if (self.automatic_resize): # have to explicitly turn off as can cause image scrambling
-      widths = WIDTHS
-      from pi3d.Display import Display
-      if Display.INSTANCE is not None:
-        max_texture_size = Display.INSTANCE.opengl.max_texture_size.value
-        if max_texture_size > widths[-1]: # OpenGL size is greater than last in list so add powers of two up to this
-          pwr = int(np.log(max_texture_size) / np.log(2)) # use np seeing as it's already imported!
-          last_pwr = int(np.log(widths[-1]) / np.log(2))
-          extend_list = [2 ** i for i in range(last_pwr + 1, pwr + 1)]
-          widths.extend(extend_list)
-      max_size = max(widths)
-      if self.iy > self.ix and self.iy > max_size: # fairly rare circumstance
-        im = im.resize((int((max_size * self.ix) / self.iy), max_size))
-        self.ix, self.iy = im.size
-      n = len(widths)
-      for i in xrange(n-1, 0, -1):
-        if self.ix == widths[i]:
-          break # no need to resize as already a golden size
-        if self.ix > widths[i]:
-          im = im.resize((widths[i], int((widths[i] * self.iy) / self.ix)),
-                          resize_type)
-          self.ix, self.iy = im.size
-          break
+    # work out if sizes > MAX_SIZE or coerce to multiple of 4
+    (new_w, new_h) = (self.ix, self.iy)
+    from pi3d.Display import Display
+    if Display.INSTANCE is not None:
+      max_size = Display.INSTANCE.opengl.max_texture_size.value
+    else:
+      max_size = MAX_SIZE
+    if new_h > new_w and new_h > max_size: # fairly rare circumstance
+      (new_w, new_h) = (int(max_size * new_x / new_h), max_size)
+    if (new_w % 4) != 0:
+      new_w = int(new_w / 4) * 4
+      new_h = int(self.iy * new_w / self.ix)
+    if new_w != self.ix: # only resize if had to change width
+      im = im.resize((new_w, new_h), resize_type)
+      (self.ix, self.iy) = (new_w, new_h)
 
     LOGGER.debug('Loading ...%s', s)
 
