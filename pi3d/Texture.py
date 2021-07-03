@@ -246,7 +246,9 @@ class Texture(Loadable):
     else:
       max_size = MAX_SIZE
     if new_h > new_w and new_h > max_size: # fairly rare circumstance
-      (new_w, new_h) = (int(max_size * new_x / new_h), max_size)
+      (new_w, new_h) = (int(max_size * new_w / new_h), max_size)
+    elif new_w > max_size:
+      (new_w, new_h) = (max_size, int(max_size * new_h / new_w))
     if (new_w % 4) != 0:
       new_w = int(new_w / 4) * 4
       new_h = int(self.iy * new_w / self.ix)
