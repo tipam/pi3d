@@ -4,6 +4,10 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
+v2.46
+2021-07-03  Bug fix: Resizing Textures when image dimensions were greater than
+            max_size was incorrect (typo and missing functionality)
+
 v2.45
 2021-04-30  Improvement: Found that texture widths can be any multiple of four
             up to GL_MAX_TEXTURE_SIZE
