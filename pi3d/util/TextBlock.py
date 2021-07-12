@@ -48,7 +48,7 @@ class TextBlockColour(object):
 
     #Fill an array with the colour to copy to the manager normals
     #rotation is included for efficiency
-    normal = np.zeros((3), dtype=np.float)
+    normal = np.zeros((3), dtype=float)
     normal[0] = textBlock.rot + textBlock.char_rot
     normal[1] = (self.colour[1] * 0.999) + (math.floor(self.colour[0] * 999))
     normal[2] = (self.colour[3] * 0.999) + (math.floor(self.colour[2] * 999))
@@ -84,7 +84,7 @@ class TextBlockColourGradient(TextBlockColour):
     hsv1 = colorsys.rgb_to_hsv(colour1[0], colour1[1], colour1[2])
     hsv2 = colorsys.rgb_to_hsv(colour2[0], colour2[1], colour2[2])
       
-    normal = np.zeros((3), dtype=np.float)
+    normal = np.zeros((3), dtype=float)
     normal[0] = textBlock.rot + textBlock.char_rot
 
     tlen = textBlock._string_length # alias for brevity below
@@ -192,7 +192,7 @@ class TextBlock(object):
     size_pos += math.trunc(self.z * 10.0)   # depth has resolution of 0.1m and range of 25.5m
     pos = [self.x, self.y, size_pos]
 
-    locations = np.zeros((self.char_count, 3), dtype=np.float)
+    locations = np.zeros((self.char_count, 3), dtype=float)
     (c, s) = (np.cos(self.rot), np.sin(self.rot))
     matrix = np.array([[c, -s], [s, c]])
     locations[:,:2] = matrix.dot(self.char_offsets[:,:2].T).T
