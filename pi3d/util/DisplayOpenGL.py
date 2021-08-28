@@ -27,8 +27,8 @@ if not (pi3d.USE_PYGAME or PLATFORM in (PLATFORM_ANDROID, PLATFORM_PI, PLATFORM_
     CWBorderPixel, CWColormap, CWEventMask, EnterWindowMask, ExposureMask,
     KeyPressMask, KeyReleaseMask, LeaveWindowMask, OwnerGrabButtonMask,
     ResizeRedirectMask, StructureNotifyMask)
-    
-  
+
+
   from pyxlib import glx
   X_WINDOW = True
 else:
@@ -70,13 +70,14 @@ class DisplayOpenGL(object):
       display_name = None #previous to RPi4 this worked but now problems..
       for f in os.listdir('/tmp/.X11-unix'):
         display_name = b':' + f[1:].encode('utf-8')
-        if display_name == b':0':
-          break # use X0 if this exist, else use last in list (which might work!)
-      self.d = xlib.XOpenDisplay(display_name)
-      if self.d:
-        self.screen = xlib.XDefaultScreenOfDisplay(self.d)
-        self.width, self.height = xlib.XWidthOfScreen(self.screen), xlib.XHeightOfScreen(self.screen)
-      else:
+        #if display_name == b':0':
+        #  break # use X0 if this exist, else use last in list (which might work!)
+        self.d = xlib.XOpenDisplay(display_name) # return NULL from X function or address if sucessful
+        if self.d: 
+          self.screen = xlib.XDefaultScreenOfDisplay(self.d)
+          self.width, self.height = xlib.XWidthOfScreen(self.screen), xlib.XHeightOfScreen(self.screen)
+          break # as soon as first valid display found. TODO mulitple displays?
+      if not self.d: 
         print('************************\nX11 needs to be running\n************************')
         assert False, 'Couldnt open DISPLAY {}'.format(display_name)
 
@@ -87,7 +88,6 @@ class DisplayOpenGL(object):
     self.display_config = display_config
     self.window_title = window_title.encode()
     if not self.use_glx:
-      assert openegl is not None # TODO implement better error handling. On macOS there is no egl, so glx has to be used.
       self.display = openegl.eglGetDisplay(EGL_DEFAULT_DISPLAY)
       assert self.display != EGL_NO_DISPLAY and self.display is not None
       for smpl in [samples, 0]: # try with samples first but ANGLE dll can't cope so drop to 0 for windows

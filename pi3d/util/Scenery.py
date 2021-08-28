@@ -162,7 +162,7 @@ class Scene(object):
       
       if (dx * dx + dz * dz) < s_item.threshold_sq:
         if s_item.status == 0:
-          if not self.thr.isAlive():
+          if not self.thr.is_alive():
             self.thr = Thread(target=load_scenery)
             self.thr.daemon = True
             self.thr.start()
