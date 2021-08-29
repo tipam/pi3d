@@ -1,5 +1,5 @@
 #version 120
-//precision mediump float;
+//precision highp float;
 
 
 attribute vec3 vertex;

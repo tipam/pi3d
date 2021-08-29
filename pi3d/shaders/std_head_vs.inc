@@ -1,6 +1,6 @@
 // ----- boiler-plate code for vertex shader variable definition
 #version 120
-//precision mediump float;
+//precision highp float;
 
 attribute vec3 vertex;
 attribute vec3 normal;
