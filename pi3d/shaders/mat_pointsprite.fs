@@ -1,5 +1,5 @@
 #version 120
-//precision mediump float;
+//precision highp float;
 
 uniform vec3 unib[5];
 //uniform float hardness => unib[0][0]

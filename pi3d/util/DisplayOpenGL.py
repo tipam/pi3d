@@ -70,13 +70,14 @@ class DisplayOpenGL(object):
       display_name = None #previous to RPi4 this worked but now problems..
       for f in os.listdir('/tmp/.X11-unix'):
         display_name = b':' + f[1:].encode('utf-8')
-        if display_name == b':0':
-          break # use X0 if this exist, else use last in list (which might work!)
-      self.d = xlib.XOpenDisplay(display_name)
-      if self.d:
-        self.screen = xlib.XDefaultScreenOfDisplay(self.d)
-        self.width, self.height = xlib.XWidthOfScreen(self.screen), xlib.XHeightOfScreen(self.screen)
-      else:
+        #if display_name == b':0':
+        #  break # use X0 if this exist, else use last in list (which might work!)
+        self.d = xlib.XOpenDisplay(display_name) # return NULL from X function or address if sucessful
+        if self.d: 
+          self.screen = xlib.XDefaultScreenOfDisplay(self.d)
+          self.width, self.height = xlib.XWidthOfScreen(self.screen), xlib.XHeightOfScreen(self.screen)
+          break # as soon as first valid display found. TODO mulitple displays?
+      if not self.d: 
         print('************************\nX11 needs to be running\n************************')
         assert False, 'Couldnt open DISPLAY {}'.format(display_name)
 

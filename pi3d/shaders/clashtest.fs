@@ -1,5 +1,5 @@
 #version 120
-//precision mediump float;
+//precision highp float;
 
 varying vec2 texcoordout;
 varying float dist;

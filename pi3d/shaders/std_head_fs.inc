@@ -1,6 +1,6 @@
 // ----- boiler-plate code for fragment shader variable definition
 #version 120
-//precision mediump float;
+//precision highp float;
 
 uniform sampler2D tex0;
 uniform sampler2D tex1;

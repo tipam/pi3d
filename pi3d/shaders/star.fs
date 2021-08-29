@@ -1,5 +1,5 @@
 #version 120
-//precision mediump float;
+//precision highp float;
 
 uniform sampler2D tex0;
 uniform vec3 unif[20];    // hpe
