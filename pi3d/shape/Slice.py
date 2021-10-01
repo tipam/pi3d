@@ -42,8 +42,9 @@ class Slice(Shape):
     (verts, texcoords) = self.make_verts()
     norms = np.zeros_like(verts)
     norms[:,2] = -1.0
-    inds = np.array([[i+u, i+v, i+w] for i in range(0, self.n, 2)
-                                    for (u, v, w) in [(0, 1, 3), (3, 2, 0)]], dtype=float)
+    inds = np.array([[2 * i + u, 2 * i + v, 2 * i + w] for i in range(0, sides)
+                                    for (u, v, w) in [(0, 1, 3), (3, 2, 0)]], dtype=int)
+    verts[:,2] = z
     self.buf = [Buffer(self, verts, texcoords, inds, norms)]
 
   def make_verts(self):
