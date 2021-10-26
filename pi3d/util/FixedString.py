@@ -11,7 +11,8 @@ if sys.version_info[0] == 3:
 # NB PIL must be available to use FixedString. Otherwise use Pngfont
 from PIL import Image, ImageDraw, ImageFont
 
-from pi3d.Texture import Texture, WIDTHS
+from pi3d.Display import Display
+from pi3d.Texture import Texture, MAX_SIZE
 from pi3d.shape.Sprite import Sprite
 
 class FixedString(Texture):
@@ -119,7 +120,11 @@ class FixedString(Texture):
       if line_wid > maxwid:
         maxwid = line_wid
     maxwid += 2.0 * margin
-    texture_wid = min(int(maxwid / 4) * 4, 2048)
+    if Display.INSTANCE is not None:
+      max_size = Display.INSTANCE.opengl.max_texture_size.value
+    else:
+      max_size = MAX_SIZE
+    texture_wid = min(int(maxwid / 4) * 4, max_size)
     nlines = len(lines)
     texture_hgt = int(nlines * height + 2 * margin)
 
