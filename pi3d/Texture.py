@@ -348,8 +348,10 @@ class Texture(Loadable):
     ''' takes a numpy array and returns a normal map (as np array using
     lightness as height map. Argument factor can scale the effect
     '''
-    if image.shape[2] > 2:
+    if image.shape[2] > 2: # RGB or RGBA
       gray = (image[:,:,:3] * [0.2989, 0.5870, 0.1140]).sum(axis=2) # grayscale
+      if image.shape[2] == 4: # has alpha, multiply by this
+        gray *= image[:,:,3] / 255.0
     else:
       gray = image[:,:,0]
     grdnt = np.gradient(gray) # a tuple of two arrays x and y gradients
