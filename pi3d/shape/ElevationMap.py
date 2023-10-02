@@ -92,7 +92,7 @@ class ElevationMap(Shape):
         if divx == 0:
           divx = 200
           divy = 200
-        im = im.resize((divx, divy), Image.ANTIALIAS)
+        im = im.resize((divx, divy), Image.LANCZOS)
         ix, iy = im.size
       im = im.convert('L')
       im = im.transpose(Image.FLIP_TOP_BOTTOM)
