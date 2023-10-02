@@ -165,7 +165,9 @@ class Font(Texture):
       except TypeError:
         ch = i
 
-      chwidth, chheight = imgfont.getsize(ch)
+      (left, top, right, bottom) = imgfont.getbbox(ch)
+      chwidth = right - left
+      chheight = bottom - top
 
       curX = xindex * self.spacing
       curY = yindex * self.spacing

@@ -90,14 +90,16 @@ class FixedString(Texture):
     new_lines = []
     maxwid = 0
     for l in lines:
-      line_wid = imgfont.getsize(l)[0]
+      (left, _, right, _) = imgfont.getbbox(l)
+      line_wid = right - left
       if width is not None and line_wid > width:
         new_line = ""
         space = ""
         words = l.split(" ")
         for word in words:
           check_line = "{}{}{}".format(new_line, space, word)
-          if imgfont.getsize(check_line)[0] <= width:
+          (left, _, right, _) = imgfont.getbbox(check_line)
+          if (right - left) <= width:
             new_line = check_line
           else: # wrap before this word TODO cope with lines with no spaces
             if "-" in word: # TODO make this a function to split first on " " then "-" then on
@@ -105,7 +107,8 @@ class FixedString(Texture):
               pre = split_word[0]
               post = "-".join(split_word[1:])
               check_line = "{} {}-".format(new_line, pre)
-              if imgfont.getsize(check_line)[0] <= width:
+              (left, _, right, _) = imgfont.getbbox(check_line)
+              if (right - left) <= width:
                 new_line = check_line
                 word = post
             new_lines.append(new_line)
@@ -116,7 +119,8 @@ class FixedString(Texture):
         new_lines.append(l)
     lines = new_lines
     for l in lines:
-      line_wid = imgfont.getsize(l)[0]
+      (left, _, right, _) = imgfont.getbbox(l)
+      line_wid = right - left
       if line_wid > maxwid:
         maxwid = line_wid
     maxwid += 2.0 * margin
@@ -185,7 +189,8 @@ class FixedString(Texture):
 
   def _render_text(self, lines, justify, margin, imgfont, maxwid, height, color, draw):
     for i, line in enumerate(lines):
-      line_len = imgfont.getsize(line)[0]
+      (left, _, right, _) = imgfont.getbbox(line)
+      line_len = right - left
       if justify == "C":
         xoff = (maxwid - line_len) / 2.0
       elif justify == "L":
