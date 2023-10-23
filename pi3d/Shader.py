@@ -20,7 +20,7 @@ def _opengl_log(shader, function, caption):
   log = c_chars(MAX_LOG_SIZE)
   loglen = ctypes.c_int()
   function(shader, MAX_LOG_SIZE, ctypes.byref(loglen), log)
-  LOGGER.info('%s: %s', caption, log.value)
+  LOGGER.debug('%s: %s', caption, log.value)
 
 class Shader(DefaultInstance):
   """This compiles and holds the shaders to be used to render the Shape Buffers
@@ -66,6 +66,8 @@ class Shader(DefaultInstance):
   do everything is that 'if' statements within the shader language are **very**
   time consuming.
   """
+  shader_list = {}
+
   def __init__(self, shfile=None, vshader_source=None, fshader_source=None):
     """
     Arguments:
@@ -139,6 +141,18 @@ class Shader(DefaultInstance):
     self.use()
 
   @staticmethod
+  def create(shfile=None, vshader_source=None, fshader_source=None):
+    if shfile is not None and shfile in Shader.shader_list:
+      LOGGER.debug("re-using shader {}".format(shfile))
+      shader = Shader.shader_list[shfile]
+    else:
+      shader = Shader(shfile, vshader_source, fshader_source)
+    if shfile is not None and shfile not in Shader.shader_list:
+      LOGGER.debug("saving shader {}".format(shfile))
+      Shader.shader_list[shfile] = shader
+    return shader
+
+  @staticmethod
   def _default_instance():
     return Shader('mat_light')
 
@@ -154,7 +168,7 @@ class Shader(DefaultInstance):
     opengles.glGetShaderInfoLog(
       shader, N, ctypes.byref(loglen), log)
     if len(log.value) > 0:
-      LOGGER.info('shader(%s) %s, %s', shader, self.shfile, log.value)
+      LOGGER.debug('shader(%s) %s, %s', shader, self.shfile, log.value)
 
   def showprogramlog(self, shader):
     """Prints the compile log for a program"""
@@ -177,7 +191,7 @@ class Shader(DefaultInstance):
     try:
       st = resource_string('pi3d', 'shaders/' + sfile)
     except:
-      LOGGER.info('no file shaders/' + sfile + ' in pkg_resources trying')
+      LOGGER.debug('no file shaders/' + sfile + ' in pkg_resources trying')
       st = open(sfile, 'rb').read() #assume it's a non-standard shader in a file
     for l in st.split(b'\n'):
       if b'#include' in l:

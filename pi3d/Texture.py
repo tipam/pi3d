@@ -20,10 +20,11 @@ if PIL_OK:
   from PIL import Image
 
 LOGGER = logging.getLogger(__name__)
-MAX_SIZE = 1920
 DEFER_TEXTURE_LOADING = True
+# from v.2.45 WIDTHS is deprecated but left in for backward compatibility
 WIDTHS = [4, 8, 16, 32, 48, 64, 72, 96, 128, 144, 192, 256,
-           288, 384, 512, 576, 640, 720, 768, 800, 960, 1024, 1080, 1920]
+           288, 384, 512, 576, 640, 720, 768, 800, 960, 1024, 1080, 1920, 2048]
+MAX_SIZE = max(WIDTHS) # also deprecated from v2.45
 FILE = 0
 PIL_IMAGE = 1
 NUMPY = 2
@@ -56,7 +57,7 @@ class Texture(Loadable):
   def __init__(self, file_string, blend=False, flip=False, size=0,
                defer=DEFER_TEXTURE_LOADING, mipmap=True, m_repeat=False,
                free_after_load=False, i_format=None, filter=None,
-               normal_map=None, automatic_resize=None):
+               normal_map=None, automatic_resize=True):
     """
     Arguments:
       *file_string*
@@ -102,11 +103,9 @@ class Texture(Loadable):
         normal map where Luminance value is proportional to height. The 
         value of nomral_map is used the scale the effect (see _normal_map())
       *automatic_resize*
-        default to None, if this has not been overridden and you are running on a
-        RPi before v4 then the width will be coerced to one of the 'standard'
-        WIDTHs. Otherwise, where the GPU can cope with any image dimension -
-        or alternatively where you know that the images will comply and don't
-        need to check, no resizing will take place.
+        deprecated from v2.45 - has no effect
+        default to True, only set to False if you have ensured that any image
+        dimensions match ones that the GPU can cope with, no resizing will take place.
     """
     super(Texture, self).__init__()
     try:
@@ -202,7 +201,7 @@ class Texture(Loadable):
     Pngfont, Font, Defocus and ShadowCaster inherit from Texture but
     don't do all this so have to override this
     """
-    
+
     # If already loaded, abort
     if self._loaded:
       return
@@ -239,21 +238,23 @@ class Texture(Loadable):
     else:
       resize_type = Image.NEAREST
 
-    # work out if sizes > MAX_SIZE or coerce to golden values in WIDTHS
-    if (self.automatic_resize or # default None which evaluates as boolean True
-        self.automatic_resize is None and PLATFORM == PLATFORM_PI):
-      if self.iy > self.ix and self.iy > MAX_SIZE: # fairly rare circumstance
-        im = im.resize((int((MAX_SIZE * self.ix) / self.iy), MAX_SIZE))
-        self.ix, self.iy = im.size
-      n = len(WIDTHS)
-      for i in xrange(n-1, 0, -1):
-        if self.ix == WIDTHS[i]:
-          break # no need to resize as already a golden size
-        if self.ix > WIDTHS[i]:
-          im = im.resize((WIDTHS[i], int((WIDTHS[i] * self.iy) / self.ix)),
-                          resize_type)
-          self.ix, self.iy = im.size
-          break
+    # work out if sizes > MAX_SIZE or coerce to multiple of 4
+    (new_w, new_h) = (self.ix, self.iy)
+    from pi3d.Display import Display
+    if Display.INSTANCE is not None:
+      max_size = Display.INSTANCE.opengl.max_texture_size.value
+    else:
+      max_size = MAX_SIZE
+    if new_h > new_w and new_h > max_size: # fairly rare circumstance
+      (new_w, new_h) = (int(max_size * new_w / new_h), max_size)
+    elif new_w > max_size:
+      (new_w, new_h) = (max_size, int(max_size * new_h / new_w))
+    if (new_w % 4) != 0:
+      new_w = int(new_w / 4) * 4
+      new_h = int(self.iy * new_w / self.ix)
+    if new_w != self.ix: # only resize if had to change width
+      im = im.resize((new_w, new_h), resize_type)
+      (self.ix, self.iy) = (new_w, new_h)
 
     LOGGER.debug('Loading ...%s', s)
 
@@ -272,7 +273,9 @@ class Texture(Loadable):
     self._tex = GLuint()
     if self.string_type == FILE and 'fonts/' in self.file_string:
       self.im = im
-      
+    else:
+      self.im = None
+
     self._loaded = True
 
   def _load_opengl(self):
@@ -301,11 +304,11 @@ class Texture(Loadable):
   def update_ndarray(self, new_array=None, texture_num=None):
     """to allow numpy arrays to be patched in to textures without regenerating
     new glTextureBuffers i.e. for movie textures
-    
+
       *new_array*
         ndarray, if supplied this will be the pixel data for the new
         Texture2D
-        
+
       *texture_num*
         int, if supplied this will make the update effective for a specific
         sampler number i.e. as held in the Buffer.textures array. This
@@ -331,21 +334,24 @@ class Texture(Loadable):
                           GL_UNSIGNED_BYTE,
                           self.image.ctypes.data_as(ctypes.POINTER(ctypes.c_ubyte)))
     if opengles.glGetError() == GL_OUT_OF_MEMORY:
-      LOGGER.critical('Out of GPU memory')
+      LOGGER.critical('Out of GPU memory in Texture.update_ndarray')
     #opengles.glEnable(GL_TEXTURE_2D) # invalid in OpenGLES 2
     if self.mipmap:
       opengles.glGenerateMipmap(GL_TEXTURE_2D)
 
     if self.free_after_load:
         self.image = None
+        self.file_string = None
         self._loaded = False
 
   def _normal_map(self, image, factor=1.0):
     ''' takes a numpy array and returns a normal map (as np array using
     lightness as height map. Argument factor can scale the effect
     '''
-    if image.shape[2] > 2:
+    if image.shape[2] > 2: # RGB or RGBA
       gray = (image[:,:,:3] * [0.2989, 0.5870, 0.1140]).sum(axis=2) # grayscale
+      if image.shape[2] == 4: # has alpha, multiply by this
+        gray *= image[:,:,3] / 255.0
     else:
       gray = image[:,:,0]
     grdnt = np.gradient(gray) # a tuple of two arrays x and y gradients
@@ -363,13 +369,13 @@ class Texture(Loadable):
     """clear it out"""
     opengles.glDeleteTextures(1, ctypes.byref(self._tex))
 
-    
+
   # Implement pickle/unpickle support
   def __getstate__(self):
     # Make sure the image is actually loaded
     if not self._loaded:
       self._load_disk()
-      
+
     return {
       'blend': self.blend,
       'flip': self.flip,

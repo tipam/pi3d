@@ -135,12 +135,12 @@ class PexParticles(Points):
                             point_size=self.point_size * self.scale, **kwargs) # pass to Points.__init__()
     if self.texture['name'] == 'circle': # TODO alternative geometries
       self.lite = True
-      shader = Shader('mat_pointsprite')
+      shader = Shader.create('mat_pointsprite')
       self.set_shader(shader)
       self.buf[0].unib[0] = hardness
     else:
       self.lite = False
-      shader = Shader('uv_pointsprite')
+      shader = Shader.create('uv_pointsprite')
       try:
         tex = Texture(self.texture['name']) # obvious first!
       except:

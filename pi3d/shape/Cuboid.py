@@ -33,7 +33,7 @@ class Cuboid(Shape):
     super(Cuboid, self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                 1.0, 1.0, 1.0, cx, cy, cz)
 
-    LOGGER.info("Creating cuboid ...")
+    LOGGER.debug("Creating cuboid ...")
 
     self.width = w
     self.height = h

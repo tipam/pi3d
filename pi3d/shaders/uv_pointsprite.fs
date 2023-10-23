@@ -1,5 +1,5 @@
 #version 120
-//precision mediump float;
+//precision highp float;
 
 uniform sampler2D tex0;
 uniform vec3 unib[5];
@@ -21,7 +21,7 @@ void main(void) {
   if (any(greaterThan(abs(rot_coord), limit))) discard;
   rot_coord += p_centre;
   vec4 texc = texture2D(tex0, (rot_coord * subsize + corner));
-  if (texc.a < unib[0][2]) discard; // ------ to allow rendering behind the transparent parts of this object
+  if (texc.a <= unib[0][2]) discard; // ------ to allow rendering behind the transparent parts of this object
   gl_FragColor = colour * texc;
   //gl_FragColor.a *= texc.a;
 }

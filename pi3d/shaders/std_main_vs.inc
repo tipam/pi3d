@@ -28,3 +28,5 @@
                           uvec.y, vvec.y, -normout.y, 0.0,
                           uvec.z, vvec.z, -normout.z, 0.0,
                           0.0,    0.0,    0.0,        1.0) * vec4(lightVector, 0.0));
+
+  is_3d = abs(modelviewmatrix[0][3][3] - modelviewmatrix[1][3][3]);

@@ -23,7 +23,7 @@ class Plane(Shape):
     super(Plane, self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                 sx, sy, sz, cx, cy, cz)
 
-    LOGGER.info("Creating plane ...")
+    LOGGER.debug("Creating plane ...")
 
     self.width = w
     self.height = h

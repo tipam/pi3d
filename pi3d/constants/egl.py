@@ -2,8 +2,8 @@
 This module contains integer constants from a C header file named something
 like egl.h.
 """
-from ctypes import Structure, POINTER, c_void_p, c_int32, c_int, c_int64
-from pyxlib.x import Window
+from ctypes import Structure, POINTER, c_void_p, c_int32, c_int, c_int64, c_ulong
+Window = c_ulong
 
 EGL_SUCCESS = 0x3000
 EGL_NOT_INITIALIZED = 0x3001

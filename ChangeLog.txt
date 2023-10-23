@@ -4,6 +4,85 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
+v2.50
+2023-09-26  Bug fix: Points previously comparing np array with empty list, deprecated now errors
+            found by  `@Home-Control9000` and `@joshstir`
+
+v2.49
+2021-10-26  Bug fix: FixedString width not using Display.opengl.max_texture_size.value
+            found by  `@jeffalperin`
+
+v2.48
+2021-10-01  Bug fix: Slice index for triangles wrong
+            found by  `@chatcoda`
+
+v2.47
+2021-08-29  Bug fix: conway vertex shader has -0.5 pixel adjustment over width and
+            height. All shaders use highp precision.
+            Improvements: mac setup sorted out thanks to `@helgeerbe`
+
+v2.46
+2021-07-03  Bug fix: Resizing Textures when image dimensions were greater than
+            max_size was incorrect (typo and missing functionality)
+
+v2.45
+2021-04-30  Improvement: Found that texture widths can be any multiple of four
+            up to GL_MAX_TEXTURE_SIZE
+
+v2.44
+2021-03-30  Improvement: FixedString wrapping on pixel widths for accurate fitting
+            on screen
+
+v2.43
+2021-03-06  Bug fix: glGetError message cleaned up. Missing dependencies in setup.py
+            Improvement: PointText wrapping on pixel widths for accurate fitting
+            on screen
+
+v2.42
+2021-02-09  Bug fix: bump shaders work with orthographic cameras, integer
+            division in find devices corrected to //. Alpha value for discarding
+            fragments reduced to 1 part in 255 to avoid 'edges'
+
+v2.41
+2020-12-04  Bug fix: PointText now copes with multi-line strings and
+            can insert new lines at a given width
+
+v2.40
+2020-12-02  Bug fix: PointText needs to write over previous characters if the
+            string reduces in length (set uv to [0.0, 0.0])
+
+v2.39
+2020-12-01  Bug fix: PointText checks if char in Font rather than crashing
+            as it did previously.
+
+v2.38
+2020-08-28  Bug fix: Display.destroy() now doesn't get in a tangle trying to free
+            OpenGL textures, programs, buffers (i.e. it actually completes)
+            Improvement: masked_screenshot() can grab pixels from a rectangle of
+            the screen as a numpy array.
+
+v2.37
+2020-05-27  Bug fix: clear Texture.file_string as well as image if free_after_load
+            is set True. Also import of egl that was dragging in xlib functions and
+            stopped pi3d working on windows.
+            Improvement: Slice primitive in pi3d/shape which is like a slice of
+            a pie-chart. If colours specified with rgb values greater than 1.0 they
+            are treated as u8 0-255 values.
+
+v2.36
+2020-03-22  Bug fix: screen capture utility was incorrectly left in the form
+            used for debugging the distance texture mod. Also the general use of
+            logging.info() has been switched to logging.debug()
+
+v2.35
+2020-03-11  Improvement: OffscreenTexture saves distance texture as well as colour
+            which works on RPi4 and bigger computers but old versions have to use
+            Blur_legacy.py technique. Shader.create() checks for existing instances
+            of shaders with same name so saves recompiling on complicated set-ups.
+            PolygonLines creates lines from triangles giving neater ends and corners.
+            Reduced wildcard imports.
+            Bug fix: display picks up non-default :0 on some ubuntu.
+
 v2.34
 2019-11-16  Bug fix: move the changes in fragment shaders into the include file in
             pi3d so minimise breaking shaders in pi3d_demos.

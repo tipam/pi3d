@@ -16,7 +16,7 @@ from pi3d.constants import (openegl, opengles, PLATFORM, PLATFORM_ANDROID,
 if PLATFORM == PLATFORM_WINDOWS:
   import sdl2
 elif PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
-  from pyxlib.x import KeyPress, KeyRelease, ClientMessage
+  from pyxlib.x import KeyPress, KeyRelease, ClientMessage, ResizeRequest
   from pyxlib import xlib
 
 LOGGER = logging.getLogger(__name__)
@@ -154,6 +154,7 @@ class Display(object):
     self.first_time = True
     self.is_running = True
     self.lock = threading.RLock()
+    self.was_resized = False
 
     LOGGER.debug(STARTUP_MESSAGE)
 
@@ -230,6 +231,7 @@ class Display(object):
     self.right = x + w
     self.bottom = y + h
     self.opengl.resize(x, y, w, h, self.layer)
+    self.was_resized = True
 
   def change_layer(self, layer=0):
     self.layer = layer
@@ -357,6 +359,11 @@ class Display(object):
           elif self.ev.type == ClientMessage:
             if (self.ev.xclient.data.l[0] == self.opengl.WM_DELETE_WINDOW.value):
               self.destroy()
+          elif self.ev.type == ResizeRequest:
+            (self.width, self.height) = (self.ev.xresizerequest.width,
+                                         self.ev.xresizerequest.height)
+            opengles.glViewport(0, 0, self.width, self.height)
+            self.was_resized = True
     self.clear()
     with self.lock:
       self.sprites_to_load, to_load = set(), self.sprites_to_load

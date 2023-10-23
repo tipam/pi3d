@@ -5,7 +5,6 @@ from ctypes import c_float
 from numpy import subtract, dot, divide, sqrt as npsqrt
 from math import sqrt, sin, cos, tan, radians, pi, acos
 
-from pi3d.constants import *
 from pi3d.util.Ctypes import c_bytes
 
 def normalize_v3(arr):

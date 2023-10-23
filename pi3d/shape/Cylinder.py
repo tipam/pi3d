@@ -22,7 +22,7 @@ class Cylinder(Shape):
     """
     super(Cylinder, self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                    sx, sy, sz, cx, cy, cz)
-    LOGGER.info("Creating Cylinder ...")
+    LOGGER.debug("Creating Cylinder ...")
 
     path = [(0, height * 0.5),
             (radius * 0.999, height * 0.5),

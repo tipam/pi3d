@@ -23,7 +23,7 @@ class Points(Shape):
     super(Points, self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                 sx, sy, sz, cx, cy, cz)
 
-    LOGGER.info("Creating Points ...")
+    LOGGER.debug("Creating Points ...")
 
     n_v = len(vertices)
     indices = [[a, a + 1, a + 2] for a in range(0, n_v, 3)]
@@ -31,7 +31,7 @@ class Points(Shape):
       last = indices[-1]
       if last[i] >= n_v:
         last[i] = n_v - 1
-    if normals == [] and tex_coords == []:
+    if len(normals) == 0 and len(tex_coords) == 0:
       normals = [[0.0, 0.0, 0.0] for i in range(n_v)] #used for rgb in mat_pointsprite
       tex_coords = [[1.0, 0.0] for i in range(n_v)] # [:,0] used for alpha in mat_pointsprite
     self.buf = [Buffer(self, vertices, tex_coords, indices, normals, smooth=False)]

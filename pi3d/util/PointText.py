@@ -28,7 +28,7 @@ class PointText(object):
     """
     self.max_chars = max_chars
     self.font = font
-    self.shader = Shader("uv_pointsprite")
+    self.shader = Shader.create("uv_pointsprite")
     
     self.locations = np.zeros((max_chars, 3))
     # :,2 for size and z offset. 

@@ -1,4 +1,4 @@
-from ctypes import *
+from ctypes import c_ubyte, c_ulong, c_char_p, POINTER
 
 X_PROTOCOL = 11
 X_PROTOCOL_REVISION = 0

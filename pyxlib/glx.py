@@ -1,9 +1,14 @@
-from ctypes import *
+from ctypes import (CDLL, Structure, Union, c_char, c_short, c_int, c_int64, c_uint,
+    c_long, c_ulong, CFUNCTYPE, POINTER)
 from ctypes.util import find_library
-from .x import *
+from pi3d.constants import PLATFORM, PLATFORM_OSX
+from .x import XID, VisualID, Colormap
 from pyxlib import xlib
 
-glx_name = find_library('GLX')
+if PLATFORM == PLATFORM_OSX:
+    glx_name = find_library('GL')
+else:
+    glx_name = find_library('GLX')
 libGLX = CDLL(glx_name)
 
 GLX_VERSION_1_1 = 1

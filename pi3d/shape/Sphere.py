@@ -30,7 +30,7 @@ class Sphere(Shape):
     super(Sphere, self).__init__(camera, light, name, x, y, z, rx, ry, rz,
                                 sx, sy, sz, cx, cy, cz)
 
-    LOGGER.info("Creating sphere ...")
+    LOGGER.debug("Creating sphere ...")
 
     path = []
     #extra points added at poles to reduce distortion (mainly normals)

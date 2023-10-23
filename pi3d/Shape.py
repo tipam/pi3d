@@ -70,7 +70,7 @@ class Shape(Loadable):
       11  light1 position, direction vector           33  35
       12  light1 strength per shade                   36  38
       13  light1 ambient values                       39  41
-      14  defocus dist_from, dist_to, amount          42  43 # also 2D x, y
+      14  defocus dist_from, dist_to, amount          42  44 # also 2D x, y
       15  defocus frame width, height (only 2 used)   45  46 # also 2D w, h, tot_ht
       16  custom data space                           48  50
       17  custom data space                           51  53
@@ -294,10 +294,15 @@ class Shape(Loadable):
 
     Arguments:
       *material*
-        tuple (rgb)
+        tuple (rgb) if any values > 1 then assume scale 0-255. If passed (rgba)
+        then set alpha for this shape.
     """
+    if any((v > 1 for v in material)):
+        material = tuple(v / 255.0 for v in material)
+    if len(material) > 3:
+        self.set_alpha(material[3])
     for b in self.buf:
-      b.set_material(material)
+      b.set_material(material[:3])
 
   def set_textures(self, textures):
     """Wrapper for setting textures in each Buffer object.

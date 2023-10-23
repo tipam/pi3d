@@ -32,7 +32,7 @@ class MergeShape(Shape):
     super(MergeShape, self).__init__(camera, light, name, x, y, z,
                                    rx, ry, rz, sx, sy, sz, cx, cy, cz)
 
-    LOGGER.info("Creating Merge Shape ...")
+    LOGGER.debug("Creating Merge Shape ...")
 
     self.buf = [Buffer(self, [], [], [], [])] # create single empty buffer in case draw() before first merge()
     self.billboard_array = [np.zeros((0, 6), dtype='float32')] # list of arrays holding x0, z0, x, z, nx, nz for each vert
@@ -113,7 +113,7 @@ class MergeShape(Shape):
 
       n = len(bufr.array_buffer)
 
-      LOGGER.info("Merging Buffer %s", bufr)
+      LOGGER.debug("Merging Buffer %s", bufr)
 
       original_vertex_count = len(vertices[b_id])
 
@@ -245,7 +245,7 @@ class MergeShape(Shape):
 
     blist = []
     for r in range(int(st)):
-      LOGGER.info("merging %d", r)
+      LOGGER.debug("merging %d", r)
       ca = math.cos(math.radians(sta))
       sa = math.sin(math.radians(sta))
       sta += step
@@ -254,7 +254,7 @@ class MergeShape(Shape):
                 0, sta, 0, 1.0, 1.0, 1.0, bufnum])
 
     self.merge(blist)
-    LOGGER.info("merged all")
+    LOGGER.debug("merged all")
   
   def billboard(self, cam_location):
     ''' rotates all merged shapes to face camera

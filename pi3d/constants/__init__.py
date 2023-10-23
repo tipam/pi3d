@@ -6,7 +6,7 @@ pi3d.constants contains constant values, mainly integers, from OpenGL ES 2.0.
 import time
 import logging
 
-__version__ = '2.34'
+__version__ = '2.50'
 year = time.localtime().tm_year
 
 STARTUP_MESSAGE = """
@@ -153,13 +153,28 @@ def _windows():
   here http://github.com/paddywwoof/pi3d_windll
   """
   import ctypes.wintypes as wt
-  opengles = _load_library("libglesv2.dll", "Win")
-  openegl = _load_library("libegl.dll", "Win")
+  opengles = _load_library("./libglesv2.dll", "Win")
+  openegl = _load_library("./libegl.dll", "Win")
   openegl.eglGetDisplay.argtypes = [wt.HDC]
   return platform, bcm, openegl, opengles # opengles now determined by platform
 
 def _darwin():
-  pass
+  """
+  Tested on macOS for apple silicon (M1). Actual there seems no port for EGL, so only glx is supported.
+  XQuartz has to be installed and running (X11 server)
+  ensure DYLD_FALLBACK_LIBRARY_PATH is defined
+  - export DYLD_FALLBACK_LIBRARY_PATH="/opt/X11/lib" or
+  - export DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib"
+  """
+  from ctypes.util import find_library
+  platform = PLATFORM_OSX
+  bcm = None
+
+  openegl = None
+  opengles_name = find_library('GLESv2.2')
+  opengles = _load_library(opengles_name)
+
+  return platform, bcm, openegl, opengles # opengles now determined by platform
 
 _PLATFORMS = {
   'linux': _linux,
@@ -175,7 +190,8 @@ def _detect_platform_and_load_libraries():
   if not loader:
     raise Exception("Couldn't understand platform %s" % platform_name)
   platform, bcm, openegl, opengles = loader()
-  set_egl_function_args(openegl) # function defined in constants/elg.py
+  if openegl != None:
+    set_egl_function_args(openegl) # function defined in constants/elg.py
   set_gles_function_args(opengles) #function defined in constants/gl.py
 
   return platform, bcm, openegl, opengles

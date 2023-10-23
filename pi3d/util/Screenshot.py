@@ -3,7 +3,10 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import ctypes
 import numpy as np
 
-from pi3d.constants import *
+from pi3d.constants import (opengles, GLint, GLsizei, GLubyte, GL_DEPTH_COMPONENT, 
+                            GL_RGBA, GL_UNSIGNED_BYTE, GL_UNSIGNED_SHORT, PIL_OK)
+ 
+
 from pi3d.util import Log
 
 if PIL_OK:
@@ -31,9 +34,7 @@ def screenshot(filestring=None):
   from pi3d.Display import Display
 
   w, h = Display.INSTANCE.width, Display.INSTANCE.height
-  img = np.zeros((h, w, 4), dtype=np.uint8)
-  opengles.glReadPixels(GLint(0), GLint(0), GLsizei(w), GLsizei(h), GL_RGBA, GL_UNSIGNED_BYTE, img.ctypes.data_as(ctypes.POINTER(GLubyte)))
-  img = img[::-1,:,:3].copy()
+  img = masked_screenshot(0, 0, w, h)
   if filestring is None:
     return img
 
@@ -42,3 +43,14 @@ def screenshot(filestring=None):
     im.save(filestring, quality=90)
   else:
     np.savez_compressed('{}'.format(filestring), img)
+
+
+def masked_screenshot(x, y, w, h):
+  """returns numpy array from part of screen so it can be used by applications
+  drawing low resolution offscreen textures using scaling.
+  """
+  img = np.zeros((h, w, 4), dtype=np.uint8)
+  opengles.glReadPixels(GLint(x), GLint(y), GLsizei(w), GLsizei(h), GL_RGBA,
+        GL_UNSIGNED_BYTE, img.ctypes.data_as(ctypes.POINTER(GLubyte)))
+  return img[::-1,:,:3].copy()
+

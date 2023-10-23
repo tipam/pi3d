@@ -1,4 +1,6 @@
-from ctypes import *
+from ctypes import (CDLL, c_byte, c_ubyte, c_char, c_wchar, c_int, c_uint,
+    c_short, c_ushort, c_long, c_ulong, c_char_p, c_wchar_p, c_void_p,
+    Structure, Union, POINTER)
 from ctypes.util import find_library
 from .x import *
 

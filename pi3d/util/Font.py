@@ -11,7 +11,6 @@ if sys.version_info[0] == 3:
 # NB PIL must be available to use Font. Otherwise use Pngfont
 from PIL import Image, ImageDraw, ImageFont
 
-from pi3d.constants import *
 from pi3d.Texture import Texture
 
 MAX_SIZE = 1920
@@ -166,7 +165,9 @@ class Font(Texture):
       except TypeError:
         ch = i
 
-      chwidth, chheight = imgfont.getsize(ch)
+      (left, top, right, bottom) = imgfont.getbbox(ch)
+      chwidth = right - left
+      chheight = bottom - top
 
       curX = xindex * self.spacing
       curY = yindex * self.spacing

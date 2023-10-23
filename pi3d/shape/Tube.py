@@ -28,7 +28,7 @@ class Tube(Shape):
     """
     super(Tube, self).__init__(camera, light, name, x, y, z, rx, ry, rz, sx, sy, sz, cx, cy, cz)
 
-    LOGGER.info("Creating Tube ...")
+    LOGGER.debug("Creating Tube ...")
 
     if use_lathe:
       t = thickness * 0.5
@@ -77,4 +77,4 @@ class Tube(Shape):
             f_off = i * 8
             faces += [(a + f_off, b + f_off, c + f_off)]
 
-        self.buf = [Buffer(self, verts, uvs, faces, norms)]
+      self.buf = [Buffer(self, verts, uvs, faces, norms)]
