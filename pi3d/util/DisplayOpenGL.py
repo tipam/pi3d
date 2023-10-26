@@ -129,7 +129,7 @@ class DisplayOpenGL(object):
         if b'.' in s:
           self.gl_id = b"GLES" + s.split(b'.')[0]
           break
-    print("gl_id ", self.gl_id)
+    print("gl_id ", self.gl_id, version)
 
     #Setup default hints
     opengles.glEnable(GL_CULL_FACE)
@@ -197,7 +197,7 @@ class DisplayOpenGL(object):
       mode = sdl2.SDL_DisplayMode()
       sdl2.SDL_GetCurrentDisplayMode(0, byref(mode))
       flags = sdl2.SDL_WINDOW_OPENGL | sdl2.SDL_WINDOW_RESIZABLE
-      self.window = sdl2.SDL_CreateWindow(b'hello world', x, y, w, h, flags)
+      self.window = sdl2.SDL_CreateWindow(self.window_title, x, y, w, h, flags)
       assert self.window, sdl2.SDL_GetError()
       sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_CONTEXT_PROFILE_MASK, sdl2.SDL_GL_CONTEXT_PROFILE_COMPATIBILITY)
       sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_CONTEXT_MAJOR_VERSION, 2)
@@ -205,6 +205,7 @@ class DisplayOpenGL(object):
       sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_DOUBLEBUFFER, 1)
       sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_DEPTH_SIZE, 24)
       self.context = sdl2.SDL_GL_CreateContext(self.window)
+      sdl2.SDL_GL_MakeCurrent(self.window, self.context)
       if (w == self.width and h == self.height) or (self.display_config & DISPLAY_CONFIG_FULLSCREEN):
         sdl2.SDL_SetWindowFullscreen(self.window, sdl2.SDL_WINDOW_FULLSCREEN)
       if self.display_config & DISPLAY_CONFIG_HIDE_CURSOR:
@@ -430,8 +431,8 @@ class DisplayOpenGL(object):
         xlib.XCloseDisplay(self.d)
 
   def swap_buffers(self):
-    #opengles.glFlush()
-    #opengles.glFinish()
+    opengles.glFlush()
+    opengles.glFinish()
     if pi3d.USE_SDL2:
       import sdl2
       sdl2.SDL_GL_SwapWindow(self.window)

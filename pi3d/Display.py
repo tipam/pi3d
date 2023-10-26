@@ -503,7 +503,7 @@ def create(x=None, y=None, w=None, h=None, near=None, far=None,
   *display_config*
     Configuration of display - See pi3d.constants for DISPLAY_CONFIG options
   """
-  if tk: #NB this happens before Display created so use_sdl2 will not work on linux
+  if tk: #NB this happens before Display created so use_sdl2 will not work with tk
     if PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
       #just use python-xlib same as non-tk but need dummy behaviour
       from pi3d.Keyboard import Keyboard

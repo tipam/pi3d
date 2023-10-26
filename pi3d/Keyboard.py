@@ -302,7 +302,7 @@ def Keyboard(use_curses=USE_CURSES):
   if pi3d.PLATFORM == pi3d.PLATFORM_ANDROID:
     return AndroidKeyboard()
   #elif PLATFORM == PLATFORM_WINDOWS:
-  elif pi3d.USE_SDL2:
+  elif pi3d.USE_SDL2: # set in Display.__init__() so that must happen before Keyboard()
     return sdl2Keyboard()
   elif pi3d.PLATFORM != pi3d.PLATFORM_PI:
     return x11Keyboard()
