@@ -155,6 +155,7 @@ class Display(object):
     self.is_running = True
     self.lock = threading.RLock()
     self.was_resized = False
+    self.frame_time = 0.03
 
     LOGGER.debug(STARTUP_MESSAGE)
 
@@ -430,7 +431,12 @@ class Display(object):
       if delta > 0:
         time.sleep(delta)
 
+    t = time.time()
+    self.frame_time = self.frame_time * 0.95 + (t - self.time) * 0.05 
     self.time = time.time()
+
+  def fps(self):
+    return 1.0 / self.frame_time
 
   def _for_each_sprite(self, function, sprites=None):
     if sprites is None:
