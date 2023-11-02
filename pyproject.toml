@@ -1,0 +1,59 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pi3d"
+description = "pi3d OpenGL 3D graphics library"
+keywords = [
+    "OpenGL", 
+    "3D", 
+    "raspberry", 
+    "raspi",
+    "graphics", 
+    "game engine"]
+authors = [
+  {name = "Tim Skillman"},
+  {name = "Paddy Gaunt"},
+  {name = "Tom Ritchford"},
+]
+maintainers = [
+  {name = "Paddy Gaunt"},
+]
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.7"
+classifiers=[
+    "Development Status :: 5 - Production/Stable",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Topic :: Multimedia :: Graphics",
+]
+dynamic = ["version"]
+dependencies = [
+    "Pillow",
+    "numpy",
+    "pysdl2"
+]
+
+[project.urls]
+"Homepage" = "http://pi3d.github.com/html/index.html"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+namespaces = true
+where = ["src"]
+
+[tool.setuptools.package-data]
+"*" = ["*.fs", "*.vs", "*.inc", "*.gif"]
+
+[tool.setuptools.dynamic]
+version = {attr = "pi3d.constants.__version__"}
+readme = {file = ["ReadMe.rst"]}
+
+[tool.versioneer]
+VCS = "git"
+style = "pep440"

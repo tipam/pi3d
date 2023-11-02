@@ -1,6 +1,6 @@
 import os
 
-from six_mod.moves import tkinter
+import tkinter
 
 class TkWin(tkinter.Tk):
   """

@@ -5,8 +5,6 @@ import re, os
 
 import pi3d
 from random import randint
-from six_mod.moves import xrange
-from six_mod import advance_iterator
 
 from pi3d.Texture import Texture
 from pi3d.Buffer import Buffer
@@ -84,7 +82,7 @@ def loadFileEGG(model, fileName):
   def pRec(x, bReg, l, i):
     while 1:
       try:
-        nxtFind = advance_iterator(bReg)
+        nxtFind = next(bReg)
         j = nxtFind.start()
       except:
         return i+1
@@ -185,7 +183,7 @@ def loadFileEGG(model, fileName):
     gMRef = ""
     gTRef = ""
     nP = len(structPList)
-    for p in xrange(nP):
+    for p in range(nP):
       if (len(structPList[p].MRef) > 0): gMRef = structPList[p].MRef
       else: gMRef = ""
       if (len(structPList[p].TRef) > 0): gTRef = structPList[p].TRef
@@ -259,7 +257,7 @@ def loadFileEGG(model, fileName):
   for x in xx[3]:
     if "<Texture>" in x[0]:
       model.textureList[x[1]] = {}
-      for i in xrange(len(x[3])): model.textureList[x[1]][x[3][i][1]] = x[3][i][2]
+      for i in range(len(x[3])): model.textureList[x[1]][x[3][i][1]] = x[3][i][2]
       model.textureList[x[1]]["filename"] = x[2].strip("\"")
       LOGGER.debug('path: %s, filename:%s', filePath, model.textureList[x[1]]["filename"])
       model.textureList[x[1]]["texID"] = Texture(os.path.join(filePath, model.textureList[x[1]]["filename"]), False, True) # load from file
@@ -267,6 +265,6 @@ def loadFileEGG(model, fileName):
       model.coordinateSystem = x[2].lower()
     if "<Material>" in x[0]:
       model.materialList[x[1]] = {}
-      for i in xrange(len(x[3])): model.materialList[x[1]][x[3][i][1]] = x[3][i][2]
+      for i in range(len(x[3])): model.materialList[x[1]][x[3][i][1]] = x[3][i][2]
     if "<Group>" in x[0]:
       groupDrill(x[3], x[1])

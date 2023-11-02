@@ -1,7 +1,6 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import threading
-import six_mod
 import ctypes
 import logging
 
@@ -47,7 +46,7 @@ class _sdl2Mouse():
     self.YSIGN = 1 << 5
 
     self.running = False
-    self.buffr = '' if six_mod.PY3 else b''
+    self.buffr = ''
     self.lock = threading.RLock()
     self.width = width
     self.height = height
@@ -123,7 +122,7 @@ class _nixMouse(threading.Thread):
     super(_nixMouse, self).__init__()
     self.fd = open('/dev/input/' + mouse, 'rb')
     self.running = False
-    self.buffr = '' if six_mod.PY3 else b''
+    self.buffr = ''
     self.lock = threading.RLock()
     self.width = width
     self.height = height

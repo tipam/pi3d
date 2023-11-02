@@ -5,8 +5,6 @@ import sys, os
 import numpy as np
 import logging
 
-from six_mod.moves import xrange
-
 from pi3d.constants import (opengles, PIL_OK, GL_ALPHA, GL_LUMINANCE,
           GL_LUMINANCE_ALPHA, GL_RGB, GL_RGBA, GL_MIRRORED_REPEAT, GL_REPEAT,
           GL_LINEAR, GL_NEAREST, GL_LINEAR_MIPMAP_NEAREST, GL_NEAREST_MIPMAP_NEAREST,

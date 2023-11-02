@@ -152,7 +152,6 @@ zipped download from github is c.600 kB extracts to c.1100kB
 #.  **images** To show in ReadMe on github 325kB
 #.  **ReadMe** This file in markup and plain text 27kB
 #.  **ChangeLog.txt** Latest changes of pi3d 16kB
-#.  **six_mod.py** utilities to help run under python2 and python3 13kB
 #.  **misc. others** 10kB
 
 Setup on the Raspberry Pi

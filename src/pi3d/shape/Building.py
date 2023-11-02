@@ -41,7 +41,6 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import os.path
 
 import math, random, sys
-from six_mod.moves import filter
 
 # NB PIL must be available to use Building
 from PIL import ImageOps, ImageDraw, Image

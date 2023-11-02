@@ -3,7 +3,6 @@ import platform
 import time
 
 from ctypes import c_int, c_uint, c_float, byref, POINTER, c_char_p
-from six_mod.moves import xrange
 
 import pi3d
 from pi3d.constants import (bcm, openegl, opengles,

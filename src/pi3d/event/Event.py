@@ -1,4 +1,3 @@
-import six_mod
 import logging
 
 from pi3d.event import EventHandler
@@ -15,7 +14,7 @@ for v in KEY_CODE:
   CODE_KEY[KEY_CODE[v]] = v
 
 def key_to_code(key):
-  return KEY_CODE.get(str(key), -1) if isinstance(key, six_mod.string_types) else key
+  return KEY_CODE.get(str(key), -1) if isinstance(key, str) else key
 
 def code_to_key(code):
   return CODE_KEY.get(code, '')

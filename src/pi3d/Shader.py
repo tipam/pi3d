@@ -3,7 +3,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import ctypes
 import sys, os
 import logging
-from pkg_resources import resource_string
+import pi3d
 
 from pi3d.constants import opengles, GL_FRAGMENT_SHADER, GL_VERTEX_SHADER, GLsizei, GLint
 from pi3d.util.Ctypes import c_chars
@@ -189,7 +189,9 @@ class Shader(DefaultInstance):
       sfile = sfile.decode()
     new_text = b'' #but then returns a bytes object so swap to bytes!
     try:
-      st = resource_string('pi3d', 'shaders/' + sfile)
+      shader_file = os.path.join(os.path.dirname(pi3d.__file__), 'shaders', sfile)
+      print(shader_file)
+      st = open(shader_file, 'rb').read()
     except:
       LOGGER.debug('no file shaders/' + sfile + ' in pkg_resources trying')
       st = open(sfile, 'rb').read() #assume it's a non-standard shader in a file
