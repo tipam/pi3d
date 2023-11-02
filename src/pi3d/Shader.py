@@ -190,7 +190,6 @@ class Shader(DefaultInstance):
     new_text = b'' #but then returns a bytes object so swap to bytes!
     try:
       shader_file = os.path.join(os.path.dirname(pi3d.__file__), 'shaders', sfile)
-      print(shader_file)
       st = open(shader_file, 'rb').read()
     except:
       LOGGER.debug('no file shaders/' + sfile + ' in pkg_resources trying')
