@@ -234,6 +234,16 @@ class Display(object):
     self.opengl.resize(x, y, w, h, self.layer)
     self.was_resized = True
 
+  def enable_screensaver(self):
+    if pi3d.USE_SDL2: # functionality only exists in SDL2
+      import sdl2 # this shouldn't be needed but won't cause delay if already avail
+      sdl2.SDL_EnableScreenSaver()
+
+  def disable_screensaver(self):
+    if pi3d.USE_SDL2:
+      import sdl2
+      sdl2.SDL_DisableScreenSaver()
+
   def change_layer(self, layer=0):
     self.layer = layer
     self.opengl.change_layer(layer)
