@@ -244,6 +244,11 @@ class Display(object):
       import sdl2
       sdl2.SDL_DisableScreenSaver()
 
+  def is_screensaver_enabled(self):
+    if pi3d.USE_SDL2: # if not will return None
+      import sdl2
+      return sdl2.SDL_IsScreenSaverEnabled() # returns SDL_boolean (0, 1)
+
   def change_layer(self, layer=0):
     self.layer = layer
     self.opengl.change_layer(layer)
