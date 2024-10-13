@@ -4,6 +4,10 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
+v2.52
+2024-10-13  Bug fix: SDL2 uses FULLSCREEN_DESKTOP flag to allow wlr-randr to blank the screen
+            without killing the process
+
 v2.51
 2023-11-01  Improvement: option to use SDL2 for the windowing and event (keyboard, mouse) input
             this needs pysdl2 to be installed. Display.create(...use_sdl2=True)

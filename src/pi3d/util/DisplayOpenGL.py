@@ -206,7 +206,7 @@ class DisplayOpenGL(object):
       self.context = sdl2.SDL_GL_CreateContext(self.window)
       sdl2.SDL_GL_MakeCurrent(self.window, self.context)
       if (w == self.width and h == self.height) or (self.display_config & DISPLAY_CONFIG_FULLSCREEN):
-        sdl2.SDL_SetWindowFullscreen(self.window, sdl2.SDL_WINDOW_FULLSCREEN)
+        sdl2.SDL_SetWindowFullscreen(self.window, sdl2.SDL_WINDOW_FULLSCREEN_DESKTOP)
       if self.display_config & DISPLAY_CONFIG_HIDE_CURSOR:
         disp = pi3d.Display.Display.INSTANCE
         disp._mouse_relative = True
