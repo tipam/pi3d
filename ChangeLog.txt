@@ -4,6 +4,10 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
+v2.53
+2025-02-04  Bug fix: SDL2 uses SDL_WINDOW_BORDERLESS flag if pi3d.DISPLAY_CONFIG_NO_FRAME
+            has been included in Display.create argument display_config
+
 v2.52
 2024-10-13  Bug fix: SDL2 uses FULLSCREEN_DESKTOP flag to allow wlr-randr to blank the screen
             without killing the process
