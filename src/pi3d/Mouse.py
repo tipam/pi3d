@@ -3,6 +3,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import threading
 import ctypes
 import logging
+import time
 
 import pi3d
 from pi3d.constants import PLATFORM_PI, PLATFORM_ANDROID
@@ -59,11 +60,13 @@ class _sdl2Mouse():
     else:
       self.display._mouse_relative = not restrict # set with mouse argument
     sdl2.SDL_SetRelativeMouseMode(self.display._mouse_relative)
+    self.x_offset = self.display.width // 2 + 1
+    self.y_offset = self.display.height // 2
 
   def position(self):
     ''' returns x, y tuple
     '''
-    return self.display._mouse_x, self.display._mouse_y
+    return self.display._mouse_x - self.x_offset, self.display._mouse_y + self.y_offset
 
   def velocity(self):
     ''' returns dx, dy tuple of distance moved since last reading
@@ -120,23 +123,28 @@ class _nixMouse(threading.Thread):
         mouse y limit
     """
     super(_nixMouse, self).__init__()
-    self.fd = open('/dev/input/' + mouse, 'rb')
     self.running = False
     self.buffr = ''
     self.lock = threading.RLock()
     self.width = width
     self.height = height
     self.restrict = restrict
+    self.mouse = mouse
 
     #create a pointer to this so Display.destroy can stop the thread
-    from pi3d.Display import Display
-    Display.INSTANCE.external_mouse = self
+    self.display = pi3d.Display.Display.INSTANCE
+    self.display.external_mouse = self #TODO check how copes with circular refs
+    if restrict is None: # not specified in arguments
+      if self.display._mouse_relative is None: # not set with Display.create()
+        self.display._mouse_relative = False # default
+    else:
+      self.display._mouse_relative = not restrict # set with mouse argument
 
     self.use_x = False
     if use_x: # version as argument to __init__
       if pi3d.PLATFORM != pi3d.PLATFORM_ANDROID and pi3d.PLATFORM != pi3d.PLATFORM_PI:
-        self.d = Display.INSTANCE.opengl.d
-        self.window = Display.INSTANCE.opengl.window
+        self.d = self.display.opengl.d
+        self.window = self.display.opengl.window
         self.root = ctypes.c_ulong(0)
         self.child = ctypes.c_ulong(0)
         self.x = ctypes.c_int(0)
@@ -145,8 +153,8 @@ class _nixMouse(threading.Thread):
         self.rooty = ctypes.c_int(0)
         self.mask = ctypes.c_uint(0)
         self.use_x = True
-        self.x_offset = Display.INSTANCE.width // 2 + 1
-        self.y_offset = Display.INSTANCE.height // 2
+    self.x_offset = self.display.width // 2 + 1
+    self.y_offset = self.display.height // 2
 
     self.daemon = True # to kill app rather than waiting for mouse event
     self.reset()
@@ -158,13 +166,14 @@ class _nixMouse(threading.Thread):
     self._buttons = 0
 
   def start(self):
+    self.fd = open('/dev/input/' + self.mouse, 'rb')
     if not self.running:
       self.running = True
       super(_nixMouse, self).start()
 
   def run(self):
     while self.running:
-      self._check_event()
+        self._check_event()
     self.fd.close()
 
   def position(self):
@@ -175,11 +184,11 @@ class _nixMouse(threading.Thread):
                         ctypes.byref(self.root), ctypes.byref(self.child),
                         ctypes.byref(self.rootx), ctypes.byref(self.rooty),
                         ctypes.byref(self.x),ctypes.byref(self.y),
-                        self.mask)
+                        ctypes.byref(self.mask))
       return self.x.value - self.x_offset, self.y_offset - self.y.value
     else:
       with self.lock:
-        return self._x, self._y
+        return self._x - self.x_offset, self._y - self.y_offset
 
   def velocity(self):
     ''' returns dx, dy tuple of distance moved since last reading
@@ -199,7 +208,9 @@ class _nixMouse(threading.Thread):
     Mouse.BUTTONUP 8
     '''
     with self.lock:
-      return self._buttons
+      button = self._buttons
+      self._buttons = 0
+      return button
 
   def _check_event(self):
     if len(self.buffr) >= 3:
@@ -227,7 +238,6 @@ class _nixMouse(threading.Thread):
 
         with self.lock:
           self._x, self._y, self._dx, self._dy = x, y, dx, dy
-
     else:
       try:
         strn = self.fd.read(3).decode("latin-1")

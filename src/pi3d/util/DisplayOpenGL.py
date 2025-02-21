@@ -195,7 +195,7 @@ class DisplayOpenGL(object):
       import sdl2
       mode = sdl2.SDL_DisplayMode()
       sdl2.SDL_GetCurrentDisplayMode(0, byref(mode))
-      if self.display_config | DISPLAY_CONFIG_NO_FRAME == 0: # if config isn't set to no_frame make resizable
+      if self.display_config & DISPLAY_CONFIG_NO_FRAME == 0: # if config isn't set to no_frame make resizable
         flags = sdl2.SDL_WINDOW_OPENGL | sdl2.SDL_WINDOW_RESIZABLE
       else: # it should be borderless i.e. no_frame
         flags = sdl2.SDL_WINDOW_OPENGL | sdl2.SDL_WINDOW_BORDERLESS

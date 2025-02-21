@@ -16,7 +16,7 @@ from pi3d.constants import (openegl, opengles, PLATFORM, PLATFORM_ANDROID,
 if PLATFORM == PLATFORM_WINDOWS:
   import sdl2
 elif PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
-  from pyxlib.x import KeyPress, KeyRelease, ClientMessage, ResizeRequest
+  from pyxlib.x import KeyPress, KeyRelease, ClientMessage, ResizeRequest, ButtonPress
   from pyxlib import xlib
 
 LOGGER = logging.getLogger(__name__)
@@ -367,7 +367,7 @@ class Display(object):
             self.resize(w=w.value, h=h.value)
 
     elif PLATFORM != PLATFORM_PI and PLATFORM != PLATFORM_ANDROID:
-      n = xlib.XEventsQueued(self.opengl.d, xlib.QueuedAfterFlush)
+      n = xlib.XEventsQueued(self.opengl.d, xlib.QueuedAfterFlush) #TODO use x11 for mousebutton
       for _ in range(n):
           xlib.XNextEvent(self.opengl.d, self.ev)
           if self.ev.type == KeyPress or self.ev.type == KeyRelease:

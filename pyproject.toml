@@ -48,7 +48,7 @@ namespaces = true
 where = ["src"]
 
 [tool.setuptools.package-data]
-"*" = ["*.fs", "*.vs", "*.inc", "*.gif"]
+"*" = ["*.fs", "*.vs", "*.inc", "*.gif", "*.png"]
 
 [tool.setuptools.dynamic]
 version = {attr = "pi3d.constants.__version__"}

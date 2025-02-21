@@ -8,7 +8,7 @@ from pi3d.constants import PLATFORM_PI, PLATFORM_ANDROID
 if pi3d.USE_PYGAME:
   import pygame
 elif pi3d.PLATFORM != PLATFORM_PI and pi3d.PLATFORM != PLATFORM_ANDROID:
-  from pyxlib import x
+  from pyxlib import x, XKeycodeToKeysym, XKeysymToString
 
 USE_CURSES = True
 
@@ -76,6 +76,7 @@ class SysKeyboard(object):
     # turn off non-blocking
     fcntl.fcntl(self.fd, fcntl.F_SETFL, self.flags_save & ~os.O_NONBLOCK)
 
+
   def read(self):
     try:
       return ord(sys.stdin.read())
@@ -83,7 +84,10 @@ class SysKeyboard(object):
       return 0
 
   def read_code(self):
-    return ""
+    try:
+      return sys.stdin.read()
+    except KeyboardInterrupt:
+      return ""
 
   def close(self):
     termios.tcsetattr(self.fd, termios.TCSAFLUSH, self.attrs_save)
@@ -95,6 +99,7 @@ class SysKeyboard(object):
     except:
       pass
 
+
 """Keyboard using sdl2 functionality
 """
 class sdl2Keyboard(object):
@@ -105,19 +110,35 @@ class sdl2Keyboard(object):
     self.key_num = 0
     self.key_code = ""
     self.key_mod = sdl2.KMOD_NONE
+    self.upper_case = (sdl2.KMOD_CAPS, sdl2.KMOD_RSHIFT, sdl2.KMOD_LSHIFT, sdl2.KMOD_SHIFT)
+
+    self.KEYBOARD = {}
+    for k in dir(sdl2): # sift through for key codes
+      if "SDLK_" in k:
+        key_num = getattr(sdl2, k)
+        if type(key_num) == int:
+          key_code = k.split("_")[-1]
+          self.KEYBOARD[key_num] = key_code
 
   def _update_event(self):
     if self.display is None: #Because DummyTkWin Keyboard instance created before Display!
       from pi3d.Display import Display
       self.display = Display.INSTANCE
     ret_val = False
-    for k in self.display.keys_pressed: # dict - random access order, just use first 
+    keys_read = []
+    for k in self.display.keys_pressed: # dict - random access order, just use first
       self.key_num = k
-      self.key_code = self.display.keys_pressed[k][0]
+      self.key_code = self.KEYBOARD[k] #self.display.keys_pressed[k][0]
       self.key_mod = self.display.keys_pressed[k][1]
+      if self.key_mod in self.upper_case:
+        self.key_code = self.key_code.upper()
+      keys_read.append(k) #stop re-reading same key, delete after iterating dict
       ret_val = True
       if k < 0x40000000: # stop after a key with char representation, if there is one
         break
+    for k in keys_read:
+      self.display.keys_pressed.pop(k)
+
     return ret_val
 
   def read(self):
@@ -144,39 +165,46 @@ class sdl2Keyboard(object):
       self.close()
     except:
       pass
+
+
 """Keyboard using x11 functionality
 """
 class x11Keyboard(object):
   KEYBOARD = [[0, ""], [0, ""], [0, ""], [0, ""], [0, ""],
-            [0, ""], [0, ""], [0, ""], [0, ""], [27, "Escape"],
+            [0, ""], [0, ""], [0, ""], [0, ""], [27, "ESCAPE"],
             [49, "1"], [50, "2"], [51, "3"], [52, "4"], [53, "5"],
             [54, "6"], [55, "7"], [56, "8"], [57, "9"], [48, "0"],
-            [45, "-"], [61, "="], [8, "BackSpace"], [9, "Tab"], [113, "q"],
+            [45, "-"], [61, "="], [8, "BACKSPACE"], [9, "TAB"], [113, "q"],
+
             [119, "w"], [101, "e"], [114, "r"], [116, "t"], [121, "y"],
             [117, "u"], [105, "i"], [111, "o"], [112, "p"], [91, "["],
-            [93, "]"], [13, "Return"], [0, "Control_L"], [97, "a"], [115, "s"],
+            [93, "]"], [13, "RETURN"], [0, "LCTRL"], [97, "a"], [115, "s"],
             [100, "d"], [102, "f"], [103, "g"], [104, "h"], [106, "j"],
             [107, "k"], [108, "l"], [59, ";"], [39, "'"], [96, "`"],
-            [0, "Shift_L"], [35, "#"], [122, "z"], [120, "x"], [99, "c"],
+
+            [0, "LSHIFT"], [35, "#"], [122, "z"], [120, "x"], [99, "c"],
             [118, "v"], [98, "b"], [110, "n"], [109, "m"], [44, ","],
-            [46, "."], [47, "/"], [0, "Shift_R"], [0, ""], [0, "Alt_L"],
-            [32, "space"], [0, "Caps"], [145, "F1"], [146, "F2"], [147, "F3"],
+            [46, "."], [47, "/"], [0, "RSHIFT"], [0, ""], [0, "LALT"],
+            [32, "SPACE"], [0, "CAPSLOCK"], [145, "F1"], [146, "F2"], [147, "F3"],
             [148, "F4"], [149, "F5"], [150, "F6"], [151, "F7"], [152, "F8"],
-            [153, "F9"], [154, "F10"], [0, "Num_Lock"], [0, ""], [0, ""],
-            [0, ""], [0, ""], [0, ""], [0, ""], [0, ""],
-            [0, ""], [0, ""], [0, ""], [0, ""], [0, ""],
-            [0, ""], [0, ""], [0, ""], [0, ""], [92, "\\"],
+
+            [153, "F9"], [154, "F10"], [0, "NUMLOCKCLEAR"], [0, "KP_MULTIPLY"], [0, "KP7"],
+            [0, "KP8"], [0, "KP9"], [0, "KP_MINUS"], [0, "KP4"], [0, "KP5"],
+            [0, "KP6"], [0, "KP_PLUS"], [0, "KP1"], [0, "KP2"], [0, "KP3"],
+            [0, "KP0"], [0, "KP_PERIOD"], [0, ""], [0, ""], [92, "\\"],
             [155, "F11"], [156, "F12"], [0, ""], [0, ""], [0, ""],
-            [0, ""], [0, ""], [0, ""], [0, ""], [13, "KP_Enter"],
-            [0, "Control_R"], [0, ""], [0, ""], [0, "Alt_R"], [0, ""],
-            [129, "Home"], [134, "Up"], [130, "Page_Up"], [136, "Left"], [137, "Right"],
-            [132, "End"], [135, "Down"], [133, "Page_Down"], [128, "Insert"], [131, "DEL"]]
+
+            [0, ""], [0, ""], [0, ""], [0, ""], [13, "ENTER"],
+            [0, "RCTRL"], [0, "KP_DIVIDE"], [0, ""], [0, "RALT"], [0, ""],
+            [129, "HOME"], [134, "UP"], [130, "PAGEUP"], [136, "LEFT"], [137, "RIGHT"],
+            [132, "END"], [135, "DOWN"], [133, "PAGEDOWN"], [128, "INSERT"], [131, "DEL"]]
 
   def __init__(self):
     from pi3d.Display import Display
     self.display = Display.INSTANCE
     self.key_num = 0
     self.key_code = ""
+    self.key_mod = 0
 
   def _update_event(self):
     if self.display is None: #Because DummyTkWin Keyboard instance created before Display!
@@ -184,9 +212,26 @@ class x11Keyboard(object):
       self.display = Display.INSTANCE
     while len(self.display.event_list) > 0:
       e = self.display.event_list.pop(0)
-      if e.type == x.KeyPress and e.xkey.keycode < len(self.KEYBOARD):
-        self.key_num = self.KEYBOARD[e.xkey.keycode][0]
-        self.key_code = self.KEYBOARD[e.xkey.keycode][1]
+      if e.type == x.KeyPress:
+        keycode = e.xkey.keycode
+        self.key_mod = e.xkey.state
+        state = 1 if self.key_mod == 1 or self.key_mod == 2 else 0 # SHIFT or CAPS, XKeycodeToKeysym scrambled by other states
+        keysym = XKeycodeToKeysym(self.display.opengl.d, keycode, state)
+        self.key_num = keysym
+        if keysym < 128:
+          # Letters, numbers, symbols. Handles modifier keys.
+          self.key_code = chr(keysym)
+        else:
+          self.key_code = XKeysymToString(keysym).decode()
+          if keycode < len(self.KEYBOARD):
+            lookup_num = self.KEYBOARD[keycode][0]
+            if lookup_num != 0:
+              self.key_num = lookup_num
+            lookup_code = self.KEYBOARD[keycode][1]
+            if lookup_code != "":
+              self.key_code = lookup_code
+          else:
+            continue # this event didn't match a know key, keep checking
         return True
     return False
 
