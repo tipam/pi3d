@@ -353,12 +353,12 @@ class Texture(Loadable):
     else:
       gray = image[:,:,0]
     grdnt = np.gradient(gray) # a tuple of two arrays x and y gradients
-    grdnt[0] = 128.0 - grdnt[0] * 0.5 * factor # range -256 to +256 converted to
-    grdnt[1] = 128.0 + grdnt[1] * 0.5 * factor # 0-255. x swapped r to l
-    z = np.maximum(0, 65025 - grdnt[0]**2 - grdnt[1]**2) # ensure +ve for sqrt
+    y_grdnt = 128.0 - grdnt[0] * 0.5 * factor # range -256 to +256 converted to
+    x_grdnt = 128.0 + grdnt[1] * 0.5 * factor # 0-255. x swapped r to l
+    z = np.maximum(0, 65025 - y_grdnt**2 - x_grdnt**2) # ensure +ve for sqrt
     n_map = np.zeros(image.shape[:2] + (3,), dtype=np.uint8) # RGB same size
-    n_map[:,:,0] = grdnt[0].astype(np.uint8) # R
-    n_map[:,:,1] = grdnt[1].astype(np.uint8) # G
+    n_map[:,:,0] = y_grdnt.astype(np.uint8) # R
+    n_map[:,:,1] = x_grdnt.astype(np.uint8) # G
     n_map[:,:,2] = (z**0.5).astype(np.uint8) # B
     return n_map
 

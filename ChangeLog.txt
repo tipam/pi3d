@@ -4,9 +4,16 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
+v2.54
+2025-03-07  Improvement: Mouse pointer locations for X11 and SDL2 have been harmonised.
+            Keyboard also returns more constant info. This latter might be a breaking
+            change if Keyboard.read_code() used.
+            Bug fix: Texture._normal_map() previously assigned to item in tuple which is
+            not allowed.
+
 v2.53
 2025-02-04  Bug fix: SDL2 uses SDL_WINDOW_BORDERLESS flag if pi3d.DISPLAY_CONFIG_NO_FRAME
-            has been included in Display.create argument display_config
+            has been included in Display.create argument display_config. *.png added in project.toml
 
 v2.52
 2024-10-13  Bug fix: SDL2 uses FULLSCREEN_DESKTOP flag to allow wlr-randr to blank the screen
