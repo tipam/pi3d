@@ -4,6 +4,10 @@ Tim Skillman, Patrick Gaunt, Tom Ritchford
 
 Date        Amends
 
+v2.55
+2025-10-14  Bug fix: Mouse pointer hidden with relevant CONFIG in sdl2. Gui always creates
+            pointer sprite in case the show_pointer flag gets changed subsequently
+
 v2.54
 2025-03-07  Improvement: Mouse pointer locations for X11 and SDL2 have been harmonised.
             Keyboard also returns more constant info. This latter might be a breaking

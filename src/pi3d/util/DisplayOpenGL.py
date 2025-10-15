@@ -105,7 +105,7 @@ class DisplayOpenGL(object):
                                     attribute_list,
                                     poss_configs, EGLint(len(poss_configs)),
                                     byref(numconfig))
-        
+
         context_attribs = (EGLint * 3)(EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE)
         if numconfig.value > 0:
           self.config = poss_configs[0]
@@ -211,6 +211,7 @@ class DisplayOpenGL(object):
       if (w == self.width and h == self.height) or (self.display_config & DISPLAY_CONFIG_FULLSCREEN):
         sdl2.SDL_SetWindowFullscreen(self.window, sdl2.SDL_WINDOW_FULLSCREEN_DESKTOP)
       if self.display_config & DISPLAY_CONFIG_HIDE_CURSOR:
+        sdl2.SDL_ShowCursor(sdl2.SDL_DISABLE)
         disp = pi3d.Display.Display.INSTANCE
         disp._mouse_relative = True
         sdl2.SDL_SetRelativeMouseMode(True) #TODO this will be overidden by creation Mouse

@@ -34,11 +34,12 @@ class Gui(object):
       if os.path.exists(icon_path):
         self.icon_path = icon_path
         break
-    if self.show_pointer:
-      tex = pi3d.Texture(self.icon_path + "pointer.png", blend=True, mipmap=False)
-      self.pointer = pi3d.Sprite(camera=self.camera, w=tex.ix, h=tex.iy, z=0.5)
-      self.pointer.set_draw_details(self.shader, [tex])
-      self.p_dx, self.p_dy = tex.ix/2.0, -tex.iy/2.0
+    # self.show_pointer could be changed externally i.e. to hide/reveal pointer when moving
+    # so always create sprite even if init argument is False
+    tex = pi3d.Texture(self.icon_path + "pointer.png", blend=True, mipmap=False)
+    self.pointer = pi3d.Sprite(camera=self.camera, w=tex.ix, h=tex.iy, z=0.5)
+    self.pointer.set_draw_details(self.shader, [tex])
+    self.p_dx, self.p_dy = tex.ix/2.0, -tex.iy/2.0
     self.next_tm = time.time() + DTM
 
   def draw(self, x, y):
