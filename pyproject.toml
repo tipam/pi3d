@@ -20,12 +20,11 @@ authors = [
 maintainers = [
   {name = "Paddy Gaunt"},
 ]
-readme = "README.md"
-license = {text = "MIT"}
+readme = "README"
+license = "MIT"
 requires-python = ">=3.7"
 classifiers=[
     "Development Status :: 5 - Production/Stable",
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
     "Topic :: Multimedia :: Graphics",
